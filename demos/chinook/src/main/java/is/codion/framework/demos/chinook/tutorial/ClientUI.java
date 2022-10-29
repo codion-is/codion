@@ -14,7 +14,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 
@@ -87,7 +87,7 @@ public final class ClientUI {
     // create an Entity value based on the album artist in the edit model
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
-    SwingEntityComboBoxModel artistComboBoxModel = editModel.foreignKeyComboBoxModel(Album.ARTIST_FK);
+    EntityComboBoxModel artistComboBoxModel = editModel.foreignKeyComboBoxModel(Album.ARTIST_FK);
 
     // create a combobox for selecting the album artist
     // based on a combobox model supplied by the edit model

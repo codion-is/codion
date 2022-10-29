@@ -3,14 +3,13 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.model.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.i18n.FrameworkMessages;
-import is.codion.framework.model.EntityComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -19,7 +18,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.JComboBox;
@@ -30,7 +29,7 @@ import java.util.ResourceBundle;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A UI component based on the SwingEntityComboBoxModel.
+ * A UI component based on the {@link EntityComboBoxModel}.
  * @see EntityComboBoxModel
  */
 public final class EntityComboBox extends JComboBox<Entity> {
@@ -39,15 +38,15 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   /**
    * Instantiates a new EntityComboBox
-   * @param model the SwingEntityComboBoxModel
+   * @param model the {@link EntityComboBoxModel}
    */
-  EntityComboBox(SwingEntityComboBoxModel model) {
+  EntityComboBox(EntityComboBoxModel model) {
     super(model);
   }
 
   @Override
-  public SwingEntityComboBoxModel getModel() {
-    return (SwingEntityComboBoxModel) super.getModel();
+  public EntityComboBoxModel getModel() {
+    return (EntityComboBoxModel) super.getModel();
   }
 
   /**
@@ -149,7 +148,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a builder for a {@link EntityComboBox}
    */
-  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(SwingEntityComboBoxModel comboBoxModel) {
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(EntityComboBoxModel comboBoxModel) {
     return builder(comboBoxModel, null);
   }
 
@@ -160,7 +159,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
    * @param <B> the builder type
    * @return a builder for a {@link EntityComboBox}
    */
-  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(SwingEntityComboBoxModel comboBoxModel,
+  public static <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> builder(EntityComboBoxModel comboBoxModel,
                                                                                                                           Value<Entity> linkedValue) {
     return new DefaultBuilder<>(comboBoxModel, linkedValue);
   }
@@ -178,7 +177,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   private static final class DefaultBuilder<B extends ComboBoxBuilder<Entity, EntityComboBox, B>> extends DefaultComboBoxBuilder<Entity, EntityComboBox, B> {
 
-    private DefaultBuilder(SwingEntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
+    private DefaultBuilder(EntityComboBoxModel comboBoxModel, Value<Entity> linkedValue) {
       super(comboBoxModel, linkedValue);
       popupMenuControl(Control.builder(new ForceRefreshCommand(comboBoxModel))
               .caption(FrameworkMessages.refresh())
@@ -187,15 +186,15 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
     @Override
     protected EntityComboBox createComboBox() {
-      return new EntityComboBox((SwingEntityComboBoxModel) comboBoxModel);
+      return new EntityComboBox((EntityComboBoxModel) comboBoxModel);
     }
   }
 
   private static final class ForceRefreshCommand implements Control.Command {
 
-    private final SwingEntityComboBoxModel comboBoxModel;
+    private final EntityComboBoxModel comboBoxModel;
 
-    private ForceRefreshCommand(SwingEntityComboBoxModel comboBoxModel) {
+    private ForceRefreshCommand(EntityComboBoxModel comboBoxModel) {
       this.comboBoxModel = comboBoxModel;
     }
 

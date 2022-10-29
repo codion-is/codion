@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.NumberField;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
@@ -35,7 +35,7 @@ public class EntityComboBoxTest {
 
   @Test
   void inputProvider() throws Exception {
-    SwingEntityComboBoxModel model = new SwingEntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
+    EntityComboBoxModel model = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
     model.refresh();
     Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "OPERATIONS");
     model.setSelectedItem(operations);
@@ -55,7 +55,7 @@ public class EntityComboBoxTest {
 
   @Test
   void integerSelectorField() {
-    SwingEntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
+    EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
     comboBoxModel.refresh();
     Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
     comboBoxModel.selectByKey(jonesKey);

@@ -103,6 +103,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -366,7 +367,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (int i = 50; i <= 200; i += 5) {
       values.add(Item.item(i, i + "%"));
     }
-    ItemComboBoxModel<Integer> comboBoxModel = ItemComboBoxModel.createModel(values);
+    ItemComboBoxModel<Integer> comboBoxModel = itemComboBoxModel(values);
     Integer fontSizeMultiplier = fontSizeMultiplier();
 
     Dialogs.okCancelDialog(Components.panel(Layouts.borderLayout())

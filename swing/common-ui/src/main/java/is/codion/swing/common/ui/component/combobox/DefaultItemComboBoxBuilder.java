@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
-import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
@@ -19,6 +19,8 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.sortedItemComboBoxModel;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static java.util.Objects.requireNonNull;
 
@@ -170,13 +172,13 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
         modelItems.add(0, nullItem);
       }
       if (sortComparator != null) {
-        comboBoxModel = ItemComboBoxModel.createSortedModel(modelItems, sortComparator);
+        comboBoxModel = sortedItemComboBoxModel(modelItems, sortComparator);
       }
       else if (sorted) {
-        comboBoxModel = ItemComboBoxModel.createSortedModel(modelItems);
+        comboBoxModel = sortedItemComboBoxModel(modelItems);
       }
       else {
-        comboBoxModel = ItemComboBoxModel.createModel(modelItems);
+        comboBoxModel = itemComboBoxModel(modelItems);
       }
     }
     if (nullable && comboBoxModel.containsItem(nullItem)) {

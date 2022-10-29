@@ -10,7 +10,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -70,7 +69,7 @@ public final class SwingEntityModelTest
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     SwingEntityTableModel employeeTableModel = employeeModel.tableModel();
 
-    SwingEntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
+    EntityComboBoxModel comboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK);
     new EntityComboBoxModelValue(comboBoxModel).link(employeeEditModel.value(Employee.MGR_FK));
     employeeTableModel.refresh();
     for (Entity employee : employeeTableModel.items()) {
@@ -184,9 +183,9 @@ public final class SwingEntityModelTest
 
   private static final class EntityComboBoxModelValue extends AbstractValue<Entity> {
 
-    private final SwingEntityComboBoxModel comboBoxModel;
+    private final EntityComboBoxModel comboBoxModel;
 
-    public EntityComboBoxModelValue(SwingEntityComboBoxModel comboBoxModel) {
+    public EntityComboBoxModelValue(EntityComboBoxModel comboBoxModel) {
       this.comboBoxModel = comboBoxModel;
       comboBoxModel.addSelectionListener(selected -> notifyValueChange());
     }

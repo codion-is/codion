@@ -13,8 +13,8 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
@@ -146,8 +146,8 @@ public final class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
-      SwingEntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
+    public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
+      EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
                 Condition.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));

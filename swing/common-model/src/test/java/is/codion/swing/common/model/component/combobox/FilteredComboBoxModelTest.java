@@ -5,8 +5,8 @@ package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,9 +23,9 @@ import java.util.function.Predicate;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class SwingFilteredComboBoxModelTest {
+public class FilteredComboBoxModelTest {
 
-  private SwingFilteredComboBoxModel<String> testModel;
+  private FilteredComboBoxModel<String> testModel;
 
   private static final String NULL = "nullitem";
   private static final String ANNA = "anna";
@@ -241,7 +241,7 @@ public class SwingFilteredComboBoxModelTest {
 
   @Test
   void nullItem() {
-    SwingFilteredComboBoxModel<String> model = new SwingFilteredComboBoxModel<>();
+    FilteredComboBoxModel<String> model = new FilteredComboBoxModel<>();
     assertFalse(model.containsItem(null));
     model.setIncludeNull(true);
     assertTrue(model.containsItem(null));
@@ -306,7 +306,7 @@ public class SwingFilteredComboBoxModelTest {
     }
     List<Data> contents = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
-    SwingFilteredComboBoxModel<Data> model = new SwingFilteredComboBoxModel<>();
+    FilteredComboBoxModel<Data> model = new FilteredComboBoxModel<>();
     model.setContents(contents);
     model.setSelectedItem(contents.get(1));
     assertEquals("2", model.selectedValue().data);
@@ -319,7 +319,7 @@ public class SwingFilteredComboBoxModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    testModel = new SwingFilteredComboBoxModel<>();
+    testModel = new FilteredComboBoxModel<>();
     testModel.setIncludeNull(true);
     testModel.setNullItem(NULL);
     List<String> names = new ArrayList<>();

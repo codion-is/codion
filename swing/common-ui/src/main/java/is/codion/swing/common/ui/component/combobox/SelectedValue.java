@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.model.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.ComboBoxModel;

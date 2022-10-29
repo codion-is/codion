@@ -8538,3 +8538,6 @@
   Database.maximumNumberOfParameters() added, used in DefaultLocalEntityConnection.selectReferencedEntities()
   ForeignKeyConditionModel removed, related refactoring
   DefaultForeignKeyConditionModel renamed EntitySearchModelConditionModel, SwingForeignKeyConditionModel renamed SwingEntityComboBoxModelConditionModel and FXForeignKeyConditionListModel renamed EntityListConditionModel
+  FilteredComboBoxModel and EntityComboBoxModel interfaces removed, SwingFilteredComboBoxModel, SwingPropertyComboBoxModel and SwingEntityComboBoxModel renamed FilteredComboBoxModel, PropertyComboBoxModel and EntityComboBoxModel respectively
+  PropertyComboBoxModel removed
+  ItemComboBoxModel.createModel() renamed itemComboBoxModel(), createSortedModel() renamed sortedItemComboBoxModel() and createBooleanModel() renamed booleanItemComboBoxModel()

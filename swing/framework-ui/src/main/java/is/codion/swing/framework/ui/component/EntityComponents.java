@@ -11,7 +11,6 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.LabelBuilder;
@@ -26,7 +25,7 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
 
@@ -45,6 +44,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -186,7 +186,7 @@ public class EntityComponents {
   public final ItemComboBoxBuilder<Boolean> booleanComboBox(Attribute<Boolean> attribute) {
     Property<Boolean> property = entityDefinition.property(attribute);
 
-    return Components.booleanComboBox(ItemComboBoxModel.createBooleanModel())
+    return Components.booleanComboBox(booleanItemComboBoxModel())
             .toolTipText(property.description());
   }
 
@@ -198,7 +198,7 @@ public class EntityComponents {
    * @return a foreign key JComboBox builder
    */
   public final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> foreignKeyComboBox(ForeignKey foreignKey,
-                                                                                                                                    SwingEntityComboBoxModel comboBoxModel) {
+                                                                                                                                    EntityComboBoxModel comboBoxModel) {
     ForeignKeyProperty foreignKeyProperty = entityDefinition.foreignKeyProperty(foreignKey);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) EntityComboBox.builder(comboBoxModel)

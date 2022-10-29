@@ -18,7 +18,7 @@ public class ItemComboBoxModelTest {
 
   @Test
   void test() throws Exception {
-    ItemComboBoxModel.createModel();
+    ItemComboBoxModel.itemComboBoxModel();
     Item<Integer> nullItem = item(null, "");
     Item<Integer> aOne = item(1, "AOne");
     Item<Integer> bTwo = item(2, "BTwo");
@@ -26,7 +26,7 @@ public class ItemComboBoxModelTest {
     Item<Integer> dFour = item(4, "DFour");
 
     List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    ItemComboBoxModel<Integer> model = ItemComboBoxModel.createSortedModel(items);
+    ItemComboBoxModel<Integer> model = ItemComboBoxModel.sortedItemComboBoxModel(items);
 
     assertEquals(0, model.indexOf(null));
     assertEquals(1, model.indexOf(1));
@@ -57,7 +57,7 @@ public class ItemComboBoxModelTest {
     assertEquals(4, model.indexOf(4));
 
     //test unsorted final List<Item<Integer>> items = asList(nullItem, cThree, bTwo, aOne, dFour);
-    ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.createModel(items);
+    ItemComboBoxModel<Integer> unsortedModel = ItemComboBoxModel.itemComboBoxModel(items);
 
     assertEquals(0, unsortedModel.indexOf(null));
     assertEquals(1, unsortedModel.indexOf(3));
@@ -68,7 +68,7 @@ public class ItemComboBoxModelTest {
 
   @Test
   void booleanComboBoxModel() throws Exception {
-    ItemComboBoxModel<Boolean> model = ItemComboBoxModel.createBooleanModel();
+    ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
 
     model.setSelectedItem(false);
     assertEquals(false, ((Item<Boolean>) model.getSelectedItem()).value());
