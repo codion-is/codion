@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  * @see #createSortedModel()
  * @see #createBooleanModel()
  */
-public final class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
+public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
 
   private ItemComboBoxModel(List<Item<T>> items) {
     setContents(items);

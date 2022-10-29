@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
@@ -55,7 +55,7 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
                                                               Entity initialValue) {
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
     if (editModel.connectionProvider().entities().definition(foreignKey.referencedType()).isSmallDataset()) {
-      SwingEntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
+      EntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
       comboBoxModel.setSelectedItem(initialValue);
 
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, comboBoxModel)

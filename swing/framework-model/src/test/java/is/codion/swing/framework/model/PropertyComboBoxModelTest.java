@@ -9,15 +9,14 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
-import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.swing.framework.model.SwingPropertyComboBoxModel.swingPropertyComboBoxModel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public final class SwingPropertyComboBoxModelTest {
+public final class PropertyComboBoxModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -27,11 +26,11 @@ public final class SwingPropertyComboBoxModelTest {
             .user(UNIT_TEST_USER)
             .build();
 
-  private final SwingFilteredComboBoxModel<String> comboBoxModel;
+  private final FilteredComboBoxModel<String> comboBoxModel;
   private final Event<?> refreshEvent = Event.event();
 
-  public SwingPropertyComboBoxModelTest() {
-    comboBoxModel = swingPropertyComboBoxModel(CONNECTION_PROVIDER, Department.NAME);
+  public PropertyComboBoxModelTest() {
+    comboBoxModel = PropertyComboBoxModel.propertyComboBoxModel(CONNECTION_PROVIDER, Department.NAME);
     refreshEvent.addListener(comboBoxModel::refresh);
   }
 

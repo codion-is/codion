@@ -5,7 +5,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -32,9 +32,9 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
             .build());
     Entity insertedAlbum = albumEditModel.insert();
     SwingEntityEditModel trackEditModel = albumModel.detailModel(Track.TYPE).editModel();
-    SwingEntityComboBoxModel genreComboBoxModel = trackEditModel.foreignKeyComboBoxModel(Track.GENRE_FK);
+    EntityComboBoxModel genreComboBoxModel = trackEditModel.foreignKeyComboBoxModel(Track.GENRE_FK);
     selectRandomItem(genreComboBoxModel);
-    SwingEntityComboBoxModel mediaTypeComboBoxModel =
+    EntityComboBoxModel mediaTypeComboBoxModel =
             trackEditModel.foreignKeyComboBoxModel(Track.MEDIATYPE_FK);
     selectRandomItem(mediaTypeComboBoxModel);
     for (int i = 0; i < 10; i++) {

@@ -9,10 +9,10 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.tools.loadtest.UsageScenario;
+import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import java.util.ArrayList;

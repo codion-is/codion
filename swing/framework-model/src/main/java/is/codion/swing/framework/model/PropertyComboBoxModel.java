@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import java.util.Collection;
 import java.util.function.Supplier;
@@ -15,17 +15,17 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A combo box model based on all the values of a single attribute.
- * For instances use the {@link #swingPropertyComboBoxModel(EntityConnectionProvider, Attribute)} or
- * {@link #swingPropertyComboBoxModel(Supplier)} factory methods.
+ * For instances use the {@link #propertyComboBoxModel(EntityConnectionProvider, Attribute)} or
+ * {@link #propertyComboBoxModel(Supplier)} factory methods.
  * @param <T> the type of values in this combo box model
- * @see #swingPropertyComboBoxModel(EntityConnectionProvider, Attribute)
- * @see #swingPropertyComboBoxModel(Supplier)
+ * @see #propertyComboBoxModel(EntityConnectionProvider, Attribute)
+ * @see #propertyComboBoxModel(Supplier)
  */
-public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> {
+public final class PropertyComboBoxModel<T> extends FilteredComboBoxModel<T> {
 
   private final Supplier<Collection<T>> valueSupplier;
 
-  private SwingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
+  private PropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
     this.valueSupplier = requireNonNull(valueSupplier, "valueSupplier");
   }
 
@@ -33,19 +33,19 @@ public final class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxMo
    * @param connectionProvider a EntityConnectionProvider instance
    * @param attribute the underlying attribute
    * @param <T> the type of values in this combo box model
-   * @return a new {@link SwingPropertyComboBoxModel} instance
+   * @return a new {@link PropertyComboBoxModel} instance
    */
-  public static <T> SwingPropertyComboBoxModel<T> swingPropertyComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
-    return new SwingPropertyComboBoxModel<>(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute));
+  public static <T> PropertyComboBoxModel<T> propertyComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+    return new PropertyComboBoxModel<>(new DefaultValueSupplier<>(requireNonNull(connectionProvider, "connectionProvider"), attribute));
   }
 
   /**
    * @param valueSupplier provides the values to show in this combo box model
    * @param <T> the type of values in this combo box model
-   * @return a new {@link SwingPropertyComboBoxModel} instance
+   * @return a new {@link PropertyComboBoxModel} instance
    */
-  public static <T> SwingPropertyComboBoxModel<T> swingPropertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
-    return new SwingPropertyComboBoxModel<>(valueSupplier);
+  public static <T> PropertyComboBoxModel<T> propertyComboBoxModel(Supplier<Collection<T>> valueSupplier) {
+    return new PropertyComboBoxModel<>(valueSupplier);
   }
 
   @Override

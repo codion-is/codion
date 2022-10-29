@@ -13,17 +13,17 @@ import java.util.Arrays;
 import java.util.Objects;
 
 /**
- * A {@link is.codion.common.model.table.ColumnConditionModel} based on a {@link SwingEntityComboBoxModel}.
- * For instances use the {@link #swingEntityComboBoxModelConditionModel(ForeignKey, SwingEntityComboBoxModel)} factory method.
- * @see #swingEntityComboBoxModelConditionModel(ForeignKey, SwingEntityComboBoxModel)
+ * A {@link is.codion.common.model.table.ColumnConditionModel} based on a {@link EntityComboBoxModel}.
+ * For instances use the {@link #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)} factory method.
+ * @see #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)
  */
-public final class SwingEntityComboBoxModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntityComboBoxModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
 
-  private final SwingEntityComboBoxModel entityComboBoxModel;
+  private final EntityComboBoxModel entityComboBoxModel;
 
   private boolean updatingModel = false;
 
-  private SwingEntityComboBoxModelConditionModel(ForeignKey foreignKey, SwingEntityComboBoxModel comboBoxModel) {
+  private EntityComboBoxModelConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
     super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
     if (entityComboBoxModel.isCleared()) {
@@ -40,21 +40,21 @@ public final class SwingEntityComboBoxModelConditionModel extends DefaultColumnC
   }
 
   /**
-   * @return the {@link SwingEntityComboBoxModel} used by this {@link SwingEntityComboBoxModelConditionModel}
+   * @return the {@link EntityComboBoxModel} used by this {@link EntityComboBoxModelConditionModel}
    */
-  public SwingEntityComboBoxModel entityComboBoxModel() {
+  public EntityComboBoxModel entityComboBoxModel() {
     return entityComboBoxModel;
   }
 
   /**
-   * Instantiates a {@link SwingEntityComboBoxModelConditionModel} instance
+   * Instantiates a {@link EntityComboBoxModelConditionModel} instance
    * @param foreignKey the foreign key
    * @param comboBoxModel a SwingEntityComboBoxModel
-   * @return a new {@link SwingEntityComboBoxModelConditionModel} instance
+   * @return a new {@link EntityComboBoxModelConditionModel} instance
    */
-  public static SwingEntityComboBoxModelConditionModel swingEntityComboBoxModelConditionModel(ForeignKey foreignKey,
-                                                                                              SwingEntityComboBoxModel comboBoxModel) {
-    return new SwingEntityComboBoxModelConditionModel(foreignKey, comboBoxModel);
+  public static EntityComboBoxModelConditionModel entityComboBoxModelConditionModel(ForeignKey foreignKey,
+                                                                                    EntityComboBoxModel comboBoxModel) {
+    return new EntityComboBoxModelConditionModel(foreignKey, comboBoxModel);
   }
 
   private void bindComboBoxEvents() {

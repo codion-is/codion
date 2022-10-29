@@ -13,7 +13,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -34,7 +33,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class SwingEntityComboBoxModelTest {
+public final class EntityComboBoxModelTest {
 
   private static final Entities ENTITIES = new TestDomain().entities();
 
@@ -46,10 +45,10 @@ public final class SwingEntityComboBoxModelTest {
             .user(UNIT_TEST_USER)
             .build();
 
-  private final SwingEntityComboBoxModel comboBoxModel;
+  private final EntityComboBoxModel comboBoxModel;
 
-  public SwingEntityComboBoxModelTest() {
-    comboBoxModel = new SwingEntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
+  public EntityComboBoxModelTest() {
+    comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
   }
 
   @Test
@@ -84,22 +83,22 @@ public final class SwingEntityComboBoxModelTest {
 
   @Test
   void constructorNullEntityType() {
-    assertThrows(NullPointerException.class, () -> new SwingEntityComboBoxModel(null, CONNECTION_PROVIDER));
+    assertThrows(NullPointerException.class, () -> new EntityComboBoxModel(null, CONNECTION_PROVIDER));
   }
 
   @Test
   void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new SwingEntityComboBoxModel(Employee.TYPE, null));
+    assertThrows(NullPointerException.class, () -> new EntityComboBoxModel(Employee.TYPE, null));
   }
 
   @Test
   void foreignKeyFilterComboBoxModel() throws Exception {
     EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-    SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(Employee.TYPE, connectionProvider);
+    EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
     empBox.setNullCaption("-");
     empBox.refresh();
     assertEquals(17, empBox.getSize());
-    SwingEntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(Employee.DEPARTMENT_FK);
+    EntityComboBoxModel deptBox = empBox.createForeignKeyFilterComboBoxModel(Employee.DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
     Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
     deptBox.selectByKey(accountingKey);
@@ -116,11 +115,11 @@ public final class SwingEntityComboBoxModelTest {
   @Test
   void foreignKeyConditionComboBoxModel() throws Exception {
     EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
-    SwingEntityComboBoxModel empBox = new SwingEntityComboBoxModel(Employee.TYPE, connectionProvider);
+    EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
     empBox.setNullCaption("-");
     empBox.refresh();
     assertEquals(17, empBox.getSize());
-    SwingEntityComboBoxModel deptBox = empBox.createForeignKeyConditionComboBoxModel(Employee.DEPARTMENT_FK);
+    EntityComboBoxModel deptBox = empBox.createForeignKeyConditionComboBoxModel(Employee.DEPARTMENT_FK);
     assertEquals(1, empBox.getSize());
     Key accountingKey = connectionProvider.entities().primaryKey(Department.TYPE, 10);
     deptBox.selectByKey(accountingKey);

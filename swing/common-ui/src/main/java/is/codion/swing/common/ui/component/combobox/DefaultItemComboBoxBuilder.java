@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.item.Item;
-import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;

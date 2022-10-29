@@ -7,7 +7,6 @@ import is.codion.common.ProxyBuilder;
 import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.model.combobox.FilteredComboBoxModel;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -19,9 +18,8 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.model.EntityComboBoxModel;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -43,7 +41,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
-public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
+public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
@@ -72,7 +70,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
    * @param entityType the type of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
-  public SwingEntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+  public EntityComboBoxModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
@@ -89,33 +87,52 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return getClass().getSimpleName() + " [entityType: " + entityType + "]";
   }
 
-  @Override
+  /**
+   * @return the connection provider used by this combo box model
+   */
   public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
   }
 
-  @Override
+  /**
+   * @return the type of the entity this combo box model is based on
+   */
   public final EntityType entityType() {
     return entityType;
   }
 
-  @Override
+  /**
+   * Forces a refresh of this model, disregarding the staticData directive
+   * @see #setStaticData(boolean)
+   */
   public final void forceRefresh() {
     forceRefresh = true;
     refresh();
   }
 
-  @Override
+  /**
+   * @return true if the data for this model should only be fetched once
+   * @see #forceRefresh()
+   */
   public final boolean isStaticData() {
     return staticData;
   }
 
-  @Override
+  /**
+   * Specifies whether this models data should be considered static, that is, only fetched once.
+   * Note that {@link #forceRefresh()} disregards this directive.
+   * @param staticData the value
+   */
   public final void setStaticData(boolean staticData) {
     this.staticData = staticData;
   }
 
-  @Override
+  /**
+   * Enables the null item and sets the null item caption.
+   * @param caption the null item caption
+   * @see #setIncludeNull(boolean)
+   * @see #setNullItem(Object)
+   */
   public final void setNullCaption(String caption) {
     setIncludeNull(true);
     setNullItem(ProxyBuilder.builder(Entity.class)
@@ -124,7 +141,13 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
             .build());
   }
 
-  @Override
+  /**
+   * Specifies the attributes to include when selecting the entities to populate this model with.
+   * Note that the primary key attribute values are always included.
+   * An empty Collection indicates that all attributes should be selected.
+   * @param selectAttributes the attributes to select
+   * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
+   */
   public final void setSelectAttributes(Collection<Attribute<?>> selectAttributes) {
     for (Attribute<?> attribute : requireNonNull(selectAttributes)) {
       if (!attribute.entityType().equals(entityType)) {
@@ -135,12 +158,22 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     this.selectAttributes.addAll(selectAttributes);
   }
 
-  @Override
+  /**
+   * True if this combo box model responds to entity edit events, by adding inserted items,
+   * updating any updated items and removing deleted ones.
+   * @return true if this combo box model listens edit events
+   * @see EntityEditEvents
+   */
   public final boolean isListenToEditEvents() {
     return listenToEditEvents;
   }
 
-  @Override
+  /**
+   * Set to true if this combo box model should respond to entity edit events, by adding inserted items,
+   * updating any updated items and removing deleted ones.
+   * @param listenToEditEvents if true then this model listens to entity edit events
+   * @see EntityEditEvents
+   */
   public final void setListenToEditEvents(boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
     if (listenToEditEvents) {
@@ -151,7 +184,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  @Override
+  /**
+   * @param primaryKey the primary key of the entity to fetch from this model
+   * @return the entity with the given key if found in the model, an empty Optional otherwise
+   */
   public final Optional<Entity> entity(Key primaryKey) {
     requireNonNull(primaryKey);
 
@@ -160,7 +196,11 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
             .findFirst();
   }
 
-  @Override
+  /**
+   * Selects the entity with the given primary key, if the entity is not available
+   * in the model this method returns silently without changing the selection
+   * @param primaryKey the primary key of the entity to select
+   */
   public final void selectByKey(Key primaryKey) {
     requireNonNull(primaryKey);
     int indexOfKey = indexOfKey(primaryKey);
@@ -175,22 +215,40 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     }
   }
 
-  @Override
+  /**
+   * Sets the condition provider to use when querying data
+   * @param selectConditionSupplier the condition supplier
+   */
   public final void setSelectConditionSupplier(Supplier<Condition> selectConditionSupplier) {
     this.selectConditionSupplier = selectConditionSupplier;
   }
 
-  @Override
+  /**
+   * @return the select condition supplier, null if none is specified
+   */
   public final Supplier<Condition> getSelectConditionSupplier() {
     return this.selectConditionSupplier;
   }
 
-  @Override
+  /**
+   * Use this method to retrieve the default foreign key filter include condition if you
+   * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
+   * <pre>
+   *   Predicate fkCondition = model.foreignKeyIncludeCondition();
+   *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
+   * </pre>
+   * @return the {@link Predicate} based on the foreign key filter entities
+   * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
+   */
   public final Predicate<Entity> foreignKeyIncludeCondition() {
     return foreignKeyIncludeCondition;
   }
 
-  @Override
+  /**
+   * Filters this combo box model so that only items referencing the given keys via the given foreign key are shown.
+   * @param foreignKey the foreign key
+   * @param keys the keys, null or empty for none
+   */
   public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Key> keys) {
     requireNonNull(foreignKey);
     if (Util.nullOrEmpty(keys)) {
@@ -202,7 +260,10 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     setIncludeCondition(foreignKeyIncludeCondition);
   }
 
-  @Override
+  /**
+   * @param foreignKey the foreign key
+   * @return the keys currently used to filter the contents of this model by foreign key, an empty collection for none
+   */
   public final Collection<Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFilterKeys.containsKey(foreignKey)) {
@@ -212,37 +273,72 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return emptyList();
   }
 
-  @Override
+  /**
+   * Specifies whether foreign key filtering should be strict or not.
+   * When the filtering is strict only entities with the correct reference are included, that is,
+   * entities with null values for the given foreign key are filtered.
+   * Non-strict simply means that entities with null references are not filtered.
+   * @param strictForeignKeyFiltering the value
+   * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
+   */
   public final void setStrictForeignKeyFiltering(boolean strictForeignKeyFiltering) {
     this.strictForeignKeyFiltering = strictForeignKeyFiltering;
   }
 
-  @Override
+  /**
+   * @return true if strict foreign key filtering is enabled
+   */
   public final boolean isStrictForeignKeyFiltering() {
     return strictForeignKeyFiltering;
   }
 
-  @Override
-  public final SwingEntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey) {
+  /**
+   * Returns a combo box model for selecting a foreign key value for filtering this model.
+   * @param foreignKey the foreign key
+   * @return a combo box model for selecting a filtering value for this combo box model
+   * @see #linkForeignKeyFilterComboBoxModel(ForeignKey, EntityComboBoxModel)
+   */
+  public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(ForeignKey foreignKey) {
     return createForeignKeyComboBoxModel(foreignKey, true);
   }
 
-  @Override
-  public final SwingEntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
+  /**
+   * Returns a combo box model for selecting a foreign key value for using as a condition this model.
+   * Note that each time the selection changes in the created model this model is refreshed.
+   * @param foreignKey the foreign key
+   * @return a combo box model for selecting a filtering value for this combo box model
+   * @see #linkForeignKeyConditionComboBoxModel(ForeignKey, EntityComboBoxModel)
+   */
+  public final EntityComboBoxModel createForeignKeyConditionComboBoxModel(ForeignKey foreignKey) {
     return createForeignKeyComboBoxModel(foreignKey, false);
   }
 
-  @Override
+  /**
+   * Links the given combo box model representing master entities to this combo box model
+   * so that selection in the master model filters this model according to the selected master entity
+   * @param foreignKey the foreign key attribute
+   * @param foreignKeyModel the combo box model to link
+   */
   public final void linkForeignKeyFilterComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, true);
   }
 
-  @Override
+  /**
+   * Links the given combo box model representing master entities to this combo box model
+   * so that selection in the master model refreshes this model with the selected master entity as condition
+   * @param foreignKey the foreign key attribute
+   * @param foreignKeyModel the combo box model to link
+   */
   public final void linkForeignKeyConditionComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, false);
   }
 
-  @Override
+  /**
+   * Creates a {@link Value} linked to the selected entity via the value of the given attribute.
+   * @param <T> the attribute type
+   * @param attribute the attribute
+   * @return a {@link Value} for selecting items by attribute value
+   */
   public final <T> Value<T> createSelectorValue(Attribute<T> attribute) {
     if (!entities.definition(entityType()).containsAttribute(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
@@ -325,10 +421,9 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
     return -1;
   }
 
-  private SwingEntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
+  private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
     ForeignKeyProperty foreignKeyProperty = entities.definition(entityType).foreignKeyProperty(foreignKey);
-    SwingEntityComboBoxModel foreignKeyModel =
-            new SwingEntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider);
+    EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
@@ -404,7 +499,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public void onEvent(List<Entity> inserted) {
-      inserted.forEach(SwingEntityComboBoxModel.this::addItem);
+      inserted.forEach(EntityComboBoxModel.this::addItem);
     }
   }
 
@@ -420,7 +515,7 @@ public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity>
 
     @Override
     public void onEvent(List<Entity> deleted) {
-      deleted.forEach(SwingEntityComboBoxModel.this::removeItem);
+      deleted.forEach(EntityComboBoxModel.this::removeItem);
     }
   }
 

@@ -16,8 +16,8 @@ import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
-import is.codion.swing.framework.model.SwingEntityComboBoxModel;
-import is.codion.swing.framework.model.SwingEntityComboBoxModelConditionModel;
+import is.codion.swing.framework.model.EntityComboBoxModel;
+import is.codion.swing.framework.model.EntityComboBoxModelConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import org.slf4j.Logger;
@@ -131,8 +131,8 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
         return entityComponents.foreignKeySearchField(model.columnIdentifier(), searchModel).build();
       }
-      if (model instanceof SwingEntityComboBoxModelConditionModel) {
-        SwingEntityComboBoxModel comboBoxModel = ((SwingEntityComboBoxModelConditionModel) model).entityComboBoxModel();
+      if (model instanceof EntityComboBoxModelConditionModel) {
+        EntityComboBoxModel comboBoxModel = ((EntityComboBoxModelConditionModel) model).entityComboBoxModel();
 
         return entityComponents.foreignKeyComboBox(model.columnIdentifier(), comboBoxModel)
                 .completionMode(Completion.Mode.MAXIMUM_MATCH)

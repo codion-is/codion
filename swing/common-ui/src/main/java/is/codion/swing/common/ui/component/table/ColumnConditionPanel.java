@@ -10,7 +10,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.SwingFilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Controls;
@@ -467,7 +467,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private JComboBox<Operator> createOperatorComboBox(List<Operator> operators) {
-    SwingFilteredComboBoxModel<Operator> operatorComboBoxModel = new SwingFilteredComboBoxModel<>();
+    FilteredComboBoxModel<Operator> operatorComboBoxModel = new FilteredComboBoxModel<>();
     operatorComboBoxModel.setContents(operators);
     operatorComboBoxModel.setSelectedItem(operators.get(0));
     return comboBox(operatorComboBoxModel, conditionModel.operatorValue())
