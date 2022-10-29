@@ -796,7 +796,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     @Override
-    protected void setTransferFocusOnEnter(EntitySearchField component) {
+    protected void enableTransferFocusOnEnter(EntitySearchField component) {
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_FOCUSED)
               .action(component.transferFocusAction)

@@ -8505,3 +8505,4 @@
   ItemComboBoxModel.createModel() renamed itemComboBoxModel(), createSortedModel() renamed sortedItemComboBoxModel() and createBooleanModel() renamed booleanItemComboBoxModel()
   ColumnSummaryModel.isValueSubset() removed, ColumnSummaryModel.SummaryValues added
   DefaultColumnSummaryModel no longer public, ColumnSummaryModel.columnSummaryModel() factory method added
+  AbstractComponentBuilder.setTransferFocusOnEnter() renamed enableTransferFocusOnEnter()

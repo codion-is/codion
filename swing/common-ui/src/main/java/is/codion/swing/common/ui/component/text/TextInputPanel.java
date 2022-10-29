@@ -343,7 +343,7 @@ public final class TextInputPanel extends JPanel {
     }
 
     @Override
-    protected void setTransferFocusOnEnter(TextInputPanel component) {
+    protected void enableTransferFocusOnEnter(TextInputPanel component) {
       component.setTransferFocusOnEnter(true);
     }
   }

@@ -98,8 +98,8 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
   }
 
   @Override
-  protected final void setTransferFocusOnEnter(JSpinner component) {
-    super.setTransferFocusOnEnter(component);
+  protected final void enableTransferFocusOnEnter(JSpinner component) {
+    super.enableTransferFocusOnEnter(component);
     TransferFocusOnEnter.enable(((JSpinner.DefaultEditor) component.getEditor()).getTextField());
   }
 
