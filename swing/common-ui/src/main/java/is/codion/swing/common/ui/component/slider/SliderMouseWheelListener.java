@@ -12,10 +12,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A mouse wheel listener for JSlider, moving to the next or previous value on wheel spin.
  * Up/away increases the value and down/towards decreases it unless reversed.
- * @see #create(BoundedRangeModel)
- * @see #createReversed(BoundedRangeModel)
  */
-public final class SliderMouseWheelListener implements MouseWheelListener {
+final class SliderMouseWheelListener implements MouseWheelListener {
 
   private final BoundedRangeModel boundedRangeModel;
   private final boolean reversed;
@@ -25,7 +23,7 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
    * @param boundedRangeModel the model
    * @param reversed if true then up/away decreases the value and down/towards increases it.
    */
-  private SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
+  SliderMouseWheelListener(BoundedRangeModel boundedRangeModel, boolean reversed) {
     this.boundedRangeModel = requireNonNull(boundedRangeModel);
     this.reversed = reversed;
   }
@@ -36,23 +34,5 @@ public final class SliderMouseWheelListener implements MouseWheelListener {
     if (wheelRotation != 0) {
       boundedRangeModel.setValue(boundedRangeModel.getValue() + (wheelRotation * (reversed ? 1 : -1)));
     }
-  }
-
-  /**
-   * Instantiates a new mouse wheel listener
-   * @param boundedRangeModel the model
-   * @return a new MouseWheelListener
-   */
-  public static MouseWheelListener create(BoundedRangeModel boundedRangeModel) {
-    return new SliderMouseWheelListener(boundedRangeModel, false);
-  }
-
-  /**
-   * Instantiates a new reversed mouse wheel listener
-   * @param boundedRangeModel the model
-   * @return a new MouseWheelListener
-   */
-  public static MouseWheelListener createReversed(BoundedRangeModel boundedRangeModel) {
-    return new SliderMouseWheelListener(boundedRangeModel, true);
   }
 }

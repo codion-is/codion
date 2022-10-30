@@ -115,10 +115,10 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
     slider.setInverted(inverted);
     slider.setOrientation(orientation);
     if (mouseWheelScrolling) {
-      slider.addMouseWheelListener(SliderMouseWheelListener.create(boundedRangeModel));
+      slider.addMouseWheelListener(new SliderMouseWheelListener(boundedRangeModel, false));
     }
     if (mouseWheelScrollingReversed) {
-      slider.addMouseWheelListener(SliderMouseWheelListener.createReversed(boundedRangeModel));
+      slider.addMouseWheelListener(new SliderMouseWheelListener(boundedRangeModel, true));
     }
 
     return slider;

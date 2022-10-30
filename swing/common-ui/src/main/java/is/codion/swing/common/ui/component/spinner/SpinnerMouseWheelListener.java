@@ -12,10 +12,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A mouse wheel listener for JSpinner, moving to the next or previous value on wheel spin.
  * Up/away increases the value and down/towards decreases it unless reversed.
- * @see #create(SpinnerModel)
- * @see #createReversed(SpinnerModel)
  */
-public final class SpinnerMouseWheelListener implements MouseWheelListener {
+final class SpinnerMouseWheelListener implements MouseWheelListener {
 
   private final SpinnerModel spinnerModel;
   private final boolean reversed;
@@ -25,7 +23,7 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
    * @param spinnerModel the spinner model
    * @param reversed if true then up/away decreases the value and down/towards increases it.
    */
-  private SpinnerMouseWheelListener(SpinnerModel spinnerModel, boolean reversed) {
+  SpinnerMouseWheelListener(SpinnerModel spinnerModel, boolean reversed) {
     this.spinnerModel = requireNonNull(spinnerModel);
     this.reversed = reversed;
   }
@@ -39,23 +37,5 @@ public final class SpinnerMouseWheelListener implements MouseWheelListener {
         spinnerModel.setValue(newValue);
       }
     }
-  }
-
-  /**
-   * Instantiates a new mouse wheel listener
-   * @param spinnerModel the spinner model
-   * @return a new MouseWheelListener
-   */
-  public static MouseWheelListener create(SpinnerModel spinnerModel) {
-    return new SpinnerMouseWheelListener(spinnerModel, false);
-  }
-
-  /**
-   * Instantiates a new reversed mouse wheel listener
-   * @param spinnerModel the spinner model
-   * @return a new MouseWheelListener
-   */
-  public static MouseWheelListener createReversed(SpinnerModel spinnerModel) {
-    return new SpinnerMouseWheelListener(spinnerModel, true);
   }
 }

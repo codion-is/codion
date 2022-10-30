@@ -125,10 +125,10 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
       Completion.enable(comboBox, completionMode);
     }
     if (mouseWheelScrolling) {
-      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(comboBoxModel));
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, false));
     }
     if (mouseWheelScrollingWithWrapAround) {
-      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.createWithWrapAround(comboBoxModel));
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, true));
     }
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
