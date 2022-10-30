@@ -1430,9 +1430,6 @@ public class EntityTablePanel extends JPanel {
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
-  /**
-   * @return the refresh toolbar
-   */
   private JToolBar createRefreshToolBar() {
     Control refreshControl = Control.builder(tableModel::refresh)
             .enabledState(tableModel.conditionChangedObserver())
