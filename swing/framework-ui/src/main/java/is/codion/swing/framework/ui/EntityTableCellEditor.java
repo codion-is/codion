@@ -5,9 +5,11 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
@@ -62,6 +64,9 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
     JComponent editorComponent = componentValue.component();
     if (editorComponent instanceof JCheckBox) {
       ((JCheckBox) editorComponent).setHorizontalAlignment(SwingConstants.CENTER);
+    }
+    if (editorComponent instanceof JComboBox) {
+      new ComboBoxEnterPressedAction((JComboBox<?>) editorComponent, Control.control(this::stopCellEditing));
     }
 
     return editorComponent;

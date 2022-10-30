@@ -47,8 +47,6 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -75,7 +73,6 @@ import java.awt.GridBagLayout;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
 import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
@@ -1240,7 +1237,7 @@ public class EntityTablePanel extends JPanel {
     if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
       return null;
     }
-    //TODO handle Enter key correctly for foreign key input fields
+
     return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(property.attribute(), null));
   }
 
@@ -1693,7 +1690,7 @@ public class EntityTablePanel extends JPanel {
 
   private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
     if (component instanceof JComboBox) {
-      new RefreshOnEnterAction((JComboBox<?>) component, refreshControl);
+      new ComboBoxEnterPressedAction((JComboBox<?>) component, refreshControl);
     }
     else if (component instanceof TemporalField) {
       ((TemporalField<?>) component).addActionListener(refreshControl);
@@ -1853,32 +1850,6 @@ public class EntityTablePanel extends JPanel {
       }
 
       return columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
-    }
-  }
-
-  private static final class RefreshOnEnterAction extends AbstractAction {
-
-    private static final String ENTER_PRESSED = "enterPressed";
-
-    private final JComboBox<?> comboBox;
-    private final Control refreshControl;
-    private final Action enterPressedAction;
-
-    private RefreshOnEnterAction(JComboBox<?> comboBox, Control refreshControl) {
-      this.comboBox = comboBox;
-      this.refreshControl = refreshControl;
-      this.enterPressedAction = comboBox.getActionMap().get(ENTER_PRESSED);
-      this.comboBox.getActionMap().put(ENTER_PRESSED, this);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      if (comboBox.isPopupVisible()) {
-        enterPressedAction.actionPerformed(e);
-      }
-      else if (refreshControl.isEnabled()) {
-        refreshControl.actionPerformed(e);
-      }
     }
   }
 }

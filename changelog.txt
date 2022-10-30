@@ -8507,3 +8507,4 @@
   DefaultColumnSummaryModel no longer public, ColumnSummaryModel.columnSummaryModel() factory method added
   AbstractComponentBuilder.setTransferFocusOnEnter() renamed enableTransferFocusOnEnter()
   SpinnerMouseWheelListener, SliderMouseWheelListener, ComboBoxMouseWheelListener no longer public
+  EntityTableCellEditor now stops editing when Enter is pressed on a JComboBox with the popup hidden
