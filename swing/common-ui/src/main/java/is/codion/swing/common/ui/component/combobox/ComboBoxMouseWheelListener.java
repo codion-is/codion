@@ -12,15 +12,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A mouse wheel listener for JComboBox, moving to the next or previous value on wheel spin.
- * @see #create(ComboBoxModel)
- * @see #createWithWrapAround(ComboBoxModel)
  */
-public final class ComboBoxMouseWheelListener implements MouseWheelListener {
+final class ComboBoxMouseWheelListener implements MouseWheelListener {
 
   private final ComboBoxModel<?> comboBoxModel;
   private final boolean wrapAround;
 
-  private ComboBoxMouseWheelListener(ComboBoxModel<?> comboBoxModel, boolean wrapAround) {
+  ComboBoxMouseWheelListener(ComboBoxModel<?> comboBoxModel, boolean wrapAround) {
     this.comboBoxModel = requireNonNull(comboBoxModel);
     this.wrapAround = wrapAround;
   }
@@ -34,26 +32,6 @@ public final class ComboBoxMouseWheelListener implements MouseWheelListener {
     if (wheelRotation != 0) {
       comboBoxModel.setSelectedItem(itemToSelect(wheelRotation > 0));
     }
-  }
-
-  /**
-   * Instantiates a new mouse wheel listener for the given combo box model
-   * @param comboBoxModel the combo box model
-   * @param <T> the combo box value type
-   * @return a new MouseWheelListener based on the given model
-   */
-  public static <T> MouseWheelListener create(ComboBoxModel<T> comboBoxModel) {
-    return new ComboBoxMouseWheelListener(comboBoxModel, false);
-  }
-
-  /**
-   * Instantiates a new mouse wheel listener with wrap-around for the given combo box model
-   * @param comboBoxModel the combo box model
-   * @param <T> the combo box value type
-   * @return a new MouseWheelListener based on the given model
-   */
-  public static <T> MouseWheelListener createWithWrapAround(ComboBoxModel<T> comboBoxModel) {
-    return new ComboBoxMouseWheelListener(comboBoxModel, true);
   }
 
   private Object itemToSelect(boolean next) {

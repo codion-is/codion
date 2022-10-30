@@ -132,10 +132,10 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
     if (mouseWheelScrolling) {
-      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.create(itemComboBoxModel));
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(itemComboBoxModel, false));
     }
     if (mouseWheelScrollingWithWrapAround) {
-      comboBox.addMouseWheelListener(ComboBoxMouseWheelListener.createWithWrapAround(comboBoxModel));
+      comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, true));
     }
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
