@@ -18,7 +18,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Handles the importing of files.
+ * Handles the importing of files during drag'n drop operations.
  */
 public abstract class FileTransferHandler extends TransferHandler {
 
@@ -73,6 +73,7 @@ public abstract class FileTransferHandler extends TransferHandler {
       throw new RuntimeException(e);
     }
   }
+
   /**
    * Returns the files described by the given transfer support object.
    * An empty list is returned if no files are found.
