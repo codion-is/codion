@@ -77,11 +77,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
 
   @Override
   public Color backgroundColor(JTable table, int row, boolean selected) {
-    if (selected) {
-      return settings.selectionBackgroundColor(row);
-    }
-
-    return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
+    return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState, selected);
   }
 
   @Override
@@ -154,11 +150,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
 
     @Override
     public Color backgroundColor(JTable table, int row, boolean selected) {
-      if (selected) {
-        return settings.selectionBackgroundColor(row);
-      }
-
-      return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState);
+      return settings.backgroundColor(tableModel, property.attribute(), row, displayConditionState, selected);
     }
 
     @Override
@@ -169,6 +161,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
 
   private static final class UISettings {
 
+    private static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
     private static final double DARKENING_FACTOR = 0.9;
     private static final double DOUBLE_DARKENING_FACTOR = 0.8;
     private static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
@@ -212,15 +205,15 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     }
 
     private Color backgroundColor(SwingEntityTableModel tableModel, Attribute<?> attribute,
-                                  int row, boolean indicateCondition) {
+                                  int row, boolean indicateCondition, boolean selected) {
       boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      Color cellColor = tableModel.backgroundColor(row, attribute);
+      Color cellColor = cellColor(tableModel.backgroundColor(row, attribute), row, selected);
       if (showCondition) {
         return conditionEnabledColor(row, conditionEnabled && filterEnabled, cellColor);
       }
-      else if (cellColor != null) {
+      if (cellColor != null) {
         return cellColor;
       }
 
@@ -231,6 +224,16 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
       Color cellColor = tableModel.foregroundColor(row, attribute);
 
       return cellColor == null ? foregroundColor : cellColor;
+    }
+
+    private Color cellColor(Color cellSpecificBackgroundColor, int row, boolean selected) {
+      if (selected) {
+        return cellSpecificBackgroundColor == null ?
+                selectionBackgroundColor(row) :
+                blendColors(cellSpecificBackgroundColor, selectionBackgroundColor(row));
+      }
+
+      return cellSpecificBackgroundColor;
     }
 
     private Color selectionBackgroundColor(int row) {
@@ -254,6 +257,14 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {
       return createCompoundBorder(createLineBorder(darker(foregroundColor, DOUBLE_DARKENING_FACTOR),
               FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
+    }
+
+    private static Color blendColors(Color color1, Color color2) {
+      int r = (int) (color1.getRed() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getRed() * SELECTION_COLOR_BLEND_RATIO);
+      int g = (int) (color1.getGreen() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getGreen() * SELECTION_COLOR_BLEND_RATIO);
+      int b = (int) (color1.getBlue() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getBlue() * SELECTION_COLOR_BLEND_RATIO);
+
+      return new Color(r, g, b, color1.getAlpha());
     }
   }
 
