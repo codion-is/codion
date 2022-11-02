@@ -30,6 +30,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.db.condition.Condition.condition;
@@ -100,11 +101,16 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final void refresh() {
+    refreshThen(null);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
     if (asyncRefresh && Platform.isFxApplicationThread()) {
-      refreshAsync();
+      refreshAsync(afterRefresh);
     }
     else {
-      refreshSync();
+      refreshSync(afterRefresh);
     }
   }
 
@@ -351,15 +357,15 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     selectionModel.addSelectionListener(selectionChangedEvent);
   }
 
-  private void refreshAsync() {
-    new Thread(new RefreshTask(getSelectedItems())).start();
+  private void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {
+    new Thread(new RefreshTask(getSelectedItems(), afterRefresh)).start();
   }
 
-  private void refreshSync() {
+  private void refreshSync(Consumer<Collection<Entity>> afterRefresh) {
     List<Entity> selectedItems = getSelectedItems();
     onRefreshStarted();
     try {
-      onRefreshResult(performQuery());
+      onRefreshResult(performQuery(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -381,9 +387,12 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
     throw new RuntimeException(throwable);
   }
 
-  private void onRefreshResult(Collection<Entity> items) {
+  private void onRefreshResult(Collection<Entity> items, Consumer<Collection<Entity>> afterRefresh) {
     setAll(items);
     refreshingState.set(false);
+    if (afterRefresh != null) {
+      afterRefresh.accept(items);
+    }
     refreshEvent.onEvent();
   }
 
@@ -410,9 +419,11 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private final class RefreshTask extends Task<Collection<Entity>> {
 
     private final List<Entity> selectedItems;
+    private final Consumer<Collection<Entity>> afterRefresh;
 
-    private RefreshTask(List<Entity> selectedItems) {
+    private RefreshTask(List<Entity> selectedItems, Consumer<Collection<Entity>> afterRefresh) {
       this.selectedItems = selectedItems;
+      this.afterRefresh = afterRefresh;
     }
 
     @Override
@@ -433,7 +444,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
 
     @Override
     protected void succeeded() {
-      onRefreshResult(getValue());
+      onRefreshResult(getValue(), afterRefresh);
       setSelectedItems(selectedItems);
     }
   }

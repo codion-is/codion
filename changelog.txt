@@ -8510,3 +8510,7 @@
   EntityTableCellEditor now stops editing when Enter is pressed on a JComboBox with the popup hidden
   EntityPanel.setMasterPanel() renamed setParentPanel()
   DefaultEntityTableCellRenderer, now blends cell specific background color with selection background color
+  EntityTableModel.setForeignKeyConditionValues() now returns true if the table condition changed, implementations no longer perform a refresh
+  EntityTableModel.setRefreshOnForeignKeyConditionValuesSet() removed
+  FilteredModel.refreshThen(Consumer<Collection<T>> afterRefresh) added, allowing some action to be performed after a successful refresh
+  DefaultEntityModel.initialize() uses the above to initialize the edit model after the table model has been refreshed, since isEntityNew() relies on the clearing of the selection, which happens after the refresh

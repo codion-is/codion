@@ -9,7 +9,9 @@ import is.codion.common.event.EventListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 
+import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -118,8 +120,20 @@ public interface FilteredModel<T> {
    * @see #refreshingObserver()
    * @see #addRefreshListener(EventListener)
    * @see #addRefreshFailedListener(EventDataListener)
+   * @see #setAsyncRefresh(boolean)
    */
   void refresh();
+
+  /**
+   * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the EDT.
+   * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
+   * @param afterRefresh called after a successful refresh, may be null
+   * @see #refreshingObserver()
+   * @see #addRefreshListener(EventListener)
+   * @see #addRefreshFailedListener(EventDataListener)
+   * @see #setAsyncRefresh(boolean)
+   */
+  void refreshThen(Consumer<Collection<T>> afterRefresh);
 
   /**
    * @return an observer active while a refresh is in progress

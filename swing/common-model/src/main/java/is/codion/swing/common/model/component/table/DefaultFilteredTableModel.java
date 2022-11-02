@@ -28,6 +28,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -160,11 +161,16 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    */
   @Override
   public final void refresh() {
+    refreshThen(null);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<R>> afterRefresh) {
     if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
-      refreshAsync();
+      refreshAsync(afterRefresh);
     }
     else {
-      refreshSync();
+      refreshSync(afterRefresh);
     }
   }
 
@@ -593,19 +599,19 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     return includeCondition == null || includeCondition.test(item);
   }
 
-  private void refreshAsync() {
+  private void refreshAsync(Consumer<Collection<R>> afterRefresh) {
     cancelCurrentRefresh();
     refreshWorker = ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
-            .onResult(this::onRefreshResult)
+            .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
             .execute();
   }
 
-  private void refreshSync() {
+  private void refreshSync(Consumer<Collection<R>> onRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(refreshItems());
+      onRefreshResult(refreshItems(), onRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -631,7 +637,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     throw new RuntimeException(throwable);
   }
 
-  private void onRefreshResult(Collection<R> items) {
+  private void onRefreshResult(Collection<R> items, Consumer<Collection<R>> afterRefresh) {
     cleanupRefreshWorker();
     refreshingState.set(false);
     if (mergeOnRefresh && !items.isEmpty()) {
@@ -639,6 +645,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
     else {
       clearAndAdd(items);
+    }
+    if (afterRefresh != null) {
+      afterRefresh.accept(items);
     }
     refreshEvent.onEvent();
   }

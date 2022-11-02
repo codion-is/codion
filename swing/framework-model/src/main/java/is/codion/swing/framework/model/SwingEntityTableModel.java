@@ -92,8 +92,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private InsertAction insertAction = InsertAction.ADD_TOP;
   /** Specifies whether multiple entities can be updated at a time */
   private boolean batchUpdateEnabled = true;
-  /** Specifies whether this table model should automatically refresh when foreign key condition values are set */
-  private boolean refreshOnForeignKeyConditionValuesSet = true;
   /**
    * Specifies whether this table model is editable.
    * @see #isCellEditable(int, int)
@@ -266,16 +264,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet) {
-    this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
-  }
-
-  @Override
-  public final boolean isRefreshOnForeignKeyConditionValuesSet() {
-    return refreshOnForeignKeyConditionValuesSet;
-  }
-
-  @Override
   public final boolean isDeleteEnabled() {
     return editModel != null && editModel.isDeleteEnabled();
   }
@@ -399,13 +387,12 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+  public boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     entityDefinition().foreignKeyProperty(foreignKey);
-    if (tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues) && refreshOnForeignKeyConditionValuesSet) {
-      refresh();
-    }
+
+    return tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
   }
 
   @Override
