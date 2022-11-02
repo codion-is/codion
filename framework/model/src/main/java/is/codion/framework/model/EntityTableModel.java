@@ -102,8 +102,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * and refreshes this table model.
    * @param foreignKey the foreign key
    * @param foreignKeyValues the entities to use as condition values
+   * @return true if the table search condition changed due to this call and a refresh is in order, false otherwise
    */
-  void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
+  boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -392,18 +393,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param listener notified when the selection changes in the underlying selection model
    */
   void addSelectionListener(EventListener listener);
-
-  /**
-   * @param refreshOnForeignKeyConditionValuesSet true if this table model should automatically refresh when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(ForeignKey, Collection)
-   */
-  void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet);
-
-  /**
-   * @return true if this table model automatically refreshes when foreign key condition values are set
-   * @see #setForeignKeyConditionValues(ForeignKey, Collection)
-   */
-  boolean isRefreshOnForeignKeyConditionValuesSet();
 
   /**
    * Creates a new {@link ColumnPreferences} instance.

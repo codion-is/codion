@@ -269,10 +269,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   public final void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues) {
     requireNonNull(foreignKey);
     requireNonNull(foreignKeyValues);
-    if (containsTableModel()) {
-      tableModel.setForeignKeyConditionValues(foreignKey, foreignKeyValues);
+    if (containsTableModel() && tableModel.setForeignKeyConditionValues(foreignKey, foreignKeyValues)) {
+      tableModel.refreshThen(items -> onInitialization(foreignKey, foreignKeyValues));
     }
-    onInitialization(foreignKey, foreignKeyValues);
+    else {
+      onInitialization(foreignKey, foreignKeyValues);
+    }
   }
 
   @Override
@@ -360,8 +362,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (!entities.isEmpty()) {
       editModel.put(foreignKey, entities.get(0));
     }
-    if (containsTableModel() && searchOnMasterInsert) {
-      tableModel.setForeignKeyConditionValues(foreignKey, entities);
+    if (containsTableModel() && searchOnMasterInsert && tableModel.setForeignKeyConditionValues(foreignKey, entities)) {
+      tableModel.refresh();
     }
   }
 

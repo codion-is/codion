@@ -73,7 +73,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean batchUpdateEnabled = true;
   private boolean removeDeletedEntities = true;
-  private boolean refreshOnForeignKeyConditionValuesSet = true;
   private boolean editable = false;
   private int limit = -1;
   private boolean queryHiddenColumns = QUERY_HIDDEN_COLUMNS.get();
@@ -188,11 +187,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   @Override
-  public final void setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+    requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKeyValues, "foreignKeyValues");
     entityDefinition().foreignKeyProperty(foreignKey);
-    if (tableConditionModel.setEqualConditionValues(foreignKey, entities) && refreshOnForeignKeyConditionValuesSet) {
-      refresh();
-    }
+
+    return tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
   }
 
   @Override
@@ -276,16 +276,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void setBatchUpdateEnabled(boolean batchUpdateEnabled) {
     this.batchUpdateEnabled = batchUpdateEnabled;
-  }
-
-  @Override
-  public final void setRefreshOnForeignKeyConditionValuesSet(boolean refreshOnForeignKeyConditionValuesSet) {
-    this.refreshOnForeignKeyConditionValuesSet = refreshOnForeignKeyConditionValuesSet;
-  }
-
-  @Override
-  public final boolean isRefreshOnForeignKeyConditionValuesSet() {
-    return refreshOnForeignKeyConditionValuesSet;
   }
 
   @Override

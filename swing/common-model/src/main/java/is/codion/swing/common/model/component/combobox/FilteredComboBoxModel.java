@@ -27,6 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
@@ -97,14 +98,20 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * If run on the Event Dispatch Thread the refresh happens asynchronously.
    * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
    * @see #addRefreshFailedListener(EventDataListener)
+   * @see #setAsyncRefresh(boolean)
    */
   @Override
   public final void refresh() {
+    refreshThen(null);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
     if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
-      refreshAsync();
+      refreshAsync(afterRefresh);
     }
     else {
-      refreshSync();
+      refreshSync(afterRefresh);
     }
   }
 
@@ -546,18 +553,18 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private void refreshAsync() {
+  private void refreshAsync(Consumer<Collection<T>> afterRefresh) {
     ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
-            .onResult(this::onRefreshResult)
+            .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
             .execute();
   }
 
-  private void refreshSync() {
+  private void refreshSync(Consumer<Collection<T>> afterRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(refreshItems());
+      onRefreshResult(refreshItems(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -582,9 +589,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     throw new RuntimeException(throwable);
   }
 
-  private void onRefreshResult(Collection<T> items) {
+  private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
     refreshingState.set(false);
     setContents(items);
+    if (afterRefresh != null) {
+      afterRefresh.accept(items);
+    }
     refreshEvent.onEvent();
   }
 

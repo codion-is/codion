@@ -27,7 +27,6 @@ import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Collections;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singletonList;
@@ -86,14 +85,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(0, employeeTableModel.getRowCount());
     Entity accounting = connectionProvider().connection().selectSingle(Department.ID, 10);
     employeeTableModel.setForeignKeyConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
-    assertEquals(7, employeeTableModel.getRowCount());
-    employeeTableModel.clear();
-    employeeTableModel.setRefreshOnForeignKeyConditionValuesSet(false);
-    Entity sales = connectionProvider().connection().selectSingle(Department.ID, 30);
-    employeeTableModel.setForeignKeyConditionValues(Employee.DEPARTMENT_FK, Collections.singleton(sales));
-    assertEquals(0, employeeTableModel.getRowCount());
     employeeTableModel.refresh();
-    assertEquals(4, employeeTableModel.getRowCount());
+    assertEquals(7, employeeTableModel.getRowCount());
   }
 
   @Test
