@@ -28,6 +28,10 @@ public class DefaultForeignKeyEntityModelLink<M extends DefaultEntityModel<M, E,
   private boolean searchByInsertedEntity = ForeignKeyEntityModelLink.SEARCH_BY_INSERTED_ENTITY.get();
   private boolean refreshOnSelection = ForeignKeyEntityModelLink.REFRESH_ON_SELECTION.get();
 
+  /**
+   * @param detailModel the detail model
+   * @param foreignKey the foreign key to base this link on
+   */
   public DefaultForeignKeyEntityModelLink(M detailModel, ForeignKey foreignKey) {
     super(detailModel);
     this.foreignKey = requireNonNull(foreignKey, "foreignKey");

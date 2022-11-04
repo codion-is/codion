@@ -8516,3 +8516,4 @@
   DefaultEntityModel.initialize() uses the above to initialize the edit model after the table model has been refreshed, since isEntityNew() relies on the clearing of the selection, which happens after the refresh
   EntityModelLink and ForeignKeyEntityModelLink added along with DefaultModelLink and DefaultForeignKeyModelLink, related refactoring
   EntityModel.addLinkedDetailModel() and removeLinkedDetailModel() renamed activateDetailModel() and deactivateDetailModel() respectively
+  SwingEntityModelLink and SwingForeignKeyModelLink added
