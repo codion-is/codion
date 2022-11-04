@@ -240,7 +240,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  void clearForeignKeyOnEmptySelection() throws DatabaseException {
+  public void clearForeignKeyOnEmptySelection() throws DatabaseException {
     if (!departmentModel.containsTableModel()) {
       return;
     }
@@ -274,7 +274,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  void refreshOnSelection() throws DatabaseException {
+  public void refreshOnSelection() throws DatabaseException {
     if (!departmentModel.containsTableModel()) {
       return;
     }
