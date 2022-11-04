@@ -50,7 +50,6 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     model.addEntityModel(deptModel);
     assertNotNull(model.entityModel(Department.TYPE));
     assertEquals(1, model.entityModels().size());
-    model.clear();
     assertEquals(UNIT_TEST_USER, model.user());
 
     assertThrows(IllegalArgumentException.class, () -> model.entityModel(Employee.TYPE));
