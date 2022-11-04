@@ -141,12 +141,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean postEditEvents = POST_EDIT_EVENTS.get();
 
   /**
-   * Specifies whether this edit model sets the foreign key to null when initialized with a null value.
-   * @see #initialize(ForeignKey, Entity)
-   */
-  private boolean initializeForeignKeyToNull = INITIALIZE_FOREIGN_KEY_TO_NULL.get();
-
-  /**
    * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
    * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
@@ -356,14 +350,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public boolean isEntityNew() {
     return entity().isNew();
-  }
-
-  @Override
-  public final void initialize(ForeignKey foreignKey, Entity foreignKeyValue) {
-    requireNonNull(foreignKey);
-    if (isEntityNew() && (foreignKeyValue != null || initializeForeignKeyToNull)) {
-      put(foreignKey, foreignKeyValue);
-    }
   }
 
   @Override
@@ -666,16 +652,6 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void setPostEditEvents(boolean postEditEvents) {
     this.postEditEvents = postEditEvents;
-  }
-
-  @Override
-  public final boolean isInitializeForeignKeyToNull() {
-    return initializeForeignKeyToNull;
-  }
-
-  @Override
-  public final void setInitializeForeignKeyToNull(boolean initializeForeignKeyToNull) {
-    this.initializeForeignKeyToNull = initializeForeignKeyToNull;
   }
 
   @Override

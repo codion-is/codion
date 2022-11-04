@@ -8,12 +8,10 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
@@ -22,15 +20,6 @@ import java.util.List;
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
 public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
-
-  /**
-   * Specifies whether a table model should automatically search by the inserted entity
-   * when an insert is performed in a master model.
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> SEARCH_ON_MASTER_INSERT =
-          Configuration.booleanValue("is.codion.framework.model.EntityModel.searchOnMasterInsert", false);
 
   /**
    * Specifies whether the client should save and apply user preferences<br>
@@ -71,33 +60,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsTableModel();
 
   /**
-   * @return an unmodifiable collection containing the detail models that are currently linked to this model
+   * @return an unmodifiable collection containing the active detail models, that is, those that should respond to master model events
    */
-  Collection<M> linkedDetailModels();
+  Collection<M> activeDetailModels();
 
   /**
-   * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
+   * Adds the given model to the currently active detail models. Active detail models are updated and filtered according
    * to the entity/entities selected in this (the master) model.
-   * Calling this method with a null argument or a model which is already linked is safe.
+   * Calling this method with a model which is already active has no effect.
    * @param detailModel links the given detail model to this model
    */
-  void addLinkedDetailModel(M detailModel);
+  void activateDetailModel(M detailModel);
 
   /**
-   * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
+   * Removes the given model from the currently active detail models. Active models are updated and filtered according
    * to the entity/entities selected in this (the master) model.
-   * Calling this method with a null argument or a model which is not linked is safe.
+   * Calling this method with a model which is not active has no effect.
    * @param detailModel unlinks the given detail model from this model
    */
-  void removeLinkedDetailModel(M detailModel);
-
-  /**
-   * Initializes this {@link EntityModel} according to the given foreign key entities,
-   * sets the appropriate attribute value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
-   * @param foreignKey the foreign key
-   * @param foreignKeyValues the foreign key values, empty list for none
-   */
-  void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues);
+  void deactivateDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -114,21 +95,31 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
    * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
-   * @return the detail model just added
+   * @return the resulting {@link EntityModelLink}
    */
-  M addDetailModel(M detailModel);
+  ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}
    * Specify the foreign key in case the detail model is based on an entity which contains multiple foreign keys to the
-   * same master entity. When initializing this detail model only the value for that foreign key is set.
+   * same master entity.
    * @param detailModel the detail model
    * @param foreignKey the foreign key to base the detail model on
-   * @return the detail model just added
+   * @return the resulting {@link EntityModelLink}
    */
-  M addDetailModel(M detailModel, ForeignKey foreignKey);
+  ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
+
+  /**
+   * Adds the given detail model to this model, a side effect if the detail model contains
+   * a table model is that it is configured so that a query condition is required for it to show
+   * any data, via {@link EntityTableModel#queryConditionRequiredState()}
+   * @param modelLink the {@link EntityModelLink} to add
+   * @param <L> the {@link EntityModelLink} type
+   * @return the {@link EntityModelLink}
+   */
+  <L extends EntityModelLink<M, E, T>> L addDetailModel(L modelLink);
 
   /**
    * @param modelClass the detail model class
@@ -172,9 +163,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * @param detailModel the detail model
-   * @return the foreign key the given detail model is based on
+   * @param <L> the {@link EntityModelLink} type
+   * @return the model link associated with the given detail model
    */
-  ForeignKey detailModelForeignKey(M detailModel);
+  <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel);
 
   /**
    * Clears all data models used by this model.
@@ -187,38 +179,24 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   void clearDetailModels();
 
   /**
-   * @return true if this models table model should automatically search by the inserted entity
-   * when an insert is performed in a master model
-   * @see EntityModel#SEARCH_ON_MASTER_INSERT
+   * @param listener a listener to be notified each time a detail model is activated
    */
-  boolean isSearchOnMasterInsert();
-
-  /**
-   * @param searchOnMasterInsert if true then this models table model will automatically search by the inserted entity
-   * when an insert is performed in a master model
-   * @see EntityModel#SEARCH_ON_MASTER_INSERT
-   */
-  void setSearchOnMasterInsert(boolean searchOnMasterInsert);
-
-  /**
-   * @param listener a listener to be notified each time a linked detail model is added
-   */
-  void addLinkedDetailModelAddedListener(EventDataListener<M> listener);
+  void addDetailModelActivatedListener(EventDataListener<M> listener);
 
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelAddedListener(EventDataListener<M> listener);
+  void removeDetailModelActivatedListener(EventDataListener<M> listener);
 
-    /**
-   * @param listener a listener to be notified each time a linked detail model is removed
+  /**
+   * @param listener a listener to be notified each time a detail model is deactivated
    */
-  void addLinkedDetailModelRemovedListener(EventDataListener<M> listener);
+  void addDetailModelDeactivatedListener(EventDataListener<M> listener);
 
-    /**
+  /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener);
+  void removeDetailModelDeactivatedListener(EventDataListener<M> listener);
 
   /**
    * Saves any user preferences

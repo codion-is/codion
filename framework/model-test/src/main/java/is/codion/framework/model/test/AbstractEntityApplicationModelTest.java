@@ -112,7 +112,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     }
 
     Model empModel = deptModel.detailModel(Employee.TYPE);
-    deptModel.addLinkedDetailModel(empModel);
+    deptModel.activateDetailModel(empModel);
 
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     model.addEntityModel(deptModel);

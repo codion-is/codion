@@ -611,27 +611,6 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  void initializeForeignKeyToNull() throws DatabaseException {
-    Entity dept = employeeEditModel.connectionProvider().connection().selectSingle(Department.ID, 10);
-
-    employeeEditModel.initialize(Employee.DEPARTMENT_FK, dept);
-    assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
-
-    employeeEditModel.initialize(Employee.DEPARTMENT_FK, null);
-    assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
-
-    employeeEditModel.setInitializeForeignKeyToNull(true);
-
-    employeeEditModel.initialize(Employee.DEPARTMENT_FK, null);
-    assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK));
-
-    employeeEditModel.setInitializeForeignKeyToNull(false);
-    employeeEditModel.put(Employee.DEPARTMENT_FK, dept);
-    employeeEditModel.initialize(Employee.DEPARTMENT_FK, null);
-    assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
-  }
-
-  @Test
   void modifiedAndNullObserver() throws DatabaseException {
     employeeEditModel.put(Employee.NAME, "NAME");
     //only modified when the entity is not new

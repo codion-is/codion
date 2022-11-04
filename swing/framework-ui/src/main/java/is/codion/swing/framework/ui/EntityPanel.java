@@ -497,13 +497,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * @return the currently visible/linked detail EntityPanel, if any
+   * @return the currently visible/active detail EntityPanels, if any
    */
-  public final Collection<EntityPanel> linkedDetailPanels() {
-    Collection<SwingEntityModel> linkedDetailModels = entityModel.linkedDetailModels();
+  public final Collection<EntityPanel> activeDetailPanels() {
+    Collection<SwingEntityModel> activeDetailModels = entityModel.activeDetailModels();
 
     return detailEntityPanels.stream()
-            .filter(detailPanel -> linkedDetailModels.contains(detailPanel.entityModel))
+            .filter(detailPanel -> activeDetailModels.contains(detailPanel.entityModel))
             .collect(toList());
   }
 
@@ -598,9 +598,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final Optional<HierarchyPanel> selectedChildPanel() {
-    Collection<EntityPanel> linkedDetailPanels = linkedDetailPanels();
-    if (!linkedDetailPanels.isEmpty()) {
-      return Optional.of(linkedDetailPanels.iterator().next());
+    Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
+    if (!activeDetailPanels.isEmpty()) {
+      return Optional.of(activeDetailPanels.iterator().next());
     }
 
     return Optional.empty();
@@ -610,12 +610,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final void selectChildPanel(HierarchyPanel childPanel) {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
-      for (SwingEntityModel linkedModel : new ArrayList<>(entityModel.linkedDetailModels())) {
-        entityModel.removeLinkedDetailModel(linkedModel);
+      for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
+        entityModel.deactivateDetailModel(activeModel);
       }
       SwingEntityModel detailModel = selectedDetailPanel().model();
       if (entityModel.containsDetailModel(detailModel)) {
-        entityModel.addLinkedDetailModel(detailModel);
+        entityModel.activateDetailModel(detailModel);
       }
     }
   }
@@ -856,10 +856,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     SwingEntityModel detailModel = selectedDetailPanel().model();
     if (entityModel.containsDetailModel(detailModel)) {
       if (state == HIDDEN) {
-        entityModel.removeLinkedDetailModel(detailModel);
+        entityModel.deactivateDetailModel(detailModel);
       }
       else {
-        entityModel.addLinkedDetailModel(detailModel);
+        entityModel.activateDetailModel(detailModel);
       }
     }
 

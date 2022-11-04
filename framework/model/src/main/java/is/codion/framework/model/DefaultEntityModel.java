@@ -22,7 +22,6 @@ import java.util.Set;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * A default EntityModel implementation.
@@ -35,8 +34,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 
-  private final Event<M> linkedDetailModelAddedEvent = Event.event();
-  private final Event<M> linkedDetailModelRemovedEvent = Event.event();
+  private final Event<M> detailModelActivatedEvent = Event.event();
+  private final Event<M> detailModelDeactivatedEvent = Event.event();
 
   /**
    * The EntityEditModel instance
@@ -56,18 +55,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Map<M, ForeignKey> detailModels = new HashMap<>();
+  private final Map<M, EntityModelLink<M, E, T>> detailModels = new HashMap<>();
 
   /**
-   * Holds linked detail models that should be updated and filtered according to the selected entity/entities
+   * Holds the active detail models, those that should be updated and filtered according to the selected entity/entities
    */
-  private final Set<M> linkedDetailModels = new HashSet<>();
-
-  /**
-   * If true then this models table model will automatically search by the inserted entity
-   * when an insert is performed in a master model
-   */
-  private boolean searchOnMasterInsert = EntityModel.SEARCH_ON_MASTER_INSERT.get();
+  private final Set<M> activeDetailModels = new HashSet<>();
 
   /**
    * Instantiates a new DefaultEntityModel, without a table model
@@ -142,7 +135,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M addDetailModel(M detailModel) {
+  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     List<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
     if (foreignKeys.isEmpty()) {
@@ -154,7 +147,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final M addDetailModel(M detailModel, ForeignKey foreignKey) {
+  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     requireNonNull(foreignKey, "foreignKey");
     if (this == detailModel) {
@@ -163,12 +156,16 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     if (detailModels.containsKey(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
-    detailModels.put(detailModel, foreignKey);
-    if (detailModel.containsTableModel()) {
-      detailModel.tableModel().queryConditionRequiredState().set(true);
-    }
 
-    return detailModel;
+    return addDetailModel(new DefaultForeignKeyEntityModelLink<>(detailModel, foreignKey));
+  }
+
+  @Override
+  public final <L extends EntityModelLink<M, E, T>> L addDetailModel(L modelLink) {
+    requireNonNull(modelLink, "modelLink");
+    detailModels.put(modelLink.detailModel(), modelLink);
+
+    return modelLink;
   }
 
   @Override
@@ -196,28 +193,37 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void addLinkedDetailModel(M detailModel) {
+  public final <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
-    if (linkedDetailModels.add(detailModel)) {
-      linkedDetailModelAddedEvent.onEvent(detailModel);
+
+    return (L) detailModels.get(detailModel);
+  }
+
+  @Override
+  public final void activateDetailModel(M detailModel) {
+    if (!detailModels.containsKey(requireNonNull(detailModel))) {
+      throw new IllegalStateException("Detail model not found: " + detailModel);
+    }
+    if (activeDetailModels.add(detailModel)) {
+      detailModelActivatedEvent.onEvent(detailModel);
     }
   }
 
   @Override
-  public final void removeLinkedDetailModel(M detailModel) {
+  public final void deactivateDetailModel(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
-    if (linkedDetailModels.remove(detailModel)) {
-      linkedDetailModelRemovedEvent.onEvent(detailModel);
+    if (activeDetailModels.remove(detailModel)) {
+      detailModelDeactivatedEvent.onEvent(detailModel);
     }
   }
 
   @Override
-  public final Collection<M> linkedDetailModels() {
-    return unmodifiableCollection(linkedDetailModels);
+  public final Collection<M> activeDetailModels() {
+    return unmodifiableCollection(activeDetailModels);
   }
 
   @Override
@@ -245,11 +251,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKey detailModelForeignKey(M detailModel) {
-    return detailModels.get(requireNonNull(detailModel, DETAIL_MODEL_PARAMETER));
-  }
-
-  @Override
   public final void clear() {
     if (containsTableModel()) {
       tableModel.clear();
@@ -266,18 +267,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void initialize(ForeignKey foreignKey, List<Entity> foreignKeyValues) {
-    requireNonNull(foreignKey);
-    requireNonNull(foreignKeyValues);
-    if (containsTableModel() && tableModel.setForeignKeyConditionValues(foreignKey, foreignKeyValues)) {
-      tableModel.refreshThen(items -> onInitialization(foreignKey, foreignKeyValues));
-    }
-    else {
-      onInitialization(foreignKey, foreignKeyValues);
-    }
-  }
-
-  @Override
   public void savePreferences() {
     if (containsTableModel()) {
       tableModel().savePreferences();
@@ -286,109 +275,30 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final boolean isSearchOnMasterInsert() {
-    return searchOnMasterInsert;
+  public final void addDetailModelActivatedListener(EventDataListener<M> listener) {
+    detailModelActivatedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void setSearchOnMasterInsert(boolean searchOnMasterInsert) {
-    this.searchOnMasterInsert = searchOnMasterInsert;
+  public final void removeDetailModelActivatedListener(EventDataListener<M> listener) {
+    detailModelActivatedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addLinkedDetailModelAddedListener(EventDataListener<M> listener) {
-    linkedDetailModelAddedEvent.addDataListener(listener);
+  public final void addDetailModelDeactivatedListener(EventDataListener<M> listener) {
+    detailModelDeactivatedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLinkedDetailModelAddedListener(EventDataListener<M> listener) {
-    linkedDetailModelAddedEvent.removeDataListener(listener);
+  public final void removeDetailModelDeactivatedListener(EventDataListener<M> listener) {
+    detailModelDeactivatedEvent.removeDataListener(listener);
   }
 
-  @Override
-  public final void addLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
-    linkedDetailModelRemovedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
-    linkedDetailModelRemovedEvent.removeDataListener(listener);
-  }
-
-  /**
-   * By default, this method initializes the edit model according to the given foreign key values, using the first item in {@code foreignKeyValues}.
-   * @param foreignKey the foreign key attribute referring to the master model doing the initialization
-   * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model, empty list for none
-   * @see EntityEditModel#initialize(ForeignKey, Entity)
-   */
-  protected void onInitialization(ForeignKey foreignKey, List<Entity> foreignKeyValues) {
-    editModel.initialize(foreignKey, foreignKeyValues.isEmpty() ? null : foreignKeyValues.get(0));
-  }
-
-  /**
-   * Initializes all linked detail models according to the active entities in this master model
-   * @see #addLinkedDetailModel(DefaultEntityModel)
-   * @see #initialize(ForeignKey, List)
-   */
-  protected final void initializeDetailModels() {
+  private void onMasterSelectionChanged() {
     List<Entity> activeEntities = activeEntities();
-    for (M detailModel : linkedDetailModels) {
-      initializeDetailModel(activeEntities, detailModel);
+    for (M detailModel : activeDetailModels) {
+      detailModels.get(detailModel).onSelection(activeEntities);
     }
-  }
-
-  /**
-   * Initializes the given detail model according to the given active master entities.
-   * @param activeEntities the currently active master entities
-   * @param detailModel the detail model
-   */
-  protected void initializeDetailModel(List<Entity> activeEntities, M detailModel) {
-    detailModel.initialize(detailModels.get(detailModel), activeEntities);
-  }
-
-  /**
-   * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
-   * sets the value of the master foreign key attribute and filters the table model if applicable
-   * @param masterModel the master model doing the insert
-   * @param insertedEntities the inserted entities
-   * @see EntityModel#SEARCH_ON_MASTER_INSERT
-   */
-  protected final void onMasterInsert(M masterModel, List<Entity> insertedEntities) {
-    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
-    List<Entity> entities = insertedEntities.stream()
-            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
-            .collect(toList());
-    editModel.addForeignKeyValues(foreignKey, entities);
-    if (!entities.isEmpty()) {
-      editModel.put(foreignKey, entities.get(0));
-    }
-    if (containsTableModel() && searchOnMasterInsert && tableModel.setForeignKeyConditionValues(foreignKey, entities)) {
-      tableModel.refresh();
-    }
-  }
-
-  /**
-   * Replaces the updated master entities wherever they are referenced
-   * @param masterModel the master model doing the update
-   * @param updatedEntities the updated entities
-   */
-  protected final void onMasterUpdate(M masterModel, Map<Key, Entity> updatedEntities) {
-    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
-    List<Entity> entities = updatedEntities.values().stream()
-            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
-            .collect(toList());
-    editModel.replaceForeignKeyValues(foreignKey, entities);
-    if (containsTableModel()) {
-      tableModel.replaceForeignKeyValues(foreignKey, entities);
-    }
-  }
-
-  protected final void onMasterDelete(M masterModel, List<Entity> deletedEntities) {
-    ForeignKey foreignKey = masterModel.detailModelForeignKey((M) this);
-    List<Entity> entities = deletedEntities.stream()
-            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
-            .collect(toList());
-    editModel.removeForeignKeyValues(foreignKey, entities);
   }
 
   private List<Entity> activeEntities() {
@@ -403,29 +313,29 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void bindEventsInternal() {
-    EventListener initializer = this::initializeDetailModels;
-    linkedDetailModelAddedEvent.addListener(initializer);
-    linkedDetailModelRemovedEvent.addListener(initializer);
+    EventListener onMasterSelectionChanged = this::onMasterSelectionChanged;
+    detailModelActivatedEvent.addListener(onMasterSelectionChanged);
+    detailModelDeactivatedEvent.addListener(onMasterSelectionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     if (containsTableModel()) {
-      tableModel().addSelectionListener(initializer);
+      tableModel.addSelectionListener(onMasterSelectionChanged);
     }
     else {
-      editModel.addEntityListener(entity -> initializeDetailModels());
+      editModel.addEntityListener(entity -> onMasterSelectionChanged());
     }
   }
 
   private void onInsert(List<Entity> insertedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterInsert((M) this, insertedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onInsert(insertedEntities));
   }
 
   private void onUpdate(Map<Key, Entity> updatedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterUpdate((M) this, updatedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onUpdate(updatedEntities));
   }
 
   private void onDelete(List<Entity> deletedEntities) {
-    detailModels.keySet().forEach(detailModel -> detailModel.onMasterDelete((M) this, deletedEntities));
+    detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onDelete(deletedEntities));
   }
 }

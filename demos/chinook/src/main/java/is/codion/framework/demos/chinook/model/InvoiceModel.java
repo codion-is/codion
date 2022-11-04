@@ -14,10 +14,8 @@ public final class InvoiceModel extends SwingEntityModel {
     InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connectionProvider);
 
     SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-    invoiceLineModel.editModel().setInitializeForeignKeyToNull(true);
-
-    addDetailModel(invoiceLineModel);
-    addLinkedDetailModel(invoiceLineModel);
+    addDetailModel(invoiceLineModel).setClearForeignKeyOnEmptySelection(true);
+    activateDetailModel(invoiceLineModel);
 
     invoiceLineEditModel.addTotalsUpdatedListener(tableModel()::replaceEntities);
   }
