@@ -1,14 +1,21 @@
 package is.codion.framework.demos.world.model;
 
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
+import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.model.SwingEntityModelLink;
 
 import org.jfree.data.category.CategoryDataset;
 import org.jfree.data.category.DefaultCategoryDataset;
 import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
+
+import java.util.Collection;
+import java.util.List;
 
 public final class ContinentModel extends SwingEntityModel {
 
@@ -20,6 +27,9 @@ public final class ContinentModel extends SwingEntityModel {
   ContinentModel(EntityConnectionProvider connectionProvider) {
     super(Continent.TYPE, connectionProvider);
     tableModel().addRefreshListener(this::refreshChartDatasets);
+    CountryModel countryModel = new CountryModel(connectionProvider);
+    addDetailModel(new CountryModelLink(countryModel));
+    activateDetailModel(countryModel);
   }
 
   public PieDataset<String> populationDataset() {
@@ -50,5 +60,32 @@ public final class ContinentModel extends SwingEntityModel {
       lifeExpectancyDataset.addValue(continent.minLifeExpectancy(), "Lowest", continent.name());
       lifeExpectancyDataset.addValue(continent.maxLifeExpectancy(), "Highest", continent.name());
     });
+  }
+
+  private static final class CountryModel extends SwingEntityModel {
+
+    private CountryModel(EntityConnectionProvider connectionProvider) {
+      super(Country.TYPE, connectionProvider);
+      editModel().setReadOnly(true);
+      ColumnConditionModel<?, ?> continentConditionModel =
+              tableModel().tableConditionModel().conditionModel(Country.CONTINENT);
+      continentConditionModel.automaticWildcardValue().set(AutomaticWildcard.NONE);
+      continentConditionModel.caseSensitiveState().set(true);
+    }
+  }
+
+  private static final class CountryModelLink extends SwingEntityModelLink {
+
+    private CountryModelLink(SwingEntityModel detailModel) {
+      super(detailModel);
+    }
+
+    @Override
+    public void onSelection(List<Entity> selectedEntities) {
+      Collection<String> continentNames = Entity.get(Continent.NAME, selectedEntities);
+      if (detailModel().tableModel().tableConditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
+        detailModel().tableModel().refresh();
+      }
+    }
   }
 }
