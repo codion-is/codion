@@ -578,8 +578,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final void activatePanel() {
-    parentPanel().ifPresent(parentPanel ->
-            parentPanel.selectChildPanel(this));
+    parentPanel().ifPresent(panel ->
+            panel.selectChildPanel(this));
     initializePanel();
     requestInitialFocus();
     if (editPanelWindow != null) {
@@ -626,8 +626,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    HierarchyPanel parentPanel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = parentPanel.childPanels();
+    HierarchyPanel panel = optionalParent.get();
+    List<? extends HierarchyPanel> siblingPanels = panel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == 0) {//wrap around
@@ -646,8 +646,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    HierarchyPanel parentPanel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = parentPanel.childPanels();
+    HierarchyPanel panel = optionalParent.get();
+    List<? extends HierarchyPanel> siblingPanels = panel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == siblingPanels.size() - 1) {//wrap around

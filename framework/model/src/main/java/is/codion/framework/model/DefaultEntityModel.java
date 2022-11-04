@@ -33,6 +33,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
         T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
+  private static final String DETAIL_MODEL_NOT_FOUND = "Detail model not found: ";
 
   private final Event<M> detailModelActivatedEvent = Event.event();
   private final Event<M> detailModelDeactivatedEvent = Event.event();
@@ -195,7 +196,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException("Detail model not found: " + detailModel);
+      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
     }
 
     return (L) detailModels.get(detailModel);
@@ -204,7 +205,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void activateDetailModel(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException("Detail model not found: " + detailModel);
+      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
     }
     if (activeDetailModels.add(detailModel)) {
       detailModelActivatedEvent.onEvent(detailModel);
@@ -214,7 +215,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final void deactivateDetailModel(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException("Detail model not found: " + detailModel);
+      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
     }
     if (activeDetailModels.remove(detailModel)) {
       detailModelDeactivatedEvent.onEvent(detailModel);
