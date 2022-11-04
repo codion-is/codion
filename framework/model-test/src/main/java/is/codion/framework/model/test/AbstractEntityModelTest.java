@@ -141,11 +141,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   public void test() throws Exception {
     assertNotNull(departmentModel.editModel());
 
-    EventDataListener<Model> linkedListener = model -> {};
-    departmentModel.addLinkedDetailModelAddedListener(linkedListener);
-    departmentModel.addLinkedDetailModelRemovedListener(linkedListener);
-    departmentModel.removeLinkedDetailModelAddedListener(linkedListener);
-    departmentModel.removeLinkedDetailModelRemovedListener(linkedListener);
+    EventDataListener<Model> activeListener = model -> {};
+    departmentModel.addDetailModelActivatedListener(activeListener);
+    departmentModel.addDetailModelDeactivatedListener(activeListener);
+    departmentModel.removeDetailModelActivatedListener(activeListener);
+    departmentModel.removeDetailModelDeactivatedListener(activeListener);
   }
 
   @Test
@@ -155,11 +155,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertTrue(departmentModel.containsDetailModel(departmentModel.detailModel(Employee.TYPE)));
     assertTrue(departmentModel.containsDetailModel((Class<? extends Model>) departmentModel.detailModel(Employee.TYPE).getClass()));
     assertEquals(1, departmentModel.detailModels().size(), "Only one detail model should be in DepartmentModel");
-    assertEquals(1, departmentModel.linkedDetailModels().size());
+    assertEquals(1, departmentModel.activeDetailModels().size());
 
     departmentModel.detailModel(Employee.TYPE);
 
-    assertTrue(departmentModel.linkedDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
+    assertTrue(departmentModel.activeDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
     assertNotNull(departmentModel.detailModel(Employee.TYPE));
     if (!departmentModel.containsTableModel()) {
       return;
@@ -190,17 +190,17 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void addLinkedDetailModelWithoutAddingFirst() {
+  public void activateDetailModelWithoutAddingFirst() {
     Model model = createDepartmentModelWithoutDetailModel();
     Model employeeModel = createEmployeeModel();
-    assertThrows(IllegalStateException.class, () -> model.addLinkedDetailModel(employeeModel));
+    assertThrows(IllegalStateException.class, () -> model.activateDetailModel(employeeModel));
   }
 
   @Test
-  public void removeLinkedDetailModelWithoutAddingFirst() {
+  public void deactivateDetailModelWithoutAddingFirst() {
     Model model = createDepartmentModelWithoutDetailModel();
     Model employeeModel = createEmployeeModel();
-    assertThrows(IllegalStateException.class, () -> model.removeLinkedDetailModel(employeeModel));
+    assertThrows(IllegalStateException.class, () -> model.deactivateDetailModel(employeeModel));
   }
 
   @Test
@@ -210,12 +210,12 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void addRemoveLinkedDetailModel() {
-    departmentModel.removeLinkedDetailModel(departmentModel.detailModel(Employee.TYPE));
-    assertTrue(departmentModel.linkedDetailModels().isEmpty());
-    departmentModel.addLinkedDetailModel(departmentModel.detailModel(Employee.TYPE));
-    assertFalse(departmentModel.linkedDetailModels().isEmpty());
-    assertTrue(departmentModel.linkedDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
+  public void activateDeactivateDetailModel() {
+    departmentModel.deactivateDetailModel(departmentModel.detailModel(Employee.TYPE));
+    assertTrue(departmentModel.activeDetailModels().isEmpty());
+    departmentModel.activateDetailModel(departmentModel.detailModel(Employee.TYPE));
+    assertFalse(departmentModel.activeDetailModels().isEmpty());
+    assertTrue(departmentModel.activeDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
   }
 
   @Test

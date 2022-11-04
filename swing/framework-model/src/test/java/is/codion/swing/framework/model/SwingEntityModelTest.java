@@ -29,7 +29,7 @@ public final class SwingEntityModelTest
     SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
     employeeModel.editModel().refreshComboBoxModels();
     departmentModel.addDetailModel(employeeModel, Employee.DEPARTMENT_FK);
-    departmentModel.addLinkedDetailModel(employeeModel);
+    departmentModel.activateDetailModel(employeeModel);
     employeeModel.tableModel().queryConditionRequiredState().set(false);
 
     return departmentModel;
@@ -85,7 +85,7 @@ public final class SwingEntityModelTest
     assertFalse(departmentModel.containsDetailModel(EmpModel.class));
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     assertNotNull(employeeModel);
-    assertTrue(departmentModel.linkedDetailModels().contains(employeeModel));
+    assertTrue(departmentModel.activeDetailModels().contains(employeeModel));
     departmentModel.tableModel().refresh();
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);

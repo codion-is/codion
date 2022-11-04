@@ -60,25 +60,25 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   boolean containsTableModel();
 
   /**
-   * @return an unmodifiable collection containing the detail models that are currently linked to this model
+   * @return an unmodifiable collection containing the active detail models, that is, those that should respond to master model events
    */
-  Collection<M> linkedDetailModels();
+  Collection<M> activeDetailModels();
 
   /**
-   * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
+   * Adds the given model to the currently active detail models. Active detail models are updated and filtered according
    * to the entity/entities selected in this (the master) model.
-   * Calling this method with a model which is already linked has no effect.
+   * Calling this method with a model which is already active has no effect.
    * @param detailModel links the given detail model to this model
    */
-  void addLinkedDetailModel(M detailModel);
+  void activateDetailModel(M detailModel);
 
   /**
-   * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
+   * Removes the given model from the currently active detail models. Active models are updated and filtered according
    * to the entity/entities selected in this (the master) model.
-   * Calling this method with a model which is not linked has no effect.
+   * Calling this method with a model which is not active has no effect.
    * @param detailModel unlinks the given detail model from this model
    */
-  void removeLinkedDetailModel(M detailModel);
+  void deactivateDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -179,24 +179,24 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   void clearDetailModels();
 
   /**
-   * @param listener a listener to be notified each time a linked detail model is added
+   * @param listener a listener to be notified each time a detail model is activated
    */
-  void addLinkedDetailModelAddedListener(EventDataListener<M> listener);
+  void addDetailModelActivatedListener(EventDataListener<M> listener);
 
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelAddedListener(EventDataListener<M> listener);
+  void removeDetailModelActivatedListener(EventDataListener<M> listener);
 
   /**
-   * @param listener a listener to be notified each time a linked detail model is removed
+   * @param listener a listener to be notified each time a detail model is deactivated
    */
-  void addLinkedDetailModelRemovedListener(EventDataListener<M> listener);
+  void addDetailModelDeactivatedListener(EventDataListener<M> listener);
 
   /**
    * @param listener a listener to be removed
    */
-  void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener);
+  void removeDetailModelDeactivatedListener(EventDataListener<M> listener);
 
   /**
    * Saves any user preferences

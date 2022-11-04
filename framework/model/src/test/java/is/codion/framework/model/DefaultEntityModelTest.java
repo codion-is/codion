@@ -22,7 +22,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     TestEntityModel deptModel = new TestEntityModel(new TestEntityEditModel(Department.TYPE, connectionProvider()));
     TestEntityModel empModel = new TestEntityModel(new TestEntityEditModel(Employee.TYPE, connectionProvider()));
     deptModel.addDetailModel(empModel);
-    deptModel.addLinkedDetailModel(empModel);
+    deptModel.activateDetailModel(empModel);
 
     return deptModel;
   }

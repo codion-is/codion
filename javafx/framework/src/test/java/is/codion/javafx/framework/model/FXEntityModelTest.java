@@ -29,7 +29,7 @@ public final class FXEntityModelTest extends AbstractEntityModelTest<FXEntityMod
     FXEntityEditModel employeeEditModel = employeeModel.editModel();
     new EntityTableView(employeeEditModel.foreignKeyListModel(Employee.DEPARTMENT_FK));
     entityModel.addDetailModel(employeeModel, Employee.DEPARTMENT_FK);
-    entityModel.addLinkedDetailModel(employeeModel);
+    entityModel.activateDetailModel(employeeModel);
     employeeModel.tableModel().queryConditionRequiredState().set(false);
 
     return entityModel;

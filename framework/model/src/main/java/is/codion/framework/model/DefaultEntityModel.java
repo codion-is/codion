@@ -34,8 +34,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
 
-  private final Event<M> linkedDetailModelAddedEvent = Event.event();
-  private final Event<M> linkedDetailModelRemovedEvent = Event.event();
+  private final Event<M> detailModelActivatedEvent = Event.event();
+  private final Event<M> detailModelDeactivatedEvent = Event.event();
 
   /**
    * The EntityEditModel instance
@@ -58,9 +58,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   private final Map<M, EntityModelLink<M, E, T>> detailModels = new HashMap<>();
 
   /**
-   * Holds linked detail models that should be updated and filtered according to the selected entity/entities
+   * Holds the active detail models, those that should be updated and filtered according to the selected entity/entities
    */
-  private final Set<M> linkedDetailModels = new HashSet<>();
+  private final Set<M> activeDetailModels = new HashSet<>();
 
   /**
    * Instantiates a new DefaultEntityModel, without a table model
@@ -202,28 +202,28 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void addLinkedDetailModel(M detailModel) {
+  public final void activateDetailModel(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
-    if (linkedDetailModels.add(detailModel)) {
-      linkedDetailModelAddedEvent.onEvent(detailModel);
+    if (activeDetailModels.add(detailModel)) {
+      detailModelActivatedEvent.onEvent(detailModel);
     }
   }
 
   @Override
-  public final void removeLinkedDetailModel(M detailModel) {
+  public final void deactivateDetailModel(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
-    if (linkedDetailModels.remove(detailModel)) {
-      linkedDetailModelRemovedEvent.onEvent(detailModel);
+    if (activeDetailModels.remove(detailModel)) {
+      detailModelDeactivatedEvent.onEvent(detailModel);
     }
   }
 
   @Override
-  public final Collection<M> linkedDetailModels() {
-    return unmodifiableCollection(linkedDetailModels);
+  public final Collection<M> activeDetailModels() {
+    return unmodifiableCollection(activeDetailModels);
   }
 
   @Override
@@ -275,28 +275,28 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void addLinkedDetailModelAddedListener(EventDataListener<M> listener) {
-    linkedDetailModelAddedEvent.addDataListener(listener);
+  public final void addDetailModelActivatedListener(EventDataListener<M> listener) {
+    detailModelActivatedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLinkedDetailModelAddedListener(EventDataListener<M> listener) {
-    linkedDetailModelAddedEvent.removeDataListener(listener);
+  public final void removeDetailModelActivatedListener(EventDataListener<M> listener) {
+    detailModelActivatedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
-    linkedDetailModelRemovedEvent.addDataListener(listener);
+  public final void addDetailModelDeactivatedListener(EventDataListener<M> listener) {
+    detailModelDeactivatedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeLinkedDetailModelRemovedListener(EventDataListener<M> listener) {
-    linkedDetailModelRemovedEvent.removeDataListener(listener);
+  public final void removeDetailModelDeactivatedListener(EventDataListener<M> listener) {
+    detailModelDeactivatedEvent.removeDataListener(listener);
   }
 
   private void onMasterSelectionChanged() {
     List<Entity> activeEntities = activeEntities();
-    for (M detailModel : linkedDetailModels) {
+    for (M detailModel : activeDetailModels) {
       detailModels.get(detailModel).onSelection(activeEntities);
     }
   }
@@ -314,8 +314,8 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   private void bindEventsInternal() {
     EventListener onMasterSelectionChanged = this::onMasterSelectionChanged;
-    linkedDetailModelAddedEvent.addListener(onMasterSelectionChanged);
-    linkedDetailModelRemovedEvent.addListener(onMasterSelectionChanged);
+    detailModelActivatedEvent.addListener(onMasterSelectionChanged);
+    detailModelDeactivatedEvent.addListener(onMasterSelectionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
