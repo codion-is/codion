@@ -73,11 +73,6 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
   }
 
   @Override
-  public void clear() {
-    foreignKeyListModels.values().forEach(FXEntityListModel::clear);
-  }
-
-  @Override
   public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
     FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
     if (listModel != null) {

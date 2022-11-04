@@ -169,16 +169,6 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel);
 
   /**
-   * Clears all data models used by this model.
-   */
-  void clear();
-
-  /**
-   * Clears the detail models.
-   */
-  void clearDetailModels();
-
-  /**
    * @param listener a listener to be notified each time a detail model is activated
    */
   void addDetailModelActivatedListener(EventDataListener<M> listener);

@@ -150,9 +150,4 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * Refreshes all data models contained in this application model
    */
   void refresh();
-
-  /**
-   * Clears all data from models contained in this application model
-   */
-  void clear();
 }

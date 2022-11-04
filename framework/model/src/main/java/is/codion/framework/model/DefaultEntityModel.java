@@ -251,22 +251,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void clear() {
-    if (containsTableModel()) {
-      tableModel.clear();
-    }
-    editModel.clear();
-    clearDetailModels();
-  }
-
-  @Override
-  public final void clearDetailModels() {
-    for (M detailModel : detailModels.keySet()) {
-      detailModel.clear();
-    }
-  }
-
-  @Override
   public void savePreferences() {
     if (containsTableModel()) {
       tableModel().savePreferences();

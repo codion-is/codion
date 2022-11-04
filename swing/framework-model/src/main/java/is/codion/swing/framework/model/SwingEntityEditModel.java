@@ -54,11 +54,6 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
     super(entityType, connectionProvider, validator);
   }
 
-  @Override
-  public void clear() {
-    clearComboBoxModels();
-  }
-
   /**
    * Creates and refreshes combo box models for the given attributes. Doing this avoids refreshing the
    * data on the EDT when the actual combo boxes are initialized.

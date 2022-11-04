@@ -405,11 +405,6 @@ public interface EntityEditModel {
   void refresh();
 
   /**
-   * Clears all data models used by this edit model.
-   */
-  void clear();
-
-  /**
    * @return true if the underlying Entity is modified
    * @see #setModifiedSupplier(Supplier)
    * @see #modifiedObserver()

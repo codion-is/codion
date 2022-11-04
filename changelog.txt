@@ -8555,3 +8555,4 @@
   EntityModelLink and ForeignKeyEntityModelLink added along with DefaultModelLink and DefaultForeignKeyModelLink, related refactoring
   EntityModel.addLinkedDetailModel() and removeLinkedDetailModel() renamed activateDetailModel() and deactivateDetailModel() respectively
   SwingEntityModelLink and SwingForeignKeyModelLink added
+  EntityApplicationModel.clear(), EntityEditModel.clear(), EntityModel.clear() and clearDetailModels() removed, never used, easy enough to do manually

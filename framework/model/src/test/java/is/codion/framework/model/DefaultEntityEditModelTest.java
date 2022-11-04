@@ -541,8 +541,6 @@ public final class DefaultEntityEditModelTest {
       @Override
       public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
       @Override
-      public void clear() {}
-      @Override
       public StateObserver refreshingObserver() {
         return null;
       }
@@ -670,9 +668,6 @@ public final class DefaultEntityEditModelTest {
 
     @Override
     public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
-
-    @Override
-    public void clear() {}
 
     @Override
     public StateObserver refreshingObserver() {

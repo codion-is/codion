@@ -126,13 +126,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final void clear() {
-    for (M entityModel : entityModels) {
-      entityModel.clear();
-    }
-  }
-
-  @Override
   public final <T extends M> T entityModel(Class<? extends M> modelClass) {
     for (M model : entityModels) {
       if (model.getClass().equals(modelClass)) {

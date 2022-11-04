@@ -112,10 +112,10 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     employeeModel.tableModel().refresh();
     assertTrue(employeeModel.tableModel().getRowCount() > 0);
 
-    departmentModel.clearDetailModels();
+    departmentModel.detailModels().forEach(detailModel -> detailModel.tableModel().clear());
     assertEquals(0, employeeModel.tableModel().getRowCount());
 
-    departmentModel.clear();
+    departmentModel.tableModel().clear();
     assertEquals(0, departmentModel.tableModel().getRowCount());
   }
 
