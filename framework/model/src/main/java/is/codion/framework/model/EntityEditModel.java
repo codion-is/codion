@@ -57,13 +57,6 @@ public interface EntityEditModel {
   PropertyValue<Boolean> POST_EDIT_EVENTS = Configuration.booleanValue("codion.client.editModelPostEditEvents", true);
 
   /**
-   * Specifies whether edit models set the master foreign key to null when initialized with a null foreign key value via {@link #initialize(ForeignKey, Entity)}<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  PropertyValue<Boolean> INITIALIZE_FOREIGN_KEY_TO_NULL = Configuration.booleanValue("codion.client.initializeForeignKeyToNull", false);
-
-  /**
    * @return the type of the entity this edit model is based on
    */
   EntityType entityType();
@@ -271,20 +264,6 @@ public interface EntityEditModel {
   void setPostEditEvents(boolean postEditEvents);
 
   /**
-   * Returns true if this edit model sets the foreign key to null when initialized with a null value.
-   * @return true if initialization with a null value sets the foreign key to null
-   * @see #initialize(ForeignKey, Entity)
-   */
-  boolean isInitializeForeignKeyToNull();
-
-  /**
-   * Set to true if this edit model should set the foreign key value to null when initialized with a null value.
-   * @param initializeForeignKeyToNull true if initialization with a null value should set the foreign key to null
-   * @see #initialize(ForeignKey, Entity)
-   */
-  void setInitializeForeignKeyToNull(boolean initializeForeignKeyToNull);
-
-  /**
    * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key property,
    * using the search properties defined for that entity type, or if none are defined all string based searchable
    * properties in that entity.
@@ -460,16 +439,6 @@ public interface EntityEditModel {
    * @param entities the foreign key entities
    */
   void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities);
-
-  /**
-   * Initializes this {@link EntityEditModel} according to the given foreign key value
-   * by setting the foreign key to the given value. Note that this only happens if the current entity is new.
-   * @param foreignKey the foreign key
-   * @param foreignKeyValue the foreign key value, null for none
-   * @see #setInitializeForeignKeyToNull(boolean)
-   * @see #isEntityNew()
-   */
-  void initialize(ForeignKey foreignKey, Entity foreignKeyValue);
 
   /**
    * @return the validator
