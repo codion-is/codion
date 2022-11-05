@@ -14,6 +14,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 
+import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
@@ -42,6 +43,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
     JToolBar updateToolBar = Components.toolBar()
             .floatable(false)
             .action(getControl(ControlCode.UPDATE))
+            .preferredHeight(preferredTextFieldHeight())
             .build();
 
     JPanel eastPanel = Components.panel(flexibleGridLayout(1, 2))
