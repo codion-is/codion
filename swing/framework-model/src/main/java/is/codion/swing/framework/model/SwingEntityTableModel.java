@@ -682,7 +682,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     EventListener statusListener = () -> statusMessageValue.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
     addFilterListener(statusListener);
-    addTableDataChangedListener(statusListener);
+    addDataChangedListener(statusListener);
   }
 
   private void rememberCondition() {

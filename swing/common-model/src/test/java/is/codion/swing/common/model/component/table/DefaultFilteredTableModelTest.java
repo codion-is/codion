@@ -167,7 +167,7 @@ public final class DefaultFilteredTableModelTest {
     EventListener clearedListener = cleared::incrementAndGet;
     tableModel.addRefreshListener(successfulListener);
     tableModel.addRefreshFailedListener(failedListener);
-    tableModel.addTableModelClearedListener(clearedListener);
+    tableModel.addClearListener(clearedListener);
     tableModel.refresh();
     assertTrue(tableModel.getRowCount() > 0);
     assertEquals(1, done.get());
@@ -182,7 +182,7 @@ public final class DefaultFilteredTableModelTest {
 
     tableModel.removeRefreshListener(successfulListener);
     tableModel.removeRefreshFailedListener(failedListener);
-    tableModel.removeTableModelClearedListener(clearedListener);
+    tableModel.removeClearListener(clearedListener);
   }
 
   @Test
@@ -235,7 +235,7 @@ public final class DefaultFilteredTableModelTest {
   void removeItems() {
     AtomicInteger events = new AtomicInteger();
     EventListener listener = events::incrementAndGet;
-    tableModel.addTableDataChangedListener(listener);
+    tableModel.addDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
     tableModel.columnFilterModel(0).setEqualValue("a");
@@ -250,7 +250,7 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(4, events.get());//no change when removing filtered items
     assertFalse(tableModel.isVisible(D));
     assertFalse(tableModel.isVisible(E));
-    tableModel.removeTableDataChangedListener(listener);
+    tableModel.removeDataChangedListener(listener);
   }
 
   @Test
@@ -276,7 +276,7 @@ public final class DefaultFilteredTableModelTest {
   void removeItemsRange() {
     AtomicInteger events = new AtomicInteger();
     EventListener listener = events::incrementAndGet;
-    tableModel.addTableDataChangedListener(listener);
+    tableModel.addDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
     tableModel.removeItems(1, 3);
@@ -292,7 +292,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     assertEquals(5, events.get());
 
-    tableModel.removeTableDataChangedListener(listener);
+    tableModel.removeDataChangedListener(listener);
   }
 
   @Test
