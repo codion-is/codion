@@ -67,8 +67,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Adds the given detail model to this model, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
-   * Note that the detail model is associated with the first foreign key found referencing this models entity.
+   * Note that each detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModels the detail models to add
+   * @throws IllegalArgumentException in case no foreign key exists between the entities involved
    */
   void addDetailModels(M... detailModels);
 
@@ -79,6 +80,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
    * @return the resulting {@link ForeignKeyDetailModelHandler}
+   * @throws IllegalArgumentException in case no foreign key exists between the entities involved
    */
   ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel);
 
