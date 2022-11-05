@@ -56,7 +56,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Map<M, EntityModelLink<M, E, T>> detailModels = new HashMap<>();
+  private final Map<M, DetailModelHandler<M, E, T>> detailModels = new HashMap<>();
 
   /**
    * Holds the active detail models, those that should be updated and filtered according to the selected entity/entities
@@ -136,7 +136,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel) {
+  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     List<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
     if (foreignKeys.isEmpty()) {
@@ -148,7 +148,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
+  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     requireNonNull(foreignKey, "foreignKey");
     if (this == detailModel) {
@@ -158,15 +158,15 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
     }
 
-    return addDetailModel(new DefaultForeignKeyEntityModelLink<>(detailModel, foreignKey));
+    return addDetailModel(new DefaultForeignKeyDetailModelHandler<>(detailModel, foreignKey));
   }
 
   @Override
-  public final <L extends EntityModelLink<M, E, T>> L addDetailModel(L modelLink) {
-    requireNonNull(modelLink, "modelLink");
-    detailModels.put(modelLink.detailModel(), modelLink);
+  public final <H extends DetailModelHandler<M, E, T>> H addDetailModel(H detailModelHandler) {
+    requireNonNull(detailModelHandler, "detailModelHandler");
+    detailModels.put(detailModelHandler.detailModel(), detailModelHandler);
 
-    return modelLink;
+    return detailModelHandler;
   }
 
   @Override
@@ -194,12 +194,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel) {
+  public final <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
     }
 
-    return (L) detailModels.get(detailModel);
+    return (H) detailModels.get(detailModel);
   }
 
   @Override

@@ -15,7 +15,7 @@ import java.util.Map;
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  */
-public interface EntityModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * @return the detail model
@@ -41,7 +41,7 @@ public interface EntityModelLink<M extends EntityModel<M, E, T>, E extends Entit
   default void onUpdate(Map<Key, Entity> updatedEntities) {}
 
   /**
-   * Called when a delete is performed in the master model
+   * Called when delete is performed in the master model
    * @param deletedEntities the deleted entities
    */
   default void onDelete(List<Entity> deletedEntities) {}

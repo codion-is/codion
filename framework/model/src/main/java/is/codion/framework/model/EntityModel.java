@@ -95,9 +95,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
    * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
-   * @return the resulting {@link EntityModelLink}
+   * @return the resulting {@link DetailModelHandler}
    */
-  ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel);
+  ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -107,19 +107,19 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * same master entity.
    * @param detailModel the detail model
    * @param foreignKey the foreign key to base the detail model on
-   * @return the resulting {@link EntityModelLink}
+   * @return the resulting {@link DetailModelHandler}
    */
-  ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
+  ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}
-   * @param modelLink the {@link EntityModelLink} to add
-   * @param <L> the {@link EntityModelLink} type
-   * @return the {@link EntityModelLink}
+   * @param detailModelHandler the {@link DetailModelHandler} to add
+   * @param <H> the {@link DetailModelHandler} type
+   * @return the {@link DetailModelHandler}
    */
-  <L extends EntityModelLink<M, E, T>> L addDetailModel(L modelLink);
+  <H extends DetailModelHandler<M, E, T>> H addDetailModel(H detailModelHandler);
 
   /**
    * @param modelClass the detail model class
@@ -163,10 +163,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * @param detailModel the detail model
-   * @param <L> the {@link EntityModelLink} type
-   * @return the model link associated with the given detail model
+   * @param <H> the {@link DetailModelHandler} type
+   * @return the detail model handler for the given detail model
    */
-  <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel);
+  <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel);
 
   /**
    * @param listener a listener to be notified each time a detail model is activated

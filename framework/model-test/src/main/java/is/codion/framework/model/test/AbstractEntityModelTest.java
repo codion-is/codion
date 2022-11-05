@@ -17,7 +17,7 @@ import is.codion.framework.model.DefaultEntityModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.framework.model.ForeignKeyEntityModelLink;
+import is.codion.framework.model.ForeignKeyDetailModelHandler;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
@@ -224,9 +224,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
       return;
     }
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
-    ForeignKeyEntityModelLink<Model, EditModel, TableModel> modelLink = departmentModel.detailModelLink(employeeModel);
-    modelLink.setSearchByInsertedEntity(true);
-    assertTrue(modelLink.isSearchByInsertedEntity());
+    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
+    handler.setSearchByInsertedEntity(true);
+    assertTrue(handler.isSearchByInsertedEntity());
     EntityEditModel editModel = departmentModel.editModel();
     editModel.put(Department.ID, 100);
     editModel.put(Department.NAME, "Name");
@@ -247,8 +247,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
     EditModel employeeEditModel = employeeModel.editModel();
 
-    ForeignKeyEntityModelLink<Model, EditModel, TableModel> modelLink = departmentModel.detailModelLink(employeeModel);
-    modelLink.setClearForeignKeyOnEmptySelection(false);
+    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
+    handler.setClearForeignKeyOnEmptySelection(false);
 
     Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
 
@@ -259,7 +259,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().clearSelection();
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
 
-    modelLink.setClearForeignKeyOnEmptySelection(true);
+    handler.setClearForeignKeyOnEmptySelection(true);
 
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
@@ -267,7 +267,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().clearSelection();
     assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK));
 
-    modelLink.setClearForeignKeyOnEmptySelection(false);
+    handler.setClearForeignKeyOnEmptySelection(false);
 
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
@@ -281,8 +281,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
     TableModel employeeTableModel = employeeModel.tableModel();
 
-    ForeignKeyEntityModelLink<Model, EditModel, TableModel> modelLink = departmentModel.detailModelLink(employeeModel);
-    modelLink.setRefreshOnSelection(false);
+    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
+    handler.setRefreshOnSelection(false);
 
     Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
 
@@ -290,7 +290,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(0, employeeTableModel.getRowCount());
 
-    modelLink.setRefreshOnSelection(true);
+    handler.setRefreshOnSelection(true);
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertNotEquals(0, employeeTableModel.getRowCount());
   }
