@@ -8519,3 +8519,4 @@
   SwingEntityModelLink and SwingForeignKeyModelLink added
   EntityApplicationModel.clear(), EntityEditModel.clear(), EntityModel.clear() and clearDetailModels() removed, never used, easy enough to do manually
   EntityModelLink renamed DetailModelHandler
+  EntityModel.addActiveDetailModel() removed, DetailModelHandler.setActive() added

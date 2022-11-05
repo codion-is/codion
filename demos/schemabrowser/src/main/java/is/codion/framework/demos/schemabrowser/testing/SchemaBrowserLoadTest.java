@@ -54,15 +54,15 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
                             .user(getUser())
                             .build());
     SwingEntityModel schemaModel = applicationModel.entityModel(Schema.TYPE);
-    SwingEntityModel dbObjectModel = schemaModel.detailModel(Table.TYPE);
-    schemaModel.activateDetailModel(dbObjectModel);
-    SwingEntityModel columnModel = dbObjectModel.detailModel(Column.TYPE);
-    SwingEntityModel constraintModel = dbObjectModel.detailModel(Constraint.TYPE);
-    dbObjectModel.addDetailModel(columnModel);
-    dbObjectModel.addDetailModel(constraintModel);
-    SwingEntityModel constraintColumnModel = dbObjectModel.detailModel(ConstraintColumn.TYPE);
+    SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);
+    schemaModel.detailModelHandler(tableModel).setActive(true);
+    SwingEntityModel columnModel = tableModel.detailModel(Column.TYPE);
+    SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
+    tableModel.addDetailModel(columnModel);
+    tableModel.addDetailModel(constraintModel);
+    SwingEntityModel constraintColumnModel = tableModel.detailModel(ConstraintColumn.TYPE);
     constraintModel.addDetailModel(constraintColumnModel);
-    dbObjectModel.activateDetailModel(columnModel);
+    tableModel.detailModelHandler(columnModel).setActive(true);
 
     return applicationModel;
   }

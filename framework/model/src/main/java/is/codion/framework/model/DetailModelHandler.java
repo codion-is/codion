@@ -3,6 +3,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
@@ -21,6 +22,23 @@ public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends En
    * @return the detail model
    */
   M detailModel();
+
+  /**
+   * @return an observer for the active state
+   */
+  StateObserver activeObserver();
+
+  /**
+   * @return true if this handler is active
+   */
+  boolean isActive();
+
+  /**
+   * Sets the active state of this handler. Active detail model handlers update and filter
+   * the detail model according to the entity/entities selected in this (the master) model.
+   * @param active true if this handler should be activated
+   */
+  void setActive(boolean active);
 
   /**
    * Called when the selection changes in the master model

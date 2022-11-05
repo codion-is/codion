@@ -45,11 +45,11 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
                     .user(getUser())
                     .build());
     SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
-    categoryModel.activateDetailModel(categoryModel.detailModels().iterator().next());
+    categoryModel.detailModelHandler(categoryModel.detailModels().iterator().next()).setActive(true);
     SwingEntityModel productModel = categoryModel.detailModels().iterator().next();
-    productModel.activateDetailModel(productModel.detailModels().iterator().next());
+    productModel.detailModelHandler(productModel.detailModels().iterator().next()).setActive(true);
     SwingEntityModel itemModel = productModel.detailModels().iterator().next();
-    itemModel.activateDetailModel(itemModel.detailModels().iterator().next());
+    itemModel.detailModelHandler(itemModel.detailModels().iterator().next()).setActive(true);
 
     return applicationModel;
   }

@@ -4,7 +4,6 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -140,12 +139,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   @Test
   public void test() throws Exception {
     assertNotNull(departmentModel.editModel());
-
-    EventDataListener<Model> activeListener = model -> {};
-    departmentModel.addDetailModelActivatedListener(activeListener);
-    departmentModel.addDetailModelDeactivatedListener(activeListener);
-    departmentModel.removeDetailModelActivatedListener(activeListener);
-    departmentModel.removeDetailModelDeactivatedListener(activeListener);
   }
 
   @Test
@@ -190,20 +183,6 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   }
 
   @Test
-  public void activateDetailModelWithoutAddingFirst() {
-    Model model = createDepartmentModelWithoutDetailModel();
-    Model employeeModel = createEmployeeModel();
-    assertThrows(IllegalStateException.class, () -> model.activateDetailModel(employeeModel));
-  }
-
-  @Test
-  public void deactivateDetailModelWithoutAddingFirst() {
-    Model model = createDepartmentModelWithoutDetailModel();
-    Model employeeModel = createEmployeeModel();
-    assertThrows(IllegalStateException.class, () -> model.deactivateDetailModel(employeeModel));
-  }
-
-  @Test
   public void addModelAsItsOwnDetailModel() {
     Model model = createDepartmentModelWithoutDetailModel();
     assertThrows(IllegalArgumentException.class, () -> model.addDetailModel(model));
@@ -211,9 +190,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void activateDeactivateDetailModel() {
-    departmentModel.deactivateDetailModel(departmentModel.detailModel(Employee.TYPE));
+    departmentModel.detailModelHandler(departmentModel.detailModel(Employee.TYPE)).setActive(false);
     assertTrue(departmentModel.activeDetailModels().isEmpty());
-    departmentModel.activateDetailModel(departmentModel.detailModel(Employee.TYPE));
+    departmentModel.detailModelHandler(departmentModel.detailModel(Employee.TYPE)).setActive(true);
     assertFalse(departmentModel.activeDetailModels().isEmpty());
     assertTrue(departmentModel.activeDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
   }

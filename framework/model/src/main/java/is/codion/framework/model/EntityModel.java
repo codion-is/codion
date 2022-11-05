@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -63,22 +62,6 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return an unmodifiable collection containing the active detail models, that is, those that should respond to master model events
    */
   Collection<M> activeDetailModels();
-
-  /**
-   * Adds the given model to the currently active detail models. Active detail models are updated and filtered according
-   * to the entity/entities selected in this (the master) model.
-   * Calling this method with a model which is already active has no effect.
-   * @param detailModel links the given detail model to this model
-   */
-  void activateDetailModel(M detailModel);
-
-  /**
-   * Removes the given model from the currently active detail models. Active models are updated and filtered according
-   * to the entity/entities selected in this (the master) model.
-   * Calling this method with a model which is not active has no effect.
-   * @param detailModel unlinks the given detail model from this model
-   */
-  void deactivateDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -167,26 +150,6 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the detail model handler for the given detail model
    */
   <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel);
-
-  /**
-   * @param listener a listener to be notified each time a detail model is activated
-   */
-  void addDetailModelActivatedListener(EventDataListener<M> listener);
-
-  /**
-   * @param listener a listener to be removed
-   */
-  void removeDetailModelActivatedListener(EventDataListener<M> listener);
-
-  /**
-   * @param listener a listener to be notified each time a detail model is deactivated
-   */
-  void addDetailModelDeactivatedListener(EventDataListener<M> listener);
-
-  /**
-   * @param listener a listener to be removed
-   */
-  void removeDetailModelDeactivatedListener(EventDataListener<M> listener);
 
   /**
    * Saves any user preferences

@@ -3,6 +3,9 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+
 import java.util.List;
 import java.util.Map;
 
@@ -23,6 +26,7 @@ public class DefaultDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E 
         T extends EntityTableModel<E>> implements DetailModelHandler<M, E, T> {
 
   private final M detailModel;
+  private final State activeState = State.state();
 
   public DefaultDetailModelHandler(M detailModel) {
     this.detailModel = requireNonNull(detailModel, "detailModel");
@@ -34,5 +38,20 @@ public class DefaultDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E 
   @Override
   public final M detailModel() {
     return detailModel;
+  }
+
+  @Override
+  public final StateObserver activeObserver() {
+    return activeState.observer();
+  }
+
+  @Override
+  public final boolean isActive() {
+    return activeState.get();
+  }
+
+  @Override
+  public final void setActive(boolean active) {
+    activeState.set(active);
   }
 }
