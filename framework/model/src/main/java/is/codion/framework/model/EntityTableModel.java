@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Specifies a table model containing {@link Entity} objects
+ * Specifies a table model containing {@link Entity} instances.
  * @param <E> the type of {@link EntityEditModel} used by this {@link EntityTableModel}
  */
 public interface EntityTableModel<E extends EntityEditModel> extends FilteredModel<Entity> {
@@ -324,7 +324,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Returns an Iterator which iterates through the selected entities
-   * @return the iterator used when generating reports
+   * @return an iterator for the selected entities
    */
   Iterator<Entity> selectedEntitiesIterator();
 

@@ -78,7 +78,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
    * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
-   * @return the resulting {@link DetailModelHandler}
+   * @return the resulting {@link ForeignKeyDetailModelHandler}
    */
   ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel);
 
@@ -90,7 +90,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * same master entity.
    * @param detailModel the detail model
    * @param foreignKey the foreign key to base the detail model on
-   * @return the resulting {@link DetailModelHandler}
+   * @return the resulting {@link ForeignKeyDetailModelHandler}
    */
   ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
 

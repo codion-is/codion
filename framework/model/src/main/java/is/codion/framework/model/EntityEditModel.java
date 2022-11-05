@@ -98,7 +98,7 @@ public interface EntityEditModel {
    * Returns true if the active entity is new or false if it represents a row already persisted.
    * By default, an entity is new if either its primary key or the original primary key are null.
    * Basing the result of this function on a database query is not recommended since it is called very frequently,
-   * as in, every time a property value changes.
+   * as in, every time an attribute value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #primaryKeyNullObserver
    * @see Key#isNull()
@@ -115,13 +115,13 @@ public interface EntityEditModel {
 
   /**
    * @param attribute the attribute
-   * @return true if the value of the given property is null
+   * @return true if the value of the given attribute is null
    */
   boolean isNull(Attribute<?> attribute);
 
   /**
    * @param attribute the attribute
-   * @return true if the value of the given property is not null
+   * @return true if the value of the given attribute is not null
    */
   boolean isNotNull(Attribute<?> attribute);
 
@@ -134,7 +134,7 @@ public interface EntityEditModel {
   /**
    * Sets the given value in the underlying Entity
    * @param attribute the attribute to associate the given value with
-   * @param value the value to associate with the given property
+   * @param value the value to associate with the given attribute
    * @param <T> the value type
    */
   <T> void put(Attribute<T> attribute, T value);
@@ -148,18 +148,18 @@ public interface EntityEditModel {
   <T> T remove(Attribute<T> attribute);
 
   /**
-   * Returns the value associated with the given property
+   * Returns the value associated with the given attribute
    * @param attribute the attribute
    * @param <T> the value type
-   * @return the value associated with the given property
+   * @return the value associated with the given attribute
    */
   <T> T get(Attribute<T> attribute);
 
   /**
-   * Returns the value associated with the given property
+   * Returns the value associated with the given attribute
    * @param attribute the attribute
    * @param <T> the value type
-   * @return the value associated with the given property, an empty Optional in case it is null
+   * @return the value associated with the given attribute, an empty Optional in case it is null
    */
   <T> Optional<T> getOptional(Attribute<T> attribute);
 
@@ -264,13 +264,11 @@ public interface EntityEditModel {
   void setPostEditEvents(boolean postEditEvents);
 
   /**
-   * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key property,
-   * using the search properties defined for that entity type, or if none are defined all string based searchable
-   * properties in that entity.
+   * Creates a {@link EntitySearchModel} for looking up entities referenced by the given foreign key,
+   * using the search attributes defined for that entity type.
    * @param foreignKey the foreign key for which to create a {@link EntitySearchModel}
    * @return a {@link EntitySearchModel} for looking up entities of the type referenced by the given foreign key attribute,
-   * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
-   * given foreign key property
+   * @throws IllegalStateException in case no searchable attributes can be found for the entity type referenced by the given foreign key
    */
   EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey);
 
@@ -428,7 +426,7 @@ public interface EntityEditModel {
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from {@code entities}, useful when property
+   * the corresponding entity from {@code entities}, useful when attribute
    * values have been changed in the referenced entity that must be reflected in the edit model.
    * @param foreignKey the foreign key
    * @param entities the foreign key entities
@@ -570,7 +568,7 @@ public interface EntityEditModel {
    * {@link #put(Attribute, Object)} or {@link #remove(Attribute)}, note that this event is only fired
    * if the value actually changes.
    * @param attribute the attribute for which to monitor value edits
-   * @param listener a listener notified each time the value of the given property is edited via this model
+   * @param listener a listener notified each time the value of the given attribute is edited via this model
    * @param <T> the value type
    */
   <T> void addEditListener(Attribute<T> attribute, EventDataListener<T> listener);
