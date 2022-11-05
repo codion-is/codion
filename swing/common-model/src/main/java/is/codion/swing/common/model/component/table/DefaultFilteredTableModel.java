@@ -57,8 +57,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Event<?> sortEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
-  private final Event<?> tableDataChangedEvent = Event.event();
-  private final Event<?> tableModelClearedEvent = Event.event();
+  private final Event<?> dataChangedEvent = Event.event();
+  private final Event<?> clearEvent = Event.event();
   private final Event<RowsRemoved> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
   private final ColumnValueProvider<R, C> columnValueProvider;
@@ -187,7 +187,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
     }
-    tableModelClearedEvent.onEvent();
+    clearEvent.onEvent();
   }
 
   @Override
@@ -431,23 +431,23 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addTableDataChangedListener(EventListener listener) {
-    tableDataChangedEvent.addListener(listener);
+  public final void addDataChangedListener(EventListener listener) {
+    dataChangedEvent.addListener(listener);
   }
 
   @Override
-  public final void removeTableDataChangedListener(EventListener listener) {
-    tableDataChangedEvent.removeListener(listener);
+  public final void removeDataChangedListener(EventListener listener) {
+    dataChangedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addTableModelClearedListener(EventListener listener) {
-    tableModelClearedEvent.addListener(listener);
+  public final void addClearListener(EventListener listener) {
+    clearEvent.addListener(listener);
   }
 
   @Override
-  public final void removeTableModelClearedListener(EventListener listener) {
-    tableModelClearedEvent.removeListener(listener);
+  public final void removeClearListener(EventListener listener) {
+    clearEvent.removeListener(listener);
   }
 
   /**
@@ -552,7 +552,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void bindEventsInternal() {
-    addTableModelListener(e -> tableDataChangedEvent.onEvent());
+    addTableModelListener(e -> dataChangedEvent.onEvent());
     columnFilterModels.values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::filterContents));
     sortModel.addSortingChangedListener(columnIdentifier -> sort());
@@ -766,7 +766,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
     @Override
     public void addValuesListener(EventListener listener) {
-      tableModel.addTableDataChangedListener(listener);
+      tableModel.addDataChangedListener(listener);
       tableModel.selectionModel().addSelectionListener(listener);
     }
 

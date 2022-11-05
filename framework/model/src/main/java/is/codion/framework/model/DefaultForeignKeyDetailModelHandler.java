@@ -77,9 +77,8 @@ public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M,
 
   @Override
   public void onSelection(List<Entity> selectedEntities) {
-    T tableModel = detailModel().tableModel();
-    if (detailModel().containsTableModel() && tableModel.setForeignKeyConditionValues(foreignKey, selectedEntities) && isRefreshOnSelection()) {
-      tableModel.refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
+    if (detailModel().containsTableModel() && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, selectedEntities) && isRefreshOnSelection()) {
+      detailModel().tableModel().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
     }
     else {
       setEditModelForeignKeyValue(selectedEntities);

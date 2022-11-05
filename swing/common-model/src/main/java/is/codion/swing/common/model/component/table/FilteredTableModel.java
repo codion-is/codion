@@ -36,22 +36,22 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @param listener a listener to be notified each time the table data changes
    */
-  void addTableDataChangedListener(EventListener listener);
+  void addDataChangedListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableDataChangedListener(EventListener listener);
+  void removeDataChangedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table model is cleared
    */
-  void addTableModelClearedListener(EventListener listener);
+  void addClearListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableModelClearedListener(EventListener listener);
+  void removeClearListener(EventListener listener);
 
   /**
    * Adds a listener that is notified each time rows are removed from this model.
@@ -68,11 +68,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @return true if an impending selection change should be allowed
    */
   boolean allowSelectionChange();
-
-  /**
-   * @return the size of the table model
-   */
-  int getRowCount();
 
   /**
    * @param item the item

@@ -61,7 +61,7 @@ final class ContinentPanel extends EntityPanel {
             .add(pieChartChartPanel, BorderLayout.CENTER)
             .build();
 
-    EntityPanel countryPanel = this.countryPanel.initializePanel();
+    countryPanel.initializePanel();
     countryPanel.setPreferredSize(new Dimension(countryPanel.getPreferredSize().width, 100));
 
     JTabbedPane tabbedPane = Components.tabbedPane()

@@ -47,19 +47,19 @@ public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends En
   default void onSelection(List<Entity> selectedEntities) {}
 
   /**
-   * Called when a insert is performed in the master model
+   * Called when a insert is performed in the master model, regardless of entity type.
    * @param insertedEntities the inserted entities
    */
   default void onInsert(List<Entity> insertedEntities) {}
 
   /**
-   * Called when an update is performed in the master model
+   * Called when an update is performed in the master model, regardless of entity type.
    * @param updatedEntities the updated entities, mapped to their original primary keys
    */
   default void onUpdate(Map<Key, Entity> updatedEntities) {}
 
   /**
-   * Called when delete is performed in the master model
+   * Called when delete is performed in the master model, regardless of entity type.
    * @param deletedEntities the deleted entities
    */
   default void onDelete(List<Entity> deletedEntities) {}

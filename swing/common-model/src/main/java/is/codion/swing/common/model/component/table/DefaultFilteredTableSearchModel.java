@@ -171,7 +171,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     regularExpressionSearch.addListener(() -> searchStringValue.set(null));
     caseSensitiveSearch.addListener(this::performSearch);
     tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
-    tableModel.addTableDataChangedListener(() -> {
+    tableModel.addDataChangedListener(() -> {
       clearSearchResults();
       performSearch();
     });
