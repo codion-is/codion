@@ -3,9 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -15,10 +12,9 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -33,10 +29,6 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
         T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
-  private static final String DETAIL_MODEL_NOT_FOUND = "Detail model not found: ";
-
-  private final Event<M> detailModelActivatedEvent = Event.event();
-  private final Event<M> detailModelDeactivatedEvent = Event.event();
 
   /**
    * The EntityEditModel instance
@@ -56,12 +48,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Map<M, EntityModelLink<M, E, T>> detailModels = new HashMap<>();
-
-  /**
-   * Holds the active detail models, those that should be updated and filtered according to the selected entity/entities
-   */
-  private final Set<M> activeDetailModels = new HashSet<>();
+  private final Map<M, DetailModelHandler<M, E, T>> detailModels = new HashMap<>();
 
   /**
    * Instantiates a new DefaultEntityModel, without a table model
@@ -136,7 +123,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel) {
+  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     List<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
     if (foreignKeys.isEmpty()) {
@@ -148,25 +135,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyEntityModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
+  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     requireNonNull(foreignKey, "foreignKey");
-    if (this == detailModel) {
-      throw new IllegalArgumentException("A model can not be its own detail model");
-    }
-    if (detailModels.containsKey(detailModel)) {
-      throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
-    }
 
-    return addDetailModel(new DefaultForeignKeyEntityModelLink<>(detailModel, foreignKey));
+    return addDetailModel(new DefaultForeignKeyDetailModelHandler<>(detailModel, foreignKey));
   }
 
   @Override
-  public final <L extends EntityModelLink<M, E, T>> L addDetailModel(L modelLink) {
-    requireNonNull(modelLink, "modelLink");
-    detailModels.put(modelLink.detailModel(), modelLink);
+  public final <H extends DetailModelHandler<M, E, T>> H addDetailModel(H detailModelHandler) {
+    requireNonNull(detailModelHandler, "detailModelHandler");
+    if (this == detailModelHandler.detailModel()) {
+      throw new IllegalArgumentException("A model can not be its own detail model");
+    }
+    if (detailModels.containsKey(detailModelHandler.detailModel())) {
+      throw new IllegalArgumentException("Detail model " + detailModelHandler.detailModel() + " has already been added");
+    }
+    detailModels.put(detailModelHandler.detailModel(), detailModelHandler);
+    detailModelHandler.activeObserver().addListener(() -> detailModelHandler.onSelection(activeEntities()));
 
-    return modelLink;
+    return detailModelHandler;
   }
 
   @Override
@@ -194,61 +182,38 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <L extends EntityModelLink<M, E, T>> L detailModelLink(M detailModel) {
+  public final <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
+      throw new IllegalStateException("Detail model not found: " + detailModel);
     }
 
-    return (L) detailModels.get(detailModel);
-  }
-
-  @Override
-  public final void activateDetailModel(M detailModel) {
-    if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
-    }
-    if (activeDetailModels.add(detailModel)) {
-      detailModelActivatedEvent.onEvent(detailModel);
-    }
-  }
-
-  @Override
-  public final void deactivateDetailModel(M detailModel) {
-    if (!detailModels.containsKey(requireNonNull(detailModel))) {
-      throw new IllegalStateException(DETAIL_MODEL_NOT_FOUND + detailModel);
-    }
-    if (activeDetailModels.remove(detailModel)) {
-      detailModelDeactivatedEvent.onEvent(detailModel);
-    }
+    return (H) detailModels.get(detailModel);
   }
 
   @Override
   public final Collection<M> activeDetailModels() {
-    return unmodifiableCollection(activeDetailModels);
+    return detailModels.values().stream()
+            .filter(DetailModelHandler::isActive)
+            .map(DetailModelHandler::detailModel)
+            .collect(Collectors.toList());
   }
 
   @Override
   public final <T extends M> T detailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    for (M detailModel : detailModels.keySet()) {
-      if (detailModel.getClass().equals(modelClass)) {
-        return (T) detailModel;
-      }
-    }
-
-    throw new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found");
+    return (T) detailModels.keySet().stream()
+            .filter(detailModel -> detailModel.getClass().equals(modelClass))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + this));
   }
 
   @Override
   public final M detailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    for (M detailModel : detailModels.keySet()) {
-      if (detailModel.entityType().equals(entityType)) {
-        return detailModel;
-      }
-    }
-
-    throw new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this);
+    return detailModels.keySet().stream()
+            .filter(detailModel -> detailModel.entityType().equals(entityType))
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));
   }
 
   @Override
@@ -259,29 +224,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels().forEach(EntityModel::savePreferences);
   }
 
-  @Override
-  public final void addDetailModelActivatedListener(EventDataListener<M> listener) {
-    detailModelActivatedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeDetailModelActivatedListener(EventDataListener<M> listener) {
-    detailModelActivatedEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final void addDetailModelDeactivatedListener(EventDataListener<M> listener) {
-    detailModelDeactivatedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeDetailModelDeactivatedListener(EventDataListener<M> listener) {
-    detailModelDeactivatedEvent.removeDataListener(listener);
-  }
-
   private void onMasterSelectionChanged() {
     List<Entity> activeEntities = activeEntities();
-    for (M detailModel : activeDetailModels) {
+    for (M detailModel : activeDetailModels()) {
       detailModels.get(detailModel).onSelection(activeEntities);
     }
   }
@@ -298,14 +243,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void bindEventsInternal() {
-    EventListener onMasterSelectionChanged = this::onMasterSelectionChanged;
-    detailModelActivatedEvent.addListener(onMasterSelectionChanged);
-    detailModelDeactivatedEvent.addListener(onMasterSelectionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     if (containsTableModel()) {
-      tableModel.addSelectionListener(onMasterSelectionChanged);
+      tableModel.addSelectionListener(this::onMasterSelectionChanged);
     }
     else {
       editModel.addEntityListener(entity -> onMasterSelectionChanged());

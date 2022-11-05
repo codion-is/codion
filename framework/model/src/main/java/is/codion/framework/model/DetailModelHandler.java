@@ -3,6 +3,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
@@ -15,12 +16,29 @@ import java.util.Map;
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  */
-public interface EntityModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * @return the detail model
    */
   M detailModel();
+
+  /**
+   * @return an observer for the active state
+   */
+  StateObserver activeObserver();
+
+  /**
+   * @return true if this handler is active
+   */
+  boolean isActive();
+
+  /**
+   * Sets the active state of this handler. Active detail model handlers update and filter
+   * the detail model according to the entity/entities selected in this (the master) model.
+   * @param active true if this handler should be activated
+   */
+  void setActive(boolean active);
 
   /**
    * Called when the selection changes in the master model
@@ -41,7 +59,7 @@ public interface EntityModelLink<M extends EntityModel<M, E, T>, E extends Entit
   default void onUpdate(Map<Key, Entity> updatedEntities) {}
 
   /**
-   * Called when a delete is performed in the master model
+   * Called when delete is performed in the master model
    * @param deletedEntities the deleted entities
    */
   default void onDelete(List<Entity> deletedEntities) {}
