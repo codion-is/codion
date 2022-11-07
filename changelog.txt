@@ -8559,3 +8559,4 @@
   EntityModelLink renamed DetailModelHandler
   EntityModel.addActiveDetailModel() removed, DetailModelHandler.setActive() added
   FilteredTableModel.addTableModelClearedListener() and addTableDataChangedListener() renamed addClearListener() and addDataChangedListener() respectively
+  EntityModel.addActiveDetailModelsListener() added

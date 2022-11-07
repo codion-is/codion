@@ -3,6 +3,8 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -49,6 +51,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
    * Holds the detail EntityModels used by this EntityModel
    */
   private final Map<M, DetailModelHandler<M, E, T>> detailModels = new HashMap<>();
+  private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
 
   /**
    * Instantiates a new DefaultEntityModel, without a table model
@@ -152,7 +155,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalArgumentException("Detail model " + detailModelHandler.detailModel() + " has already been added");
     }
     detailModels.put(detailModelHandler.detailModel(), detailModelHandler);
-    detailModelHandler.activeObserver().addListener(() -> detailModelHandler.onSelection(activeEntities()));
+    detailModelHandler.activeObserver().addListener(() -> activeDetailModelChanged(detailModelHandler));
 
     return detailModelHandler;
   }
@@ -199,6 +202,16 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
+  public final void addActiveDetailModelsListener(EventDataListener<Collection<M>> listener) {
+    activeDetailModelsEvent.addDataListener(listener);
+  }
+
+  @Override
+  public final void removeActiveDetailModelsListener(EventDataListener<Collection<M>> listener) {
+    activeDetailModelsEvent.removeDataListener(listener);
+  }
+
+  @Override
   public final <T extends M> T detailModel(Class<? extends M> modelClass) {
     requireNonNull(modelClass, "modelClass");
     return (T) detailModels.keySet().stream()
@@ -222,6 +235,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       tableModel().savePreferences();
     }
     detailModels().forEach(EntityModel::savePreferences);
+  }
+
+  private void activeDetailModelChanged(DetailModelHandler<M, E, T> detailModelHandler) {
+    activeDetailModelsEvent.onEvent(activeDetailModels());
+    detailModelHandler.onSelection(activeEntities());
   }
 
   private void onMasterSelectionChanged() {

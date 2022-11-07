@@ -4,6 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -157,4 +158,14 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Saves any user preferences
    */
   void savePreferences();
+
+  /**
+   * @param listener notified each time the active detail models change
+   */
+  void addActiveDetailModelsListener(EventDataListener<Collection<M>> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeActiveDetailModelsListener(EventDataListener<Collection<M>> listener);
 }
