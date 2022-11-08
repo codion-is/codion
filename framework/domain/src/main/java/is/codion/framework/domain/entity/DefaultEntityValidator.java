@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -10,6 +11,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
@@ -22,8 +24,8 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link EntityValidator} implementation providing null validation for properties marked as not null,
- * range validation for numerical properties with max and/or min values specified and string length validation
- * based on the specified max length.
+ * item validation for item based properties, range validation for numerical properties with max and/or min values
+ * specified and string length validation based on the specified max length.
  * This Validator can be extended to provide further validation.
  * @see Property.Builder#nullable(boolean)
  * @see Property.Builder#valueRange(Number, Number)
@@ -38,6 +40,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   private static final String ENTITY_PARAM = "entity";
   private static final String ATTRIBUTE_PARAM = "attribute";
   private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
+  private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 
   @Override
   public boolean isValid(Entity entity) {
@@ -71,8 +74,12 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
+    Property<T> property = entity.definition().property(attribute);
     if (!entity.definition().isForeignKeyAttribute(attribute)) {
-      performNullValidation(entity, attribute);
+      performNullValidation(entity, property);
+    }
+    if (property instanceof ItemProperty) {
+      performItemValidation(entity, (ItemProperty<T>) property);
     }
     if (attribute.isNumerical()) {
       performRangeValidation(entity, (Attribute<Number>) attribute);
@@ -82,24 +89,34 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private <T> void performNullValidation(Entity entity, Attribute<T> attribute) throws NullValidationException {
+  private <T> void performNullValidation(Entity entity, Property<T> property) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(attribute, ATTRIBUTE_PARAM);
-    Property<T> property = entity.definition().property(attribute);
+    requireNonNull(property, "property");
+    Attribute<T> attribute = property.attribute();
     if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
       if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
         boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
         boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.definition(), property);
         if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-          throw new NullValidationException(property.attribute(),
+          throw new NullValidationException(attribute,
                   MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
         }
       }
       else {
-        throw new NullValidationException(property.attribute(),
+        throw new NullValidationException(attribute,
                 MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
       }
+    }
+  }
+
+  private <T> void performItemValidation(Entity entity, ItemProperty<T> property) throws ItemValidationException {
+    if (entity.isNull(property.attribute()) && isNullable(entity, property.attribute())) {
+      return;
+    }
+    T value = entity.get(property.attribute());
+    if (!property.isValid(value)) {
+      throw new ItemValidationException(property.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
     }
   }
 

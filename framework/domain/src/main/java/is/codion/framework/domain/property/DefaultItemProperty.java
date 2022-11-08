@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 
 import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -16,6 +17,9 @@ import static java.util.Objects.requireNonNull;
 final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements ItemProperty<T> {
 
   private static final long serialVersionUID = 1;
+
+  private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
+  private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(DefaultItemProperty.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
 
   private final List<Item<T>> items;
   private final Map<T, Item<T>> itemMap;
@@ -50,8 +54,12 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
   @Override
   public String toString(T value) {
     if (!isValid(value)) {
-      //return an empty string for invalid values
-      return "";
+      if (value == null && isNullable()) {
+        //technically valid
+        return "";
+      }
+      //mark invalid values
+      return value + " <" + INVALID_ITEM_SUFFIX + ">";
     }
 
     return item(value).caption();
