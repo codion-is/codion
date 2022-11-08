@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
@@ -39,7 +40,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static is.codion.framework.domain.TestDomain.DOMAIN;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -483,6 +486,17 @@ public class DomainTest {
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
     emp.put(Employee.COMMISSION, 2100d);
     assertThrows(RangeValidationException.class, () -> validator.validate(emp));
+  }
+
+  @Test
+  void itemValidation() throws ValidationException {
+    Map<Attribute<?>, Object> values = new HashMap<>();
+    values.put(Employee.NAME, "Name");
+    values.put(Employee.DEPARTMENT_NO, 1);
+    values.put(Employee.JOB, "CLREK");
+    Entity emp = entities.definition(Employee.TYPE).entity(values);
+    DefaultEntityValidator validator = new DefaultEntityValidator();
+    assertThrows(ItemValidationException.class, () -> validator.validate(emp));
   }
 
   @Test

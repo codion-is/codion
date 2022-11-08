@@ -8523,3 +8523,4 @@
   FilteredTableModel.addTableModelClearedListener() and addTableDataChangedListener() renamed addClearListener() and addDataChangedListener() respectively
   EntityModel.addActiveDetailModelsListener() added
   DefaultItemProperty, now presents invalid item values as is with a suffix indicating that the value is invalid, instead of hiding them behind an empty string
+  DefaultEntityValidator, validation for invalid item values added
