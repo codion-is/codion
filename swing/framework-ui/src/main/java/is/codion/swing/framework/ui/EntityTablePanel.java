@@ -18,6 +18,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -1819,7 +1820,9 @@ public class EntityTablePanel extends JPanel {
     public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       requireNonNull(attribute, "attribute");
       requireNonNull(editModel, "editModel");
-      if (attribute.isString()) {
+      Property<T> property = editModel.entityDefinition().property(attribute);
+      if (!(property instanceof ItemProperty) && attribute.isString()) {
+        //special handling for non-item based String properties, text input panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
