@@ -8525,3 +8525,4 @@
   DefaultItemProperty, now presents invalid item values as is with a suffix indicating that the value is invalid, instead of hiding them behind an empty string
   DefaultEntityValidator, validation for invalid item values added
   EntityTablePanel.UpdateSelectedComponentFactory bug fixed, did not create combo boxes for item properties in case the were String based
+  DefaultFilteredTableModel.DefaultIncludeCondition.test(), garbage reduction, stream replaced with simple loop
