@@ -8527,3 +8527,4 @@
   EntityTablePanel.UpdateSelectedComponentFactory bug fixed, did not create combo boxes for item properties in case the were String based
   DefaultFilteredTableModel.DefaultIncludeCondition.test(), garbage reduction, stream replaced with simple loop
   DefaultColumnFilterModel.include() no longer checks if filter model is enabled, responsibility moved to caller
+  AbstractValue.OriginalValueListener replaces lambda, set() stream replaced with simple loop
