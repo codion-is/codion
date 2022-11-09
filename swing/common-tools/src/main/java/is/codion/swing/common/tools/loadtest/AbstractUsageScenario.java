@@ -4,6 +4,7 @@
 package is.codion.swing.common.tools.loadtest;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -15,11 +16,13 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
 
+  private static final int MAXIMUM_EXCEPTIONS = 50;
+
   private final String name;
   private final int maximumTime;
   private final AtomicInteger successfulRunCount = new AtomicInteger();
   private final AtomicInteger unsuccessfulRunCount = new AtomicInteger();
-  private final List<Exception> exceptions = new ArrayList<>();
+  private final LinkedList<Throwable> exceptions = new LinkedList<>();
 
   /**
    * Instantiates a new UsageScenario using the simple class name as scenario name
@@ -76,7 +79,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final List<Exception> exceptions() {
+  public final List<Throwable> exceptions() {
     synchronized (exceptions) {
       return new ArrayList<>(exceptions);
     }
@@ -110,10 +113,13 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
       perform(application);
       successfulRunCount.incrementAndGet();
     }
-    catch (Exception e) {
+    catch (Throwable e) {
       unsuccessfulRunCount.incrementAndGet();
       synchronized (exceptions) {
         exceptions.add(e);
+        if (exceptions.size() > MAXIMUM_EXCEPTIONS) {
+          exceptions.removeFirst();
+        }
       }
     }
     finally {

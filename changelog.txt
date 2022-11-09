@@ -8563,3 +8563,8 @@
   DefaultItemProperty, now presents invalid item values as is with a suffix indicating that the value is invalid, instead of hiding them behind an empty string
   DefaultEntityValidator, validation for invalid item values added
   EntityTablePanel.UpdateSelectedComponentFactory bug fixed, did not create combo boxes for item properties in case the were String based
+  DefaultFilteredTableModel.DefaultIncludeCondition.test(), garbage reduction, stream replaced with simple loop
+  DefaultColumnFilterModel.include() no longer checks if filter model is enabled, responsibility moved to caller
+  AbstractValue.OriginalValueListener replaces lambda, set() stream replaced with simple loop
+  AbstractUsageScenario memory leak bug fixed, now only keeps the last 50 exceptions
+  AbstractUsageScenario now catches and logs Throwable, instead of just Exception, UsageScenario.exceptions() now returns a list of Throwable

@@ -41,7 +41,7 @@ public interface UsageScenario<T> {
   /**
    * @return any exceptions that have occurred during a run
    */
-  List<Exception> exceptions();
+  List<Throwable> exceptions();
 
   /**
    * Resets the run counters

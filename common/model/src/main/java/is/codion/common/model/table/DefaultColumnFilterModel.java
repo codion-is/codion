@@ -55,14 +55,10 @@ public final class DefaultColumnFilterModel<R, C, T> extends DefaultColumnCondit
 
   @Override
   public boolean include(R row) {
-    return !isEnabled() || include(comparableFunction.apply(row));
+    return include(comparableFunction.apply(row));
   }
 
   boolean include(Comparable<T> comparable) {
-    if (!isEnabled()) {
-      return true;
-    }
-
     switch (getOperator()) {
       case EQUAL:
         return includeEqual(comparable);

@@ -32,7 +32,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   private final boolean notifyOnSet;
   private final Set<Validator<T>> validators = new LinkedHashSet<>(0);
   private final Map<Value<T>, ValueLink<T>> linkedValues = new LinkedHashMap<>(0);
-  private final EventDataListener<T> originalValueListener = this::set;
+  private final EventDataListener<T> originalValueListener = new OriginalValueListener();
 
   private ValueObserver<T> observer;
 
@@ -62,7 +62,9 @@ public abstract class AbstractValue<T> implements Value<T> {
   public final void set(T value) {
     T newValue = value == null ? nullValue : value;
     if (!Objects.equals(get(), newValue)) {
-      validators.forEach(validator -> validator.validate(newValue));
+      for (Validator<T> validator : validators) {
+        validator.validate(newValue);
+      }
       setValue(newValue);
       if (notifyOnSet) {
         notifyValueChange();
@@ -178,5 +180,13 @@ public abstract class AbstractValue<T> implements Value<T> {
    */
   protected final void notifyValueChange() {
     changeEvent.onEvent(get());
+  }
+
+  private final class OriginalValueListener implements EventDataListener<T> {
+
+    @Override
+    public void onEvent(T value) {
+      set(value);
+    }
   }
 }

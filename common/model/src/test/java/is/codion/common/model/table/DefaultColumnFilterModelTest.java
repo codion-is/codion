@@ -19,7 +19,6 @@ public class DefaultColumnFilterModelTest {
     conditionModel.setOperator(Operator.EQUAL);
 
     conditionModel.setEqualValue(null);
-    conditionModel.setEnabled(true);
     assertTrue(conditionModel.include((Comparable<Integer>) null));
     assertFalse(conditionModel.include(1));
 
@@ -119,7 +118,6 @@ public class DefaultColumnFilterModelTest {
     assertTrue(conditionModel.include(8));
     assertTrue(conditionModel.include(11));
 
-    conditionModel.setEnabled(false);
     assertTrue(conditionModel.include((Comparable<Integer>) null));
     assertTrue(conditionModel.include(5));
     assertTrue(conditionModel.include(6));
@@ -130,7 +128,6 @@ public class DefaultColumnFilterModelTest {
   void includeString() {
     DefaultColumnFilterModel<String, String, String> conditionModel = new DefaultColumnFilterModel<>("test", String.class, '%');
     conditionModel.autoEnableState().set(false);
-    conditionModel.setEnabled(true);
 
     conditionModel.setOperator(Operator.EQUAL);
     conditionModel.setEqualValue("hello");

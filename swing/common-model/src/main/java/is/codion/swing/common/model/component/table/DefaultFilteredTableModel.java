@@ -21,6 +21,7 @@ import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -708,13 +709,18 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     private final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters;
 
     private DefaultIncludeCondition(Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters) {
-      this.columnFilters = columnFilters;
+      this.columnFilters = columnFilters == null ? Collections.emptyList() : columnFilters;
     }
 
     @Override
     public boolean test(R item) {
-      return columnFilters == null || columnFilters.stream()
-              .allMatch(columnFilter -> columnFilter.include(item));
+      for (ColumnFilterModel<R, C, ?> filterModel : columnFilters) {
+        if (filterModel.isEnabled() && !filterModel.include(item)) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 
