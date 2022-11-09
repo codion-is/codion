@@ -8528,3 +8528,5 @@
   DefaultFilteredTableModel.DefaultIncludeCondition.test(), garbage reduction, stream replaced with simple loop
   DefaultColumnFilterModel.include() no longer checks if filter model is enabled, responsibility moved to caller
   AbstractValue.OriginalValueListener replaces lambda, set() stream replaced with simple loop
+  AbstractUsageScenario memory leak bug fixed, now only keeps the last 50 exceptions
+  AbstractUsageScenario now catches and logs Throwable, instead of just Exception, UsageScenario.exceptions() now returns a list of Throwable

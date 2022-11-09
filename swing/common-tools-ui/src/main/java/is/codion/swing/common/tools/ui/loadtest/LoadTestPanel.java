@@ -412,8 +412,7 @@ public final class LoadTestPanel<T> extends JPanel {
     @Override
     public void actionPerformed(ActionEvent e) {
       exceptionsTextArea().replaceRange("", 0, exceptionsTextArea().getDocument().getLength());
-      List<Exception> exceptions = scenario().exceptions();
-      for (Exception exception : exceptions) {
+      for (Throwable exception : scenario().exceptions()) {
         exceptionsTextArea().append(exception.getMessage());
         exceptionsTextArea().append(Separators.LINE_SEPARATOR);
         exceptionsTextArea().append(Separators.LINE_SEPARATOR);
