@@ -21,8 +21,10 @@ public interface ColumnFilterModel<R, C, T> extends ColumnConditionModel<C, T> {
   void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
 
   /**
+   * Returns true if the criteria in this filter model accepts the given input row.
+   * Note that this is independent of the enabled state of this model.
    * @param row the row
-   * @return true if the row should be included or if this model is not enabled
+   * @return true if the row should be included according to this filter model criteria
    */
   boolean include(R row);
 }
