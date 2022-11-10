@@ -6,8 +6,8 @@ package is.codion.framework.model.test;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.DefaultEntityApplicationModel;
-import is.codion.framework.model.DefaultEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityEditModel;
@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @param <TableModel> the {@link EntityTableModel} type
  */
 public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
-        EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
+        EditModel extends AbstractEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));

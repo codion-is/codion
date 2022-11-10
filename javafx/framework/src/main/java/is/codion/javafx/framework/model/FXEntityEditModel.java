@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.DefaultEntityEditModel;
+import is.codion.framework.model.AbstractEntityEditModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -23,7 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JavaFX implementation of {@link is.codion.framework.model.EntityEditModel}
  */
-public class FXEntityEditModel extends DefaultEntityEditModel {
+public class FXEntityEditModel extends AbstractEntityEditModel {
 
   private final Map<ForeignKey, FXEntityListModel> foreignKeyListModels = new HashMap<>();
 
@@ -31,7 +31,7 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link FXEntityEditModel} based on the given entity type
-   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public FXEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {

@@ -19,7 +19,7 @@ import static java.util.stream.Collectors.toList;
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  */
-public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends DefaultEntityEditModel,
+public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
         T extends EntityTableModel<E>> extends DefaultDetailModelHandler<M, E, T> implements ForeignKeyDetailModelHandler<M, E, T> {
 
   private final ForeignKey foreignKey;
