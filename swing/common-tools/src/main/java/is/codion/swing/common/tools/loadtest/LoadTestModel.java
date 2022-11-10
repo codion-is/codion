@@ -114,8 +114,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
    * @param loginDelayFactor the value with which to multiply the think time when delaying login
    * @param applicationBatchSize the number of applications to add in a batch
    */
-  public LoadTestModel(User user, Collection<? extends UsageScenario<T>> usageScenarios,
-                       int maximumThinkTime, int loginDelayFactor, int applicationBatchSize) {
+  protected LoadTestModel(User user, Collection<? extends UsageScenario<T>> usageScenarios,
+                          int maximumThinkTime, int loginDelayFactor, int applicationBatchSize) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
     }

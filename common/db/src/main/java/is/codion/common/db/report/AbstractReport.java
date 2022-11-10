@@ -24,7 +24,7 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
    * Instantiates a new AbstractReport.
    * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}.
    */
-  public AbstractReport(String reportPath) {
+  protected AbstractReport(String reportPath) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
   }
 

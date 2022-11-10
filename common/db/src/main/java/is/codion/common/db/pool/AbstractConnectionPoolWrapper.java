@@ -38,7 +38,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @param user the connection pool user
    * @param poolDataSource the DataSource
    */
-  public AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource poolDataSource) {
+  protected AbstractConnectionPoolWrapper(ConnectionFactory connectionFactory, User user, DataSource poolDataSource) {
     this.connectionFactory = requireNonNull(connectionFactory, "connectionFactory");
     this.user = requireNonNull(user, "user");
     this.poolDataSource = (DataSource) newProxyInstance(DataSource.class.getClassLoader(),

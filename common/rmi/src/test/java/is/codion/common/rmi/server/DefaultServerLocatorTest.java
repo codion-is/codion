@@ -54,7 +54,7 @@ public class DefaultServerLocatorTest {
 
   private class TestServer extends AbstractServer<Remote, ServerAdmin> {
 
-    public TestServer() throws RemoteException {
+    private TestServer() throws RemoteException {
       super(configuration);
     }
 

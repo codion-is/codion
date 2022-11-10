@@ -30,8 +30,8 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param tableConditionModel the table condition model
    * @param tableColumns the table columns
    */
-  public AbstractEntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
-                                           Collection<TableColumn> tableColumns) {
+  protected AbstractEntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
+                                              Collection<TableColumn> tableColumns) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
     this.tableColumns = requireNonNull(tableColumns);
     bindEvents();

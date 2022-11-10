@@ -27,7 +27,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   /**
    * Instantiates a new UsageScenario using the simple class name as scenario name
    */
-  public AbstractUsageScenario() {
+  protected AbstractUsageScenario() {
     this.name = getClass().getSimpleName();
     this.maximumTime = 0;
   }
@@ -36,7 +36,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * Instantiates a new UsageScenario with the given name
    * @param name the scenario name
    */
-  public AbstractUsageScenario(String name) {
+  protected AbstractUsageScenario(String name) {
     this(name, 0);
   }
 
@@ -45,7 +45,7 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * @param name the scenario name
    * @param maximumTimeMs the maximum time in milliseconds this scenario should take to run
    */
-  public AbstractUsageScenario(String name, int maximumTimeMs) {
+  protected AbstractUsageScenario(String name, int maximumTimeMs) {
     this.name = requireNonNull(name, "name");
     if (maximumTimeMs < 0) {
       throw new IllegalArgumentException("Maximum time in ms must be a positive integer");
