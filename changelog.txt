@@ -8568,3 +8568,5 @@
   AbstractValue.OriginalValueListener replaces lambda, set() stream replaced with simple loop
   AbstractUsageScenario memory leak bug fixed, now only keeps the last 50 exceptions
   AbstractUsageScenario now catches and logs Throwable, instead of just Exception, UsageScenario.exceptions() now returns a list of Throwable
+  Most Abstract class constructors now protected
+  DefaultEntityEditModel renamed AbstractEntityEditModel, constructors now protected

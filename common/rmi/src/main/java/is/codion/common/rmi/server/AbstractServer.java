@@ -76,7 +76,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param configuration the configuration
    * @throws RemoteException in case of an exception
    */
-  public AbstractServer(ServerConfiguration configuration) throws RemoteException {
+  protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").serverPort(),
             configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));

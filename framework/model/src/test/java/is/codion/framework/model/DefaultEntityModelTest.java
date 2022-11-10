@@ -51,7 +51,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     return null;
   }
 
-  public static final class TestEntityEditModel extends DefaultEntityEditModel {
+  public static final class TestEntityEditModel extends AbstractEntityEditModel {
 
     public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);

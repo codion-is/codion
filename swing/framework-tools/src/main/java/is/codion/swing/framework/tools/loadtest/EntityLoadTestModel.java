@@ -64,7 +64,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
+  protected EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
     super(user, usageScenarios, LOAD_TEST_THINKTIME.get(), LOAD_TEST_LOGIN_DELAY.get(),
             LOAD_TEST_BATCH_SIZE.get());
     EntityApplicationModel.SCHEDULE_CONNECTION_VALIDATION.set(false);

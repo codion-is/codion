@@ -40,7 +40,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultEntityEditModelTest {
+public final class AbstractEntityEditModelTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -535,7 +535,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   void derivedProperties() {
-    EntityEditModel editModel = new DefaultEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider()) {
+    EntityEditModel editModel = new AbstractEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider()) {
       @Override
       public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
       @Override
@@ -656,9 +656,9 @@ public final class DefaultEntityEditModelTest {
     }
   }
 
-  private static final class TestEntityEditModel extends DefaultEntityEditModel {
+  private static final class TestEntityEditModel extends AbstractEntityEditModel {
 
-    public TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
       setDefaultValueSupplier(Employee.HIREDATE, LocalDate::now);
     }

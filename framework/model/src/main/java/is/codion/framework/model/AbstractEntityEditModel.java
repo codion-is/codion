@@ -48,9 +48,9 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default {@link EntityEditModel} implementation
  */
-public abstract class DefaultEntityEditModel implements EntityEditModel {
+public abstract class AbstractEntityEditModel implements EntityEditModel {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
   private static final String ENTITIES = "entities";
   private static final String PROPERTY = "property";
@@ -141,22 +141,22 @@ public abstract class DefaultEntityEditModel implements EntityEditModel {
   private boolean postEditEvents = POST_EDIT_EVENTS.get();
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
+   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
-  public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+  protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).validator());
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+   * Instantiates a new {@link AbstractEntityEditModel} based on the given entity type.
+   * @param entityType the type of the entity to base this {@link AbstractEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public DefaultEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                EntityValidator validator) {
+  protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                    EntityValidator validator) {
     this.entity = connectionProvider.entities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.validator = validator;

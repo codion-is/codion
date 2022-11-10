@@ -22,11 +22,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * A central application model class.
  * @param <M> the type of {@link DefaultEntityModel} this application model is based on
- * @param <E> the type of {@link DefaultEntityEditModel} used by this {@link EntityModel}
+ * @param <E> the type of {@link AbstractEntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
 public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>,
-        E extends DefaultEntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
+        E extends AbstractEntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 30;
 

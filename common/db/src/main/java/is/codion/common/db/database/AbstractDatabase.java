@@ -53,7 +53,7 @@ public abstract class AbstractDatabase implements Database {
    * Instantiates a new AbstractDatabase.
    * @param url the jdbc url
    */
-  public AbstractDatabase(String url) {
+  protected AbstractDatabase(String url) {
     this.url = requireNonNull(url, "url");
   }
 

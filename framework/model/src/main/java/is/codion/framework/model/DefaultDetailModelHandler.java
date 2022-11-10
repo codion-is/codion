@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
  * @see #onUpdate(Map)
  * @see #onDelete(List)
  */
-public class DefaultDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends DefaultEntityEditModel,
+public class DefaultDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
         T extends EntityTableModel<E>> implements DetailModelHandler<M, E, T> {
 
   private final M detailModel;

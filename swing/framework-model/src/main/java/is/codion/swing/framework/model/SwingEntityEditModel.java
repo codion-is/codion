@@ -16,7 +16,7 @@ import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.DefaultEntityEditModel;
+import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
@@ -30,14 +30,14 @@ import static java.util.Objects.requireNonNull;
 /**
  * A Swing implementation of {@link EntityEditModel}.
  */
-public class SwingEntityEditModel extends DefaultEntityEditModel {
+public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
   private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   public SwingEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -46,7 +46,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
 
   /**
    * Instantiates a new {@link SwingEntityEditModel} based on the given entity type.
-   * @param entityType the type of the entity to base this {@link DefaultEntityEditModel} on
+   * @param entityType the type of the entity to base this {@link SwingEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */

@@ -24,10 +24,10 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default EntityModel implementation.
  * @param <M> the type of {@link DefaultEntityModel} used for detail models
- * @param <E> the type of {@link DefaultEntityEditModel} used by this {@link EntityModel}
+ * @param <E> the type of {@link AbstractEntityEditModel} used by this {@link EntityModel}
  * @param <T> the type of {@link EntityTableModel} used by this {@link EntityModel}
  */
-public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends DefaultEntityEditModel,
+public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
         T extends EntityTableModel<E>> implements EntityModel<M, E, T> {
 
   private static final String DETAIL_MODEL_PARAMETER = "detailModel";
