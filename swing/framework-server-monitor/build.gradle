@@ -33,24 +33,23 @@ mainClassName = "is.codion.swing.framework.server.monitor.ui.EntityServerMonitor
 
 applicationDistribution.from(files(
         '../../framework/server/src/main/config/truststore.jks',
-        '../../framework/server/src/main/config/all_permissions.policy',
-        'src/main/config/logback.xml',
-        'src/main/config/server_monitor.config')) {
+        'src/main/config/logback.xml')) {
     into("config")
 }
 
 applicationDefaultJvmArgs = [
+        "-Dcodion.server.hostname=${serverHostName}",
+        "-Dcodion.server.admin.user=scott:tiger",
         "-Dcodion.client.trustStore=../config/truststore.jks",
         "-Dcodion.client.trustStorePassword=crappypass",
-        "-Djava.security.policy=../config/all_permissions.policy",
-        "-Dcodion.configurationFile=../config/server_monitor.config"
+        "-Dlogback.configurationFile=../config/logback.xml"
 ]
 
 task runServerMonitor(type: ModularJavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
-    mainClass = mainClassName
-    mainModule = moduleName
+    mainClass.set(mainClassName)
+    mainModule.set(moduleName)
     systemProperties = [
             'codion.server.hostname'          : "${serverHostName}",
             'codion.server.admin.user'        : 'scott:tiger',

@@ -1,9 +1,0 @@
-//the default permissions to use when generating a security policy with https://github.com/pro-grade/pro-grade
-grant {
-  permission java.io.FilePermission "/tmp/*", "write,delete";
-  permission java.io.FilePermission "../lib/-", "read";
-  permission java.io.FilePermission "../config/-", "read";
-  permission java.util.PropertyPermission "*", "read";
-  permission java.util.PropertyPermission "codion.*", "write";
-  permission java.net.SocketPermission "127.0.0.1:*", "accept,resolve";
-};

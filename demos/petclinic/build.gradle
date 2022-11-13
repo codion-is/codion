@@ -55,8 +55,8 @@ application {
 
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -66,8 +66,8 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRMI(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
@@ -78,8 +78,8 @@ task runClientRMI(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',

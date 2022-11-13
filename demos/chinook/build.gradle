@@ -69,8 +69,8 @@ compileTestJava {
 }
 
 application {
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
 }
 
 task buildReports(dependsOn: 'compileJava') {
@@ -113,8 +113,8 @@ jar {
 
 task runClientLocal(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -125,8 +125,8 @@ task runClientLocal(type: ModularJavaExec) {
 
 task runClientRMI(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -138,8 +138,8 @@ task runClientRMI(type: ModularJavaExec) {
 
 task runClientHttp(type: ModularJavaExec) {
     group 'application'
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass.set(execMainClass)
+    mainModule.set(moduleName)
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'http',
@@ -150,8 +150,8 @@ task runClientHttp(type: ModularJavaExec) {
 
 task runLoadTestRMI(type: ModularJavaExec) {
     group 'application'
-    mainClass = execLoadTestMainClass
-    mainModule = moduleName
+    mainClass.set(execLoadTestMainClass)
+    mainModule.set(moduleName)
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
@@ -163,8 +163,8 @@ task runLoadTestRMI(type: ModularJavaExec) {
 
 task runLoadTestHttp(type: ModularJavaExec) {
     group 'application'
-    mainClass = execLoadTestMainClass
-    mainModule = moduleName
+    mainClass.set(execLoadTestMainClass)
+    mainModule.set(moduleName)
     jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
     systemProperties = [
             'codion.client.connectionType': 'http',
