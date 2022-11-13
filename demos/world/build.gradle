@@ -77,25 +77,25 @@ jar {
 }
 
 startScripts {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 clientRMIScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 clientHttpScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientLocal {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientRMI {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientHttp {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }

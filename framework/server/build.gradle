@@ -94,7 +94,7 @@ applicationDefaultJvmArgs = [
 task runServer(type: JavaExec, dependsOn: createServerKeystore) {
     group 'application'
     classpath = configurations.serverRuntime
-    mainClass = mainClassName
+    mainClass.set(mainClassName)
     maxHeapSize = '256m'
     systemProperties = [
             'codion.db.url'                             : 'jdbc:h2:mem:h2db',

@@ -76,32 +76,32 @@ jar {
 }
 
 startScripts {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 clientRMIScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 clientHttpScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 loadTestRMIScript {
-    mainClass = execLoadTestMainClass
+    mainClass.set(execLoadTestMainClass)
 }
 
 loadTestHttpScript {
-    mainClass = execLoadTestMainClass
+    mainClass.set(execLoadTestMainClass)
 }
 
 runClientLocal {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 task runClientLocalFX(type: JavaExec) {
     group 'application'
-    mainClass = 'is.codion.framework.demos.empdept.javafx.EmpDeptFX'
+    mainClass.set('is.codion.framework.demos.empdept.javafx.EmpDeptFX')
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -111,17 +111,17 @@ task runClientLocalFX(type: JavaExec) {
 }
 
 runClientRMI {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientHttp {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runLoadTestRMI {
-    mainClass = execLoadTestMainClass
+    mainClass.set(execLoadTestMainClass)
 }
 
 runLoadTestHttp {
-    mainClass = execLoadTestMainClass
+    mainClass.set(execLoadTestMainClass)
 }

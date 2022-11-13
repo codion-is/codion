@@ -52,7 +52,7 @@ applicationDistribution.into('config') {
 
 task runDatabaseExplorerH2(type: JavaExec) {
     group 'application'
-    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.db.url'        : 'jdbc:h2:mem:h2db',
@@ -67,7 +67,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
 
 //task runDatabaseExplorerOracle(type: JavaExec) {
 //    group 'application'
-//    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+//    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
 //            'codion.db.url': 'jdbc:oracle:thin:@localhost:1521:sid'
@@ -76,7 +76,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
 
 //task runDatabaseExplorerPostgres(type: JavaExec) {
 //    group 'application'
-//    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+//    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
 //            'codion.db.url': 'jdbc:postgresql://localhost:5432/postgres'
@@ -85,7 +85,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
 
 //task runDatabaseExplorerMariaDB(type: JavaExec) {
 //    group 'application'
-//    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+//    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath
 //    systemProperties = [
 //            'codion.db.url': 'jdbc:mariadb://localhost:3306/mariadb'

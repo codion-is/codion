@@ -34,7 +34,7 @@ test {
 }
 
 startScripts {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
@@ -43,15 +43,15 @@ startScripts {
 }
 
 clientRMIScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 clientHttpScript {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientLocal {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -65,9 +65,9 @@ runClientLocal {
 }
 
 runClientRMI {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
 
 runClientHttp {
-    mainClass = execMainClass
+    mainClass.set(execMainClass)
 }
