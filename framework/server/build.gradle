@@ -28,8 +28,6 @@ dependencies {
     serverRuntime project(':codion-plugin-hikari-pool')
     serverRuntime project(':codion-plugin-logback-proxy')
 
-//    runtimeOnly 'net.sourceforge.pro-grade:pro-grade:1.1.2-SNAPSHOT'
-
     serverRuntime project(path: ':codion-demos-empdept', configuration: 'domain')
     serverRuntime project(path: ':codion-demos-chinook', configuration: 'domain')
     serverRuntime project(path: ':codion-demos-petclinic', configuration: 'domain')
@@ -90,17 +88,7 @@ distributions {
 applicationDefaultJvmArgs = [
         '-Xmx256m',
         '-Dcodion.configurationFile=../config/h2_embedded.config',
-        '-Dlogback.configurationFile=../config/logback.xml',
-        '-Djava.security.policy=../config/codion_server.policy'
-]
-
-def applicationGenerateSecurityPolicyJvmArgs = [
-        '-Xmx256m',
-        '-Dcodion.configurationFile=../config/h2_embedded.config',
-        '-Dlogback.configurationFile=../config/logback.xml',
-        '-Djava.security.manager=net.sourceforge.prograde.sm.PolicyFileGeneratorJSM',
-        '-Djava.security.policy=../config/default.policy',
-        '-Dprograde.generated.policy=../config/generated.policy'
+        '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
 task runServer(type: JavaExec, dependsOn: createServerKeystore) {
@@ -123,7 +111,6 @@ task runServer(type: JavaExec, dependsOn: createServerKeystore) {
             'javax.net.ssl.keyStore'                    : 'src/main/config/keystore.jks',
             'javax.net.ssl.keyStorePassword'            : 'crappypass',
             'java.rmi.server.hostname'                  : "${serverHostName}",
-            'logback.configurationFile'                 : 'src/main/config/logback.xml',
-            'java.security.policy'                      : 'src/main/config/codion_server.policy'
+            'logback.configurationFile'                 : 'src/main/config/logback.xml'
     ]
 }
