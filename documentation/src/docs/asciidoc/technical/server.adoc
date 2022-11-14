@@ -79,22 +79,6 @@ include::{dir-source}/src/main/config/serialization-whitelist.txt[]
 ----
 ====
 
-=== Security Policy
-
-Security policy generated with https://github.com/pro-grade/pro-grade[ProGrade].
-
-Requires this fix:
-https://github.com/pro-grade/pro-grade/issues/29#issuecomment-592956858[Issue#29]
-
-.Demo security policy
-[%collapsible]
-====
-[source]
-----
-include::{dir-source}/src/main/config/codion_server.policy[]
-----
-====
-
 [#_server_configuration]
 == Configuration
 
