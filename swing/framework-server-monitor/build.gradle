@@ -36,11 +36,11 @@ applicationDistribution.from(files(
 }
 
 applicationDefaultJvmArgs = [
-        "-Dcodion.server.hostname=${serverHostName}",
-        "-Dcodion.server.admin.user=scott:tiger",
-        "-Dcodion.client.trustStore=../config/truststore.jks",
-        "-Dcodion.client.trustStorePassword=crappypass",
-        "-Dlogback.configurationFile=../config/logback.xml"
+        '-Dcodion.server.hostname=' + getProperty("serverHostName"),
+        '-Dcodion.server.admin.user=scott:tiger',
+        '-Dcodion.client.trustStore=../config/truststore.jks',
+        '-Dcodion.client.trustStorePassword=crappypass',
+        '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
 task runServerMonitor(type: JavaExec) {
