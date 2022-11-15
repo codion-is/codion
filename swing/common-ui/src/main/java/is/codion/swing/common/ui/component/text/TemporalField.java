@@ -12,10 +12,12 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
 import java.text.ParseException;
+import java.time.DateTimeException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
@@ -162,7 +164,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
       super(temporalClass, linkedValue);
       this.temporalClass = temporalClass;
       this.dateTimePattern = requireNonNull(dateTimePattern);
-      this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern);
+      this.dateTimeFormatter = DateTimeFormatter.ofPattern(dateTimePattern).withZone(ZoneId.systemDefault());
       this.mask = createMask(dateTimePattern);
       this.dateTimeParser = createDateTimeParser(temporalClass);
     }
@@ -280,7 +282,19 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
     @Override
     public OffsetDateTime parse(CharSequence text, DateTimeFormatter formatter) {
-      return OffsetDateTime.parse(text, formatter);
+      try {
+        return OffsetDateTime.parse(text, formatter);
+      }
+      catch (DateTimeException e) {
+        //assuming 'Unable to obtain OffsetDateTime from TemporalAccessor', let's fall back
+        //to LocalDateTime with the zone from the formatter or system default if none is specified
+        ZoneId zone = formatter.getZone();
+        if (zone == null) {
+          zone = ZoneId.systemDefault();
+        }
+
+        return LocalDateTime.parse(text, formatter).atZone(zone).toOffsetDateTime();
+      }
     }
   }
 }
