@@ -839,24 +839,14 @@ public class EntityTablePanel extends JPanel {
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
   public void onReferentialIntegrityException(ReferentialIntegrityException exception, List<Entity> entities) {
-    WaitCursor.show(this);
-    try {
-      if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-        Map<EntityType, Collection<Entity>> dependencies =
-                tableModel.connectionProvider().connection().selectDependencies(entities);
-        showDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
-                MESSAGES.getString("unknown_dependent_records"));
-      }
-      else {
-        onException(exception);
-      }
+    requireNonNull(exception);
+    requireNonNull(entities);
+    if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
+      showDependenciesDialog(entities, tableModel.connectionProvider(),
+              this, MESSAGES.getString("unknown_dependent_records"));
     }
-    catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      onException(e);
-    }
-    finally {
-      WaitCursor.hide(this);
+    else {
+      onException(exception);
     }
   }
 
