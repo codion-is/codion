@@ -6,6 +6,9 @@ package is.codion.dbms.postgresql;
 import is.codion.common.db.database.AbstractDatabase;
 
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
@@ -14,16 +17,34 @@ import static java.util.Objects.requireNonNull;
  */
 final class PostgreSQLDatabase extends AbstractDatabase {
 
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(PostgreSQLDatabase.class.getName());
+
+  private static final Map<String, String> ERROR_CODE_MAP = new HashMap<>();
+
   private static final String INVALID_PASS = "28P01";
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
   private static final String FOREIGN_KEY_VIOLATION = "23503";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
   private static final String TIMEOUT_ERROR = "57014";//query_canceled
+  private static final String NULL_VALUE_ERROR = "23502";
+  private static final String CHECK_CONSTRAINT_ERROR = "23514";
+  private static final String VALUE_TOO_LARGE_ERROR = "22001";
+  private static final String MISSING_PRIVS_ERROR = "42501";
 
   private static final String JDBC_URL_PREFIX = "jdbc:postgresql://";
   private static final int MAXIMUM_STATEMENT_PARAMETERS = 65_535;
 
   static final String CHECK_QUERY = "select 1";
+
+  static {
+    ERROR_CODE_MAP.put(UNIQUE_CONSTRAINT_ERROR, MESSAGES.getString("unique_key_error"));
+    ERROR_CODE_MAP.put(FOREIGN_KEY_VIOLATION, MESSAGES.getString("foreign_key_violation"));
+    ERROR_CODE_MAP.put(NULL_VALUE_ERROR, MESSAGES.getString("null_value_error"));
+    ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_VIOLATION, MESSAGES.getString("integrity_constraint_error"));
+    ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, MESSAGES.getString("check_constraint_error"));
+    ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, MESSAGES.getString("missing_privileges_error"));
+    ERROR_CODE_MAP.put(VALUE_TOO_LARGE_ERROR, MESSAGES.getString("value_too_large_for_column_error"));
+  }
 
   private final boolean nowait;
 
@@ -114,5 +135,22 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public String checkConnectionQuery() {
     return CHECK_QUERY;
+  }
+
+  @Override
+  public String errorMessage(SQLException exception) {
+    String sqlState = exception.getSQLState();
+    if (NULL_VALUE_ERROR.equals(sqlState)) {
+      //null value in column "column_name" of relation "table_name" violates not-null constraint
+      String exceptionMessage = exception.getMessage();
+      String columnName = exceptionMessage.substring(exceptionMessage.indexOf("column \"") + 8, exceptionMessage.indexOf("\" of relation"));
+
+      return MESSAGES.getString("value_missing") + ": " + columnName;
+    }
+    if (ERROR_CODE_MAP.containsKey(exception.getSQLState())) {
+      return ERROR_CODE_MAP.get(exception.getSQLState());
+    }
+
+    return super.errorMessage(exception);
   }
 }

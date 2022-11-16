@@ -8573,3 +8573,4 @@
   TemporalField.OffsetDateTimeParser bug fixed, now falls back to LocalDateTime if offset is not found in the source string
   EntityTablePanel.onReferentialIntegrityException() simplified, now same as in EntityEditPanel
   DatabaseException, sqlState added, transient
+  PostgreSQLDatabase, i18n error messages added for the most common errors
