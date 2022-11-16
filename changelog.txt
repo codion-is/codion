@@ -8571,3 +8571,5 @@
   Most Abstract class constructors now protected
   DefaultEntityEditModel renamed AbstractEntityEditModel, constructors now protected
   TemporalField.OffsetDateTimeParser bug fixed, now falls back to LocalDateTime if offset is not found in the source string
+  EntityTablePanel.onReferentialIntegrityException() simplified, now same as in EntityEditPanel
+  DatabaseException, sqlState added, transient

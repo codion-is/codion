@@ -23,6 +23,12 @@ public class DatabaseException extends Exception {
   private final transient int errorCode;
 
   /**
+   * The underlying sql state, if any, transient so that it's not
+   * available client side if running in a server/client environment
+   */
+  private final transient String sqlState;
+
+  /**
    * Constructs a new DatabaseException instance
    * @param message the exception message
    */
@@ -39,6 +45,7 @@ public class DatabaseException extends Exception {
     super(message);
     this.statement = statement;
     this.errorCode = -1;
+    this.sqlState = null;
   }
 
   /**
@@ -69,10 +76,12 @@ public class DatabaseException extends Exception {
     this.statement = statement;
     if (cause != null) {
       errorCode = cause.getErrorCode();
+      sqlState = cause.getSQLState();
       setStackTrace(cause.getStackTrace());
     }
     else {
       errorCode = -1;
+      sqlState = null;
     }
   }
 
@@ -92,6 +101,15 @@ public class DatabaseException extends Exception {
    */
   public final int errorCode() {
     return errorCode;
+  }
+
+  /**
+   * Returns the underlying sql state, note that this is only available when running with
+   * a local database connection.
+   * @return the underlying sql state, null if not available
+   */
+  public final String sqlState() {
+    return sqlState;
   }
 
   @Override
