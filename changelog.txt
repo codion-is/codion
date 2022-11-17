@@ -8536,3 +8536,5 @@
   EntityTablePanel.onReferentialIntegrityException() simplified, now same as in EntityEditPanel
   DatabaseException, sqlState added, transient
   PostgreSQLDatabase, i18n error messages added for the most common errors
+  EntitySearchField.TableSelectionProvider now uses EntityTableCellRenderer
+  EntityTablePanel.configureColumn() no longer sets resizable to true, since it's the default

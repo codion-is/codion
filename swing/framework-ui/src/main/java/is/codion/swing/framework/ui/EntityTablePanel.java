@@ -1567,7 +1567,6 @@ public class EntityTablePanel extends JPanel {
     Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
-    column.setResizable(true);
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 

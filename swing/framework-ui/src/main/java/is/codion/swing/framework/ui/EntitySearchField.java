@@ -12,6 +12,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
@@ -51,6 +52,7 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.UIManager;
+import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -573,6 +575,7 @@ public final class EntitySearchField extends JTextField {
               .modifiers(InputEvent.CTRL_DOWN_MASK)
               .action(Control.control(() -> table.searchField().requestFocusInWindow()))
               .enable(table);
+      tableModel.columnModel().columns().forEach(this::configureColumn);
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
       tableModel.columnModel().setVisibleColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
@@ -624,6 +627,11 @@ public final class EntitySearchField extends JTextField {
         searchModel.setSelectedEntities(tableModel.selectionModel().getSelectedItems());
         Utilities.disposeParentWindow(table);
       };
+    }
+
+    private <T> void configureColumn(TableColumn column) {
+      Property<T> property = table.getModel().entityDefinition().property((Attribute<T>) column.getIdentifier());
+      column.setCellRenderer(EntityTableCellRenderer.builder(table.getModel(), property).build());
     }
   }
 
