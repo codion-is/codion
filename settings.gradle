@@ -165,7 +165,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            version('slf4j.api', '2.0.3')
+            version('slf4j.api', '2.0.4')
             version('logback', '1.4.4')
             version('h2', '2.1.214')
             version('json', '20220924')
@@ -184,7 +184,7 @@ dependencyResolutionManagement {
             version('hikari', '5.0.1')
             version('jackson', '2.14.0')
             version('log4j', '2.19.0')
-            version('tomcat', '10.1.1')
+            version('tomcat', '10.1.2')
             //jasperreports
             version('jasperreports', '6.20.0')
             version('commons.logging', '1.2')
