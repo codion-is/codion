@@ -54,29 +54,13 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
   protected final void setValue(T value) {
     if (SwingUtilities.isEventDispatchThread()) {
       setComponentValue(value);
+      return;
     }
-    else {
-      try {
-        SwingUtilities.invokeAndWait(() -> setComponentValue(value));
-      }
-      catch (InterruptedException ex) {
-        Thread.currentThread().interrupt();
-        throw new RuntimeException(ex);
-      }
-      catch (InvocationTargetException e) {
-        Throwable cause = e.getCause();
-        if (cause instanceof RuntimeException) {
-          throw (RuntimeException) cause;
-        }
-
-        throw new RuntimeException(cause);
-      }
-      catch (RuntimeException e) {
-        throw e;
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+    try {
+      SwingUtilities.invokeAndWait(() -> setComponentValue(value));
+    }
+    catch (Exception ex) {
+      handleInvokeAndWaitException(ex);
     }
   }
 
@@ -93,4 +77,19 @@ public abstract class AbstractComponentValue<T, C extends JComponent> extends Ab
    * @see #component()
    */
   protected abstract void setComponentValue(T value);
+
+  private static void handleInvokeAndWaitException(Exception exception) {
+    Throwable cause = exception;
+    if (exception instanceof InvocationTargetException) {
+      cause = exception.getCause();
+    }
+    if (cause instanceof InterruptedException) {
+      Thread.currentThread().interrupt();
+    }
+    if (cause instanceof RuntimeException) {
+      throw (RuntimeException) cause;
+    }
+
+    throw new RuntimeException(cause);
+  }
 }
