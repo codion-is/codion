@@ -8540,3 +8540,4 @@
   EntityTablePanel.configureColumn() no longer sets resizable to true, since it's the default
   FXEntityEditModel.removeForeignKeyValues() implemented properly
   FrameworkIcons.SETTINGS icon added, used in EntitySearchField popup menu
+  FilteredTable, EntitySearchField, i18n capitalization changed
