@@ -8539,3 +8539,4 @@
   EntitySearchField.TableSelectionProvider now uses EntityTableCellRenderer
   EntityTablePanel.configureColumn() no longer sets resizable to true, since it's the default
   FXEntityEditModel.removeForeignKeyValues() implemented properly
+  FrameworkIcons.SETTINGS icon added, used in EntitySearchField popup menu

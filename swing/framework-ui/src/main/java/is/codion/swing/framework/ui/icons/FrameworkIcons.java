@@ -122,6 +122,11 @@ public interface FrameworkIcons extends Logos {
   ImageIcon dependencies();
 
   /**
+   * @return icon for a 'settings' action.
+   */
+  ImageIcon settings();
+
+  /**
    * @return the logo icon.
    */
   ImageIcon logo();

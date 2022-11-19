@@ -22,6 +22,7 @@ enum FrameworkIkons implements Ikon {
   SUMMARY("fr-summary", '\u03a3'),
   EDIT_PANEL("fr-edit-panel", '\uf168'),
   DEPENDENCIES("fr-dependencies", '\uf1ad'),
+  SETTINGS("fr-settings", '\uf214'),
   LOGO("fr-logo", '\uf208');
 
   private final String description;
