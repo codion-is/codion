@@ -5897,7 +5897,7 @@
   common.db.connection, database and result packages added
   EntityEditObserver, notify methods removed
   DefaultEntityEditModel now initializes persistent values in constructor, some refactoring
-  DefaultEntityEditModel.removeForeignKeyValues() now clears all related references, as per todo
+  DefaultEntityEditModel.removeForeignKeyValues() now clears all related references
   DefaultEntityEditModel, insert, update and delete now start by throwing exceptions if action is not enabled
   DefaultEntityEditModel bug fixed, validation now only uses edit model validator for the underlying entity type, uses the one from the domain model for other types
   EntityEditObserver removed
@@ -8538,3 +8538,4 @@
   PostgreSQLDatabase, i18n error messages added for the most common errors
   EntitySearchField.TableSelectionProvider now uses EntityTableCellRenderer
   EntityTablePanel.configureColumn() no longer sets resizable to true, since it's the default
+  FXEntityEditModel.removeForeignKeyValues() implemented properly
