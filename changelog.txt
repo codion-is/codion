@@ -8541,3 +8541,4 @@
   FXEntityEditModel.removeForeignKeyValues() implemented properly
   FrameworkIcons.SETTINGS icon added, used in EntitySearchField popup menu
   FilteredTable, EntitySearchField, i18n capitalization changed
+  EntityApplicationPanel.createSettingsControls() removed, unused
