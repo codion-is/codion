@@ -612,16 +612,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return the Controls specifying the items in the 'Settings' menu
-   */
-  protected Controls createSettingsControls() {
-    return Controls.builder()
-            .caption(FrameworkMessages.settings())
-            .control(createLogLevelControl())
-            .build();
-  }
-
-  /**
    * @return the Controls specifying the items in the 'Tools' menu
    */
   protected Controls createToolsControls() {

@@ -44,6 +44,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     ICONS.put(FrameworkIkons.SUMMARY, FontImageIcon.of(FrameworkIkons.SUMMARY));
     ICONS.put(FrameworkIkons.EDIT_PANEL, FontImageIcon.of(FrameworkIkons.EDIT_PANEL));
     ICONS.put(FrameworkIkons.DEPENDENCIES, FontImageIcon.of(FrameworkIkons.DEPENDENCIES));
+    ICONS.put(FrameworkIkons.SETTINGS, FontImageIcon.of(FrameworkIkons.SETTINGS));
     ICON_COLOR.addDataListener(color -> {
       if (color != null) {
         ICONS.values().forEach(icon -> icon.setColor(color));
@@ -135,6 +136,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   @Override
   public ImageIcon dependencies() {
     return ICONS.get(FrameworkIkons.DEPENDENCIES).imageIcon;
+  }
+
+  @Override
+  public ImageIcon settings() {
+    return ICONS.get(FrameworkIkons.SETTINGS).imageIcon;
   }
 
   @Override

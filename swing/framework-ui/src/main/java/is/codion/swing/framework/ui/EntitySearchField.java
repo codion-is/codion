@@ -35,6 +35,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -319,8 +320,10 @@ public final class EntitySearchField extends JTextField {
     popupMenu.add(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
                     .owner(EntitySearchField.this)
                     .title(FrameworkMessages.settings())
+                    .icon(FrameworkIcons.instance().settings())
                     .show())
             .caption(FrameworkMessages.settings())
+            .smallIcon(FrameworkIcons.instance().settings())
             .build());
 
     return popupMenu;

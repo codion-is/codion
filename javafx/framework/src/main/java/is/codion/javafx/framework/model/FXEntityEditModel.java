@@ -73,7 +73,9 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+  public final void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    requireNonNull(foreignKey);
+    requireNonNull(entities);
     FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
     if (listModel != null) {
       listModel.addAll(entities);
@@ -81,21 +83,22 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
-    FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
-    if (listModel != null) {
+  public final void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {
+    requireNonNull(foreignKey);
+    requireNonNull(entities);
+    if (foreignKeyListModels.containsKey(foreignKey)) {
+      FXEntityListModel listModel = foreignKeyListModels.get(foreignKey);
+      Entity selectedEntity = listModel.selectionModel().getSelectedItem();
       listModel.removeAll(entities);
-      //todo
-//      final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
-//      if (listModel.isVisible(selectedEntity)) {
-//        listModel.setSelectedItem(selectedEntity);
-//      }//if the null value is selected we're fine, otherwise select topmost item
-//      else if (!listModel.isNullValueSelected() && listModel.getSize() > 0) {
-//        listModel.setSelectedItem(listModel.getElementAt(0));
-//      }
-//      else {
-//        listModel.setSelectedItem(null);
-//      }
+      if (listModel.isVisible(selectedEntity)) {
+        listModel.selectionModel().setSelectedItem(selectedEntity);
+      }//if the null value is selected we're fine, otherwise select topmost item
+      else if (listModel.selectionModel().getSelectedItem() == null && listModel.getSize() > 0) {
+        listModel.selectionModel().setSelectedItem(listModel.get(0));
+      }
+      else {
+        listModel.selectionModel().setSelectedItem(null);
+      }
     }
     clearForeignKeyReferences(foreignKey, entities);
   }
