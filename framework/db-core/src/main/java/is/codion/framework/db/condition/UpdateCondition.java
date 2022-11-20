@@ -8,8 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 import java.util.Map;
 
 /**
- * A condition specifying a where clause along with properties and
- * their associated values for update.
+ * A condition specifying a where clause along with attributes and their associated values for update.
  */
 public interface UpdateCondition extends Condition {
 

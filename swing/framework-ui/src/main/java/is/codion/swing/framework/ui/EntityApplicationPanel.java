@@ -563,7 +563,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the controls on which to base the main menu
    * @see #createFileControls()
-   * @see #createSettingsControls()
    * @see #createViewControls()
    * @see #createToolsControls()
    * @see #createHelpControls()
