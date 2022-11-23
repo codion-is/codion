@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -19,7 +20,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
-import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.List;
@@ -40,7 +40,7 @@ import static java.util.stream.Collectors.toList;
  */
 public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
 
-  private final TableColumnComponentPanel<ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
+  private final TableColumnComponentPanel<Attribute<?>, ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
   private final FilteredTableColumnModel<Attribute<?>> columnModel;
 
   private EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
@@ -125,7 +125,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
   public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> conditionPanel(C attribute) {
-    for (TableColumn column : tableColumns()) {
+    for (FilteredTableColumn<Attribute<?>> column : tableColumns()) {
       if (column.getIdentifier().equals(attribute)) {
         return (ColumnConditionPanel<C, T>) conditionPanel.columnComponents().get(column);
       }
@@ -172,11 +172,11 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
             .collect(toList());
   }
 
-  private static Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
+  private static Map<FilteredTableColumn<Attribute<?>>, ColumnConditionPanel<Attribute<?>, ?>> createConditionPanels(
           FilteredTableColumnModel<Attribute<?>> columnModel, ConditionPanelFactory conditionPanelFactory) {
-    Map<TableColumn, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
+    Map<FilteredTableColumn<Attribute<?>>, ColumnConditionPanel<Attribute<?>, ?>> conditionPanels = new HashMap<>();
     columnModel.columns().forEach(column -> {
-      ColumnConditionPanel<Attribute<?>, Object> conditionPanel = (ColumnConditionPanel<Attribute<?>, Object>) conditionPanelFactory.createConditionPanel(column);
+      ColumnConditionPanel<Attribute<?>, Object> conditionPanel = conditionPanelFactory.createConditionPanel(column);
       if (conditionPanel != null) {
         conditionPanels.put(column, conditionPanel);
       }

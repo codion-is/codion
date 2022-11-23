@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import javax.swing.table.TableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 /**
  * Responsible for creating {@link ColumnConditionPanel}s
@@ -12,9 +12,10 @@ public interface ConditionPanelFactory {
 
   /**
    * Creates a ColumnConditionPanel for the given column, returns null if none is available
+   * @param <C> the column identifier type
    * @param <T> the column value type
    * @param column the column
    * @return a ColumnConditionPanel or null if none is available for the given column
    */
-   <T> ColumnConditionPanel<?, T> createConditionPanel(TableColumn column);
+   <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column);
 }

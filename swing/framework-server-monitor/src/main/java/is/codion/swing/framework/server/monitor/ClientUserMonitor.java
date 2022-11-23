@@ -11,6 +11,7 @@ import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.slf4j.Logger;
@@ -19,7 +20,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 
 /**
@@ -225,7 +226,7 @@ public final class ClientUserMonitor {
     }
   }
 
-  private static List<TableColumn> createUserHistoryColumns() {
+  private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
     return asList(
             createColumn(USERNAME_COLUMN, "Username"),
             createColumn(CLIENT_TYPE_COLUMN, "Client type"),
@@ -236,14 +237,13 @@ public final class ClientUserMonitor {
             createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
   }
 
-  private static TableColumn createColumn(Integer identifier, String headerValue) {
+  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue) {
     return createColumn(identifier, headerValue, null);
   }
 
-  private static TableColumn createColumn(Integer identifier, String headerValue,
-                                          TableCellRenderer cellRenderer) {
-    TableColumn column = new TableColumn(identifier);
-    column.setIdentifier(identifier);
+  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
+                                                           TableCellRenderer cellRenderer) {
+    FilteredTableColumn<Integer> column = filteredTableColumn(identifier, identifier);
     column.setHeaderValue(headerValue);
     if (cellRenderer != null) {
       column.setCellRenderer(cellRenderer);

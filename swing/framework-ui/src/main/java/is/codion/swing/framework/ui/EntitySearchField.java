@@ -16,6 +16,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.SwingMessages;
@@ -53,7 +54,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.UIManager;
-import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
@@ -632,7 +632,7 @@ public final class EntitySearchField extends JTextField {
       };
     }
 
-    private <T> void configureColumn(TableColumn column) {
+    private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
       Property<T> property = table.getModel().entityDefinition().property((Attribute<T>) column.getIdentifier());
       column.setCellRenderer(EntityTableCellRenderer.builder(table.getModel(), property).build());
     }

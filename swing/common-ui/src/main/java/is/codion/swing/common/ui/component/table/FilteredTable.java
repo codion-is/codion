@@ -10,6 +10,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
@@ -35,7 +36,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Color;
 import java.awt.Component;
@@ -127,7 +127,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   /**
    * The column filter panels
    */
-  private final Map<TableColumn, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
+  private final Map<FilteredTableColumn<C>, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
 
   /**
    * Active filter panel dialogs
@@ -369,8 +369,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     int selectedRow = getSelectedRow();
     int selectedColumn = getSelectedColumn();
     if (selectedRow >= 0 && selectedColumn >= 0) {
-      TableColumn column = getModel().columnModel().getColumn(selectedColumn);
-      Utilities.setClipboard(getModel().getStringAt(selectedRow, (C) column.getIdentifier()));
+      FilteredTableColumn<C> column = getModel().columnModel().getColumn(selectedColumn);
+      Utilities.setClipboard(getModel().getStringAt(selectedRow, column.getIdentifier()));
     }
   }
 
@@ -574,8 +574,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     viewport.scrollRectToVisible(cellRectangle);
   }
 
-  private ToggleControl createToggleColumnControl(TableColumn column) {
-    C identifier = (C) column.getIdentifier();
+  private ToggleControl createToggleColumnControl(FilteredTableColumn<C> column) {
+    C identifier = column.getIdentifier();
     State visibleState = State.state(tableModel.columnModel().isColumnVisible(identifier));
     visibleState.addDataListener(visible -> tableModel.columnModel().setColumnVisible(identifier, visible));
 
@@ -617,7 +617,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return false;
   }
 
-  private void bindFilterIndicatorEvents(TableColumn column) {
+  private void bindFilterIndicatorEvents(FilteredTableColumn<C> column) {
     ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
@@ -654,7 +654,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     @Override
-    public <T> ColumnConditionPanel<C, T> createConditionPanel(TableColumn column) {
+    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
       ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
@@ -681,11 +681,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       Font defaultFont = component.getFont();
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
-        TableColumn tableColumn = table.getColumnModel().getColumn(column);
+        FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
         ColumnFilterModel<R, C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
-        label.setIcon(headerRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+        label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 
       return component;
@@ -771,13 +771,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       }
 
       JTableHeader tableHeader = (JTableHeader) e.getSource();
-      TableColumnModel columnModel = tableHeader.getColumnModel();
+      FilteredTableColumnModel<C> columnModel = (FilteredTableColumnModel<C>) tableHeader.getColumnModel();
       int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         if (!getSelectionModel().isSelectionEmpty()) {
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
-        C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
+        C columnIdentifier = columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
           SortOrder newSortOrder = newSortOrder(sortModel.sortingState(columnIdentifier).sortOrder(), e.isShiftDown());
@@ -815,9 +815,8 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
     private void toggleFilterPanel(MouseEvent event) {
       FilteredTableColumnModel<C> columnModel = getModel().columnModel();
-      TableColumn column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
-      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, k ->
-                      (ColumnConditionPanel<C, ?>) conditionPanelFactory.createConditionPanel(k)),
+      FilteredTableColumn<C> column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
+      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, conditionPanelFactory::createConditionPanel),
               column.getHeaderValue().toString(), event.getLocationOnScreen());
     }
 

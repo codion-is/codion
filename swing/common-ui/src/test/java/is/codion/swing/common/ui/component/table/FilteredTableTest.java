@@ -6,16 +6,17 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.table.TableColumn;
 import java.awt.AWTException;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,8 +33,7 @@ public class FilteredTableTest {
 
   @Test
   void searchField() throws AWTException {
-    TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
     ColumnFilterModel<List<String>, Integer, String> filterModel =
             new DefaultColumnFilterModel<>(0, String.class, '%');
 
@@ -82,7 +82,7 @@ public class FilteredTableTest {
 
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
-    private TestAbstractFilteredTableModel(List<TableColumn> columns,
+    private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
                                            List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
       super(columns, new ColumnValueProvider<List<String>, Integer>() {
         @Override

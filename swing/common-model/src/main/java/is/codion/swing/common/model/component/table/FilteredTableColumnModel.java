@@ -22,17 +22,17 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @return an unmodifiable view of all columns in this model, both hidden and visible, in no particular order
    */
-  Collection<TableColumn> columns();
+  Collection<FilteredTableColumn<C>> columns();
 
   /**
    * @return an unmodifiable view of the currently visible columns
    */
-  List<TableColumn> visibleColumns();
+  List<FilteredTableColumn<C>> visibleColumns();
 
   /**
    * @return an unmodifiable view of currently hidden columns, in no particular order
    */
-  Collection<TableColumn> hiddenColumns();
+  Collection<FilteredTableColumn<C>> hiddenColumns();
 
   /**
    * Returns a {@link State} instance controlling whether this model is locked or not.
@@ -74,7 +74,10 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  TableColumn tableColumn(C identifier);
+  FilteredTableColumn<C> tableColumn(C identifier);
+
+  @Override
+  FilteredTableColumn<C> getColumn(int columnIndex);
 
   /**
    * @param identifier the column identifier

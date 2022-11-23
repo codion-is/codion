@@ -13,7 +13,6 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -35,7 +34,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
   private final Event<C> columnHiddenEvent = Event.event();
   private final Event<C> columnShownEvent = Event.event();
-  private final Map<C, TableColumn> columns = new LinkedHashMap<>();
+  private final Map<C, FilteredTableColumn<C>> columns = new LinkedHashMap<>();
   private final Map<Integer, C> columnIdentifiers = new HashMap<>();
   private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
   private final State lockedState = State.state();
@@ -44,12 +43,12 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
    * Instantiates a new DefaultFilteredTableColumnModel.
    * @param tableColumns the columns to base this model on
    */
-  DefaultFilteredTableColumnModel(List<TableColumn> tableColumns) {
+  DefaultFilteredTableColumnModel(List<FilteredTableColumn<C>> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
     tableColumns.forEach(column -> {
-      C identifier = (C) column.getIdentifier();
+      C identifier = column.getIdentifier();
       columns.put(identifier, column);
       columnIdentifiers.put(column.getModelIndex(), identifier);
       tableColumnModel.addColumn(column);
@@ -57,7 +56,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public Collection<TableColumn> columns() {
+  public Collection<FilteredTableColumn<C>> columns() {
     return unmodifiableCollection(columns.values());
   }
 
@@ -95,28 +94,34 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       showColumn(identifier);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
-    for (TableColumn column : columns()) {
+    for (FilteredTableColumn<C> column : columns()) {
       if (!columnIdentifiers.contains(column.getIdentifier())) {
-        hideColumn((C) column.getIdentifier());
+        hideColumn(column.getIdentifier());
       }
     }
   }
 
   @Override
-  public List<TableColumn> visibleColumns() {
-    return unmodifiableList(Collections.list(tableColumnModel.getColumns()));
+  public List<FilteredTableColumn<C>> visibleColumns() {
+    List<FilteredTableColumn<C>> tableColumns = new ArrayList<>(tableColumnModel.getColumnCount());
+    Enumeration<TableColumn> columnEnumeration = tableColumnModel.getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      tableColumns.add((FilteredTableColumn<C>) columnEnumeration.nextElement());
+    }
+
+    return unmodifiableList(tableColumns);
   }
 
   @Override
-  public Collection<TableColumn> hiddenColumns() {
+  public Collection<FilteredTableColumn<C>> hiddenColumns() {
     return unmodifiableCollection(hiddenColumns.values().stream()
             .map(hiddenColumn -> hiddenColumn.column)
             .collect(Collectors.toList()));
   }
 
   @Override
-  public TableColumn tableColumn(C columnIdentifier) {
-    TableColumn column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+  public FilteredTableColumn<C> tableColumn(C columnIdentifier) {
+    FilteredTableColumn<C> column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       return column;
     }
@@ -182,8 +187,8 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public TableColumn getColumn(int columnIndex) {
-    return tableColumnModel.getColumn(columnIndex);
+  public FilteredTableColumn<C> getColumn(int columnIndex) {
+    return (FilteredTableColumn<C>) tableColumnModel.getColumn(columnIndex);
   }
 
   @Override
@@ -300,18 +305,18 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   private final class HiddenColumn {
 
-    private final TableColumn column;
-    private final Set<TableColumn> columnsToTheRight;
+    private final FilteredTableColumn<C> column;
+    private final Set<FilteredTableColumn<C>> columnsToTheRight;
 
-    private HiddenColumn(TableColumn column) {
+    private HiddenColumn(FilteredTableColumn<C> column) {
       this.column = column;
       this.columnsToTheRight = columnsToTheRightOf(column);
     }
 
-    private Set<TableColumn> columnsToTheRightOf(TableColumn column) {
-      Set<TableColumn> set = new HashSet<>();
+    private Set<FilteredTableColumn<C>> columnsToTheRightOf(FilteredTableColumn<C> column) {
+      Set<FilteredTableColumn<C>> set = new HashSet<>();
       for (int i = tableColumnModel.getColumnIndex(column.getIdentifier()) + 1; i < tableColumnModel.getColumnCount(); i++) {
-        set.add(tableColumnModel.getColumn(i));
+        set.add((FilteredTableColumn<C>) tableColumnModel.getColumn(i));
       }
 
       return set;

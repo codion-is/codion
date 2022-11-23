@@ -8543,3 +8543,4 @@
   FilteredTable, EntitySearchField, i18n capitalization changed
   EntityApplicationPanel.createSettingsControls() removed, unused
   AbstractComponentValue, minor exception handling refactoring
+  FilteredTableColumn added

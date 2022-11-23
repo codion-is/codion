@@ -5,13 +5,14 @@ package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import javax.swing.SortOrder;
-import javax.swing.table.TableColumn;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 
 final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> {
@@ -34,12 +35,10 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
     return schemas;
   }
 
-  private static List<TableColumn> createSchemaColumns() {
-    TableColumn schemaColumn = new TableColumn(SchemaTableModel.SCHEMA);
-    schemaColumn.setIdentifier(SchemaTableModel.SCHEMA);
+  private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
+    FilteredTableColumn<Integer> schemaColumn = filteredTableColumn(SchemaTableModel.SCHEMA, SchemaTableModel.SCHEMA);
     schemaColumn.setHeaderValue("Schema");
-    TableColumn populatedColumn = new TableColumn(SchemaTableModel.POPULATED);
-    populatedColumn.setIdentifier(SchemaTableModel.POPULATED);
+    FilteredTableColumn<Integer> populatedColumn = filteredTableColumn(SchemaTableModel.POPULATED, SchemaTableModel.POPULATED);
     populatedColumn.setHeaderValue("Populated");
 
     return asList(schemaColumn, populatedColumn);

@@ -7,11 +7,11 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.JPanel;
-import javax.swing.table.TableColumn;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractEntityTableConditionPanel extends JPanel {
 
   private final EntityTableConditionModel tableConditionModel;
-  private final Collection<TableColumn> tableColumns;
+  private final Collection<FilteredTableColumn<Attribute<?>>> tableColumns;
   private final State advancedViewState = State.state();
 
   /**
@@ -31,7 +31,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
    * @param tableColumns the table columns
    */
   protected AbstractEntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
-                                              Collection<TableColumn> tableColumns) {
+                                              Collection<FilteredTableColumn<Attribute<?>>> tableColumns) {
     this.tableConditionModel = requireNonNull(tableConditionModel);
     this.tableColumns = requireNonNull(tableColumns);
     bindEvents();
@@ -47,7 +47,7 @@ public abstract class AbstractEntityTableConditionPanel extends JPanel {
   /**
    * @return all columns from the underlying column model
    */
-  public final Collection<TableColumn> tableColumns() {
+  public final Collection<FilteredTableColumn<Attribute<?>>> tableColumns() {
     return tableColumns;
   }
 

@@ -18,6 +18,7 @@ import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
 import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.framework.model.test.TestDomain.Master;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 import org.junit.jupiter.api.Test;
 
@@ -163,7 +164,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void columnModel() {
-    TableColumn column = testModel.columnModel().tableColumn(Detail.STRING);
+    FilteredTableColumn<Attribute<?>> column = testModel.columnModel().tableColumn(Detail.STRING);
     assertEquals(Detail.STRING, column.getIdentifier());
   }
 

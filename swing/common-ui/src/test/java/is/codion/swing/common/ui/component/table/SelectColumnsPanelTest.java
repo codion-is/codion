@@ -4,20 +4,19 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.table.TableColumn;
-
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Collections.singletonList;
 
 public final class SelectColumnsPanelTest {
 
   @Test
   void test() {
-    TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
     column.setHeaderValue("Testing");
 
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(singletonList(column),

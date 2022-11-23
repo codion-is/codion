@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
@@ -37,16 +38,16 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the component type
  * @see #tableColumnComponentPanel(FilteredTableColumnModel, Map)
  */
-public final class TableColumnComponentPanel<T extends JComponent> extends JPanel {
+public final class TableColumnComponentPanel<C, T extends JComponent> extends JPanel {
 
   private final TableColumnModel columnModel;
-  private final Collection<TableColumn> columns;
+  private final Collection<? extends FilteredTableColumn<?>> columns;
   private final Box.Filler scrollBarFiller;
   private final JPanel basePanel;
   private final Map<TableColumn, T> columnComponents;
   private final Map<TableColumn, JPanel> nullComponents = new HashMap<>(0);
 
-  private TableColumnComponentPanel(FilteredTableColumnModel<?> columnModel, Map<TableColumn, T> columnComponents) {
+  private TableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<FilteredTableColumn<C>, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.columns();
     requireNonNull(columnComponents).forEach((column, component) -> {
@@ -89,11 +90,12 @@ public final class TableColumnComponentPanel<T extends JComponent> extends JPane
    * Instantiates a new {@link TableColumnComponentPanel}.
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
+   * @param <C> the column identifier type
    * @param <T> the component type
    * @return a new {@link TableColumnComponentPanel}
    */
-  public static <T extends JComponent> TableColumnComponentPanel<T> tableColumnComponentPanel(FilteredTableColumnModel<?> columnModel,
-                                                                                              Map<TableColumn, T> columnComponents) {
+  public static <C, T extends JComponent> TableColumnComponentPanel<C, T> tableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
+                                                                                                    Map<FilteredTableColumn<C>, T> columnComponents) {
     return new TableColumnComponentPanel<>(columnModel, columnComponents);
   }
 

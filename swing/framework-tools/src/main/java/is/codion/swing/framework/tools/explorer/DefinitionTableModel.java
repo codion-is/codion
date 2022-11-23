@@ -5,14 +5,15 @@ package is.codion.swing.framework.tools.explorer;
 
 import is.codion.common.model.table.DefaultColumnFilterModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.framework.tools.metadata.Schema;
 
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.domain.DomainType.domainType;
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -46,12 +47,10 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
             .collect(toList());
   }
 
-  private static List<TableColumn> createDefinitionColumns() {
-    TableColumn domainColumn = new TableColumn(DefinitionTableModel.DOMAIN);
-    domainColumn.setIdentifier(DefinitionTableModel.DOMAIN);
+  private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
+    FilteredTableColumn<Integer> domainColumn = filteredTableColumn(DefinitionTableModel.DOMAIN, DefinitionTableModel.DOMAIN);
     domainColumn.setHeaderValue("Domain");
-    TableColumn entityTypeColumn = new TableColumn(DefinitionTableModel.ENTITY);
-    entityTypeColumn.setIdentifier(DefinitionTableModel.ENTITY);
+    FilteredTableColumn<Integer> entityTypeColumn = filteredTableColumn(DefinitionTableModel.ENTITY, DefinitionTableModel.ENTITY);
     entityTypeColumn.setHeaderValue("Entity");
 
     return asList(domainColumn, entityTypeColumn);

@@ -17,7 +17,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,6 +26,7 @@ import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,11 +86,8 @@ public final class DefaultFilteredTableModelTest {
     }
   }
 
-  private static List<TableColumn> createColumns() {
-    TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
-
-    return singletonList(column);
+  private static List<FilteredTableColumn<Integer>> createColumns() {
+    return singletonList(filteredTableColumn(0, 0));
   }
 
   private static List<ColumnFilterModel<List<String>, Integer, String>> createFilterModels() {
@@ -139,7 +136,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            singletonList(new TableColumn()), null));
+            singletonList(filteredTableColumn(0, 0)), null));
   }
 
   @Test
@@ -313,10 +310,8 @@ public final class DefaultFilteredTableModelTest {
       }
     }
 
-    TableColumn columnId = new TableColumn(0);
-    columnId.setIdentifier(0);
-    TableColumn columnValue = new TableColumn(1);
-    columnValue.setIdentifier(1);
+    FilteredTableColumn<Integer> columnId = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> columnValue = filteredTableColumn(1, 1);
 
     List<Row> items = asList(
             new Row(0, "a"),
@@ -848,7 +843,7 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void columnModel() {
-    TableColumn column = tableModel.columnModel().tableColumn(0);
+    FilteredTableColumn<Integer> column = tableModel.columnModel().tableColumn(0);
     assertEquals(0, column.getIdentifier());
   }
 
