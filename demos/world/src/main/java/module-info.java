@@ -15,7 +15,7 @@ module is.codion.framework.demos.world {
   exports is.codion.framework.demos.world.ui
           to is.codion.swing.framework.ui;
   //for loading reports from classpath
-  opens is.codion.framework.demos.world.ui;
+  opens is.codion.framework.demos.world.model;
   //for accessing default methods in EntityType interfaces
   opens is.codion.framework.demos.world.domain.api
           to is.codion.framework.domain;
