@@ -23,6 +23,7 @@ import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -64,7 +65,6 @@ import javax.swing.SwingConstants;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
-import javax.swing.table.TableColumn;
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Component;
@@ -248,7 +248,7 @@ public class EntityTablePanel extends JPanel {
 
   private final JScrollPane conditionScrollPane;
 
-  private final TableColumnComponentPanel<JPanel> summaryPanel;
+  private final TableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
 
   private final JScrollPane summaryScrollPane;
 
@@ -1465,8 +1465,8 @@ public class EntityTablePanel extends JPanel {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
-  private TableColumnComponentPanel<JPanel> createSummaryPanel() {
-    Map<TableColumn, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+  private TableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
+    Map<FilteredTableColumn<Attribute<?>>, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
     if (columnSummaryPanels.isEmpty()) {
       return null;
     }
@@ -1563,7 +1563,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private <T> void configureColumn(TableColumn column) {
+  private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
     Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
     column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
@@ -1695,7 +1695,7 @@ public class EntityTablePanel extends JPanel {
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.tableColumns().forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel((Attribute<?>) column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
@@ -1732,10 +1732,10 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static Map<TableColumn, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
-    Map<TableColumn, JPanel> components = new HashMap<>();
+  private static Map<FilteredTableColumn<Attribute<?>>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
+    Map<FilteredTableColumn<Attribute<?>>, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
-            tableModel.columnSummaryModel((Attribute<?>) column.getIdentifier())
+            tableModel.columnSummaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
                             components.put(column, columnSummaryPanel(columnSummaryModel))));
 
@@ -1790,12 +1790,11 @@ public class EntityTablePanel extends JPanel {
       Component component = wrappedRenderer == null ?
               table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      TableColumn tableColumn = tableModel.columnModel().getColumn(column);
+      FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
-      Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
       boolean displayConditionState = renderer instanceof EntityTableCellRenderer
               && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
-              && tableModel.tableConditionModel().isConditionEnabled(attribute);
+              && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
@@ -1831,14 +1830,14 @@ public class EntityTablePanel extends JPanel {
     }
 
     @Override
-    public ColumnConditionPanel<?, ?> createConditionPanel(TableColumn column) {
+    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
       ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
               tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
 
-      return columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
+      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
     }
   }
 }

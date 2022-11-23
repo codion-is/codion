@@ -1,0 +1,39 @@
+/*
+ * Copyright (c) 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.swing.common.model.component.table;
+
+import javax.swing.table.TableColumn;
+
+import static java.util.Objects.requireNonNull;
+
+/**
+ * A {@link TableColumn} with a typed identifier.
+ * For instances use factory method {@link #filteredTableColumn(int, Object)}.
+ * @param <C> the column identifier type
+ * @see #filteredTableColumn(int, Object)
+ */
+public final class FilteredTableColumn<C> extends TableColumn {
+
+  private FilteredTableColumn(int modelIndex, C identifier) {
+    super(modelIndex);
+    setIdentifier(requireNonNull(identifier));
+  }
+
+  @Override
+  public C getIdentifier() {
+    return (C) super.getIdentifier();
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTableColumn}.
+   * @param modelIndex the column model index
+   * @param identifier the column identifier
+   * @param <C> the column identifier type
+   * @return a new {@link FilteredTableColumn} instance
+   * @throws NullPointerException in case {@code identifier} is null
+   */
+  public static <C> FilteredTableColumn<C> filteredTableColumn(int modelIndex, C identifier) {
+    return new FilteredTableColumn<>(modelIndex, identifier);
+  }
+}

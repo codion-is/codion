@@ -31,6 +31,7 @@ import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -44,7 +45,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -56,7 +56,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
-import static java.util.Collections.*;
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
+import static java.util.Collections.emptyList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toMap;
@@ -492,9 +494,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   public final String tableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();
-    Enumeration<TableColumn> columnEnumeration = columnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      Attribute<?> attribute = (Attribute<?>) columnEnumeration.nextElement().getIdentifier();
+    for (FilteredTableColumn<Attribute<?>> column : columnModel().visibleColumns()) {
+      Attribute<?> attribute = column.getIdentifier();
       attributes.add(attribute);
       header.add(entityDefinition().property(attribute).caption());
     }
@@ -526,7 +527,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
    */
-  public static List<TableColumn> createColumns(EntityDefinition definition) {
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition definition) {
     return createColumns(requireNonNull(definition).visibleProperties());
   }
 
@@ -535,12 +536,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param properties the properties
    * @return a list of TableColumns based on the given properties
    */
-  public static List<TableColumn> createColumns(List<Property<?>> properties) {
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(List<Property<?>> properties) {
     requireNonNull(properties);
-    List<TableColumn> columns = new ArrayList<>(properties.size());
+    List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(properties.size());
     for (Property<?> property : properties) {
-      TableColumn column = new TableColumn(columns.size());
-      column.setIdentifier(property.attribute());
+      FilteredTableColumn<Attribute<?>> column = filteredTableColumn(columns.size(), property.attribute());
       column.setHeaderValue(property.caption());
       if (property.preferredColumnWidth() > 0) {
         column.setPreferredWidth(property.preferredColumnWidth());
@@ -801,8 +801,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private JSONObject createColumnPreferences() throws Exception {
     JSONObject columnPreferencesRoot = new JSONObject();
-    for (TableColumn column : columnModel().columns()) {
-      Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
+    for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
+      Attribute<?> attribute = column.getIdentifier();
       boolean visible = columnModel().isColumnVisible(attribute);
       ColumnPreferences columnPreferences = EntityTableModel.columnPreferences(attribute,
               visible ? columnModel().getColumnIndex(attribute) : -1, column.getWidth());
@@ -828,10 +828,10 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private void applyColumnPreferences(String preferencesString) {
     JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
-    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(list(columnModel().getColumns()), preferences);
+    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(columnModel().columns(), preferences);
     List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
-    for (TableColumn column : list(columnModel().getColumns())) {
-      Attribute<?> attribute = (Attribute<?>) column.getIdentifier();
+    for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
+      Attribute<?> attribute = column.getIdentifier();
       ColumnPreferences columnPreferences = preferenceMap.get(attribute);
       if (columnPreferences == null) {
         columnAttributesWithoutPreferences.add(attribute);
@@ -858,7 +858,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(List<TableColumn> tableColumns, JSONObject preferences) {
+  private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(Collection<FilteredTableColumn<Attribute<?>>> tableColumns, JSONObject preferences) {
     return tableColumns.stream()
             .map(tableColumn -> columnPreferences(tableColumn, preferences))
             .filter(Optional::isPresent)
@@ -866,8 +866,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
             .collect(toMap(ColumnPreferences::attribute, Function.identity()));
   }
 
-  private static Optional<ColumnPreferences> columnPreferences(TableColumn tableColumn, JSONObject preferences) {
-    Attribute<?> attribute = (Attribute<?>) tableColumn.getIdentifier();
+  private static Optional<ColumnPreferences> columnPreferences(FilteredTableColumn<Attribute<?>> tableColumn, JSONObject preferences) {
+    Attribute<?> attribute = tableColumn.getIdentifier();
     try {
       return Optional.of(fromJSONObject(attribute, preferences.getJSONObject(attribute.name())));
     }

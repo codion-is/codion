@@ -17,7 +17,6 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
-import javax.swing.table.TableColumn;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -81,7 +80,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
    */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns, ColumnValueProvider<R, C> columnValueProvider) {
+  public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider) {
     this(tableColumns, columnValueProvider, null);
   }
 
@@ -91,7 +90,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param columnValueProvider the column value provider
    * @param columnFilterModels the filter models if any, may be null
    */
-  public DefaultFilteredTableModel(List<TableColumn> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
+  public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
                                    Collection<? extends ColumnFilterModel<R, C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);

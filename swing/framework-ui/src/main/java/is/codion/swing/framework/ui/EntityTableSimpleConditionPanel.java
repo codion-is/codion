@@ -5,6 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Conjunction;
 import is.codion.common.event.EventListener;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
@@ -34,9 +35,9 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
   private final Control searchControl;
 
   private EntityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
-                                          FilteredTableColumnModel<?> columnModel,
+                                          FilteredTableColumnModel<Attribute<?>> columnModel,
                                           EventListener onSearchListener) {
-    super(tableConditionModel, columnModel.columns());
+    super(tableConditionModel, requireNonNull(columnModel).columns());
     this.searchControl = Control.builder(this::performSimpleSearch)
             .caption(FrameworkMessages.search())
             .build();
@@ -84,7 +85,7 @@ public final class EntityTableSimpleConditionPanel extends AbstractEntityTableCo
    * @return a new {@link EntityTableSimpleConditionPanel}
    */
   public static EntityTableSimpleConditionPanel entityTableSimpleConditionPanel(EntityTableConditionModel tableConditionModel,
-                                                                                FilteredTableColumnModel<?> columnModel,
+                                                                                FilteredTableColumnModel<Attribute<?>> columnModel,
                                                                                 EventListener onSearchListener) {
     return new EntityTableSimpleConditionPanel(tableConditionModel, columnModel, onSearchListener);
   }

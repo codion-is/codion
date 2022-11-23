@@ -4,30 +4,25 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JPanel;
-import javax.swing.table.TableColumn;
 import java.util.HashMap;
 import java.util.Map;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TableColumnComponentPanelTest {
 
-  private final TableColumn column0 = new TableColumn(0);
-  private final TableColumn column1 = new TableColumn(1);
-  private final TableColumn column2 = new TableColumn(2);
-
-  public TableColumnComponentPanelTest() {
-    column0.setIdentifier(0);
-    column1.setIdentifier(1);
-    column2.setIdentifier(2);
-  }
+  private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
+  private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
+  private final FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
 
   @Test
   void wrongColumn() {
@@ -44,8 +39,8 @@ public class TableColumnComponentPanelTest {
               }
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    Map<TableColumn, JPanel> columnComponents = createColumnComponents(columnModel);
-    columnComponents.put(new TableColumn(3), new JPanel());
+    Map<FilteredTableColumn<Integer>, JPanel> columnComponents = createColumnComponents(columnModel);
+    columnComponents.put(filteredTableColumn(3, 3), new JPanel());
     assertThrows(IllegalArgumentException.class, () -> TableColumnComponentPanel.tableColumnComponentPanel(columnModel, columnComponents));
   }
 
@@ -66,7 +61,7 @@ public class TableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
-    TableColumnComponentPanel<JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     assertTrue(panel.columnComponents().containsKey(column1));
 
     assertNull(panel.columnComponents().get(column1).getParent());
@@ -93,7 +88,7 @@ public class TableColumnComponentPanelTest {
               }
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    TableColumnComponentPanel<JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
     assertEquals(100, panel.columnComponents().get(column0).getPreferredSize().width);
     column1.setWidth(90);
@@ -102,8 +97,8 @@ public class TableColumnComponentPanelTest {
     assertEquals(80, panel.columnComponents().get(column2).getPreferredSize().width);
   }
 
-  private static Map<TableColumn, JPanel> createColumnComponents(FilteredTableColumnModel<?> columnModel) {
-    Map<TableColumn, JPanel> columnComponents = new HashMap<>();
+  private static Map<FilteredTableColumn<Integer>, JPanel> createColumnComponents(FilteredTableColumnModel<Integer> columnModel) {
+    Map<FilteredTableColumn<Integer>, JPanel> columnComponents = new HashMap<>();
     columnModel.columns().forEach(column -> columnComponents.put(column, new JPanel()));
 
     return columnComponents;

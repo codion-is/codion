@@ -7,10 +7,10 @@ import is.codion.common.event.EventDataListener;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -63,14 +63,10 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test
   void setColumns() {
-    TableColumn column0 = new TableColumn(0);
-    column0.setIdentifier(0);
-    TableColumn column1 = new TableColumn(1);
-    column1.setIdentifier(1);
-    TableColumn column2 = new TableColumn(2);
-    column2.setIdentifier(2);
-    TableColumn column3 = new TableColumn(3);
-    column3.setIdentifier(3);
+    FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
+    FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
+    FilteredTableColumn<Integer> column3 = filteredTableColumn(3, 3);
 
     DefaultFilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -113,14 +109,10 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test
   void lock() {
-    TableColumn column0 = new TableColumn(0);
-    column0.setIdentifier(0);
-    TableColumn column1 = new TableColumn(1);
-    column1.setIdentifier(1);
-    TableColumn column2 = new TableColumn(2);
-    column2.setIdentifier(2);
-    TableColumn column3 = new TableColumn(3);
-    column3.setIdentifier(3);
+    FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
+    FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
+    FilteredTableColumn<Integer> column3 = filteredTableColumn(3, 3);
 
     FilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -140,9 +132,6 @@ public class DefaultFilteredTableColumnModelTest {
   }
 
   private static FilteredTableColumnModel<Integer> createTestModel() {
-    TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
-
-    return new DefaultFilteredTableColumnModel<>(singletonList(column));
+    return new DefaultFilteredTableColumnModel<>(singletonList(filteredTableColumn(0, 0)));
   }
 }

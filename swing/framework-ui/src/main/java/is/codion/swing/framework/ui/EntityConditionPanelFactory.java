@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -27,7 +28,6 @@ import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
-import javax.swing.table.TableColumn;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
@@ -54,11 +54,11 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   }
 
   @Override
-  public final <T> ColumnConditionPanel<?, T> createConditionPanel(TableColumn column) {
+  public final <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
     ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
             tableConditionModel.conditionModels().get(column.getIdentifier());
 
-    return conditionModel == null ? null : createConditionPanel(conditionModel);
+    return conditionModel == null ? null : (ColumnConditionPanel<C, T>) createConditionPanel(conditionModel);
   }
 
   /**

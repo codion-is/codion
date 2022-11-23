@@ -7,11 +7,11 @@ import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnVal
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.table.TableColumn;
 import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static javax.swing.ListSelectionModel.*;
@@ -23,8 +23,7 @@ public class DefaultFilteredTableSelectionModelTest {
 
   public DefaultFilteredTableSelectionModelTest() {
     List<String> data = asList("A", "B", "C");
-    TableColumn column = new TableColumn(0);
-    column.setIdentifier(0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
             singletonList(column), new ColumnValueProvider<String, Integer>() {
       @Override
