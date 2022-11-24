@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.worker;
 
+import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
@@ -33,7 +34,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
-  private static final String PROGRESS_PROPERTY = "progress";
   private static final String STATE_PROPERTY = "state";
 
   private final ProgressTask<T, V> task;
@@ -58,7 +58,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     this.onException = builder.onException;
     this.onCancelled = builder.onCancelled;
     this.onInterrupted = builder.onInterrupted;
-    getPropertyChangeSupport().addPropertyChangeListener(PROGRESS_PROPERTY, new ProgressListener());
     getPropertyChangeSupport().addPropertyChangeListener(STATE_PROPERTY, new StateListener());
   }
 
@@ -117,6 +116,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
+  private void updateProgress(int progress) {
+    setProgress(progress);
+    if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
+      SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+    }
+  }
+
   private final class StateListener implements PropertyChangeListener {
 
     @Override
@@ -127,14 +133,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
           runOnDone();
         }
       }
-    }
-  }
-
-  private final class ProgressListener implements PropertyChangeListener {
-
-    @Override
-    public void propertyChange(PropertyChangeEvent changeEvent) {
-      onProgress.accept((Integer) changeEvent.getNewValue());
     }
   }
 
@@ -253,9 +251,10 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   }
 
   private final class TaskProgressReporter implements ProgressReporter<V> {
+
     @Override
     public void setProgress(int progress) {
-      ProgressWorker.this.setProgress(progress);
+      ProgressWorker.this.updateProgress(progress);
     }
 
     @Override

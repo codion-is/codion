@@ -17,12 +17,21 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   private FilteredTableColumn(int modelIndex, C identifier) {
     super(modelIndex);
-    setIdentifier(requireNonNull(identifier));
+    super.setIdentifier(requireNonNull(identifier));
   }
 
   @Override
   public C getIdentifier() {
     return (C) super.getIdentifier();
+  }
+
+  /**
+   * @param identifier an identifier for this column
+   * @throws IllegalStateException always
+   */
+  @Override
+  public void setIdentifier(Object identifier) {
+    throw new IllegalStateException("Can't change the identifier of a FilteredTableColumn");
   }
 
   /**
