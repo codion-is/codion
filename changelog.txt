@@ -8544,3 +8544,4 @@
   EntityApplicationPanel.createSettingsControls() removed, unused
   AbstractComponentValue, minor exception handling refactoring
   FilteredTableColumn added
+  FilteredTableColumn, setIdentifier() overridden to throw an exception, changing the identifier not allowed
