@@ -8545,3 +8545,4 @@
   AbstractComponentValue, minor exception handling refactoring
   FilteredTableColumn added
   FilteredTableColumn, setIdentifier() overridden to throw an exception, changing the identifier not allowed
+  ProgressWorker bug fixed, no longer relies on SwingWorker progress property change listener, which was never updated when progress was updated too rapidly, apparently coalescing all events
