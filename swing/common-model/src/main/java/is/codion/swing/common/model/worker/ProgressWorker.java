@@ -7,6 +7,7 @@ import javax.swing.SwingUtilities;
 import javax.swing.SwingWorker;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
@@ -88,11 +89,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   }
 
   @Override
-  protected void process(List<V> chunks) {
-    onPublish.accept(chunks);
-  }
-
-  @Override
   protected void done() {
     runOnDone();
     try {
@@ -120,6 +116,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     setProgress(progress);
     if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
       SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+    }
+  }
+
+  private void publishChunks(V... chunks) {
+    publish(chunks);
+    if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
+      SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
     }
   }
 
@@ -254,12 +257,12 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public void setProgress(int progress) {
-      ProgressWorker.this.updateProgress(progress);
+      updateProgress(progress);
     }
 
     @Override
     public void publish(V... chunks) {
-      ProgressWorker.this.publish(chunks);
+      publishChunks(chunks);
     }
   }
 
