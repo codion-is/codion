@@ -16,9 +16,12 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogBuilder> implements LoginDialogBuilder {
 
+  private static final int DEFAULT_FIELD_COLUMNS = 8;
+
   private User defaultUser;
   private LoginValidator validator = new NoLoginValidation();
   private JComponent southComponent;
+  private int inputFieldColumns = DEFAULT_FIELD_COLUMNS;
 
   DefaultLoginDialogBuilder() {
     titleProvider(Value.value(Messages.login()));
@@ -43,12 +46,18 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   }
 
   @Override
+  public LoginDialogBuilder inputFieldColumns(int inputFieldColumns) {
+    this.inputFieldColumns = inputFieldColumns;
+    return this;
+  }
+
+  @Override
   public User show() {
     JFrame dummyFrame = null;
     if (owner == null && isWindows()) {
       owner = dummyFrame = createDummyFrame(titleProvider == null ? null : titleProvider.get(), icon);
     }
-    LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent);
+    LoginPanel loginPanel = new LoginPanel(defaultUser, validator, icon, southComponent, inputFieldColumns);
     new DefaultOkCancelDialogBuilder(loginPanel)
             .owner(owner)
             .resizable(false)

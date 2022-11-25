@@ -14,6 +14,6 @@ public final class LoginPanelTest {
 
   @Test
   void test() {
-    new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Logos.logoTransparent(), new JLabel());
+    new LoginPanel(User.user("scott", "test".toCharArray()), user -> {}, Logos.logoTransparent(), new JLabel(), 1);
   }
 }

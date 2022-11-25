@@ -42,7 +42,6 @@ final class LoginPanel extends JPanel {
     UiManagerDefaults.initialize();
   }
 
-  private static final int DEFAULT_FIELD_COLUMNS = 8;
   private static final String PASSWORD_CARD = "password";
   private static final String PROGRESS_CARD = "progress";
 
@@ -55,16 +54,16 @@ final class LoginPanel extends JPanel {
   private final Control cancelControl;
   private final State validatingState = State.state();
 
-  LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent) {
+  LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
     this.usernameField = Components.textField()
             .initialValue(defaultUser == null ? "" : defaultUser.username())
-            .columns(DEFAULT_FIELD_COLUMNS)
+            .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .enabledState(validatingState.reversedObserver())
             .build();
     this.passwordField = Components.passwordField()
             .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()))
-            .columns(DEFAULT_FIELD_COLUMNS)
+            .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .build();
     this.icon = icon;
