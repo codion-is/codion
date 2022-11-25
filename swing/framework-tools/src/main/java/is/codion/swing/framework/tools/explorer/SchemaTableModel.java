@@ -36,9 +36,9 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
   }
 
   private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
-    FilteredTableColumn<Integer> schemaColumn = filteredTableColumn(SchemaTableModel.SCHEMA, SchemaTableModel.SCHEMA);
+    FilteredTableColumn<Integer> schemaColumn = filteredTableColumn(SchemaTableModel.SCHEMA);
     schemaColumn.setHeaderValue("Schema");
-    FilteredTableColumn<Integer> populatedColumn = filteredTableColumn(SchemaTableModel.POPULATED, SchemaTableModel.POPULATED);
+    FilteredTableColumn<Integer> populatedColumn = filteredTableColumn(SchemaTableModel.POPULATED);
     populatedColumn.setHeaderValue("Populated");
 
     return asList(schemaColumn, populatedColumn);

@@ -243,7 +243,7 @@ public final class ClientUserMonitor {
 
   private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
                                                            TableCellRenderer cellRenderer) {
-    FilteredTableColumn<Integer> column = filteredTableColumn(identifier, identifier);
+    FilteredTableColumn<Integer> column = filteredTableColumn(identifier);
     column.setHeaderValue(headerValue);
     if (cellRenderer != null) {
       column.setCellRenderer(cellRenderer);

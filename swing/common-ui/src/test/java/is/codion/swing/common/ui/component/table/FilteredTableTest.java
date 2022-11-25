@@ -33,7 +33,7 @@ public class FilteredTableTest {
 
   @Test
   void searchField() throws AWTException {
-    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0);
     ColumnFilterModel<List<String>, Integer, String> filterModel =
             new DefaultColumnFilterModel<>(0, String.class, '%');
 

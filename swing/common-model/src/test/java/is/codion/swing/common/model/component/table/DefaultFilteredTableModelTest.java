@@ -87,7 +87,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   private static List<FilteredTableColumn<Integer>> createColumns() {
-    return singletonList(filteredTableColumn(0, 0));
+    return singletonList(filteredTableColumn(0));
   }
 
   private static List<ColumnFilterModel<List<String>, Integer, String>> createFilterModels() {
@@ -136,7 +136,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void nullSortModel() {
     assertThrows(NullPointerException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            singletonList(filteredTableColumn(0, 0)), null));
+            singletonList(filteredTableColumn(0)), null));
   }
 
   @Test
@@ -310,8 +310,8 @@ public final class DefaultFilteredTableModelTest {
       }
     }
 
-    FilteredTableColumn<Integer> columnId = filteredTableColumn(0, 0);
-    FilteredTableColumn<Integer> columnValue = filteredTableColumn(1, 1);
+    FilteredTableColumn<Integer> columnId = filteredTableColumn(0);
+    FilteredTableColumn<Integer> columnValue = filteredTableColumn(1);
 
     List<Row> items = asList(
             new Row(0, "a"),

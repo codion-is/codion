@@ -16,7 +16,7 @@ public final class SelectColumnsPanelTest {
 
   @Test
   void test() {
-    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0);
     column.setHeaderValue("Testing");
 
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(singletonList(column),

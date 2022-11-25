@@ -48,9 +48,9 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   }
 
   private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
-    FilteredTableColumn<Integer> domainColumn = filteredTableColumn(DefinitionTableModel.DOMAIN, DefinitionTableModel.DOMAIN);
+    FilteredTableColumn<Integer> domainColumn = filteredTableColumn(DefinitionTableModel.DOMAIN);
     domainColumn.setHeaderValue("Domain");
-    FilteredTableColumn<Integer> entityTypeColumn = filteredTableColumn(DefinitionTableModel.ENTITY, DefinitionTableModel.ENTITY);
+    FilteredTableColumn<Integer> entityTypeColumn = filteredTableColumn(DefinitionTableModel.ENTITY);
     entityTypeColumn.setHeaderValue("Entity");
 
     return asList(domainColumn, entityTypeColumn);
