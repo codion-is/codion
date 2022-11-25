@@ -32,6 +32,12 @@ public interface LoginDialogBuilder extends DialogBuilder<LoginDialogBuilder> {
   LoginDialogBuilder southComponent(JComponent southComponent);
 
   /**
+   * @param inputFieldColumns the number of columns to display in the input fields (username/password), 8 by default
+   * @return this LoginDialogBuilder instance
+   */
+  LoginDialogBuilder inputFieldColumns(int inputFieldColumns);
+
+  /**
    * @return the logged-in user
    * @throws CancelException in case the login is cancelled
    */

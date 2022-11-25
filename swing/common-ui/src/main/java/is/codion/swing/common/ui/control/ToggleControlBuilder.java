@@ -19,6 +19,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   private StateObserver enabledState;
   private char mnemonic;
   private Icon smallIcon;
+  private Icon largeIcon;
   private String description;
   private KeyStroke keyStroke;
 
@@ -46,7 +47,13 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl.Builder smallIcon(Icon smallIcon) {
-    this.smallIcon = requireNonNull(smallIcon);
+    this.smallIcon = smallIcon;
+    return this;
+  }
+
+  @Override
+  public ToggleControl.Builder largeIcon(Icon largeIcon) {
+    this.largeIcon = largeIcon;
     return this;
   }
 
@@ -67,6 +74,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
     DefaultToggleControl toggleControl = new DefaultToggleControl(caption, value, enabledState);
     toggleControl.setMnemonic(mnemonic);
     toggleControl.setSmallIcon(smallIcon);
+    toggleControl.setLargeIcon(largeIcon);
     toggleControl.setDescription(description);
     toggleControl.setKeyStroke(keyStroke);
 
