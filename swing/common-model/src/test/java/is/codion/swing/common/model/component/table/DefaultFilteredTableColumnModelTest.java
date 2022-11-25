@@ -63,10 +63,10 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test
   void setColumns() {
-    FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
-    FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
-    FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
-    FilteredTableColumn<Integer> column3 = filteredTableColumn(3, 3);
+    FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
+    FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
+    FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
+    FilteredTableColumn<Integer> column3 = filteredTableColumn(3);
 
     DefaultFilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -109,10 +109,10 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test
   void lock() {
-    FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
-    FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
-    FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
-    FilteredTableColumn<Integer> column3 = filteredTableColumn(3, 3);
+    FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
+    FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
+    FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
+    FilteredTableColumn<Integer> column3 = filteredTableColumn(3);
 
     FilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
@@ -132,6 +132,6 @@ public class DefaultFilteredTableColumnModelTest {
   }
 
   private static FilteredTableColumnModel<Integer> createTestModel() {
-    return new DefaultFilteredTableColumnModel<>(singletonList(filteredTableColumn(0, 0)));
+    return new DefaultFilteredTableColumnModel<>(singletonList(filteredTableColumn(0)));
   }
 }

@@ -23,7 +23,7 @@ public class DefaultFilteredTableSelectionModelTest {
 
   public DefaultFilteredTableSelectionModelTest() {
     List<String> data = asList("A", "B", "C");
-    FilteredTableColumn<Integer> column = filteredTableColumn(0, 0);
+    FilteredTableColumn<Integer> column = filteredTableColumn(0);
     FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
             singletonList(column), new ColumnValueProvider<String, Integer>() {
       @Override

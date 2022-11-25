@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link TableColumn} with a typed identifier.
- * For instances use factory method {@link #filteredTableColumn(int, Object)}.
+ * For instances use factory method {@link #filteredTableColumn(int)} or {@link #filteredTableColumn(int, Object)}.
  * @param <C> the column identifier type
  * @see #filteredTableColumn(int, Object)
  */
@@ -32,6 +32,15 @@ public final class FilteredTableColumn<C> extends TableColumn {
   @Override
   public void setIdentifier(Object identifier) {
     throw new IllegalStateException("Can't change the identifier of a FilteredTableColumn");
+  }
+
+  /**
+   * Instantiates a new index based {@link FilteredTableColumn}.
+   * @param modelIndex the column model index and identifier
+   * @return a new {@link FilteredTableColumn} instance
+   */
+  public static FilteredTableColumn<Integer> filteredTableColumn(int modelIndex) {
+    return new FilteredTableColumn<>(modelIndex, modelIndex);
   }
 
   /**

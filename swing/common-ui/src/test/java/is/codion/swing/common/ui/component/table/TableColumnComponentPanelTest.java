@@ -20,9 +20,9 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class TableColumnComponentPanelTest {
 
-  private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0, 0);
-  private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1, 1);
-  private final FilteredTableColumn<Integer> column2 = filteredTableColumn(2, 2);
+  private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
+  private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
+  private final FilteredTableColumn<Integer> column2 = filteredTableColumn(2);
 
   @Test
   void wrongColumn() {
@@ -40,7 +40,7 @@ public class TableColumnComponentPanelTest {
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<FilteredTableColumn<Integer>, JPanel> columnComponents = createColumnComponents(columnModel);
-    columnComponents.put(filteredTableColumn(3, 3), new JPanel());
+    columnComponents.put(filteredTableColumn(3), new JPanel());
     assertThrows(IllegalArgumentException.class, () -> TableColumnComponentPanel.tableColumnComponentPanel(columnModel, columnComponents));
   }
 
