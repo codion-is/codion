@@ -98,6 +98,17 @@ public interface Control extends Action {
   Icon getSmallIcon();
 
   /**
+   * @param largeIcon the large icon to associate with this Control
+   * @return this Control instance
+   */
+  Control setLargeIcon(Icon largeIcon);
+
+  /**
+   * @return the icon
+   */
+  Icon getLargeIcon();
+
+  /**
    * @param background the background color
    * @return this Control instance
    */
@@ -259,6 +270,12 @@ public interface Control extends Action {
      * @return this Builder instance
      */
     Builder smallIcon(Icon smallIcon);
+
+    /**
+     * @param largeIcon the large control icon
+     * @return this Builder instance
+     */
+    Builder largeIcon(Icon largeIcon);
 
     /**
      * @param description a string describing the control

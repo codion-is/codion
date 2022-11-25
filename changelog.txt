@@ -8549,3 +8549,4 @@
   ProgressWorker bug fixed, no longer relies on SwingWorker publish, which was very flaky when chunks were published too rapidly, apparently coalescing all events
   FilteredTableColumn.filteredTableColumn(modelIndex) convenience factory method added
   LoginDialogBuilder.inputFieldColumns() added
+  Control.setLargeIcon() and Control.Builder.largeIcon() added

@@ -61,23 +61,23 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final String getDescription() {
-    return (String) super.getValue(Action.SHORT_DESCRIPTION);
+    return (String) getValue(Action.SHORT_DESCRIPTION);
   }
 
   @Override
   public final Control setDescription(String description) {
-    super.putValue(Action.SHORT_DESCRIPTION, description);
+    putValue(Action.SHORT_DESCRIPTION, description);
     return this;
   }
 
   @Override
   public final String getCaption() {
-    return (String) super.getValue(NAME);
+    return (String) getValue(NAME);
   }
 
   @Override
   public final Control setCaption(String caption) {
-    super.putValue(NAME, caption);
+    putValue(NAME, caption);
     return this;
   }
 
@@ -88,19 +88,19 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final Control setMnemonic(int key) {
-    super.putValue(MNEMONIC_KEY, key);
+    putValue(MNEMONIC_KEY, key);
     return this;
   }
 
   @Override
   public final int getMnemonic() {
-    Integer mnemonic = (Integer) super.getValue(MNEMONIC_KEY);
+    Integer mnemonic = (Integer) getValue(MNEMONIC_KEY);
     return mnemonic == null ? 0 : mnemonic;
   }
 
   @Override
   public final Control setKeyStroke(KeyStroke keyStroke) {
-    super.putValue(ACCELERATOR_KEY, keyStroke);
+    putValue(ACCELERATOR_KEY, keyStroke);
     return this;
   }
 
@@ -111,13 +111,24 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final Control setSmallIcon(Icon smallIcon) {
-    super.putValue(SMALL_ICON, smallIcon);
+    putValue(SMALL_ICON, smallIcon);
     return this;
   }
 
   @Override
   public final Icon getSmallIcon() {
     return (Icon) getValue(SMALL_ICON);
+  }
+
+  @Override
+  public final Control setLargeIcon(Icon largeIcon) {
+    putValue(LARGE_ICON_KEY, largeIcon);
+    return this;
+  }
+
+  @Override
+  public final Icon getLargeIcon() {
+    return (Icon) getValue(LARGE_ICON_KEY);
   }
 
   @Override
