@@ -7,6 +7,8 @@ plugins {
 
 apply from: '../demos.gradle'
 
+apply plugin: BuildReportsPlugin
+
 dependencies {
     implementation project(':codion-framework-db-local')
     implementation project(':codion-framework-db-rmi')
@@ -73,26 +75,10 @@ application {
     mainModule.set(moduleName)
 }
 
-task buildReports(dependsOn: 'compileJava') {
-    group 'build'
-    def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/empdept/domain')
-    inputs.dir jasperSourceDir
-    outputs.dir jasperTargetDir
-    doLast {
-        ant {
-            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
-            jasperTargetDir.mkdirs()
-            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-                classpath(path: sourceSets.main.output.classesDirs)
-                include(name: '**/*.jrxml')
-            }
-        }
-    }
+buildReports {
+    sourceDir = file('src/main/reports')
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/empdept/domain')
 }
-classes.finalizedBy buildReports
-
-compileTestJava.dependsOn buildReports
 
 test {
     moduleOptions {
@@ -100,17 +86,8 @@ test {
         addReads = testAddReads
         addExports = testAddExports
     }
-    dependsOn buildReports
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
-}
-
-domainJar {
-    dependsOn buildReports
-}
-
-jar {
-    dependsOn buildReports
 }
 
 task runClientLocal(type: ModularJavaExec) {

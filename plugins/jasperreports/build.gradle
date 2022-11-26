@@ -1,3 +1,5 @@
+apply plugin: BuildReportsPlugin
+
 dependencies {
     implementation project(':codion-common-core')
     implementation project(':codion-common-db')
@@ -42,25 +44,7 @@ test {
     }
 }
 
-task buildReports(dependsOn: 'compileJava') {
-    group 'build'
-    def jasperSourceDir = file('src/test/reports')
-    def jasperTargetDir = file('build/resources/test')
-    inputs.dir jasperSourceDir
-    outputs.dir jasperTargetDir
-    doLast {
-        ant {
-            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
-            jasperTargetDir.mkdirs()
-            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-                classpath(path: sourceSets.main.output.classesDirs)
-                include(name: '**/*.jrxml')
-            }
-        }
-    }
-}
-compileJava.finalizedBy buildReports
-
-test {
-    dependsOn buildReports
+buildReports {
+    sourceDir = file('src/test/reports')
+    targetDir = file(sourceSets.test.output.resourcesDir.toString())
 }
