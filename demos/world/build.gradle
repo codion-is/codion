@@ -1,5 +1,7 @@
 apply from: '../demos.gradle'
 
+apply plugin: BuildReportsPlugin
+
 dependencies {
     implementation project(':codion-swing-framework-ui')
     implementation project(':codion-plugin-jackson-json')
@@ -37,43 +39,14 @@ dependencies {
 
 ext.execMainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'
 
-task buildReports(dependsOn: 'compileJava') {
-    group 'build'
-    // otherwise this task fails in a clean project clone, since the codion jar files
-    // which are required on the report compile classpath have not been created yet
-    dependsOn configurations.runtimeClasspath
-    def jasperSourceDir = file('src/main/reports')
-    def jasperTargetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/model')
-    inputs.dir jasperSourceDir
-    outputs.dir jasperTargetDir
-    doLast {
-        ant {
-            lifecycleLogLevel = "INFO"
-            taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask', classpath: configurations.runtimeClasspath.asPath)
-            jasperTargetDir.mkdirs()
-            jrc(srcdir: jasperSourceDir, destdir: jasperTargetDir) {
-                classpath(path: sourceSets.main.output.classesDirs.asPath)
-                include(name: '**/*.jrxml')
-            }
-        }
-    }
+buildReports {
+    sourceDir = file('src/main/reports')
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/model')
 }
-classes.finalizedBy buildReports
-
-compileTestJava.dependsOn buildReports
 
 test {
-    dependsOn buildReports
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
-}
-
-domainJar {
-    dependsOn buildReports
-}
-
-jar {
-    dependsOn buildReports
 }
 
 startScripts {

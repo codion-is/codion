@@ -8550,3 +8550,4 @@
   FilteredTableColumn.filteredTableColumn(modelIndex) convenience factory method added
   LoginDialogBuilder.inputFieldColumns() added
   Control.setLargeIcon() and Control.Builder.largeIcon() added
+  buildSrc added with BuildReportsPlugin, replaces ad-hoc buildReports task
