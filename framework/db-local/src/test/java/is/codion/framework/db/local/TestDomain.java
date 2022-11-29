@@ -162,7 +162,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.MGR),
             foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name())
                     //not really soft, just for testing purposes
-                    .softReference(),
+                    .softReference(true),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
             columnProperty(Employee.HIRETIME, Employee.HIRETIME.name()),
