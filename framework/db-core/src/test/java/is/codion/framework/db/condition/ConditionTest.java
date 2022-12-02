@@ -18,6 +18,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -88,6 +89,24 @@ public final class ConditionTest {
     assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(ENTITIES.definition(Detail.TYPE)));
     Condition condition2 = where(Detail.MASTER_VIA_CODE_FK).equalTo(master);
     assertEquals("master_code = ?", condition2.toString(ENTITIES.definition(Detail.TYPE)));
+  }
+
+  @Test
+  void compositePrimaryKeyConditionWithNullValues() {
+    Key masterKey = ENTITIES.keyBuilder(Master.TYPE)
+            .with(Master.ID_1, 1)
+            .with(Master.ID_2, null)
+            .with(Master.CODE, 3)
+            .build();
+    Condition.condition(masterKey);
+
+    Key masterKey2 = ENTITIES.keyBuilder(Master.TYPE)
+            .with(Master.ID_1, null)
+            .with(Master.ID_2, null)
+            .with(Master.CODE, 42)
+            .build();
+
+    Condition.condition(Arrays.asList(masterKey, masterKey2));
   }
 
   @Test
