@@ -12,8 +12,11 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -24,7 +27,6 @@ import static is.codion.framework.domain.entity.Entity.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 /**
  * Specifies a query condition. A factory class for {@link Condition} and it's descendants.
@@ -113,9 +115,12 @@ public interface Condition {
    */
   static Condition condition(Key key) {
     if (requireNonNull(key).attributes().size() > 1) {
-      return compositeCondition(key.attributes().stream()
-              .collect(Collectors.toMap(Function.identity(), Function.identity())), EQUAL, key.attributes().stream()
-              .collect(Collectors.toMap(Function.identity(), key::get)));
+      Map<Attribute<?>, Attribute<?>> attributeMap = key.attributes().stream()
+              .collect(Collectors.toMap(Function.identity(), Function.identity()));
+      Map<Attribute<?>, Object> valueMap = new HashMap<>();
+      key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
+
+      return compositeCondition(attributeMap, EQUAL, valueMap);
     }
 
     return new MultiValueAttributeCondition<>(key.attribute(), singletonList(key.get()), EQUAL);
@@ -133,11 +138,16 @@ public interface Condition {
     }
     Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.attributes().size() > 1) {
-      return compositeKeyCondition(firstKey.attributes().stream()
-              .collect(Collectors.toMap(Function.identity(), Function.identity())), EQUAL, keys.stream()
-              .map(key -> key.attributes().stream()
-                      .collect(Collectors.<Attribute<?>, Attribute<?>, Object>toMap(attribute -> attribute, key::get)))
-              .collect(toList()));
+      Map<Attribute<?>, Attribute<?>> attributeMap = firstKey.attributes().stream()
+              .collect(Collectors.toMap(Function.identity(), Function.identity()));
+      List<Map<Attribute<?>, Object>> valueMaps = new ArrayList<>(keys.size());
+      keys.forEach(key -> {
+        Map<Attribute<?>, Object> valueMap = new HashMap<>();
+        key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
+        valueMaps.add(valueMap);
+      });
+
+      return compositeKeyCondition(attributeMap, EQUAL, valueMaps);
     }
 
     return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), getValues(keys), EQUAL);
