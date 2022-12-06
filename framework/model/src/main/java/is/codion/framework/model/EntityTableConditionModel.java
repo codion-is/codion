@@ -41,6 +41,7 @@ public interface EntityTableConditionModel {
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.
+   * Enables the condition model in case {@code values} is non-empty or disables it if {@code values is empty}.
    * @param attribute the attribute
    * @param values the search condition values
    * @param <T> the value type
@@ -50,6 +51,7 @@ public interface EntityTableConditionModel {
 
   /**
    * Sets the condition value of the filter model associated with {@code attribute}.
+   * Enables the condition model in case {@code values} is non-empty or disables it if {@code values is empty}.
    * @param attribute the attribute
    * @param value the condition value
    * @param <T> the value type
