@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
+import is.codion.common.state.StateObserver;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
@@ -36,6 +37,10 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   private boolean resizable = true;
   private Dimension size;
   private Consumer<JDialog> onShown;
+  private StateObserver okEnabledState;
+  private StateObserver cancelEnabledState;
+  private Runnable onOk;
+  private Runnable onCancel;
   private Action okAction;
   private Action cancelAction;
   private int buttonPanelConstraints = FlowLayout.RIGHT;
@@ -43,8 +48,6 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   DefaultOkCancelDialogBuilder(JComponent component) {
     this.component = requireNonNull(component);
-    this.okAction = Control.control(new DefaultOkCommand(component));
-    this.cancelAction = Control.control(new DefaultCancelCommand(component));
   }
 
   @Override
@@ -78,23 +81,59 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
+  public OkCancelDialogBuilder okEnabledState(StateObserver okEnabledState) {
+    if (okAction != null) {
+      throw new IllegalStateException("OK action has already been set");
+    }
+    this.okEnabledState = requireNonNull(okEnabledState);
+
+    return this;
+  }
+
+  @Override
+  public OkCancelDialogBuilder cancelEnabledState(StateObserver cancelEnabledState) {
+    if (cancelAction != null) {
+      throw new IllegalStateException("Cancel action has already been set");
+    }
+    this.cancelEnabledState = requireNonNull(cancelEnabledState);
+
+    return this;
+  }
+
+  @Override
   public OkCancelDialogBuilder onOk(Runnable onOk) {
-    return okAction(performAndCloseControl(requireNonNull(onOk)));
+    if (okAction != null) {
+      throw new IllegalStateException("OK action has already been set");
+    }
+    this.onOk = requireNonNull(onOk);
+
+    return this;
   }
 
   @Override
   public OkCancelDialogBuilder onCancel(Runnable onCancel) {
-    return cancelAction(performAndCloseControl(requireNonNull(onCancel)));
+    if (cancelAction != null) {
+      throw new IllegalStateException("Cancel action has already been set");
+    }
+    this.onCancel = requireNonNull(onCancel);
+
+    return this;
   }
 
   @Override
   public OkCancelDialogBuilder okAction(Action okAction) {
+    if (onOk != null) {
+      throw new IllegalStateException("onOk has already been set");
+    }
     this.okAction = requireNonNull(okAction);
     return this;
   }
 
   @Override
   public OkCancelDialogBuilder cancelAction(Action cancelAction) {
+    if (onCancel != null) {
+      throw new IllegalStateException("onCancel has already been set");
+    }
     this.cancelAction = requireNonNull(cancelAction);
     return this;
   }
@@ -115,6 +154,12 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
 
   @Override
   public JDialog build() {
+    if (okAction == null) {
+      okAction = createControl(onOk == null ? new DefaultOkCommand(component) : new PerformAndCloseCommand(onOk, component), okEnabledState);
+    }
+    if (cancelAction == null) {
+      cancelAction = createControl(onCancel == null ? new DefaultCancelCommand(component) : new PerformAndCloseCommand(onCancel, component), cancelEnabledState);
+    }
     JButton okButton = new JButton(okAction);
     okButton.setText(Messages.ok());
     okButton.setMnemonic(Messages.okMnemonic());
@@ -143,8 +188,13 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     return dialog;
   }
 
-  private Control performAndCloseControl(Runnable command) {
-    return Control.control(new PerformAndCloseCommand(command, component));
+  private static Control createControl(Control.Command command, StateObserver enabledState) {
+    Control.Builder builder = Control.builder(command);
+    if (enabledState != null) {
+      builder.enabledState(enabledState);
+    }
+
+    return builder.build();
   }
 
   private static final class CancelOnWindowClosingListener extends WindowAdapter {

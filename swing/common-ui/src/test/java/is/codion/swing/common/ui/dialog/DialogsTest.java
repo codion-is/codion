@@ -4,6 +4,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.event.Event;
+import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -16,6 +18,9 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.util.Collections;
 
+import static is.codion.swing.common.ui.control.Control.control;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 public final class DialogsTest {
 
   @Test
@@ -26,7 +31,7 @@ public final class DialogsTest {
             .icon(Logos.logoTransparent())
             .modal(false)
             .resizable(false)
-            .enterAction(Control.control(() -> {}))
+            .enterAction(control(() -> {}))
             .onOpened(e -> {})
             .onClosed(e -> {})
             .closeEvent(Event.event())
@@ -81,14 +86,40 @@ public final class DialogsTest {
 
   @Test
   void okCancelDialog() {
-    Dialogs.okCancelDialog(new JLabel())
-            .owner(new JLabel())
+    JLabel label = new JLabel();
+    Runnable runnable = () -> {};
+    Dialogs.okCancelDialog(label)
+            .owner(label)
             .title("title")
             .modal(false)
             .icon(Logos.logoTransparent())
-            .onOk(() -> {})
-            .onCancel(() -> {})
+            .onOk(runnable)
+            .onCancel(runnable)
             .build();
+
+    Control.Command command = () -> {};
+    StateObserver state = State.state().observer();
+
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .onOk(runnable)
+            .okAction(control(command)));
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .onCancel(runnable)
+            .cancelAction(control(command)));
+
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .okAction(control(command))
+            .onOk(runnable));
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .cancelAction(control(command))
+            .onCancel(runnable));
+
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .okAction(control(command))
+            .okEnabledState(state));
+    assertThrows(IllegalStateException.class, () -> Dialogs.okCancelDialog(label)
+            .cancelAction(control(command))
+            .cancelEnabledState(state));
   }
 
   @Test

@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.state.StateObserver;
+
 import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.border.Border;
@@ -51,14 +53,32 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
   OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder);
 
   /**
+   * Note that this is overridden by {@link #okAction(Action)}.
+   * @param okEnabledState the state observer controlling the ok enabled state
+   * @return this builder instance
+   * @throws IllegalStateException in case an ok action has already been set
+   */
+  OkCancelDialogBuilder okEnabledState(StateObserver okEnabledState);
+
+  /**
+   * Note that this is overridden by {@link #cancelAction(Action)}.
+   * @param cancelEnabledState the state observer controlling the cancel enabled state
+   * @return this builder instance
+   * @throws IllegalStateException in case a cancel action has already been set
+   */
+  OkCancelDialogBuilder cancelEnabledState(StateObserver cancelEnabledState);
+
+  /**
    * @param onOk called on ok pressed, before the dialog has been disposed
    * @return this builder instance
+   * @throws IllegalStateException in case an ok action has already been set
    */
   OkCancelDialogBuilder onOk(Runnable onOk);
 
   /**
    * @param onCancel called on cancel pressed, before the dialog has been disposed
    * @return this builder instance
+   * @throws IllegalStateException in case a cancel action has already been set
    */
   OkCancelDialogBuilder onCancel(Runnable onCancel);
 

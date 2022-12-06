@@ -8553,3 +8553,4 @@
   buildSrc added with BuildReportsPlugin, replaces ad-hoc buildReports task
   ForeignKeyProperty.Builder.softReference(), boolean parameter added for consistency
   Condition.condition(key) and condition(keys) bug fixed, did not handle null values when using Collectors.toMap()
+  OkCancelDialogBuilder.okEnabledState() and cancelEnabledState() added, refactored
