@@ -131,9 +131,11 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       if (changeEvent.getNewValue() == StateValue.STARTED) {
-        onStarted.run();
         if (isDone()) {
           runOnDone();
+        }
+        else {
+          onStarted.run();
         }
       }
     }
@@ -194,6 +196,9 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
+     * Note that this only gets called if the background processing has not finished
+     * (due to an exception f.ex) when the StateValue.STARTED property change event is fired,
+     * otherwise
      * @param onStarted called on the EDT before background processing is started
      * @return this builder instance
      */

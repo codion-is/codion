@@ -8556,3 +8556,4 @@
   OkCancelDialogBuilder.okEnabledState() and cancelEnabledState() added, refactored
   DefaultProgressWorkerDialogBuilder bug fixed, now correctly sets the dialog title instead of message
   JasperReports and JasperReportsDataSource, now rethrow RuntimeException instead of wrapping
+  ProgressWorker bug fixed, no longer calls onStarted if the worker is done when the StateValue.STARTED event is received, preventing modal dialog deadlocks
