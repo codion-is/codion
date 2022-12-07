@@ -78,6 +78,9 @@ public final class JasperReports {
     try {
       return JasperFillManager.fillReport(report.loadReport(), reportParameters, dataSource);
     }
+    catch (RuntimeException re) {
+      throw re;
+    }
     catch (Exception e) {
       throw new ReportException(e);
     }
