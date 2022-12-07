@@ -8554,3 +8554,4 @@
   ForeignKeyProperty.Builder.softReference(), boolean parameter added for consistency
   Condition.condition(key) and condition(keys) bug fixed, did not handle null values when using Collectors.toMap()
   OkCancelDialogBuilder.okEnabledState() and cancelEnabledState() added, refactored
+  DefaultProgressWorkerDialogBuilder bug fixed, now correctly sets the dialog title instead of message
