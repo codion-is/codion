@@ -173,7 +173,7 @@ dependencyResolutionManagement {
             version('jfreechart', '1.5.3')
             version('jcommon', '1.0.24')
             version('jetty', '9.4.15.v20190215')
-            version('http.client', '4.5.13')
+            version('http.client', '4.5.14')
             version('jaxb.api', '2.3.0')
             version('javax.activation', '1.2.0')
             version('jersey', '2.34')
