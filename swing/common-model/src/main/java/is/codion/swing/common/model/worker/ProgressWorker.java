@@ -196,9 +196,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
-     * Note that this only gets called if the background processing has not finished
-     * (due to an exception f.ex) when the StateValue.STARTED property change event is fired,
-     * otherwise
+     * Note that this does not get called in case the background processing has finished
+     * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
      * @param onStarted called on the EDT before background processing is started
      * @return this builder instance
      */
