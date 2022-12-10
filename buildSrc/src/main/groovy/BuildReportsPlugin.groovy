@@ -34,7 +34,7 @@ class BuildReportsPlugin implements Plugin<Project> {
             project.afterEvaluate {
                 project.getTasks().findByName('classes').finalizedBy(buildReports)
                 project.getTasks().findByName('jar').dependsOn(buildReports)
-                project.getTasks().findByName('test').dependsOn(buildReports)
+                project.getTasks().findByName('compileTestJava').dependsOn(buildReports)
             }
         }
     }
