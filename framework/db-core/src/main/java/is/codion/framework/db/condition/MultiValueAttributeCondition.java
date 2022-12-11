@@ -87,11 +87,12 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     if (values.isEmpty()) {
       return identifier + (notEqual ? " is not null" : " is null");
     }
-    if (attribute().isString() && !caseSensitive) {
+
+    boolean caseInsensitiveString = attribute().isString() && !caseSensitive;
+    if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
-
-    String valuePlaceholder = attribute().isString() && !caseSensitive ? "upper(?)" : "?";
+    String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
     if (values.size() > 1) {
       return createInList(identifier, valuePlaceholder, values.size(), notEqual);
     }

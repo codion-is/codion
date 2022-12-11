@@ -112,20 +112,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private void updateProgress(int progress) {
-    setProgress(progress);
-    if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-      SwingUtilities.invokeLater(() -> onProgress.accept(progress));
-    }
-  }
-
-  private void publishChunks(V... chunks) {
-    publish(chunks);
-    if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
-      SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
-    }
-  }
-
   private final class StateListener implements PropertyChangeListener {
 
     @Override
@@ -196,9 +182,8 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   public interface Builder<T, V> {
 
     /**
-     * Note that this only gets called if the background processing has not finished
-     * (due to an exception f.ex) when the StateValue.STARTED property change event is fired,
-     * otherwise
+     * Note that this does not get called in case the background processing has finished
+     * before the {@link javax.swing.SwingWorker.StateValue#STARTED} change event is fired.
      * @param onStarted called on the EDT before background processing is started
      * @return this builder instance
      */
@@ -262,12 +247,18 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public void setProgress(int progress) {
-      updateProgress(progress);
+      ProgressWorker.this.setProgress(progress);
+      if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
+        SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+      }
     }
 
     @Override
     public void publish(V... chunks) {
-      publishChunks(chunks);
+      ProgressWorker.this.publish(chunks);
+      if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
+        SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
+      }
     }
   }
 
