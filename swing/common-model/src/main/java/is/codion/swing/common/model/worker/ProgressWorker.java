@@ -112,20 +112,6 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     }
   }
 
-  private void updateProgress(int progress) {
-    setProgress(progress);
-    if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-      SwingUtilities.invokeLater(() -> onProgress.accept(progress));
-    }
-  }
-
-  private void publishChunks(V... chunks) {
-    publish(chunks);
-    if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
-      SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
-    }
-  }
-
   private final class StateListener implements PropertyChangeListener {
 
     @Override
@@ -261,12 +247,18 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
 
     @Override
     public void setProgress(int progress) {
-      updateProgress(progress);
+      ProgressWorker.this.setProgress(progress);
+      if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
+        SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+      }
     }
 
     @Override
     public void publish(V... chunks) {
-      publishChunks(chunks);
+      ProgressWorker.this.publish(chunks);
+      if (onPublish != DefaultBuilder.EMPTY_CONSUMER) {
+        SwingUtilities.invokeLater(() -> onPublish.accept(Arrays.asList(chunks)));
+      }
     }
   }
 

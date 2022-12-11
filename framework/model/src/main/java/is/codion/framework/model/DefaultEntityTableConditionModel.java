@@ -296,21 +296,13 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   private static <T> AttributeCondition<T> attributeCondition(ColumnConditionModel<?, T> conditionModel) {
     Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    boolean ignoreCase = !conditionModel.caseSensitiveState().get();
+    boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
     AttributeCondition.Builder<T> builder = Condition.where(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        if (attribute.isString() && ignoreCase) {
-          return (AttributeCondition<T>) builder.equalToIgnoreCase((Collection<String>) equalToValues);
-        }
-
-        return builder.equalTo(equalToValues);
+        return caseInsensitiveString ? (AttributeCondition<T>) builder.equalToIgnoreCase((Collection<String>) equalToValues) : builder.equalTo(equalToValues);
       case NOT_EQUAL:
-        if (attribute.isString() && ignoreCase) {
-          return (AttributeCondition<T>) builder.notEqualToIgnoreCase((Collection<String>) equalToValues);
-        }
-
-        return builder.notEqualTo(equalToValues);
+        return caseInsensitiveString ? (AttributeCondition<T>) builder.notEqualToIgnoreCase((Collection<String>) equalToValues) : builder.notEqualTo(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
