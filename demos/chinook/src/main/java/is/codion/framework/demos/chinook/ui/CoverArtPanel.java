@@ -178,7 +178,7 @@ final class CoverArtPanel extends JPanel {
     protected boolean importFiles(Component component, List<File> files) {
       File importedFile = files.get(0);
       boolean isImage = Arrays.stream(IMAGE_FILE_EXTENSIONS)
-              .anyMatch(extension -> importedFile.getName().endsWith(extension));
+              .anyMatch(extension -> importedFile.getName().toLowerCase().endsWith(extension));
       try {
         imageBytesValue.set(isImage ? Files.readAllBytes(importedFile.toPath()) : null);
 
