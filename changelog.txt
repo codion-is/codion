@@ -8597,3 +8597,4 @@
   ProgressWorker bug fixed, no longer calls onStarted if the worker is done when the StateValue.STARTED event is received, preventing modal dialog deadlocks
   ExceptionPanel, increase description label size a bit
   DatabaseException, add serialVersionUID based on the last class version, for some backwards compatibility
+  NavigableImagePanel bug fixed, image based constructor did not call default constructor
