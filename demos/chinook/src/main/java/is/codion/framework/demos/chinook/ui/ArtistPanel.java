@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -14,8 +14,10 @@ public final class ArtistPanel extends EntityPanel {
     super(artistModel, new ArtistEditPanel(artistModel.editModel()));
     setDetailSplitPanelResizeWeight(0.25);
 
-    SwingEntityModel albumModel = artistModel.detailModel(Chinook.Album.TYPE);
-    EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.editModel()));
+    SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
+    EntityPanel albumPanel = new EntityPanel(albumModel,
+            new AlbumEditPanel(albumModel.editModel()),
+            new AlbumTablePanel(albumModel.tableModel()));
 
     SwingEntityModel trackModel = albumModel.detailModel(Track.TYPE);
     EntityPanel trackPanel = new EntityPanel(trackModel,
