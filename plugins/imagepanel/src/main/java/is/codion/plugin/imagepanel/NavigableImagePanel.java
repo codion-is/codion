@@ -221,6 +221,7 @@ public class NavigableImagePanel extends JPanel {
    * @throws IllegalArgumentException in case the image height and/or width is zero
    */
   public NavigableImagePanel(BufferedImage image) {
+    this();
     setImage(image);
   }
 
