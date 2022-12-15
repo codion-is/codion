@@ -10,9 +10,11 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -227,7 +229,9 @@ public final class EntityComboBoxModelTest {
 
   @Test
   void selectAttributes() {
-    comboBoxModel.setSelectAttributes(Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK));
+    List<Attribute<?>> selectAttributes = Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK);
+    comboBoxModel.setSelectAttributes(selectAttributes);
+    assertTrue(comboBoxModel.getSelectAttributes().containsAll(selectAttributes));
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));
@@ -301,6 +305,17 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
     comboBoxModel.setSelectedItem("SCOTT");
     assertEquals(comboBoxModel.selectedValue().get(Employee.NAME), "SCOTT");
+  }
+
+  @Test
+  void setOrderBy() {
+    comboBoxModel.setSortComparator(null);
+    comboBoxModel.setOrderBy(OrderBy.ascending(Employee.NAME));
+    comboBoxModel.refresh();
+    assertEquals("ADAMS", comboBoxModel.getElementAt(0).get(Employee.NAME));
+    comboBoxModel.setOrderBy(OrderBy.descending(Employee.NAME));
+    comboBoxModel.refresh();
+    assertEquals("WARD", comboBoxModel.getElementAt(0).get(Employee.NAME));
   }
 
   @Test
