@@ -61,7 +61,7 @@ test {
     systemProperty "codion.test.user", "scott:tiger"
 }
 
-task writeVersion {
+tasks.register('writeVersion') {
     group 'build'
     def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + "/version.properties")
     inputs.property("version", project.version)

@@ -1,4 +1,4 @@
-task writeVersion {
+tasks.register('writeVersion') {
     group 'build'
     def versionFile = file(sourceSets.main.output.resourcesDir.getAbsolutePath() + '/is/codion/common/version/version.properties')
     inputs.property("version", project.version)

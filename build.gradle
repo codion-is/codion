@@ -44,7 +44,7 @@ configure(project.frameworkModules) {
 
     ext.moduleName = "is." + project.name.replace('-', '.')
 
-    tasks.withType(JavaCompile) {
+    tasks.withType(JavaCompile).configureEach {
         options.encoding = 'UTF-8'
         options.deprecation = true
     }
@@ -124,7 +124,7 @@ configure(project.frameworkModules) {
     }
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-    task createServerKeystore {
+    tasks.register('createServerKeystore') {
         def keystoreDir = "${rootDir}/framework/server/src/main/config/"
         def keystore = keystoreDir + 'keystore.jks'
         def truststore = keystoreDir + 'truststore.jks'
@@ -180,7 +180,7 @@ configure(project.frameworkModules) {
     }
 }
 
-task tagRelease {
+tasks.register('tagRelease') {
     doLast {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Thou shalt not tag a snapshot release")
@@ -196,7 +196,7 @@ boolean hasPublicationProperties() {
     return project.hasProperty('artifactoryUsername') &&
             project.hasProperty('artifactoryPassword') &&
             project.hasProperty('artifactorySnapshotUrl') &&
-            project.hasProperty('artifactoryReleaseUrl');
+            project.hasProperty('artifactoryReleaseUrl')
 }
 
 boolean hasSonarqubeProperties() {

@@ -14,13 +14,13 @@ class BuildReportsPlugin implements Plugin<Project> {
     @Override
     void apply(final Project project) {
         def config = project.extensions.create('buildReports', BuildReportsExtension)
-        def buildReports = project.task('buildReports') {
+        def buildReports = project.tasks.register('buildReports') {
             group = 'build'
             inputs.dir config.sourceDir
             outputs.dir config.targetDir
             doLast {
                 def javaPlugin = project.getExtensions().getByType(JavaPluginExtension.class)
-                def main = javaPlugin.getSourceSets().findByName('main')
+                def main = javaPlugin.getSourceSets().named('main').get()
                 ant.lifecycleLogLevel = 'INFO'
                 ant.taskdef(name: 'jrc', classname: 'net.sf.jasperreports.ant.JRAntCompileTask',
                         classpath: main.getRuntimeClasspath().asPath)
@@ -32,9 +32,9 @@ class BuildReportsPlugin implements Plugin<Project> {
         }
         project.configure(project) {
             project.afterEvaluate {
-                project.getTasks().findByName('classes').finalizedBy(buildReports)
-                project.getTasks().findByName('jar').dependsOn(buildReports)
-                project.getTasks().findByName('compileTestJava').dependsOn(buildReports)
+                project.getTasks().named('classes').get().finalizedBy(buildReports)
+                project.getTasks().named('jar').get().dependsOn(buildReports)
+                project.getTasks().named('compileTestJava').get().dependsOn(buildReports)
             }
         }
     }

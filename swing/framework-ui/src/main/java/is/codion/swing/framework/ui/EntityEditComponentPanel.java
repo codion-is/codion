@@ -797,7 +797,7 @@ public class EntityEditComponentPanel extends JPanel {
     FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
     comboBoxModel.addRefreshFailedListener(this::onException);
 
-    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, (ComboBoxModel<T>) comboBoxModel)
+    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 
