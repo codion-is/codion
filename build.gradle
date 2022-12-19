@@ -182,7 +182,7 @@ boolean hasPublicationProperties() {
     return project.hasProperty('artifactoryUsername') &&
             project.hasProperty('artifactoryPassword') &&
             project.hasProperty('artifactorySnapshotUrl') &&
-            project.hasProperty('artifactoryReleaseUrl');
+            project.hasProperty('artifactoryReleaseUrl')
 }
 
 boolean hasSonarqubeProperties() {

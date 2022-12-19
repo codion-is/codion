@@ -99,7 +99,7 @@ public final class EmpDept extends DefaultDomain {
     BigDecimal getSalary();
     void setSalary(BigDecimal salary);
     Double getCommission();
-    void setCommission( Double commission);
+    void setCommission(Double commission);
     Department getDepartment();
     void setDepartment(Department department);
   }
