@@ -8598,3 +8598,4 @@
   ExceptionPanel, increase description label size a bit
   DatabaseException, add serialVersionUID based on the last class version, for some backwards compatibility
   NavigableImagePanel bug fixed, image based constructor did not call default constructor
+  EntityComboBoxModel.getSelectAttributes(), setOrderBy() and getOrderBy() added, javadoc improvements

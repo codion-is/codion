@@ -23,6 +23,7 @@ import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -48,7 +49,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /** The attributes to include when selecting the entities for this combo box model, an empty list indicates all attributes */
   private final Collection<Attribute<?>> selectAttributes = new ArrayList<>(0);
   private final Entities entities;
-  private final OrderBy orderBy;
   /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
@@ -58,11 +58,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
   private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
 
-  /** true if the data should only be fetched once, unless {@code forceRefresh()} is called */
+  /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
   private Supplier<Condition> selectConditionSupplier;
+  private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
   private boolean listenToEditEvents = true;
 
@@ -145,7 +146,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Specifies the attributes to include when selecting the entities to populate this model with.
    * Note that the primary key attribute values are always included.
    * An empty Collection indicates that all attributes should be selected.
-   * @param selectAttributes the attributes to select
+   * @param selectAttributes the attributes to select, an empty Collection for all available attributes
    * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
    */
   public final void setSelectAttributes(Collection<Attribute<?>> selectAttributes) {
@@ -156,6 +157,14 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
     this.selectAttributes.clear();
     this.selectAttributes.addAll(selectAttributes);
+  }
+
+  /**
+   * @return an unmodifiable view of the attributes to include when selecting entities for this model,
+   * an empty Collection indicates all available attributes
+   */
+  public final Collection<Attribute<?>> getSelectAttributes() {
+    return unmodifiableCollection(selectAttributes);
   }
 
   /**
@@ -216,7 +225,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the condition provider to use when querying data
+   * Sets the condition provider to use when querying data, set to null to fetch all underlying entities.
    * @param selectConditionSupplier the condition supplier
    */
   public final void setSelectConditionSupplier(Supplier<Condition> selectConditionSupplier) {
@@ -228,6 +237,24 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    */
   public final Supplier<Condition> getSelectConditionSupplier() {
     return this.selectConditionSupplier;
+  }
+
+  /**
+   * Sets the order by to use when selecting entities for this model.
+   * Note that in order for this to have an effect, you must disable sorting
+   * by setting the sort comparator to null ({@link #setSortComparator(Comparator)}
+   * @param orderBy the order by
+   * @see #setSortComparator(Comparator)
+   */
+  public final void setOrderBy(OrderBy orderBy) {
+    this.orderBy = orderBy;
+  }
+
+  /**
+   * @return the order by, possibly null
+   */
+  public final OrderBy getOrderBy() {
+    return orderBy;
   }
 
   /**
@@ -381,9 +408,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the {@link #getSelectConditionSupplier()} specified for this model
+   * the select condition supplier ({@link #getSelectConditionSupplier()}) as well as the
+   * select attributes ({@link #getSelectAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #getSelectConditionSupplier()
+   * @see #getSelectAttributes()
+   * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
     Condition condition = selectConditionSupplier == null ? condition(entityType) : selectConditionSupplier.get();

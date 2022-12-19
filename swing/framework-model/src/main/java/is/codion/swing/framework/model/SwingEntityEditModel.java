@@ -111,7 +111,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * Returns a {@link EntityComboBoxModel} for the given foreign key attribute. If one does not exist it is created.
+   * Returns the {@link EntityComboBoxModel} for the given foreign key attribute. If one does not exist one is created.
    * @param foreignKey the foreign key attribute
    * @return a {@link EntityComboBoxModel} based on the entity referenced by the given foreign key attribute
    * @see #createForeignKeyComboBoxModel(ForeignKey)
@@ -133,7 +133,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * Returns a {@link FilteredComboBoxModel} for the given attribute,
+   * Returns the {@link FilteredComboBoxModel} for the given attribute. If one does not exist one is created.
    * @param attribute the attribute
    * @param <T> the value type
    * @return a {@link FilteredComboBoxModel} for the given attribute
@@ -164,12 +164,12 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * Creates a default {@link EntityComboBoxModel} for the given attribute, override to provide
-   * a specific {@link EntityComboBoxModel} (filtered for example) for attributes.
-   * This method is called when creating a {@link EntityComboBoxModel} for foreign keys, both
-   * for the edit fields used when editing a single record and the edit field used when updating multiple records.
-   * This default implementation returns a sorted {@link EntityComboBoxModel} with the default nullValueItem
-   * if the underlying attribute is nullable.
+   * Creates a {@link EntityComboBoxModel} for the given foreign key, override to
+   * provide a custom {@link EntityComboBoxModel} implementation.
+   * This method is called when creating a foreign key {@link EntityComboBoxModel} for the edit
+   * fields used when editing a single record.
+   * This default implementation returns a sorted {@link EntityComboBoxModel} with the default
+   * nullValueCaption if the underlying attribute is nullable.
    * If the foreign key property has select attributes defined, those are set in the combo box model.
    * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
    * @return a {@link EntityComboBoxModel} for the given foreign key
