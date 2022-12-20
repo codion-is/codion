@@ -304,7 +304,7 @@ public final class NumberFieldTest {
   void decimalSeparators() {
     NumberField<Double>doubleField = NumberField.builder(Double.class).build();
     doubleField.setGroupingUsed(false);
-    doubleField.setSeparators('.', ',');
+    doubleField.setDecimalSeparator('.');
     doubleField.setText("1.5");
     assertEquals(Double.valueOf(1.5), doubleField.getNumber());
     doubleField.setText("123.34.56");
@@ -314,6 +314,12 @@ public final class NumberFieldTest {
     assertEquals(Double.valueOf(1.5), doubleField.getNumber());
     doubleField.setText("1,4.5");
     assertEquals(Double.valueOf(1.5), doubleField.getNumber());
+
+    doubleField.setDecimalSeparator(',');
+    doubleField.setText("1,6");
+    assertEquals(Double.valueOf(1.6), doubleField.getNumber());
+    doubleField.setText("123,34,56");
+    assertEquals(Double.valueOf(1.6), doubleField.getNumber());
   }
 
   @Test
@@ -340,6 +346,12 @@ public final class NumberFieldTest {
     assertEquals("12,345,678.9", doubleField.getText());
     doubleField.setSeparators(',', '.');
     assertEquals("12.345.678,9", doubleField.getText());
+
+    doubleField.setDecimalSeparator('.');
+    doubleField.setGroupingSeparator(',');
+    doubleField.setNumber(12345678.9);
+
+    assertEquals("12,345,678.9", doubleField.getText());
   }
 
   @Test

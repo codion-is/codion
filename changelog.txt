@@ -8599,3 +8599,4 @@
   DatabaseException, add serialVersionUID based on the last class version, for some backwards compatibility
   NavigableImagePanel bug fixed, image based constructor did not call default constructor
   EntityComboBoxModel.getSelectAttributes(), setOrderBy() and getOrderBy() added, javadoc improvements
+  NumberDocument.setDecimalSeparator() and setGroupingSeparator() bug fixed, did not set the decimal format symbols on the format after changing decimal/grouping separator, like setSeparators() does
