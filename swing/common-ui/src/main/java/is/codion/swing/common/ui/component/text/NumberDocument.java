@@ -98,11 +98,17 @@ class NumberDocument<T extends Number> extends PlainDocument {
   void setDecimalSeparator(char decimalSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setDecimalSeparator(decimalSeparator);
+    T number = getNumber();
+    ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
+    setNumber(number);
   }
 
   void setGroupingSeparator(char groupingSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
     symbols.setGroupingSeparator(groupingSeparator);
+    T number = getNumber();
+    ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
+    setNumber(number);
   }
 
   static class NumberParser<T extends Number> implements Parser<T> {
