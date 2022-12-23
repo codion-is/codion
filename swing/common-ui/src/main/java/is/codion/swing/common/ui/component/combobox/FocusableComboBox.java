@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component.combobox;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
+import java.awt.event.FocusListener;
 
 final class FocusableComboBox<T> extends JComboBox<T> {
 
@@ -23,6 +24,22 @@ final class FocusableComboBox<T> extends JComboBox<T> {
     }
     else {
       super.requestFocus();
+    }
+  }
+
+  @Override
+  public synchronized void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    if (isEditable()) {
+      getEditor().getEditorComponent().addFocusListener(listener);
+    }
+  }
+
+  @Override
+  public synchronized void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    if (isEditable()) {
+      getEditor().getEditorComponent().removeFocusListener(listener);
     }
   }
 }
