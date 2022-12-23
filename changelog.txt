@@ -8563,3 +8563,4 @@
   EntityComboBoxModel.getSelectAttributes(), setOrderBy() and getOrderBy() added, javadoc improvements
   NumberDocument.setDecimalSeparator() and setGroupingSeparator() bug fixed, did not set the decimal format symbols on the format after changing decimal/grouping separator, like setSeparators() does
   EntityComboBox, FocusableComboBox, add/removeFocusListener() overridden in order for the editor component to recieve focus events, when editable
+  EntityPanel.createEditBasePanel() added
