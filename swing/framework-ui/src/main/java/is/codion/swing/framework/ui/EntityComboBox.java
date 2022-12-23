@@ -23,6 +23,7 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
+import java.awt.event.FocusListener;
 import java.util.Collection;
 import java.util.ResourceBundle;
 
@@ -60,6 +61,22 @@ public final class EntityComboBox extends JComboBox<Entity> {
     }
     else {
       super.requestFocus();
+    }
+  }
+
+  @Override
+  public synchronized void addFocusListener(FocusListener listener) {
+    super.addFocusListener(listener);
+    if (isEditable()) {
+      getEditor().getEditorComponent().addFocusListener(listener);
+    }
+  }
+
+  @Override
+  public synchronized void removeFocusListener(FocusListener listener) {
+    super.removeFocusListener(listener);
+    if (isEditable()) {
+      getEditor().getEditorComponent().removeFocusListener(listener);
     }
   }
 

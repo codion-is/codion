@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -55,6 +56,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static java.awt.event.InputEvent.*;
@@ -1075,6 +1077,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   protected void initialize() {/*Provided for subclasses*/}
 
   /**
+   * Creates a base panel for the edit panel.
+   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #controlPanelConstraints()}.
+   * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
+   * @param editPanel the initialized edit panel
+   * @return a base panel for the edit panel
+   */
+  protected JPanel createEditBasePanel(EntityEditPanel editPanel) {
+    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
+            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
+
+    return Components.panel(flowLayout(alignment))
+            .add(editPanel)
+            .build();
+  }
+
+  /**
    * Creates the control panel or component to place next to the edit panel, containing controls for managing
    * records, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
@@ -1288,11 +1306,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   protected final void initializeEditControlPanel() {
     editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
-    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
-            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    JPanel propertyBase = new JPanel(Layouts.flowLayout(alignment));
-    propertyBase.add(editPanel);
-    editControlPanel.add(propertyBase, BorderLayout.CENTER);
+    editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {
       JComponent controlPanel = createEditControlPanel();
       if (controlPanel != null) {
