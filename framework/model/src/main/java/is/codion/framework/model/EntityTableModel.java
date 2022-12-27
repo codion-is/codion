@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -321,12 +320,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param keys the primary keys of the entities to select
    */
   void selectByKey(Collection<Key> keys);
-
-  /**
-   * Returns an Iterator which iterates through the selected entities
-   * @return an iterator for the selected entities
-   */
-  Iterator<Entity> selectedEntitiesIterator();
 
   /**
    * @param primaryKey the primary key to search by
