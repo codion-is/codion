@@ -8565,3 +8565,5 @@
   EntityComboBox, FocusableComboBox, add/removeFocusListener() overridden in order for the editor component to recieve focus events, when editable
   EntityPanel.createEditBasePanel() added
   EntityTableModel.selectedEntitiesIterator() removed
+  FilteredTable, some minor refactoring
+  Use ActionEvent.ACTION_PERFORMED as id when creating ActionEvents

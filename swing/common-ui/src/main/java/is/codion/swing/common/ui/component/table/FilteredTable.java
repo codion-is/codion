@@ -49,7 +49,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
 import java.util.Comparator;
@@ -174,7 +173,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = createSearchField();
-    initializeTableHeader();
+    initializeTableHeader(getTableHeader());
     bindEvents();
   }
 
@@ -311,7 +310,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
-   * Shows a dialog for selecting which columns to show/hide
+   * Shows a dialog for selecting which columns to display
    */
   public void selectColumns() {
     SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.columnModel());
@@ -584,19 +583,22 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .build();
   }
 
-  private void initializeTableHeader() {
-    getTableHeader().addMouseListener(new ColumnFilterPanelMouseHandler());
-    tableModel.addSortListener(getTableHeader()::repaint);
-    getTableHeader().setReorderingAllowed(true);
-    getTableHeader().setAutoscrolls(true);
-    getTableHeader().addMouseMotionListener(new ColumnDragMouseHandler());
-    getTableHeader().addMouseListener(new MouseSortHandler());
-    tableModel.columnModel().columns().forEach(tableColumn ->
-            tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer())));
+  private void initializeTableHeader(JTableHeader header) {
+    header.addMouseListener(new ColumnFilterPanelMouseHandler());
+    header.setReorderingAllowed(true);
+    header.setAutoscrolls(true);
+    header.addMouseMotionListener(new ColumnDragMouseHandler());
+    header.addMouseListener(new MouseSortHandler());
+    tableModel.addSortListener(header::repaint);
+    tableModel.columnModel().columns().forEach(this::setColumnHeaderRenderer);
+  }
+
+  private void setColumnHeaderRenderer(FilteredTableColumn<C> tableColumn) {
+    tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer()));
   }
 
   private void bindEvents() {
-    addMouseListener(createTableMouseListener());
+    addMouseListener(new FilteredTableMouseListener());
     tableModel.selectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
@@ -622,27 +624,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
-  }
-
-  /**
-   * Creates the MouseListener for the table component handling double click.
-   * Double-clicking invokes the action returned by {@link #getDoubleClickAction()}
-   * with this table as the ActionEvent source
-   * @return the MouseListener for the table
-   * @see #getDoubleClickAction()
-   */
-  private MouseListener createTableMouseListener() {
-    return new MouseAdapter() {
-      @Override
-      public void mouseClicked(MouseEvent e) {
-        if (e.getClickCount() == 2) {
-          if (doubleClickAction != null) {
-            doubleClickAction.actionPerformed(new ActionEvent(this, -1, "doubleClick"));
-          }
-          doubleClickedEvent.onEvent(e);
-        }
-      }
-    };
   }
 
   private static final class DefaultConditionPanelFactory<C> implements ConditionPanelFactory {
@@ -699,6 +680,24 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
       return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
               tableModel.sortModel().sortingState(columnIdentifier).priority());
+    }
+  }
+
+  /**
+   * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
+   * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(EventDataListener)} event.
+   * @see #getDoubleClickAction()
+   */
+  private final class FilteredTableMouseListener extends MouseAdapter {
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+      if (e.getClickCount() == 2) {
+        if (doubleClickAction != null) {
+          doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
+        }
+        doubleClickedEvent.onEvent(e);
+      }
     }
   }
 
@@ -806,6 +805,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private final class ColumnFilterPanelMouseHandler extends MouseAdapter {
+
     @Override
     public void mouseClicked(MouseEvent e) {
       if (e.isAltDown() && e.isControlDown()) {
