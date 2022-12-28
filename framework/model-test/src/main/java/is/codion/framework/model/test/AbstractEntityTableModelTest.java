@@ -93,7 +93,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
-    Iterator<Entity> iterator = tableModel.selectedEntitiesIterator();
+    Iterator<Entity> iterator = tableModel.selectionModel().getSelectedItems().iterator();
     assertEquals(tableModel.items().get(0), iterator.next());
     assertEquals(tableModel.items().get(3), iterator.next());
     assertEquals(tableModel.items().get(5), iterator.next());

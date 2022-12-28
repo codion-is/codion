@@ -613,11 +613,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
       for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
-        entityModel.detailModelHandler(activeModel).setActive(false);
+        entityModel.detailModelLink(activeModel).setActive(false);
       }
       SwingEntityModel detailModel = selectedDetailPanel().model();
       if (entityModel.containsDetailModel(detailModel)) {
-        entityModel.detailModelHandler(detailModel).setActive(true);
+        entityModel.detailModelLink(detailModel).setActive(true);
       }
     }
   }
@@ -857,7 +857,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     SwingEntityModel detailModel = selectedDetailPanel().model();
     if (entityModel.containsDetailModel(detailModel)) {
-      entityModel.detailModelHandler(detailModel).setActive(state != HIDDEN);
+      entityModel.detailModelLink(detailModel).setActive(state != HIDDEN);
     }
 
     detailPanelState = state;

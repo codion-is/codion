@@ -82,11 +82,11 @@ public final class DefaultControlTest {
 
   @Test
   void actionCommand() {
-    ActionEvent event = new ActionEvent(this, -1, "test");
+    ActionEvent event = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "test");
     Control test = Control.actionControl(actionEvent -> {
       assertSame(this, actionEvent.getSource());
       assertEquals(actionEvent.getActionCommand(), "test");
-      assertEquals(actionEvent.getID(), -1);
+      assertEquals(actionEvent.getID(), ActionEvent.ACTION_PERFORMED);
     });
     assertTrue(test instanceof DefaultActionControl);
     test.actionPerformed(event);

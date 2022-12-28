@@ -464,11 +464,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final Iterator<Entity> selectedEntitiesIterator() {
-    return selectionModel().getSelectedItems().iterator();
-  }
-
-  @Override
   public final void setVisibleColumns(Attribute<?>... attributes) {
     columnModel().setVisibleColumns(attributes);
   }

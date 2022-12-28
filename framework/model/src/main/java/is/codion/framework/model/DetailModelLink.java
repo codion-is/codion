@@ -16,7 +16,7 @@ import java.util.Map;
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  */
-public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
+public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends EntityEditModel, T extends EntityTableModel<E>> {
 
   /**
    * @return the detail model
@@ -29,14 +29,14 @@ public interface DetailModelHandler<M extends EntityModel<M, E, T>, E extends En
   StateObserver activeObserver();
 
   /**
-   * @return true if this handler is active
+   * @return true if this link is active
    */
   boolean isActive();
 
   /**
-   * Sets the active state of this handler. Active detail model handlers update and filter
+   * Sets the active state of this link. Active detail model handlers update and filter
    * the detail model according to the entity/entities selected in this (the master) model.
-   * @param active true if this handler should be activated
+   * @param active true if this link should be activated
    */
   void setActive(boolean active);
 

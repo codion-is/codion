@@ -80,10 +80,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}.
    * Note that the detail model is associated with the first foreign key found referencing this models entity.
    * @param detailModel the detail model
-   * @return the resulting {@link ForeignKeyDetailModelHandler}
+   * @return the resulting {@link ForeignKeyDetailModelLink}
    * @throws IllegalArgumentException in case no foreign key exists between the entities involved
    */
-  ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel);
+  ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
@@ -93,19 +93,19 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * same master entity.
    * @param detailModel the detail model
    * @param foreignKey the foreign key to base the detail model on
-   * @return the resulting {@link ForeignKeyDetailModelHandler}
+   * @return the resulting {@link ForeignKeyDetailModelLink}
    */
-  ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
+  ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey);
 
   /**
    * Adds the given detail model to this model, a side effect if the detail model contains
    * a table model is that it is configured so that a query condition is required for it to show
    * any data, via {@link EntityTableModel#queryConditionRequiredState()}
-   * @param detailModelHandler the {@link DetailModelHandler} to add
-   * @param <H> the {@link DetailModelHandler} type
-   * @return the {@link DetailModelHandler}
+   * @param detailModelLink the {@link DetailModelLink} to add
+   * @param <L> the {@link DetailModelLink} type
+   * @return the {@link DetailModelLink}
    */
-  <H extends DetailModelHandler<M, E, T>> H addDetailModel(H detailModelHandler);
+  <L extends DetailModelLink<M, E, T>> L addDetailModel(L detailModelLink);
 
   /**
    * @param modelClass the detail model class
@@ -130,7 +130,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param <T> the model type
    * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type {@code entityModelClass}
-   * @throws IllegalArgumentException in case a model is not found
+   * @throws IllegalArgumentException in case this model does not contain a detail model of the given type
    */
   <T extends M> T detailModel(Class<? extends M> modelClass);
 
@@ -138,7 +138,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * Returns a detail model of the given type
    * @param entityType the entityType of the required EntityModel
    * @return the detail model of type {@code entityModelClass}
-   * @throws IllegalArgumentException in case no detail model for the given entityType is found
+   * @throws IllegalArgumentException in case this model does not contain a detail model for the entityType
    */
   M detailModel(EntityType entityType);
 
@@ -149,13 +149,16 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * @param detailModel the detail model
-   * @param <H> the {@link DetailModelHandler} type
-   * @return the detail model handler for the given detail model
+   * @param <L> the {@link DetailModelLink} type
+   * @return the link for the given detail model
+   * @throws IllegalArgumentException in case this model does not contain the given detail model
    */
-  <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel);
+  <L extends DetailModelLink<M, E, T>> L detailModelLink(M detailModel);
 
   /**
-   * Saves any user preferences
+   * Saves any user preferences for this model, its table model and each detail model.
+   * Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false', calling this method has no effect.
+   * Remember to call super.savePreferences() when overriding.
    */
   void savePreferences();
 

@@ -184,7 +184,7 @@ public final class Utilities {
           public void windowGainedFocus(WindowEvent windowEvent) {
             component.requestFocus();
             if (onFocusAction != null) {
-              onFocusAction.actionPerformed(new ActionEvent(component, 0, "onFocusAction"));
+              onFocusAction.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, "onFocusAction"));
             }
           }
         });

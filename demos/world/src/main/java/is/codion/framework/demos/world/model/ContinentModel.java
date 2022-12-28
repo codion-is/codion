@@ -6,7 +6,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.framework.model.SwingDetailModelHandler;
+import is.codion.swing.framework.model.SwingDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 import org.jfree.data.category.CategoryDataset;
@@ -28,7 +28,7 @@ public final class ContinentModel extends SwingEntityModel {
     super(Continent.TYPE, connectionProvider);
     tableModel().addRefreshListener(this::refreshChartDatasets);
     CountryModel countryModel = new CountryModel(connectionProvider);
-    addDetailModel(new CountryModelHandler(countryModel)).setActive(true);
+    addDetailModel(new CountryModelLink(countryModel)).setActive(true);
   }
 
   public PieDataset<String> populationDataset() {
@@ -73,9 +73,9 @@ public final class ContinentModel extends SwingEntityModel {
     }
   }
 
-  private static final class CountryModelHandler extends SwingDetailModelHandler {
+  private static final class CountryModelLink extends SwingDetailModelLink {
 
-    private CountryModelHandler(SwingEntityModel detailModel) {
+    private CountryModelLink(SwingEntityModel detailModel) {
       super(detailModel);
     }
 

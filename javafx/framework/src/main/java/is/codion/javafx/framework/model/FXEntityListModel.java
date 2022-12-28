@@ -38,7 +38,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -375,11 +374,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
             .orElse(null);
-  }
-
-  @Override
-  public final Iterator<Entity> selectedEntitiesIterator() {
-    return selectionModel().getSelectedItems().iterator();
   }
 
   @Override

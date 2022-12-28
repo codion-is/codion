@@ -12,7 +12,7 @@ import java.util.Map;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link DetailModelHandler} implementation which does nothing.
+ * A default {@link DetailModelLink} implementation which does nothing.
  * Override one or more methods that define the detail model behaviour.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
@@ -22,13 +22,13 @@ import static java.util.Objects.requireNonNull;
  * @see #onUpdate(Map)
  * @see #onDelete(List)
  */
-public class DefaultDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
-        T extends EntityTableModel<E>> implements DetailModelHandler<M, E, T> {
+public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+        T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
 
   private final M detailModel;
   private final State activeState = State.state();
 
-  public DefaultDetailModelHandler(M detailModel) {
+  public DefaultDetailModelLink(M detailModel) {
     this.detailModel = requireNonNull(detailModel, "detailModel");
     if (detailModel.containsTableModel()) {
       detailModel.tableModel().queryConditionRequiredState().set(true);
