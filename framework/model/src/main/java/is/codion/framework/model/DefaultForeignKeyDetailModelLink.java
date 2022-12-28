@@ -14,25 +14,25 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
 /**
- * A default {@link ForeignKeyDetailModelHandler} implementation.
+ * A default {@link ForeignKeyDetailModelLink} implementation.
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
  */
-public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
-        T extends EntityTableModel<E>> extends DefaultDetailModelHandler<M, E, T> implements ForeignKeyDetailModelHandler<M, E, T> {
+public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
+        T extends EntityTableModel<E>> extends DefaultDetailModelLink<M, E, T> implements ForeignKeyDetailModelLink<M, E, T> {
 
   private final ForeignKey foreignKey;
 
-  private boolean clearForeignKeyOnEmptySelection = ForeignKeyDetailModelHandler.CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION.get();
-  private boolean searchByInsertedEntity = ForeignKeyDetailModelHandler.SEARCH_BY_INSERTED_ENTITY.get();
-  private boolean refreshOnSelection = ForeignKeyDetailModelHandler.REFRESH_ON_SELECTION.get();
+  private boolean clearForeignKeyOnEmptySelection = ForeignKeyDetailModelLink.CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION.get();
+  private boolean searchByInsertedEntity = ForeignKeyDetailModelLink.SEARCH_BY_INSERTED_ENTITY.get();
+  private boolean refreshOnSelection = ForeignKeyDetailModelLink.REFRESH_ON_SELECTION.get();
 
   /**
    * @param detailModel the detail model
    * @param foreignKey the foreign key to base this link on
    */
-  public DefaultForeignKeyDetailModelHandler(M detailModel, ForeignKey foreignKey) {
+  public DefaultForeignKeyDetailModelLink(M detailModel, ForeignKey foreignKey) {
     super(detailModel);
     this.foreignKey = requireNonNull(foreignKey, "foreignKey");
   }
@@ -48,7 +48,7 @@ public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M,
   }
 
   @Override
-  public final ForeignKeyDetailModelHandler<M, E, T> setSearchByInsertedEntity(boolean searchByInsertedEntity) {
+  public final ForeignKeyDetailModelLink<M, E, T> setSearchByInsertedEntity(boolean searchByInsertedEntity) {
     this.searchByInsertedEntity = searchByInsertedEntity;
     return this;
   }
@@ -59,7 +59,7 @@ public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M,
   }
 
   @Override
-  public final ForeignKeyDetailModelHandler<M, E, T> setRefreshOnSelection(boolean refreshOnSelection) {
+  public final ForeignKeyDetailModelLink<M, E, T> setRefreshOnSelection(boolean refreshOnSelection) {
     this.refreshOnSelection = refreshOnSelection;
     return this;
   }
@@ -70,7 +70,7 @@ public class DefaultForeignKeyDetailModelHandler<M extends DefaultEntityModel<M,
   }
 
   @Override
-  public final ForeignKeyDetailModelHandler<M, E, T> setClearForeignKeyOnEmptySelection(boolean clearForeignKeyOnEmptySelection) {
+  public final ForeignKeyDetailModelLink<M, E, T> setClearForeignKeyOnEmptySelection(boolean clearForeignKeyOnEmptySelection) {
     this.clearForeignKeyOnEmptySelection = clearForeignKeyOnEmptySelection;
     return this;
   }

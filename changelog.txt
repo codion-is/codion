@@ -8567,3 +8567,4 @@
   EntityTableModel.selectedEntitiesIterator() removed
   FilteredTable, some minor refactoring
   Use ActionEvent.ACTION_PERFORMED as id when creating ActionEvents
+  DetailModelHandler renamed DetailModelLink

@@ -16,7 +16,7 @@ import is.codion.framework.model.DefaultEntityModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableModel;
-import is.codion.framework.model.ForeignKeyDetailModelHandler;
+import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
 
@@ -190,9 +190,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void activateDeactivateDetailModel() {
-    departmentModel.detailModelHandler(departmentModel.detailModel(Employee.TYPE)).setActive(false);
+    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).setActive(false);
     assertTrue(departmentModel.activeDetailModels().isEmpty());
-    departmentModel.detailModelHandler(departmentModel.detailModel(Employee.TYPE)).setActive(true);
+    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).setActive(true);
     assertFalse(departmentModel.activeDetailModels().isEmpty());
     assertTrue(departmentModel.activeDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
   }
@@ -203,9 +203,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
       return;
     }
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
-    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
-    handler.setSearchByInsertedEntity(true);
-    assertTrue(handler.isSearchByInsertedEntity());
+    ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
+    link.setSearchByInsertedEntity(true);
+    assertTrue(link.isSearchByInsertedEntity());
     EntityEditModel editModel = departmentModel.editModel();
     editModel.put(Department.ID, 100);
     editModel.put(Department.NAME, "Name");
@@ -226,8 +226,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
     EditModel employeeEditModel = employeeModel.editModel();
 
-    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
-    handler.setClearForeignKeyOnEmptySelection(false);
+    ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
+    link.setClearForeignKeyOnEmptySelection(false);
 
     Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
 
@@ -238,7 +238,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().clearSelection();
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
 
-    handler.setClearForeignKeyOnEmptySelection(true);
+    link.setClearForeignKeyOnEmptySelection(true);
 
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
@@ -246,7 +246,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().clearSelection();
     assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK));
 
-    handler.setClearForeignKeyOnEmptySelection(false);
+    link.setClearForeignKeyOnEmptySelection(false);
 
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(dept, employeeEditModel.get(Employee.DEPARTMENT_FK));
@@ -260,8 +260,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     Model employeeModel = departmentModel.detailModel(Employee.TYPE);
     TableModel employeeTableModel = employeeModel.tableModel();
 
-    ForeignKeyDetailModelHandler<Model, EditModel, TableModel> handler = departmentModel.detailModelHandler(employeeModel);
-    handler.setRefreshOnSelection(false);
+    ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
+    link.setRefreshOnSelection(false);
 
     Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
 
@@ -269,7 +269,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertEquals(0, employeeTableModel.getRowCount());
 
-    handler.setRefreshOnSelection(true);
+    link.setRefreshOnSelection(true);
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
     assertNotEquals(0, employeeTableModel.getRowCount());
   }

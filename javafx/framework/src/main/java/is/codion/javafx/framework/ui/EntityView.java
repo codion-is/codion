@@ -340,7 +340,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
     FXEntityModel entityModel = model();
     if (model.containsDetailModel(tabbedDetailPanel().model)) {
-      entityModel.detailModelHandler(tabbedDetailPanel().model).setActive(state != PanelState.HIDDEN);
+      entityModel.detailModelLink(tabbedDetailPanel().model).setActive(state != PanelState.HIDDEN);
     }
     detailPanelState = state;
     if (state.equals(PanelState.EMBEDDED)) {

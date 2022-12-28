@@ -50,7 +50,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Map<M, DetailModelHandler<M, E, T>> detailModels = new HashMap<>();
+  private final Map<M, DetailModelLink<M, E, T>> detailModels = new HashMap<>();
   private final Event<Collection<M>> activeDetailModelsEvent = Event.event();
 
   /**
@@ -126,7 +126,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel) {
+  public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     List<ForeignKey> foreignKeys = detailModel.editModel().entityDefinition().foreignKeys(editModel.entityType());
     if (foreignKeys.isEmpty()) {
@@ -138,26 +138,26 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final ForeignKeyDetailModelHandler<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
+  public final ForeignKeyDetailModelLink<M, E, T> addDetailModel(M detailModel, ForeignKey foreignKey) {
     requireNonNull(detailModel, DETAIL_MODEL_PARAMETER);
     requireNonNull(foreignKey, "foreignKey");
 
-    return addDetailModel(new DefaultForeignKeyDetailModelHandler<>(detailModel, foreignKey));
+    return addDetailModel(new DefaultForeignKeyDetailModelLink<>(detailModel, foreignKey));
   }
 
   @Override
-  public final <H extends DetailModelHandler<M, E, T>> H addDetailModel(H detailModelHandler) {
-    requireNonNull(detailModelHandler, "detailModelHandler");
-    if (this == detailModelHandler.detailModel()) {
+  public final <L extends DetailModelLink<M, E, T>> L addDetailModel(L detailModelLink) {
+    requireNonNull(detailModelLink, "detailModelLink");
+    if (this == detailModelLink.detailModel()) {
       throw new IllegalArgumentException("A model can not be its own detail model");
     }
-    if (detailModels.containsKey(detailModelHandler.detailModel())) {
-      throw new IllegalArgumentException("Detail model " + detailModelHandler.detailModel() + " has already been added");
+    if (detailModels.containsKey(detailModelLink.detailModel())) {
+      throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
     }
-    detailModels.put(detailModelHandler.detailModel(), detailModelHandler);
-    detailModelHandler.activeObserver().addListener(() -> activeDetailModelChanged(detailModelHandler));
+    detailModels.put(detailModelLink.detailModel(), detailModelLink);
+    detailModelLink.activeObserver().addListener(() -> activeDetailModelChanged(detailModelLink));
 
-    return detailModelHandler;
+    return detailModelLink;
   }
 
   @Override
@@ -185,19 +185,19 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel) {
+  public final <L extends DetailModelLink<M, E, T>> L detailModelLink(M detailModel) {
     if (!detailModels.containsKey(requireNonNull(detailModel))) {
       throw new IllegalStateException("Detail model not found: " + detailModel);
     }
 
-    return (H) detailModels.get(detailModel);
+    return (L) detailModels.get(detailModel);
   }
 
   @Override
   public final Collection<M> activeDetailModels() {
     return detailModels.values().stream()
-            .filter(DetailModelHandler::isActive)
-            .map(DetailModelHandler::detailModel)
+            .filter(DetailModelLink::isActive)
+            .map(DetailModelLink::detailModel)
             .collect(Collectors.toList());
   }
 
@@ -237,9 +237,9 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels().forEach(EntityModel::savePreferences);
   }
 
-  private void activeDetailModelChanged(DetailModelHandler<M, E, T> detailModelHandler) {
+  private void activeDetailModelChanged(DetailModelLink<M, E, T> detailModelLink) {
     activeDetailModelsEvent.onEvent(activeDetailModels());
-    detailModelHandler.onSelection(activeEntities());
+    detailModelLink.onSelection(activeEntities());
   }
 
   private void onMasterSelectionChanged() {
