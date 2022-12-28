@@ -155,7 +155,9 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   <H extends DetailModelHandler<M, E, T>> H detailModelHandler(M detailModel);
 
   /**
-   * Saves any user preferences
+   * Saves any user preferences for this model, its table model and each detail model.
+   * Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false', calling this method has no effect.
+   * Remember to call super.savePreferences() when overriding.
    */
   void savePreferences();
 

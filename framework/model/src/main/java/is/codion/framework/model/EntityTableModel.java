@@ -334,7 +334,8 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   int indexOf(Key primaryKey);
 
   /**
-   * Saves any user preferences
+   * Saves any user preferences. Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false',
+   * calling this method has no effect.
    */
   void savePreferences();
 

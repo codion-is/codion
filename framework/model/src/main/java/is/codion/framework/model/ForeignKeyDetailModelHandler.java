@@ -40,19 +40,19 @@ public interface ForeignKeyDetailModelHandler<M extends EntityModel<M, E, T>, E 
           Configuration.booleanValue("is.codion.framework.model.ForeignKeyDetailModelHandler.clearForeignKeyOnEmptySelection", false);
 
   /**
-   * @return the foreign key this model link is based on
+   * @return the foreign key representing this detail model
    */
   ForeignKey foreignKey();
 
   /**
-   * @return true if this models table model should automatically search by the inserted entity
+   * @return true if the detail table model should automatically search by the inserted entity
    * when an insert is performed in a master model
    * @see ForeignKeyDetailModelHandler#SEARCH_BY_INSERTED_ENTITY
    */
   boolean isSearchByInsertedEntity();
 
   /**
-   * @param searchOnMasterInsert if true then this models table model will automatically search by the inserted entity
+   * @param searchOnMasterInsert if true then the detail table model will automatically search by the inserted entity
    * when an insert is performed in a master model
    * @return this {@link DetailModelHandler} instance
    * @see ForeignKeyDetailModelHandler#SEARCH_BY_INSERTED_ENTITY
@@ -60,14 +60,14 @@ public interface ForeignKeyDetailModelHandler<M extends EntityModel<M, E, T>, E 
   ForeignKeyDetailModelHandler<M, E, T> setSearchByInsertedEntity(boolean searchOnMasterInsert);
 
   /**
-   * @return true if this model table model should be automatically refreshed
+   * @return true if the detail table model should be automatically refreshed
    * when the foreign key condition is set according to the master model selection
    * @see ForeignKeyDetailModelHandler#REFRESH_ON_SELECTION
    */
   boolean isRefreshOnSelection();
 
   /**
-   * @param refreshOnSelection if true then this models table model will be automatically refreshed
+   * @param refreshOnSelection if true then the detail table model will be automatically refreshed
    * when the foreign key condition is set according to the master model selection
    * @return this {@link DetailModelHandler} instance
    * @see ForeignKeyDetailModelHandler#REFRESH_ON_SELECTION
@@ -75,14 +75,14 @@ public interface ForeignKeyDetailModelHandler<M extends EntityModel<M, E, T>, E 
   ForeignKeyDetailModelHandler<M, E, T> setRefreshOnSelection(boolean refreshOnSelection);
 
   /**
-   * Returns true if this model link should set the foreign key to null when null or no value is selected in the master model.
+   * Returns true if the detail model should set the foreign key to null when null or no value is selected in the master model.
    * @return true if a null selection should result in the foreign key being set to null
    * @see ForeignKeyDetailModelHandler#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION
    */
   boolean isClearForeignKeyOnEmptySelection();
 
   /**
-   * Set to true if this model link should set the foreign key to null when null or no value is selected in the master model.
+   * Set to true if the detail model should set the foreign key to null when null or no value is selected in the master model.
    * @param clearForeignKeyOnEmptySelection true if initialization with a null value should set the foreign key to null
    * @return this {@link DetailModelHandler} instance
    * @see ForeignKeyDetailModelHandler#CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION
