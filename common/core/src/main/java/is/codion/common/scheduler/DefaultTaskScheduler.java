@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2012 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2012 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.common.scheduler;
 
