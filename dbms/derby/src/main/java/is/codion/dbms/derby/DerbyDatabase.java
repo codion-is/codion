@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2009 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2009 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.dbms.derby;
 

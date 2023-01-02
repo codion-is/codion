@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2019 - 2022, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.swing.common.ui.component.text;
 
