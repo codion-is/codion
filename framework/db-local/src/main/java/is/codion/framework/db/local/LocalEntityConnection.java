@@ -56,7 +56,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> USE_OPTIMISTIC_LOCKING = Configuration.booleanValue("codion.db.useOptimisticLocking", true);
+  PropertyValue<Boolean> OPTIMISTIC_LOCKING_ENABLED = Configuration.booleanValue("codion.db.optimisticLockingEnabled", true);
 
   /**
    * Specifies whether the foreign key value graph should be fully populated instead of

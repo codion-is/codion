@@ -90,6 +90,11 @@ public interface EntityDefinition {
   boolean isReadOnly();
 
   /**
+   * @return true if optimistic locking should be used during updates
+   */
+  boolean isOptimisticLockingEnabled();
+
+  /**
    * @return the object responsible for generating primary key values for entities of this type
    * @see Builder#keyGenerator(KeyGenerator)
    */
@@ -510,6 +515,13 @@ public interface EntityDefinition {
      * @return this {@link Builder} instance
      */
     Builder readOnly(boolean readOnly);
+
+    /**
+     * Use this to disable optimistic locking for this entity type
+     * @param optimisticLockingEnabled true if optimistic locking should be used during updates, false to disable
+     * @return this {@link Builder} instance
+     */
+    Builder optimisticLockingEnabled(boolean optimisticLockingEnabled);
 
     /**
      * Sets the primary key generator

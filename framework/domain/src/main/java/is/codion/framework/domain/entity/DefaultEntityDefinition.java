@@ -129,6 +129,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final boolean keyGenerated;
 
   /**
+   * True if optimistic locking should be used during updates
+   */
+  private transient final boolean optimisticLockingEnabled;
+
+  /**
    * The {@link Function} to use when toString() is called for this entity type
    */
   private final Function<Entity, String> stringFactory;
@@ -211,6 +216,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.staticData = builder.staticData;
     this.keyGenerator = builder.keyGenerator;
     this.keyGenerated = builder.keyGenerated;
+    this.optimisticLockingEnabled = builder.optimisticLockingEnabled;
     this.stringFactory = builder.stringFactory;
     this.backgroundColorProvider = builder.backgroundColorProvider;
     this.foregroundColorProvider = builder.foregroundColorProvider;
@@ -309,6 +315,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public boolean isReadOnly() {
     return readOnly;
+  }
+
+  @Override
+  public boolean isOptimisticLockingEnabled() {
+    return optimisticLockingEnabled;
   }
 
   @Override
@@ -1086,6 +1097,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private boolean readOnly;
     private KeyGenerator keyGenerator = new KeyGenerator() {};
     private boolean keyGenerated;
+    private boolean optimisticLockingEnabled = true;
     private OrderBy orderBy;
     private String selectTableName;
     private SelectQuery selectQuery;
@@ -1160,6 +1172,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     @Override
     public Builder readOnly(boolean readOnly) {
       this.readOnly = readOnly;
+      return this;
+    }
+
+    @Override
+    public Builder optimisticLockingEnabled(boolean optimisticLockingEnabled) {
+      this.optimisticLockingEnabled = optimisticLockingEnabled;
       return this;
     }
 

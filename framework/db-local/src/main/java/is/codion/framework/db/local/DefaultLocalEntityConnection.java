@@ -94,7 +94,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<SelectCondition, List<Entity>> queryCache = new HashMap<>();
 
-  private boolean optimisticLockingEnabled = LocalEntityConnection.USE_OPTIMISTIC_LOCKING.get();
+  private boolean optimisticLockingEnabled = LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED.get();
   private boolean limitForeignKeyFetchDepth = LocalEntityConnection.LIMIT_FOREIGN_KEY_FETCH_DEPTH.get();
   private int defaultQueryTimeout = LocalEntityConnection.QUERY_TIMEOUT_SECONDS.get();
   private boolean queryCacheEnabled = false;
@@ -910,26 +910,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void performOptimisticLocking(Map<EntityType, List<Entity>> entitiesByEntityType) throws SQLException, RecordModifiedException {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
-      Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
-      SelectCondition selectForUpdateCondition = condition(originalKeys).selectBuilder()
-              .selectAttributes(primaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
-              .forUpdate()
-              .build();
-      List<Entity> currentEntities = doSelect(selectForUpdateCondition);
       EntityDefinition definition = domainEntities.definition(entitiesByEntityTypeEntry.getKey());
-      Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(currentEntities);
-      for (Entity entity : entitiesByEntityTypeEntry.getValue()) {
-        Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
-        if (current == null) {
-          Entity original = entity.copy();
-          original.revertAll();
+      if (definition.isOptimisticLockingEnabled()) {
+        Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
+        SelectCondition selectForUpdateCondition = condition(originalKeys).selectBuilder()
+                .selectAttributes(primaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
+                .forUpdate()
+                .build();
+        List<Entity> currentEntities = doSelect(selectForUpdateCondition);
+        Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(currentEntities);
+        for (Entity entity : entitiesByEntityTypeEntry.getValue()) {
+          Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
+          if (current == null) {
+            Entity original = entity.copy();
+            original.revertAll();
 
-          throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
-                  + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
-        }
-        Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(definition, entity, current);
-        if (!modified.isEmpty()) {
-          throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
+            throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
+                    + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
+          }
+          Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(definition, entity, current);
+          if (!modified.isEmpty()) {
+            throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
+          }
         }
       }
     }

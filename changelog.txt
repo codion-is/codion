@@ -8571,3 +8571,4 @@
   EntityTestUtil.createRandomValue() now handles short, randomShort() added
   QueryKeyGenerator bug fixed, did not override beforeInsert() and did nothing
   DefaultLocalEntityConnection.createLogMessage() now presents the actual column values, with quoted strings
+  EntityDefinition.isOptimisticLockingEnabled() added
