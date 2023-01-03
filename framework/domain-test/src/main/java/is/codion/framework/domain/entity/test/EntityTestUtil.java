@@ -131,6 +131,9 @@ public final class EntityTestUtil {
     if (attribute.isLong()) {
       return (T) Long.valueOf(randomInteger(property));
     }
+    if (attribute.isShort()) {
+      return (T) Short.valueOf(randomShort(property));
+    }
     if (attribute.isString()) {
       return (T) randomString(property);
     }
@@ -195,6 +198,13 @@ public final class EntityTestUtil {
     int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().intValue();
 
     return RANDOM.nextInt((max - min) + 1) + min;
+  }
+
+  private static short randomShort(Property<?> property) {
+    short min = property.minimumValue() == null ? Short.MIN_VALUE : property.minimumValue().shortValue();
+    short max = property.maximumValue() == null ? Short.MAX_VALUE : property.maximumValue().shortValue();
+
+    return (short) (RANDOM.nextInt((max - min) + 1) + min);
   }
 
   private static double randomDouble(Property<?> property) {
