@@ -142,7 +142,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * but for certain types this may be necessary, such as boolean values where
      * the values are represented by a non-boolean data type in the underlying database
      * @param value the value to translate
-     * @param statement the statement using the value
+     * @param statement the statement using the value, may be null
      * @return the sql value used to represent the given value
      * @throws java.sql.SQLException in case of an exception
      */
