@@ -82,7 +82,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final String ENTITY_MODEL_PARAM = "entityModel";
   private static final String MSG_DETAIL_TABLES = "detail_tables";
 
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
@@ -321,7 +320,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
-    requireNonNull(entityModel, ENTITY_MODEL_PARAM);
+    requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
     this.caption = entityModel.editModel().entityDefinition().caption();
