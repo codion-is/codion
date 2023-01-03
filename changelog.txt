@@ -8572,3 +8572,4 @@
   QueryKeyGenerator bug fixed, did not override beforeInsert() and did nothing
   DefaultLocalEntityConnection.createLogMessage() now presents the actual column values, with quoted strings
   EntityDefinition.isOptimisticLockingEnabled() added
+  EntityTestUtil.MINIMUM_RANDOM_NUMBER and MAXIMUM_RANDOM_NUMBER set to -10.000 and 10.000 respectively

@@ -36,8 +36,8 @@ import static java.util.Objects.requireNonNull;
  */
 public final class EntityTestUtil {
 
-  private static final int MININUM_RANDOM_NUMBER = -10000000;
-  private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
+  private static final int MININUM_RANDOM_NUMBER = -10_000;
+  private static final int MAXIMUM_RANDOM_NUMBER = 10_000;
   private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
   private static final Random RANDOM = new Random();
 
@@ -201,8 +201,8 @@ public final class EntityTestUtil {
   }
 
   private static short randomShort(Property<?> property) {
-    short min = property.minimumValue() == null ? Short.MIN_VALUE : property.minimumValue().shortValue();
-    short max = property.maximumValue() == null ? Short.MAX_VALUE : property.maximumValue().shortValue();
+    short min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().shortValue();
+    short max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().shortValue();
 
     return (short) (RANDOM.nextInt((max - min) + 1) + min);
   }
