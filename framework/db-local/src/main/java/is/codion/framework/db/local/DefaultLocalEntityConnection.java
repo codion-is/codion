@@ -928,7 +928,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                     + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
           }
-          Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(definition, entity, current);
+          Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(entity, current);
           if (!modified.isEmpty()) {
             throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
           }
