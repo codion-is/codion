@@ -105,9 +105,7 @@ public class EntityTestUnit {
     }
     finally {
       connection.rollbackTransaction();
-      if (connection != null) {
-        connection.close();
-      }
+      connection.close();
     }
   }
 
@@ -132,12 +130,17 @@ public class EntityTestUnit {
   /**
    * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
    * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
+   * Note that this default implementation returns null in case the referenced entity type is read-only.
    * @param foreignKey the foreign key referencing the entity
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return an entity for the given foreign key
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
+    if (entities().definition(requireNonNull(foreignKey).referencedType()).isReadOnly()) {
+      return null;
+    }
+
     return EntityTestUtil.createRandomEntity(entities(), foreignKey.referencedType(), foreignKeyEntities);
   }
 
@@ -215,7 +218,8 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.type() + " failed equals comparison");
     }
     else {
-      connection.select(condition(entityType).selectBuilder()
+      connection.select(condition(entityType)
+              .selectBuilder()
               .limit(SELECT_FETCH_COUNT)
               .build());
     }
@@ -236,27 +240,11 @@ public class EntityTestUnit {
       return;
     }
 
-    Entity updated = connection.update(testEntity);
-    assertEquals(testEntity.primaryKey(), updated.primaryKey());
-    for (ColumnProperty<?> property : testEntity.definition().columnProperties()) {
-      if (property.isUpdatable()) {
-        Object beforeUpdate = testEntity.get(property.attribute());
-        Object afterUpdate = updated.get(property.attribute());
-        String message = "Values of property " + property + " should be equal after update ["
-                + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
-                + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-        if (property.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
-          assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
-                  && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
-        }
-        else if (property.attribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
-          assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
-        }
-        else {
-          assertEquals(beforeUpdate, afterUpdate, message);
-        }
-      }
-    }
+    Entity updatedEntity = connection.update(testEntity);
+    assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
+    testEntity.definition().columnProperties().stream()
+            .filter(ColumnProperty::isUpdatable)
+            .forEach(property -> assertValueEqual(testEntity, updatedEntity, property));
   }
 
   /**
@@ -298,6 +286,24 @@ public class EntityTestUnit {
     catch (DatabaseException e) {
       LOG.error("EntityTestUnit.insertOrSelect()", e);
       throw e;
+    }
+  }
+
+  private static void assertValueEqual(Entity testEntity, Entity updated, ColumnProperty<?> property) {
+    Object beforeUpdate = testEntity.get(property.attribute());
+    Object afterUpdate = updated.get(property.attribute());
+    String message = "Values of property " + property + " should be equal after update ["
+            + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
+            + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
+    if (property.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+      assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
+              && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
+    }
+    else if (property.attribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+      assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
+    }
+    else {
+      assertEquals(beforeUpdate, afterUpdate, message);
     }
   }
 
