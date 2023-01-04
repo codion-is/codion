@@ -912,27 +912,31 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (Map.Entry<EntityType, List<Entity>> entitiesByEntityTypeEntry : entitiesByEntityType.entrySet()) {
       EntityDefinition definition = domainEntities.definition(entitiesByEntityTypeEntry.getKey());
       if (definition.isOptimisticLockingEnabled()) {
-        Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entitiesByEntityTypeEntry.getValue());
-        SelectCondition selectForUpdateCondition = condition(originalKeys).selectBuilder()
-                .selectAttributes(primaryKeyAndWritableColumnAttributes(entitiesByEntityTypeEntry.getKey()))
-                .forUpdate()
-                .build();
-        List<Entity> currentEntities = doSelect(selectForUpdateCondition);
-        Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(currentEntities);
-        for (Entity entity : entitiesByEntityTypeEntry.getValue()) {
-          Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
-          if (current == null) {
-            Entity original = entity.copy();
-            original.revertAll();
+        checkIfMissingOrModified(entitiesByEntityTypeEntry.getKey(), entitiesByEntityTypeEntry.getValue());
+      }
+    }
+  }
 
-            throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
-                    + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
-          }
-          Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(entity, current);
-          if (!modified.isEmpty()) {
-            throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
-          }
-        }
+  private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
+    Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entities);
+    SelectCondition selectForUpdateCondition = condition(originalKeys)
+            .selectBuilder()
+            .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
+            .forUpdate()
+            .build();
+    Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(doSelect(selectForUpdateCondition));
+    for (Entity entity : entities) {
+      Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
+      if (current == null) {
+        Entity original = entity.copy();
+        original.revertAll();
+
+        throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
+                + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
+      }
+      Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(entity, current);
+      if (!modified.isEmpty()) {
+        throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
       }
     }
   }
