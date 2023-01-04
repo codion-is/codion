@@ -360,18 +360,16 @@ public interface Entity extends Comparable<Entity> {
    * Returns all updatable {@link Attribute}s which value is missing or the original value differs from the one in the comparison
    * entity, returns an empty Collection if all of {@code entity}s original values match the values found in {@code comparison}.
    * Note that only eagerly loaded blob values are included in this comparison.
-   * @param definition the entity definition
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable column attributes which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static Collection<Attribute<?>> getModifiedColumnAttributes(EntityDefinition definition, Entity entity, Entity comparison) {
-    requireNonNull(definition);
+  static Collection<Attribute<?>> getModifiedColumnAttributes(Entity entity, Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
-            .map(entry -> definition.property(entry.getKey()))
+            .map(entry -> entity.definition().property(entry.getKey()))
             .filter(property -> {
               boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
               boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();

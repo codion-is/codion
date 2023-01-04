@@ -131,7 +131,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * True if optimistic locking should be used during updates
    */
-  private transient final boolean optimisticLockingEnabled;
+  private final transient boolean optimisticLockingEnabled;
 
   /**
    * The {@link Function} to use when toString() is called for this entity type
