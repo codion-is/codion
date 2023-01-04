@@ -132,12 +132,17 @@ public class EntityTestUnit {
   /**
    * Initializes an Entity instance to reference via the given foreign key, by default this method creates an Entity
    * filled with random values. Subclasses can override and provide a hard coded instance or select one from the database.
+   * Note that this default implementation returns null in case the referenced entity type is read-only.
    * @param foreignKey the foreign key referencing the entity
    * @param foreignKeyEntities the entities referenced via foreign keys
    * @return an entity for the given foreign key
    * @throws DatabaseException in case of an exception
    */
   protected Entity initializeForeignKeyEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> foreignKeyEntities) throws DatabaseException {
+    if (entities().definition(requireNonNull(foreignKey).referencedType()).isReadOnly()) {
+      return null;
+    }
+
     return EntityTestUtil.createRandomEntity(entities(), foreignKey.referencedType(), foreignKeyEntities);
   }
 
