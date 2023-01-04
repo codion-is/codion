@@ -105,9 +105,7 @@ public class EntityTestUnit {
     }
     finally {
       connection.rollbackTransaction();
-      if (connection != null) {
-        connection.close();
-      }
+      connection.close();
     }
   }
 
