@@ -1457,8 +1457,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       case Types.TIMESTAMP:
       case Types.TIMESTAMP_WITH_TIMEZONE:
         return "'" + string + "'";
+      default:
+        return string;
     }
-
-    return string;
   }
 }
