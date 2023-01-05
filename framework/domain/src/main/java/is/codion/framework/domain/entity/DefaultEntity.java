@@ -670,42 +670,52 @@ final class DefaultEntity implements Entity, Serializable {
       return new DefaultKey(definition, emptyList(), true);
     }
     List<Attribute<?>> primaryKeyAttributes = definition.primaryKeyAttributes();
-    if (primaryKeyAttributes.size() > 1) {
-      Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
-      for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-        Attribute<?> attribute = primaryKeyAttributes.get(i);
-        keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
-      }
-
-      return new DefaultKey(definition, keyValues, true);
+    if (primaryKeyAttributes.size() == 1) {
+      return createSingleAttributePrimaryKey(originalValues, primaryKeyAttributes.get(0));
     }
 
-    Attribute<?> attribute = primaryKeyAttributes.get(0);
+    return createMultiAttributePrimaryKey(originalValues, primaryKeyAttributes);
+  }
 
+  private DefaultKey createSingleAttributePrimaryKey(boolean originalValues, Attribute<?> attribute) {
     return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
   }
 
-  private <T> T derivedValue(DerivedProperty<T> derivedProperty, boolean originalValue) {
-    return derivedProperty.valueProvider().get(sourceValues(derivedProperty, originalValue));
+  private DefaultKey createMultiAttributePrimaryKey(boolean originalValues, List<Attribute<?>> primaryKeyAttributes) {
+    Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
+    for (int i = 0; i < primaryKeyAttributes.size(); i++) {
+      Attribute<?> attribute = primaryKeyAttributes.get(i);
+      keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
+    }
+
+    return new DefaultKey(definition, keyValues, true);
   }
 
-  private DerivedProperty.SourceValues sourceValues(DerivedProperty<?> derivedProperty, boolean originalValues) {
+  private <T> T derivedValue(DerivedProperty<T> derivedProperty, boolean originalValue) {
+    return derivedProperty.valueProvider().get(createSourceValues(derivedProperty, originalValue));
+  }
+
+  private DerivedProperty.SourceValues createSourceValues(DerivedProperty<?> derivedProperty, boolean originalValue) {
     List<Attribute<?>> sourceAttributes = derivedProperty.sourceAttributes();
     if (sourceAttributes.size() == 1) {
-      Attribute<?> sourceAttribute = sourceAttributes.get(0);
-
-      return new DefaultSourceValues(derivedProperty.attribute(),
-              singletonMap(sourceAttribute, originalValues ? getOriginal(sourceAttribute) : get(sourceAttribute)));
+      return new DefaultSourceValues(derivedProperty.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
     }
-    else {
-      Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
-      for (int i = 0; i < sourceAttributes.size(); i++) {
-        Attribute<?> sourceAttribute = sourceAttributes.get(i);
-        valueMap.put(sourceAttribute, originalValues ? getOriginal(sourceAttribute) : get(sourceAttribute));
-      }
 
-      return new DefaultSourceValues(derivedProperty.attribute(), valueMap);
+    return new DefaultSourceValues(derivedProperty.attribute(), createMultiAttributeSourceValueMap(sourceAttributes, originalValue));
+  }
+
+  private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> sourceAttribute, boolean originalValue) {
+    return singletonMap(sourceAttribute, originalValue ? getOriginal(sourceAttribute) : get(sourceAttribute));
+  }
+
+  private Map<Attribute<?>, Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sourceAttributes, boolean originalValue) {
+    Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
+    for (int i = 0; i < sourceAttributes.size(); i++) {
+      Attribute<?> sourceAttribute = sourceAttributes.get(i);
+      valueMap.put(sourceAttribute, originalValue ? getOriginal(sourceAttribute) : get(sourceAttribute));
     }
+
+    return valueMap;
   }
 
   private boolean isModified(boolean overrideModifiesEntity) {
