@@ -124,9 +124,9 @@ public interface EntityDefinition {
   String selectTableName();
 
   /**
-   * @return the select query to use when selecting entities of this type
+   * @return the select query to use when selecting entities of this type, may be null
    */
-  SelectQuery setSelectQuery();
+  SelectQuery selectQuery();
 
   /**
    * @return the object responsible for providing toString values for this entity type

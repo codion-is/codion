@@ -570,7 +570,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(attribute, "attribute").entityType());
-    if (entityDefinition.setSelectQuery() != null) {
+    if (entityDefinition.selectQuery() != null) {
       throw new UnsupportedOperationException("select is not implemented for entities with custom select queries");
     }
     Condition combinedCondition = where(attribute).isNotNull();
