@@ -664,7 +664,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                 .fetchDepth(1)
                 .build());
         if (!dependencies.isEmpty()) {
-          dependencyMap.put(foreignKeyReference.entityType(), dependencies);
+          dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
         }
       }
     }
