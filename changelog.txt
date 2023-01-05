@@ -8578,3 +8578,4 @@
   DefaultEntity.createPrimaryKey() refactored, sourceValues() renamed createSourceValues() and refactored
   LocalEntityConnection.connection() renamed fetchConnection()
   EntityDefinition.setSelectQuery() renamed selectQuery()
+  DefaultLocalEntityConnection.selectDependencies() bug fixed, now handles multiple foreign keys referencing the same entity type

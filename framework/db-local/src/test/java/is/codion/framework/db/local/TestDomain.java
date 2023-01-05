@@ -35,6 +35,7 @@ import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
+import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
@@ -76,6 +77,8 @@ public final class TestDomain extends DefaultDomain {
     queryColumnsWhereClause();
     queryFromClause();
     queryFromWhereClause();
+    master();
+    detail();
   }
 
   public interface Department extends Entity {
@@ -436,5 +439,40 @@ public final class TestDomain extends DefaultDomain {
                     .where("deptno > 10")
                     .orderBy("deptno")
                     .build()));
+  }
+
+  public interface Master {
+    EntityType TYPE = DOMAIN.entityType("scott.master");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> DATA = TYPE.stringAttribute("data");
+  }
+
+  void master() {
+    add(definition(
+            primaryKeyProperty(Master.ID),
+            columnProperty(Master.DATA))
+            .keyGenerator(identity()));
+  }
+
+  public interface Detail {
+    EntityType TYPE = DOMAIN.entityType("scott.detail");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> MASTER_1_ID = TYPE.integerAttribute("master_1_id");
+    Attribute<Integer> MASTER_2_ID = TYPE.integerAttribute("master_2_id");
+
+    ForeignKey MASTER_1_FK = TYPE.foreignKey("master_1_fk", MASTER_1_ID, Master.ID);
+    ForeignKey MASTER_2_FK = TYPE.foreignKey("master_2_fk", MASTER_2_ID, Master.ID);
+  }
+
+  void detail() {
+    add(definition(
+            primaryKeyProperty(Detail.ID),
+            columnProperty(Detail.MASTER_1_ID),
+            foreignKeyProperty(Detail.MASTER_1_FK),
+            columnProperty(Detail.MASTER_2_ID),
+            foreignKeyProperty(Detail.MASTER_2_FK))
+            .keyGenerator(identity()));
   }
 }

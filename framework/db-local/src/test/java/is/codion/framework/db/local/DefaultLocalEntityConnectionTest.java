@@ -37,6 +37,7 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -205,6 +206,48 @@ public class DefaultLocalEntityConnectionTest {
     Entity emp = connection.selectSingle(Employee.NAME, "KING");
     Map<EntityType, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
+
+    //multiple foreign keys referencing the same entity
+    Entity master1 = connection.selectSingle(where(Master.ID).equalTo(1));
+    Entity master2 = connection.selectSingle(where(Master.ID).equalTo(2));
+    Entity master3 = connection.selectSingle(where(Master.ID).equalTo(3));
+    Entity master4 = connection.selectSingle(where(Master.ID).equalTo(4));
+
+    Entity detail1 = connection.selectSingle(where(Detail.ID).equalTo(1));
+    Entity detail2 = connection.selectSingle(where(Detail.ID).equalTo(2));
+
+    deps = connection.selectDependencies(singletonList(master1));
+    Collection<Entity> dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(1, dependantEntities.size());
+    assertTrue(dependantEntities.contains(detail1));
+
+    deps = connection.selectDependencies(singletonList(master2));
+    dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(2, dependantEntities.size());
+    assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
+
+    deps = connection.selectDependencies(singletonList(master3));
+    dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(1, dependantEntities.size());
+    assertTrue(dependantEntities.contains(detail2));
+
+    deps = connection.selectDependencies(Arrays.asList(master1, master2));
+    dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(2, dependantEntities.size());
+    assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
+
+    deps = connection.selectDependencies(Arrays.asList(master2, master3));
+    dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(2, dependantEntities.size());
+    assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
+
+    deps = connection.selectDependencies(Arrays.asList(master1, master2, master3, master4));
+    dependantEntities = deps.get(Detail.TYPE);
+    assertEquals(2, dependantEntities.size());
+    assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
+
+    deps = connection.selectDependencies(singletonList(master4));
+    assertFalse(deps.containsKey(Detail.TYPE));
   }
 
   @Test
