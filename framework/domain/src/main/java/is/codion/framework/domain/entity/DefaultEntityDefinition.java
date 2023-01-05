@@ -348,7 +348,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public SelectQuery setSelectQuery() {
+  public SelectQuery selectQuery() {
     return selectQuery;
   }
 

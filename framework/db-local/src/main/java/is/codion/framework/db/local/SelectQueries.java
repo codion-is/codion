@@ -103,7 +103,7 @@ final class SelectQueries {
     }
 
     Builder entitySelectQuery() {
-      SelectQuery selectQuery = definition.setSelectQuery();
+      SelectQuery selectQuery = definition.selectQuery();
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
