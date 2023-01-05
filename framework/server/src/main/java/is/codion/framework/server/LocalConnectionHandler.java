@@ -42,7 +42,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private static final Logger LOG = LoggerFactory.getLogger(LocalConnectionHandler.class);
 
   private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
-  private static final String GET_CONNECTION = "getConnection";
+  private static final String FETCH_CONNECTION = "fetchConnection";
   private static final String RETURN_CONNECTION = "returnConnection";
 
   static final RequestCounter REQUEST_COUNTER = new RequestCounter();
@@ -150,7 +150,7 @@ final class LocalConnectionHandler implements InvocationHandler {
         methodLogger.logAccess(methodName, args);
       }
 
-      return method.invoke(connection(), args);
+      return method.invoke(fetchConnection(), args);
     }
     catch (InvocationTargetException e) {
       throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
@@ -217,11 +217,11 @@ final class LocalConnectionHandler implements InvocationHandler {
     return closed;
   }
 
-  private EntityConnection connection() throws DatabaseException {
+  private EntityConnection fetchConnection() throws DatabaseException {
     DatabaseException exception = null;
     try {
       if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(GET_CONNECTION, userDescription);
+        methodLogger.logAccess(FETCH_CONNECTION, userDescription);
       }
       if (connectionPool != null) {
         return pooledEntityConnection();
@@ -235,7 +235,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
     finally {
       if (methodLogger.isEnabled()) {
-        methodLogger.logExit(GET_CONNECTION, exception);
+        methodLogger.logExit(FETCH_CONNECTION, exception);
       }
     }
   }

@@ -8576,3 +8576,4 @@
   EntityTestUnit.initializeForeignKeyEntity() bug fixed, now returns null in case the referenced type is read-only
   Entity.getModifiedColumnAttributes(), redundant entityDefinition parameter removed
   DefaultEntity.createPrimaryKey() refactored, sourceValues() renamed createSourceValues() and refactored
+  LocalEntityConnection.connection() renamed fetchConnection()
