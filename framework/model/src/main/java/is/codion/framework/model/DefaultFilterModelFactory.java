@@ -4,9 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.Text;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
 
@@ -20,7 +18,7 @@ import java.util.List;
 public class DefaultFilterModelFactory implements FilterModelFactory {
 
   @Override
-  public <T> ColumnConditionModel<Attribute<?>, T> createFilterModel(Property<T> property) {
+  public <T> ColumnConditionModel<Attribute<T>, T> createFilterModel(Property<T> property) {
     if (property.attribute().isEntity()) {
       return null;
     }
@@ -28,9 +26,11 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(property.attribute(), property.attribute().valueClass(),
-            operators(property.attribute().valueClass()), Text.WILDCARD_CHARACTER.get(),
-            property.format(), property.dateTimePattern());
+    return ColumnConditionModel.builder(property.attribute(), property.attribute().valueClass())
+            .operators(operators(property.attribute().valueClass()))
+            .format(property.format())
+            .dateTimePattern(property.dateTimePattern())
+            .build();
   }
 
   private static List<Operator> operators(Class<?> columnClass) {

@@ -42,7 +42,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> filterModels;
+  private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels;
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels;
   private final Value<String> simpleConditionStringValue = Value.value();
   private final Event<Condition> conditionChangedEvent = Event.event();
@@ -84,7 +84,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> filterModels() {
+  public Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels() {
     return filterModels;
   }
 
@@ -224,15 +224,15 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
             .forEach(conditionModel -> setConditionString(conditionModel, searchString));
   }
 
-  private Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
+  private Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> createFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
     if (filterModelProvider == null) {
       return emptyMap();
     }
 
-    Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> models = new HashMap<>();
+    Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> models = new HashMap<>();
     for (Property<?> property : connectionProvider.entities().definition(entityType).properties()) {
       if (!property.isHidden()) {
-        ColumnConditionModel<Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
+        ColumnConditionModel<? extends Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
         if (filterModel != null) {
           models.put(filterModel.columnIdentifier(), filterModel);
         }

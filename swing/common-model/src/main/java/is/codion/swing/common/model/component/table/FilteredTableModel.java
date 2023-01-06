@@ -130,7 +130,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the column filter models, mapped to their respective column identifier
    */
-  Map<C, ColumnConditionModel<C, ?>> columnFilterModels();
+  Map<C, ColumnConditionModel<? extends C, ?>> columnFilterModels();
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.

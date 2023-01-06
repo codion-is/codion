@@ -19,5 +19,5 @@ public interface FilterModelFactory {
    * @return a {@link ColumnConditionModel} for the given property, null if filtering should
    * not be allowed for this property
    */
-  <T> ColumnConditionModel<Attribute<?>, T> createFilterModel(Property<T> property);
+  <T> ColumnConditionModel<Attribute<T>, T> createFilterModel(Property<T> property);
 }

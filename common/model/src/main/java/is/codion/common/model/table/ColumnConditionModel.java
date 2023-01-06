@@ -23,6 +23,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
+ * For instances create a {@link Builder} via {@link #builder(Object, Class)}.
  * @param <C> the type used to identify columns
  * @param <T> the column value type
  */
@@ -311,6 +312,59 @@ public interface ColumnConditionModel<C, T> {
    * @param listener the listener to remove
    */
   void removeConditionChangedListener(EventListener listener);
+
+  /**
+   * Returns a new {@link Builder} instance.
+   * @param columnIdentifier the column identifier
+   * @param columnClass the column class
+   * @return a new {@link Builder} instance
+   * @param <C> the column identifier type
+   * @param <T> the column value type
+   */
+  static <C, T> Builder<C, T> builder(C columnIdentifier, Class<T> columnClass) {
+    return new DefaultColumnConditionModel.DefaultBuilder<>(columnIdentifier, columnClass);
+  }
+
+  /**
+   * Builds a {@link ColumnConditionModel} instance.
+   */
+  interface Builder<C, T> {
+
+    /**
+     * @param operators the conditional operators available to this condition model
+     * @return this builder instance
+     */
+    Builder<C, T> operators(List<Operator> operators);
+
+    /**
+     * @param wildcard the character to use as wildcard
+     * @return this builder instance
+     */
+    Builder<C, T> wildcard(char wildcard);
+
+    /**
+     * @param format the format to use when presenting the values, numbers for example
+     * @return this builder instance
+     */
+    Builder<C, T> format(Format format);
+
+    /**
+     * @param dateTimePattern the date/time format pattern to use in case of a date/time column
+     * @return this builder instance
+     */
+    Builder<C, T> dateTimePattern(String dateTimePattern);
+
+    /**
+     * @param automaticWildcard the automatic wildcard type to use
+     * @return this builder instance
+     */
+    Builder<C, T> automaticWildcard(AutomaticWildcard automaticWildcard);
+
+    /**
+     * @return a new {@link ColumnConditionModel} instance based on this builder
+     */
+    ColumnConditionModel<C, T> build();
+  }
 
   /**
    * @param operator the operator

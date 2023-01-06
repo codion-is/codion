@@ -3,13 +3,10 @@
  */
 package is.codion.javafx.framework.model;
 
-import is.codion.common.Operator;
-import is.codion.common.Text;
-import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.model.AbstractForeignKeyConditionModel;
 
-import java.util.Arrays;
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
@@ -19,14 +16,14 @@ import static java.util.Objects.requireNonNull;
  * For instances use the {@link #entityListConditionModel(ForeignKey, ObservableEntityList)} factory method.
  * @see #entityListConditionModel(ForeignKey, ObservableEntityList)
  */
-public final class EntityListConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntityListConditionModel extends AbstractForeignKeyConditionModel {
 
   private final ObservableEntityList listModel;
 
   private boolean updatingModel = false;
 
   private EntityListConditionModel(ForeignKey foreignKey, ObservableEntityList listModel) {
-    super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
+    super(foreignKey);
     this.listModel = requireNonNull(listModel, "listModel");
     listModel.refresh();
     bindListModelEvents();
