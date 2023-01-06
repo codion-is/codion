@@ -180,7 +180,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @see #addSortListener(EventListener)
    * @see FilteredTableSortModel#isSortingEnabled
    */
-  void sort();
+  void sortItems();
 
   /**
    * @return the selection model used by this table model

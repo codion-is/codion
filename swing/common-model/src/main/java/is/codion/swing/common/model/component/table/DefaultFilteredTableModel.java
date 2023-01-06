@@ -272,7 +272,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void sort() {
+  public final void sortItems() {
     if (sortModel.isSortingEnabled()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
@@ -554,7 +554,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     addTableModelListener(e -> dataChangedEvent.onEvent());
     columnFilterModels.values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(this::filterItems));
-    sortModel.addSortingChangedListener(columnIdentifier -> sort());
+    sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsRemovedEvent.onEvent(new DefaultRowsRemoved(e.getFirstRow(), e.getLastRow()));

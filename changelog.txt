@@ -8583,3 +8583,4 @@
   DefaultFilteredTableModel filter functionality improved, setIncludeCondition() now works in conjunction with the column filter models
   FilteredModel.filterContents() renamed filterItems()
   FilteredComboBoxModel.setContents() renamed setItems()
+  FilteredTableModel.sort() renamed sortItems()

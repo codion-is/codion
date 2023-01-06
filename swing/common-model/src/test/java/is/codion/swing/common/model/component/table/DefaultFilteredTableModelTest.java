@@ -220,7 +220,7 @@ public final class DefaultFilteredTableModelTest {
 
     testModel.refresh();
     //merge does not sort new items
-    testModel.sort();
+    testModel.sortItems();
 
     testModel.selectionModel().setSelectedIndex(1);//b
 

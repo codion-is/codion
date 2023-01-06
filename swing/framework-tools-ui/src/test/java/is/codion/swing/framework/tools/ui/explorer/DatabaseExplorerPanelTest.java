@@ -20,7 +20,7 @@ public class DatabaseExplorerPanelTest {
     DatabaseExplorerModel model = new DatabaseExplorerModel(Database.instance(), UNIT_TEST_USER);
     new DatabaseExplorerPanel(model);
     model.schemaModel().refresh();
-    model.schemaModel().sort();
+    model.schemaModel().sortItems();
     model.schemaModel().selectionModel().setSelectedIndex(2);
     model.populateSelected(schema -> {});
     model.definitionModel().selectionModel().setSelectedIndex(0);
