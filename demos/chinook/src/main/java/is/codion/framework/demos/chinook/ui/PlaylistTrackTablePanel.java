@@ -6,7 +6,6 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -31,8 +30,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
     }
 
     @Override
-    protected <C extends Attribute<T>, T> ColumnConditionPanel<Entity, C, T> createConditionPanel(ColumnConditionModel<Entity, C, T> conditionModel) {
-      ColumnConditionPanel<Entity, C, T> conditionPanel = super.createConditionPanel(conditionModel);
+    protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<C, T> conditionModel) {
+      ColumnConditionPanel<C, T> conditionPanel = super.createConditionPanel(conditionModel);
       if (PlaylistTrack.TRACK_FK.equals(conditionModel.columnIdentifier())) {
         EntitySearchField equalField = (EntitySearchField) conditionPanel.equalField();
         equalField.setSelectionProvider(new TrackSelectionProvider(equalField.model()));

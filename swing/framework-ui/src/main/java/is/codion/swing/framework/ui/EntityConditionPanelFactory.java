@@ -54,11 +54,11 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   }
 
   @Override
-  public final <R, C, T> ColumnConditionPanel<R, C, T> createConditionPanel(FilteredTableColumn<C> column) {
-    ColumnConditionModel<Entity, Attribute<T>, T> conditionModel = (ColumnConditionModel<Entity, Attribute<T>, T>)
+  public final <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
+    ColumnConditionModel<Attribute<T>, T> conditionModel = (ColumnConditionModel<Attribute<T>, T>)
             tableConditionModel.conditionModels().get(column.getIdentifier());
 
-    return conditionModel == null ? null : (ColumnConditionPanel<R, C, T>) createConditionPanel(conditionModel);
+    return conditionModel == null ? null : (ColumnConditionPanel<C, T>) createConditionPanel(conditionModel);
   }
 
   /**
@@ -69,7 +69,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @return a ColumnConditionPanel based on the given model
    * @see #createDefaultConditionPanel(ColumnConditionModel)
    */
-  protected <C extends Attribute<T>, T> ColumnConditionPanel<Entity, C, T> createConditionPanel(ColumnConditionModel<Entity, C, T> conditionModel) {
+  protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     return createDefaultConditionPanel(requireNonNull(conditionModel));
   }
 
@@ -80,10 +80,10 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
    * @param conditionModel the {@link ColumnConditionModel} for which to create a condition panel
    * @return a ColumnConditionPanel based on the given model
    */
-  protected final <C extends Attribute<T>, T> ColumnConditionPanel<Entity, C, T> createDefaultConditionPanel(ColumnConditionModel<Entity, C, T> conditionModel) {
+  protected final <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createDefaultConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel.columnIdentifier() instanceof ForeignKey) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ColumnConditionModel<Entity, ForeignKey, Entity>) conditionModel, entityComponents);
+      boundFieldFactory = new ForeignKeyBoundFieldFactory((ColumnConditionModel<ForeignKey, Entity>) conditionModel, entityComponents);
     }
     else if (entityComponents.supports(conditionModel.columnIdentifier())) {
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, conditionModel.columnIdentifier());
@@ -103,9 +103,9 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   private static final class ForeignKeyBoundFieldFactory implements ColumnConditionPanel.BoundFieldFactory {
 
     private final EntityComponents entityComponents;
-    private final ColumnConditionModel<Entity, ForeignKey, Entity> model;
+    private final ColumnConditionModel<ForeignKey, Entity> model;
 
-    private ForeignKeyBoundFieldFactory(ColumnConditionModel<Entity, ForeignKey, Entity> model, EntityComponents entityComponents) {
+    private ForeignKeyBoundFieldFactory(ColumnConditionModel<ForeignKey, Entity> model, EntityComponents entityComponents) {
       this.model = model;
       this.entityComponents = entityComponents;
     }
@@ -146,11 +146,11 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
 
   private static final class AttributeBoundFieldFactory<C extends Attribute<T>, T> implements ColumnConditionPanel.BoundFieldFactory {
 
-    private final ColumnConditionModel<Entity, C, T> conditionModel;
+    private final ColumnConditionModel<C, T> conditionModel;
     private final EntityComponents inputComponents;
     private final Attribute<T> attribute;
 
-    private AttributeBoundFieldFactory(ColumnConditionModel<Entity, C, T> conditionModel,
+    private AttributeBoundFieldFactory(ColumnConditionModel<C, T> conditionModel,
                                        EntityComponents inputComponents,
                                        Attribute<T> attribute) {
       this.conditionModel = requireNonNull(conditionModel);

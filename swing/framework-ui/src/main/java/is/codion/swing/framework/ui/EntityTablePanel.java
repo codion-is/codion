@@ -1695,7 +1695,7 @@ public class EntityTablePanel extends JPanel {
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.tableColumns().forEach(column -> {
-      ColumnConditionPanel<?, ?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
@@ -1830,14 +1830,14 @@ public class EntityTablePanel extends JPanel {
     }
 
     @Override
-    public <R, C, T> ColumnConditionPanel<R, C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<Entity, Attribute<?>, ?> filterModel =
+    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
+      ColumnConditionModel<Attribute<?>, ?> filterModel =
               tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
 
-      return (ColumnConditionPanel<R, C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
+      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
     }
   }
 }

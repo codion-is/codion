@@ -58,7 +58,7 @@ public class DefaultEntityTableConditionModelTest {
     DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
             CONNECTION_PROVIDER, new DefaultFilterModelFactory(), new DefaultConditionModelFactory(CONNECTION_PROVIDER));
     //no search properties defined for master entity
-    ColumnConditionModel<?, ? extends Attribute<Entity>, Entity> masterModel =
+    ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.conditionModel(Detail.MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
             ((EntitySearchModelConditionModel) masterModel).entitySearchModel().performQuery());
@@ -88,7 +88,7 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void setEqualFilterValue() {
     conditionModel.setEqualFilterValue(Employee.COMMISSION, 1400d);
-    ColumnConditionModel<?, ?, Double> propertyConditionModel = conditionModel.filterModel(Employee.COMMISSION);
+    ColumnConditionModel<?, Double> propertyConditionModel = conditionModel.filterModel(Employee.COMMISSION);
     assertTrue(propertyConditionModel.isEnabled());
     assertTrue(conditionModel.isFilterEnabled(Employee.COMMISSION));
     assertEquals(Operator.EQUAL, propertyConditionModel.getOperator());
@@ -103,7 +103,7 @@ public class DefaultEntityTableConditionModelTest {
     boolean searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isConditionEnabled(Employee.DEPARTMENT_FK));
-    ColumnConditionModel<?, ? extends Attribute<Entity>, Entity> deptModel =
+    ColumnConditionModel<? extends Attribute<Entity>, Entity> deptModel =
             conditionModel.conditionModel(Employee.DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
@@ -138,7 +138,7 @@ public class DefaultEntityTableConditionModelTest {
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
     assertFalse(conditionModel.isConditionEnabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
-    ColumnConditionModel<?, ?, String> nameConditionModel = conditionModel.conditionModel(Employee.NAME);
+    ColumnConditionModel<?, String> nameConditionModel = conditionModel.conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
@@ -149,14 +149,14 @@ public class DefaultEntityTableConditionModelTest {
     final String value = "test";
     char wildcard = Text.WILDCARD_CHARACTER.get();
     conditionModel.simpleConditionStringValue().set(value);
-    for (ColumnConditionModel<?, ?, ?> model : conditionModel.conditionModels().values()) {
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
       if (model.columnClass().equals(String.class)) {
         assertEquals(wildcard + value + wildcard, model.getEqualValue());
         assertTrue(model.isEnabled());
       }
     }
     conditionModel.simpleConditionStringValue().set(null);
-    for (ColumnConditionModel<?, ?, ?> model : conditionModel.conditionModels().values()) {
+    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
       if (model.columnClass().equals(String.class)) {
         assertNull(model.getUpperBound());
         assertFalse(model.isEnabled());

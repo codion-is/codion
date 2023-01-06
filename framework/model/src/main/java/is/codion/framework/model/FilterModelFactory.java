@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
 /**
@@ -20,5 +19,5 @@ public interface FilterModelFactory {
    * @return a {@link ColumnConditionModel} for the given property, null if filtering should
    * not be allowed for this property
    */
-  <T> ColumnConditionModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
+  <T> ColumnConditionModel<Attribute<?>, T> createFilterModel(Property<T> property);
 }

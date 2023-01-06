@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  * For instances use the {@link #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)} factory method.
  * @see #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)
  */
-public final class EntitySearchModelConditionModel extends DefaultColumnConditionModel<Entity, ForeignKey, Entity> {
+public final class EntitySearchModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
 
   private final EntitySearchModel entitySearchModel;
 
