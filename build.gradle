@@ -77,7 +77,7 @@ configure(project.frameworkModules) {
                     "Implementation-URL": "https://codion.is",
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                     "Built-By": System.getProperty("user.name"),
-                    "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm").format(LocalDateTime.now()))
+                    "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))
         }
     }
 
