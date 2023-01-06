@@ -4,6 +4,7 @@
 package is.codion.common.model.table;
 
 import is.codion.common.Operator;
+import is.codion.common.Text;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -124,10 +125,7 @@ public class DefaultColumnConditionModelTest {
     assertFalse(model.caseSensitiveState().get());
     assertEquals("test", model.columnIdentifier());
     assertEquals(String.class, model.columnClass());
-    assertEquals('%', model.wildcardValue().get());
-
-    model.wildcardValue().set('#');
-    assertEquals('#', model.wildcardValue().get());
+    assertEquals(Text.WILDCARD_CHARACTER.get(), model.wildcard());
 
     model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.automaticWildcardValue().get());

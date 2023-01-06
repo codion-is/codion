@@ -35,11 +35,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private final Event<?> conditionChangedEvent = Event.event();
   private final Event<?> conditionModelClearedEvent = Event.event();
 
-  private final State caseSensitiveState = State.state(CASE_SENSITIVE.get());
-  private final Value<AutomaticWildcard> automaticWildcardValue = Value.value(AUTOMATIC_WILDCARD.get(), AutomaticWildcard.NONE);
-  private final Value<Character> wildcardValue = Value.value('%', '%');
+  private final State caseSensitiveState;
+  private final Value<AutomaticWildcard> automaticWildcardValue;
+  private final char wildcard;
 
-  private final State autoEnableState = State.state(true);
+  private final State autoEnableState;
   private final State enabledState = State.state();
   private final State lockedState = State.state();
 
@@ -53,10 +53,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     this.columnIdentifier = builder.columnIdentifier;
     this.operators = unmodifiableList(builder.operators);
     this.columnClass = builder.columnClass;
-    this.wildcardValue.set(builder.wildcard);
+    this.wildcard = builder.wildcard;
     this.format = builder.format;
     this.dateTimePattern = builder.dateTimePattern;
-    this.automaticWildcardValue.set(builder.automaticWildcard);
+    this.automaticWildcardValue = Value.value(builder.automaticWildcard, AutomaticWildcard.NONE);
+    this.caseSensitiveState = State.state(builder.caseSensitive);
+    this.autoEnableState = State.state(builder.autoEnable);
     this.enabledState.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
@@ -160,8 +162,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public Value<Character> wildcardValue() {
-    return wildcardValue;
+  public char wildcard() {
+    return wildcard;
   }
 
   @Override
@@ -335,7 +337,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       return comparable == null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
       return includeExactWildcard((String) comparable);
     }
 
@@ -351,7 +353,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       return comparable != null;
     }
 
-    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
       return !includeExactWildcard((String) comparable);
     }
 
@@ -363,7 +365,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     if (equalsValue == null) {
       equalsValue = "";
     }
-    if (equalsValue.equals(String.valueOf(wildcardValue().get()))) {
+    if (equalsValue.equals(String.valueOf(wildcard))) {
       return true;
     }
 
@@ -373,7 +375,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       realValue = realValue.toUpperCase(Locale.getDefault());
     }
 
-    if (!equalsValue.contains(String.valueOf(wildcardValue().get()))) {
+    if (!equalsValue.contains(String.valueOf(wildcard))) {
       return realValue.compareTo(equalsValue) == 0;
     }
 
@@ -382,7 +384,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   private String prepareForRegex(String string) {
     //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
-    return string.replace(String.valueOf(wildcardValue().get()), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+    return string.replace(String.valueOf(wildcard), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
   private boolean includeLessThan(Comparable<T> comparable) {
@@ -529,11 +531,11 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     if (operatorValue.equalTo(Operator.EQUAL) || operatorValue.equalTo(Operator.NOT_EQUAL)) {
       switch (automaticWildcardValue.get()) {
         case PREFIX_AND_POSTFIX:
-          return wildcardValue.get() + value + wildcardValue.get();
+          return wildcard + value + wildcard;
         case PREFIX:
-          return wildcardValue.get() + value;
+          return wildcard + value;
         case POSTFIX:
-          return value + wildcardValue.get();
+          return value + wildcard;
         default:
           return value;
       }
@@ -611,6 +613,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     private Format format;
     private String dateTimePattern;
     private AutomaticWildcard automaticWildcard = ColumnConditionModel.AUTOMATIC_WILDCARD.get();
+    private boolean caseSensitive = CASE_SENSITIVE.get();
+    private boolean autoEnable = true;
 
     DefaultBuilder(C columnIdentifier, Class<T> columnClass) {
       this.columnIdentifier = requireNonNull(columnIdentifier);
@@ -648,6 +652,18 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     @Override
     public Builder<C, T> automaticWildcard(AutomaticWildcard automaticWildcard) {
       this.automaticWildcard = requireNonNull(automaticWildcard);
+      return this;
+    }
+
+    @Override
+    public Builder<C, T> caseSensitive(boolean caseSensitive) {
+      this.caseSensitive = caseSensitive;
+      return this;
+    }
+
+    @Override
+    public Builder<C, T> autoEnable(boolean autoEnable) {
+      this.autoEnable = autoEnable;
       return this;
     }
 

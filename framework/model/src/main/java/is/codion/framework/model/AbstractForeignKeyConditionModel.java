@@ -123,8 +123,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final Value<Character> wildcardValue() {
-    return conditionModel.wildcardValue();
+  public final char wildcard() {
+    return conditionModel.wildcard();
   }
 
   @Override
