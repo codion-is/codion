@@ -283,7 +283,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void filterContents() {
+  public final void filterItems() {
     List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
@@ -308,7 +308,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void setIncludeCondition(Predicate<R> includeCondition) {
     combinedIncludeCondition.includeCondition = includeCondition;
-    filterContents();
+    filterItems();
   }
 
   @Override
@@ -553,7 +553,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private void bindEventsInternal() {
     addTableModelListener(e -> dataChangedEvent.onEvent());
     columnFilterModels.values().forEach(conditionModel ->
-            conditionModel.addConditionChangedListener(this::filterContents));
+            conditionModel.addConditionChangedListener(this::filterItems));
     sortModel.addSortingChangedListener(columnIdentifier -> sort());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {

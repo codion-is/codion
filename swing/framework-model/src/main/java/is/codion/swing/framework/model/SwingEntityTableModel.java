@@ -730,7 +730,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   /**
    * Replace the entities identified by the Entity.Key map keys with their respective value.
-   * Note that this does not trigger {@link #filterContents()}, that must be done explicitly.
+   * Note that this does not trigger {@link #filterItems()}, that must be done explicitly.
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(Map<Key, Entity> entitiesByKey) {

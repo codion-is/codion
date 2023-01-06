@@ -57,7 +57,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final List<T> filteredItems = new ArrayList<>();
 
   /**
-   * set during setContents
+   * set during setItems()
    */
   private boolean cleared = true;
 
@@ -76,7 +76,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * Instantiates a new FilteredComboBoxModel.
-   * The model contents are sorted automatically with a default collation based comparator.
+   * The model items are sorted automatically with a default collation based comparator.
    * To prevent sorting call {@link #setSortComparator(Comparator)} with a null argument before adding items.
    */
   public FilteredComboBoxModel() {
@@ -125,7 +125,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void clear() {
     setSelectedItem(null);
-    setContents(null);
+    setItems(null);
   }
 
   /**
@@ -136,26 +136,26 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * Resets the contents of this model using the values found in {@code contents},
-   * if contents is null then the model is considered to be cleared.
-   * @param contents the contents to display in this combo box model
+   * Resets the items of this model using the values found in {@code items},
+   * if items is null then the model is considered to be cleared.
+   * @param items the items to display in this combo box model
    * @see #isCleared()
    */
-  public final void setContents(Collection<T> contents) {
+  public final void setItems(Collection<T> items) {
     filteredItems.clear();
     visibleItems.clear();
-    if (contents != null) {
-      visibleItems.addAll(contents);
+    if (items != null) {
+      visibleItems.addAll(items);
       if (includeNull) {
         visibleItems.add(0, null);
       }
     }
-    filterContents();
-    cleared = contents == null;
+    filterItems();
+    cleared = items == null;
   }
 
   @Override
-  public final void filterContents() {
+  public final void filterItems() {
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
     if (includeCondition != null) {
@@ -209,7 +209,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   @Override
   public final void setIncludeCondition(Predicate<T> includeCondition) {
     this.includeCondition = includeCondition;
-    filterContents();
+    filterItems();
   }
 
   @Override
@@ -292,7 +292,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the Comparator used when sorting the contents of this model
+   * @return the Comparator used when sorting the items of this model
    */
   public final Comparator<T> getSortComparator() {
     return sortComparator;
@@ -302,7 +302,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Sets the Comparator used when sorting the items visible in this model and sorts the model accordingly.
    * This Comparator must take into account the null value if a {@code nullValueString} is specified.
    * If a null {@code sortComparator} is provided no sorting will be performed.
-   * @param sortComparator the Comparator, null if the contents of this model should not be sorted
+   * @param sortComparator the Comparator, null if the items of this model should not be sorted
    */
   public final void setSortComparator(Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
@@ -508,13 +508,13 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * both filtered and visible, excluding the null value.
    */
   protected Collection<T> refreshItems() {
-    List<T> contents = new ArrayList<>(visibleItems);
+    List<T> items = new ArrayList<>(visibleItems);
     if (includeNull) {
-      contents.remove(null);
+      items.remove(null);
     }
-    contents.addAll(filteredItems);
+    items.addAll(filteredItems);
 
-    return contents;
+    return items;
   }
 
   /**
@@ -591,7 +591,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
     refreshingState.set(false);
-    setContents(items);
+    setItems(items);
     if (afterRefresh != null) {
       afterRefresh.accept(items);
     }

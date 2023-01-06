@@ -279,11 +279,11 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final void setIncludeCondition(Predicate<Entity> includeCondition) {
     this.includeCondition = includeCondition;
-    filterContents();
+    filterItems();
   }
 
   @Override
-  public final void filterContents() {
+  public final void filterItems() {
     filteredList.setPredicate(entity -> includeCondition == null || includeCondition.test(entity));
     filterEvent.onEvent();
   }

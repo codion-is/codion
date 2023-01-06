@@ -110,7 +110,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void filterContents() {
+  void filterItems() {
     tableModel.refresh();
     tableModel.setIncludeCondition(item -> !item.equals(B) && !item.equals(F));
     assertFalse(tableModel.isVisible(B));

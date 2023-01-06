@@ -289,7 +289,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * @param foreignKey the foreign key
-   * @return the keys currently used to filter the contents of this model by foreign key, an empty collection for none
+   * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
    */
   public final Collection<Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
     requireNonNull(foreignKey);

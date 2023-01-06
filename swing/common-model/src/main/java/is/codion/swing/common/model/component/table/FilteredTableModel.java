@@ -174,7 +174,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void setMergeOnRefresh(boolean mergeOnRefresh);
 
   /**
-   * Sorts the visible contents according to the {@link FilteredTableSortModel}, keeping the selected items.
+   * Sorts the visible items according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #sortModel()
    * @see #addSortListener(EventListener)
