@@ -3,13 +3,16 @@
  */
 package is.codion.swing.framework.tools.explorer;
 
-import is.codion.common.model.table.DefaultColumnFilterModel;
+import is.codion.common.Operator;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import javax.swing.SortOrder;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
@@ -24,8 +27,8 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
 
   SchemaTableModel(Collection<Schema> schemas) {
     super(createSchemaColumns(), new SchemaColumnValueProvider(),
-            asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
-                    new DefaultColumnFilterModel<>(0, Boolean.class, '%')));
+            asList(new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%'),
+                    new DefaultColumnConditionModel<>(0, Boolean.class, Collections.singletonList(Operator.EQUAL), '%')));
     this.schemas = schemas;
     sortModel().setSortOrder(0, SortOrder.ASCENDING);
   }

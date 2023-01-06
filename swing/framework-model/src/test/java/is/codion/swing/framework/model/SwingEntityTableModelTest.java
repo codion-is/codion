@@ -106,7 +106,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void testFiltering() {
     testModel.refresh();
-    ColumnConditionModel<Attribute<String>, String> filterModel =
+    ColumnConditionModel<?, Attribute<String>, String> filterModel =
             testModel.tableConditionModel().filterModel(Detail.STRING);
     filterModel.setEqualValue("a");
     testModel.filterItems();
@@ -183,7 +183,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void backgroundColor() {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
-    ColumnConditionModel<Attribute<String>, String> nameConditionModel =
+    ColumnConditionModel<?, Attribute<String>, String> nameConditionModel =
             employeeTableModel.tableConditionModel().conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();

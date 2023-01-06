@@ -755,11 +755,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
-    ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
+    ColumnConditionModel<?, ?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
     if (conditionModel != null && !conditionModel.isLocked()) {
       conditionModel.setEnabled(false);
     }
-    ColumnConditionModel<?, ?> filterModel = tableConditionModel.filterModels().get(attribute);
+    ColumnConditionModel<?, ?, ?> filterModel = tableConditionModel.filterModels().get(attribute);
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }

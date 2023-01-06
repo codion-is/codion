@@ -3,8 +3,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.table.ColumnFilterModel;
-import is.codion.common.model.table.DefaultColumnFilterModel;
+import is.codion.common.Operator;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
@@ -13,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.AWTException;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -34,8 +36,8 @@ public class FilteredTableTest {
   @Test
   void searchField() throws AWTException {
     FilteredTableColumn<Integer> column = filteredTableColumn(0);
-    ColumnFilterModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnFilterModel<>(0, String.class, '%');
+    ColumnConditionModel<List<String>, Integer, String> filterModel =
+            new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%');
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
       @Override
@@ -83,7 +85,7 @@ public class FilteredTableTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
-                                           List<ColumnFilterModel<List<String>, Integer, String>> columnFilterModels) {
+                                           List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
       super(columns, new ColumnValueProvider<List<String>, Integer>() {
         @Override
         public Object value(List<String> row, Integer columnIdentifier) {

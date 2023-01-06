@@ -8584,3 +8584,4 @@
   FilteredModel.filterContents() renamed filterItems()
   FilteredComboBoxModel.setContents() renamed setItems()
   FilteredTableModel.sort() renamed sortItems()
+  ColumnFilterModel removed, merged with ColumnConditionModel

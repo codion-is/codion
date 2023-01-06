@@ -57,7 +57,7 @@ import static javax.swing.SwingConstants.CENTER;
  * @see #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton)
  * @see #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton, BoundFieldFactory)
  */
-public final class ColumnConditionPanel<C, T> extends JPanel {
+public final class ColumnConditionPanel<R, C, T> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
 
@@ -78,7 +78,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final float OPERATOR_FONT_SIZE = 18f;
 
-  private final ColumnConditionModel<C, T> conditionModel;
+  private final ColumnConditionModel<R, C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
   private final JComboBox<Item<Operator>> operatorCombo;
@@ -93,7 +93,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedViewState = State.state();
 
-  private ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, ToggleAdvancedButton toggleAdvancedButton,
+  private ColumnConditionPanel(ColumnConditionModel<R, C, T> conditionModel, ToggleAdvancedButton toggleAdvancedButton,
                                BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
@@ -129,7 +129,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the condition model this panel uses
    */
-  public ColumnConditionModel<C, T> model() {
+  public ColumnConditionModel<R, C, T> model() {
     return this.conditionModel;
   }
 
@@ -226,12 +226,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Instantiates a new {@link ColumnConditionPanel}, with a default bound field factory.
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
+   * @param <R> the row type
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-                                                                       ToggleAdvancedButton toggleAdvancedButton) {
+  public static <R, C, T> ColumnConditionPanel<R, C, T> columnConditionPanel(ColumnConditionModel<R, C, T> conditionModel,
+                                                                             ToggleAdvancedButton toggleAdvancedButton) {
     return columnConditionPanel(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel));
   }
 
@@ -240,13 +241,14 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param conditionModel the condition model to base this panel on
    * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param boundFieldFactory the input field factory
+   * @param <R> the row type
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-                                                                       ToggleAdvancedButton toggleAdvancedButton,
-                                                                       BoundFieldFactory boundFieldFactory) {
+  public static <R, C, T> ColumnConditionPanel<R, C, T> columnConditionPanel(ColumnConditionModel<R, C, T> conditionModel,
+                                                                             ToggleAdvancedButton toggleAdvancedButton,
+                                                                             BoundFieldFactory boundFieldFactory) {
     return new ColumnConditionPanel<>(conditionModel, toggleAdvancedButton, boundFieldFactory);
   }
 
@@ -276,9 +278,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final class DefaultBoundFieldFactory<T> implements BoundFieldFactory {
 
-    private final ColumnConditionModel<?, T> columnConditionModel;
+    private final ColumnConditionModel<?, ?, T> columnConditionModel;
 
-    private DefaultBoundFieldFactory(ColumnConditionModel<?, T> columnConditionModel) {
+    private DefaultBoundFieldFactory(ColumnConditionModel<?, ?, T> columnConditionModel) {
       this.columnConditionModel = requireNonNull(columnConditionModel, "columnConditionModel");
     }
 

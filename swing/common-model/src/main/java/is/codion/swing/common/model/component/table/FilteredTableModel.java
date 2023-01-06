@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 
 import javax.swing.table.TableModel;
@@ -131,7 +130,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the column filter models, mapped to their respective column identifier
    */
-  Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels();
+  Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels();
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
@@ -140,7 +139,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @return the ColumnConditionModel for the column with the given identifier.
    * @throws IllegalArgumentException in case no filter model exists for the given column
    */
-  <T> ColumnFilterModel<R, C, T> columnFilterModel(C columnIdentifier);
+  <T> ColumnConditionModel<R, C, T> columnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values

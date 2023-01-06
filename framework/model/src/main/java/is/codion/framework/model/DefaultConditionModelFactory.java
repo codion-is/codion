@@ -9,6 +9,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -33,10 +34,10 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   }
 
   @Override
-  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
+  public <T, A extends Attribute<T>> ColumnConditionModel<Entity, A, T> createConditionModel(A attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      return (ColumnConditionModel<A, T>) entitySearchModelConditionModel(foreignKey,
+      return (ColumnConditionModel<Entity, A, T>) entitySearchModelConditionModel(foreignKey,
               EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 

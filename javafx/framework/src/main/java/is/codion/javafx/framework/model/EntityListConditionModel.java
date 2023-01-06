@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  * For instances use the {@link #entityListConditionModel(ForeignKey, ObservableEntityList)} factory method.
  * @see #entityListConditionModel(ForeignKey, ObservableEntityList)
  */
-public final class EntityListConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntityListConditionModel extends DefaultColumnConditionModel<Entity, ForeignKey, Entity> {
 
   private final ObservableEntityList listModel;
 
