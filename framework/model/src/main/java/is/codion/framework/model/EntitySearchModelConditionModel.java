@@ -3,14 +3,9 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Operator;
-import is.codion.common.Text;
-import is.codion.common.model.table.DefaultColumnConditionModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,14 +14,14 @@ import static java.util.Objects.requireNonNull;
  * For instances use the {@link #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)} factory method.
  * @see #entitySearchModelConditionModel(ForeignKey, EntitySearchModel)
  */
-public final class EntitySearchModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntitySearchModelConditionModel extends AbstractForeignKeyConditionModel {
 
   private final EntitySearchModel entitySearchModel;
 
   private boolean updatingModel = false;
 
   private EntitySearchModelConditionModel(ForeignKey foreignKey, EntitySearchModel entitySearchModel) {
-    super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
+    super(foreignKey);
     this.entitySearchModel = requireNonNull(entitySearchModel, "entitySearchModel");
     bindSearchModelEvents();
   }

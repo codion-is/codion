@@ -662,7 +662,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
         FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-        ColumnConditionModel<C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
+        ColumnConditionModel<?, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));

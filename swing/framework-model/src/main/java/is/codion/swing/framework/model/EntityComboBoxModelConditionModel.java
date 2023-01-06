@@ -3,13 +3,9 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.Operator;
-import is.codion.common.Text;
-import is.codion.common.model.table.DefaultColumnConditionModel;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.model.AbstractForeignKeyConditionModel;
 
-import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -17,14 +13,14 @@ import java.util.Objects;
  * For instances use the {@link #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)} factory method.
  * @see #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)
  */
-public final class EntityComboBoxModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyConditionModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
 
   private boolean updatingModel = false;
 
   private EntityComboBoxModelConditionModel(ForeignKey foreignKey, EntityComboBoxModel comboBoxModel) {
-    super(foreignKey, Entity.class, Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL), Text.WILDCARD_CHARACTER.get());
+    super(foreignKey);
     this.entityComboBoxModel = Objects.requireNonNull(comboBoxModel, "comboBoxModel");
     if (entityComboBoxModel.isCleared()) {
       entityComboBoxModel.setSelectedItem(getEqualValue());

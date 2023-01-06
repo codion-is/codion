@@ -1831,8 +1831,7 @@ public class EntityTablePanel extends JPanel {
 
     @Override
     public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<Attribute<?>, ?> filterModel =
-              tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
+      ColumnConditionModel<?, ?> filterModel = tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }

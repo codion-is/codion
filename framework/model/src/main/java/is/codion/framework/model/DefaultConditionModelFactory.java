@@ -4,9 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.Text;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -45,8 +43,11 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
       return null;
     }
 
-    return new DefaultColumnConditionModel<>(attribute, attribute.valueClass(), operators(attribute),
-            Text.WILDCARD_CHARACTER.get(), property.format(), property.dateTimePattern());
+    return ColumnConditionModel.builder(attribute, attribute.valueClass())
+            .operators(operators(attribute))
+            .format(property.format())
+            .dateTimePattern(property.dateTimePattern())
+            .build();
   }
 
   /**

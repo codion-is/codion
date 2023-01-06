@@ -3,9 +3,7 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
@@ -14,7 +12,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.AWTException;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -36,8 +33,7 @@ public class FilteredTableTest {
   @Test
   void searchField() throws AWTException {
     FilteredTableColumn<Integer> column = filteredTableColumn(0);
-    ColumnConditionModel<Integer, String> filterModel =
-            new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%');
+    ColumnConditionModel<Integer, String> filterModel = ColumnConditionModel.builder(0, String.class).build();
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
       @Override

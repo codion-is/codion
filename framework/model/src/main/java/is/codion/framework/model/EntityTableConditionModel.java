@@ -121,7 +121,7 @@ public interface EntityTableConditionModel {
   /**
    * @return an unmodifiable map containing the filter models available in this table condition model, mapped to their respective attributes
    */
-  Map<Attribute<?>, ColumnConditionModel<Attribute<?>, ?>> filterModels();
+  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels();
 
   /**
    * The filter model associated with {@code attribute}

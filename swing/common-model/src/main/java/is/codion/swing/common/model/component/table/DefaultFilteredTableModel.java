@@ -68,7 +68,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableColumnModel<C> columnModel;
   private final FilteredTableSortModel<R, C> sortModel;
   private final FilteredTableSearchModel searchModel;
-  private final Map<C, ColumnConditionModel<C, ?>> columnFilterModels;
+  private final Map<C, ColumnConditionModel<? extends C, ?>> columnFilterModels;
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
   private final CombinedIncludeCondition combinedIncludeCondition;
 
@@ -92,7 +92,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param columnFilterModels the filter models if any, may be null
    */
   public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
-                                   Collection<? extends ColumnConditionModel<C, ?>> columnFilterModels) {
+                                   Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
@@ -215,7 +215,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Map<C, ColumnConditionModel<C, ?>> columnFilterModels() {
+  public final Map<C, ColumnConditionModel<? extends C, ?>> columnFilterModels() {
     return columnFilterModels;
   }
 
@@ -689,13 +689,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     selectionModel.setSelectedItems(selectedItems);
   }
 
-  private Map<C, ColumnConditionModel<C, ?>> initializeColumnFilterModels(Collection<? extends ColumnConditionModel<C, ?>> filterModels) {
+  private Map<C, ColumnConditionModel<? extends C, ?>> initializeColumnFilterModels(Collection<? extends ColumnConditionModel<? extends C, ?>> filterModels) {
     if (filterModels == null) {
       return emptyMap();
     }
 
-    Map<C, ColumnConditionModel<C, ?>> filterMap = new HashMap<>();
-    for (ColumnConditionModel<C, ?> columnFilterModel : filterModels) {
+    Map<C, ColumnConditionModel<? extends C, ?>> filterMap = new HashMap<>();
+    for (ColumnConditionModel<? extends C, ?> columnFilterModel : filterModels) {
       filterMap.put(columnFilterModel.columnIdentifier(), columnFilterModel);
     }
 
@@ -704,18 +704,18 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private final class CombinedIncludeCondition implements Predicate<R> {
 
-    private final List<? extends ColumnConditionModel<C, ?>> columnFilters;
+    private final List<? extends ColumnConditionModel<? extends C, ?>> columnFilters;
 
     private Predicate<R> includeCondition;
 
-    private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<C, ?>> columnFilters) {
+    private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
       this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
     }
 
     @Override
     public boolean test(R item) {
       for (int i = 0; i < columnFilters.size(); i++) {
-        ColumnConditionModel<C, ?> conditionModel = columnFilters.get(i);
+        ColumnConditionModel<? extends C, ?> conditionModel = columnFilters.get(i);
         if (!conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()))) {
           return false;
         }
