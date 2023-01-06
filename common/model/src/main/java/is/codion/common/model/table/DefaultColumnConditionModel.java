@@ -18,7 +18,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.function.Function;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.unmodifiableList;
@@ -30,7 +29,7 @@ import static java.util.stream.Collectors.toList;
  * @param <C> the type of the column identifier
  * @param <T> the column value type
  */
-public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionModel<R, C, T> {
+public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
   private final ValueSet<T> equalValues = ValueSet.valueSet();
   private final Value<T> upperBoundValue = Value.value();
@@ -52,8 +51,6 @@ public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionMode
   private final Format format;
   private final String dateTimePattern;
   private final List<Operator> operators;
-
-  private Function<R, Comparable<T>> comparableFunction = Comparable.class::cast;
 
   /**
    * Instantiates a DefaultColumnConditionModel.
@@ -242,13 +239,8 @@ public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionMode
   }
 
   @Override
-  public final void setComparableFunction(Function<R, Comparable<T>> comparableFunction) {
-    this.comparableFunction = requireNonNull(comparableFunction);
-  }
-
-  @Override
-  public final boolean include(R row) {
-    return !enabledState.get() || include(comparableFunction.apply(row));
+  public final boolean accepts(Comparable<T> columnValue) {
+    return !enabledState.get() || include(columnValue);
   }
 
   @Override

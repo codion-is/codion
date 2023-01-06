@@ -38,7 +38,7 @@ import static is.codion.common.item.Item.item;
  */
 public final class PropertyConditionView<T> extends BorderPane {
 
-  private final ColumnConditionModel<Entity, ? extends Attribute<?>, T> model;
+  private final ColumnConditionModel<? extends Attribute<?>, T> model;
   private final Pane operatorPane;
   private final Pane topPane;
   private final Label header;
@@ -54,7 +54,7 @@ public final class PropertyConditionView<T> extends BorderPane {
    * @param model the {@link ColumnConditionModel} to base this view on
    * @param property the underlying property
    */
-  public PropertyConditionView(ColumnConditionModel<Entity, ? extends Attribute<?>, T> model, Property<T> property) {
+  public PropertyConditionView(ColumnConditionModel<? extends Attribute<?>, T> model, Property<T> property) {
     this.model = model;
     this.header = new Label(property.caption());
     this.enabledBox = createEnabledBox();

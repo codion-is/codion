@@ -36,7 +36,7 @@ public class FilteredTableTest {
   @Test
   void searchField() throws AWTException {
     FilteredTableColumn<Integer> column = filteredTableColumn(0);
-    ColumnConditionModel<List<String>, Integer, String> filterModel =
+    ColumnConditionModel<Integer, String> filterModel =
             new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%');
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
@@ -85,7 +85,7 @@ public class FilteredTableTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
-                                           List<ColumnConditionModel<List<String>, Integer, String>> columnFilterModels) {
+                                           List<ColumnConditionModel<Integer, String>> columnFilterModels) {
       super(columns, new ColumnValueProvider<List<String>, Integer>() {
         @Override
         public Object value(List<String> row, Integer columnIdentifier) {

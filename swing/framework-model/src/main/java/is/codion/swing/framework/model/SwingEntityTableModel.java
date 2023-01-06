@@ -755,11 +755,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
-    ColumnConditionModel<?, ?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
+    ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
     if (conditionModel != null && !conditionModel.isLocked()) {
       conditionModel.setEnabled(false);
     }
-    ColumnConditionModel<?, ?, ?> filterModel = tableConditionModel.filterModels().get(attribute);
+    ColumnConditionModel<?, ?> filterModel = tableConditionModel.filterModels().get(attribute);
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }
@@ -916,6 +916,20 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     @Override
     public String string(Entity entity, Attribute<?> attribute) {
       return entity.toString(attribute);
+    }
+
+    @Override
+    public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
+      if (entity.isNull(attribute)) {
+        return null;
+      }
+
+      Object value = entity.get(attribute);
+      if (value instanceof Entity) {
+        return (Comparable<T>) value.toString();
+      }
+
+      return (Comparable<T>) value;
     }
   }
 }

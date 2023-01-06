@@ -23,18 +23,18 @@ public class ColumnConditionPanelTest {
   @Test
   void test() {
     final String key = "key";
-    ColumnConditionModel<?, String, String> model = new DefaultColumnConditionModel<>(key, String.class, ALL_OPERATORS, '%');
-    ColumnConditionPanel<?, String, String> panel = columnConditionPanel(model, ToggleAdvancedButton.YES);
+    ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>(key, String.class, ALL_OPERATORS, '%');
+    ColumnConditionPanel<String, String> panel = columnConditionPanel(model, ToggleAdvancedButton.YES);
     assertEquals(model, panel.model());
     assertNotNull(panel.equalField());
     assertNotNull(panel.upperBoundField());
     assertNotNull(panel.lowerBoundField());
-    assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<Object, String, String>columnConditionPanel(null, null));
+    assertThrows(NullPointerException.class, () -> ColumnConditionPanel.<String, String>columnConditionPanel(null, null));
   }
 
   @Test
   void lockedModel() {
-    ColumnConditionModel<?, String, String> model = new DefaultColumnConditionModel<>("key", String.class, ALL_OPERATORS, '%');
+    ColumnConditionModel<String, String> model = new DefaultColumnConditionModel<>("key", String.class, ALL_OPERATORS, '%');
     model.setLocked(true);
     columnConditionPanel(model, ToggleAdvancedButton.YES);
   }

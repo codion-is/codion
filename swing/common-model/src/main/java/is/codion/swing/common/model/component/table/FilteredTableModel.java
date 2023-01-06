@@ -130,7 +130,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the column filter models, mapped to their respective column identifier
    */
-  Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels();
+  Map<C, ColumnConditionModel<C, ?>> columnFilterModels();
 
   /**
    * Returns the {@link ColumnConditionModel} for the column with the given identifier.
@@ -139,7 +139,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @return the ColumnConditionModel for the column with the given identifier.
    * @throws IllegalArgumentException in case no filter model exists for the given column
    */
-  <T> ColumnConditionModel<R, C, T> columnFilterModel(C columnIdentifier);
+  <T> ColumnConditionModel<C, T> columnFilterModel(C columnIdentifier);
 
   /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
@@ -270,6 +270,17 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
       Object columnValue = value(row, columnIdentifier);
 
       return columnValue == null ? "" : columnValue.toString();
+    }
+
+    /**
+     * Returns a Comparable instance for the given row and columnIdentifier
+     * @param <T> the column value type
+     * @param row the object representing a given row
+     * @param columnIdentifier the column identifier
+     * @return a Comparable for the given row and column
+     */
+    default <T> Comparable<T> comparable(R row, C columnIdentifier) {
+      return (Comparable<T>) value(row, columnIdentifier);
     }
   }
 

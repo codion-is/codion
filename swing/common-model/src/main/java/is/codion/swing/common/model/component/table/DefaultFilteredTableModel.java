@@ -68,9 +68,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableColumnModel<C> columnModel;
   private final FilteredTableSortModel<R, C> sortModel;
   private final FilteredTableSearchModel searchModel;
-  private final Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels;
+  private final Map<C, ColumnConditionModel<C, ?>> columnFilterModels;
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
-  private final CombinedIncludeCondition<R, C> combinedIncludeCondition;
+  private final CombinedIncludeCondition combinedIncludeCondition;
 
   private ProgressWorker<Collection<R>, ?> refreshWorker;
   private boolean mergeOnRefresh = false;
@@ -92,14 +92,14 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param columnFilterModels the filter models if any, may be null
    */
   public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
-                                   Collection<? extends ColumnConditionModel<R, C, ?>> columnFilterModels) {
+                                   Collection<? extends ColumnConditionModel<C, ?>> columnFilterModels) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     this.columnFilterModels = initializeColumnFilterModels(columnFilterModels);
-    this.combinedIncludeCondition = new CombinedIncludeCondition<>(columnFilterModels);
+    this.combinedIncludeCondition = new CombinedIncludeCondition(columnFilterModels);
     bindEventsInternal();
   }
 
@@ -215,13 +215,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Map<C, ColumnConditionModel<R, C, ?>> columnFilterModels() {
+  public final Map<C, ColumnConditionModel<C, ?>> columnFilterModels() {
     return columnFilterModels;
   }
 
   @Override
-  public final <T> ColumnConditionModel<R, C, T> columnFilterModel(C columnIdentifier) {
-    ColumnConditionModel<R, C, T> filterModel = (ColumnConditionModel<R, C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+  public final <T> ColumnConditionModel<C, T> columnFilterModel(C columnIdentifier) {
+    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) columnFilterModels.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model exists for column: " + columnIdentifier);
     }
@@ -689,33 +689,34 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     selectionModel.setSelectedItems(selectedItems);
   }
 
-  private Map<C, ColumnConditionModel<R, C, ?>> initializeColumnFilterModels(Collection<? extends ColumnConditionModel<R, C, ?>> filterModels) {
+  private Map<C, ColumnConditionModel<C, ?>> initializeColumnFilterModels(Collection<? extends ColumnConditionModel<C, ?>> filterModels) {
     if (filterModels == null) {
       return emptyMap();
     }
 
-    Map<C, ColumnConditionModel<R, C, ?>> filterMap = new HashMap<>();
-    for (ColumnConditionModel<R, C, ?> columnFilterModel : filterModels) {
+    Map<C, ColumnConditionModel<C, ?>> filterMap = new HashMap<>();
+    for (ColumnConditionModel<C, ?> columnFilterModel : filterModels) {
       filterMap.put(columnFilterModel.columnIdentifier(), columnFilterModel);
     }
 
     return unmodifiableMap(filterMap);
   }
 
-  private static final class CombinedIncludeCondition<R, C>  implements Predicate<R> {
+  private final class CombinedIncludeCondition implements Predicate<R> {
 
-    private final List<? extends ColumnConditionModel<R, C, ?>> columnFilters;
+    private final List<? extends ColumnConditionModel<C, ?>> columnFilters;
 
     private Predicate<R> includeCondition;
 
-    private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<R, C, ?>> columnFilters) {
+    private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<C, ?>> columnFilters) {
       this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
     }
 
     @Override
     public boolean test(R item) {
       for (int i = 0; i < columnFilters.size(); i++) {
-        if (!columnFilters.get(i).include(item)) {
+        ColumnConditionModel<C, ?> conditionModel = columnFilters.get(i);
+        if (!conditionModel.accepts(columnValueProvider.comparable(item, conditionModel.columnIdentifier()))) {
           return false;
         }
       }

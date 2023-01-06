@@ -74,6 +74,11 @@ public final class DefaultFilteredTableModelTest {
 
                   return (Comparator<String>) String::compareTo;
                 }
+
+                @Override
+                public <T> Comparable<T> comparable(List<String> row, Integer columnIdentifier) {
+                  return (Comparable<T>) row.get(0);
+                }
               }, createFilterModels());
     }
 
@@ -91,11 +96,9 @@ public final class DefaultFilteredTableModelTest {
     return singletonList(filteredTableColumn(0));
   }
 
-  private static List<ColumnConditionModel<List<String>, Integer, String>> createFilterModels() {
-    ColumnConditionModel<List<String>, Integer, String> filterModel =
+  private static List<ColumnConditionModel<Integer, String>> createFilterModels() {
+    ColumnConditionModel<Integer, String> filterModel =
             new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%');
-
-    filterModel.setComparableFunction(row -> row.get(0));
 
     return singletonList(filterModel);
   }
