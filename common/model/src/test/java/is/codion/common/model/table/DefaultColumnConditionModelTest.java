@@ -342,60 +342,61 @@ public class DefaultColumnConditionModelTest {
 
   @Test
   void includeInteger() {
-    DefaultColumnConditionModel<String, String, Integer> conditionModel = new DefaultColumnConditionModel<>("test",
+    DefaultColumnConditionModel<Integer, String, Integer> conditionModel = new DefaultColumnConditionModel<>("test",
             Integer.class, Arrays.asList(Operator.values()), '%');
     conditionModel.autoEnableState().set(false);
+    conditionModel.setEnabled(true);
     conditionModel.setOperator(Operator.EQUAL);
 
     conditionModel.setEqualValue(null);
-    assertTrue(conditionModel.include((Comparable<Integer>) null));
+    assertTrue(conditionModel.include(null));
     assertFalse(conditionModel.include(1));
 
     conditionModel.setOperator(Operator.NOT_EQUAL);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertTrue(conditionModel.include(1));
 
     conditionModel.setOperator(Operator.EQUAL);
 
     conditionModel.setEqualValue(10);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
     conditionModel.setOperator(Operator.NOT_EQUAL);
-    assertTrue(conditionModel.include((Comparable<Integer>) null));
+    assertTrue(conditionModel.include(null));
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
     conditionModel.setLowerBound(10);
     conditionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertFalse(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
     conditionModel.setOperator(Operator.GREATER_THAN);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertFalse(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertTrue(conditionModel.include(11));
 
     conditionModel.setUpperBound(10);
     conditionModel.setOperator(Operator.LESS_THAN_OR_EQUAL);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertTrue(conditionModel.include(9));
     assertTrue(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
     conditionModel.setOperator(Operator.LESS_THAN);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertTrue(conditionModel.include(9));
     assertFalse(conditionModel.include(10));
     assertFalse(conditionModel.include(11));
 
     conditionModel.setLowerBound(6);
     conditionModel.setOperator(Operator.BETWEEN);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
     assertTrue(conditionModel.include(9));
@@ -403,7 +404,7 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(11));
     assertFalse(conditionModel.include(5));
     conditionModel.setOperator(Operator.BETWEEN_EXCLUSIVE);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertFalse(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
     assertTrue(conditionModel.include(9));
@@ -412,7 +413,7 @@ public class DefaultColumnConditionModelTest {
     assertFalse(conditionModel.include(5));
 
     conditionModel.setOperator(Operator.NOT_BETWEEN);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertTrue(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));
@@ -420,7 +421,7 @@ public class DefaultColumnConditionModelTest {
     assertTrue(conditionModel.include(11));
     assertTrue(conditionModel.include(5));
     conditionModel.setOperator(Operator.NOT_BETWEEN_EXCLUSIVE);
-    assertFalse(conditionModel.include((Comparable<Integer>) null));
+    assertFalse(conditionModel.include(null));
     assertFalse(conditionModel.include(6));
     assertFalse(conditionModel.include(7));
     assertFalse(conditionModel.include(9));
@@ -447,7 +448,7 @@ public class DefaultColumnConditionModelTest {
     assertTrue(conditionModel.include(8));
     assertTrue(conditionModel.include(11));
 
-    assertTrue(conditionModel.include((Comparable<Integer>) null));
+    assertTrue(conditionModel.include(null));
     assertTrue(conditionModel.include(5));
     assertTrue(conditionModel.include(6));
     assertTrue(conditionModel.include(7));
@@ -458,6 +459,7 @@ public class DefaultColumnConditionModelTest {
     DefaultColumnConditionModel<String, String, String> conditionModel = new DefaultColumnConditionModel<>("test",
             String.class, Arrays.asList(Operator.values()), '%');
     conditionModel.autoEnableState().set(false);
+    conditionModel.setEnabled(true);
 
     conditionModel.setOperator(Operator.EQUAL);
     conditionModel.setEqualValue("hello");

@@ -248,7 +248,7 @@ public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionMode
 
   @Override
   public final boolean include(R row) {
-    return include(comparableFunction.apply(row));
+    return !enabledState.get() || include(comparableFunction.apply(row));
   }
 
   @Override
@@ -351,7 +351,7 @@ public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionMode
     return operatorValue;
   }
 
-  boolean include(Comparable<T> comparable) {
+  private boolean include(Comparable<T> comparable) {
     switch (getOperator()) {
       case EQUAL:
         return includeEqual(comparable);

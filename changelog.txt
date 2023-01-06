@@ -8585,3 +8585,4 @@
   FilteredComboBoxModel.setContents() renamed setItems()
   FilteredTableModel.sort() renamed sortItems()
   ColumnFilterModel removed, merged with ColumnConditionModel
+  DefaultColumnConditionModel.include() now returns true in case the model is disabled

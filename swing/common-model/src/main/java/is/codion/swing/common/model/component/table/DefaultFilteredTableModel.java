@@ -715,8 +715,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     @Override
     public boolean test(R item) {
       for (int i = 0; i < columnFilters.size(); i++) {
-        ColumnConditionModel<R, C, ?> filterModel = columnFilters.get(i);
-        if (filterModel.isEnabled() && !filterModel.include(item)) {
+        if (!columnFilters.get(i).include(item)) {
           return false;
         }
       }

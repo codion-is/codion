@@ -244,8 +244,7 @@ public interface ColumnConditionModel<R, C, T> {
   void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
 
   /**
-   * Returns true if the criteria in this condition model accepts the given input row.
-   * Note that this is independent of the enabled state of this model.
+   * Returns true if the given row is accepted by this models condition or if this model is disabled.
    * @param row the row
    * @return true if the row should be included according to this filter model criteria
    */
