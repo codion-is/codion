@@ -8627,3 +8627,5 @@
   ColumnConditionModel.include() and setComparableFunction() replaced with accept() and ColumnValueProvider.comparable()
   DefaultColumnFilterModelFactory.createFilterModel() bug fixed, now only creates condition models for columns based on a Comparable value
   DefaultColumnConditionModel now final, ColumnConditionModel.Builder and AbstractForeignKeyConditionModel added along with related refactoring
+  ColumnConditionModel.Builder.autoEnable() and caseSensitive() added
+  ColumnConditionModel.wildcardValue() replaced with wildcard()

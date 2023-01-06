@@ -186,9 +186,9 @@ public interface ColumnConditionModel<C, T> {
   List<Operator> operators();
 
   /**
-   * @return the Value controlling the character used as a wildcard when working with strings
+   * @return the character used as a wildcard when working with strings
    */
-  Value<Character> wildcardValue();
+  char wildcard();
 
   /**
    * @return true if this condition model is enabled
@@ -359,6 +359,18 @@ public interface ColumnConditionModel<C, T> {
      * @return this builder instance
      */
     Builder<C, T> automaticWildcard(AutomaticWildcard automaticWildcard);
+
+    /**
+     * @param caseSensitive true if the model should be case-sensitive
+     * @return this builder instance
+     */
+    Builder<C, T> caseSensitive(boolean caseSensitive);
+
+    /**
+     * @param autoEnable true if the model should auto-enable
+     * @return this builder instance
+     */
+    Builder<C, T> autoEnable(boolean autoEnable);
 
     /**
      * @return a new {@link ColumnConditionModel} instance based on this builder
