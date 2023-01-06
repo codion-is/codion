@@ -6,11 +6,12 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Controls;
@@ -40,6 +41,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -79,7 +81,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final ColumnConditionModel<C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
   private final JToggleButton toggleAdvancedButton;
-  private final JComboBox<Operator> operatorCombo;
+  private final JComboBox<Item<Operator>> operatorCombo;
   private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
@@ -174,7 +176,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @return the condition operator combo box
    */
-  public JComboBox<Operator> operatorComboBox() {
+  public JComboBox<Item<Operator>> operatorComboBox() {
     return operatorCombo;
   }
 
@@ -466,18 +468,19 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
   }
 
-  private JComboBox<Operator> createOperatorComboBox(List<Operator> operators) {
-    FilteredComboBoxModel<Operator> operatorComboBoxModel = new FilteredComboBoxModel<>();
-    operatorComboBoxModel.setContents(operators);
+  private JComboBox<Item<Operator>> createOperatorComboBox(List<Operator> operators) {
+    ItemComboBoxModel<Operator> operatorComboBoxModel = ItemComboBoxModel.itemComboBoxModel(operators.stream()
+            .map(operator -> Item.item(operator, ColumnConditionModel.caption(operator)))
+            .collect(Collectors.toList()));
     operatorComboBoxModel.setSelectedItem(operators.get(0));
-    return comboBox(operatorComboBoxModel, conditionModel.operatorValue())
+    return itemComboBox(operatorComboBoxModel, conditionModel.operatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .maximumRowCount(operators.size())
-            .toolTipText(operatorComboBoxModel.selectedValue().description())
+            .toolTipText(operatorComboBoxModel.selectedValue().value().description())
             .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
-                    comboBox.setToolTipText(selectedOperator.description())))
+                    comboBox.setToolTipText(selectedOperator.value().description())))
             .build();
   }
 
@@ -589,7 +592,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .build();
   }
 
-  private static final class OperatorComboBoxRenderer implements ListCellRenderer<Operator> {
+  private static final class OperatorComboBoxRenderer implements ListCellRenderer<Item<Operator>> {
 
     private final DefaultListCellRenderer listCellRenderer = new DefaultListCellRenderer();
 
@@ -598,7 +601,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     @Override
-    public Component getListCellRendererComponent(JList<? extends Operator> list, Operator value,
+    public Component getListCellRendererComponent(JList<? extends Item<Operator>> list, Item<Operator> value,
                                                   int index, boolean isSelected, boolean cellHasFocus) {
       return listCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
     }

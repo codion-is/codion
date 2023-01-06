@@ -10,34 +10,21 @@ import java.util.ResourceBundle;
  */
 public enum Operator {
 
-  EQUAL("="),
-  NOT_EQUAL("\u2260"),
-  LESS_THAN("<"),
-  LESS_THAN_OR_EQUAL("\u2264"),
-  GREATER_THAN(">"),
-  GREATER_THAN_OR_EQUAL("\u2265"),
-  BETWEEN_EXCLUSIVE("<\u2219<"),
-  BETWEEN("\u2264\u2219\u2264"),
-  NOT_BETWEEN_EXCLUSIVE("\u2265\u2219\u2265"),
-  NOT_BETWEEN(">\u2219>");
+  EQUAL,
+  NOT_EQUAL,
+  LESS_THAN,
+  LESS_THAN_OR_EQUAL,
+  GREATER_THAN,
+  GREATER_THAN_OR_EQUAL,
+  BETWEEN_EXCLUSIVE,
+  BETWEEN,
+  NOT_BETWEEN_EXCLUSIVE,
+  NOT_BETWEEN;
 
-  private final ResourceBundle messages = ResourceBundle.getBundle(Operator.class.getName());
-
-  private final String caption;
   private final String description;
 
-  Operator(String caption) {
-    this.caption = caption;
-    this.description = messages.getString(name().toLowerCase());
-  }
-
-  @Override
-  public String toString() {
-    return caption;
-  }
-
-  public String caption() {
-    return caption;
+  Operator() {
+    this.description = ResourceBundle.getBundle(Operator.class.getName()).getString(name().toLowerCase());
   }
 
   public String description() {

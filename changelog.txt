@@ -8579,3 +8579,4 @@
   LocalEntityConnection.connection() renamed fetchConnection()
   EntityDefinition.setSelectQuery() renamed selectQuery()
   DefaultLocalEntityConnection.selectDependencies() bug fixed, now handles multiple foreign keys referencing the same entity type
+  Operator, caption removed, ColumnConditionModel.caption() added, operator captions improved a bit
