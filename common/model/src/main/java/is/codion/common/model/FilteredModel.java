@@ -36,7 +36,7 @@ public interface FilteredModel<T> {
    * @see #setIncludeCondition(Predicate)
    * @see #addFilterListener(EventListener)
    */
-  void filterContents();
+  void filterItems();
 
   /**
    * Returns the include condition used by this model, null if no include condition has been set.

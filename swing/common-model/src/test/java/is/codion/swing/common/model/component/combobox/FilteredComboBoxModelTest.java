@@ -75,7 +75,7 @@ public class FilteredComboBoxModelTest {
     names.add(SIGGI);
     names.add(TOMAS);
     names.add(BJORN);
-    testModel.setContents(names);
+    testModel.setItems(names);
 
     assertEquals(ANNA, testModel.getElementAt(1));
     assertEquals(KALLI, testModel.getElementAt(2));
@@ -85,7 +85,7 @@ public class FilteredComboBoxModelTest {
 
     testModel.setSortComparator(comparator);
     names.remove(SIGGI);
-    testModel.setContents(names);
+    testModel.setItems(names);
     testModel.addItem(SIGGI);
 
     assertEquals(ANNA, testModel.getElementAt(1));
@@ -304,16 +304,16 @@ public class FilteredComboBoxModelTest {
         return id == ((Data) o).id;
       }
     }
-    List<Data> contents = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
+    List<Data> items = asList(new Data(1, "1"), new Data(2, "2"), new Data(3, "3"));
 
     FilteredComboBoxModel<Data> model = new FilteredComboBoxModel<>();
-    model.setContents(contents);
-    model.setSelectedItem(contents.get(1));
+    model.setItems(items);
+    model.setSelectedItem(items.get(1));
     assertEquals("2", model.selectedValue().data);
 
-    contents = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
+    items = asList(new Data(1, "1"), new Data(2, "22"), new Data(3, "3"));
 
-    model.setContents(contents);
+    model.setItems(items);
     assertEquals("22", model.selectedValue().data);
   }
 
@@ -328,7 +328,7 @@ public class FilteredComboBoxModelTest {
     names.add(SIGGI);
     names.add(TOMAS);
     names.add(BJORN);
-    testModel.setContents(names);
+    testModel.setItems(names);
   }
 
   @AfterEach

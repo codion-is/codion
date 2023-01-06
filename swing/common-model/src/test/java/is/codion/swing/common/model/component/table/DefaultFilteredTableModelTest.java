@@ -110,7 +110,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void filterContents() {
+  void filterItems() {
     tableModel.refresh();
     tableModel.setIncludeCondition(item -> !item.equals(B) && !item.equals(F));
     assertFalse(tableModel.isVisible(B));
@@ -220,7 +220,7 @@ public final class DefaultFilteredTableModelTest {
 
     testModel.refresh();
     //merge does not sort new items
-    testModel.sort();
+    testModel.sortItems();
 
     testModel.selectionModel().setSelectedIndex(1);//b
 
@@ -773,21 +773,28 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void filtering() throws Exception {
-    AtomicInteger done = new AtomicInteger();
-    EventListener listener = done::incrementAndGet;
+    AtomicInteger filterEventCount = new AtomicInteger();
+    EventListener listener = filterEventCount::incrementAndGet;
     tableModel.addFilterListener(listener);
 
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertNotNull(tableModel.getIncludeCondition());
+    assertNull(tableModel.getIncludeCondition());
 
     //test filters
     assertTrue(tableModel.isVisible(B));
     tableModel.columnFilterModel(0).setEqualValue("a");
-    assertEquals(2, done.get());
+    assertEquals(2, filterEventCount.get());
     assertTrue(tableModel.isVisible(A));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
+
+    tableModel.setIncludeCondition(strings -> !strings.equals(A));
+    assertNotNull(tableModel.getIncludeCondition());
+    assertFalse(tableModel.isVisible(A));
+    tableModel.setIncludeCondition(null);
+    assertTrue(tableModel.isVisible(A));
+
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
     assertTrue(tableModel.columnFilterModel(0).isEnabled());
@@ -800,7 +807,7 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModel.items().size() > 0);
 
     tableModel.columnFilterModel(0).setEnabled(false);
-    assertEquals(3, done.get());
+    assertEquals(5, filterEventCount.get());
     assertFalse(tableModel.columnFilterModel(0).isEnabled());
 
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));

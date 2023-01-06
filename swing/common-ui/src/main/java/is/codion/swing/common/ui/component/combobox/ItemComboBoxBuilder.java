@@ -29,14 +29,14 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
   ItemComboBoxBuilder<T> nullable(boolean nullable);
 
   /**
-   * Sorts the contents by caption
+   * Sorts the items by caption
    * @param sorted if true then the items will be sorted by caption
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> sorted(boolean sorted);
 
   /**
-   * @param sortComparator if specified the combo box contents are sorted using this comparator
+   * @param sortComparator if specified the combo box items are sorted using this comparator
    * @return this builder instance
    */
   ItemComboBoxBuilder<T> sortComparator(Comparator<Item<T>> sortComparator);

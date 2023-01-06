@@ -70,8 +70,9 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableSearchModel searchModel;
   private final Map<C, ColumnFilterModel<R, C, ?>> columnFilterModels;
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
+  private final CombinedIncludeCondition<R, C> combinedIncludeCondition;
+
   private ProgressWorker<Collection<R>, ?> refreshWorker;
-  private Predicate<R> includeCondition;
   private boolean mergeOnRefresh = false;
   private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
@@ -98,7 +99,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     this.columnFilterModels = initializeColumnFilterModels(columnFilterModels);
-    this.includeCondition = new DefaultIncludeCondition<>(columnFilterModels);
+    this.combinedIncludeCondition = new CombinedIncludeCondition<>(columnFilterModels);
     bindEventsInternal();
   }
 
@@ -271,7 +272,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void sort() {
+  public final void sortItems() {
     if (sortModel.isSortingEnabled()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
@@ -282,17 +283,15 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void filterContents() {
+  public final void filterItems() {
     List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
-    if (includeCondition != null) {
-      for (ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
-        R item = iterator.next();
-        if (!includeCondition.test(item)) {
-          filteredItems.add(item);
-          iterator.remove();
-        }
+    for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext();) {
+      R item = visibleItemsIterator.next();
+      if (!include(item)) {
+        visibleItemsIterator.remove();
+        filteredItems.add(item);
       }
     }
     sortModel.sort(visibleItems);
@@ -303,13 +302,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Predicate<R> getIncludeCondition() {
-    return includeCondition;
+    return combinedIncludeCondition.includeCondition;
   }
 
   @Override
   public final void setIncludeCondition(Predicate<R> includeCondition) {
-    this.includeCondition = includeCondition;
-    filterContents();
+    combinedIncludeCondition.includeCondition = includeCondition;
+    filterItems();
   }
 
   @Override
@@ -554,8 +553,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private void bindEventsInternal() {
     addTableModelListener(e -> dataChangedEvent.onEvent());
     columnFilterModels.values().forEach(conditionModel ->
-            conditionModel.addConditionChangedListener(this::filterContents));
-    sortModel.addSortingChangedListener(columnIdentifier -> sort());
+            conditionModel.addConditionChangedListener(this::filterItems));
+    sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
         rowsRemovedEvent.onEvent(new DefaultRowsRemoved(e.getFirstRow(), e.getLastRow()));
@@ -596,7 +595,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private boolean include(R item) {
-    return includeCondition == null || includeCondition.test(item);
+    return combinedIncludeCondition.test(item);
   }
 
   private void refreshAsync(Consumer<Collection<R>> afterRefresh) {
@@ -703,23 +702,26 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     return unmodifiableMap(filterMap);
   }
 
-  private static final class DefaultIncludeCondition<R, C> implements Predicate<R> {
+  private static final class CombinedIncludeCondition<R, C>  implements Predicate<R> {
 
-    private final Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters;
+    private final List<? extends ColumnFilterModel<R, C, ?>> columnFilters;
 
-    private DefaultIncludeCondition(Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters) {
-      this.columnFilters = columnFilters == null ? Collections.emptyList() : columnFilters;
+    private Predicate<R> includeCondition;
+
+    private CombinedIncludeCondition(Collection<? extends ColumnFilterModel<R, C, ?>> columnFilters) {
+      this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
     }
 
     @Override
     public boolean test(R item) {
-      for (ColumnFilterModel<R, C, ?> filterModel : columnFilters) {
+      for (int i = 0; i < columnFilters.size(); i++) {
+        ColumnFilterModel<R, C, ?> filterModel = columnFilters.get(i);
         if (filterModel.isEnabled() && !filterModel.include(item)) {
           return false;
         }
       }
 
-      return true;
+      return includeCondition == null || includeCondition.test(item);
     }
   }
 

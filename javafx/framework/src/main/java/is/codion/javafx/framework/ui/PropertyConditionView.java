@@ -239,15 +239,15 @@ public final class PropertyConditionView<T> extends BorderPane {
   private static Collection<Item<Operator>> operators(Attribute<?> attribute) {
     Collection<Item<Operator>> types = new ArrayList<>();
     if (attribute instanceof ForeignKey) {
-      types.add(item(Operator.EQUAL, Operator.EQUAL.caption()));
-      types.add(item(Operator.NOT_EQUAL, Operator.NOT_EQUAL.caption()));
+      types.add(item(Operator.EQUAL, ColumnConditionModel.caption(Operator.EQUAL)));
+      types.add(item(Operator.NOT_EQUAL, ColumnConditionModel.caption(Operator.NOT_EQUAL)));
     }
     else if (attribute.isBoolean()) {
-      types.add(item(Operator.EQUAL, Operator.EQUAL.caption()));
+      types.add(item(Operator.EQUAL, ColumnConditionModel.caption(Operator.EQUAL)));
     }
     else {
       for (Operator operator : Operator.values()) {
-        types.add(item(operator, operator.caption()));
+        types.add(item(operator, ColumnConditionModel.caption(operator)));
       }
     }
 

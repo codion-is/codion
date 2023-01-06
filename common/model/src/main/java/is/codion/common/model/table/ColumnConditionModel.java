@@ -18,6 +18,8 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
@@ -302,4 +304,25 @@ public interface ColumnConditionModel<C, T> {
    * @param listener the listener to remove
    */
   void removeConditionChangedListener(EventListener listener);
+
+  /**
+   * @param operator the operator
+   * @return a caption for the given operator
+   */
+  static String caption(Operator operator) {
+    switch (requireNonNull(operator)) {
+      case EQUAL: return "α =";
+      case NOT_EQUAL: return "α ≠";
+      case LESS_THAN: return "α <";
+      case LESS_THAN_OR_EQUAL: return "α ≤";
+      case GREATER_THAN: return "α >";
+      case GREATER_THAN_OR_EQUAL: return "α ≥";
+      case BETWEEN_EXCLUSIVE: return "< α <";
+      case BETWEEN: return "≤ α ≤";
+      case NOT_BETWEEN_EXCLUSIVE: return "≥ α ≥";
+      case NOT_BETWEEN: return "> α >";
+      default:
+        throw new IllegalArgumentException("Unknown operator: " + operator);
+    }
+  }
 }
