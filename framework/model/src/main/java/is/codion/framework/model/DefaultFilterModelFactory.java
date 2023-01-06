@@ -24,6 +24,9 @@ public class DefaultFilterModelFactory implements FilterModelFactory {
     if (property.attribute().isEntity()) {
       return null;
     }
+    if (!Comparable.class.isAssignableFrom(property.attribute().valueClass())) {
+      return null;
+    }
 
     return new DefaultColumnConditionModel<>(property.attribute(), property.attribute().valueClass(),
             operators(property.attribute().valueClass()), Text.WILDCARD_CHARACTER.get(),

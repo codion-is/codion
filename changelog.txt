@@ -8587,3 +8587,4 @@
   ColumnFilterModel removed, merged with ColumnConditionModel
   DefaultColumnConditionModel.include() now returns true in case the model is disabled
   ColumnConditionModel.include() and setComparableFunction() replaced with accept() and ColumnValueProvider.comparable()
+  DefaultColumnFilterModelFactory.createFilterModel() bug fixed, now only creates condition models for columns based on a Comparable value
