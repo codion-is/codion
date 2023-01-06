@@ -8,7 +8,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnFilterModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
@@ -126,12 +125,12 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   /**
    * The column filter panels
    */
-  private final Map<FilteredTableColumn<C>, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
+  private final Map<FilteredTableColumn<C>, ColumnConditionPanel<R, C, ?>> columnFilterPanels = new HashMap<>();
 
   /**
    * Active filter panel dialogs
    */
-  private final Map<ColumnConditionPanel<C, ?>, JDialog> columnFilterPanelDialogs = new HashMap<>();
+  private final Map<ColumnConditionPanel<R, C, ?>, JDialog> columnFilterPanelDialogs = new HashMap<>();
 
   /**
    * The text field used for entering the search condition
@@ -620,7 +619,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   private void bindFilterIndicatorEvents(FilteredTableColumn<C> column) {
-    ColumnFilterModel<R, C, Object> model = (ColumnFilterModel<R, C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
+    ColumnConditionModel<R, C, Object> model = (ColumnConditionModel<R, C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
@@ -635,13 +634,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     @Override
-    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnFilterModel<?, C, Object> filterModel = (ColumnFilterModel<?, C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
+    public <R, C, T> ColumnConditionPanel<R, C, T> createConditionPanel(FilteredTableColumn<C> column) {
+      ColumnConditionModel<R, C, Object> filterModel = (ColumnConditionModel<R, C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
 
-      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
+      return columnConditionPanel((ColumnConditionModel<R, C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
     }
   }
 
@@ -663,7 +662,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
         FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-        ColumnFilterModel<R, C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
+        ColumnConditionModel<R, C, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
@@ -820,7 +819,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
               column.getHeaderValue().toString(), event.getLocationOnScreen());
     }
 
-    private void toggleFilterPanel(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
+    private void toggleFilterPanel(ColumnConditionPanel<R, C, ?> filterPanel, String title, Point location) {
       if (filterPanel != null) {
         JDialog dialog = filterPanelDialog(filterPanel, title);
         if (dialog.isShowing()) {
@@ -832,7 +831,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       }
     }
 
-    private void showDialog(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
+    private void showDialog(ColumnConditionPanel<R, C, ?> filterPanel, String title, Point location) {
       JDialog dialog = filterPanelDialog(filterPanel, title);
       //adjust the location to above the column header
       location.y = location.y - dialog.getHeight() - getTableHeader().getHeight();
@@ -842,7 +841,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
       filterPanel.requestInputFocus();
     }
 
-    private JDialog filterPanelDialog(ColumnConditionPanel<C, ?> filterPanel, String title) {
+    private JDialog filterPanelDialog(ColumnConditionPanel<R, C, ?> filterPanel, String title) {
       return columnFilterPanelDialogs.computeIfAbsent(filterPanel, k -> Dialogs.componentDialog(k)
               .owner(FilteredTable.this)
               .title(title)

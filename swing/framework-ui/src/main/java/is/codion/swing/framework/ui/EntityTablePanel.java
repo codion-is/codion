@@ -8,7 +8,7 @@ import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -1695,7 +1695,7 @@ public class EntityTablePanel extends JPanel {
 
   private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
     tableConditionPanel.tableColumns().forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
+      ColumnConditionPanel<?, ?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
@@ -1830,14 +1830,14 @@ public class EntityTablePanel extends JPanel {
     }
 
     @Override
-    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnFilterModel<Entity, Attribute<?>, ?> filterModel =
+    public <R, C, T> ColumnConditionPanel<R, C, T> createConditionPanel(FilteredTableColumn<C> column) {
+      ColumnConditionModel<Entity, Attribute<?>, ?> filterModel =
               tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }
 
-      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
+      return (ColumnConditionPanel<R, C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
     }
   }
 }

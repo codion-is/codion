@@ -3,11 +3,12 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.ColumnFilterModel;
-import is.codion.common.model.table.DefaultColumnFilterModel;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
@@ -90,9 +91,9 @@ public final class DefaultFilteredTableModelTest {
     return singletonList(filteredTableColumn(0));
   }
 
-  private static List<ColumnFilterModel<List<String>, Integer, String>> createFilterModels() {
-    ColumnFilterModel<List<String>, Integer, String> filterModel =
-            new DefaultColumnFilterModel<>(0, String.class, '%');
+  private static List<ColumnConditionModel<List<String>, Integer, String>> createFilterModels() {
+    ColumnConditionModel<List<String>, Integer, String> filterModel =
+            new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%');
 
     filterModel.setComparableFunction(row -> row.get(0));
 

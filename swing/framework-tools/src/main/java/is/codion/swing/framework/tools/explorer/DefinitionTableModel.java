@@ -3,12 +3,14 @@
  */
 package is.codion.swing.framework.tools.explorer;
 
-import is.codion.common.model.table.DefaultColumnFilterModel;
+import is.codion.common.Operator;
+import is.codion.common.model.table.DefaultColumnConditionModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.framework.tools.metadata.Schema;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -26,8 +28,8 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
 
   DefinitionTableModel(SchemaTableModel schemaTableModel) {
     super(createDefinitionColumns(), new DefinitionColumnValueProvider(),
-            asList(new DefaultColumnFilterModel<>(0, String.class, '%'),
-                    new DefaultColumnFilterModel<>(1, String.class, '%')));
+            asList(new DefaultColumnConditionModel<>(0, String.class, Arrays.asList(Operator.values()), '%'),
+                    new DefaultColumnConditionModel<>(1, String.class, Arrays.asList(Operator.values()), '%')));
     this.schemaTableModel = schemaTableModel;
   }
 

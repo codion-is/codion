@@ -17,6 +17,9 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Locale;
+import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
@@ -27,7 +30,7 @@ import static java.util.stream.Collectors.toList;
  * @param <C> the type of the column identifier
  * @param <T> the column value type
  */
-public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
+public class DefaultColumnConditionModel<R, C, T> implements ColumnConditionModel<R, C, T> {
 
   private final ValueSet<T> equalValues = ValueSet.valueSet();
   private final Value<T> upperBoundValue = Value.value();
@@ -49,6 +52,8 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   private final Format format;
   private final String dateTimePattern;
   private final List<Operator> operators;
+
+  private Function<R, Comparable<T>> comparableFunction = Comparable.class::cast;
 
   /**
    * Instantiates a DefaultColumnConditionModel.
@@ -237,6 +242,16 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   }
 
   @Override
+  public final void setComparableFunction(Function<R, Comparable<T>> comparableFunction) {
+    this.comparableFunction = requireNonNull(comparableFunction);
+  }
+
+  @Override
+  public final boolean include(R row) {
+    return !enabledState.get() || include(comparableFunction.apply(row));
+  }
+
+  @Override
   public final StateObserver lockedObserver() {
     return lockedState.observer();
   }
@@ -334,6 +349,216 @@ public class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C
   @Override
   public final Value<Operator> operatorValue() {
     return operatorValue;
+  }
+
+  private boolean include(Comparable<T> comparable) {
+    switch (getOperator()) {
+      case EQUAL:
+        return includeEqual(comparable);
+      case NOT_EQUAL:
+        return includeNotEqual(comparable);
+      case LESS_THAN:
+        return includeLessThan(comparable);
+      case LESS_THAN_OR_EQUAL:
+        return includeLessThanOrEqual(comparable);
+      case GREATER_THAN:
+        return includeGreaterThan(comparable);
+      case GREATER_THAN_OR_EQUAL:
+        return includeGreaterThanOrEqual(comparable);
+      case BETWEEN_EXCLUSIVE:
+        return includeBetweenExclusive(comparable);
+      case BETWEEN:
+        return includeBetweenInclusive(comparable);
+      case NOT_BETWEEN_EXCLUSIVE:
+        return includeNotBetweenExclusive(comparable);
+      case NOT_BETWEEN:
+        return includeNotBetween(comparable);
+      default:
+        throw new IllegalArgumentException("Undefined operator: " + getOperator());
+    }
+  }
+
+  private boolean includeEqual(Comparable<T> comparable) {
+    T equalValue = getEqualValue();
+    if (comparable == null) {
+      return equalValue == null;
+    }
+    if (equalValue == null) {
+      return comparable == null;
+    }
+
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
+      return includeExactWildcard((String) comparable);
+    }
+
+    return comparable.compareTo(equalValue) == 0;
+  }
+
+  private boolean includeNotEqual(Comparable<T> comparable) {
+    T equalValue = getEqualValue();
+    if (comparable == null) {
+      return equalValue != null;
+    }
+    if (equalValue == null) {
+      return comparable != null;
+    }
+
+    if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcardValue().get()))) {
+      return !includeExactWildcard((String) comparable);
+    }
+
+    return comparable.compareTo(equalValue) != 0;
+  }
+
+  private boolean includeExactWildcard(String value) {
+    String equalsValue = (String) getEqualValue();
+    if (equalsValue == null) {
+      equalsValue = "";
+    }
+    if (equalsValue.equals(String.valueOf(wildcardValue().get()))) {
+      return true;
+    }
+
+    String realValue = value;
+    if (!caseSensitiveState().get()) {
+      equalsValue = equalsValue.toUpperCase(Locale.getDefault());
+      realValue = realValue.toUpperCase(Locale.getDefault());
+    }
+
+    if (!equalsValue.contains(String.valueOf(wildcardValue().get()))) {
+      return realValue.compareTo(equalsValue) == 0;
+    }
+
+    return Pattern.matches(prepareForRegex(equalsValue), realValue);
+  }
+
+  private String prepareForRegex(String string) {
+    //a somewhat dirty fix to get rid of the '$' sign from the pattern, since it interferes with the regular expression parsing
+    return string.replace(String.valueOf(wildcardValue().get()), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
+  }
+
+  private boolean includeLessThan(Comparable<T> comparable) {
+    T upperBound = getUpperBound();
+
+    return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
+  }
+
+  private boolean includeLessThanOrEqual(Comparable<T> comparable) {
+    T upperBound = getUpperBound();
+
+    return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
+  }
+
+  private boolean includeGreaterThan(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+
+    return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
+  }
+
+  private boolean includeGreaterThanOrEqual(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+
+    return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
+  }
+
+  private boolean includeBetweenExclusive(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
+    if (lowerBound == null && upperBound == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (lowerBound == null) {
+      return comparable.compareTo(upperBound) < 0;
+    }
+
+    if (upperBound == null) {
+      return comparable.compareTo(lowerBound) > 0;
+    }
+
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
+
+    return lowerCompareResult > 0 && upperCompareResult < 0;
+  }
+
+  private boolean includeBetweenInclusive(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
+    if (lowerBound == null && upperBound == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (lowerBound == null) {
+      return comparable.compareTo(upperBound) <= 0;
+    }
+
+    if (upperBound == null) {
+      return comparable.compareTo(lowerBound) >= 0;
+    }
+
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
+
+    return lowerCompareResult >= 0 && upperCompareResult <= 0;
+  }
+
+  private boolean includeNotBetweenExclusive(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
+    if (lowerBound == null && upperBound == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (lowerBound == null) {
+      return comparable.compareTo(upperBound) > 0;
+    }
+
+    if (upperBound == null) {
+      return comparable.compareTo(lowerBound) < 0;
+    }
+
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
+
+    return lowerCompareResult < 0 || upperCompareResult > 0;
+  }
+
+  private boolean includeNotBetween(Comparable<T> comparable) {
+    T lowerBound = getLowerBound();
+    T upperBound = getUpperBound();
+    if (lowerBound == null && upperBound == null) {
+      return true;
+    }
+
+    if (comparable == null) {
+      return false;
+    }
+
+    if (lowerBound == null) {
+      return comparable.compareTo(upperBound) >= 0;
+    }
+
+    if (upperBound == null) {
+      return comparable.compareTo(lowerBound) <= 0;
+    }
+
+    int lowerCompareResult = comparable.compareTo(lowerBound);
+    int upperCompareResult = comparable.compareTo(upperBound);
+
+    return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
   private T boundValue(Object bound) {

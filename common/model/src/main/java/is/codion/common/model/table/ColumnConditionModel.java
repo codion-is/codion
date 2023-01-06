@@ -17,16 +17,18 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a condition model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
+ * @param <R> the row type
  * @param <C> the type used to identify columns
  * @param <T> the column value type
  */
-public interface ColumnConditionModel<C, T> {
+public interface ColumnConditionModel<R, C, T> {
 
   /**
    * Specifies whether wildcards are automatically added to string conditions by default<br>
@@ -234,6 +236,19 @@ public interface ColumnConditionModel<C, T> {
    * @return a Value based on the operator
    */
   Value<Operator> operatorValue();
+
+  /**
+   * The default implementation simply returns the row, assuming it is a Comparable instance.
+   * @param comparableFunction the function converting from a Row object to a Comparable for the underlying column
+   */
+  void setComparableFunction(Function<R, Comparable<T>> comparableFunction);
+
+  /**
+   * Returns true if the given row is accepted by this models condition or if this model is disabled.
+   * @param row the row
+   * @return true if the row should be included according to this filter model criteria
+   */
+  boolean include(R row);
 
   /**
    * @param listener a listener to be notified each time the enabled state changes

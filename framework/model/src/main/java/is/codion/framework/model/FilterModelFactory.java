@@ -3,22 +3,22 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.model.table.ColumnFilterModel;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
 
 /**
- * Responsible for creating {@link ColumnFilterModel} based on properties.
+ * Responsible for creating {@link ColumnConditionModel} based on properties.
  */
 public interface FilterModelFactory {
 
   /**
-   * Creates a {@link ColumnFilterModel} for the given property
+   * Creates a {@link ColumnConditionModel} for the given property
    * @param <T> the column value type
-   * @param property the Property for which to create a {@link ColumnFilterModel}
-   * @return a {@link ColumnFilterModel} for the given property, null if filtering should
+   * @param property the Property for which to create a {@link ColumnConditionModel}
+   * @return a {@link ColumnConditionModel} for the given property, null if filtering should
    * not be allowed for this property
    */
-  <T> ColumnFilterModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
+  <T> ColumnConditionModel<Entity, Attribute<?>, T> createFilterModel(Property<T> property);
 }

@@ -17,7 +17,7 @@ import java.util.Objects;
  * For instances use the {@link #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)} factory method.
  * @see #entityComboBoxModelConditionModel(ForeignKey, EntityComboBoxModel)
  */
-public final class EntityComboBoxModelConditionModel extends DefaultColumnConditionModel<ForeignKey, Entity> {
+public final class EntityComboBoxModelConditionModel extends DefaultColumnConditionModel<Entity, ForeignKey, Entity> {
 
   private final EntityComboBoxModel entityComboBoxModel;
 
