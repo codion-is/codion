@@ -10,7 +10,6 @@ import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
 
-import javax.swing.JTextField;
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
@@ -27,12 +26,12 @@ import static java.util.Objects.requireNonNull;
  * Use {@link #builder(Class)} or {@link #builder(Class, Value)} for {@link Builder} instances.
  * @param <T> the Number type
  */
-public final class NumberField<T extends Number> extends JTextField {
+public final class NumberField<T extends Number> extends HintTextField {
 
   private final Value<T> value = Value.value();
 
   private NumberField(NumberDocument<T> document) {
-    setDocument(document);
+    super(document);
     document.setTextComponent(this);
     if (document.getFormat() instanceof DecimalFormat) {
       addKeyListener(new GroupingSkipAdapter());
