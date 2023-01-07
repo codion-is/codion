@@ -120,8 +120,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     if (selectionProvider != null) {
       addSelectionProvider(textField, selectionProvider);
     }
-    if (hintText != null) {
-      TextFieldHint.create(textField, hintText);
+    if (hintText != null && textField instanceof HintTextField) {
+      ((HintTextField) textField).setHintText(hintText);
     }
 
     return textField;
@@ -131,7 +131,7 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
    * @return the {@link javax.swing.text.JTextField} built by this builder.
    */
   protected C createTextField() {
-    return (C) new JTextField(sizedDocument(), "", 1);
+    return (C) new HintTextField(sizedDocument());
   }
 
   @Override

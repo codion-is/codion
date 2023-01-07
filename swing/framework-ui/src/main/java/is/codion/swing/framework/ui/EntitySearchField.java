@@ -29,9 +29,9 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
-import is.codion.swing.common.ui.component.text.TextFieldHint;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -96,7 +96,7 @@ import static java.util.Objects.requireNonNull;
  * @see EntitySearchModel
  * @see #setSelectionProvider(SelectionProvider)
  */
-public final class EntitySearchField extends JTextField {
+public final class EntitySearchField extends HintTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
 
@@ -104,7 +104,6 @@ public final class EntitySearchField extends JTextField {
   private static final int BORDER_SIZE = 15;
 
   private final EntitySearchModel model;
-  private final TextFieldHint searchHint;
   private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
@@ -116,6 +115,7 @@ public final class EntitySearchField extends JTextField {
   private boolean performingSearch = false;
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
+    super(searchHintEnabled ? Messages.searchFieldHint() : null);
     requireNonNull(searchModel, SEARCH_MODEL);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);
@@ -126,7 +126,6 @@ public final class EntitySearchField extends JTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterKeyListener());
     addKeyListener(new EscapeKeyListener());
-    this.searchHint = searchHintEnabled ? TextFieldHint.create(this, Messages.searchFieldHint()) : null;
     configureColors();
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -137,9 +136,6 @@ public final class EntitySearchField extends JTextField {
     super.updateUI();
     if (model != null) {
       configureColors();
-      if (searchHint != null) {
-        searchHint.updateHint();
-      }
     }
     if (selectionProvider != null) {
       selectionProvider.updateUI();
@@ -254,12 +250,7 @@ public final class EntitySearchField extends JTextField {
   private void linkToModel() {
     new SearchFieldValue(this).link(model.searchStringValue());
     model.searchStringValue().addDataListener(searchString -> updateColors());
-    model.addSelectedEntitiesListener(entities -> {
-      setCaretPosition(0);
-      if (entities.isEmpty() && searchHint != null) {
-        searchHint.updateHint();
-      }
-    });
+    model.addSelectedEntitiesListener(entities -> setCaretPosition(0));
   }
 
   private void configureColors() {
@@ -269,7 +260,7 @@ public final class EntitySearchField extends JTextField {
   }
 
   private void updateColors() {
-    boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintVisible());
+    boolean validBackground = model.searchStringRepresentsSelected();
     setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
@@ -697,8 +688,7 @@ public final class EntitySearchField extends JTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchHint != null && !searchHint.isHintVisible() &&
-              !performingSearch && !model.searchStringRepresentsSelected();
+      return !performingSearch && !model.searchStringRepresentsSelected();
     }
   }
 
