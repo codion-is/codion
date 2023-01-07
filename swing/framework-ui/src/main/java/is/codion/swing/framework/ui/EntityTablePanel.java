@@ -8,7 +8,6 @@ import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
-import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -31,8 +30,6 @@ import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
-import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -90,7 +87,6 @@ import java.util.Set;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
-import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -1401,8 +1397,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> createTable() {
-    FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable =
-            FilteredTable.filteredTable(tableModel, new DefaultFilterPanelFactory(tableModel));
+    FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable = FilteredTable.filteredTable(tableModel);
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -1818,25 +1813,6 @@ public class EntityTablePanel extends JPanel {
       }
 
       return super.createComponentValue(attribute, editModel, initialValue);
-    }
-  }
-
-  private static final class DefaultFilterPanelFactory implements ConditionPanelFactory {
-
-    private final SwingEntityTableModel tableModel;
-
-    private DefaultFilterPanelFactory(SwingEntityTableModel tableModel) {
-      this.tableModel = requireNonNull(tableModel);
-    }
-
-    @Override
-    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<?, ?> filterModel = tableModel.tableConditionModel().filterModels().get(column.getIdentifier());
-      if (filterModel == null) {
-        return null;
-      }
-
-      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel, ToggleAdvancedButton.YES);
     }
   }
 }

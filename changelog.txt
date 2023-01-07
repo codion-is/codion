@@ -8591,3 +8591,4 @@
   DefaultColumnConditionModel now final, ColumnConditionModel.Builder and AbstractForeignKeyConditionModel added along with related refactoring
   ColumnConditionModel.Builder.autoEnable() and caseSensitive() added
   ColumnConditionModel.wildcardValue() replaced with wildcard()
+  EntityTablePanel.DefaultFilterPanelFactory removed, exactly like FilteredTable.DefaultFilterPanelFactory, redundant

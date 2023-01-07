@@ -448,7 +448,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
    * @return a new {@link FilteredTable}
    */
   public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel) {
-    return filteredTable(tableModel, new DefaultConditionPanelFactory<>(tableModel));
+    return filteredTable(tableModel, new DefaultFilterPanelFactory<>(tableModel));
   }
 
   /**
@@ -625,11 +625,11 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
   }
 
-  private static final class DefaultConditionPanelFactory<C> implements ConditionPanelFactory {
+  private static final class DefaultFilterPanelFactory<C> implements ConditionPanelFactory {
 
     private final FilteredTableModel<?, C> tableModel;
 
-    private DefaultConditionPanelFactory(FilteredTableModel<?, C> tableModel) {
+    private DefaultFilterPanelFactory(FilteredTableModel<?, C> tableModel) {
       this.tableModel = tableModel;
     }
 
