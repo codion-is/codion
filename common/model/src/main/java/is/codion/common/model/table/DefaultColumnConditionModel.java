@@ -198,7 +198,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public boolean accepts(Comparable<T> columnValue) {
-    return !enabledState.get() || include(columnValue);
+    return !isEnabled() || include(columnValue);
   }
 
   @Override
