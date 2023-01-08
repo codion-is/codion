@@ -385,7 +385,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final String getStringAt(int rowIndex, C columnIdentifier) {
+  public final String getStringValueAt(int rowIndex, C columnIdentifier) {
     return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
   }
 
