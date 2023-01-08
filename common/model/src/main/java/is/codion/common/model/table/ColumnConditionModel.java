@@ -237,9 +237,9 @@ public interface ColumnConditionModel<C, T> {
   Value<Operator> operatorValue();
 
   /**
-   * Returns true if the given column value is accepted by this models condition or if this model is disabled.
+   * Returns true if this model is enabled and the given value is accepted by this models condition.
    * @param columnValue the column value
-   * @return true if column value is accepted by this models condition or if this model is disabled
+   * @return true if this model is enabled and the given value is accepted by this models condition
    */
   boolean accepts(Comparable<T> columnValue);
 

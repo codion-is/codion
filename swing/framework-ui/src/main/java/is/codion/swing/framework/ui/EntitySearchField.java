@@ -82,17 +82,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A UI component based on the EntitySearchModel.
- *
  * The search is triggered by the ENTER key and behaves in the following way:
  * If the search result is empty a message is shown, if a single entity fits the
  * condition then that entity is selected, otherwise a component displaying the entities
  * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the search model settings.
- *
  * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
- *
  * Use {@link EntitySearchField#builder(EntitySearchModel)} for a builder instance.
- *
  * @see EntitySearchModel
  * @see #setSelectionProvider(SelectionProvider)
  */
