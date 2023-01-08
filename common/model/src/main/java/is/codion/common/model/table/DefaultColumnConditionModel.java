@@ -109,7 +109,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public T getEqualValue() {
-    return boundValue(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
+    return addAutomaticWildcard(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
   }
 
   @Override
@@ -120,7 +120,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public Collection<T> getEqualValues() {
     return equalValues.get().stream()
-            .map(this::boundValue)
+            .map(this::addAutomaticWildcard)
             .collect(toList());
   }
 
@@ -131,7 +131,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public T getUpperBound() {
-    return boundValue(upperBoundValue.get());
+    return upperBoundValue.get();
   }
 
   @Override
@@ -141,7 +141,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public T getLowerBound() {
-    return boundValue(lowerBoundValue.get());
+    return lowerBoundValue.get();
   }
 
   @Override
@@ -510,37 +510,31 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return lowerCompareResult <= 0 || upperCompareResult >= 0;
   }
 
-  private T boundValue(Object bound) {
-    if (columnClass.equals(String.class)) {
-      if (bound == null || (bound instanceof String && ((String) bound).isEmpty())) {
-        return null;
-      }
-      if (bound instanceof Collection) {
-        return (T) bound;
-      }
-
-      return (T) addWildcard((String) bound);
+  private T addAutomaticWildcard(T bound) {
+    if (!(bound instanceof String)) {
+      return bound;
     }
-
-    return (T) bound;
+    switch (operatorValue.get()) {
+      //wildcard only used for EQUAL and NOT_EQUAL
+      case EQUAL:
+      case NOT_EQUAL:
+        return (T) addAutomaticWildcard((String) bound);
+      default:
+        return bound;
+    }
   }
 
-  private String addWildcard(String value) {
-    //only use wildcard for EQUAL and NOT_EQUAL
-    if (operatorValue.equalTo(Operator.EQUAL) || operatorValue.equalTo(Operator.NOT_EQUAL)) {
-      switch (automaticWildcardValue.get()) {
-        case PREFIX_AND_POSTFIX:
-          return wildcard + value + wildcard;
-        case PREFIX:
-          return wildcard + value;
-        case POSTFIX:
-          return value + wildcard;
-        default:
-          return value;
-      }
+  private String addAutomaticWildcard(String value) {
+    switch (automaticWildcardValue.get()) {
+      case PREFIX_AND_POSTFIX:
+        return wildcard + value + wildcard;
+      case PREFIX:
+        return wildcard + value;
+      case POSTFIX:
+        return value + wildcard;
+      default:
+        return value;
     }
-
-    return value;
   }
 
   private void bindEvents() {

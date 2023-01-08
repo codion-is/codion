@@ -58,17 +58,25 @@ public class DefaultColumnConditionModelTest {
     assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
-    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
-    assertEquals("%hello%", model.getUpperBound());
-    assertEquals("%hello%", model.getLowerBound());
-    model.automaticWildcardValue().set(AutomaticWildcard.NONE);
-
     model.setEqualValue("test");
     assertEquals(1, equalToCounter.get());
     assertEquals("test", model.getEqualValue());
 
     model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals("%test%", model.getEqualValues().iterator().next());
+    assertEquals("%test%", model.getEqualValue());
+
+    model.automaticWildcardValue().set(AutomaticWildcard.PREFIX);
+    assertEquals("%test", model.getEqualValues().iterator().next());
+    assertEquals("%test", model.getEqualValue());
+
+    model.automaticWildcardValue().set(AutomaticWildcard.POSTFIX);
+    assertEquals("test%", model.getEqualValues().iterator().next());
+    assertEquals("test%", model.getEqualValue());
+
+    model.automaticWildcardValue().set(AutomaticWildcard.NONE);
+    assertEquals("test", model.getEqualValues().iterator().next());
+    assertEquals("test", model.getEqualValue());
 
     model.clearCondition();
     assertEquals(1, clearCounter.get());
