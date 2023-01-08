@@ -22,7 +22,8 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 /**
- * A text field which paints a hint text when it is not the focus owner and contains no text.
+ * A text field which displays a hint text when it is not the focus owner and contains no text.
+ * The hint text foreground color is a simplistic average of the text field background and foreground color.
  */
 public class HintTextField extends JTextField {
 

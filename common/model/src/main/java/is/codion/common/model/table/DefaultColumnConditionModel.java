@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.unmodifiableList;
@@ -198,7 +197,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public boolean accepts(Comparable<T> columnValue) {
-    return !isEnabled() || include(columnValue);
+    return !isEnabled() || valueAccepted(columnValue);
   }
 
   @Override
@@ -301,34 +300,34 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return operatorValue;
   }
 
-  private boolean include(Comparable<T> comparable) {
+  private boolean valueAccepted(Comparable<T> comparable) {
     switch (getOperator()) {
       case EQUAL:
-        return includeEqual(comparable);
+        return isEqual(comparable);
       case NOT_EQUAL:
-        return includeNotEqual(comparable);
+        return isNotEqual(comparable);
       case LESS_THAN:
-        return includeLessThan(comparable);
+        return isLessThan(comparable);
       case LESS_THAN_OR_EQUAL:
-        return includeLessThanOrEqual(comparable);
+        return isLessThanOrEqual(comparable);
       case GREATER_THAN:
-        return includeGreaterThan(comparable);
+        return isGreaterThan(comparable);
       case GREATER_THAN_OR_EQUAL:
-        return includeGreaterThanOrEqual(comparable);
+        return isGreaterThanOrEqual(comparable);
       case BETWEEN_EXCLUSIVE:
-        return includeBetweenExclusive(comparable);
+        return isBetweenExclusive(comparable);
       case BETWEEN:
-        return includeBetweenInclusive(comparable);
+        return isBetween(comparable);
       case NOT_BETWEEN_EXCLUSIVE:
-        return includeNotBetweenExclusive(comparable);
+        return isNotBetweenExclusive(comparable);
       case NOT_BETWEEN:
-        return includeNotBetween(comparable);
+        return isNotBetween(comparable);
       default:
         throw new IllegalArgumentException("Undefined operator: " + getOperator());
     }
   }
 
-  private boolean includeEqual(Comparable<T> comparable) {
+  private boolean isEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
     if (comparable == null) {
       return equalValue == null;
@@ -338,13 +337,13 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     }
 
     if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
-      return includeExactWildcard((String) comparable);
+      return isEqualWildcard((String) comparable);
     }
 
     return comparable.compareTo(equalValue) == 0;
   }
 
-  private boolean includeNotEqual(Comparable<T> comparable) {
+  private boolean isNotEqual(Comparable<T> comparable) {
     T equalValue = getEqualValue();
     if (comparable == null) {
       return equalValue != null;
@@ -354,32 +353,32 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     }
 
     if (comparable instanceof String && ((String) equalValue).contains(String.valueOf(wildcard))) {
-      return !includeExactWildcard((String) comparable);
+      return !isEqualWildcard((String) comparable);
     }
 
     return comparable.compareTo(equalValue) != 0;
   }
 
-  private boolean includeExactWildcard(String value) {
-    String equalsValue = (String) getEqualValue();
-    if (equalsValue == null) {
-      equalsValue = "";
+  private boolean isEqualWildcard(String value) {
+    String equalValue = (String) getEqualValue();
+    if (equalValue == null) {
+      equalValue = "";
     }
-    if (equalsValue.equals(String.valueOf(wildcard))) {
+    if (equalValue.equals(String.valueOf(wildcard))) {
       return true;
     }
 
-    String realValue = value;
-    if (!caseSensitiveState().get()) {
-      equalsValue = equalsValue.toUpperCase(Locale.getDefault());
-      realValue = realValue.toUpperCase(Locale.getDefault());
+    String valueToTest = value;
+    if (!caseSensitiveState.get()) {
+      equalValue = equalValue.toUpperCase();
+      valueToTest = valueToTest.toUpperCase();
     }
 
-    if (!equalsValue.contains(String.valueOf(wildcard))) {
-      return realValue.compareTo(equalsValue) == 0;
+    if (!equalValue.contains(String.valueOf(wildcard))) {
+      return valueToTest.compareTo(equalValue) == 0;
     }
 
-    return Pattern.matches(prepareForRegex(equalsValue), realValue);
+    return Pattern.matches(prepareForRegex(equalValue), valueToTest);
   }
 
   private String prepareForRegex(String string) {
@@ -387,31 +386,31 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return string.replace(String.valueOf(wildcard), ".*").replace("\\$", ".").replace("]", "\\\\]").replace("\\[", "\\\\[");
   }
 
-  private boolean includeLessThan(Comparable<T> comparable) {
+  private boolean isLessThan(Comparable<T> comparable) {
     T upperBound = getUpperBound();
 
     return upperBound == null || comparable != null && comparable.compareTo(upperBound) < 0;
   }
 
-  private boolean includeLessThanOrEqual(Comparable<T> comparable) {
+  private boolean isLessThanOrEqual(Comparable<T> comparable) {
     T upperBound = getUpperBound();
 
     return upperBound == null || comparable != null && comparable.compareTo(upperBound) <= 0;
   }
 
-  private boolean includeGreaterThan(Comparable<T> comparable) {
+  private boolean isGreaterThan(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
 
     return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) > 0;
   }
 
-  private boolean includeGreaterThanOrEqual(Comparable<T> comparable) {
+  private boolean isGreaterThanOrEqual(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
 
     return lowerBound == null || comparable != null && comparable.compareTo(lowerBound) >= 0;
   }
 
-  private boolean includeBetweenExclusive(Comparable<T> comparable) {
+  private boolean isBetweenExclusive(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
     T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
@@ -436,7 +435,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return lowerCompareResult > 0 && upperCompareResult < 0;
   }
 
-  private boolean includeBetweenInclusive(Comparable<T> comparable) {
+  private boolean isBetween(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
     T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
@@ -461,7 +460,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  private boolean includeNotBetweenExclusive(Comparable<T> comparable) {
+  private boolean isNotBetweenExclusive(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
     T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
@@ -486,7 +485,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     return lowerCompareResult < 0 || upperCompareResult > 0;
   }
 
-  private boolean includeNotBetween(Comparable<T> comparable) {
+  private boolean isNotBetween(Comparable<T> comparable) {
     T lowerBound = getLowerBound();
     T upperBound = getUpperBound();
     if (lowerBound == null && upperBound == null) {
