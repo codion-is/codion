@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -65,7 +66,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     sortingStatesOrderedByPriority().forEach(entry ->
             columnSortOrder.put(entry.getKey(), entry.getValue().sortOrder()));
 
-    return columnSortOrder;
+    return (LinkedHashMap<C, SortOrder>) Collections.unmodifiableMap(columnSortOrder);
   }
 
   @Override

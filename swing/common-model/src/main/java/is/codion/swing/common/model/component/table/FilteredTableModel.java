@@ -86,7 +86,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param columnIdentifier the column identifier
    * @return the string value
    */
-  String getStringAt(int rowIndex, C columnIdentifier);
+  String getStringValueAt(int rowIndex, C columnIdentifier);
 
   /**
    * Removes the given items from this table model
@@ -273,7 +273,8 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     }
 
     /**
-     * Returns a Comparable instance for the given row and columnIdentifier
+     * Returns a Comparable instance for the given row and columnIdentifier.
+     * The default implementation simply assumes the value is a {@link Comparable} instance and performs a cast.
      * @param <T> the column value type
      * @param row the object representing a given row
      * @param columnIdentifier the column identifier

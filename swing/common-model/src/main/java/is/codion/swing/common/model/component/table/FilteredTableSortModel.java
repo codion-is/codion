@@ -55,7 +55,7 @@ public interface FilteredTableSortModel<R, C> {
 
   /**
    * Returns the current column sort order, in order of priority
-   * @return the current column sort orderk, in order of priority
+   * @return the current column sort order, in order of priority
    */
   LinkedHashMap<C, SortOrder> columnSortOrder();
 

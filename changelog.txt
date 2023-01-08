@@ -8633,3 +8633,4 @@
   DefaultFilteredTableModel.CombinedIncludeCondition.test() now short circuits on disabled condition models, so columnValueProvider.comparable() doesn't get called
   TextFieldHint replaced with HintTextField
   DefaultColumnConditionModel.boundValue() renamed to addAutomaticWildcard() and refactored, no longer called in getLowerBound() and getUpperBound()
+  FilteredTableModel.getStringAt() renamed getStringValueAt()
