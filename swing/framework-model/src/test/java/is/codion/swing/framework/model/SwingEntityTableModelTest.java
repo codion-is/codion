@@ -195,7 +195,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider());
     tableModel.refresh();
     tableModel.sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
-    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortingState(Employee.NAME).sortOrder());
+    assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortOrder(Employee.NAME));
 
     Key pk1 = connectionProvider().entities().primaryKey(Employee.TYPE, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));

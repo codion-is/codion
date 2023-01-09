@@ -8,25 +8,21 @@ import is.codion.common.event.EventDataListener;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
-
-  private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortOrder.UNSORTED, -1);
 
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
   private final Event<C> sortingChangedEvent = Event.event();
-  private final Map<C, SortingState> sortingStates = new HashMap<>();
-  private final SortingStatesComparator sortingStatesComparator = new SortingStatesComparator();
+  private final List<ColumnSortOrder<C>> columnSortOrder = new ArrayList<>(0);
 
   DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider) {
     this.columnValueProvider = requireNonNull(columnValueProvider);
@@ -34,14 +30,30 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   @Override
   public void sort(List<R> items) {
-    requireNonNull(items, "items").sort(new RowComparator(sortingStatesOrderedByPriority()));
+    requireNonNull(items, "items").sort(new RowComparator());
   }
 
   @Override
-  public SortingState sortingState(C columnIdentifier) {
-    requireNonNull(columnIdentifier, "columnIdentifier");
+  public SortOrder sortOrder(C columnIdentifier) {
+    requireNonNull(columnIdentifier);
 
-    return sortingStates.getOrDefault(columnIdentifier, EMPTY_SORTING_STATE);
+    return columnSortOrder.stream()
+            .filter(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier))
+            .findFirst()
+            .map(ColumnSortOrder::sortOrder)
+            .orElse(SortOrder.UNSORTED);
+  }
+
+  @Override
+  public int sortPriority(C columnIdentifier) {
+    requireNonNull(columnIdentifier);
+    for (int i = 0; i < columnSortOrder.size(); i++) {
+      if (columnSortOrder.get(i).columnIdentifier().equals(columnIdentifier)) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
   @Override
@@ -56,24 +68,19 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   @Override
   public boolean isSortingEnabled() {
-    return sortingStates.values().stream()
-            .anyMatch(state -> !state.equals(EMPTY_SORTING_STATE));
+    return !columnSortOrder.isEmpty();
   }
 
   @Override
-  public LinkedHashMap<C, SortOrder> columnSortOrder() {
-    LinkedHashMap<C, SortOrder> columnSortOrder = new LinkedHashMap<>();
-    sortingStatesOrderedByPriority().forEach(entry ->
-            columnSortOrder.put(entry.getKey(), entry.getValue().sortOrder()));
-
-    return (LinkedHashMap<C, SortOrder>) Collections.unmodifiableMap(columnSortOrder);
+  public List<ColumnSortOrder<C>> columnSortOrder() {
+    return Collections.unmodifiableList(columnSortOrder);
   }
 
   @Override
   public void clear() {
-    if (!sortingStates.isEmpty()) {
-      C firstSortColumn = sortingStatesOrderedByPriority().get(0).getKey();
-      sortingStates.clear();
+    if (!columnSortOrder.isEmpty()) {
+      C firstSortColumn = columnSortOrder.get(0).columnIdentifier();
+      columnSortOrder.clear();
       sortingChangedEvent.onEvent(firstSortColumn);
     }
   }
@@ -84,53 +91,26 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
-    requireNonNull(columnIdentifier, "columnIdentifier");
-    requireNonNull(sortOrder, "sortOrder");
+    requireNonNull(columnIdentifier);
+    requireNonNull(sortOrder);
     if (!addColumnToSort) {
-      sortingStates.clear();
-    }
-    if (sortOrder == SortOrder.UNSORTED) {
-      sortingStates.remove(columnIdentifier);
+      columnSortOrder.clear();
     }
     else {
-      SortingState state = sortingState(columnIdentifier);
-      if (state.equals(EMPTY_SORTING_STATE)) {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, nextSortPriority()));
-      }
-      else {
-        sortingStates.put(columnIdentifier, new DefaultSortingState(sortOrder, state.priority()));
-      }
+      columnSortOrder.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
+    }
+    if (sortOrder != SortOrder.UNSORTED) {
+      columnSortOrder.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
     }
     sortingChangedEvent.onEvent(columnIdentifier);
   }
 
-  private List<Map.Entry<C, SortingState>> sortingStatesOrderedByPriority() {
-    return sortingStates.entrySet().stream()
-            .sorted(sortingStatesComparator)
-            .collect(toList());
-  }
-
-  private int nextSortPriority() {
-    int maxPriority = -1;
-    for (SortingState state : sortingStates.values()) {
-      maxPriority = Math.max(state.priority(), maxPriority);
-    }
-
-    return maxPriority + 1;
-  }
-
   private final class RowComparator implements Comparator<R> {
-
-    private final List<Map.Entry<C, SortingState>> sortedSortingStates;
-
-    private RowComparator(List<Map.Entry<C, SortingState>> sortedSortingStates) {
-      this.sortedSortingStates = sortedSortingStates;
-    }
 
     @Override
     public int compare(R rowOne, R rowTwo) {
-      for (Map.Entry<C, FilteredTableSortModel.SortingState> state : sortedSortingStates) {
-        int comparison = compareRows(rowOne, rowTwo, state.getKey(), state.getValue().sortOrder());
+      for (ColumnSortOrder<C> columnSortOrder : columnSortOrder) {
+        int comparison = compareRows(rowOne, rowTwo, columnSortOrder.columnIdentifier(), columnSortOrder.sortOrder());
         if (comparison != 0) {
           return comparison;
         }
@@ -165,26 +145,19 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     }
   }
 
-  private final class SortingStatesComparator implements Comparator<Map.Entry<C, SortingState>> {
-    @Override
-    public int compare(Map.Entry<C, SortingState> state1, Map.Entry<C, SortingState> state2) {
-      return Integer.compare(state1.getValue().priority(), state2.getValue().priority());
-    }
-  }
+  private static final class DefaultColumnSortOrder<C> implements ColumnSortOrder<C> {
 
-  private static final class DefaultSortingState implements SortingState {
-
+    private final C columnIdentifier;
     private final SortOrder sortOrder;
-    private final int priority;
 
-    private DefaultSortingState(SortOrder sortOrder, int priority) {
+    private DefaultColumnSortOrder(C columnIdentifier, SortOrder sortOrder) {
+      this.columnIdentifier = columnIdentifier;
       this.sortOrder = sortOrder;
-      this.priority = priority;
     }
 
     @Override
-    public int priority() {
-      return priority;
+    public C columnIdentifier() {
+      return columnIdentifier;
     }
 
     @Override

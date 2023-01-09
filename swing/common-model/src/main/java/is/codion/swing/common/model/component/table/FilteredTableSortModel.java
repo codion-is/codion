@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventDataListener;
 
 import javax.swing.SortOrder;
-import java.util.LinkedHashMap;
 import java.util.List;
 
 /**
@@ -27,7 +26,7 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #addSortOrder(Object, SortOrder)
-   * @see #sortingState(Object)
+   * @see #sortOrder(Object)
    */
   void setSortOrder(C columnIdentifier, SortOrder sortOrder);
 
@@ -38,15 +37,21 @@ public interface FilteredTableSortModel<R, C> {
    * @param columnIdentifier the identifier of the column to sort by
    * @param sortOrder the sorting order
    * @see #setSortOrder(Object, SortOrder)
-   * @see #sortingState(Object)
+   * @see #sortOrder(Object)
    */
   void addSortOrder(C columnIdentifier, SortOrder sortOrder);
 
   /**
    * @param columnIdentifier the column identifier
-   * @return the {@link SortingState} associated with the given column
+   * @return the {@link SortOrder} associated with the given column
    */
-  SortingState sortingState(C columnIdentifier);
+  SortOrder sortOrder(C columnIdentifier);
+
+  /**
+   * @param columnIdentifier the column identifier
+   * @return the sort priority for the given column, -1 if not sorted
+   */
+  int sortPriority(C columnIdentifier);
 
   /**
    * @return true if sorting is enabled for one or more columns
@@ -57,7 +62,7 @@ public interface FilteredTableSortModel<R, C> {
    * Returns the current column sort order, in order of priority
    * @return the current column sort order, in order of priority
    */
-  LinkedHashMap<C, SortOrder> columnSortOrder();
+  List<ColumnSortOrder<C>> columnSortOrder();
 
   /**
    * Clears the sorting states from this sort model. Note that only one sorting change event
@@ -73,16 +78,16 @@ public interface FilteredTableSortModel<R, C> {
   /**
    * Specifies a sorting state for a column.
    */
-  interface SortingState {
+  interface ColumnSortOrder<C> {
+
+    /**
+     * @return the column identifier
+     */
+    C columnIdentifier();
 
     /**
      * @return the sorting order currently associated with the column
      */
     SortOrder sortOrder();
-
-    /**
-     * @return the sorting priority, 0 for first, 1 for second etc.
-     */
-    int priority();
   }
 }

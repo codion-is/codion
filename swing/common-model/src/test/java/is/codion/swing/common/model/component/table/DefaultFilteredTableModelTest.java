@@ -475,13 +475,13 @@ public final class DefaultFilteredTableModelTest {
     tableModel.refresh();
     FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.sortModel();
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
-    assertEquals(SortOrder.DESCENDING, sortModel.sortingState(0).sortOrder());
+    assertEquals(SortOrder.DESCENDING, sortModel.sortOrder(0));
     assertEquals(E, tableModel.itemAt(0));
     assertEquals(1, actionsPerformed.get());
     sortModel.setSortOrder(0, SortOrder.ASCENDING);
-    assertEquals(SortOrder.ASCENDING, sortModel.sortingState(0).sortOrder());
+    assertEquals(SortOrder.ASCENDING, sortModel.sortOrder(0));
     assertEquals(A, tableModel.itemAt(0));
-    assertEquals(0, sortModel.sortingState(0).priority());
+    assertEquals(0, sortModel.columnSortOrder().get(0).columnIdentifier());
     assertEquals(2, actionsPerformed.get());
 
     sortModel.setSortOrder(0, SortOrder.DESCENDING);

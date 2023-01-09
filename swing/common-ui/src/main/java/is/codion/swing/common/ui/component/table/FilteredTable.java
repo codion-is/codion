@@ -672,13 +672,13 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     }
 
     private Icon headerRendererIcon(C columnIdentifier, int iconSizePixels) {
-      SortOrder sortOrder = tableModel.sortModel().sortingState(columnIdentifier).sortOrder();
+      SortOrder sortOrder = tableModel.sortModel().sortOrder(columnIdentifier);
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
       }
 
       return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-              tableModel.sortModel().sortingState(columnIdentifier).priority());
+              tableModel.sortModel().sortPriority(columnIdentifier));
     }
   }
 
@@ -778,18 +778,18 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
         C columnIdentifier = columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
-          SortOrder newSortOrder = newSortOrder(sortModel.sortingState(columnIdentifier).sortOrder(), e.isShiftDown());
+          SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier), e.isShiftDown());
           if (e.isControlDown()) {
-            sortModel.addSortOrder(columnIdentifier, newSortOrder);
+            sortModel.addSortOrder(columnIdentifier, nextSortOrder);
           }
           else {
-            sortModel.setSortOrder(columnIdentifier, newSortOrder);
+            sortModel.setSortOrder(columnIdentifier, nextSortOrder);
           }
         }
       }
     }
 
-    private SortOrder newSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
+    private SortOrder nextSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
       switch (currentSortOrder) {
         case UNSORTED:
           return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;

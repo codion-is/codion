@@ -8634,3 +8634,4 @@
   TextFieldHint replaced with HintTextField
   DefaultColumnConditionModel.boundValue() renamed to addAutomaticWildcard() and refactored, no longer called in getLowerBound() and getUpperBound()
   FilteredTableModel.getStringAt() renamed getStringValueAt()
+  FilteredTableSortModel.SortingState renamed SortState, priority field removed, columnIdentifier field added, FilteredTableSortModel.sortPriority() added
