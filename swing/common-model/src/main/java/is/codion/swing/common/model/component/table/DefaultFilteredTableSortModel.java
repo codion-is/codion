@@ -22,7 +22,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
   private final Event<C> sortingChangedEvent = Event.event();
-  private final List<ColumnSortOrder<C>> columnSortOrder = new ArrayList<>(0);
+  private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 
   DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider) {
     this.columnValueProvider = requireNonNull(columnValueProvider);
@@ -37,7 +37,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   public SortOrder sortOrder(C columnIdentifier) {
     requireNonNull(columnIdentifier);
 
-    return columnSortOrder.stream()
+    return columnSortOrders.stream()
             .filter(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier))
             .findFirst()
             .map(ColumnSortOrder::sortOrder)
@@ -47,8 +47,8 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   @Override
   public int sortPriority(C columnIdentifier) {
     requireNonNull(columnIdentifier);
-    for (int i = 0; i < columnSortOrder.size(); i++) {
-      if (columnSortOrder.get(i).columnIdentifier().equals(columnIdentifier)) {
+    for (int i = 0; i < columnSortOrders.size(); i++) {
+      if (columnSortOrders.get(i).columnIdentifier().equals(columnIdentifier)) {
         return i;
       }
     }
@@ -68,19 +68,19 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
   @Override
   public boolean isSortingEnabled() {
-    return !columnSortOrder.isEmpty();
+    return !columnSortOrders.isEmpty();
   }
 
   @Override
   public List<ColumnSortOrder<C>> columnSortOrder() {
-    return Collections.unmodifiableList(columnSortOrder);
+    return Collections.unmodifiableList(columnSortOrders);
   }
 
   @Override
   public void clear() {
-    if (!columnSortOrder.isEmpty()) {
-      C firstSortColumn = columnSortOrder.get(0).columnIdentifier();
-      columnSortOrder.clear();
+    if (!columnSortOrders.isEmpty()) {
+      C firstSortColumn = columnSortOrders.get(0).columnIdentifier();
+      columnSortOrders.clear();
       sortingChangedEvent.onEvent(firstSortColumn);
     }
   }
@@ -94,13 +94,13 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     requireNonNull(columnIdentifier);
     requireNonNull(sortOrder);
     if (!addColumnToSort) {
-      columnSortOrder.clear();
+      columnSortOrders.clear();
     }
     else {
-      columnSortOrder.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
+      columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
     }
     if (sortOrder != SortOrder.UNSORTED) {
-      columnSortOrder.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
+      columnSortOrders.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
     }
     sortingChangedEvent.onEvent(columnIdentifier);
   }
@@ -109,7 +109,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
 
     @Override
     public int compare(R rowOne, R rowTwo) {
-      for (ColumnSortOrder<C> columnSortOrder : columnSortOrder) {
+      for (ColumnSortOrder<C> columnSortOrder : columnSortOrders) {
         int comparison = compareRows(rowOne, rowTwo, columnSortOrder.columnIdentifier(), columnSortOrder.sortOrder());
         if (comparison != 0) {
           return comparison;
