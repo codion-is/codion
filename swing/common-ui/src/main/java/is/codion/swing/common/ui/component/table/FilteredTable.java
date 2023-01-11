@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
@@ -55,7 +54,6 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -475,7 +473,6 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     Control selectPreviousResult = control(() -> selectSearchResult(true, false));
     Control requestTableFocus = control(this::requestFocusInWindow);
 
-    String hintText = Messages.searchFieldHint();
     return Components.textField(tableModel.searchModel().searchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
@@ -497,9 +494,9 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
                     .action(requestTableFocus))
             .popupMenuControls(searchFieldPopupMenuControls())
-            .hintText(hintText)
+            .hintText(MESSAGES.getString("search_field_hint"))
             .onTextChanged(searchText -> {
-              if (!searchText.isEmpty() && !Objects.equals(searchText, hintText)) {
+              if (!searchText.isEmpty()) {
                 tableModel.searchModel().nextResult();
               }
             })
