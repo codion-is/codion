@@ -518,6 +518,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   private static final class DefaultDomainEntityDefinition implements DomainEntityDefinition, Serializable {
 
+    private static final long serialVersionUID = 1;
+
     private final String name;
     private final String tableName;
 
@@ -538,6 +540,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private static final class DefaultDomainReport implements DomainReport, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private final String name;
     private final String description;
@@ -566,6 +570,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
   }
 
   private static final class DefaultDomainOperation implements DomainOperation, Serializable {
+
+    private static final long serialVersionUID = 1;
 
     private final String type;
     private final String name;
