@@ -45,17 +45,13 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
   }
 
   @Override
-  public final boolean isCached() {
-    synchronized (reportPath) {
-      return cachedReport != null;
-    }
+  public final synchronized boolean isCached() {
+    return cachedReport != null;
   }
 
   @Override
-  public final void clearCache() {
-    synchronized (reportPath) {
-      cachedReport = null;
-    }
+  public final synchronized void clearCache() {
+    cachedReport = null;
   }
 
   /**
@@ -80,18 +76,16 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
     return loadReport();
   }
 
-  private T cachedReport() {
-    synchronized (reportPath) {
-      if (cachedReport == null) {
-        try {
-          cachedReport = loadReport();
-        }
-        catch (ReportException e) {
-          throw new RuntimeException(e);
-        }
+  private synchronized T cachedReport() {
+    if (cachedReport == null) {
+      try {
+        cachedReport = loadReport();
       }
-
-      return cachedReport;
+      catch (ReportException e) {
+        throw new RuntimeException(e);
+      }
     }
+
+    return cachedReport;
   }
 }
