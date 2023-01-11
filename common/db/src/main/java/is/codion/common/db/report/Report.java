@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 
 import java.sql.Connection;
+import java.util.Objects;
 
 /**
  * A wrapper for a report
@@ -45,6 +46,16 @@ public interface Report<T, R, P> {
   T loadReport() throws ReportException;
 
   /**
+   * @return true if this report has been cached
+   */
+  boolean isCached();
+
+  /**
+   * Clears the report cache, if caching is not enabled calling this method has no effect
+   */
+  void clearCache();
+
+  /**
    * @return the value associated with {@link Report#REPORT_PATH}
    * @throws IllegalStateException in case it is not specified
    */
@@ -60,7 +71,8 @@ public interface Report<T, R, P> {
    * @throws IllegalStateException in case {@link Report#REPORT_PATH} is not specified
    */
   static String fullReportPath(String reportPath) {
-    final String slash = "/";
+    Objects.requireNonNull(reportPath);
+    String slash = "/";
     String reportLocation = reportPath();
     StringBuilder builder = new StringBuilder(reportLocation);
     if (!reportLocation.endsWith(slash) && !reportPath.startsWith(slash)) {

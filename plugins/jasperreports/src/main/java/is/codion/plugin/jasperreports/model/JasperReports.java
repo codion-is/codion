@@ -33,6 +33,7 @@ public final class JasperReports {
 
   /**
    * Instantiates a JRReport for a classpath based report.
+   * Note that classpath reports are always cached.
    * @param resourceClass the class owning the report resource
    * @param reportPath the report path, relative to the resource class
    * @return a report wrapper
@@ -47,7 +48,17 @@ public final class JasperReports {
    * @return a report wrapper
    */
   public static JRReport fileReport(String reportPath) {
-    return new FileJRReport(reportPath);
+    return fileReport(reportPath, Report.CACHE_REPORTS.get());
+  }
+
+  /**
+   * Instantiates a JRReport for a file based report, either loaded from a URL or from the filesystem.
+   * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}
+   * @param cacheReport if true the report is only loaded once and cached
+   * @return a report wrapper
+   */
+  public static JRReport fileReport(String reportPath, boolean cacheReport) {
+    return new FileJRReport(reportPath, cacheReport);
   }
 
   /**

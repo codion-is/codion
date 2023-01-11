@@ -4,6 +4,7 @@
 package is.codion.framework.server;
 
 import is.codion.common.db.database.Database;
+import is.codion.common.db.report.Report;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.ServerConfiguration;
@@ -29,6 +30,7 @@ public final class DefaultEntityServerAdminTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.KEYSTORE.set("src/main/config/keystore.jks");
     ServerConfiguration.KEYSTORE_PASSWORD.set("crappypass");
+    Report.REPORT_PATH.set("a/report/path");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(3224, 3222)
             .adminPort(3225)
@@ -80,7 +82,10 @@ public final class DefaultEntityServerAdminTest {
       admin.databaseUrl();
       admin.connectionPoolUsernames();
       admin.setMaintenanceInterval(500);
-      admin.entityDefinitions();
+      admin.domainEntityDefinitions();
+      assertEquals(1, admin.domainReports().get("TestDomain").size());
+      assertEquals(2, admin.domainOperations().get("TestDomain").size());
+      admin.clearReportCache();
       assertEquals(500, admin.getMaintenanceInterval());
       admin.maxMemory();
       admin.requestsPerSecond();

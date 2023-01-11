@@ -3,6 +3,12 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -10,6 +16,7 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
@@ -34,6 +41,8 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+
+    ProcedureType<EntityConnection, Object> PROC = ProcedureType.procedureType("dept_proc");
   }
 
   void department() {
@@ -47,6 +56,8 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .stringFactory(Department.NAME)
             .caption("Department"));
+
+    add(Department.PROC, (connection, argument) -> {});
   }
 
   public interface Employee {
@@ -66,6 +77,8 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
     ConditionType MGR_CONDITION_TYPE = TYPE.conditionType("mgrConditionId");
+    ReportType<Object, Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
+    FunctionType<EntityConnection, Object, Object> FUNC = FunctionType.functionType("emp_func");
   }
 
   void employee() {
@@ -97,5 +110,18 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
+
+    add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {
+      @Override
+      public Object fillReport(Connection connection, Object parameters) throws ReportException {
+        return null;
+      }
+      @Override
+      public Object loadReport() throws ReportException {
+        return null;
+      }
+    });
+
+    add(Employee.FUNC, (connection, argument) -> null);
   }
 }

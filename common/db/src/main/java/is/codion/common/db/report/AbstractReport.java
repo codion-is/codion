@@ -3,9 +3,6 @@
  */
 package is.codion.common.db.report;
 
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -16,16 +13,20 @@ import static java.util.Objects.requireNonNull;
  */
 public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
-  private static final Map<String, Object> REPORT_CACHE = new ConcurrentHashMap<>();
-
   protected final String reportPath;
+
+  private final boolean cacheReport;
+
+  private T cachedReport;
 
   /**
    * Instantiates a new AbstractReport.
    * @param reportPath the report path, relative to the central report path {@link Report#REPORT_PATH}.
+   * @param cacheReport true if the report should be cached when loaded
    */
-  protected AbstractReport(String reportPath) {
+  protected AbstractReport(String reportPath, boolean cacheReport) {
     this.reportPath = requireNonNull(reportPath, "reportPath");
+    this.cacheReport = cacheReport;
   }
 
   @Override
@@ -43,6 +44,20 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
     return fullReportPath().hashCode();
   }
 
+  @Override
+  public final boolean isCached() {
+    synchronized (reportPath) {
+      return cachedReport != null;
+    }
+  }
+
+  @Override
+  public final void clearCache() {
+    synchronized (reportPath) {
+      cachedReport = null;
+    }
+  }
+
   /**
    * This default implementation uses {@link Report#fullReportPath(String)}.
    * @return a unique path for this report
@@ -53,23 +68,30 @@ public abstract class AbstractReport<T, R, P> implements Report<T, R, P> {
 
   /**
    * Returns the underlying report, either from the cache, if enabled or via {@link #loadReport()}.
-   * Caches the report if report caching is enabled.
    * @return the report
    * @throws ReportException in case of an exception
    * @see Report#CACHE_REPORTS
    */
   protected final T loadAndCacheReport() throws ReportException {
-    if (CACHE_REPORTS.get()) {
-      return (T) REPORT_CACHE.computeIfAbsent(fullReportPath(), fullPath -> {
+    if (cacheReport) {
+      return cachedReport();
+    }
+
+    return loadReport();
+  }
+
+  private T cachedReport() {
+    synchronized (reportPath) {
+      if (cachedReport == null) {
         try {
-          return loadReport();
+          cachedReport = loadReport();
         }
         catch (ReportException e) {
           throw new RuntimeException(e);
         }
-      });
-    }
+      }
 
-    return loadReport();
+      return cachedReport;
+    }
   }
 }

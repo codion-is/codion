@@ -15,7 +15,7 @@ final class ClassPathJRReport extends AbstractJRReport {
   private final Class<?> resourceClass;
 
   ClassPathJRReport(Class<?> resourceClass, String reportPath) {
-    super(reportPath);
+    super(reportPath, true);
     this.resourceClass = requireNonNull(resourceClass);
   }
 

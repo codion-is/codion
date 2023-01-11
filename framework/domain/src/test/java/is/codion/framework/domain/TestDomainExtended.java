@@ -5,7 +5,7 @@ package is.codion.framework.domain;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.common.db.report.Report;
+import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.entity.Attribute;
@@ -62,7 +62,7 @@ public final class TestDomainExtended extends DefaultDomain {
   }
 
   void report() {
-    add(REP_TYPE, new Report<Object, Object, Object>() {
+    add(REP_TYPE, new AbstractReport<Object, Object, Object>("", false) {
       @Override
       public Object fillReport(Connection connection, Object parameters) throws ReportException {
         return null;

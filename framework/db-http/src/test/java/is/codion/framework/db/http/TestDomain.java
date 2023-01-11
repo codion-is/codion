@@ -38,7 +38,7 @@ public final class TestDomain extends DefaultDomain {
     department();
     employee();
     operations();
-    add(REPORT, new AbstractReport<Object, String, String>("report.path") {
+    add(REPORT, new AbstractReport<Object, String, String>("report.path", false) {
       @Override
       public String fillReport(Connection connection, String parameters) throws ReportException {
         return "result";

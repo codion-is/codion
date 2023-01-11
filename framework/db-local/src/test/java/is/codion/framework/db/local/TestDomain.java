@@ -62,7 +62,7 @@ public final class TestDomain extends DefaultDomain {
     job();
     noPkEntity();
     Report.REPORT_PATH.set("path/to/reports");
-    add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path") {
+    add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path", false) {
       @Override
       public String fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
         return "result";

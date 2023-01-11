@@ -8,7 +8,6 @@ import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.DefaultServerAdmin;
-import is.codion.framework.domain.entity.EntityType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -217,11 +216,31 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
-  public Map<String, String> entityDefinitions() {
-    Map<EntityType, String> entityDefinitions = server.entityDefinitions();
-    Map<String, String> definitions = new HashMap<>();
-    entityDefinitions.forEach((key, value) -> definitions.put(key.domainName() + ":" + key.name(), value));
+  public Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
+    Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions = new HashMap<>();
+    server.domainEntityDefinitions().forEach((domainType, domainDefinitions) -> domainEntityDefinitions.put(domainType.name(), domainDefinitions));
 
-    return definitions;
+    return domainEntityDefinitions;
+  }
+
+  @Override
+  public Map<String, Collection<DomainReport>> domainReports() throws RemoteException {
+    Map<String, Collection<DomainReport>> domainReports = new HashMap<>();
+    server.domainReports().forEach((domainType, reports) -> domainReports.put(domainType.name(), reports));
+
+    return domainReports;
+  }
+
+  @Override
+  public Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException {
+    Map<String, Collection<DomainOperation>> domainOperations = new HashMap<>();
+    server.domainOperations().forEach((domainType, operations) -> domainOperations.put(domainType.name(), operations));
+
+    return domainOperations;
+  }
+
+  @Override
+  public void clearReportCache() throws RemoteException {
+    server.clearReportCache();
   }
 }

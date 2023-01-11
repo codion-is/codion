@@ -158,10 +158,28 @@ public interface EntityServerAdmin extends ServerAdmin {
   void setCollectPoolCheckOutTimes(String username, boolean collectCheckOutTimes) throws RemoteException;
 
   /**
-   * @return a map containing all entityType names, with their respective table names as an associated value
+   * @return a map containing each domain name and its entity definitions
    * @throws RemoteException in case of an exception
    */
-  Map<String, String> entityDefinitions() throws RemoteException;
+  Map<String, Collection<DomainEntityDefinition>> domainEntityDefinitions() throws RemoteException;
+
+  /**
+   * @return a map containing each domain name with its reports
+   * @throws RemoteException in case of an exception
+   */
+  Map<String, Collection<DomainReport>> domainReports() throws RemoteException;
+
+  /**
+   * @return a map containing each domain name with its operations
+   * @throws RemoteException in case of an exception
+   */
+  Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException;
+
+  /**
+   * Clears any cached reports
+   * @throws RemoteException in case of an exception
+   */
+  void clearReportCache() throws RemoteException;
 
   /**
    * @param username the username
@@ -232,4 +250,62 @@ public interface EntityServerAdmin extends ServerAdmin {
    * @throws RemoteException in case of an exception
    */
   void setMinimumConnectionPoolSize(String username, int value) throws RemoteException;
+
+  /**
+   * Basic information about a entity definition.
+   */
+  interface DomainEntityDefinition {
+
+    /**
+     * @return the entity name
+     */
+    String name();
+
+    /**
+     * @return the table name
+     */
+    String tableName();
+  }
+
+  /**
+   * Basic information about a report.
+   */
+  interface DomainReport {
+
+    /**
+     * @return the report name
+     */
+    String name();
+
+    /**
+     * @return the report description
+     */
+    String description();
+
+    /**
+     * @return true if the report has been cached
+     */
+    boolean isCached();
+  }
+
+  /**
+   * Basic information about an operation.
+   */
+  interface DomainOperation {
+
+    /**
+     * @return the operation type
+     */
+    String type();
+
+    /**
+     * @return the operation name
+     */
+    String name();
+
+    /**
+     * @return the operation class name
+     */
+    String className();
+  }
 }

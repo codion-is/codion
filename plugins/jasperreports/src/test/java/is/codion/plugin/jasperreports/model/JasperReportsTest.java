@@ -134,8 +134,11 @@ public class JasperReportsTest {
     reportParameters.put("DEPTNO", asList(10, 20));
     LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
     report.fillReport(connection.databaseConnection().getConnection(), Employee.FILE_REPORT, reportParameters);
+    assertTrue(Employee.FILE_REPORT.isCached());
+    Employee.FILE_REPORT.clearCache();
+    assertFalse(Employee.FILE_REPORT.isCached());
 
-    assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper").loadReport());
+    assertThrows(ReportException.class, () -> new FileJRReport("/non-existing.jasper", false).loadReport());
   }
 
   @Test

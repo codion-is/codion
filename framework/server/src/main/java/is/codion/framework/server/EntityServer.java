@@ -8,6 +8,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
+import is.codion.common.db.report.Report;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
@@ -20,12 +21,14 @@ import is.codion.common.user.User;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
+import is.codion.framework.server.EntityServerAdmin.DomainOperation;
+import is.codion.framework.server.EntityServerAdmin.DomainReport;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.lang.reflect.InvocationTargetException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -39,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -227,18 +231,51 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
             .collect(toList());
   }
 
-  /**
-   * @return a map containing all defined entityTypes, with their respective table names as an associated value
-   */
-  final Map<EntityType, String> entityDefinitions() {
-    Map<EntityType, String> definitions = new HashMap<>();
+  final Map<DomainType, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
+    Map<DomainType, Collection<DomainEntityDefinition>> domainEntities = new HashMap<>();
     for (Domain domain : domainModels.values()) {
-      for (EntityDefinition definition : domain.entities().definitions()) {
-        definitions.put(definition.type(), definition.tableName());
-      }
+      domainEntities.put(domain.type(), domain.entities().definitions().stream()
+              .map(definition -> new DefaultDomainEntityDefinition(definition.type().name(), definition.tableName()))
+              .collect(Collectors.toList()));
     }
 
-    return definitions;
+    return domainEntities;
+  }
+
+  final Map<DomainType, Collection<DomainReport>> domainReports() {
+    Map<DomainType, Collection<DomainReport>> domainReports = new HashMap<>();
+    for (Domain domain : domainModels.values()) {
+      domainReports.put(domain.type(), domain.reports().entrySet().stream()
+              .map(entry -> new DefaultDomainReport(entry.getKey().name(), entry.getValue().toString(), entry.getValue().isCached()))
+              .collect(toList()));
+    }
+
+    return domainReports;
+  }
+
+  final Map<DomainType, Collection<DomainOperation>> domainOperations() {
+    Map<DomainType, Collection<DomainOperation>> domainOperations = new HashMap<>();
+    for (Domain domain : domainModels.values()) {
+      Collection<DomainOperation> operations = new ArrayList<>();
+      operations.addAll(domain.procedures().entrySet().stream()
+              .map(entry -> new DefaultDomainOperation("Procedure", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .collect(toList()));
+      operations.addAll(domain.functions().entrySet().stream()
+              .map(entry -> new DefaultDomainOperation("Function", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .collect(toList()));
+      domainOperations.put(domain.type(), operations);
+    }
+
+    return domainOperations;
+  }
+
+  /**
+   * Clears all cached reports, triggering a reload on next usage.
+   */
+  final void clearReportCache() {
+    for (Domain domain : domainModels.values()) {
+      domain.reports().values().forEach(Report::clearCache);
+    }
   }
 
   /**
@@ -476,6 +513,83 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     public void onEvent() {
       database.closeConnectionPools();
       database.shutdownEmbedded();
+    }
+  }
+
+  private static final class DefaultDomainEntityDefinition implements DomainEntityDefinition, Serializable {
+
+    private final String name;
+    private final String tableName;
+
+    private DefaultDomainEntityDefinition(String name, String tableName) {
+      this.name = name;
+      this.tableName = tableName;
+    }
+
+    @Override
+    public String name() {
+      return name;
+    }
+
+    @Override
+    public String tableName() {
+      return tableName;
+    }
+  }
+
+  private static final class DefaultDomainReport implements DomainReport, Serializable {
+
+    private final String name;
+    private final String description;
+    private final boolean cached;
+
+    private DefaultDomainReport(String name, String description, boolean cached) {
+      this.name = name;
+      this.description = description;
+      this.cached = cached;
+    }
+
+    @Override
+    public String name() {
+      return name;
+    }
+
+    @Override
+    public String description() {
+      return description;
+    }
+
+    @Override
+    public boolean isCached() {
+      return cached;
+    }
+  }
+
+  private static final class DefaultDomainOperation implements DomainOperation, Serializable {
+
+    private final String type;
+    private final String name;
+    private final String className;
+
+    private DefaultDomainOperation(String type, String name, String className) {
+      this.type = type;
+      this.name = name;
+      this.className = className;
+    }
+
+    @Override
+    public String type() {
+      return type;
+    }
+
+    @Override
+    public String name() {
+      return name;
+    }
+
+    @Override
+    public String className() {
+      return className;
     }
   }
 }
