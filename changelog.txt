@@ -8642,3 +8642,4 @@
   EntityServerAdmin.domainReports() and clearReportCache() added
   ServerMonitor, changes related to the above
   EntityServerAdmin.domainOperations() added, ServerMonitor now displays domain operations
+  AbstractReport, bug fixed, not supposed to synchronize on String instances
