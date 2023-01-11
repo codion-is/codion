@@ -198,12 +198,32 @@ public final class ServerMonitorPanel extends JPanel {
   private JTabbedPane createEnvironmentPanel() throws RemoteException {
     JTabbedPane panel = new JTabbedPane();
     panel.addTab("System", createEnvironmentInfoPanel());
-    panel.addTab("Domain", createDomainModelPanel());
+    panel.addTab("Entities", createEntityPanel());
+    panel.addTab("Reports", createReportPanel());
 
     return panel;
   }
 
-  private JPanel createDomainModelPanel() {
+  private JPanel createReportPanel() {
+    JPanel panel = new JPanel(Layouts.borderLayout());
+    JTable table = new JTable(model.reportTableModel());
+    table.setRowSorter(new TableRowSorter<>(model.reportTableModel()));
+    JScrollPane scroller = new JScrollPane(table);
+
+    JPanel clearCacheAndRefreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
+    clearCacheAndRefreshPanel.add(Components.button(control(model::clearReportCache))
+            .caption("Clear Cache")
+            .build());
+    clearCacheAndRefreshPanel.add(Components.button(control(model::refreshReportList))
+            .caption("Refresh")
+            .build());
+    panel.add(clearCacheAndRefreshPanel, BorderLayout.NORTH);
+    panel.add(scroller, BorderLayout.CENTER);
+
+    return panel;
+  }
+
+  private JPanel createEntityPanel() {
     JPanel panel = new JPanel(Layouts.borderLayout());
     JTable table = new JTable(model.domainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));

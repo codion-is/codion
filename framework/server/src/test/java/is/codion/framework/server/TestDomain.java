@@ -3,6 +3,9 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -10,6 +13,7 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
@@ -66,6 +70,7 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
     ConditionType MGR_CONDITION_TYPE = TYPE.conditionType("mgrConditionId");
+    ReportType<Object, Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
   }
 
   void employee() {
@@ -97,5 +102,16 @@ public final class TestDomain extends DefaultDomain {
             .keyGenerator(increment("scott.emp", "empno"))
             .conditionProvider(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
+
+    add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {
+      @Override
+      public Object fillReport(Connection connection, Object parameters) throws ReportException {
+        return null;
+      }
+      @Override
+      public Object loadReport() throws ReportException {
+        return null;
+      }
+    });
   }
 }

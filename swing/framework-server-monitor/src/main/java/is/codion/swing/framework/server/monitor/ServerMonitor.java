@@ -16,6 +16,8 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.server.EntityServerAdmin;
+import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
+import is.codion.framework.server.EntityServerAdmin.DomainReport;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -30,6 +32,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.Collection;
 import java.util.EnumMap;
 import java.util.HashMap;
 import java.util.List;
@@ -68,7 +71,8 @@ public final class ServerMonitor {
 
   private final Value<Integer> connectionCountValue = Value.value(0);
   private final Value<String> memoryUsageValue = Value.value("");
-  private final DefaultTableModel domainListModel = new DomainTableModel();
+  private final DefaultTableModel domainTableModel = new ReadOnlyTableModel();
+  private final DefaultTableModel reportTableModel = new ReadOnlyTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
@@ -133,6 +137,7 @@ public final class ServerMonitor {
             .start();
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
+    refreshReportList();
     bindEvents();
   }
 
@@ -282,14 +287,38 @@ public final class ServerMonitor {
   }
 
   /**
+   * Clears the server report cache
+   * @throws RemoteException in case of an exception
+   */
+  public void clearReportCache() throws RemoteException {
+    server.clearReportCache();
+  }
+
+  /**
    * Refreshes the domain model list
    * @throws RemoteException in case of an exception
    */
   public void refreshDomainList() throws RemoteException {
-    domainListModel.setDataVector(new Object[][] {}, new Object[] {"Entity Type", "Table name"});
-    Map<String, String> definitions = server.entityDefinitions();
-    for (Map.Entry<String, String> definition : definitions.entrySet()) {
-      domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
+    domainTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain Type", "Entity Type", "Table Name"});
+    Map<String, Collection<DomainEntityDefinition>> definitions = server.domainEntityDefinitions();
+    for (Map.Entry<String, Collection<DomainEntityDefinition>> domainDefinitions : definitions.entrySet()) {
+      for (DomainEntityDefinition definition : domainDefinitions.getValue()) {
+        domainTableModel.addRow(new Object[] {domainDefinitions.getKey(), definition.name(), definition.tableName()});
+      }
+    }
+  }
+
+  /**
+   * Refreshes the report model list
+   * @throws RemoteException in case of an exception
+   */
+  public void refreshReportList() throws RemoteException {
+    reportTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain Type", "Report Type", "Report Description", "Is Cached"});
+    Map<String, Collection<DomainReport>> reports = server.domainReports();
+    for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
+      for (DomainReport domainReport : domainReports.getValue()) {
+        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.description(), domainReport.isCached()});
+      }
     }
   }
 
@@ -297,7 +326,14 @@ public final class ServerMonitor {
    * @return the table model for viewing the domain models
    */
   public TableModel domainTableModel() {
-    return domainListModel;
+    return domainTableModel;
+  }
+
+  /**
+   * @return the table model for viewing reports
+   */
+  public TableModel reportTableModel() {
+    return reportTableModel;
   }
 
   /**
@@ -467,7 +503,7 @@ public final class ServerMonitor {
     logLevelValue.addDataListener(this::setLogLevel);
   }
 
-  private static final class DomainTableModel extends DefaultTableModel {
+  private static final class ReadOnlyTableModel extends DefaultTableModel {
     @Override
     public boolean isCellEditable(int row, int column) {
       return false;

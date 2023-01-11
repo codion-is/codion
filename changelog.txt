@@ -8599,3 +8599,7 @@
   FilteredTableSortModel.SortingState renamed SortState, priority field removed, columnIdentifier field added, FilteredTableSortModel.sortPriority() added
   Report, each report now controls its own caching behaviour instead of relying on a global setting, isCached() and clearCache() added, related refactoring
   FilteredTable, search field hint changed to Find...
+  EntityServerAdmin.clearReportCache() added, related refactoring
+  EntityServerAdmin.entityDefinitions() renamed domainEntityDefinitions(), some refactoring
+  EntityServerAdmin.domainReports() and clearReportCache() added
+  ServerMonitor, changes related to the above
