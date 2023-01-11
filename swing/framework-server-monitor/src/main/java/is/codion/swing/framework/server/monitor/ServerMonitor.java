@@ -49,6 +49,7 @@ public final class ServerMonitor {
   private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
   private static final double THOUSAND = 1000;
   private static final String GC_EVENT_PREFIX = "GC ";
+  private static final String DOMAIN = "Domain";
 
   private final Event<?> serverShutDownEvent = Event.event();
   private final Value<Object> logLevelValue;
@@ -302,7 +303,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshDomainList() throws RemoteException {
-    domainTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Entity Type", "Table Name"});
+    domainTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Entity Type", "Table Name"});
     Map<String, Collection<DomainEntityDefinition>> definitions = server.domainEntityDefinitions();
     for (Map.Entry<String, Collection<DomainEntityDefinition>> domainDefinitions : definitions.entrySet()) {
       for (DomainEntityDefinition definition : domainDefinitions.getValue()) {
@@ -316,7 +317,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshReportList() throws RemoteException {
-    reportTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Report Name", "Report Description", "Is Cached"});
+    reportTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Report Name", "Report Description", "Is Cached"});
     Map<String, Collection<DomainReport>> reports = server.domainReports();
     for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
       for (DomainReport domainReport : domainReports.getValue()) {
@@ -330,7 +331,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshOperationList() throws RemoteException {
-    operationTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Operation Type", "Operation Name", "Operation Class Name"});
+    operationTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Operation Type", "Operation Name", "Operation Class Name"});
     Map<String, Collection<DomainOperation>> operations = server.domainOperations();
     for (Map.Entry<String, Collection<DomainOperation>> domainOperations : operations.entrySet()) {
       for (DomainOperation domainOperation : domainOperations.getValue()) {

@@ -80,8 +80,8 @@ public class HintTextField extends JTextField {
   }
 
   @Override
-  public final void addPropertyChangeListener(PropertyChangeListener listener) {
-    super.addPropertyChangeListener(listener);
+  public final void addPropertyChangeListener(String property, PropertyChangeListener listener) {
+    super.addPropertyChangeListener(property, listener);
   }
 
   @Override
