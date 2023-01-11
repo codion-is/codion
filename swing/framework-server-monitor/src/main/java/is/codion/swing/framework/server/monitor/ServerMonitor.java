@@ -17,6 +17,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
+import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 
 import org.jfree.data.xy.XYDataset;
@@ -73,6 +74,7 @@ public final class ServerMonitor {
   private final Value<String> memoryUsageValue = Value.value("");
   private final DefaultTableModel domainTableModel = new ReadOnlyTableModel();
   private final DefaultTableModel reportTableModel = new ReadOnlyTableModel();
+  private final DefaultTableModel operationTableModel = new ReadOnlyTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
@@ -138,6 +140,7 @@ public final class ServerMonitor {
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
     refreshReportList();
+    refreshOperationList();
     bindEvents();
   }
 
@@ -299,7 +302,7 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshDomainList() throws RemoteException {
-    domainTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain Type", "Entity Type", "Table Name"});
+    domainTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Entity Type", "Table Name"});
     Map<String, Collection<DomainEntityDefinition>> definitions = server.domainEntityDefinitions();
     for (Map.Entry<String, Collection<DomainEntityDefinition>> domainDefinitions : definitions.entrySet()) {
       for (DomainEntityDefinition definition : domainDefinitions.getValue()) {
@@ -313,11 +316,25 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshReportList() throws RemoteException {
-    reportTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain Type", "Report Type", "Report Description", "Is Cached"});
+    reportTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Report Name", "Report Description", "Is Cached"});
     Map<String, Collection<DomainReport>> reports = server.domainReports();
     for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
       for (DomainReport domainReport : domainReports.getValue()) {
         reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.description(), domainReport.isCached()});
+      }
+    }
+  }
+
+  /**
+   * Refreshes the report model list
+   * @throws RemoteException in case of an exception
+   */
+  public void refreshOperationList() throws RemoteException {
+    operationTableModel.setDataVector(new Object[][] {}, new Object[] {"Domain", "Operation Type", "Operation Name", "Operation Class Name"});
+    Map<String, Collection<DomainOperation>> operations = server.domainOperations();
+    for (Map.Entry<String, Collection<DomainOperation>> domainOperations : operations.entrySet()) {
+      for (DomainOperation domainOperation : domainOperations.getValue()) {
+        operationTableModel.addRow(new Object[] {domainOperations.getKey(), domainOperation.type(), domainOperation.name(), domainOperation.className()});
       }
     }
   }
@@ -334,6 +351,13 @@ public final class ServerMonitor {
    */
   public TableModel reportTableModel() {
     return reportTableModel;
+  }
+
+  /**
+   * @return the table model for viewing operations
+   */
+  public DefaultTableModel operationTableModel() {
+    return operationTableModel;
   }
 
   /**

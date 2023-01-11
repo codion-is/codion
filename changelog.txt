@@ -8603,3 +8603,4 @@
   EntityServerAdmin.entityDefinitions() renamed domainEntityDefinitions(), some refactoring
   EntityServerAdmin.domainReports() and clearReportCache() added
   ServerMonitor, changes related to the above
+  EntityServerAdmin.domainOperations() added, ServerMonitor now displays domain operations

@@ -3,9 +3,12 @@
  */
 package is.codion.framework.server;
 
+import is.codion.common.db.operation.FunctionType;
+import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
+import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -38,6 +41,8 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+
+    ProcedureType<EntityConnection, Object> PROC = ProcedureType.procedureType("dept_proc");
   }
 
   void department() {
@@ -51,6 +56,8 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .stringFactory(Department.NAME)
             .caption("Department"));
+
+    add(Department.PROC, (connection, argument) -> {});
   }
 
   public interface Employee {
@@ -71,6 +78,7 @@ public final class TestDomain extends DefaultDomain {
 
     ConditionType MGR_CONDITION_TYPE = TYPE.conditionType("mgrConditionId");
     ReportType<Object, Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
+    FunctionType<EntityConnection, Object, Object> FUNC = FunctionType.functionType("emp_func");
   }
 
   void employee() {
@@ -113,5 +121,7 @@ public final class TestDomain extends DefaultDomain {
         return null;
       }
     });
+
+    add(Employee.FUNC, (connection, argument) -> null);
   }
 }

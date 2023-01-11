@@ -22,6 +22,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.server.EntityServerAdmin.DomainEntityDefinition;
+import is.codion.framework.server.EntityServerAdmin.DomainOperation;
 import is.codion.framework.server.EntityServerAdmin.DomainReport;
 
 import org.slf4j.Logger;
@@ -250,6 +251,22 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
 
     return domainReports;
+  }
+
+  final Map<DomainType, Collection<DomainOperation>> domainOperations() {
+    Map<DomainType, Collection<DomainOperation>> domainOperations = new HashMap<>();
+    for (Domain domain : domainModels.values()) {
+      Collection<DomainOperation> operations = new ArrayList<>();
+      operations.addAll(domain.procedures().entrySet().stream()
+              .map(entry -> new DefaultDomainOperation("Procedure", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .collect(toList()));
+      operations.addAll(domain.functions().entrySet().stream()
+              .map(entry -> new DefaultDomainOperation("Function", entry.getKey().name(), entry.getValue().getClass().getName()))
+              .collect(toList()));
+      domainOperations.put(domain.type(), operations);
+    }
+
+    return domainOperations;
   }
 
   /**
@@ -545,6 +562,34 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     @Override
     public boolean isCached() {
       return cached;
+    }
+  }
+
+  private static final class DefaultDomainOperation implements DomainOperation, Serializable {
+
+    private final String type;
+    private final String name;
+    private final String className;
+
+    private DefaultDomainOperation(String type, String name, String className) {
+      this.type = type;
+      this.name = name;
+      this.className = className;
+    }
+
+    @Override
+    public String type() {
+      return type;
+    }
+
+    @Override
+    public String name() {
+      return name;
+    }
+
+    @Override
+    public String className() {
+      return className;
     }
   }
 }

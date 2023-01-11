@@ -232,6 +232,14 @@ final class DefaultEntityServerAdmin extends DefaultServerAdmin implements Entit
   }
 
   @Override
+  public Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException {
+    Map<String, Collection<DomainOperation>> domainOperations = new HashMap<>();
+    server.domainOperations().forEach((domainType, operations) -> domainOperations.put(domainType.name(), operations));
+
+    return domainOperations;
+  }
+
+  @Override
   public void clearReportCache() throws RemoteException {
     server.clearReportCache();
   }

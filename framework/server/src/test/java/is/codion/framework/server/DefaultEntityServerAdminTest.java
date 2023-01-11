@@ -83,7 +83,8 @@ public final class DefaultEntityServerAdminTest {
       admin.connectionPoolUsernames();
       admin.setMaintenanceInterval(500);
       admin.domainEntityDefinitions();
-      admin.domainReports();
+      assertEquals(1, admin.domainReports().get("TestDomain").size());
+      assertEquals(2, admin.domainOperations().get("TestDomain").size());
       admin.clearReportCache();
       assertEquals(500, admin.getMaintenanceInterval());
       admin.maxMemory();

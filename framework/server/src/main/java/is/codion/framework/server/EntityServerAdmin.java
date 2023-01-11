@@ -170,6 +170,12 @@ public interface EntityServerAdmin extends ServerAdmin {
   Map<String, Collection<DomainReport>> domainReports() throws RemoteException;
 
   /**
+   * @return a map containing each domain name with its operations
+   * @throws RemoteException in case of an exception
+   */
+  Map<String, Collection<DomainOperation>> domainOperations() throws RemoteException;
+
+  /**
    * Clears any cached reports
    * @throws RemoteException in case of an exception
    */
@@ -280,5 +286,26 @@ public interface EntityServerAdmin extends ServerAdmin {
      * @return true if the report has been cached
      */
     boolean isCached();
+  }
+
+  /**
+   * Basic information about an operation.
+   */
+  interface DomainOperation {
+
+    /**
+     * @return the operation type
+     */
+    String type();
+
+    /**
+     * @return the operation name
+     */
+    String name();
+
+    /**
+     * @return the operation class name
+     */
+    String className();
   }
 }
