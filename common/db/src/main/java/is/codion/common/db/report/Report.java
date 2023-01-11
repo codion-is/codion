@@ -46,6 +46,16 @@ public interface Report<T, R, P> {
   T loadReport() throws ReportException;
 
   /**
+   * @return true if this report has been cached
+   */
+  boolean isCached();
+
+  /**
+   * Clears the report cache, if caching is not enabled calling this method has no effect
+   */
+  void clearCache();
+
+  /**
    * @return the value associated with {@link Report#REPORT_PATH}
    * @throws IllegalStateException in case it is not specified
    */

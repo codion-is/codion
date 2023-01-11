@@ -71,7 +71,7 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
     JRReport FILE_REPORT =
-            fileReport("/empdept_employees.jasper");
+            fileReport("/empdept_employees.jasper", true);
     JRReport CLASS_PATH_REPORT =
             classPathReport(TestDomain.class, "/empdept_employees.jasper");
   }

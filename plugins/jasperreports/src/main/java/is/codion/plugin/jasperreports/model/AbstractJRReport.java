@@ -18,8 +18,8 @@ import static java.util.Objects.requireNonNull;
 
 abstract class AbstractJRReport extends AbstractReport<JasperReport, JasperPrint, Map<String, Object>> implements JRReport {
 
-  protected AbstractJRReport(String reportPath) {
-    super(reportPath);
+  protected AbstractJRReport(String reportPath, boolean cacheReport) {
+    super(reportPath, cacheReport);
   }
 
   @Override

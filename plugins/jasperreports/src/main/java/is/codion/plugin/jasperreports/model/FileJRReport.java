@@ -13,8 +13,8 @@ import java.net.URL;
 
 final class FileJRReport extends AbstractJRReport {
 
-  FileJRReport(String reportPath) {
-    super(reportPath);
+  FileJRReport(String reportPath, boolean cacheReport) {
+    super(reportPath, cacheReport);
   }
 
   @Override
