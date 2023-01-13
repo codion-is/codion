@@ -8606,3 +8606,4 @@
   EntityServerAdmin.domainOperations() added, ServerMonitor now displays domain operations
   AbstractReport, bug fixed, not supposed to synchronize on String instances
   ParsingDocumentFilter bug fixed, now replaces null with empty string
+  SearchHighlighter, now uses TextFieldBuilder for the search field, now with hint text

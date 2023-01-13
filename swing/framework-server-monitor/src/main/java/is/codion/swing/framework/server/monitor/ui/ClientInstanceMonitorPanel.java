@@ -90,13 +90,9 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     northPanel.add(creationDatePanel, BorderLayout.CENTER);
     northPanel.add(settingsPanel, BorderLayout.EAST);
 
-    JPanel searchPanel = new JPanel(Layouts.borderLayout());
-    searchPanel.add(new JLabel("Search"), BorderLayout.WEST);
-    searchPanel.add(searchHighlighter.createSearchField(), BorderLayout.CENTER);
-
     JPanel textLogPanel = new JPanel(Layouts.borderLayout());
     textLogPanel.add(new JScrollPane(logTextArea), BorderLayout.CENTER);
-    textLogPanel.add(searchPanel, BorderLayout.SOUTH);
+    textLogPanel.add(searchHighlighter.createSearchField(), BorderLayout.SOUTH);
 
     JTabbedPane centerPane = new JTabbedPane(SwingConstants.TOP);
     centerPane.add(textLogPanel, "Text");
