@@ -42,7 +42,7 @@ public final class EntitySearchField extends TextField {
     this.model = model;
     linkToModel();
     setInvalidBackgroundColor(Color.DARKGRAY);
-    setPromptText(Messages.searchFieldHint());
+    setPromptText(Messages.search() + "...");
     tooltipProperty().setValue(new Tooltip(model.getDescription()));
     setOnKeyPressed(new SearchKeyHandler());
     focusedProperty().addListener((observable, oldValue, newValue) -> onFocusChanged(newValue));

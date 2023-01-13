@@ -14,7 +14,6 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.tools.randomizer.ItemRandomizer;
-import is.codion.swing.common.tools.randomizer.ItemRandomizerModel;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
@@ -36,6 +35,7 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
@@ -384,12 +384,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
-    ItemRandomizer<UsageScenario<T>> model = new ItemRandomizerModel<>();
-    for (UsageScenario<T> scenario : usageScenarios.values()) {
-      model.addItem(scenario, scenario.defaultWeight());
-    }
-
-    return model;
+    return ItemRandomizer.itemRandomizer(usageScenarios.values().stream()
+            .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
+            .collect(Collectors.toList()));
   }
 
   private void initializeChartModels() {

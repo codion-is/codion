@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.Util;
+import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
-import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
@@ -31,7 +31,6 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Highlights search results in a JTextComponent.<br>
- * <br>
  * Instantiate via the {@link SearchHighlighter#searchHighlighter(JTextComponent)} factory method.
  */
 public final class SearchHighlighter {
@@ -89,23 +88,19 @@ public final class SearchHighlighter {
    * @return a text field for entering the search text.
    */
   public JTextField createSearchField() {
-    JTextField searchField = new JTextField(12);
-    new SearchFieldValue(searchField).link(searchStringValue);
-    searchField.setComponentPopupMenu(Controls.builder()
-            .control(ToggleControl.builder(caseSensitiveState)
-                    .caption(MESSAGES.getString("case_sensitive")))
-            .build().createPopupMenu());
-    KeyEvents.builder(KeyEvent.VK_DOWN)
-            .action(control(this::nextSearchPosition))
-            .enable(searchField);
-    KeyEvents.builder(KeyEvent.VK_UP)
-            .action(control(this::previousSearchPosition))
-            .enable(searchField);
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .action(control(() -> searchStringValue.set(null)))
-            .enable(searchField);
-
-    return searchField;
+    return new DefaultTextFieldBuilder<>(String.class, searchStringValue)
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+                    .action(control(this::nextSearchPosition)))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+                    .action(control(this::previousSearchPosition)))
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+                    .action(control(() -> searchStringValue.set(null))))
+            .popupMenu(Controls.builder()
+                    .control(ToggleControl.builder(caseSensitiveState)
+                            .caption(MESSAGES.getString("case_sensitive")))
+                    .build().createPopupMenu())
+            .hintText(Messages.find() + "...")
+            .build();
   }
 
   /**
@@ -218,26 +213,6 @@ public final class SearchHighlighter {
         }
       }
     });
-  }
-
-  private static final class SearchFieldValue extends AbstractValue<String> {
-
-    private final JTextField searchField;
-
-    private SearchFieldValue(JTextField searchField) {
-      this.searchField = searchField;
-      this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
-    }
-
-    @Override
-    public String get() {
-      return searchField.getText();
-    }
-
-    @Override
-    protected void setValue(String value) {
-      searchField.setText(value);
-    }
   }
 
   private static final class MatchPosition {

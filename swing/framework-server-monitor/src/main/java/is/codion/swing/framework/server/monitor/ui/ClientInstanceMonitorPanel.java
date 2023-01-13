@@ -23,7 +23,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -73,34 +72,35 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    JPanel creationDatePanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    creationDatePanel.add(new JLabel("Creation date"));
-    creationDatePanel.add(creationDateField);
+    JPanel creationDatePanel = Components.panel(Layouts.flowLayout(FlowLayout.LEFT))
+            .add(new JLabel("Creation date"))
+            .add(creationDateField)
+            .build();
 
-    JPanel settingsPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    Components.checkBox(model.loggingEnabledState())
-            .caption("Logging enabled")
-            .build(settingsPanel::add);
-    Components.button(control(this::updateView))
-            .caption("Refresh log")
-            .build(settingsPanel::add);
+    JPanel settingsPanel = Components.panel(Layouts.flowLayout(FlowLayout.LEFT))
+            .add(Components.checkBox(model.loggingEnabledState())
+                    .caption("Logging enabled")
+                    .build())
+            .add(Components.button(control(this::updateView))
+                    .caption("Refresh log")
+                    .build())
+            .build();
 
-    JPanel northPanel = new JPanel(Layouts.borderLayout());
-    northPanel.setBorder(BorderFactory.createTitledBorder("Connection info"));
-    northPanel.add(creationDatePanel, BorderLayout.CENTER);
-    northPanel.add(settingsPanel, BorderLayout.EAST);
+    JPanel northPanel = Components.panel(Layouts.borderLayout())
+            .border(BorderFactory.createTitledBorder("Connection info"))
+            .add(creationDatePanel, BorderLayout.CENTER)
+            .add(settingsPanel, BorderLayout.EAST)
+            .build();
 
-    JPanel searchPanel = new JPanel(Layouts.borderLayout());
-    searchPanel.add(new JLabel("Search"), BorderLayout.WEST);
-    searchPanel.add(searchHighlighter.createSearchField(), BorderLayout.CENTER);
+    JPanel textLogPanel = Components.panel(Layouts.borderLayout())
+            .add(new JScrollPane(logTextArea), BorderLayout.CENTER)
+            .add(searchHighlighter.createSearchField(), BorderLayout.SOUTH)
+            .build();
 
-    JPanel textLogPanel = new JPanel(Layouts.borderLayout());
-    textLogPanel.add(new JScrollPane(logTextArea), BorderLayout.CENTER);
-    textLogPanel.add(searchPanel, BorderLayout.SOUTH);
-
-    JTabbedPane centerPane = new JTabbedPane(SwingConstants.TOP);
-    centerPane.add(textLogPanel, "Text");
-    centerPane.add(new JScrollPane(createLogTree()), "Tree");
+    JTabbedPane centerPane = Components.tabbedPane()
+            .tab("Text", textLogPanel)
+            .tab("Tree", new JScrollPane(createLogTree()))
+            .build();
 
     setLayout(Layouts.borderLayout());
     add(northPanel, BorderLayout.NORTH);
@@ -115,12 +115,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private JTextArea createLogTextArea() {
-    JTextArea textArea = new JTextArea(model.logDocument());
+    JTextArea textArea = Components.textArea()
+            .document(model.logDocument())
+            .editable(false)
+            .lineWrap(false)
+            .wrapStyleWord(true)
+            .build();
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
-    textArea.setEditable(false);
-    textArea.setLineWrap(false);
-    textArea.setWrapStyleWord(true);
     State lineWrapState = State.state();
     lineWrapState.addDataListener(textArea::setLineWrap);
     textArea.setComponentPopupMenu(Controls.builder()

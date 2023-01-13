@@ -25,7 +25,8 @@ public final class Messages {
   private static final String LOGIN = "login";
   private static final String USERNAME = "username";
   private static final String PASSWORD = "password";
-  private static final String SEARCH_FIELD_HINT = "search_field_hint";
+  private static final String SEARCH = "search";
+  private static final String FIND = "find";
 
   private Messages() {}
 
@@ -121,10 +122,17 @@ public final class Messages {
   }
 
   /**
-   * @return the search field hint
+   * @return search
    */
-  public static String searchFieldHint() {
-    return get(SEARCH_FIELD_HINT);
+  public static String search() {
+    return get(SEARCH);
+  }
+
+  /**
+   * @return find
+   */
+  public static String find() {
+    return get(FIND);
   }
 
   private static String get(String key) {

@@ -25,32 +25,28 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default UI for the ItemRandomizer class.
+ * For instances use the factory method {@link #itemRandomizerPanel(ItemRandomizer)}.
  * @param <T> the type of items being randomized
  */
 public final class ItemRandomizerPanel<T> extends JPanel {
 
   private static final int SPINNER_COLUMNS = 3;
 
-  private final ItemRandomizer<T> model;
+  private final ItemRandomizer<T> itemRandomizer;
   private final JPanel configPanel = new JPanel(Layouts.gridLayout(0, 1));
   private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<>());
   private final Event<List<ItemRandomizer.RandomItem<T>>> selectedItemChangedEvent = Event.event();
 
-  /**
-   * Instantiates a new RandomItemPanel.
-   * @param itemRandomizer the ItemRandomizer to base this panel on
-   * @throws NullPointerException in case itemRandomizer is null
-   */
-  public ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
-    this.model = requireNonNull(itemRandomizer, "itemRandomizer");
+  private ItemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
+    this.itemRandomizer = requireNonNull(itemRandomizer, "itemRandomizer");
     initializeUI();
   }
 
   /**
    * @return the randomizer this panel is based on
    */
-  public ItemRandomizer<T> model() {
-    return model;
+  public ItemRandomizer<T> itemRandomizer() {
+    return itemRandomizer;
   }
 
   /**
@@ -75,10 +71,17 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   }
 
   /**
-   * Initializes the UI
+   * Instantiates a new {@link ItemRandomizerPanel}.
+   * @param itemRandomizer the item randomizer
+   * @return a new {@link ItemRandomizerPanel}
+   * @param <T> the item type
    */
+  public static <T> ItemRandomizerPanel<T> itemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
+    return new ItemRandomizerPanel<>(itemRandomizer);
+  }
+
   private void initializeUI() {
-    List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.items());
+    List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(itemRandomizer.items());
     items.sort(Comparator.comparing(item -> item.item().toString()));
     items.forEach(((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel())::addElement);
     itemList.addListSelectionListener(e -> selectedItemChangedEvent.onEvent(itemList.getSelectedValuesList()));
@@ -100,21 +103,20 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a control panel for the item weight
    */
   private JPanel createWeightPanel(ItemRandomizer.RandomItem<T> item) {
-    JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(new JLabel(item.item().toString()), BorderLayout.NORTH);
-    panel.add(Components.checkBox(new EnabledModelValue(item.item()))
-            .caption("Enabled")
-            .build(), BorderLayout.WEST);
-    panel.add(Components.label("Weight")
-            .horizontalAlignment(SwingConstants.RIGHT)
-            .build(), BorderLayout.CENTER);
-    panel.add(Components.integerSpinner(new WeightModelValue(item.item()))
-            .minimum(0)
-            .columns(SPINNER_COLUMNS)
-            .toolTipText(item.item().toString())
-            .build(), BorderLayout.EAST);
-
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(new JLabel(item.item().toString()), BorderLayout.NORTH)
+            .add(Components.checkBox(new EnabledModelValue(item.item()))
+                    .caption("Enabled")
+                    .build(), BorderLayout.WEST)
+            .add(Components.label("Weight")
+                    .horizontalAlignment(SwingConstants.RIGHT)
+                    .build(), BorderLayout.CENTER)
+            .add(Components.integerSpinner(new WeightModelValue(item.item()))
+                    .minimum(0)
+                    .columns(SPINNER_COLUMNS)
+                    .toolTipText(item.item().toString())
+                    .build(), BorderLayout.EAST)
+            .build();
   }
 
   private final class EnabledModelValue extends AbstractValue<Boolean> {
@@ -128,12 +130,12 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     @Override
     public Boolean get() {
-      return model.isItemEnabled(item);
+      return itemRandomizer.isItemEnabled(item);
     }
 
     @Override
     protected void setValue(Boolean value) {
-      model.setItemEnabled(item, value);
+      itemRandomizer.setItemEnabled(item, value);
     }
   }
 
@@ -148,12 +150,12 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     @Override
     public Integer get() {
-      return model.weight(item);
+      return itemRandomizer.weight(item);
     }
 
     @Override
     protected void setValue(Integer value) {
-      model.setWeight(item, value);
+      itemRandomizer.setWeight(item, value);
     }
   }
 }

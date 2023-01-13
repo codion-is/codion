@@ -13,18 +13,19 @@ import java.util.Collection;
  * Object two = new Object();
  * Object three = new Object();
  *
- * ItemRandomizer model = ...
+ * ItemRandomizer model = ItemRandomizer.itemRandomizer(Arrays.asList(one, two, three));
  *
  * model.setWeight(one, 10);
  * model.setWeight(two, 60);
  * model.setWeight(three, 30);
  *
  * //10% chance of getting 'one', 60% chance of getting 'two' and 30% chance of getting 'three'.
- * Object random = model.getRandomItem();
+ * Object random = model.randomItem();
  * </pre>
+ * For instances use the following factory functions: {@link #itemRandomizer(Collection)},
+ * {@link #boundedItemRandomizer(Collection)}, {@link #boundedItemRandomizer(Collection, int)}
  * @param <T> the type of item this random item model returns
  */
-
 public interface ItemRandomizer<T> {
 
   /**
@@ -50,19 +51,6 @@ public interface ItemRandomizer<T> {
    * @param weight the value
    */
   void setWeight(T item, int weight);
-
-  /**
-   * Adds the given item to this model with default weight of 0.
-   * @param item the item to add
-   */
-  void addItem(T item);
-
-  /**
-   * Adds the given item to this model with the given weight value.
-   * @param item the item to add
-   * @param weight the initial weight to assign to the item
-   */
-  void addItem(T item, int weight);
 
   /**
    * Fetches a random item from this model based on the item weights.
@@ -103,7 +91,44 @@ public interface ItemRandomizer<T> {
   void setItemEnabled(T item, boolean enabled);
 
   /**
-   * Wraps an item for usage in the ItemRandomizer
+   * Instantiates a new {@link ItemRandomizer}.
+   * @param <T> the item type
+   * @param items the items to randomize
+   * @return a new {@link ItemRandomizer}
+   */
+  static <T> ItemRandomizer<T> itemRandomizer(Collection<RandomItem<T>> items) {
+    return new DefaultItemRandomizer<>(items);
+  }
+
+  /**
+   * Instantiates a new {@link ItemRandomizer} with the added constraint that the total item weights can not exceed a defined maximum.
+   * When the weight of one item is incremented the weight of another is decremented in a round-robin kind of fashion
+   * and when an item weight is decremented the weight of another is incremented.<br>
+   * Instantiates a new {@link ItemRandomizer} with the maximum total weights as 100.
+   * @param <T> the item type
+   * @param items the items
+   * @return a new {@link ItemRandomizer}
+   */
+  static <T> ItemRandomizer<T> boundedItemRandomizer(Collection<T> items) {
+    return new BoundedItemRandomizer<>(items, 100);
+  }
+
+  /**
+   * Instantiates a new {@link ItemRandomizer} with the added constraint that the total item weights can not exceed a defined maximum.
+   * When the weight of one item is incremented the weight of another is decremented in a round-robin kind of fashion
+   * and when an item weight is decremented the weight of another is incremented.<br>
+   * @param <T> the item type
+   * @param items the items
+   * @param maximumTotalWeights the maximum total weights
+   * @return a new {@link ItemRandomizer}
+   */
+  static <T> ItemRandomizer<T> boundedItemRandomizer(Collection<T> items, int maximumTotalWeights) {
+    return new BoundedItemRandomizer<>(items, maximumTotalWeights);
+  }
+
+  /**
+   * Wraps an item for usage in the ItemRandomizer.
+   * For instances use the {@link RandomItem#randomItem(Object, int)} factory method.
    * @param <T> the type being wrapped
    */
   interface RandomItem<T> {
@@ -142,5 +167,16 @@ public interface ItemRandomizer<T> {
      * @return the item this random item represents
      */
     T item();
+
+    /**
+     * Instantiates a new {@link RandomItem} instance.
+     * @param item the item
+     * @param weight the random selection weight to assign to this item
+     * @return a new {@link RandomItem} instance.
+     * @param <T> the item type
+     */
+    static <T> RandomItem<T> randomItem(T item, int weight) {
+      return new DefaultRandomItem<>(item, weight);
+    }
   }
 }

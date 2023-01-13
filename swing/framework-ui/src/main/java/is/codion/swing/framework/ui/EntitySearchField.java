@@ -111,7 +111,7 @@ public final class EntitySearchField extends HintTextField {
   private boolean performingSearch = false;
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
-    super(searchHintEnabled ? Messages.searchFieldHint() : null);
+    super(searchHintEnabled ? Messages.search() + "..." : null);
     requireNonNull(searchModel, SEARCH_MODEL);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);

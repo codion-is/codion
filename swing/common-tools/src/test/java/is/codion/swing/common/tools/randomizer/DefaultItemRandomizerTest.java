@@ -5,20 +5,23 @@ package is.codion.swing.common.tools.randomizer;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ItemRandomizerModelTest {
+public class DefaultItemRandomizerTest {
 
   @Test
   void test() {
-    final Object one = "one";
-    final Object two = "two";
-    final Object three = "three";
+    Object one = "one";
+    Object two = "two";
+    Object three = "three";
 
-    ItemRandomizerModel<Object> model = new ItemRandomizerModel<>();
-    model.addItem(one);
-    model.addItem(two);
-    model.addItem(three);
+    DefaultItemRandomizer<Object> model = new DefaultItemRandomizer<>(Arrays.asList(
+            ItemRandomizer.RandomItem.randomItem(one, 0),
+            ItemRandomizer.RandomItem.randomItem(two, 0),
+            ItemRandomizer.RandomItem.randomItem(three, 0)
+    ));
     assertEquals(3, model.itemCount());
     assertEquals(3, model.items().size());
 

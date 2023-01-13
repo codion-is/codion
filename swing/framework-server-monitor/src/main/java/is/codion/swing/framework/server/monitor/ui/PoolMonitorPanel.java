@@ -3,11 +3,12 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.TabbedPaneBuilder;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 import is.codion.swing.framework.server.monitor.PoolMonitor;
 
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 
 /**
@@ -27,11 +28,11 @@ public final class PoolMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(new BorderLayout());
-    JTabbedPane connectionPoolPane = new JTabbedPane();
+    TabbedPaneBuilder tabbedPaneBuilder = Components.tabbedPane();
     for (ConnectionPoolMonitor monitor : model.connectionPoolInstanceMonitors()) {
-      connectionPoolPane.addTab(monitor.username(), new ConnectionPoolMonitorPanel(monitor));
+      tabbedPaneBuilder.tab(monitor.username(), new ConnectionPoolMonitorPanel(monitor));
     }
-    add(connectionPoolPane, BorderLayout.CENTER);
+    setLayout(new BorderLayout());
+    add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
   }
 }
