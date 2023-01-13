@@ -4,28 +4,30 @@
 package is.codion.swing.common.tools.randomizer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A default ItemRandomizer implementation.
+ * A default {@link ItemRandomizer} implementation.
  * @param <T> the type returned by this randomizer
  */
-public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
+class DefaultItemRandomizer<T> implements ItemRandomizer<T> {
 
   /**
    * The items contained in this model
    */
-  private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>();
+  private final List<ItemRandomizer.RandomItem<T>> items;
 
   /**
    * The Random instance used by this randomizer
    */
   private final Random random = new Random();
 
-  @Override
-  public void addItem(T item, int weight) {
-    items.add(new DefaultRandomItem<>(item, weight));
+  DefaultItemRandomizer(Collection<RandomItem<T>> items) {
+    this.items = new ArrayList<>(requireNonNull(items));
   }
 
   @Override
@@ -51,11 +53,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public final void setItemEnabled(T item, boolean enabled) {
     randomItem(item).setEnabled(enabled);
-  }
-
-  @Override
-  public final void addItem(T item) {
-    addItem(item, 0);
   }
 
   @Override
@@ -122,88 +119,5 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     return items.stream()
             .mapToInt(RandomItem::weight)
             .sum();
-  }
-
-  /**
-   * A class encapsulating an Object item and an integer weight value.
-   */
-  private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
-
-    private static final String WEIGHT_CAN_NOT_BE_NEGATIVE = "Weight can not be negative";
-
-    private final T item;
-    private int weight;
-    private boolean enabled = true;
-
-    /**
-     * Instantiates a new RandomItem
-     * @param item the item
-     * @param weight the random selection weight to assign to this item
-     */
-    private DefaultRandomItem(T item, int weight) {
-      if (weight < 0) {
-        throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
-      }
-      this.item = item;
-      this.weight = weight;
-    }
-
-    @Override
-    public int weight() {
-      return enabled ? weight : 0;
-    }
-
-    @Override
-    public boolean isEnabled() {
-      return enabled;
-    }
-
-    @Override
-    public void setEnabled(boolean enabled) {
-      this.enabled = enabled;
-    }
-
-    @Override
-    public T item() {
-      return item;
-    }
-
-    @Override
-    public String toString() {
-      return item.toString();
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-      return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem<T>) obj).item().equals(item));
-    }
-
-    @Override
-    public int hashCode() {
-      return item.hashCode();
-    }
-
-    @Override
-    public void incrementWeight() {
-      weight++;
-    }
-
-    @Override
-    public void decrementWeight() {
-      if (weight == 0) {
-        throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
-      }
-
-      weight--;
-    }
-
-    @Override
-    public void setWeight(int weight) {
-      if (weight < 0) {
-        throw new IllegalArgumentException(WEIGHT_CAN_NOT_BE_NEGATIVE);
-      }
-
-      this.weight = weight;
-    }
   }
 }

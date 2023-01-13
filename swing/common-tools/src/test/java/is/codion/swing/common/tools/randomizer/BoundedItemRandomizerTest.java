@@ -14,48 +14,41 @@ import static org.junit.jupiter.api.Assertions.*;
  * Date: 6.4.2010
  * Time: 21:50:22
  */
-public class BoundedItemRandomizerModelTest {
+public class BoundedItemRandomizerTest {
   private final String one = "one";
   private final String two = "two";
   private final String three = "three";
 
   @Test
   void constructWithoutObjects() {
-    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(10, emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizer<>(emptyList(), 10));
   }
 
   @Test
   void constructWithoutParemeters() {
-    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizer<>(emptyList(), 100));
   }
 
   @Test
   void constructNegativeWeight() {
-    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizerModel<>(-10, emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new BoundedItemRandomizer<>(emptyList(), -10));
   }
 
   @Test
   void construct() {
-    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizer<String> model = new BoundedItemRandomizer<>(asList(one, two, three), 10);
     assertEquals(3, model.itemCount());
-    assertEquals(10, model.weightBounds());
   }
 
   @Test
   void setWeight() {
-    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizer<String> model = new BoundedItemRandomizer<>(asList(one, two, three), 10);
     assertThrows(UnsupportedOperationException.class, () -> model.setWeight(one, 10));
   }
 
   @Test
-  void addItem() {
-    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
-    assertThrows(UnsupportedOperationException.class, () -> model.addItem("four"));
-  }
-
-  @Test
   void test() {
-    BoundedItemRandomizerModel<String> model = new BoundedItemRandomizerModel<>(10, asList(one, two, three));
+    BoundedItemRandomizer<String> model = new BoundedItemRandomizer<>(asList(one, two, three), 10);
 
     assertEquals(3, model.weight(one));//last
     assertEquals(3, model.weight(two));

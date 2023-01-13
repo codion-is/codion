@@ -8608,3 +8608,6 @@
   ParsingDocumentFilter bug fixed, now replaces null with empty string
   SearchHighlighter, now uses TextFieldBuilder for the search field, now with hint text
   ServerMonitor, UI refactoring
+  ItemRandomizerModel renamed DefaultItemRandomizer, no longer public, constructor private, factory method added
+  BoundedItemRandomizer renamed BoundedItemRandomizer, no longer public, constructor private, factory method added
+  ItemRandomizerPanel, constructor private, factory method added
