@@ -15,7 +15,6 @@ import org.jfree.chart.plot.PlotOrientation;
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.control.Control.control;
@@ -47,33 +46,33 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(new BorderLayout());
-    JTabbedPane tabPane = new JTabbedPane();
-    tabPane.addTab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()));
-    tabPane.addTab("Performance", chartPanel());
-    add(tabPane, BorderLayout.CENTER);
+    add(Components.tabbedPane()
+            .tab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()))
+            .tab("Performance", chartPanel())
+                    .build(), BorderLayout.CENTER);
   }
 
   private JPanel chartPanel() {
-    JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 3));
-    chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
-    chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner(model.updateIntervalValue())
-            .minimum(1)
-            .columns(SPINNER_COLUMNS)
-            .editable(false)
-            .build());
-    chartConfig.add(Components.button(control(model::clearStatistics))
-            .caption("Clear")
-            .build());
+    JPanel chartConfig = Components.panel(Layouts.flexibleGridLayout(1, 3))
+            .border(BorderFactory.createTitledBorder("Charts"))
+            .add(new JLabel("Update interval (s)"))
+            .add(Components.integerSpinner(model.updateIntervalValue())
+                    .minimum(1)
+                    .columns(SPINNER_COLUMNS)
+                    .editable(false)
+                    .build())
+            .add(Components.button(control(model::clearStatistics))
+                    .caption("Clear")
+                    .build())
+            .build();
 
-    JPanel configBase = new JPanel(Layouts.borderLayout());
-    configBase.add(chartConfig, BorderLayout.WEST);
-
-    JPanel panel = new JPanel(Layouts.borderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
-    panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
-    panel.add(configBase, BorderLayout.SOUTH);
 
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(queriesPerSecondChartPanel, BorderLayout.CENTER)
+            .add(Components.panel(Layouts.borderLayout())
+                    .add(chartConfig, BorderLayout.WEST)
+                    .build(), BorderLayout.SOUTH)
+            .build();
   }
 }

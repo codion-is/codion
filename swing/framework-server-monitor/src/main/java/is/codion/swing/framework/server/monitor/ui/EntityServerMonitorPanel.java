@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
@@ -35,7 +36,6 @@ import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
@@ -140,12 +140,12 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    setLayout(new BorderLayout());
-    JTabbedPane hostPane = new JTabbedPane();
+    TabbedPaneBuilder tabbedPaneBuilder = Components.tabbedPane();
     for (HostMonitor hostMonitor : model.hostMonitors()) {
-      hostPane.addTab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
+      tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
-    add(hostPane, BorderLayout.CENTER);
+    setLayout(new BorderLayout());
+    add(tabbedPaneBuilder.build(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
   }
 
@@ -224,9 +224,9 @@ public final class EntityServerMonitorPanel extends JPanel {
             .selectAllOnFocusGained(true)
             .build();
 
-    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    panel.add(field);
-    Dialogs.okCancelDialog(panel)
+    Dialogs.okCancelDialog(Components.panel(new FlowLayout(FlowLayout.CENTER))
+                    .add(field)
+                    .build())
             .owner(this)
             .title("Update interval (s)")
             .onOk(() -> model().setUpdateInterval(field.getNumber()))
@@ -242,12 +242,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel createSouthPanel() {
-    JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-    southPanel.setBorder(BorderFactory.createEtchedBorder());
-    southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
-
-    return southPanel;
+    return Components.panel(Layouts.flowLayout(FlowLayout.TRAILING))
+            .border(BorderFactory.createEtchedBorder())
+            .add(new JLabel("Memory usage:"))
+            .add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS))
+            .build();
   }
 
   private static User adminUser() {

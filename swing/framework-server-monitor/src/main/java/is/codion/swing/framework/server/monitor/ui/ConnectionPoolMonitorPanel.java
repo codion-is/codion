@@ -65,12 +65,29 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private ChartPanel checkOutTimePanel;
 
-  private final JTextField resetTimeField = new JTextField(RESET_FIELD_COLUMNS);
-  private final JTextField poolSizeField = new JTextField();
-  private final JTextField createdField = new JTextField();
-  private final JTextField destroyedField = new JTextField();
-  private final JTextField requestedField = new JTextField();
-  private final JTextField failedField = new JTextField();
+  private final JTextField resetTimeField = Components.textField()
+          .columns(RESET_FIELD_COLUMNS)
+          .build();
+  private final JTextField poolSizeField = Components.textField()
+          .editable(false)
+          .horizontalAlignment(CENTER)
+          .build();
+  private final JTextField createdField = Components.textField()
+          .editable(false)
+          .horizontalAlignment(CENTER)
+          .build();
+  private final JTextField destroyedField = Components.textField()
+          .editable(false)
+          .horizontalAlignment(CENTER)
+          .build();
+  private final JTextField requestedField = Components.textField()
+          .editable(false)
+          .horizontalAlignment(CENTER)
+          .build();
+  private final JTextField failedField = Components.textField()
+          .editable(false)
+          .horizontalAlignment(CENTER)
+          .build();
 
   /**
    * Instantiates a new ConnectionPoolMonitorPanel
@@ -142,109 +159,89 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel configurationPanel() {
-    JPanel configBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
-    configBase.setBorder(BorderFactory.createTitledBorder("Configuration"));
-    configBase.add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.minimumPoolSizeValue())
-            .columns(3)
-            .editable(false)
-            .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner(model.maximumPoolSizeValue())
-            .columns(3)
-            .editable(false)
-            .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.maximumCheckOutTimeValue())
-            .stepSize(1000)
-            .columns(6)
-            .editable(false)
-            .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Idle timeout (ms)"), Components.integerSpinner(model.pooledConnectionTimeoutValue())
-            .stepSize(1000)
-            .columns(6)
-            .groupingUsed(true)
-            .editable(false)
-            .build()));
-    configBase.add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.poolCleanupIntervalValue())
-            .columns(3)
-            .editable(false)
-            .build()));
+    JPanel configBase = Components.panel(Layouts.flexibleGridLayout(1, 0))
+            .border(BorderFactory.createTitledBorder("Configuration"))
+            .add(createWestCenterPanel(new JLabel("Mininum size"), Components.integerSpinner(model.minimumPoolSizeValue())
+                    .columns(3)
+                    .editable(false)
+                    .build()))
+            .add(createWestCenterPanel(new JLabel("Maximum size"), Components.integerSpinner(model.maximumPoolSizeValue())
+                    .columns(3)
+                    .editable(false)
+                    .build()))
+            .add(createWestCenterPanel(new JLabel("Checkout timeout (ms)"), Components.integerSpinner(model.maximumCheckOutTimeValue())
+                    .stepSize(1000)
+                    .columns(6)
+                    .editable(false)
+                    .build()))
+            .add(createWestCenterPanel(new JLabel("Idle timeout (ms)"), Components.integerSpinner(model.pooledConnectionTimeoutValue())
+                    .stepSize(1000)
+                    .columns(6)
+                    .groupingUsed(true)
+                    .editable(false)
+                    .build()))
+            .add(createWestCenterPanel(new JLabel("Cleanup interval (s)"), Components.integerSpinner(model.poolCleanupIntervalValue())
+                    .columns(3)
+                    .editable(false)
+                    .build()))
+            .build();
 
-    JPanel configPanel = new JPanel(Layouts.flowLayout(RIGHT));
-    configPanel.add(configBase);
-
-    return configPanel;
+    return Components.panel(Layouts.flowLayout(RIGHT))
+            .add(configBase)
+            .build();
   }
 
   private JPanel chartPanel() {
-    JPanel chartBase = new JPanel(new GridLayout(2, 2));
-    chartBase.add(requestsPerSecondChartPanel);
-    chartBase.add(inPoolChartPanel);
-    chartBase.add(checkOutTimePanel);
-    chartBase.add(inPoolSnapshotChartPanel);
-    chartBase.setBorder(BorderFactory.createEtchedBorder());
-
-    return chartBase;
+    return Components.panel(new GridLayout(2, 2))
+            .border(BorderFactory.createEtchedBorder())
+            .add(requestsPerSecondChartPanel)
+            .add(inPoolChartPanel)
+            .add(checkOutTimePanel)
+            .add(inPoolSnapshotChartPanel)
+            .build();
   }
 
   private JPanel southPanel() {
-    JPanel chartConfig = new JPanel(Layouts.flexibleGridLayout(1, 4));
-    chartConfig.setBorder(BorderFactory.createTitledBorder("Charts"));
-    chartConfig.add(new JLabel("Update interval (s)"));
-    chartConfig.add(Components.integerSpinner(model.updateIntervalValue())
-            .minimum(1)
-            .columns(SPINNER_COLUMNS)
-            .editable(false)
-            .build());
+    JPanel chartConfig = Components.panel(Layouts.flexibleGridLayout(1, 4))
+            .border(BorderFactory.createTitledBorder("Charts"))
+            .add(new JLabel("Update interval (s)"))
+            .add(Components.integerSpinner(model.updateIntervalValue())
+                    .minimum(1)
+                    .columns(SPINNER_COLUMNS)
+                    .editable(false)
+                    .build())
+            .add(Components.checkBox(model.collectSnapshotStatisticsState())
+                    .caption("Snapshot")
+                    .maximumSize(TextComponents.preferredTextFieldSize())
+                    .build())
+            .add(Components.checkBox(model.collectCheckOutTimesState())
+                    .caption("Check out times")
+                    .maximumSize(TextComponents.preferredTextFieldSize())
+                    .build())
+            .add(Components.button(control(model::clearInPoolStatistics))
+                    .caption("Clear")
+                    .maximumSize(TextComponents.preferredTextFieldSize())
+                    .build())
+            .build();
 
-    chartConfig.add(Components.checkBox(model.collectSnapshotStatisticsState())
-            .caption("Snapshot")
-            .maximumSize(TextComponents.preferredTextFieldSize())
-            .build());
-
-    chartConfig.add(Components.checkBox(model.collectCheckOutTimesState())
-            .caption("Check out times")
-            .maximumSize(TextComponents.preferredTextFieldSize())
-            .build());
-
-    chartConfig.add(Components.button(control(model::clearInPoolStatistics))
-            .caption("Clear")
-            .maximumSize(TextComponents.preferredTextFieldSize())
-            .build());
-
-    JPanel southPanel = new JPanel(Layouts.borderLayout());
-    southPanel.add(chartConfig, BorderLayout.WEST);
-
-    southPanel.add(statisticsPanel(), BorderLayout.CENTER);
-
-    return southPanel;
+    return Components.panel(Layouts.borderLayout())
+            .add(chartConfig, BorderLayout.WEST)
+            .add(statisticsPanel(), BorderLayout.CENTER)
+            .build();
   }
 
   private JPanel statisticsPanel() {
-    JPanel statisticsBase = new JPanel(Layouts.flexibleGridLayout(1, 0));
-    poolSizeField.setEditable(false);
-    poolSizeField.setHorizontalAlignment(CENTER);
-    createdField.setEditable(false);
-    createdField.setHorizontalAlignment(CENTER);
-    destroyedField.setEditable(false);
-    destroyedField.setHorizontalAlignment(CENTER);
-    requestedField.setEditable(false);
-    requestedField.setHorizontalAlignment(CENTER);
-    failedField.setEditable(false);
-    failedField.setHorizontalAlignment(CENTER);
-    resetTimeField.setEditable(false);
-    resetTimeField.setHorizontalAlignment(CENTER);
-
-    statisticsBase.add(createWestCenterPanel(new JLabel("Connections"), poolSizeField));
-    statisticsBase.add(createWestCenterPanel(new JLabel("Requested"), requestedField));
-    statisticsBase.add(createWestCenterPanel(new JLabel("Failed"), failedField));
-    statisticsBase.add(createWestCenterPanel(new JLabel("Created"), createdField));
-    statisticsBase.add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField));
-    statisticsBase.add(createWestCenterPanel(new JLabel("Since"), resetTimeField));
-    statisticsBase.add(Components.button(control(model::clearStatistics))
-            .caption("Clear")
-            .build(), BorderLayout.SOUTH);
-
-    statisticsBase.setBorder(BorderFactory.createTitledBorder("Statistics"));
-
-    return statisticsBase;
+    return Components.panel(Layouts.flexibleGridLayout(1, 0))
+            .border(BorderFactory.createTitledBorder("Statistics"))
+            .add(createWestCenterPanel(new JLabel("Connections"), poolSizeField))
+            .add(createWestCenterPanel(new JLabel("Requested"), requestedField))
+            .add(createWestCenterPanel(new JLabel("Failed"), failedField))
+            .add(createWestCenterPanel(new JLabel("Created"), createdField))
+            .add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField))
+            .add(createWestCenterPanel(new JLabel("Since"), resetTimeField))
+            .add(Components.button(control(model::clearStatistics))
+                    .caption("Clear")
+                    .build(), BorderLayout.SOUTH)
+            .build();
   }
 }

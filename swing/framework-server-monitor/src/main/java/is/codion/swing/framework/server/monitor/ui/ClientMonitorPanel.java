@@ -54,20 +54,24 @@ public final class ClientMonitorPanel extends JPanel {
   private void initializeUI() {
     clientList.setComponentPopupMenu(createPopupMenu());
 
-    JPanel clientInstanceBase = new JPanel(Layouts.borderLayout());
-    JScrollPane clientInstanceScroller = new JScrollPane(clientList);
-    clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
-    clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);
-    clientInstanceBase.add(Components.button(control(this::refresh))
-            .caption("Refresh")
-            .build(), BorderLayout.SOUTH);
+    JScrollPane clientInstanceScroller = Components.scrollPane(clientList)
+            .border(BorderFactory.createTitledBorder("Clients"))
+            .build();
+    JPanel clientInstanceBase = Components.panel(Layouts.borderLayout())
+            .add(clientInstanceScroller, BorderLayout.CENTER)
+            .add(Components.button(control(this::refresh))
+                    .caption("Refresh")
+                    .build(), BorderLayout.SOUTH)
+            .build();
 
-    JPanel clientInstancePanel = new JPanel(Layouts.borderLayout());
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setContinuousLayout(true);
-    splitPane.setLeftComponent(clientInstanceBase);
-    splitPane.setRightComponent(clientInstancePanel);
+    JPanel clientInstancePanel = Components.panel(Layouts.borderLayout()).build();
+    JSplitPane splitPane = Components.splitPane()
+            .orientation(JSplitPane.HORIZONTAL_SPLIT)
+            .oneTouchExpandable(true)
+            .continuousLayout(true)
+            .leftComponent(clientInstanceBase)
+            .rightComponent(clientInstancePanel)
+            .build();
 
     clientList.getSelectionModel().addListSelectionListener(e -> {
       clientInstancePanel.removeAll();

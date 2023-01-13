@@ -108,152 +108,163 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    JPanel serverPanel = new JPanel(Layouts.flowLayout(FlowLayout.LEFT));
-    serverPanel.add(new JLabel("Connections", SwingConstants.RIGHT));
-    serverPanel.add(createConnectionCountField());
-    serverPanel.add(new JLabel("limit", SwingConstants.RIGHT));
-    serverPanel.add(Components.integerSpinner(model.connectionLimitValue())
-            .columns(SPINNER_COLUMNS)
-            .build());
-    serverPanel.add(new JLabel("Mem. usage", SwingConstants.RIGHT));
-    serverPanel.add(createMemoryField());
-    serverPanel.add(new JLabel("Logging", SwingConstants.RIGHT));
-    serverPanel.add(createLogLevelField());
+    JPanel serverPanel = Components.panel(Layouts.flowLayout(FlowLayout.LEFT))
+            .add(new JLabel("Connections", SwingConstants.RIGHT))
+            .add(createConnectionCountField())
+            .add(new JLabel("limit", SwingConstants.RIGHT))
+            .add(Components.integerSpinner(model.connectionLimitValue())
+                    .columns(SPINNER_COLUMNS)
+                    .build())
+            .add(new JLabel("Mem. usage", SwingConstants.RIGHT))
+            .add(createMemoryField())
+            .add(new JLabel("Logging", SwingConstants.RIGHT))
+            .add(createLogLevelField())
+            .build();
 
-    JPanel northPanel = new JPanel(Layouts.borderLayout());
-    northPanel.add(serverPanel, BorderLayout.CENTER);
-    JPanel shutdownBasePanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    shutdownBasePanel.add(Components.button(control(this::shutdownServer))
-            .caption("Shutdown")
-            .build(), BorderLayout.EAST);
-    northPanel.add(shutdownBasePanel, BorderLayout.EAST);
-    northPanel.setBorder(BorderFactory.createTitledBorder("Server"));
+    JPanel shutdownBasePanel = Components.panel(Layouts.flowLayout(FlowLayout.CENTER))
+            .add(Components.button(control(this::shutdownServer))
+                    .caption("Shutdown")
+                    .build(), BorderLayout.EAST)
+            .build();
+
+    JPanel northPanel = Components.panel(Layouts.borderLayout())
+            .border(BorderFactory.createTitledBorder("Server"))
+            .add(serverPanel, BorderLayout.CENTER)
+            .add(shutdownBasePanel, BorderLayout.EAST)
+            .build();
+
+    JTabbedPane tabbedPane = Components.tabbedPane()
+            .tab("Performance", createPerformancePanel())
+            .tab("Database", new DatabaseMonitorPanel(model.databaseMonitor()))
+            .tab("Clients/Users", new ClientUserMonitorPanel(model.clientMonitor()))
+            .tab("Server", createServerPanel())
+            .build();
 
     setLayout(new BorderLayout());
     add(northPanel, BorderLayout.NORTH);
-    JTabbedPane pane = new JTabbedPane();
-    pane.addTab("Performance", createPerformancePanel());
-    pane.addTab("Database", new DatabaseMonitorPanel(model.databaseMonitor()));
-    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.clientMonitor()));
-    pane.addTab("Environment", createEnvironmentPanel());
-
-    add(pane, BorderLayout.CENTER);
+    add(tabbedPane, BorderLayout.CENTER);
   }
 
   private JPanel createPerformancePanel() {
-    JPanel controlPanel = new JPanel(Layouts.flexibleGridLayout(1, 2));
-    controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
+    JPanel intervalPanel = Components.panel(Layouts.borderLayout())
+            .add(new JLabel("Update interval (s)"), BorderLayout.WEST)
+            .add(Components.integerSpinner(model.updateIntervalValue())
+                    .minimum(1)
+                    .columns(SPINNER_COLUMNS)
+                    .editable(false)
+                    .build(), BorderLayout.CENTER)
+            .build();
 
-    JPanel intervalPanel = new JPanel(Layouts.borderLayout());
-    intervalPanel.add(new JLabel("Update interval (s)"), BorderLayout.WEST);
-    intervalPanel.add(Components.integerSpinner(model.updateIntervalValue())
-            .minimum(1)
-            .columns(SPINNER_COLUMNS)
-            .editable(false)
-            .build(), BorderLayout.CENTER);
+    JPanel chartsPanel = Components.panel(Layouts.borderLayout())
+            .add(intervalPanel, BorderLayout.CENTER)
+            .add(Components.button(control(model::clearStatistics))
+                    .caption("Clear")
+                    .build(), BorderLayout.EAST)
+            .build();
 
-    JPanel chartsPanel = new JPanel(Layouts.borderLayout());
-    chartsPanel.add(intervalPanel, BorderLayout.CENTER);
-    chartsPanel.add(Components.button(control(model::clearStatistics))
-            .caption("Clear")
-            .build(), BorderLayout.EAST);
+    JPanel zoomPanel = Components.panel(Layouts.borderLayout())
+            .add(Components.checkBox(synchronizedZoomState)
+                    .caption("Synchronize zoom")
+                    .build(), BorderLayout.CENTER)
+            .add(Components.button(control(this::resetZoom))
+                    .caption("Reset zoom")
+                    .build(), BorderLayout.EAST)
+            .build();
 
-    controlPanel.add(chartsPanel);
+    JPanel controlPanel = Components.panel(Layouts.flexibleGridLayout(1, 2))
+            .border(BorderFactory.createTitledBorder("Charts"))
+            .add(chartsPanel)
+            .add(zoomPanel)
+            .build();
 
-    JPanel zoomPanel = new JPanel(Layouts.borderLayout());
-    zoomPanel.add(Components.checkBox(synchronizedZoomState)
-            .caption("Synchronize zoom")
-            .build(), BorderLayout.CENTER);
-    zoomPanel.add(Components.button(control(this::resetZoom))
-            .caption("Reset zoom")
-            .build(), BorderLayout.EAST);
-    controlPanel.add(zoomPanel);
+    JPanel chartPanelLeft = Components.panel(Layouts.gridLayout(3, 1))
+            .add(requestsPerSecondChartPanel)
+            .add(connectionCountChartPanel)
+            .add(systemLoadChartPanel)
+            .build();
+    JPanel chartPanelRight = Components.panel(Layouts.gridLayout(3, 1))
+            .add(threadCountChartPanel)
+            .add(memoryUsageChartPanel)
+            .add(gcEventsChartPanel)
+            .build();
+    JPanel chartPanel = Components.panel(Layouts.gridLayout(1, 2))
+            .border(BorderFactory.createEtchedBorder())
+            .add(chartPanelLeft)
+            .add(chartPanelRight)
+            .build();
 
-    JPanel controlPanelBase = new JPanel(Layouts.borderLayout());
-    controlPanelBase.add(controlPanel, BorderLayout.WEST);
+    JPanel controlPanelBase = Components.panel(Layouts.borderLayout())
+            .add(controlPanel, BorderLayout.WEST)
+            .build();
 
-    JPanel chartPanelLeft = new JPanel(Layouts.gridLayout(3, 1));
-    JPanel chartPanelRight = new JPanel(Layouts.gridLayout(3, 1));
-    chartPanelLeft.add(requestsPerSecondChartPanel);
-    chartPanelLeft.add(connectionCountChartPanel);
-    chartPanelLeft.add(systemLoadChartPanel);
-    chartPanelRight.add(threadCountChartPanel);
-    chartPanelRight.add(memoryUsageChartPanel);
-    chartPanelRight.add(gcEventsChartPanel);
-    JPanel chartPanel = new JPanel(Layouts.gridLayout(1, 2));
-    chartPanel.add(chartPanelLeft);
-    chartPanel.add(chartPanelRight);
-    chartPanel.setBorder(BorderFactory.createEtchedBorder());
+    JPanel overviewPanel = Components.panel(Layouts.borderLayout())
+            .add(controlPanelBase, BorderLayout.SOUTH)
+            .add(chartPanel, BorderLayout.CENTER)
+            .build();
 
-    JPanel overviewPanel = new JPanel(Layouts.borderLayout());
-    overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
-    overviewPanel.add(chartPanel, BorderLayout.CENTER);
-
-    JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(overviewPanel, BorderLayout.CENTER);
-
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(overviewPanel, BorderLayout.CENTER)
+            .build();
   }
 
-  private JTabbedPane createEnvironmentPanel() throws RemoteException {
-    JTabbedPane panel = new JTabbedPane();
-    panel.addTab("System", createEnvironmentInfoPanel());
-    panel.addTab("Entities", createEntityPanel());
-    panel.addTab("Operations", createOperationPanel());
-    panel.addTab("Reports", createReportPanel());
-
-    return panel;
+  private JTabbedPane createServerPanel() throws RemoteException {
+    return Components.tabbedPane()
+            .tab("System", createEnvironmentInfoPanel())
+            .tab("Entities", createEntityPanel())
+            .tab("Operations", createOperationPanel())
+            .tab("Reports", createReportPanel())
+            .build();
   }
 
   private JPanel createOperationPanel() {
-    JPanel panel = new JPanel(Layouts.borderLayout());
     JTable table = new JTable(model.operationTableModel());
     table.setRowSorter(new TableRowSorter<>(model.operationTableModel()));
-    JScrollPane scroller = new JScrollPane(table);
 
-    JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(Components.button(control(model::refreshOperationList))
-            .caption("Refresh")
-            .build());
-    panel.add(refreshPanel, BorderLayout.NORTH);
-    panel.add(scroller, BorderLayout.CENTER);
+    JPanel refreshPanel = Components.panel(Layouts.flowLayout(FlowLayout.RIGHT))
+            .add(Components.button(control(model::refreshOperationList))
+                    .caption("Refresh")
+                    .build())
+            .build();
 
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(refreshPanel, BorderLayout.NORTH)
+            .add(new JScrollPane(table), BorderLayout.CENTER)
+            .build();
   }
 
   private JPanel createReportPanel() {
-    JPanel panel = new JPanel(Layouts.borderLayout());
     JTable table = new JTable(model.reportTableModel());
     table.setRowSorter(new TableRowSorter<>(model.reportTableModel()));
-    JScrollPane scroller = new JScrollPane(table);
 
-    JPanel clearCacheAndRefreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    clearCacheAndRefreshPanel.add(Components.button(control(model::clearReportCache))
-            .caption("Clear Cache")
-            .build());
-    clearCacheAndRefreshPanel.add(Components.button(control(model::refreshReportList))
-            .caption("Refresh")
-            .build());
-    panel.add(clearCacheAndRefreshPanel, BorderLayout.NORTH);
-    panel.add(scroller, BorderLayout.CENTER);
+    JPanel clearCacheAndRefreshPanel = Components.panel(Layouts.flowLayout(FlowLayout.RIGHT))
+            .add(Components.button(control(model::clearReportCache))
+                    .caption("Clear Cache")
+                    .build())
+            .add(Components.button(control(model::refreshReportList))
+                    .caption("Refresh")
+                    .build())
+            .build();
 
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(clearCacheAndRefreshPanel, BorderLayout.NORTH)
+            .add(new JScrollPane(table), BorderLayout.CENTER)
+            .build();
   }
 
   private JPanel createEntityPanel() {
-    JPanel panel = new JPanel(Layouts.borderLayout());
     JTable table = new JTable(model.domainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));
-    JScrollPane scroller = new JScrollPane(table);
 
-    JPanel refreshPanel = new JPanel(Layouts.flowLayout(FlowLayout.RIGHT));
-    refreshPanel.add(Components.button(control(model::refreshDomainList))
-            .caption("Refresh")
-            .build());
-    panel.add(refreshPanel, BorderLayout.NORTH);
-    panel.add(scroller, BorderLayout.CENTER);
+    JPanel refreshPanel = Components.panel(Layouts.flowLayout(FlowLayout.RIGHT))
+            .add(Components.button(control(model::refreshDomainList))
+                    .caption("Refresh")
+                    .build())
+            .build();
 
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(refreshPanel, BorderLayout.NORTH)
+            .add(new JScrollPane(table), BorderLayout.CENTER)
+            .build();
   }
 
   private JScrollPane createEnvironmentInfoPanel() throws RemoteException {
@@ -286,10 +297,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JComboBox<Object> createLogLevelField() {
-    DefaultComboBoxModel<Object> comboModel = new DefaultComboBoxModel<>(model.logLevels().toArray());
-
-    return Components.comboBox(comboModel, model.logLevelValue())
-            .build();
+    return Components.comboBox(new DefaultComboBoxModel<Object>(model.logLevels().toArray()), model.logLevelValue()).build();
   }
 
   private void setColors(JFreeChart chart) {
