@@ -5,10 +5,14 @@ package is.codion.swing.framework.tools.ui.explorer;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -25,6 +29,8 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.MouseEvent;
 
 import static java.util.Objects.requireNonNull;
@@ -34,7 +40,6 @@ public final class DatabaseExplorerPanel extends JPanel {
   private static final double RESIZE_WEIGHT = 0.2;
 
   private final DatabaseExplorerModel model;
-  private final JSplitPane splitPane = new JSplitPane();
 
   /**
    * Instantiates a new DatabaseExplorerPanel.
@@ -44,30 +49,47 @@ public final class DatabaseExplorerPanel extends JPanel {
     this.model = requireNonNull(model);
     FilteredTable<Schema, Integer, FilteredTableModel<Schema, Integer>> schemaTable =
             FilteredTable.filteredTable(model.schemaModel());
-    JScrollPane schemaScroller = new JScrollPane(schemaTable);
+    schemaTable.addDoubleClickListener(this::populateSchema);
 
     FilteredTable<DefinitionRow, Integer,
             FilteredTableModel<DefinitionRow, Integer>> domainTable =
             FilteredTable.filteredTable(model.definitionModel());
-    JScrollPane tableScroller = new JScrollPane(domainTable);
 
-    JSplitPane schemaTableSplitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-    schemaTableSplitPane.setResizeWeight(RESIZE_WEIGHT);
-    schemaTableSplitPane.setTopComponent(schemaScroller);
-    schemaTableSplitPane.setBottomComponent(tableScroller);
+    JSplitPane schemaTableSplitPane = Components.splitPane()
+            .orientation(JSplitPane.VERTICAL_SPLIT)
+            .resizeWeight(RESIZE_WEIGHT)
+            .topComponent(new JScrollPane(schemaTable))
+            .bottomComponent(new JScrollPane(domainTable))
+            .build();
 
-    JTextArea textArea = new JTextArea(40, 60);
-    textArea.setEditable(false);
+    JTextArea textArea = Components.textArea()
+            .rowsColumns(40, 60)
+            .editable(false)
+            .build();
 
-    splitPane.setLeftComponent(schemaTableSplitPane);
-    splitPane.setRightComponent(new JScrollPane(textArea));
-    splitPane.setResizeWeight(RESIZE_WEIGHT);
+    Font font = textArea.getFont();
+    textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
+
+    JPanel textAreaCopyPanel = Components.panel(Layouts.borderLayout())
+            .add(new JScrollPane(textArea), BorderLayout.CENTER)
+            .add(Components.panel(Layouts.flowLayout(FlowLayout.RIGHT))
+                    .add(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
+                            .caption(Messages.copy())
+                            .build()
+                            .createButton())
+                    .build(), BorderLayout.SOUTH)
+            .build();
+
+    JSplitPane splitPane = Components.splitPane()
+            .resizeWeight(RESIZE_WEIGHT)
+            .leftComponent(schemaTableSplitPane)
+            .rightComponent(textAreaCopyPanel)
+            .build();
 
     setLayout(Layouts.borderLayout());
     add(splitPane, BorderLayout.CENTER);
 
     model.domainSourceObserver().addDataListener(textArea::setText);
-    schemaTable.addDoubleClickListener(this::populateSchema);
   }
 
   public void showFrame() {
@@ -100,7 +122,7 @@ public final class DatabaseExplorerPanel extends JPanel {
   public static void main(String[] arguments) {
     try {
       Database database = Database.instance();
-      DatabaseExplorerModel explorerModel = new DatabaseExplorerModel(database,
+      DatabaseExplorerModel explorerModel = DatabaseExplorerModel.databaseExplorerModel(database,
               Dialogs.loginDialog()
                       .icon(Logos.logoTransparent())
                       .validator(user -> database.createConnection(user).close())

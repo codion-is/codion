@@ -16,9 +16,14 @@ import is.codion.swing.framework.tools.metadata.Schema;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.stream.Collectors;
 
+import static is.codion.common.Separators.LINE_SEPARATOR;
 import static java.util.Objects.requireNonNull;
 
+/**
+ * For instances use the factory method {@link #databaseExplorerModel(Database, User)}.
+ */
 public final class DatabaseExplorerModel {
 
   private final MetaDataModel metaDataModel;
@@ -31,7 +36,7 @@ public final class DatabaseExplorerModel {
     EntityDefinition.STRICT_FOREIGN_KEYS.set(false);
   }
 
-  public DatabaseExplorerModel(Database database, User user) throws DatabaseException {
+  private DatabaseExplorerModel(Database database, User user) throws DatabaseException {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
@@ -72,10 +77,20 @@ public final class DatabaseExplorerModel {
     definitionTableModel.refresh();
   }
 
+  /**
+   * Instantiates a new {@link DatabaseExplorerModel} instance.
+   * @param database the database to connect to
+   * @param user the user to connect with
+   * @return a new {@link DatabaseExplorerModel} instance
+   * @throws DatabaseException in case of an exception while connecting to the database
+   */
+  public static DatabaseExplorerModel databaseExplorerModel(Database database, User user) throws DatabaseException {
+    return new DatabaseExplorerModel(database, user);
+  }
+
   private void updateCodeValue() {
-    StringBuilder builder = new StringBuilder();
-    definitionTableModel.selectionModel().getSelectedItems().forEach(definitionRow ->
-            builder.append(DomainToString.toString(definitionRow.definition)));
-    domainSourceValue.set(builder.toString());
+    domainSourceValue.set(definitionTableModel.selectionModel().getSelectedItems().stream()
+            .map(definitionRow -> DomainToString.toString(definitionRow.definition))
+            .collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));
   }
 }

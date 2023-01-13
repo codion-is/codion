@@ -44,7 +44,7 @@ final class DomainToString {
     builder.append("  add(definition(").append(LINE_SEPARATOR);
     builder.append(String.join("," + LINE_SEPARATOR, propertyStrings(definition.properties(), interfaceName, definition)));
     builder.append(LINE_SEPARATOR).append("  ));").append(LINE_SEPARATOR);
-    builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
+    builder.append("}");
 
     return builder.toString();
   }

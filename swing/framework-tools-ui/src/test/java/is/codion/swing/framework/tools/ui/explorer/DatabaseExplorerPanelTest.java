@@ -17,7 +17,7 @@ public class DatabaseExplorerPanelTest {
 
   @Test
   void test() throws ClassNotFoundException, DatabaseException {
-    DatabaseExplorerModel model = new DatabaseExplorerModel(Database.instance(), UNIT_TEST_USER);
+    DatabaseExplorerModel model = DatabaseExplorerModel.databaseExplorerModel(Database.instance(), UNIT_TEST_USER);
     new DatabaseExplorerPanel(model);
     model.schemaModel().refresh();
     model.schemaModel().sortItems();
