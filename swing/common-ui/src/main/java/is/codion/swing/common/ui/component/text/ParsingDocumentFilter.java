@@ -27,6 +27,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   public final void insertString(FilterBypass filterBypass, int offset, String string,
                                  AttributeSet attributeSet) throws BadLocationException {
     String transformedString = transform(string);
+    transformedString = transformedString == null ? "" : transformedString;
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.insert(offset, transformedString);
@@ -57,6 +58,7 @@ public class ParsingDocumentFilter<T> extends ValidationDocumentFilter<T> {
   public final void replace(FilterBypass filterBypass, int offset, int length, String string,
                             AttributeSet attributeSet) throws BadLocationException {
     String transformedString = transform(string);
+    transformedString = transformedString == null ? "" : transformedString;
     Document document = filterBypass.getDocument();
     StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
     builder.replace(offset, offset + length, transformedString);

@@ -8605,3 +8605,4 @@
   ServerMonitor, changes related to the above
   EntityServerAdmin.domainOperations() added, ServerMonitor now displays domain operations
   AbstractReport, bug fixed, not supposed to synchronize on String instances
+  ParsingDocumentFilter bug fixed, now replaces null with empty string
