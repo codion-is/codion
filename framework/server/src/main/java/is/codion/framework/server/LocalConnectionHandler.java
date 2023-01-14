@@ -144,15 +144,12 @@ final class LocalConnectionHandler implements InvocationHandler {
     String methodName = method.getName();
     Exception exception = null;
     try {
-      MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
-      REQUEST_COUNTER.incrementRequestsPerSecondCounter();
-      if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(methodName, args);
-      }
+      logAccess(methodName, args);
 
       return method.invoke(fetchConnection(), args);
     }
     catch (InvocationTargetException e) {
+      //Wrapped exception has already been logged during the actual method call
       throw e.getCause() instanceof Exception ? (Exception) e.getCause() : e;
     }
     catch (Exception e) {
@@ -162,15 +159,27 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
     finally {
       returnConnection();
-      if (methodLogger.isEnabled()) {
-        MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
-        StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
-        entry.append(messageBuilder);
-        LOG.info(messageBuilder.toString());
-      }
-      MDC.remove(LOG_IDENTIFIER_PROPERTY);
+      logExit(methodName, exception);
       active.set(false);
     }
+  }
+
+  private void logAccess(String methodName, Object[] args) {
+    MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
+    REQUEST_COUNTER.incrementRequestsPerSecondCounter();
+    if (methodLogger.isEnabled()) {
+      methodLogger.logAccess(methodName, args);
+    }
+  }
+
+  private void logExit(String methodName, Exception exception) {
+    if (methodLogger.isEnabled()) {
+      MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
+      StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
+      entry.append(messageBuilder);
+      LOG.info(messageBuilder.toString());
+    }
+    MDC.remove(LOG_IDENTIFIER_PROPERTY);
   }
 
   boolean isConnected() {
