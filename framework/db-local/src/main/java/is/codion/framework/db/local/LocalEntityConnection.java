@@ -8,7 +8,6 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.logging.MethodLogger;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
@@ -65,16 +64,6 @@ public interface LocalEntityConnection extends EntityConnection {
    * Default value: true<br>
    */
   PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
-
-  /**
-   * @param methodLogger the MethodLogger to use, null for no method logging
-   */
-  void setMethodLogger(MethodLogger methodLogger);
-
-  /**
-   * @return the MethodLogger being used, null in case none has been set
-   */
-  MethodLogger getMethodLogger();
 
   /**
    * @return the underlying connection

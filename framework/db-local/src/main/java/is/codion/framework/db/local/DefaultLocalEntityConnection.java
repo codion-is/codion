@@ -130,20 +130,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void setMethodLogger(MethodLogger methodLogger) {
-    synchronized (connection) {
-      connection.setMethodLogger(methodLogger);
-    }
-  }
-
-  @Override
-  public MethodLogger getMethodLogger() {
-    synchronized (connection) {
-      return connection.getMethodLogger();
-    }
-  }
-
-  @Override
   public Entities entities() {
     return domainEntities;
   }
