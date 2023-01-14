@@ -67,13 +67,12 @@ public interface LocalEntityConnection extends EntityConnection {
   PropertyValue<Boolean> LIMIT_FOREIGN_KEY_FETCH_DEPTH = Configuration.booleanValue("codion.db.limitForeignKeyFetchDepth", true);
 
   /**
-   * @param methodLogger the MethodLogger to use
-   * @return this LocalEntityConnection instance
+   * @param methodLogger the MethodLogger to use, null for no method logging
    */
-  EntityConnection setMethodLogger(MethodLogger methodLogger);
+  void setMethodLogger(MethodLogger methodLogger);
 
   /**
-   * @return the MethodLogger being used
+   * @return the MethodLogger being used, null in case none has been set
    */
   MethodLogger getMethodLogger();
 
@@ -99,9 +98,8 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param optimisticLocking true if optimistic locking should be enabled
-   * @return this LocalEntityConnection instance
    */
-  LocalEntityConnection setOptimisticLockingEnabled(boolean optimisticLocking);
+  void setOptimisticLockingEnabled(boolean optimisticLocking);
 
   /**
    * @return true if foreign key fetch depths are being limited
@@ -110,10 +108,9 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param limitFetchDepth false to override the fetch depth limit provided by condition
-   * @return this LocalEntityConnection instance
    * @see SelectCondition.Builder#fetchDepth(int)
    */
-  LocalEntityConnection setLimitFetchDepth(boolean limitFetchDepth);
+  void setLimitFetchDepth(boolean limitFetchDepth);
 
   /**
    * @return the default query timeout being used
@@ -122,9 +119,8 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param queryTimeout the query timeout in seconds
-   * @return this LocalEntityConnection instance
    */
-  LocalEntityConnection setDefaultQueryTimeout(int queryTimeout);
+  void setDefaultQueryTimeout(int queryTimeout);
 
   /**
    * @return the underlying domain model

@@ -130,12 +130,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public LocalEntityConnection setMethodLogger(MethodLogger methodLogger) {
+  public void setMethodLogger(MethodLogger methodLogger) {
     synchronized (connection) {
       connection.setMethodLogger(methodLogger);
     }
-
-    return this;
   }
 
   @Override
@@ -866,9 +864,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public LocalEntityConnection setOptimisticLockingEnabled(boolean optimisticLockingEnabled) {
+  public void setOptimisticLockingEnabled(boolean optimisticLockingEnabled) {
     this.optimisticLockingEnabled = optimisticLockingEnabled;
-    return this;
   }
 
   @Override
@@ -877,9 +874,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public LocalEntityConnection setLimitFetchDepth(boolean limitFetchDepth) {
-    this.limitForeignKeyFetchDepth = limitFetchDepth;
-    return this;
+  public void setLimitFetchDepth(boolean limitForeignKeyFetchDepth) {
+    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   @Override
@@ -888,9 +884,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public LocalEntityConnection setDefaultQueryTimeout(int defaultQueryTimeout) {
+  public void setDefaultQueryTimeout(int defaultQueryTimeout) {
     this.defaultQueryTimeout = defaultQueryTimeout;
-    return this;
   }
 
   @Override

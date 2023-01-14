@@ -8614,3 +8614,4 @@
   DatabaseExplorerModel, DatabaseExplorerPanel, minor refactoring
   DefaultRemoteEntityConnectionProvider.RemoteEntityConnectionHandler now caches the Entities instance, instead of performing a remote call each time
   LocalConnectionHandler, minor refactoring
+  LocalEntityConnection, setters no longer return the instance
