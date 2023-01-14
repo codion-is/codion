@@ -45,8 +45,8 @@ public final class EntityService extends AbstractEntityService {
    * @return a response
    */
   @POST
-  @Path("getEntities")
-  public Response getEntities(@Context HttpServletRequest request, @Context HttpHeaders headers) {
+  @Path("entities")
+  public Response entities(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 

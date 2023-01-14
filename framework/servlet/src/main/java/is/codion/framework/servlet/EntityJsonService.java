@@ -62,8 +62,8 @@ public final class EntityJsonService extends AbstractEntityService {
    */
   @POST
   @Produces(MediaType.APPLICATION_OCTET_STREAM)
-  @Path("getEntities")
-  public Response getEntities(@Context HttpServletRequest request, @Context HttpHeaders headers) {
+  @Path("entities")
+  public Response entities(@Context HttpServletRequest request, @Context HttpHeaders headers) {
     try {
       RemoteEntityConnection connection = authenticate(request, headers);
 
