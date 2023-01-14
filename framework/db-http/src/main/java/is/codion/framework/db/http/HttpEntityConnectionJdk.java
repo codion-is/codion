@@ -551,7 +551,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   private Entities initializeEntities() {
     try {
-      return handleResponse(execute(createRequest("getEntities")));
+      return handleResponse(execute(createRequest("entities")));
     }
     catch (RuntimeException e) {
       throw e;
