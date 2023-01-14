@@ -24,7 +24,7 @@ final class DefaultVersion implements Version, Serializable {
    * @param patch the patch version
    * @param metadata the metadata, fx. build information
    */
-  public DefaultVersion(int major, int minor, int patch, String metadata) {
+  DefaultVersion(int major, int minor, int patch, String metadata) {
     if (major < 0 || minor < 0 || patch < 0) {
       throw new IllegalArgumentException("Major, minor and patch must be non-negative integers");
     }
