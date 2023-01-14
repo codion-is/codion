@@ -93,12 +93,12 @@ final class LocalConnectionHandler implements InvocationHandler {
   private final AtomicBoolean active = new AtomicBoolean(false);
 
   /**
-   * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
+   * A local connection used in case no connection pool is provided, managed by fetchConnection()/returnConnection()
    */
   private LocalEntityConnection localEntityConnection;
 
   /**
-   * A local connection used in case of a connection pool, managed by getConnection()/returnConnection()
+   * A local connection used in case of a connection pool, managed by fetchConnection()/returnConnection()
    */
   private LocalEntityConnection poolEntityConnection;
 
