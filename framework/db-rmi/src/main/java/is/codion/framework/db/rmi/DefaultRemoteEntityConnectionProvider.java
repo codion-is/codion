@@ -11,6 +11,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.domain.entity.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,9 +34,12 @@ import static java.util.Objects.requireNonNull;
  * @see RemoteEntityConnectionProvider#builder()
  */
 final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnectionProvider
-        implements RemoteEntityConnectionProvider{
+        implements RemoteEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+
+  private static final String IS_CONNECTED = "isConnected";
+  private static final String ENTITIES = "entities";
 
   private Server<RemoteEntityConnection, ServerAdmin> server;
   private ServerInformation serverInformation;
@@ -149,6 +153,8 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
     private final Map<Method, Method> methodCache = new HashMap<>();
     private final RemoteEntityConnection remoteConnection;
 
+    private Entities entities;
+
     private RemoteEntityConnectionHandler(RemoteEntityConnection remoteConnection) {
       this.remoteConnection = remoteConnection;
     }
@@ -158,6 +164,9 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       String methodName = method.getName();
       if (methodName.equals(IS_CONNECTED)) {
         return isConnected();
+      }
+      if (methodName.equals(ENTITIES)) {
+        return entities();
       }
 
       Method remoteMethod = methodCache.computeIfAbsent(method, RemoteEntityConnectionHandler::remoteMethod);
@@ -183,6 +192,14 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
     }
 
+    private Entities entities() throws RemoteException {
+      if (entities == null) {
+        entities = remoteConnection.entities();
+      }
+
+      return entities;
+    }
+
     private static Method remoteMethod(Method method) {
       try {
         return RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
@@ -192,5 +209,4 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
     }
   }
-
 }

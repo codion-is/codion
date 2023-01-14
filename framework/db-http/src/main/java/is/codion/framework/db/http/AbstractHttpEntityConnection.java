@@ -153,7 +153,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
 
   private Entities initializeEntities() {
     try {
-      return onResponse(execute(createHttpPost("getEntities")));
+      return onResponse(execute(createHttpPost("entities")));
     }
     catch (RuntimeException e) {
       throw e;

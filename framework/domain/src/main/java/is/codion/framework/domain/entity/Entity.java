@@ -280,7 +280,7 @@ public interface Entity extends Comparable<Entity> {
    * <pre>
    * Store domain = new Store();
    *
-   * Entities entities = domain.getEntities();
+   * Entities entities = domain.entities();
    *
    * Entity customer = entities.builder(Customer.TYPE)
    *     .with(Customer.FIRST_NAME, "John")
