@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
-  protected static final String IS_CONNECTED = "isConnected";
+
   private final Object lock = new Object();
   private final Event<EntityConnection> onConnectEvent = Event.event();
 

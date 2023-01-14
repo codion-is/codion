@@ -8612,3 +8612,4 @@
   BoundedItemRandomizer renamed BoundedItemRandomizer, no longer public, constructor private, factory method added
   ItemRandomizerPanel, constructor private, factory method added
   DatabaseExplorerModel, DatabaseExplorerPanel, minor refactoring
+  DefaultRemoteEntityConnectionProvider.RemoteEntityConnectionHandler now caches the Entities instance, instead of performing a remote call each time
