@@ -176,7 +176,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     if (methodLogger.isEnabled()) {
       MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
       StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
-      entry.append(messageBuilder);
+      entry.appendTo(messageBuilder);
       LOG.info(messageBuilder.toString());
     }
     MDC.remove(LOG_IDENTIFIER_PROPERTY);
