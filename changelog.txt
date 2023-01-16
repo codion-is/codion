@@ -8616,3 +8616,4 @@
   LocalConnectionHandler, minor refactoring
   LocalEntityConnection, setters no longer return the instance
   LocalEntityConnection.get/setMethodLogger() removed, accessible via DatabaseConnection
+  DefaultEntity.toString() bug fixed, now handles the case where the string factory returns null, by using the default string factory

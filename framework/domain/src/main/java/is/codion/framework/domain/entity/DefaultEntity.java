@@ -41,6 +41,8 @@ final class DefaultEntity implements Entity, Serializable {
 
   private static final String ATTRIBUTE = "attribute";
 
+  static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
+
   /**
    * Holds the values contained in this entity.
    */
@@ -358,6 +360,9 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   /**
+   * Returns a String representation of this entity
+   * Note that if the this entitys {@link StringFactory} returns null for some reason,
+   * the default String factory is used instead.
    * @return a string representation of this entity
    * @see EntityDefinition.Builder#stringFactory(java.util.function.Function)
    * @see EntityDefinition#stringFactory()
@@ -365,7 +370,7 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public String toString() {
     if (toString == null) {
-      toString = definition.stringFactory().apply(this);
+      toString = createToString();
     }
 
     return toString;
@@ -399,6 +404,15 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     return unmodifiableSet(originalValues.entrySet());
+  }
+
+  private String createToString() {
+    String string = definition.stringFactory().apply(this);
+    if (string == null) {
+      return DEFAULT_STRING_FACTORY.apply(this);
+    }
+
+    return string;
   }
 
   private void clear() {
