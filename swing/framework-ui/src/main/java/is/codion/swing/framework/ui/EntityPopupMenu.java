@@ -3,8 +3,10 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.ProxyBuilder;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
@@ -140,7 +142,7 @@ final class EntityPopupMenu extends JPopupMenu {
     StringBuilder builder = new StringBuilder();
     if (entity.isModified(property.attribute())) {
       builder.append(createValueString(entity.getOriginal(property.attribute()), (Property<Object>) property));
-      builder.append(" \u2192 ");
+      builder.append(" → ");
     }
     builder.append(createValueString(entity.get(property.attribute()), (Property<Object>) property));
 
@@ -183,6 +185,12 @@ final class EntityPopupMenu extends JPopupMenu {
               .selectBuilder()
               .fetchDepth(0)
               .build());
+    }
+    catch (RecordNotFoundException e) {
+      return ProxyBuilder.builder(Entity.class)
+            .delegate(Entity.entity(primaryKey))
+            .method("toString", arguments -> primaryKey.toString() + " <RECORD NOT FOUND>")
+            .build();
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
