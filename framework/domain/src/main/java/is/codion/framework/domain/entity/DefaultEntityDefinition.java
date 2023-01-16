@@ -1102,7 +1102,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private OrderBy orderBy;
     private String selectTableName;
     private SelectQuery selectQuery;
-    private Function<Entity, String> stringFactory = new DefaultStringFactory();
+    private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
     private ColorProvider backgroundColorProvider = new NullColorProvider();
     private ColorProvider foregroundColorProvider = new NullColorProvider();
     private Comparator<Entity> comparator = Text.spaceAwareCollator();

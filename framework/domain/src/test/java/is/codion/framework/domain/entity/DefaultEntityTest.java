@@ -10,6 +10,7 @@ import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
+import is.codion.framework.domain.TestDomain.NullString;
 import is.codion.framework.domain.TestDomain.TransModifies;
 import is.codion.framework.domain.TestDomain.TransModifiesNot;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
@@ -823,6 +824,14 @@ public class DefaultEntityTest {
     assertNotNull(otolith.get(Otolith.SPECIES_FK));
     assertNotNull(otolith.get(Otolith.MATURITY_FK));
     assertNotNull(otolith.get(Otolith.OTOLITH_CATEGORY_FK));
+  }
+
+  @Test
+  void nullString() {
+    Entity entity = ENTITIES.builder(NullString.TYPE)
+            .with(NullString.ID, 42)
+            .build();
+    assertEquals("null_string: id:42", entity.toString());
   }
 
   private static Entity detailEntity(long id, Integer intValue, Double doubleValue,

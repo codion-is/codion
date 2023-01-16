@@ -45,6 +45,7 @@ public final class TestDomain extends DefaultDomain {
     noPKEntity();
     transientModifies();
     transientModifiesNot();
+    nullString();
   }
 
   public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
@@ -372,5 +373,19 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(TransModifiesNot.ID),
             transientProperty(TransModifiesNot.TRANS)
                     .modifiesEntity(false)));
+  }
+
+  public interface NullString {
+    EntityType TYPE = DOMAIN.entityType("null_string");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
+  }
+
+  void nullString() {
+    add(definition(
+            primaryKeyProperty(NullString.ID),
+            columnProperty(NullString.TRANS))
+            .stringFactory(entity -> null));
   }
 }
