@@ -92,7 +92,7 @@ public final class ClientInstanceMonitor {
       if (log != null) {
         StringBuilder logBuilder = new StringBuilder();
         for (MethodLogger.Entry entry : log.entries()) {
-          entry.append(logBuilder);
+          entry.appendTo(logBuilder);
           DefaultMutableTreeNode entryNode = new DefaultMutableTreeNode(entryString(entry));
           if (entry.hasChildEntries()) {
             addChildEntries(entryNode, entry.childEntries());
@@ -158,7 +158,7 @@ public final class ClientInstanceMonitor {
             .append(MICROSECOND_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(entry.duration())))
             .append(" μs").append("]");
     if (entry.accessMessage() != null) {
-      builder.append(": ").append(entry.accessMessage()).toString();
+      builder.append(": ").append(entry.accessMessage());
     }
 
     return builder.toString();

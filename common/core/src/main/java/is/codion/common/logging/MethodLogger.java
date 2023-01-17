@@ -134,7 +134,7 @@ public interface MethodLogger {
      * Appends this logger entry along with any child-entries to the given StringBuilder.
      * @param builder the StringBuilder to append to.
      */
-    void append(StringBuilder builder);
+    void appendTo(StringBuilder builder);
 
     /**
      * Returns a string representation of this log entry.

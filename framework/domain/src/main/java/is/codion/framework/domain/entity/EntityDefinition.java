@@ -556,7 +556,7 @@ public interface EntityDefinition {
     Builder selectQuery(SelectQuery selectQuery);
 
     /**
-     * Sets the string factory, based on the value of the given attribute. Shortcut for:
+     * Sets the string factory, using the value of the given attribute. Shortcut for:
      * <pre>
      * stringFactory(StringFactory.builder()
      *           .value(attribute)
@@ -568,14 +568,16 @@ public interface EntityDefinition {
     Builder stringFactory(Attribute<?> attribute);
 
     /**
-     * Sets the string factory, that is, the object responsible for creating toString() values for this entity type
+     * Sets the string factory, that is, the function responsible for creating toString() values for this entity type.
+     * Note that if for some reason this function returns null, the default string factory is used as fallback,
+     * which simply returns the entity type name and primary key value.
      * @param stringFactory the string factory function
      * @return this {@link Builder} instance
      */
     Builder stringFactory(Function<Entity, String> stringFactory);
 
     /**
-     * Sets the comparator to use when comparing this entity type to other entities
+     * Sets the comparator to use when comparing entities of this type
      * @param comparator the comparator
      * @return this {@link Builder} instance
      */
