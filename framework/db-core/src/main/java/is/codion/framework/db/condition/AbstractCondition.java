@@ -10,13 +10,20 @@ import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractCondition implements Condition, Serializable {
+/**
+ * An abstract base class for Condition.
+ * Remember to override {@link #equals(Object)} and {@link #hashCode()} if query caching is being used.
+ */
+public abstract class AbstractCondition implements Condition, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityType entityType;
 
-  AbstractCondition(EntityType entityType) {
+  /**
+   * @param entityType the entity type this condition is based on
+   */
+  protected AbstractCondition(EntityType entityType) {
     this.entityType = requireNonNull(entityType);
   }
 
