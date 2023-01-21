@@ -8620,3 +8620,4 @@
   EntityPopupMenu.selectEntity() now handles RecordNotFoundException by returning an proxy entity indicating the record was not found
   MethodLogger.Entry.append() renamed to appendTo()
   AbstractCondition now public
+  DefaultLocalEntityConnection.delete() bug fixed, did not rollback on DeleteException
