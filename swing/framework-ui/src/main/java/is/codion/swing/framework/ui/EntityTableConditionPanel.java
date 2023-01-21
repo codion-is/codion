@@ -83,7 +83,7 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
         Property.sort(conditionProperties);
         Dialogs.selectionDialog(conditionProperties)
                 .owner(this)
-                .title(FrameworkMessages.selectInputField())
+                .title(FrameworkMessages.selectSearchField())
                 .selectSingle()
                 .ifPresent(property -> conditionPanel(property.attribute()).requestInputFocus());
       }

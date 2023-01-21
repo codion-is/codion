@@ -1146,7 +1146,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsTablePanel()) {
       Control selectTablePanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
       Control selectSearchFieldControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
-      Control selectConditionPanelAction = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
+      Control selectConditionPanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1161,7 +1161,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         KeyEvents.builder(KeyEvent.VK_S)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                .action(selectConditionPanelAction)
+                .action(selectConditionPanelControl)
                 .enable(this);
       }
       if (containsEditPanel()) {
@@ -1179,7 +1179,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           KeyEvents.builder(KeyEvent.VK_S)
                   .modifiers(CTRL_DOWN_MASK)
                   .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                  .action(selectConditionPanelAction)
+                  .action(selectConditionPanelControl)
                   .enable(editControlPanel);
         }
       }
