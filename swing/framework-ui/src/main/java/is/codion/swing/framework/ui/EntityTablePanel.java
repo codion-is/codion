@@ -1748,7 +1748,6 @@ public class EntityTablePanel extends JPanel {
 
   private static JPanel createDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies,
                                                 EntityConnectionProvider connectionProvider) {
-    JPanel panel = new JPanel(new BorderLayout());
     JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       Collection<Entity> dependentEntities = entry.getValue();
@@ -1757,9 +1756,10 @@ public class EntityTablePanel extends JPanel {
                 createEntityTablePanel(dependentEntities, connectionProvider));
       }
     }
-    panel.add(tabPane, BorderLayout.CENTER);
 
-    return panel;
+    return Components.panel(new BorderLayout())
+            .add(tabPane, BorderLayout.CENTER)
+            .build();
   }
 
   private static Point popupLocation(JTable table) {

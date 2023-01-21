@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.tools.explorer.DatabaseExplorerModel;
 import is.codion.swing.framework.tools.explorer.DefinitionRow;
 import is.codion.swing.framework.tools.metadata.Schema;
@@ -33,6 +32,8 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.MouseEvent;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 
 public final class DatabaseExplorerPanel extends JPanel {
@@ -70,9 +71,9 @@ public final class DatabaseExplorerPanel extends JPanel {
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 
-    JPanel textAreaCopyPanel = Components.panel(Layouts.borderLayout())
+    JPanel textAreaCopyPanel = Components.panel(borderLayout())
             .add(new JScrollPane(textArea), BorderLayout.CENTER)
-            .add(Components.panel(Layouts.flowLayout(FlowLayout.RIGHT))
+            .add(Components.panel(flowLayout(FlowLayout.RIGHT))
                     .add(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
                             .caption(Messages.copy())
                             .build()
@@ -86,7 +87,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .rightComponent(textAreaCopyPanel)
             .build();
 
-    setLayout(Layouts.borderLayout());
+    setLayout(borderLayout());
     add(splitPane, BorderLayout.CENTER);
 
     model.domainSourceObserver().addDataListener(textArea::setText);
@@ -103,9 +104,10 @@ public final class DatabaseExplorerPanel extends JPanel {
   }
 
   private void populateSchema(MouseEvent event) {
-    JPanel northPanel = new JPanel(Layouts.borderLayout());
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-    northPanel.add(schemaLabel, BorderLayout.CENTER);
+    JPanel northPanel = Components.panel(borderLayout())
+            .add(schemaLabel, BorderLayout.CENTER)
+            .build();
     EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
     Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
             .owner(this)

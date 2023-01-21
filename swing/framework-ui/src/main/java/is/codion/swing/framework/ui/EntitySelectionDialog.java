@@ -9,6 +9,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
@@ -78,11 +79,12 @@ public final class EntitySelectionDialog extends JDialog {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(getRootPane());
-    JPanel buttonPanel = new JPanel(flowLayout(FlowLayout.RIGHT));
     JButton okButton = okControl.createButton();
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelControl.createButton());
-    buttonPanel.add(searchControl.createButton());
+    JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.RIGHT))
+            .add(okButton)
+            .add(cancelControl.createButton())
+            .add(searchControl.createButton())
+            .build();
     getRootPane().setDefaultButton(okButton);
     setLayout(new BorderLayout());
     add(entityTablePanel, BorderLayout.CENTER);

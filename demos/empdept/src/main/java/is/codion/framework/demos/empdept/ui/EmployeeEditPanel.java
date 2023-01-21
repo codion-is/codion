@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -69,13 +70,12 @@ public class EmployeeEditPanel extends EntityEditPanel {
             .transferFocusOnEnter(true)
             .build();
 
-    JPanel departmentPanel = new JPanel(borderLayout());
-    departmentPanel.add(departmentIdField, BorderLayout.WEST);
-    departmentPanel.add(departmentBox, BorderLayout.CENTER);
-
     setComponent(Employee.DEPARTMENT_FK, departmentIdField);
 
-    return departmentPanel;
+    return Components.panel(borderLayout())
+            .add(departmentIdField, BorderLayout.WEST)
+            .add(departmentBox, BorderLayout.CENTER)
+            .build();
   }
 }
 // end::initializeUI[]
