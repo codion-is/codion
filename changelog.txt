@@ -8622,3 +8622,4 @@
   AbstractCondition now public
   DefaultLocalEntityConnection.delete() bug fixed, did not rollback on DeleteException
   FrameworkMessage.selectSearchField() added, EntityTableConditionPanel uses it instead of selectInputField()
+  EntityTablePanel.UpdateSelectedComponentFactory now sets horizontal alignment to CENTER for JCheckBox
