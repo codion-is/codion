@@ -4,6 +4,7 @@
 package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.framework.demos.petclinic.domain.api.Visit;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -26,13 +27,13 @@ public final class VisitEditPanel extends EntityEditPanel {
     createTextField(Visit.DATE);
     createTextArea(Visit.DESCRIPTION).rowsColumns(4, 20);
 
-    JPanel northPanel = new JPanel(Layouts.gridLayout(1, 2));
-    northPanel.add(createInputPanel(Visit.PET_FK));
-    northPanel.add(createInputPanel(Visit.DATE));
+    JPanel northPanel = Components.panel(Layouts.gridLayout(1, 2))
+            .add(createInputPanel(Visit.PET_FK))
+            .add(createInputPanel(Visit.DATE))
+            .build();
 
     setLayout(new BorderLayout(5, 5));
     add(northPanel, BorderLayout.NORTH);
-    addInputPanel(Visit.DESCRIPTION,
-            new JScrollPane(getComponent(Visit.DESCRIPTION)), BorderLayout.CENTER);
+    addInputPanel(Visit.DESCRIPTION, new JScrollPane(getComponent(Visit.DESCRIPTION)), BorderLayout.CENTER);
   }
 }

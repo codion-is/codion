@@ -40,7 +40,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Integer<br>
    * Default value: 40
    */
-  PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.clientLogSize", DEFAULT_CONNECTION_LOG_SIZE);
+  PropertyValue<Integer> CONNECTION_LOG_SIZE = Configuration.integerValue("codion.db.connectionLogSize", DEFAULT_CONNECTION_LOG_SIZE);
 
   /**
    * Specifies the query timeout in seconds<br>

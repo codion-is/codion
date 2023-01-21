@@ -19,6 +19,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -740,15 +741,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       return null;
     }
     if (horizontal) {
-      JPanel panel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-      panel.add(controlPanelControls.createHorizontalButtonPanel());
-
-      return panel;
+      return Components.panel(Layouts.flowLayout(FlowLayout.CENTER))
+              .add(controlPanelControls.createHorizontalButtonPanel())
+              .build();
     }
-    JPanel panel = new JPanel(Layouts.borderLayout());
-    panel.add(controlPanelControls.createVerticalButtonPanel(), BorderLayout.NORTH);
-
-    return panel;
+    return Components.panel(Layouts.borderLayout())
+            .add(controlPanelControls.createVerticalButtonPanel(), BorderLayout.NORTH)
+            .build();
   }
 
   private void bindEventsInternal() {

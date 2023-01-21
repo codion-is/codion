@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -41,14 +42,12 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListCellRenderer;
@@ -104,7 +103,10 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A central application panel class.
@@ -370,12 +372,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     ItemComboBoxModel<Integer> comboBoxModel = itemComboBoxModel(values);
     Integer fontSizeMultiplier = fontSizeMultiplier();
 
-    Dialogs.okCancelDialog(Components.panel(Layouts.borderLayout())
+    Dialogs.okCancelDialog(Components.panel(borderLayout())
                     .add(Components.itemComboBox(comboBoxModel)
                             .initialValue(fontSizeMultiplier)
                             .renderer(new FontSizeCellRenderer(values, fontSizeMultiplier))
                             .build(), BorderLayout.CENTER)
-                    .border(BorderFactory.createEmptyBorder(10, 10, 0, 10))
+                    .border(createEmptyBorder(10, 10, 0, 10))
                     .build())
             .owner(this)
             .title(resourceBundle.getString("select_font_size"))
@@ -769,25 +771,24 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel createAboutPanel() {
-    JPanel panel = new JPanel(Layouts.borderLayout());
-    String versionString = Version.versionAndMetadataString();
-    panel.add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST);
-    Version version = clientVersion();
-    JPanel versionMemoryPanel = new JPanel(Layouts.gridLayout(version == null ? 2 : 3, 2));
-    versionMemoryPanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-    if (version != null) {
-      versionMemoryPanel.add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"));
-      versionMemoryPanel.add(new JLabel(version.toString()));
+    PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
+            .border(createEmptyBorder(5, 5, 5, 5));
+    if (clientVersion() != null) {
+      versionMemoryPanel
+              .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
+              .add(new JLabel(clientVersion().toString()));
     }
-    versionMemoryPanel.add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"));
-    versionMemoryPanel.add(new JLabel(versionString));
-    versionMemoryPanel.add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"));
-    versionMemoryPanel.add(new JLabel(Memory.memoryUsage()));
-    panel.add(versionMemoryPanel, BorderLayout.CENTER);
+    versionMemoryPanel
+            .add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
+            .add(new JLabel(Version.versionAndMetadataString()))
+            .add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"))
+            .add(new JLabel(Memory.memoryUsage()));
 
-    panel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
-
-    return panel;
+    return Components.panel(borderLayout())
+            .border(createEmptyBorder(5, 5, 5, 5))
+            .add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST)
+            .add(versionMemoryPanel.build(), BorderLayout.CENTER)
+            .build();
   }
 
   /**
@@ -947,11 +948,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void initializeUI() {
     setLayout(new BorderLayout());
     applicationTabPane = createApplicationTabPane();
-    //base panel added for Look&Feel rendering
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    basePanel.add(applicationTabPane, BorderLayout.CENTER);
-    add(basePanel, BorderLayout.CENTER);
-
+    //tab pane added to a base panel for correct Look&Feel rendering
+    add(Components.panel(borderLayout())
+            .add(applicationTabPane, BorderLayout.CENTER)
+            .build(), BorderLayout.CENTER);
     JPanel northPanel = createNorthPanel();
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);

@@ -450,6 +450,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         LOG.error(createLogMessage(deleteQuery, condition == null ? emptyList() : statementValues, statementProperties, e), e);
         throw translateSQLException(e);
       }
+      catch (DeleteException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(deleteQuery, statementValues, statementProperties, e), e);
+        throw e;
+      }
       finally {
         closeSilently(statement);
       }
@@ -993,13 +998,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<ForeignKeyProperty> foreignKeyPropertiesToSet(EntityType entityType,
                                                              Collection<Attribute<?>> conditionSelectAttributes) {
+    List<ForeignKeyProperty> foreignKeyProperties = domainEntities.definition(entityType).foreignKeyProperties();
     if (conditionSelectAttributes.isEmpty()) {
-      return domainEntities.definition(entityType).foreignKeyProperties();
+      return foreignKeyProperties;
     }
 
     Set<Attribute<?>> selectAttributes = new HashSet<>(conditionSelectAttributes);
 
-    return domainEntities.definition(entityType).foreignKeyProperties().stream()
+    return foreignKeyProperties.stream()
             .filter(foreignKeyProperty -> selectAttributes.contains(foreignKeyProperty.attribute()))
             .collect(toList());
   }
@@ -1112,13 +1118,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                              int queryTimeout) throws SQLException {
     try {
       logAccess("prepareStatement", query);
-      PreparedStatement statement;
-      if (returnGeneratedKeys) {
-        statement = connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-      }
-      else {
-        statement = connection.getConnection().prepareStatement(query);
-      }
+      PreparedStatement statement = returnGeneratedKeys ?
+              connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
+              connection.getConnection().prepareStatement(query);
       statement.setQueryTimeout(queryTimeout);
 
       return statement;
@@ -1305,11 +1307,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return result;
   }
 
-  private static Entity referencedEntity(Key referencedKey, Map<Key, Entity> entitiesMappedByKey) {
+  private static Entity referencedEntity(Key referencedKey, Map<Key, Entity> entityKeyMap) {
     if (referencedKey == null) {
       return null;
     }
-    Entity referencedEntity = entitiesMappedByKey.get(referencedKey);
+    Entity referencedEntity = entityKeyMap.get(referencedKey);
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the key since that's the best we can do under the circumstances

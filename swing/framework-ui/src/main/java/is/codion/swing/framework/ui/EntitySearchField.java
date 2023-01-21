@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
@@ -77,6 +78,7 @@ import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -331,13 +333,17 @@ public final class EntitySearchField extends HintTextField {
     KeyEvents.builder(KeyEvent.VK_ESCAPE)
             .action(control(closeEvent::onEvent))
             .enable(okButton);
-    JPanel buttonPanel = new JPanel(Layouts.flowLayout(FlowLayout.CENTER));
-    buttonPanel.add(okButton);
-    JLabel messageLabel = new JLabel(FrameworkMessages.noResultsFromCondition());
-    messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
-    JPanel messagePanel = new JPanel(Layouts.borderLayout());
-    messagePanel.add(messageLabel, BorderLayout.CENTER);
-    messagePanel.add(buttonPanel, BorderLayout.SOUTH);
+    JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.CENTER))
+            .add(okButton)
+            .build();
+    JLabel messageLabel = Components.label(FrameworkMessages.noResultsFromCondition())
+            .border(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE))
+            .build();
+    JPanel messagePanel = Components.panel(borderLayout())
+            .add(messageLabel, BorderLayout.CENTER)
+            .add(buttonPanel, BorderLayout.SOUTH)
+            .build();
+
     Dialogs.componentDialog(messagePanel)
             .owner(this)
             .title(SwingMessages.get("OptionPane.messageDialogTitle"))
@@ -381,28 +387,29 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private void initializeUI(EntitySearchModel searchModel) {
-      JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
+      CardLayout cardLayout = new CardLayout(5, 5);
+      PanelBuilder propertyBasePanelBuilder = Components.panel(cardLayout);
       FilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
       for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.attributeSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.property(entry.getKey()).caption()));
-        propertyBasePanel.add(createPropertyPanel(entry.getValue()), entry.getKey().name());
+        propertyBasePanelBuilder.add(createPropertyPanel(entry.getValue()), entry.getKey().name());
       }
+      JPanel propertyBasePanel = propertyBasePanelBuilder.build();
       if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.addSelectionListener(selected ->
-                ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, selected.value().name()));
+        propertyComboBoxModel.addSelectionListener(selected -> cardLayout.show(propertyBasePanel, selected.value().name()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      JPanel generalSettingsPanel = Components.panel(Layouts.gridLayout(2, 1))
+      JPanel generalSettingsPanel = Components.panel(gridLayout(2, 1))
               .border(BorderFactory.createTitledBorder(""))
               .add(Components.checkBox(searchModel.multipleSelectionEnabledState())
                       .caption(MESSAGES.getString("enable_multiple_search_values"))
                       .build())
               .build();
 
-      JPanel valueSeparatorPanel = Components.panel(Layouts.borderLayout())
+      JPanel valueSeparatorPanel = Components.panel(borderLayout())
               .add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER)
               .add(Components.textField(searchModel.multipleItemSeparatorValue())
                       .columns(1)
@@ -412,7 +419,7 @@ public final class EntitySearchField extends HintTextField {
 
       generalSettingsPanel.add(valueSeparatorPanel);
 
-      setLayout(Layouts.borderLayout());
+      setLayout(borderLayout());
       add(Components.comboBox(propertyComboBoxModel).build(), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
@@ -421,7 +428,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
-      return Components.panel(Layouts.gridLayout(3, 1))
+      return Components.panel(gridLayout(3, 1))
               .add(Components.checkBox(settings.caseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
@@ -467,7 +474,7 @@ public final class EntitySearchField extends HintTextField {
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
     private final JScrollPane scrollPane = new JScrollPane(list);
-    private final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
     /**
@@ -533,8 +540,8 @@ public final class EntitySearchField extends HintTextField {
 
     private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
     private final JScrollPane scrollPane;
-    private final JPanel searchPanel = new JPanel(Layouts.borderLayout());
-    private final JPanel basePanel = new JPanel(Layouts.borderLayout());
+    private final JPanel searchPanel = new JPanel(borderLayout());
+    private final JPanel basePanel = new JPanel(borderLayout());
     private final Control selectControl;
 
     /**

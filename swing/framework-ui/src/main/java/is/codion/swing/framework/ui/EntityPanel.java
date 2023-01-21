@@ -18,7 +18,6 @@ import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -56,6 +55,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
@@ -185,12 +185,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * The base edit panel which contains the controls required for editing an entity
    */
-  private final JPanel editControlPanel = new JPanel(Layouts.borderLayout());
+  private final JPanel editControlPanel = new JPanel(borderLayout());
 
   /**
    * The base panel containing the edit, control and table panels
    */
-  private final JPanel editControlTablePanel = new JPanel(Layouts.borderLayout());
+  private final JPanel editControlTablePanel = new JPanel(borderLayout());
 
   /**
    * The caption to use when presenting this entity panel
@@ -1032,7 +1032,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       initializeTablePanel();
       editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
-    setLayout(Layouts.borderLayout());
+    setLayout(borderLayout());
     if (!includeDetailTabPane || detailEntityPanels.isEmpty()) {
       horizontalSplitPane = null;
       detailPanelTabbedPane = null;
@@ -1146,7 +1146,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsTablePanel()) {
       Control selectTablePanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
       Control selectSearchFieldControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
-      Control selectConditionPanelAction = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
+      Control selectConditionPanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1161,7 +1161,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         KeyEvents.builder(KeyEvent.VK_S)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                .action(selectConditionPanelAction)
+                .action(selectConditionPanelControl)
                 .enable(this);
       }
       if (containsEditPanel()) {
@@ -1179,7 +1179,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           KeyEvents.builder(KeyEvent.VK_S)
                   .modifiers(CTRL_DOWN_MASK)
                   .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                  .action(selectConditionPanelAction)
+                  .action(selectConditionPanelControl)
                   .enable(editControlPanel);
         }
       }
