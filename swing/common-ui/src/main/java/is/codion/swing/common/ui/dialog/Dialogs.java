@@ -4,20 +4,15 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
-import is.codion.common.state.State;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.SelectionProvider;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
-import java.awt.BorderLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.io.File;
@@ -149,44 +144,12 @@ public final class Dialogs {
   }
 
   /**
-   * Displays the component from the given component value in a dialog and returns the value if the user accepts the input.
+   * @param componentValue the value which component to display
+   * @return a builder for a input dialog
    * @param <T> the value type
-   * @param <C> the component type
-   * @param componentValue the component value
-   * @param dialogOwner the dialog owner
-   * @return the value from the component value if the user accepts the input
-   * @throws is.codion.common.model.CancelException if the user cancels
    */
-  public static <T, C extends JComponent> T showInputDialog(ComponentValue<T, C> componentValue, JComponent dialogOwner) {
-    return showInputDialog(componentValue, dialogOwner, null);
-  }
-
-  /**
-   * Displays the component from the given component value in a dialog and returns the value if the user accepts the input.
-   * @param <T> the value type
-   * @param <C> the component type
-   * @param componentValue the component value
-   * @param dialogOwner the dialog owner
-   * @param title the dialog title
-   * @return the value from the component value if the user accepts the input
-   * @throws is.codion.common.model.CancelException if the user cancels
-   */
-  public static <T, C extends JComponent> T showInputDialog(ComponentValue<T, C> componentValue, JComponent dialogOwner, String title) {
-    requireNonNull(componentValue);
-    State okPressed = State.state();
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    basePanel.add(componentValue.component(), BorderLayout.CENTER);
-    basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    okCancelDialog(basePanel)
-            .owner(dialogOwner)
-            .title(title)
-            .onOk(() -> okPressed.set(true))
-            .show();
-    if (okPressed.get()) {
-      return componentValue.get();
-    }
-
-    throw new CancelException();
+  public static <T> InputDialogBuilder<T> inputDialog(ComponentValue<T, ?> componentValue) {
+    return new DefaultInputDialogBuilder<>(componentValue);
   }
 
   /**

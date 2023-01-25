@@ -762,7 +762,10 @@ public class EntityTablePanel extends JPanel {
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
-      T newValue = Dialogs.showInputDialog(componentValue, this, propertyToUpdate.caption());
+      T newValue = Dialogs.inputDialog(componentValue)
+              .owner(this)
+              .title(propertyToUpdate.caption())
+              .show();
       Entity.put(propertyToUpdate.attribute(), newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
     }
