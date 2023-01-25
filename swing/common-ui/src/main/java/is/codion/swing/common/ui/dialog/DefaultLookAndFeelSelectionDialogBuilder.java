@@ -16,7 +16,7 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel.lookAndFeelSelectionPanel;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultLookAndFeelDialogBuilder implements LookAndFeelSelectionDialogBuilder {
+final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelectionDialogBuilder {
 
   private JComponent dialogOwner;
   private boolean changeOnSelection = LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.get();
