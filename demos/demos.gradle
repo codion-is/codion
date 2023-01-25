@@ -75,7 +75,7 @@ task clientRMIScript(type: CreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
-            '-Djavax.net.ssl.trustStore=../config/truststore.jks',
+            '-Dcodion.client..trustStore=../config/truststore.jks',
             '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
