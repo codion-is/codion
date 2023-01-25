@@ -206,11 +206,15 @@ public final class Utilities {
   }
 
   /**
-   * Sets a global font size multiplier.
-   * @param multiplier the font size multiplier
+   * Sets a global font size percentage.<br>
+   * 85 = decrease the default font size by 15%<br>
+   * 100 = use the default font size<br>
+   * 125 = increase the default font size by 25%<br>
+   * @param fontSizePercentage the font size percentage
    */
-  public static void setFontSize(float multiplier) {
-    UIDefaults defaults = UIManager.getDefaults();
+  public static void setFontSizePercentage(int fontSizePercentage) {
+    float multiplier = fontSizePercentage / 100f;
+    UIDefaults defaults = UIManager.getLookAndFeelDefaults();
     Enumeration<Object> enumeration = defaults.keys();
     while (enumeration.hasMoreElements()) {
       Object key = enumeration.nextElement();

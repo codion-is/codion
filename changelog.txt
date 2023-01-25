@@ -8624,3 +8624,6 @@
   FrameworkMessage.selectSearchField() added, EntityTableConditionPanel uses it instead of selectInputField()
   EntityTablePanel.UpdateSelectedComponentFactory now sets horizontal alignment to CENTER for JCheckBox
   DefaultLookAndFeelDialogBuilder renamed DefaultLookAndFeelSelectionDialogBuilder
+  Dialogs.fontSizeSelectionDialog() added, related refactoring
+  EntityApplicationPanel now resizes the framework icons according to the font size percentage
+  Utilities.setFontSizeMultiplier() renamed setFontSizePercentage()
