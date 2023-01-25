@@ -49,8 +49,10 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    return Dialogs.showInputDialog(Components.bigDecimalField()
-            .buildComponentValue(), this, BUNDLE.getString("amount"));
+    return Dialogs.inputDialog(Components.bigDecimalField().buildComponentValue())
+            .owner(this)
+            .title(BUNDLE.getString("amount"))
+            .show();
   }
 
   private static final class MinutesSecondsComponentFactory

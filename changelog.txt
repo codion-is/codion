@@ -8666,3 +8666,4 @@
   EntityApplicationPanel now resizes the framework icons according to the font size percentage
   Utilities.setFontSizeMultiplier() renamed setFontSizePercentage()
   LookAndFeelSelectionDialogBuilder, FontSizeSelectionDialogBuilder.dialogOwner() renamed owner() for consistency
+  Dialogs.showInputDialog() replace with inputDialog() returning an InputDialogBuilder

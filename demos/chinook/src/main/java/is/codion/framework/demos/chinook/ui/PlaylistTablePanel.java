@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -21,7 +22,6 @@ import java.awt.BorderLayout;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.dialog.Dialogs.showInputDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
@@ -45,8 +45,10 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   }
 
   private void createRandomPlaylist() throws DatabaseException {
-    RandomPlaylistParameters randomPlaylistParameters = showInputDialog(new RandomPlaylistParametersValue(),
-            this, BUNDLE.getString("create_random_playlist"));
+    RandomPlaylistParameters randomPlaylistParameters = Dialogs.inputDialog(new RandomPlaylistParametersValue())
+            .owner(this)
+            .title(BUNDLE.getString("create_random_playlist"))
+            .show();
     if (randomPlaylistParameters.playlistName() != null) {
       ((PlaylistTableModel) tableModel()).createRandomPlaylist(randomPlaylistParameters);
     }

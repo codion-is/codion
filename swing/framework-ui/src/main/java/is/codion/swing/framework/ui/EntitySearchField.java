@@ -356,8 +356,10 @@ public final class EntitySearchField extends HintTextField {
     EntitySearchModel searchModel = EntitySearchModel.entitySearchModel(entityType, connectionProvider);
     searchModel.multipleSelectionEnabledState().set(!singleSelection);
 
-    return Dialogs.showInputDialog(EntitySearchField.builder(searchModel)
-            .buildComponentValueMultiple(), dialogParent, dialogTitle);
+    return Dialogs.inputDialog(EntitySearchField.builder(searchModel).buildComponentValueMultiple())
+            .owner(dialogParent)
+            .title(dialogTitle)
+            .show();
   }
 
   private static final class SearchFieldValue extends AbstractValue<String> {
