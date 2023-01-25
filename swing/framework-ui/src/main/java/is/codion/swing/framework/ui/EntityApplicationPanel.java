@@ -359,7 +359,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void selectFontSize() {
     Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
-            .dialogOwner(this)
+            .owner(this)
             .selectFontSize();
   }
 
@@ -689,7 +689,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createSelectLookAndFeelControl() {
     return Dialogs.lookAndFeelSelectionDialog()
-            .dialogOwner(this)
+            .owner(this)
             .userPreferencePropertyName(applicationLookAndFeelProperty)
             .createControl();
   }
@@ -699,7 +699,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createSelectFontSizeControl() {
     return Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
-            .dialogOwner(this)
+            .owner(this)
             .createControl();
   }
 

@@ -18,13 +18,13 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelectionDialogBuilder {
 
-  private JComponent dialogOwner;
+  private JComponent owner;
   private boolean changeOnSelection = LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.get();
   private String userPreferencePropertyName;
 
   @Override
-  public LookAndFeelSelectionDialogBuilder dialogOwner(JComponent dialogOwner) {
-    this.dialogOwner = requireNonNull(dialogOwner);
+  public LookAndFeelSelectionDialogBuilder owner(JComponent owner) {
+    this.owner = requireNonNull(owner);
     return this;
   }
 
@@ -60,7 +60,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
     LookAndFeelSelectionPanel lookAndFeelSelectionPanel = lookAndFeelSelectionPanel(changeOnSelection);
     State okPressed = State.state();
     new DefaultOkCancelDialogBuilder(lookAndFeelSelectionPanel)
-            .owner(dialogOwner)
+            .owner(owner)
             .title(ResourceBundle.getBundle(LookAndFeelProvider.class.getName()).getString("select_look_and_feel"))
             .onOk(() -> okPressed.set(true))
             .show();

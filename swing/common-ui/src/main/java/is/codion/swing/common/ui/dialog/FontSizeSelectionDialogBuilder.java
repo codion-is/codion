@@ -14,10 +14,10 @@ import java.util.Optional;
 public interface FontSizeSelectionDialogBuilder {
 
   /**
-   * @param dialogOwner the dialog owner
+   * @param owner the dialog owner
    * @return this builder
    */
-  FontSizeSelectionDialogBuilder dialogOwner(JComponent dialogOwner);
+  FontSizeSelectionDialogBuilder owner(JComponent owner);
 
   /**
    * Displays a dialog allowing the user the select a font size multiplier.

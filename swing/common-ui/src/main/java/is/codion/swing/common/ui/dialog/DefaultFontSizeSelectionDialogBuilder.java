@@ -32,15 +32,16 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDialogBuilder {
 
   private final String userPreferencePropertyName;
-  private JComponent dialogOwner;
+
+  private JComponent owner;
 
   DefaultFontSizeSelectionDialogBuilder(String userPreferencePropertyName) {
     this.userPreferencePropertyName = requireNonNull(userPreferencePropertyName);
   }
 
   @Override
-  public FontSizeSelectionDialogBuilder dialogOwner(JComponent dialogOwner) {
-    this.dialogOwner = requireNonNull(dialogOwner);
+  public FontSizeSelectionDialogBuilder owner(JComponent owner) {
+    this.owner = requireNonNull(owner);
     return this;
   }
 
@@ -52,7 +53,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
     return Control.builder(() -> selectFontSize()
                     .ifPresent(fontSize -> {
                       UserPreferences.setUserPreference(userPreferencePropertyName, Integer.toString(fontSize));
-                      JOptionPane.showMessageDialog(dialogOwner, resourceBundle.getString("font_size_selected_message"));
+                      JOptionPane.showMessageDialog(owner, resourceBundle.getString("font_size_selected_message"));
                     }))
             .caption(caption)
             .build();
@@ -65,7 +66,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
     FontSizeSelectionPanel fontSizeSelectionPanel = new FontSizeSelectionPanel(currentFontSize);
     State okPressed = State.state();
     new DefaultOkCancelDialogBuilder(fontSizeSelectionPanel)
-            .owner(dialogOwner)
+            .owner(owner)
             .title(resourceBundle.getString("select_font_size"))
             .onOk(() -> okPressed.set(true))
             .show();
