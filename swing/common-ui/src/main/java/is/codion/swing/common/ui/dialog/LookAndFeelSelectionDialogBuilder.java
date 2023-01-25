@@ -15,10 +15,10 @@ import java.util.Optional;
 public interface LookAndFeelSelectionDialogBuilder {
 
   /**
-   * @param dialogOwner the dialog owner
+   * @param owner the dialog owner
    * @return this builder
    */
-  LookAndFeelSelectionDialogBuilder dialogOwner(JComponent dialogOwner);
+  LookAndFeelSelectionDialogBuilder owner(JComponent owner);
 
   /**
    * @param changeOnSelection true if the Look and Feel should change dynamically when selecting

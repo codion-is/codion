@@ -137,7 +137,15 @@ public final class Dialogs {
    * @return a builder for a dialog for selecting a look and feel
    */
   public static LookAndFeelSelectionDialogBuilder lookAndFeelSelectionDialog() {
-    return new DefaultLookAndFeelDialogBuilder();
+    return new DefaultLookAndFeelSelectionDialogBuilder();
+  }
+
+  /**
+   * @param userPreferencePropertyName the name of the property to use when saving the selected font size as a user preference
+   * @return a builder for a dialog for selecting the font size
+   */
+  public static FontSizeSelectionDialogBuilder fontSizeSelectionDialog(String userPreferencePropertyName) {
+    return new DefaultFontSizeSelectionDialogBuilder(userPreferencePropertyName);
   }
 
   /**

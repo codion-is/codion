@@ -162,7 +162,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .control(createUpateIntervalControl())
                     .separator()
                     .control(Dialogs.lookAndFeelSelectionDialog()
-                            .dialogOwner(this)
+                            .owner(this)
                             .userPreferencePropertyName(EntityServerMonitorPanel.class.getName())
                             .createControl())
                     .control(createAlwaysOnTopControl()))

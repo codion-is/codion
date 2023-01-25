@@ -125,7 +125,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .caption("View")
                     .mnemonic('V')
                     .control(Dialogs.lookAndFeelSelectionDialog()
-                            .dialogOwner(this)
+                            .owner(this)
                             .userPreferencePropertyName(LoadTestPanel.class.getName())
                             .createControl()))
             .build();

@@ -12,7 +12,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
-import is.codion.common.item.Item;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -27,7 +26,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
@@ -50,7 +48,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
@@ -58,14 +55,12 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
-import javax.swing.ListCellRenderer;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -80,7 +75,6 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Font;
 import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
@@ -102,7 +96,6 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -362,33 +355,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Display a dialog for selecting the application font size multiplier
+   * Display a dialog for selecting the application font size percentage
    */
   public final void selectFontSize() {
-    List<Item<Integer>> values = new ArrayList<>();
-    for (int i = 50; i <= 200; i += 5) {
-      values.add(Item.item(i, i + "%"));
-    }
-    ItemComboBoxModel<Integer> comboBoxModel = itemComboBoxModel(values);
-    Integer fontSizeMultiplier = fontSizeMultiplier();
-
-    Dialogs.okCancelDialog(Components.panel(borderLayout())
-                    .add(Components.itemComboBox(comboBoxModel)
-                            .initialValue(fontSizeMultiplier)
-                            .renderer(new FontSizeCellRenderer(values, fontSizeMultiplier))
-                            .build(), BorderLayout.CENTER)
-                    .border(createEmptyBorder(10, 10, 0, 10))
-                    .build())
+    Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
             .owner(this)
-            .title(resourceBundle.getString("select_font_size"))
-            .onOk(() -> {
-              Integer selectedFontSizeMultiplier = comboBoxModel.getSelectedItem().value();
-              if (!selectedFontSizeMultiplier.equals(fontSizeMultiplier)) {
-                UserPreferences.setUserPreference(applicationFontSizeProperty, selectedFontSizeMultiplier.toString());
-                JOptionPane.showMessageDialog(this, resourceBundle.getString("font_size_selected_message"));
-              }
-            })
-            .show();
+            .selectFontSize();
   }
 
   @Override
@@ -717,7 +689,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createSelectLookAndFeelControl() {
     return Dialogs.lookAndFeelSelectionDialog()
-            .dialogOwner(this)
+            .owner(this)
             .userPreferencePropertyName(applicationLookAndFeelProperty)
             .createControl();
   }
@@ -726,9 +698,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return a Control for selecting the font size
    */
   protected final Control createSelectFontSizeControl() {
-    return Control.builder(this::selectFontSize)
-            .caption(resourceBundle.getString("select_font_size"))
-            .build();
+    return Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
+            .owner(this)
+            .createControl();
   }
 
   /**
@@ -997,10 +969,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * 85 = decrease the default font size by 15%<br>
    * 100 = use the default font size<br>
    * 125 = increase the default font size by 25%<br>
-   * @return the font size multiplier to use
+   * @return the font size percentage to use
    * @see #selectFontSize()
    */
-  protected int fontSizeMultiplier() {
+  protected int fontSizePercentage() {
     return Integer.parseInt(UserPreferences.getUserPreference(applicationFontSizeProperty, "100"));
   }
 
@@ -1192,9 +1164,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     LOG.debug("{} application starting", applicationName);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
-    int fontSize = fontSizeMultiplier();
-    if (fontSize != 100) {
-      Utilities.setFontSize(fontSize / 100f);
+    int fontSizePercentage = fontSizePercentage();
+    if (fontSizePercentage != 100) {
+      Utilities.setFontSizePercentage(fontSizePercentage);
+      FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
     }
 
     EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
@@ -1580,31 +1553,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     public void validate(User user) throws Exception {
       connectionProvider = initializeConnectionProvider(user, applicationIdentifier());
       connectionProvider.connection();//throws exception if the server is not reachable
-    }
-  }
-
-  private static final class FontSizeCellRenderer implements ListCellRenderer<Item<Integer>> {
-
-    private final DefaultListCellRenderer defaultListCellRenderer = new DefaultListCellRenderer();
-    private final List<Item<Integer>> values;
-    private final Integer defaultFontSize;
-
-    private FontSizeCellRenderer(List<Item<Integer>> values, Integer defaultFontSize) {
-      this.values = values;
-      this.defaultFontSize = defaultFontSize;
-    }
-
-    @Override
-    public Component getListCellRendererComponent(JList<? extends Item<Integer>> list, Item<Integer> value, int index,
-                                                  boolean isSelected, boolean cellHasFocus) {
-      Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      if (index >= 0) {
-        Font font = component.getFont();
-        int newSize = Math.round(font.getSize() * (values.get(index).value() / (float) defaultFontSize.doubleValue()));
-        component.setFont(new Font(font.getName(), font.getStyle(), newSize));
-      }
-
-      return component;
     }
   }
 }
