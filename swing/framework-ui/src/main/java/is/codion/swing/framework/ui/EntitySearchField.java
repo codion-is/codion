@@ -123,8 +123,7 @@ public final class EntitySearchField extends HintTextField {
     setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(createPopupMenu());
     addFocusListener(new SearchFocusListener());
-    addKeyListener(new EnterKeyListener());
-    addKeyListener(new EscapeKeyListener());
+    addKeyListener(new EnterEscapeListener());
     configureColors();
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -702,23 +701,19 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private final class EnterKeyListener extends KeyAdapter {
+  private final class EnterEscapeListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ENTER && !model.searchStringRepresentsSelected()) {
-        e.consume();
-        performSearch(true);
-      }
-    }
-  }
-
-  private final class EscapeKeyListener extends KeyAdapter {
-    @Override
-    public void keyPressed(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !model.searchStringRepresentsSelected()) {
-        e.consume();
-        model.refreshSearchText();
-        selectAll();
+      if (!model.searchStringRepresentsSelected()) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          e.consume();
+          performSearch(true);
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          e.consume();
+          model.refreshSearchText();
+          selectAll();
+        }
       }
     }
   }
