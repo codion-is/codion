@@ -10,11 +10,11 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain.Department;
+import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Björn Darri
@@ -45,5 +45,15 @@ public class EntitySearchFieldTest {
     assertEquals(dept, value.get());
     model.setSelectedEntity(null);
     assertNull(value.get());
+  }
+
+  @Test
+  void lookupDialog() {
+    EntitySearchModel model = EntitySearchModel.entitySearchModel(Employee.TYPE, CONNECTION_PROVIDER);
+    EntitySearchField searchField = EntitySearchField.builder(model).build();
+    assertThrows(IllegalArgumentException.class, () -> EntitySearchField.lookupDialogBuilder(Department.TYPE, CONNECTION_PROVIDER)
+            .owner(null)
+            .title("title")
+            .searchField(searchField));
   }
 }
