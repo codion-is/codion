@@ -8629,3 +8629,6 @@
   Utilities.setFontSizeMultiplier() renamed setFontSizePercentage()
   LookAndFeelSelectionDialogBuilder, FontSizeSelectionDialogBuilder.dialogOwner() renamed owner() for consistency
   Dialogs.showInputDialog() replace with inputDialog() returning an InputDialogBuilder
+  InputDialogBuilder.caption() added
+  EntityTablePanel.updateSelectedEntities(), property caption now displayed on input dialog
+  EntityTablePanel.UpdateSelectedComponentFactory no longer sets horizontal alignment to CENTER for JCheckBox

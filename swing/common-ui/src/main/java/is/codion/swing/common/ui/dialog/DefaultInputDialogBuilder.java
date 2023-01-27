@@ -10,6 +10,7 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
@@ -21,6 +22,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
   private JComponent owner;
   private String title;
+  private String caption;
 
   DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
     this.componentValue = requireNonNull(componentValue);
@@ -39,10 +41,19 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   }
 
   @Override
+  public InputDialogBuilder<T> caption(String caption) {
+    this.caption = caption;
+    return this;
+  }
+
+  @Override
   public T show() {
     State okPressed = State.state();
     JPanel basePanel = new JPanel(Layouts.borderLayout());
     basePanel.add(componentValue.component(), BorderLayout.CENTER);
+    if (caption != null) {
+      basePanel.add(new JLabel(caption), BorderLayout.NORTH);
+    }
     basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
     new DefaultOkCancelDialogBuilder(basePanel)
             .owner(owner)

@@ -46,7 +46,6 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
@@ -764,7 +763,8 @@ public class EntityTablePanel extends JPanel {
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
-              .title(propertyToUpdate.caption())
+              .title(MESSAGES.getString("update"))
+              .caption(propertyToUpdate.caption())
               .show();
       Entity.put(propertyToUpdate.attribute(), newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
@@ -1815,12 +1815,8 @@ public class EntityTablePanel extends JPanel {
                 .initialValue((String) initialValue)
                 .buildComponentValue();
       }
-      ComponentValue<T, C> componentValue = super.createComponentValue(attribute, editModel, initialValue);
-      if (componentValue.component() instanceof JCheckBox) {
-        ((JCheckBox) componentValue.component()).setHorizontalAlignment(SwingConstants.CENTER);
-      }
 
-      return componentValue;
+      return super.createComponentValue(attribute, editModel, initialValue);
     }
   }
 }
