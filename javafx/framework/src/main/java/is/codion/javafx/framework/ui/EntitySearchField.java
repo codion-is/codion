@@ -15,6 +15,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.Color;
 
@@ -140,28 +141,14 @@ public final class EntitySearchField extends TextField {
 
     @Override
     public void handle(KeyEvent event) {
-      switch (event.getCode()) {
-        case ESCAPE:
-          onEscape();
-          break;
-        case ENTER:
-          onEnter();
-          break;
-        default:
-          break;
-      }
-    }
-
-    private void onEnter() {
-      if (!model.searchStringRepresentsSelectedObserver().get()) {
-        performSearch(true);
-      }
-    }
-
-    private void onEscape() {
-      if (model.searchStringRepresentsSelectedObserver().reversedObserver().get()) {
-        model.refreshSearchText();
-        selectAll();
+      if (!model.searchStringRepresentsSelected()) {
+        if (event.getCode() == KeyCode.ENTER) {
+          performSearch(true);
+        }
+        else if (event.getCode() == KeyCode.ESCAPE) {
+          model.resetSearchString();
+          selectAll();
+        }
       }
     }
   }

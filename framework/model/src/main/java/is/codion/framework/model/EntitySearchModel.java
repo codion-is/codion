@@ -78,9 +78,9 @@ public interface EntitySearchModel {
   void setResultSorter(Comparator<Entity> resultSorter);
 
   /**
-   * Refreshes the search text so that is represents the selected entities
+   * Resets the search string so that is represents the selected entities
    */
-  void refreshSearchText();
+  void resetSearchString();
 
   /**
    * Sets the search string to use when performing the next search

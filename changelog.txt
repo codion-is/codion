@@ -8633,3 +8633,4 @@
   EntityTablePanel.updateSelectedEntities(), property caption now displayed on input dialog
   EntityTablePanel.UpdateSelectedComponentFactory no longer sets horizontal alignment to CENTER for JCheckBox
   EntitySearchField.lookupEntity() and lookupEntities() replaced with lookupDialogBuilder()
+  EntitySearchModel.refreshSearchText() renamed resetSearchString()

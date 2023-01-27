@@ -143,7 +143,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     if (entities != null) {
       this.selectedEntities.addAll(entities);
     }
-    refreshSearchText();
+    resetSearchString();
     selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
   }
 
@@ -178,7 +178,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void refreshSearchText() {
+  public void resetSearchString() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
@@ -251,17 +251,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
-    String[] searchTexts = multipleSelectionEnabledState.get() ?
+    String[] searchStrings = multipleSelectionEnabledState.get() ?
             searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
-      for (String rawSearchText : searchTexts) {
+      for (String rawSearchString : searchStrings) {
         AttributeCondition.Builder<String> builder = where(searchAttribute);
         if (searchSettings.caseSensitiveState().get()) {
-          conditions.add(builder.equalTo(prepareSearchText(rawSearchText, searchSettings)));
+          conditions.add(builder.equalTo(prepareSearchString(rawSearchString, searchSettings)));
         }
         else {
-          conditions.add(builder.equalToIgnoreCase(prepareSearchText(rawSearchText, searchSettings)));
+          conditions.add(builder.equalToIgnoreCase(prepareSearchString(rawSearchString, searchSettings)));
         }
       }
     }
@@ -274,18 +274,18 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
             .build();
   }
 
-  private String prepareSearchText(String rawSearchText, SearchSettings searchSettings) {
+  private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
     boolean wildcardPrefix = searchSettings.wildcardPrefixState().get();
     boolean wildcardPostfix = searchSettings.wildcardPostfixState().get();
 
-    return rawSearchText.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
-            ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchText.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
+    return rawSearchString.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
+            ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
   }
 
   private void bindEventsInternal() {
     searchStringValue.addListener(() ->
             searchStringRepresentsSelectedState.set(searchStringRepresentsSelected()));
-    multipleItemSeparatorValue.addListener(this::refreshSearchText);
+    multipleItemSeparatorValue.addListener(this::resetSearchString);
   }
 
   private String createDescription() {

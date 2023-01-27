@@ -711,7 +711,7 @@ public final class EntitySearchField extends HintTextField {
         }
         else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
           e.consume();
-          model.refreshSearchText();
+          model.resetSearchString();
           selectAll();
         }
       }
