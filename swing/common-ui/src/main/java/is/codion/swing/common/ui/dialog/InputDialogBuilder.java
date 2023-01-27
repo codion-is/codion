@@ -23,6 +23,12 @@ public interface InputDialogBuilder<T> {
   InputDialogBuilder<T> title(String title);
 
   /**
+   * @param caption the label caption
+   * @return this builder instance
+   */
+  InputDialogBuilder<T> caption(String caption);
+
+  /**
    * Shows the input dialog and returns the value if the user presses OK
    * @return the value from the component value if the user accepts the input
    * @throws is.codion.common.model.CancelException in case the user cancels

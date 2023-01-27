@@ -92,13 +92,14 @@ import static java.util.Objects.requireNonNull;
  * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
  * Use {@link EntitySearchField#builder(EntitySearchModel)} for a builder instance.
  * @see EntitySearchModel
+ * @see #builder(EntitySearchModel)
+ * @see #lookupDialogBuilder(EntityType, EntityConnectionProvider)
  * @see #setSelectionProvider(SelectionProvider)
  */
 public final class EntitySearchField extends HintTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
 
-  private static final String SEARCH_MODEL = "searchModel";
   private static final int BORDER_SIZE = 15;
 
   private final EntitySearchModel model;
@@ -114,7 +115,7 @@ public final class EntitySearchField extends HintTextField {
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     super(searchHintEnabled ? Messages.search() + "..." : null);
-    requireNonNull(searchModel, SEARCH_MODEL);
+    requireNonNull(searchModel);
     this.model = searchModel;
     this.settingsPanel = new SettingsPanel(searchModel);
     this.selectionProvider = new ListSelectionProvider(model);
@@ -122,8 +123,7 @@ public final class EntitySearchField extends HintTextField {
     setToolTipText(searchModel.getDescription());
     setComponentPopupMenu(createPopupMenu());
     addFocusListener(new SearchFocusListener());
-    addKeyListener(new EnterKeyListener());
-    addKeyListener(new EscapeKeyListener());
+    addKeyListener(new EnterEscapeListener());
     configureColors();
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusAction);
     Utilities.linkToEnabledState(searchModel.searchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -159,46 +159,22 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
-   * in a dialog, using the default search attributes for the given entityType.
-   * @param entityType the entityType of the entity to perform a search for
-   * @param connectionProvider the connection provider
-   * @param dialogParent the component serving as the dialog parent
-   * @param dialogTitle the title to display on the dialog
-   * @return the selected entity, an empty Optional in case none was selected
-   * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntityDefinition#searchAttributes()
-   */
-  public static Optional<Entity> lookupEntity(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                              JComponent dialogParent, String dialogTitle) {
-    List<Entity> entities = lookupEntities(entityType, connectionProvider, true, dialogParent, dialogTitle);
-
-    return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
-  }
-
-  /**
-   * Performs a search for the given entity type, using a {@link EntitySearchField} displayed
-   * in a dialog, using the default search attributes for the given entityType.
-   * @param entityType the entityType of the entity to perform a search for
-   * @param connectionProvider the connection provider
-   * @param dialogParent the component serving as the dialog parent
-   * @param dialogTitle the title to display on the dialog
-   * @return the selected entities
-   * @throws is.codion.common.model.CancelException in case the user cancelled
-   * @see EntityDefinition#searchAttributes()
-   */
-  public static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                            JComponent dialogParent, String dialogTitle) {
-    return lookupEntities(entityType, connectionProvider, false, dialogParent, dialogTitle);
-  }
-
-  /**
    * Initializes a new {@link EntitySearchField.Builder}
    * @param searchModel the search model on which to base the search field
    * @return a new builder instance
    */
   public static Builder builder(EntitySearchModel searchModel) {
     return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
+  }
+
+  /**
+   * Instantiates a new {@link LookupDialogBuilder} instance
+   * @param entityType the entity type to lookup
+   * @param connectionProvider the connection provider
+   * @return a new {@link LookupDialogBuilder} instance
+   */
+  public static LookupDialogBuilder lookupDialogBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return new DefaultLookupDialogBuilder(entityType, connectionProvider);
   }
 
   /**
@@ -243,6 +219,45 @@ public final class EntitySearchField extends HintTextField {
      * @return a new ComponentValue
      */
     ComponentValue<List<Entity>, EntitySearchField> buildComponentValueMultiple();
+  }
+
+  /**
+   * A builder for a dialog for performing a entity lookup via a {@link EntitySearchField}.
+   * @see EntityDefinition#searchAttributes()
+   */
+  public interface LookupDialogBuilder {
+
+    /**
+     * @param owner the dialog owner
+     * @return this builder instance
+     */
+    LookupDialogBuilder owner(JComponent owner);
+
+    /**
+     * @param title the title to display on the dialog
+     * @return this builder instance
+     */
+    LookupDialogBuilder title(String title);
+
+    /**
+     * If no search field is specified one is created.
+     * @param searchField the search field to use for lookup
+     * @return this builder instance
+     * @throws IllegalArgumentException in case the search field entity type does not match the builder entity type
+     */
+    LookupDialogBuilder searchField(EntitySearchField searchField);
+
+    /**
+     * @return the selected entity, an empty Optional in case none was selected
+     * @throws is.codion.common.model.CancelException in case the user cancelled
+     */
+    Optional<Entity> lookupSingle();
+
+    /**
+     * @return the selected entities
+     * @throws is.codion.common.model.CancelException in case the user cancelled
+     */
+    List<Entity> lookup();
   }
 
   private void linkToModel() {
@@ -348,17 +363,6 @@ public final class EntitySearchField extends HintTextField {
             .owner(this)
             .title(SwingMessages.get("OptionPane.messageDialogTitle"))
             .closeEvent(closeEvent)
-            .show();
-  }
-
-  private static List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                             boolean singleSelection, JComponent dialogParent, String dialogTitle) {
-    EntitySearchModel searchModel = EntitySearchModel.entitySearchModel(entityType, connectionProvider);
-    searchModel.multipleSelectionEnabledState().set(!singleSelection);
-
-    return Dialogs.inputDialog(EntitySearchField.builder(searchModel).buildComponentValueMultiple())
-            .owner(dialogParent)
-            .title(dialogTitle)
             .show();
   }
 
@@ -484,7 +488,7 @@ public final class EntitySearchField extends HintTextField {
      * @param searchModel the {@link EntitySearchModel}
      */
     public ListSelectionProvider(EntitySearchModel searchModel) {
-      requireNonNull(searchModel, SEARCH_MODEL);
+      requireNonNull(searchModel);
       selectControl = Control.builder(createSelectCommand(searchModel))
               .caption(Messages.ok())
               .build();
@@ -551,7 +555,7 @@ public final class EntitySearchField extends HintTextField {
      * @param searchModel the {@link EntitySearchModel}
      */
     public TableSelectionProvider(EntitySearchModel searchModel) {
-      requireNonNull(searchModel, SEARCH_MODEL);
+      requireNonNull(searchModel);
       SwingEntityTableModel tableModel = new SwingEntityTableModel(searchModel.entityType(), searchModel.connectionProvider()) {
         @Override
         protected Collection<Entity> refreshItems() {
@@ -697,23 +701,19 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private final class EnterKeyListener extends KeyAdapter {
+  private final class EnterEscapeListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ENTER && !model.searchStringRepresentsSelected()) {
-        e.consume();
-        performSearch(true);
-      }
-    }
-  }
-
-  private final class EscapeKeyListener extends KeyAdapter {
-    @Override
-    public void keyPressed(KeyEvent e) {
-      if (e.getKeyCode() == KeyEvent.VK_ESCAPE && !model.searchStringRepresentsSelected()) {
-        e.consume();
-        model.refreshSearchText();
-        selectAll();
+      if (!model.searchStringRepresentsSelected()) {
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+          e.consume();
+          performSearch(true);
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          e.consume();
+          model.resetSearchString();
+          selectAll();
+        }
       }
     }
   }
@@ -812,6 +812,67 @@ public final class EntitySearchField extends HintTextField {
               .modifiers(InputEvent.SHIFT_DOWN_MASK)
               .action(component.transferFocusBackwardAction)
               .enable(component);
+    }
+  }
+
+  private static final class DefaultLookupDialogBuilder implements LookupDialogBuilder {
+
+    private final EntityType entityType;
+    private final EntityConnectionProvider connectionProvider;
+
+    private EntitySearchField searchField;
+    private JComponent owner;
+    private String title;
+
+    private DefaultLookupDialogBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+      this.entityType = requireNonNull(entityType);
+      this.connectionProvider = requireNonNull(connectionProvider);
+    }
+
+    @Override
+    public LookupDialogBuilder owner(JComponent owner) {
+      this.owner = owner;
+      return this;
+    }
+
+    @Override
+    public LookupDialogBuilder title(String title) {
+      this.title = title;
+      return this;
+    }
+
+    @Override
+    public LookupDialogBuilder searchField(EntitySearchField searchField) {
+      if (!requireNonNull(searchField).model().entityType().equals(entityType)) {
+        throw new IllegalArgumentException("Search field entity type must be the same as lookup entity type: " + entityType);
+      }
+      this.searchField = searchField;
+      return this;
+    }
+
+    @Override
+    public Optional<Entity> lookupSingle() {
+      List<Entity> entities = lookupEntities(entityType, connectionProvider, true, owner, title);
+
+      return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
+    }
+
+    @Override
+    public List<Entity> lookup() {
+      return lookupEntities(entityType, connectionProvider, false, owner, title);
+    }
+
+    private List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                        boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
+      if (searchField == null) {
+        searchField = new EntitySearchField(EntitySearchModel.entitySearchModel(entityType, connectionProvider), true);
+      }
+      searchField.model.multipleSelectionEnabledState().set(!singleSelection);
+
+      return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
+              .owner(dialogOwner)
+              .title(dialogTitle)
+              .show();
     }
   }
 }
