@@ -148,7 +148,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    * @param controlCodes if specified only controls with those keys are initialized,
-   * null or an empty String array will result in no controls being initialized
+   * null or an empty array will result in no controls being initialized
    */
   public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
     super(editModel);
