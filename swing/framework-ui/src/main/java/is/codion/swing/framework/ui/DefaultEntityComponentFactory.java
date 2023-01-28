@@ -6,10 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.text.TemporalInputPanel;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
@@ -34,12 +31,9 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
 
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
     if (attribute.isTemporal()) {
-      ComponentValue<Temporal, TemporalInputPanel<Temporal>> componentValue =
-              inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
-                      .buildComponentValue();
-      componentValue.set((Temporal) initialValue);
-
-      return (ComponentValue<T, C>) componentValue;
+      return (ComponentValue<T, C>) inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
+              .initialValue((Temporal) initialValue)
+              .buildComponentValue();
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel()
@@ -55,17 +49,14 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
                                                               Entity initialValue) {
     EntityComponents inputComponents = new EntityComponents(editModel.entityDefinition());
     if (editModel.connectionProvider().entities().definition(foreignKey.referencedType()).isSmallDataset()) {
-      EntityComboBoxModel comboBoxModel = editModel.createForeignKeyComboBoxModel(foreignKey);
-      comboBoxModel.setSelectedItem(initialValue);
-
-      return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
-              .onSetVisible(comboBox -> comboBoxModel.refresh())
+      return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
+              .initialValue(initialValue)
+              .onSetVisible(comboBox -> comboBox.getModel().refresh())
               .buildComponentValue();
     }
 
-    EntitySearchModel searchModel = editModel.createForeignKeySearchModel(foreignKey);
-    searchModel.setSelectedEntity(initialValue);
-
-    return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, searchModel).buildComponentValue();
+    return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createForeignKeySearchModel(foreignKey))
+            .initialValue(initialValue)
+            .buildComponentValue();
   }
 }

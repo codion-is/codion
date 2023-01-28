@@ -112,7 +112,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Fired when this edit panel has been initialized
    */
-  private final Event<?> initializedEvent = Event.event();
+  private final Event<EntityEditPanel> initializedEvent = Event.event();
 
   /**
    * Indicates whether the UI should be cleared after insert has been performed
@@ -148,7 +148,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    * @param controlCodes if specified only controls with those keys are initialized,
-   * null or an empty String array will result in no controls being initialized
+   * null or an empty array will result in no controls being initialized
    */
   public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
     super(editModel);
@@ -382,11 +382,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #initializePanel()
    * @see #isPanelInitialized()
    */
-  public final void addPanelInitializedListener(EventListener listener) {
-    if (isPanelInitialized()) {
+  public final void addPanelInitializedListener(EventDataListener<EntityEditPanel> listener) {
+    if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    initializedEvent.addListener(listener);
+    initializedEvent.addDataListener(listener);
   }
 
   /**

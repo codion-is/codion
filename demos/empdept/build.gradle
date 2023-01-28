@@ -31,7 +31,7 @@ dependencies {
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
-    implementation((libs.jasperreports)) {
+    implementation(libs.jasperreports) {
         transitive = false
     }
 

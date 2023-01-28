@@ -34,7 +34,7 @@ dependencies {
 
     testImplementation project(':codion-framework-domain-test')
 
-    implementation((libs.jasperreports)) {
+    implementation(libs.jasperreports) {
         transitive = false
     }
 
