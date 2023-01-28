@@ -17,7 +17,7 @@ dependencies {
     implementation (libs.flatlaf)
     implementation (libs.flatlaf.intellij.themes)
 
-    implementation((libs.jasperreports)) {
+    implementation(libs.jasperreports) {
         transitive = false
     }
 
