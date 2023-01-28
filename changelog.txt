@@ -8634,3 +8634,4 @@
   EntityTablePanel.UpdateSelectedComponentFactory no longer sets horizontal alignment to CENTER for JCheckBox
   EntitySearchField.lookupEntity() and lookupEntities() replaced with lookupDialogBuilder()
   EntitySearchModel.refreshSearchText() renamed resetSearchString()
+  EntitySearchField.ListSelectionProvider now final

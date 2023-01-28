@@ -475,7 +475,7 @@ public final class EntitySearchField extends HintTextField {
   /**
    * A {@link SelectionProvider} implementation based on {@link JList}
    */
-  public static class ListSelectionProvider implements SelectionProvider {
+  public static final class ListSelectionProvider implements SelectionProvider {
 
     private final DefaultListModel<Entity> listModel = new DefaultListModel<>();
     private final JList<Entity> list = new JList<>(listModel);
@@ -508,7 +508,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
+    public void selectEntities(JComponent dialogOwner, List<Entity> entities) {
       requireNonNull(entities).forEach(listModel::addElement);
       list.scrollRectToVisible(list.getCellBounds(0, 0));
 
@@ -522,12 +522,12 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public final void setPreferredSize(Dimension preferredSize) {
+    public void setPreferredSize(Dimension preferredSize) {
       basePanel.setPreferredSize(preferredSize);
     }
 
     @Override
-    public final void updateUI() {
+    public void updateUI() {
       Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
