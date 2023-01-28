@@ -74,7 +74,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
   }
 
   /**
-   * Creates a ColumnConditionPanel for the given model, returns null
+   * Creates a ColumnConditionPanel for the given model, returns null in case the column type is not supported
    * @param <C> the column identifier type
    * @param <T> the column value type
    * @param conditionModel the {@link ColumnConditionModel} for which to create a condition panel
