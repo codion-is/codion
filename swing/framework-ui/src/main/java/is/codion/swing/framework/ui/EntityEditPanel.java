@@ -112,7 +112,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Fired when this edit panel has been initialized
    */
-  private final Event<?> initializedEvent = Event.event();
+  private final Event<EntityEditPanel> initializedEvent = Event.event();
 
   /**
    * Indicates whether the UI should be cleared after insert has been performed
@@ -382,11 +382,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see #initializePanel()
    * @see #isPanelInitialized()
    */
-  public final void addPanelInitializedListener(EventListener listener) {
-    if (isPanelInitialized()) {
+  public final void addPanelInitializedListener(EventDataListener<EntityEditPanel> listener) {
+    if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    initializedEvent.addListener(listener);
+    initializedEvent.addDataListener(listener);
   }
 
   /**
