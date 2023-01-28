@@ -474,7 +474,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates {@link NumberField} builder based on the given attribute.
+   * Creates a {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
@@ -489,7 +489,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates {@link NumberField} builder based on the given attribute.
+   * Creates a {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
@@ -504,7 +504,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates {@link NumberField} builder based on the given attribute.
+   * Creates a {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
@@ -519,7 +519,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates {@link NumberField} builder based on the given attribute.
+   * Creates a {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
@@ -535,7 +535,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates {@link NumberField} builder based on the given attribute.
+   * Creates a {@link NumberField} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link NumberField} builder
    */
@@ -551,7 +551,7 @@ public class EntityComponents {
   }
 
   /**
-   * Creates masked text field builder based on the given attribute.
+   * Creates a masked text field builder based on the given attribute.
    * @param attribute the attribute
    * @return a JFormattedTextField builder
    */
