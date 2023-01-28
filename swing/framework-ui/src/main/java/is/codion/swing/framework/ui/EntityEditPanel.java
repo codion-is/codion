@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
@@ -348,7 +347,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * whether an exception occurs or not.
    * @return this EntityEditPanel instance
    * @see #isPanelInitialized()
-   * @see #addPanelInitializedListener(EventListener)
+   * @see #addPanelInitializedListener(EventDataListener)
    */
   public final EntityEditPanel initializePanel() {
     if (!panelInitialized) {
