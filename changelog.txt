@@ -8636,3 +8636,4 @@
   EntitySearchModel.refreshSearchText() renamed resetSearchString()
   EntitySearchField.ListSelectionProvider now final
   EntityEditModel.modifiedObserver(attribute) and nullObserver(attribute) now throw IllegalArgumentException in case the attribute is not part of the underlying entity
+  EntityEditComponentPanel, modified indicator now underlines the label text, instead of adding an asterisk, which may resize the label
