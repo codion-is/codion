@@ -631,22 +631,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
-      EntityDefinition entityDefinition = entityDefinition();
-      for (ColumnProperty<?> property : entityDefinition.columnProperties()) {
-        if (!entityDefinition.isForeignKeyAttribute(property.attribute()) && valueModified(property.attribute())) {
-          return true;
-        }
-      }
-      for (ForeignKey foreignKey : entityDefinition.foreignKeys()) {
-        if (valueModified(foreignKey)) {
-          return true;
-        }
-      }
-
-      return false;
+      return entityDefinition().columnProperties().stream()
+              .map(Property::attribute)
+              .anyMatch(this::valueModified);
     }
 
-    return !entity().originalEntrySet().isEmpty();
+    return modifiedSupplier.get();
   }
 
   @Override
