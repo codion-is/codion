@@ -335,14 +335,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
-    requireNonNull(attribute);
+    if (!requireNonNull(attribute).entityType().equals(entityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
+    }
+
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
   }
 
   @Override
   public final StateObserver nullObserver(Attribute<?> attribute) {
-    requireNonNull(attribute);
+    if (!requireNonNull(attribute).entityType().equals(entityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
+    }
     return attributeNullStateMap.computeIfAbsent(attribute, k ->
             State.state(entity.isNull(attribute))).observer();
   }
