@@ -335,14 +335,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
-    requireNonNull(attribute);
+    if (!requireNonNull(attribute).entityType().equals(entityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
+    }
+
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
   }
 
   @Override
   public final StateObserver nullObserver(Attribute<?> attribute) {
-    requireNonNull(attribute);
+    if (!requireNonNull(attribute).entityType().equals(entityType())) {
+      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
+    }
     return attributeNullStateMap.computeIfAbsent(attribute, k ->
             State.state(entity.isNull(attribute))).observer();
   }
@@ -626,22 +631,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final boolean containsUnsavedData() {
     if (isEntityNew()) {
-      EntityDefinition entityDefinition = entityDefinition();
-      for (ColumnProperty<?> property : entityDefinition.columnProperties()) {
-        if (!entityDefinition.isForeignKeyAttribute(property.attribute()) && valueModified(property.attribute())) {
-          return true;
-        }
-      }
-      for (ForeignKey foreignKey : entityDefinition.foreignKeys()) {
-        if (valueModified(foreignKey)) {
-          return true;
-        }
-      }
-
-      return false;
+      return entityDefinition().columnProperties().stream()
+              .map(Property::attribute)
+              .anyMatch(this::valueModified);
     }
 
-    return !entity().originalEntrySet().isEmpty();
+    return modifiedSupplier.get();
   }
 
   @Override

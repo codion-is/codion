@@ -44,7 +44,9 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.KeyboardFocusManager;
+import java.awt.font.TextAttribute;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.math.BigDecimal;
@@ -75,21 +77,23 @@ import static java.util.Objects.requireNonNull;
 public class EntityEditComponentPanel extends JPanel {
 
   /**
-   * Specifies whether this edit component panel should add a modified indicator to component labels<br>
+   * Specifies whether label text should be underlined to indicate that the associated value is modified<br>
    * Value type: Boolean<br>
    * Default value: true
+   * @see #MODIFIED_INDICATOR_UNDERLINE_STYLE
    */
   public static final PropertyValue<Boolean> USE_MODIFIED_INDICATOR =
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditComponentPanel.useModifiedIndicator", true);
 
   /**
-   * The String to use to indicate a modified value<br>
-   * Value type: String<br>
-   * Default value: "*"<br>
+   * The type of underline to use to indicate a modified value<br>
+   * Value type: Integer<br>
+   * Default value: {@link TextAttribute#UNDERLINE_LOW_DOTTED}<br>
+   * Valid values: {@link TextAttribute}.UNDERLINE_*
    * @see #USE_MODIFIED_INDICATOR
    */
-  public static final PropertyValue<String> MODIFIED_INDICATOR_STRING =
-          Configuration.stringValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorString", "*");
+  public static final PropertyValue<Integer> MODIFIED_INDICATOR_UNDERLINE_STYLE =
+          Configuration.integerValue("is.codion.swing.framework.ui.EntityEditComponentPanel.modifiedIndicatorUnderlineStyle", TextAttribute.UNDERLINE_LOW_DOTTED);
 
   /**
    * The edit model these edit components are associated with
@@ -347,8 +351,9 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * If set to true then component labels will indicate that the value is modified.
-   * This applies to all components create via this edit component panel as well as
-   * all components set via {@link #setComponent(Attribute, JComponent)}.
+   * This applies to all components created by this edit component panel as well as
+   * components set via {@link #setComponent(Attribute, JComponent)} as long
+   * as the component has a JLabel associated with its 'labeledBy' client property.
    * Note that this has no effect on components that have already been created.
    * @param useModifiedIndicator the new value
    * @see #USE_MODIFIED_INDICATOR
@@ -1013,10 +1018,9 @@ public class EntityEditComponentPanel extends JPanel {
   private static final class ModifiedIndicator implements EventDataListener<Boolean> {
 
     private static final String LABELED_BY_PROPERTY = "labeledBy";
+    private static final Integer UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.get();
 
     private final JComponent component;
-
-    private String labelText;
 
     private ModifiedIndicator(JComponent component) {
       this.component = component;
@@ -1026,9 +1030,6 @@ public class EntityEditComponentPanel extends JPanel {
     public void onEvent(Boolean modified) {
       JLabel label = (JLabel) component.getClientProperty(LABELED_BY_PROPERTY);
       if (label != null) {
-        if (labelText == null) {
-          labelText = label.getText();
-        }
         if (SwingUtilities.isEventDispatchThread()) {
           setModifiedIndicator(label, modified);
         }
@@ -1038,8 +1039,11 @@ public class EntityEditComponentPanel extends JPanel {
       }
     }
 
-    private void setModifiedIndicator(JLabel label, boolean modified) {
-      label.setText(modified ? labelText + MODIFIED_INDICATOR_STRING.get() : labelText);
+    private static void setModifiedIndicator(JLabel label, boolean modified) {
+      Font font = label.getFont();
+      Map<TextAttribute, Object> attributes = (Map<TextAttribute, Object>) font.getAttributes();
+      attributes.put(TextAttribute.INPUT_METHOD_UNDERLINE, modified ? UNDERLINE_STYLE : null);
+      label.setFont(font.deriveFont(attributes));
     }
   }
 }
