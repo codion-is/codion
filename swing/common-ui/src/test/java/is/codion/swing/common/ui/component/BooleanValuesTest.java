@@ -49,20 +49,20 @@ public class BooleanValuesTest {
     ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
     model.setSelectedItem(false);
     ComponentValue<Boolean, JComboBox<Item<Boolean>>> componentValue = Components.booleanComboBox(model)
-            .buildComponentValue();
+            .buildValue();
     assertEquals(false, componentValue.get());
     componentValue.component().getModel().setSelectedItem(true);
     assertEquals(true, componentValue.get());
     componentValue.component().getModel().setSelectedItem(null);
     assertNull(componentValue.get());
-    componentValue = Components.booleanComboBox().buildComponentValue();
+    componentValue = Components.booleanComboBox().buildValue();
     assertNull(componentValue.get());
   }
 
   @Test
   void booleanToggleButton() {
     ComponentValue<Boolean, JToggleButton> value = Components.toggleButton()
-            .buildComponentValue();
+            .buildValue();
 
     JToggleButton button = value.component();
     ButtonModel model = button.getModel();
@@ -81,7 +81,7 @@ public class BooleanValuesTest {
   void booleanNullableToggleButton() {
     Value<Boolean> nullableBooleanValue = Value.value();
     ComponentValue<Boolean, JCheckBox> value = Components.checkBox(nullableBooleanValue)
-            .buildComponentValue();
+            .buildValue();
 
     NullableCheckBox checkBox = (NullableCheckBox) value.component();
     NullableToggleButtonModel model = checkBox.getNullableModel();

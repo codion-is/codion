@@ -347,7 +347,7 @@ public final class InputControls {
     // tag::customTextFieldHorizontalAlignment[]
     ComponentValue<Integer, NumberField<Integer>> fieldValue =
             Components.integerField()
-                    .buildComponentValue();
+                    .buildValue();
 
     NumberField<Integer> horizontalAlignmentField = fieldValue.component();
 

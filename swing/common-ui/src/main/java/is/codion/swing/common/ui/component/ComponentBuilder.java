@@ -33,7 +33,7 @@ import java.util.function.Consumer;
 
 /**
  * Builds a JComponent.<br>
- * Note that once {@link #build} or {@link #buildComponentValue()} have been called they will return the same instance
+ * Note that once {@link #build} or {@link #buildValue()} have been called they will return the same instance
  * on subsequent calls until the builder has been cleared by calling {@link #clear()}.
  * @param <T> the type of the value the component represents
  * @param <C> the component type
@@ -339,7 +339,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   C build(Consumer<C> onBuild);
 
   /**
-   * Clears this builder so that it builds a new instance on next call to {@link #build()} or {@link #buildComponentValue()}.
+   * Clears this builder so that it builds a new instance on next call to {@link #build()} or {@link #buildValue()}.
    * @return this builder instance
    */
   B clear();
@@ -348,5 +348,5 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * Builds and returns the component value, note that subsequent calls return the same component value until {@link #clear()} has been called.
    * @return the component value
    */
-  ComponentValue<T, C> buildComponentValue();
+  ComponentValue<T, C> buildValue();
 }

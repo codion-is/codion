@@ -1813,7 +1813,7 @@ public class EntityTablePanel extends JPanel {
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
-                .buildComponentValue();
+                .buildValue();
       }
 
       return super.createComponentValue(attribute, editModel, initialValue);

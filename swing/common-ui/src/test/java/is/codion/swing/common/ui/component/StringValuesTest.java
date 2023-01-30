@@ -35,7 +35,7 @@ public class StringValuesTest {
       }
     });
     ComponentValue<String, JTextField> textFieldValue = Components.textField(textValue)
-            .buildComponentValue();
+            .buildValue();
 
     assertEquals("start", textFieldValue.get());
 
@@ -91,7 +91,7 @@ public class StringValuesTest {
   @Test
   void textValue() {
     ComponentValue<String, JTextField> value = Components.textField()
-            .buildComponentValue();
+            .buildValue();
     JTextField textField = value.component();
 
     assertNull(value.get());
@@ -107,7 +107,7 @@ public class StringValuesTest {
   @Test
   void characterValue() {
     ComponentValue<Character, JTextField> value = Components.textField(Character.class)
-            .buildComponentValue();
+            .buildValue();
     assertNull(value.get());
     value.component().setText("2");
     assertEquals('2', value.get());
