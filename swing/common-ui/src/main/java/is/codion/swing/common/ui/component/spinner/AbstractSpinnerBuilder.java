@@ -71,6 +71,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
     JSpinner spinner = createSpinner();
     JComponent editor = spinner.getEditor();
     if (editor instanceof JSpinner.DefaultEditor) {
+      spinner.setFocusable(false);//the editor field handles the focus
       JTextField editorField = ((JSpinner.DefaultEditor) editor).getTextField();
       if (!editable) {
         editorField.setEditable(false);

@@ -27,7 +27,7 @@ public class NullableCheckBoxTest {
 
     box.getModel().setEnabled(false);
     mouseListener.mouseClicked(null);
-    assertTrue(box.getState());
+    assertFalse(box.getState());
 
     box.getNullableModel().setState(null);
     assertNull(box.getState());

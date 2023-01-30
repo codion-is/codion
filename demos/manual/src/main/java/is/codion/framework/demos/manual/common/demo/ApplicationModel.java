@@ -1,13 +1,24 @@
 package is.codion.framework.demos.manual.common.demo;
 
+import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
+import javax.swing.ComboBoxModel;
+import javax.swing.DefaultBoundedRangeModel;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListModel;
+import javax.swing.ListModel;
+import javax.swing.SpinnerListModel;
+import javax.swing.SpinnerNumberModel;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Arrays;
 import java.util.Collection;
 
 import static is.codion.common.value.Value.value;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Arrays.asList;
 
@@ -138,6 +149,54 @@ public final class ApplicationModel {
 
   public ValueObserver<String> messageObserver() {
     return messageValue.observer();
+  }
+
+  public ComboBoxModel<String> createStringComboBoxModel() {
+    return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
+  }
+
+  public ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
+    return itemComboBoxModel(asList(
+            Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
+            Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
+            Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
+    ));
+  }
+
+  public DefaultBoundedRangeModel createIntegerSliderModel() {
+    return new DefaultBoundedRangeModel(0, 0, 0, 100);
+  }
+
+  public SpinnerNumberModel createIntegerSpinnerModel() {
+    return new SpinnerNumberModel(0, 0, 100, 10);
+  }
+
+  public ComboBoxModel<Integer> createIntegerComboBoxModel() {
+    return new DefaultComboBoxModel<>(new Integer[] {101, 202, 303, 404});
+  }
+
+  public SpinnerListModel createItemSpinnerModel() {
+    return new SpinnerListModel(Arrays.asList(
+            Item.item("Hello"),
+            Item.item("Everybody"),
+            Item.item("How"),
+            Item.item("Are"),
+            Item.item("You")
+    ));
+  }
+
+  public ListModel<String> createStringListModel() {
+    DefaultListModel<String> listModel = new DefaultListModel<>();
+    listModel.addElement("Here");
+    listModel.addElement("Are");
+    listModel.addElement("A");
+    listModel.addElement("Few");
+    listModel.addElement("Elements");
+    listModel.addElement("To");
+    listModel.addElement("Select");
+    listModel.addElement("From");
+
+    return listModel;
   }
 
   private void exceptionHandler(Thread thread, Throwable exception) {
