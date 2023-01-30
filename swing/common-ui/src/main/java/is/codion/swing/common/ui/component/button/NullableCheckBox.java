@@ -10,11 +10,17 @@ import javax.swing.AbstractAction;
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.JCheckBox;
+import javax.swing.UIManager;
+import java.awt.Component;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.geom.Ellipse2D;
 
 import static java.util.Objects.requireNonNull;
 
@@ -59,10 +65,11 @@ public class NullableCheckBox extends JCheckBox {
   public NullableCheckBox(NullableToggleButtonModel model, String caption, Icon icon) {
     super(caption, icon);
     super.setModel(requireNonNull(model, "model"));
+    setIcon(new NullableIcon());
     addMouseListener(new NullableMouseListener());
     KeyEvents.builder(KeyEvent.VK_SPACE)
-            .action(new NextStateAction(model))
-            .enable(this);
+             .action(new NextStateAction(model))
+             .enable(this);
   }
 
   /**
@@ -113,6 +120,44 @@ public class NullableCheckBox extends JCheckBox {
     private boolean notModified(MouseEvent e) {
       return !e.isAltDown() && !e.isControlDown() && !e.isShiftDown() &&
               !e.isAltGraphDown() && !e.isMetaDown() && !e.isPopupTrigger();
+    }
+  }
+
+  private final class NullableIcon implements Icon {
+
+    private final Icon icon = UIManager.getIcon("CheckBox.icon");
+
+    @Override
+    public void paintIcon(Component component, Graphics graphics, int x, int y) {
+      icon.paintIcon(component, graphics, x, y);
+      if (getNullableModel().getState() != null) {
+        return;
+      }
+
+      int width = getIconWidth();
+      int height = getIconHeight();
+
+      double radius = width / 2d * 0.4;
+      double centerX = x + width / 2d;
+      double centerY = y + height / 2d;
+
+      Ellipse2D circle = new Ellipse2D.Double();
+      circle.setFrameFromCenter(centerX, centerY, centerX + radius, centerY + radius);
+
+      Graphics2D graphics2D = (Graphics2D) graphics;
+      graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
+      graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+      graphics2D.fill(circle);
+    }
+
+    @Override
+    public int getIconWidth() {
+      return icon.getIconWidth();
+    }
+
+    @Override
+    public int getIconHeight() {
+      return icon.getIconHeight();
     }
   }
 

@@ -26,7 +26,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    */
   public static final int NULL = 3;
 
-  private final Value<Boolean> buttonState;
+  private final Value<Boolean> buttonState = Value.value();
 
   /**
    * Instantiates a new {@link NullableToggleButtonModel} with a null initial state.
@@ -40,9 +40,7 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    * @param initialState the initial state
    */
   public NullableToggleButtonModel(Boolean initialState) {
-    this.buttonState = Value.value(initialState);
-    displayState(initialState);
-    bindEvents();
+    setState(initialState);
   }
 
   /**
@@ -68,6 +66,9 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    */
   public void setState(Boolean state) {
     buttonState.set(state);
+    fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,this,
+            state == null ? NULL : (state ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
+    fireStateChanged();
   }
 
   /**
@@ -95,20 +96,6 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
   }
 
   /**
-   * Does nothing.
-   * @param armed the value
-   */
-  @Override
-  public void setArmed(boolean armed) {/*Not implemented*/}
-
-  /**
-   * Does nothing.
-   * @param pressed the value
-   */
-  @Override
-  public void setPressed(boolean pressed) {/*Not implemented*/}
-
-  /**
    * Adds a listener notified each time the state changes.
    * @param listener the listener
    */
@@ -122,19 +109,5 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    */
   public void removeStateListener(EventDataListener<Boolean> listener) {
     buttonState.removeDataListener(listener);
-  }
-
-  private void bindEvents() {
-    buttonState.addDataListener(state -> {
-      displayState(state);
-      fireStateChanged();
-      fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,this,
-              state == null ? NULL : (state ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
-    });
-  }
-
-  private void displayState(Boolean state) {
-    super.setArmed(state == null);
-    super.setPressed(state == null);
   }
 }

@@ -80,9 +80,7 @@ public class DefaultToggleControlTest {
     assertTrue(nullableControl.value().get());
     nullableValue.set(false);
     assertFalse(nullableControl.value().get());
-    assertFalse(toggleButtonModel.isPressed());
     nullableValue.set(null);
-    assertTrue(toggleButtonModel.isPressed());
     assertNull(toggleButtonModel.getState());
     assertFalse(toggleButtonModel.isSelected());
 
