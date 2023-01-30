@@ -8639,3 +8639,4 @@
   EntityEditComponentPanel, modified indicator now underlines the label text, instead of adding an asterisk, which may resize the label
   AbstractEntityEditModel.containsUnsavedData() refactored, now relies on the modifiedSupplier
   ComponentBuilder.buildComponentValue() renamed buildValue()
+  AbstractSpinnerBuilder, bug fixed, now makes the spinner itself non-focusable in case a default editor is set, since the editor text field handles the focus
