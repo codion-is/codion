@@ -17,19 +17,12 @@ import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultBoundedRangeModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.SpinnerListModel;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
@@ -41,8 +34,8 @@ import java.util.Objects;
 import java.util.Random;
 import java.util.function.Predicate;
 
-import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Arrays.asList;
 
@@ -141,7 +134,7 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    comboBox(createStringComboBoxModel(), model.stringSelectionValue())
+    comboBox(model.createStringComboBoxModel(), model.stringSelectionValue())
             .editable(true)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
@@ -201,7 +194,7 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    ItemComboBoxModel<Integer> integerItemComboBoxModel = createIntegerItemComboBoxModel();
+    ItemComboBoxModel<Integer> integerItemComboBoxModel = model.createIntegerItemComboBoxModel();
     Value<Integer> integerItemSelectorValue = integerItemComboBoxModel.createSelectorValue(new IntegerItemFinder());
     NumberField<Integer> integerItemSelectorField = integerField(integerItemSelectorValue)
             .columns(2)
@@ -225,7 +218,7 @@ public final class ApplicationPanel extends JPanel {
             .add(integerItemComboBox, BorderLayout.CENTER)
             .build(inputPanel::add);
 
-    slider(createSliderModel(), model.integerSlideValue())
+    slider(model.createIntegerSliderModel(), model.integerSlideValue())
             .paintTicks(true)
             .paintTrack(true)
             .minorTickSpacing(5)
@@ -238,7 +231,7 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    integerSpinner(createSpinnerModel(), model.integerSpinValue())
+    integerSpinner(model.createIntegerSpinnerModel(), model.integerSpinValue())
             .columns(4)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
@@ -248,7 +241,7 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    comboBox(createIntegerComboBoxModel(), model.integerSelectionValue())
+    comboBox(model.createIntegerComboBoxModel(), model.integerSelectionValue())
             .editable(true)
             .mouseWheelScrolling(true)
             .transferFocusOnEnter(true)
@@ -258,7 +251,7 @@ public final class ApplicationPanel extends JPanel {
             .enabledState(inputEnabledState)
             .build(inputPanel::add);
 
-    itemSpinner(createItemSpinnerModel(), model.itemSpinnerValue())
+    itemSpinner(model.createItemSpinnerModel(), model.itemSpinnerValue())
             .columns(20)
             .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
@@ -287,7 +280,7 @@ public final class ApplicationPanel extends JPanel {
                     .build(inputPanel::add))
             .build(inputPanel::add);
 
-    Components.list(createStringListModel(), model.stringListValue())
+    Components.list(model.createStringListModel(), model.stringListValue())
             .visibleRowCount(4)
             .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
@@ -352,50 +345,6 @@ public final class ApplicationPanel extends JPanel {
     }
   }
 
-  private static SpinnerNumberModel createSpinnerModel() {
-    return new SpinnerNumberModel(0, 0, 100, 10);
-  }
-
-  private static SpinnerListModel createItemSpinnerModel() {
-    return new SpinnerListModel(Arrays.asList(
-            Item.item("Hello"),
-            Item.item("Everybody"),
-            Item.item("How"),
-            Item.item("Are"),
-            Item.item("You")
-    ));
-  }
-
-  private static DefaultBoundedRangeModel createSliderModel() {
-    return new DefaultBoundedRangeModel(0, 0, 0, 100);
-  }
-
-  private static ComboBoxModel<String> createStringComboBoxModel() {
-    return new DefaultComboBoxModel<>(new String[] {"Hello", "Everybody", "How", "Are", "You"});
-  }
-
-  private static ListModel<String> createStringListModel() {
-    DefaultListModel<String> listModel = new DefaultListModel<>();
-    listModel.addElement("Here");
-    listModel.addElement("Are");
-    listModel.addElement("A");
-    listModel.addElement("Few");
-    listModel.addElement("Elements");
-    listModel.addElement("To");
-    listModel.addElement("Select");
-    listModel.addElement("From");
-
-    return listModel;
-  }
-
-  private static ItemComboBoxModel<Integer> createIntegerItemComboBoxModel() {
-    return itemComboBoxModel(asList(
-            Item.item(1, "One"), Item.item(2, "Two"), Item.item(3, "Three"),
-            Item.item(4, "Four"), Item.item(5, "Five"), Item.item(6, "Six"),
-            Item.item(7, "Seven"), Item.item(8, "Eight"), Item.item(9, "Nine")
-    ));
-  }
-
   private static final class IntegerItemFinder implements ItemFinder<Item<Integer>, Integer> {
 
     @Override
@@ -409,10 +358,6 @@ public final class ApplicationPanel extends JPanel {
     }
   }
 
-  private static ComboBoxModel<Integer> createIntegerComboBoxModel() {
-    return new DefaultComboBoxModel<>(new Integer[] {101, 202, 303, 404});
-  }
-
   private static Control createSelectRandomItemControl(ItemComboBoxModel<Integer> integerItemComboBoxModel) {
     Random random = new Random();
     return Control.builder(() ->
@@ -422,6 +367,8 @@ public final class ApplicationPanel extends JPanel {
   }
 
   public static void main(String[] args) {
+    lookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme").enable();
+
     ApplicationModel applicationModel = new ApplicationModel();
 
     ApplicationPanel applicationPanel = new ApplicationPanel(applicationModel);
