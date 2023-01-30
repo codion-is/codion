@@ -49,7 +49,7 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    return Dialogs.inputDialog(Components.bigDecimalField().buildComponentValue())
+    return Dialogs.inputDialog(Components.bigDecimalField().buildValue())
             .owner(this)
             .title(BUNDLE.getString("amount"))
             .show();

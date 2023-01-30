@@ -33,16 +33,16 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
     if (attribute.isTemporal()) {
       return (ComponentValue<T, C>) inputComponents.temporalInputPanel((Attribute<Temporal>) attribute)
               .initialValue((Temporal) initialValue)
-              .buildComponentValue();
+              .buildValue();
     }
     if (attribute.isByteArray()) {
       return (ComponentValue<T, C>) fileInputPanel()
-              .buildComponentValue();
+              .buildValue();
     }
 
     return (ComponentValue<T, C>) inputComponents.component(attribute)
             .initialValue(initialValue)
-            .buildComponentValue();
+            .buildValue();
   }
 
   private ComponentValue<T, C> createForeignKeyComponentValue(ForeignKey foreignKey, SwingEntityEditModel editModel,
@@ -52,11 +52,11 @@ public class DefaultEntityComponentFactory<T, A extends Attribute<T>, C extends 
       return (ComponentValue<T, C>) inputComponents.foreignKeyComboBox(foreignKey, editModel.createForeignKeyComboBoxModel(foreignKey))
               .initialValue(initialValue)
               .onSetVisible(comboBox -> comboBox.getModel().refresh())
-              .buildComponentValue();
+              .buildValue();
     }
 
     return (ComponentValue<T, C>) inputComponents.foreignKeySearchField(foreignKey, editModel.createForeignKeySearchModel(foreignKey))
             .initialValue(initialValue)
-            .buildComponentValue();
+            .buildValue();
   }
 }

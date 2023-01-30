@@ -32,7 +32,7 @@ public class SelectedValuesTest {
       }
     });
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}), originalValue)
-            .buildComponentValue();
+            .buildValue();
     JComboBox<String> box = componentValue.component();
 
     assertEquals("b", box.getSelectedItem());
@@ -46,7 +46,7 @@ public class SelectedValuesTest {
   void selectedItemValueLink() throws Exception {
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
                     Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent))
-            .buildComponentValue();
+            .buildValue();
     JComboBox<String> box = componentValue.component();
 
     assertNull(selectedItem);
@@ -63,13 +63,13 @@ public class SelectedValuesTest {
     ItemComboBoxModel<String> boxModel = ItemComboBoxModel.itemComboBoxModel(items);
     boxModel.setSelectedItem("two");
     ComponentValue<String, JComboBox<Item<String>>> componentValue = Components.itemComboBox(boxModel)
-            .buildComponentValue();
+            .buildValue();
     assertEquals(5, boxModel.getSize());
     assertEquals("two", componentValue.get());
 
     boxModel = ItemComboBoxModel.itemComboBoxModel(items);
     componentValue = Components.itemComboBox(boxModel)
-            .buildComponentValue();
+            .buildValue();
     assertEquals(5, boxModel.getSize());
     assertNull(componentValue.get());
   }
@@ -77,7 +77,7 @@ public class SelectedValuesTest {
   @Test
   void selectedValue() {
     ComponentValue<String, JComboBox<String>> value = Components.comboBox(new DefaultComboBoxModel<>(new String[] {null, "one", "two", "three"}))
-            .buildComponentValue();
+            .buildValue();
     JComboBox<String> box = value.component();
 
     assertNull(value.get());

@@ -40,7 +40,7 @@ public class EntityComboBoxTest {
     Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "OPERATIONS");
     model.setSelectedItem(operations);
     ComponentValue<Entity, EntityComboBox> value = EntityComboBox.builder(model)
-            .buildComponentValue();
+            .buildValue();
 
     assertNotNull(value.get());
 

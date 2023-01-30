@@ -35,7 +35,7 @@ public class EntitySearchFieldTest {
   void componentValue() throws Exception {
     EntitySearchModel model = EntitySearchModel.entitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
     ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(model)
-            .buildComponentValue();
+            .buildValue();
 
     assertNull(value.get());
 

@@ -433,7 +433,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final ComponentValue<T, C> buildComponentValue() {
+  public final ComponentValue<T, C> buildValue() {
     if (componentValue != null) {
       return componentValue;
     }
