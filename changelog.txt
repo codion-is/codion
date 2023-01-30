@@ -8640,3 +8640,4 @@
   AbstractEntityEditModel.containsUnsavedData() refactored, now relies on the modifiedSupplier
   ComponentBuilder.buildComponentValue() renamed buildValue()
   AbstractSpinnerBuilder, bug fixed, now makes the spinner itself non-focusable in case a default editor is set, since the editor text field handles the focus
+  NullableCheckBox bug fixed, mouse listener did not take the component enabled state into account

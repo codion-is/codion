@@ -105,7 +105,7 @@ public class NullableCheckBox extends JCheckBox {
   private final class NullableMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
-      if (e == null || notModified(e)) {
+      if (isEnabled() && (e == null || notModified(e))) {
         getNullableModel().nextState();
       }
     }
