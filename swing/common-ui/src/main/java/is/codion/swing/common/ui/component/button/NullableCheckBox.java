@@ -109,6 +109,11 @@ public class NullableCheckBox extends JCheckBox {
     super.addMouseListener(listener);
   }
 
+  @Override
+  public final void setIcon(Icon defaultIcon) {
+    super.setIcon(defaultIcon);
+  }
+
   private final class NullableMouseListener extends MouseAdapter {
     @Override
     public void mouseClicked(MouseEvent e) {
