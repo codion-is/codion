@@ -65,7 +65,7 @@ public final class ColumnSummaryPanel extends JPanel {
               .caption(summary.toString())
               .build());
       model.summaryValue().addDataListener(newSummary -> item.setSelected(newSummary.equals(summary)));
-      item.setSelected(model.summaryValue().equals(summary));
+      item.setSelected(model.summaryValue().get().equals(summary));
       group.add(item);
       popupMenu.add(item);
     }
