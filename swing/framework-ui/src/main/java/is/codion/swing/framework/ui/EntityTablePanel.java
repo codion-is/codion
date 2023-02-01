@@ -69,6 +69,7 @@ import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.InputEvent;
@@ -864,7 +865,11 @@ public class EntityTablePanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, getParentWindow(this));
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (focusOwner == null) {
+      focusOwner = EntityTablePanel.this;
+    }
+    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**

@@ -8683,3 +8683,4 @@
   EntityComponentValidators.AbstractValidator bug fixed, no longer validates on value change, since its subclass validates on document content changes
   NumberDocument bug fixed, now handles grouping/decimal separator conflicts
   NumberDocument.setGroupingUsed() added for consistency, performs a reformat like setDecimalSeparator() and setGroupingSeparator()
+  EntityApplicationPanel, EntityPanel, EntityEditComponentPanel and EntityTablePanel.displayException() bug fixed, now uses the current focus owner as dialog parent

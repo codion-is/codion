@@ -55,6 +55,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -671,7 +672,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (focusOwner == null) {
+      focusOwner = EntityPanel.this;
+    }
+    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**
@@ -1477,7 +1482,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a window
    */
   private void showDetailWindow() {
-    Window parent = Utilities.getParentWindow(this);
+    Window parent = getParentWindow(this);
     if (parent != null) {
       Dimension parentSize = parent.getSize();
       Dimension size = detailWindowSize(parentSize);
