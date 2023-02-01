@@ -149,7 +149,7 @@ public class ValueTest {
     Value<Integer> uiValue = Value.value();
     uiValue.link(modelValue);
 
-    assertThrows(IllegalArgumentException.class, () -> uiValue.link(modelValue));
+    assertThrows(IllegalStateException.class, () -> uiValue.link(modelValue));
 
     modelValue.addListener(modelValueEventCounter::incrementAndGet);
     AtomicInteger uiValueEventCounter = new AtomicInteger();
@@ -360,7 +360,7 @@ public class ValueTest {
 
     value1.link(value2);
 
-    assertThrows(IllegalArgumentException.class, () -> value1.link(value2));
+    assertThrows(IllegalStateException.class, () -> value1.link(value2));
 
     value2.link(value3);
     value3.link(value4);
@@ -431,7 +431,7 @@ public class ValueTest {
     assertNotEquals(originalValue.get(), value.get());
     assertEquals(1, value.get());
 
-    assertThrows(IllegalArgumentException.class, () -> value.unlink(originalValue));
+    assertThrows(IllegalStateException.class, () -> value.unlink(originalValue));
 
     ValueObserver<Integer> originalValueObserver = originalValue.observer();
 

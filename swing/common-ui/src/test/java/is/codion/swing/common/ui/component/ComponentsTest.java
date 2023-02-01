@@ -66,7 +66,7 @@ public final class ComponentsTest {
     Value<Long> value = Value.value();
     ComponentValue<Long, NumberField<Long>> componentValue = Components.longField(value)
             .buildValue();
-    assertThrows(IllegalArgumentException.class, () -> componentValue.link(value));
+    assertThrows(IllegalStateException.class, () -> componentValue.link(value));
   }
 
   @Test
