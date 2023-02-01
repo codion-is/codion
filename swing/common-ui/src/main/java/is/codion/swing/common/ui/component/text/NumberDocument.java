@@ -97,6 +97,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
   void setDecimalSeparator(char decimalSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    if (decimalSeparator == symbols.getGroupingSeparator()) {
+      symbols.setGroupingSeparator(symbols.getDecimalSeparator());
+    }
     symbols.setDecimalSeparator(decimalSeparator);
     T number = getNumber();
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
@@ -105,6 +108,9 @@ class NumberDocument<T extends Number> extends PlainDocument {
 
   void setGroupingSeparator(char groupingSeparator) {
     DecimalFormatSymbols symbols = ((DecimalFormat) getFormat()).getDecimalFormatSymbols();
+    if (groupingSeparator == symbols.getDecimalSeparator()) {
+      symbols.setDecimalSeparator(symbols.getGroupingSeparator());
+    }
     symbols.setGroupingSeparator(groupingSeparator);
     T number = getNumber();
     ((DecimalFormat) getFormat()).setDecimalFormatSymbols(symbols);
