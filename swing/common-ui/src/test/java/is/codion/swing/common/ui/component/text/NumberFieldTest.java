@@ -99,9 +99,9 @@ public final class NumberFieldTest {
     longField.setNumber(1000000000000L);
     assertEquals("1000000000000", longField.getText());
 
-    longField.setGroupingSeparator(',');
-    longField.setGroupingUsed(true);
     longField.setNumber(1_000_000_000L);
+    longField.setGroupingUsed(true);
+    longField.setGroupingSeparator(',');
     assertEquals("1,000,000,000", longField.getText());
     longField.setGroupingUsed(false);
 

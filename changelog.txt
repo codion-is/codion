@@ -8644,3 +8644,4 @@
   NullableCheckBox improved, null state now represented with a small filled circle, instead of repurposing armed and pressed states
   EntityComponentValidators.AbstractValidator bug fixed, no longer validates on value change, since its subclass validates on document content changes
   NumberDocument bug fixed, now handles grouping/decimal separator conflicts
+  NumberDocument.setGroupingUsed() added for consistency, performs a reformat like setDecimalSeparator() and setGroupingSeparator()

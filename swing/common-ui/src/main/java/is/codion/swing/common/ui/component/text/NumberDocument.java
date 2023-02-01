@@ -83,6 +83,12 @@ class NumberDocument<T extends Number> extends PlainDocument {
     getDocumentFilter().setTextComponent(textComponent);
   }
 
+  void setGroupingUsed(boolean groupingUsed) {
+    T number = getNumber();
+    getFormat().setGroupingUsed(groupingUsed);
+    setNumber(number);
+  }
+
   void setSeparators(char decimalSeparator, char groupingSeparator) {
     if (decimalSeparator == groupingSeparator) {
       throw new IllegalArgumentException("Decimal separator must not be the same as grouping separator");
