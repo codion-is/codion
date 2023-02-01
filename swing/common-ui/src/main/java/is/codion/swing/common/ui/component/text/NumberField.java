@@ -52,7 +52,7 @@ public final class NumberField<T extends Number> extends HintTextField {
    * @param groupingUsed true if grouping should be used false otherwise
    */
   public void setGroupingUsed(boolean groupingUsed) {
-    getTypedDocument().getFormat().setGroupingUsed(groupingUsed);
+    getTypedDocument().setGroupingUsed(groupingUsed);
   }
 
   /**

@@ -99,6 +99,12 @@ public final class NumberFieldTest {
     longField.setNumber(1000000000000L);
     assertEquals("1000000000000", longField.getText());
 
+    longField.setNumber(1_000_000_000L);
+    longField.setGroupingUsed(true);
+    longField.setGroupingSeparator(',');
+    assertEquals("1,000,000,000", longField.getText());
+    longField.setGroupingUsed(false);
+
     longField.setValueRange(0, 10);
     assertEquals(0, (int) longField.getMinimumValue());
     assertEquals(10, (int) longField.getMaximumValue());
@@ -131,7 +137,7 @@ public final class NumberFieldTest {
     assertEquals("22,3", doubleField.getText());
     assertEquals(Double.valueOf(22.3), doubleField.getNumber());
 
-    doubleField.setSeparators('.', ',');
+    doubleField.setDecimalSeparator('.');//automatically changes the grouping separator due to conflict
 
     doubleField.setNumber(42.2);
     assertEquals("42.2", doubleField.getText());
