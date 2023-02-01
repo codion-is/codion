@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.LabelBuilder;
@@ -66,6 +65,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
@@ -346,7 +346,11 @@ public class EntityEditComponentPanel extends JPanel {
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (focusOwner == null) {
+      focusOwner = EntityEditComponentPanel.this;
+    }
+    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**

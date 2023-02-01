@@ -96,6 +96,7 @@ import java.util.UUID;
 import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -238,8 +239,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
-    LOG.error(exception.getMessage(), exception);
-    Dialogs.showExceptionDialog(exception, Utilities.getParentWindow(this));
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (focusOwner == null) {
+      focusOwner = EntityApplicationPanel.this;
+    }
+    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**
@@ -271,7 +275,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
   public final Optional<Window> parentWindow() {
-    return Optional.ofNullable(Utilities.getParentWindow(this));
+    return Optional.ofNullable(getParentWindow(this));
   }
 
   /**
@@ -847,7 +851,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Window parentWindow = Utilities.getParentWindow(entityPanel);
+        Window parentWindow = getParentWindow(entityPanel);
         if (parentWindow != null) {
           parentWindow.toFront();
         }
@@ -888,7 +892,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Window parentWindow = Utilities.getParentWindow(entityPanel);
+        Window parentWindow = getParentWindow(entityPanel);
         if (parentWindow != null) {
           parentWindow.toFront();
         }
@@ -1264,13 +1268,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Sets the uncaught exception handler
    */
   private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> {
-      Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-      if (focusOwner == null) {
-        focusOwner = EntityApplicationPanel.this;
-      }
-      displayException(exception);
-    });
+    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
   }
 
   private void bindEventsInternal() {
@@ -1311,7 +1309,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void setParentWindowTitle(String title) {
-    Window parentWindow = Utilities.getParentWindow(this);
+    Window parentWindow = getParentWindow(this);
     if (parentWindow instanceof JFrame) {
       ((JFrame) parentWindow).setTitle(title);
     }
