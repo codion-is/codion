@@ -19,7 +19,7 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-  private final Value<Summary> summaryValue = Value.value(ColumnSummary.NONE);
+  private final Value<Summary> summaryValue = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
   private final Value<String> summaryTextValue = Value.value();
   private final State lockedState = State.state();
   private final SummaryValueProvider<T> valueProvider;
