@@ -116,7 +116,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   @Override
   public final void link(Value<T> originalValue) {
     if (linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
-      throw new IllegalArgumentException("Values are already linked");
+      throw new IllegalStateException("Values are already linked");
     }
     linkedValues.put(originalValue, new ValueLink<>(this, originalValue));
   }
@@ -124,7 +124,7 @@ public abstract class AbstractValue<T> implements Value<T> {
   @Override
   public final void unlink(Value<T> originalValue) {
     if (!linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
-      throw new IllegalArgumentException("Values are not linked");
+      throw new IllegalStateException("Values are not linked");
     }
     linkedValues.remove(originalValue).unlink();
   }

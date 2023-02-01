@@ -17,12 +17,15 @@ import static java.util.Objects.requireNonNull;
  * A wrapper class for setting and getting a value.
  * A factory class for {@link Value} instances.
  * @param <T> the type of the wrapped value
+ * @see #value()
  */
 public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
 
   /**
    * Sets the value
    * @param value the value
+   * @throws IllegalArgumentException in case the given value is invalid
+   * @see #addValidator(Validator)
    */
   void set(T value);
 
@@ -37,14 +40,15 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * so that changes in one are reflected in the other.
    * Note that after a call to this method this value is the same as {@code originalValue}.
    * @param originalValue the original value to link this value to
-   * @throws IllegalArgumentException in case the values are already linked
+   * @throws IllegalStateException in case the values are already linked
+   * @throws IllegalArgumentException in case the original value is not valid
    */
   void link(Value<T> originalValue);
 
   /**
    * Unlinks this value from the given original value
    * @param originalValue the original value to unlink from this one
-   * @throws IllegalArgumentException in case the values are not linked
+   * @throws IllegalStateException in case the values are not linked
    */
   void unlink(Value<T> originalValue);
 
@@ -53,6 +57,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * so that changes in the original value are reflected in this one.
    * Note that after a call to this method the value of this value is the same as the original value.
    * @param originalValueObserver the original value to link this value to
+   * @throws IllegalArgumentException in case the original value is not valid
    */
   void link(ValueObserver<T> originalValueObserver);
 
