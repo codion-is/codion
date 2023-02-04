@@ -38,7 +38,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
 
-  private TemporalField(DefaultBuilder<T> builder) {
+  private TemporalField(DefaultTemporalFieldBuilder<T> builder) {
     super(createFormatter(builder.mask));
     setToolTipText(builder.dateTimePattern);
     this.temporalClass = builder.temporalClass;
@@ -99,7 +99,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    * @return a new builder
    */
   public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern) {
-    return new DefaultBuilder<>(temporalClass, dateTimePattern, null);
+    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, null);
   }
 
   /**
@@ -114,7 +114,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
    */
   public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern,
                                                         Value<T> linkedValue) {
-    return new DefaultBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
+    return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
   }
 
   /**
@@ -148,7 +148,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     Builder<T> focusLostBehaviour(int focusLostBehaviour);
   }
 
-  private static final class DefaultBuilder<T extends Temporal>
+  private static final class DefaultTemporalFieldBuilder<T extends Temporal>
           extends DefaultTextFieldBuilder<T, TemporalField<T>, Builder<T>> implements Builder<T> {
 
     private final Class<T> temporalClass;
@@ -159,8 +159,8 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     private DateTimeParser<T> dateTimeParser;
     private int focusLostBehaviour = JFormattedTextField.COMMIT;
 
-    private DefaultBuilder(Class<T> temporalClass, String dateTimePattern,
-                           Value<T> linkedValue) {
+    private DefaultTemporalFieldBuilder(Class<T> temporalClass, String dateTimePattern,
+                                        Value<T> linkedValue) {
       super(temporalClass, linkedValue);
       this.temporalClass = temporalClass;
       this.dateTimePattern = requireNonNull(dateTimePattern);
