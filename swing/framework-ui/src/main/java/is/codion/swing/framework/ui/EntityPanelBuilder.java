@@ -278,8 +278,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   @Override
   public Action createEditPanelAction(JComponent component, EntityConnectionProvider connectionProvider,
-                                      EventDataListener<List<Entity>> insertListener) {
-    return new InsertEntityAction(component, connectionProvider, insertListener);
+                                      EventDataListener<List<Entity>> onInsert) {
+    return new InsertEntityAction(component, connectionProvider, onInsert);
   }
 
   private EntityPanel createPanel(SwingEntityModel entityModel) {
@@ -403,7 +403,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
-    private final EventDataListener<List<Entity>> insertListener;
+    private final EventDataListener<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityAction(EntityComboBox comboBox) {
@@ -421,11 +421,11 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private InsertEntityAction(JComponent component, EntityConnectionProvider connectionProvider,
-                               EventDataListener<List<Entity>> insertListener) {
+                               EventDataListener<List<Entity>> onInsert) {
       super("", FrameworkIcons.instance().add());
-      this.component = component;
-      this.connectionProvider = connectionProvider;
-      this.insertListener = insertListener;
+      this.component = requireNonNull(component);
+      this.connectionProvider = requireNonNull(connectionProvider);
+      this.onInsert = requireNonNull(onInsert);
       this.component.addPropertyChangeListener("enabled", changeEvent -> setEnabled((Boolean) changeEvent.getNewValue()));
       setEnabled(component.isEnabled());
       addShortcutKey();
@@ -436,38 +436,44 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
         ((JComboBox<?>) component).hidePopup();
       }
-      EntityEditPanel editPanel = buildEditPanel(connectionProvider);
-      editPanel.initializePanel();
-      editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-      editPanel.editModel().addAfterInsertListener(inserted -> {
-        this.insertedEntities.clear();
-        this.insertedEntities.addAll(inserted);
-      });
+      EntityEditPanel editPanel = createEditPanel();
       State cancelled = State.state();
-      Value<Attribute<?>> attributeWithInvalidValue = Value.value();
+      Value<Attribute<?>> invalidAttribute = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(caption == null ? connectionProvider.entities().definition(entityType).caption() : caption)
-              .onShown(dlg -> attributeWithInvalidValue.toOptional()
+              .onShown(d -> invalidAttribute.toOptional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))
               .build();
       try {
-        boolean insertPerformed = false;
-        while (!insertPerformed) {
+        boolean successfulInsert = false;
+        while (!successfulInsert) {
           dialog.setVisible(true);
           if (cancelled.get()) {
             return;//cancelled
           }
-          insertPerformed = insert(editPanel.editModel(), attributeWithInvalidValue);
-          if (insertPerformed && !insertedEntities.isEmpty()) {
-            insertListener.onEvent(insertedEntities);
+          successfulInsert = insert(editPanel.editModel(), invalidAttribute);
+          if (successfulInsert && !insertedEntities.isEmpty()) {
+            onInsert.onEvent(insertedEntities);
           }
         }
       }
       finally {
         component.requestFocusInWindow();
       }
+    }
+
+    private EntityEditPanel createEditPanel() {
+      EntityEditPanel editPanel = buildEditPanel(connectionProvider);
+      editPanel.initializePanel();
+      editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
+      editPanel.editModel().addAfterInsertListener(inserted -> {
+        insertedEntities.clear();
+        insertedEntities.addAll(inserted);
+      });
+
+      return editPanel;
     }
 
     private boolean insert(SwingEntityEditModel editModel, Value<Attribute<?>> attributeWithInvalidValue) {
@@ -484,8 +490,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
       catch (ValidationException e) {
         attributeWithInvalidValue.set(e.attribute());
-        JOptionPane.showMessageDialog(component, e.getMessage(),
-                Messages.error(), JOptionPane.ERROR_MESSAGE);
+        JOptionPane.showMessageDialog(component, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
       }
       catch (Exception e) {
         Dialogs.showExceptionDialog(e, Utilities.getParentWindow(component));

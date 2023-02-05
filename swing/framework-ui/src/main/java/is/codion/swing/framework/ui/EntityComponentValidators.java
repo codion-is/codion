@@ -117,13 +117,6 @@ public final class EntityComponentValidators {
       return component;
     }
 
-    /**
-     * @return the default tooltip to show when the field value is valid
-     */
-    protected final String defaultToolTip() {
-      return defaultToolTip;
-    }
-
     protected void setToolTipText(String validationMessage) {
       if (validationMessage == null) {
         component.setToolTipText(defaultToolTip);
@@ -135,11 +128,6 @@ public final class EntityComponentValidators {
         component.setToolTipText(validationMessage + ": " + defaultToolTip);
       }
     }
-
-    /**
-     * Updates the underlying component indicating the validity of the value being displayed
-     */
-    protected abstract void validate();
   }
 
   private static class TextValidator<T> extends AbstractValidator<T> {
@@ -163,7 +151,9 @@ public final class EntityComponentValidators {
       textComponent.addPropertyChangeListener("UI", event -> configureColors());
     }
 
-    @Override
+    /**
+     * Updates the underlying component indicating the validity of the value being displayed
+     */
     protected void validate() {
       JComponent component = component();
       boolean enabled = component.isEnabled();

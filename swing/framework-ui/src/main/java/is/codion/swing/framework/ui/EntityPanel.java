@@ -83,7 +83,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final String MSG_DETAIL_TABLES = "detail_tables";
+  private static final String DETAIL_TABLES = "detail_tables";
 
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
@@ -184,7 +184,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final EntityTablePanel tablePanel;
 
   /**
-   * The base edit panel which contains the controls required for editing an entity
+   * The base panel containing the edit and control panels
    */
   private final JPanel editControlPanel = new JPanel(borderLayout());
 
@@ -415,14 +415,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Adds the given detail panel, and adds the detail model to the underlying
-   * model if it does not contain it already, and then sets {@code includeDetailPanelTabPane}
-   * to true
+   * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
    * @param detailPanel the detail panel to add
-   * @throws IllegalStateException if the panel has been initialized
+   * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
+   * @see #setParentPanel(EntityPanel)
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     checkIfInitialized();
+    if (detailEntityPanels.contains(requireNonNull(detailPanel))) {
+      throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
+    }
     detailPanel.setParentPanel(this);
     detailEntityPanels.add(detailPanel);
   }
@@ -668,7 +670,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Displays the exception in a dialog
+   * Displays the exception in a dialog, with the dialog owner as the current focus owner
+   * or this panel if none is available.
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
@@ -1366,17 +1369,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     tabbedPane.addChangeListener(e -> selectedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
-      tabbedPane.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseReleased(MouseEvent e) {
-          if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
-          }
-          else if (e.getButton() == MouseEvent.BUTTON2) {
-            setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
-          }
-        }
-      });
+      tabbedPane.addMouseListener(new TabbedPaneMouseReleasesListener());
     }
 
     return tabbedPane;
@@ -1389,16 +1382,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the Control to trigger when a double click is performed on the table
    */
   private Control createTableDoubleClickAction() {
-    return Control.control(() -> {
-      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
-        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-          setEditPanelState(WINDOW);
-        }
-        else if (getDetailPanelState() == HIDDEN) {
-          setDetailPanelState(WINDOW);
-        }
-      }
-    });
+    return Control.control(new TableDoubleClickCommand());
   }
 
   /**
@@ -1422,20 +1406,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Creates Controls containing a control for setting the state to {@code status} on each detail panel.
-   * @param status the status
+   * Creates Controls containing a control for setting the state to {@code panelState} on each detail panel.
+   * @param panelState the panel state
    * @return Controls for controlling the state of the detail panels
    */
-  private Controls createDetailPanelControls(PanelState status) {
+  private Controls createDetailPanelControls(PanelState panelState) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
 
     Controls.Builder controls = Controls.builder()
-            .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
+            .caption(MESSAGES.getString(DETAIL_TABLES))
             .smallIcon(FrameworkIcons.instance().detail());
     detailEntityPanels.forEach(detailPanel ->
-            controls.control(Control.builder(createDetailPanelCommand(status, detailPanel))
+            controls.control(Control.builder(new DetailPanelStateCommand(detailPanel, panelState))
                     .caption(detailPanel.getCaption())));
 
     return controls.build();
@@ -1547,7 +1531,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private Window createDetailPanelWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(detailPanelTabbedPane)
-              .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+              .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> {
                 //the frame can be closed when embedding the panel, don't hide if that's the case
@@ -1560,7 +1544,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     return Dialogs.componentDialog(detailPanelTabbedPane)
             .owner(this)
-            .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+            .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
             .modal(false)
             .onClosed(e -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
@@ -1587,27 +1571,58 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private Control.Command createDetailPanelCommand(PanelState status, EntityPanel detailPanel) {
-    return () -> {
-      setDetailPanelState(status);
-      detailPanel.activatePanel();
-    };
-  }
-
   private void bindEvents() {
     addComponentListener(new EntityPanelComponentAdapter());
-//    if (containsEditPanel() && editPanel.containsControl(ControlCode.REFRESH)) {
-//      final Control refreshControl = editPanel.getControl(ControlCode.REFRESH);
-//      tableModel().tableConditionModel().conditionChangedObserver().addDataListener(changed -> {
-//        refreshControl.setForeground(changed ? Color.RED.darker() : UIManager.getColor("Button.foreground"));
-//        refreshControl.setSmallIcon(changed ? FrameworkIcons.instance().refreshRequired() : FrameworkIcons.instance().refresh());
-//      });
-//    }
   }
 
   private void checkIfInitialized() {
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
+  }
+
+  private final class TabbedPaneMouseReleasesListener extends MouseAdapter {
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+        setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
+      }
+      else if (e.getButton() == MouseEvent.BUTTON2) {
+        setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
+      }
+    }
+  }
+
+  private final class TableDoubleClickCommand implements Control.Command {
+
+    @Override
+    public void perform() throws Exception {
+      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
+        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
+          setEditPanelState(WINDOW);
+        }
+        else if (getDetailPanelState() == HIDDEN) {
+          setDetailPanelState(WINDOW);
+        }
+      }
+    }
+  }
+
+  private final class DetailPanelStateCommand implements Control.Command {
+
+    private final EntityPanel detailPanel;
+    private final PanelState panelState;
+
+    private DetailPanelStateCommand(EntityPanel detailPanel, PanelState panelState) {
+      this.detailPanel = detailPanel;
+      this.panelState = panelState;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      setDetailPanelState(panelState);
+      detailPanel.activatePanel();
     }
   }
 
@@ -1717,7 +1732,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * A class providing EntityPanel instances.
+   * A builder for {@link EntityPanel} instances.
    */
   public interface Builder {
 
@@ -1866,13 +1881,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     /**
      * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
-     * {@code insertListener} is notified.
+     * {@code onInsert} is notified.
      * @param component this component used as dialog parent, receives the focus after insert
      * @param connectionProvider the connection provider
-     * @param insertListener the listener notified when insert has been performed
+     * @param onInsert the listener notified when insert has been performed
      * @return the Action
      */
     Action createEditPanelAction(JComponent component, EntityConnectionProvider connectionProvider,
-                                 EventDataListener<List<Entity>> insertListener);
+                                 EventDataListener<List<Entity>> onInsert);
   }
 }
