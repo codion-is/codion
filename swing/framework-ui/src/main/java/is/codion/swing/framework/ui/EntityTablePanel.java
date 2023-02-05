@@ -861,7 +861,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Displays the exception in a dialog
+   * Displays the exception in a dialog, with the dialog owner as the current focus owner
+   * or this panel if none is available.
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {

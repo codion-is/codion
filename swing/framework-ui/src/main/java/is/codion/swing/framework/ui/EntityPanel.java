@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -83,7 +84,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final String MSG_DETAIL_TABLES = "detail_tables";
+  private static final String DETAIL_TABLES = "detail_tables";
 
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
@@ -184,7 +185,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final EntityTablePanel tablePanel;
 
   /**
-   * The base edit panel which contains the controls required for editing an entity
+   * The base panel containing the edit and control panels
    */
   private final JPanel editControlPanel = new JPanel(borderLayout());
 
@@ -208,7 +209,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * It splits the lower section of this EntityPanel into the EntityTablePanel
    * on the left, and the detail panels on the right.
    */
-  private JSplitPane horizontalSplitPane;
+  private JSplitPane tableDetailSplitPane;
 
   /**
    * The parent panel, if any, so that detail panels can refer to their parents
@@ -333,7 +334,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(editControlPanel, editControlTablePanel, horizontalSplitPane, tablePanel, editPanel, detailPanelTabbedPane);
+    Utilities.updateUI(editControlPanel, editControlTablePanel, tableDetailSplitPane, tablePanel, editPanel, detailPanelTabbedPane);
     if (detailEntityPanels != null) {
       Utilities.updateUI(detailEntityPanels);
     }
@@ -415,14 +416,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Adds the given detail panel, and adds the detail model to the underlying
-   * model if it does not contain it already, and then sets {@code includeDetailPanelTabPane}
-   * to true
+   * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
    * @param detailPanel the detail panel to add
-   * @throws IllegalStateException if the panel has been initialized
+   * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
+   * @see #setParentPanel(EntityPanel)
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     checkIfInitialized();
+    if (detailEntityPanels.contains(requireNonNull(detailPanel))) {
+      throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
+    }
     detailPanel.setParentPanel(this);
     detailEntityPanels.add(detailPanel);
   }
@@ -668,7 +671,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Displays the exception in a dialog
+   * Displays the exception in a dialog, with the dialog owner as the current focus owner
+   * or this panel if none is available.
    * @param exception the exception to display
    */
   public final void displayException(Throwable exception) {
@@ -870,10 +874,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (state == EMBEDDED) {
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
+      tableDetailSplitPane.setRightComponent(detailPanelTabbedPane);
     }
     else if (state == HIDDEN) {
-      horizontalSplitPane.setRightComponent(null);
+      tableDetailSplitPane.setRightComponent(null);
     }
     else {
       showDetailWindow();
@@ -931,14 +935,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         }
         break;
       case RIGHT:
-        if (horizontalSplitPane != null) {
-          horizontalSplitPane.setDividerLocation(Math.min(horizontalSplitPane.getDividerLocation() + pixelAmount,
-                  horizontalSplitPane.getMaximumDividerLocation()));
+        if (tableDetailSplitPane != null) {
+          tableDetailSplitPane.setDividerLocation(Math.min(tableDetailSplitPane.getDividerLocation() + pixelAmount,
+                  tableDetailSplitPane.getMaximumDividerLocation()));
         }
         break;
       case LEFT:
-        if (horizontalSplitPane != null) {
-          horizontalSplitPane.setDividerLocation(Math.max(horizontalSplitPane.getDividerLocation() - pixelAmount, 0));
+        if (tableDetailSplitPane != null) {
+          tableDetailSplitPane.setDividerLocation(Math.max(tableDetailSplitPane.getDividerLocation() - pixelAmount, 0));
         }
         break;
       default:
@@ -1039,16 +1043,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     setLayout(borderLayout());
     if (!includeDetailTabPane || detailEntityPanels.isEmpty()) {
-      horizontalSplitPane = null;
+      tableDetailSplitPane = null;
       detailPanelTabbedPane = null;
       add(editControlTablePanel, BorderLayout.CENTER);
     }
     else {
-      horizontalSplitPane = createHorizontalSplitPane();
-      detailPanelTabbedPane = createDetailTabPane();
-      horizontalSplitPane.setLeftComponent(editControlTablePanel);
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-      add(horizontalSplitPane, BorderLayout.CENTER);
+      tableDetailSplitPane = createTableDetailSplitPane();
+      detailPanelTabbedPane = createDetailTabbedPane();
+      add(tableDetailSplitPane, BorderLayout.CENTER);
     }
     setDetailPanelState(detailPanelState);
     if (containsEditPanel()) {
@@ -1344,42 +1346,37 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Creates the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
-  private JSplitPane createHorizontalSplitPane() {
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-    splitPane.setBorder(BorderFactory.createEmptyBorder());
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setResizeWeight(detailSplitPanelResizeWeight);
-    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE.get());
-
-    return splitPane;
+  private JSplitPane createTableDetailSplitPane() {
+    return Components.splitPane()
+            .orientation(JSplitPane.HORIZONTAL_SPLIT)
+            .continuousLayout(true)
+            .border(BorderFactory.createEmptyBorder())
+            .oneTouchExpandable(true)
+            .resizeWeight(detailSplitPanelResizeWeight)
+            .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
+            .leftComponent(editControlTablePanel)
+            .rightComponent(detailPanelTabbedPane)
+            .build();
   }
 
   /**
    * Creates the JTabbedPane containing the detail panels, used in case of multiple detail panels
    * @return the JTabbedPane for holding detail panels
    */
-  private JTabbedPane createDetailTabPane() {
-    JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.setFocusable(false);
+  private JTabbedPane createDetailTabbedPane() {
+    TabbedPaneBuilder builder = Components.tabbedPane()
+            .focusable(false)
+            .changeListener(e -> selectedDetailPanel().activatePanel());
     for (EntityPanel detailPanel : detailEntityPanels) {
-      tabbedPane.addTab(detailPanel.caption, null, detailPanel, detailPanel.description);
+      builder.tabBuilder(detailPanel.caption, detailPanel)
+              .toolTipText(detailPanel.description)
+              .add();
     }
-    tabbedPane.addChangeListener(e -> selectedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
-      tabbedPane.addMouseListener(new MouseAdapter() {
-        @Override
-        public void mouseReleased(MouseEvent e) {
-          if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
-          }
-          else if (e.getButton() == MouseEvent.BUTTON2) {
-            setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
-          }
-        }
-      });
+      builder.mouseListener(new TabbedPaneMouseReleasesListener());
     }
 
-    return tabbedPane;
+    return builder.build();
   }
 
   /**
@@ -1389,16 +1386,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the Control to trigger when a double click is performed on the table
    */
   private Control createTableDoubleClickAction() {
-    return Control.control(() -> {
-      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
-        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-          setEditPanelState(WINDOW);
-        }
-        else if (getDetailPanelState() == HIDDEN) {
-          setDetailPanelState(WINDOW);
-        }
-      }
-    });
+    return Control.control(new TableDoubleClickCommand());
   }
 
   /**
@@ -1422,20 +1410,20 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Creates Controls containing a control for setting the state to {@code status} on each detail panel.
-   * @param status the status
+   * Creates Controls containing a control for setting the state to {@code panelState} on each detail panel.
+   * @param panelState the panel state
    * @return Controls for controlling the state of the detail panels
    */
-  private Controls createDetailPanelControls(PanelState status) {
+  private Controls createDetailPanelControls(PanelState panelState) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
 
     Controls.Builder controls = Controls.builder()
-            .caption(MESSAGES.getString(MSG_DETAIL_TABLES))
+            .caption(MESSAGES.getString(DETAIL_TABLES))
             .smallIcon(FrameworkIcons.instance().detail());
     detailEntityPanels.forEach(detailPanel ->
-            controls.control(Control.builder(createDetailPanelCommand(status, detailPanel))
+            controls.control(Control.builder(new DetailPanelStateCommand(detailPanel, panelState))
                     .caption(detailPanel.getCaption())));
 
     return controls.build();
@@ -1547,7 +1535,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private Window createDetailPanelWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(detailPanelTabbedPane)
-              .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+              .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> {
                 //the frame can be closed when embedding the panel, don't hide if that's the case
@@ -1560,7 +1548,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     return Dialogs.componentDialog(detailPanelTabbedPane)
             .owner(this)
-            .title(caption + " - " + MESSAGES.getString(MSG_DETAIL_TABLES))
+            .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
             .modal(false)
             .onClosed(e -> {
               //the dialog can be closed when embedding the panel, don't hide if that's the case
@@ -1587,27 +1575,58 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private Control.Command createDetailPanelCommand(PanelState status, EntityPanel detailPanel) {
-    return () -> {
-      setDetailPanelState(status);
-      detailPanel.activatePanel();
-    };
-  }
-
   private void bindEvents() {
     addComponentListener(new EntityPanelComponentAdapter());
-//    if (containsEditPanel() && editPanel.containsControl(ControlCode.REFRESH)) {
-//      final Control refreshControl = editPanel.getControl(ControlCode.REFRESH);
-//      tableModel().tableConditionModel().conditionChangedObserver().addDataListener(changed -> {
-//        refreshControl.setForeground(changed ? Color.RED.darker() : UIManager.getColor("Button.foreground"));
-//        refreshControl.setSmallIcon(changed ? FrameworkIcons.instance().refreshRequired() : FrameworkIcons.instance().refresh());
-//      });
-//    }
   }
 
   private void checkIfInitialized() {
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
+  }
+
+  private final class TabbedPaneMouseReleasesListener extends MouseAdapter {
+
+    @Override
+    public void mouseReleased(MouseEvent e) {
+      if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+        setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
+      }
+      else if (e.getButton() == MouseEvent.BUTTON2) {
+        setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
+      }
+    }
+  }
+
+  private final class TableDoubleClickCommand implements Control.Command {
+
+    @Override
+    public void perform() throws Exception {
+      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
+        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
+          setEditPanelState(WINDOW);
+        }
+        else if (getDetailPanelState() == HIDDEN) {
+          setDetailPanelState(WINDOW);
+        }
+      }
+    }
+  }
+
+  private final class DetailPanelStateCommand implements Control.Command {
+
+    private final EntityPanel detailPanel;
+    private final PanelState panelState;
+
+    private DetailPanelStateCommand(EntityPanel detailPanel, PanelState panelState) {
+      this.detailPanel = detailPanel;
+      this.panelState = panelState;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      setDetailPanelState(panelState);
+      detailPanel.activatePanel();
     }
   }
 
@@ -1717,7 +1736,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * A class providing EntityPanel instances.
+   * A builder for {@link EntityPanel} instances.
    */
   public interface Builder {
 
@@ -1866,13 +1885,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     /**
      * Creates a new Action which shows the edit panel provided by this panel builder and if an insert is performed
-     * {@code insertListener} is notified.
+     * {@code onInsert} is notified.
      * @param component this component used as dialog parent, receives the focus after insert
      * @param connectionProvider the connection provider
-     * @param insertListener the listener notified when insert has been performed
+     * @param onInsert the listener notified when insert has been performed
      * @return the Action
      */
     Action createEditPanelAction(JComponent component, EntityConnectionProvider connectionProvider,
-                                 EventDataListener<List<Entity>> insertListener);
+                                 EventDataListener<List<Entity>> onInsert);
   }
 }
