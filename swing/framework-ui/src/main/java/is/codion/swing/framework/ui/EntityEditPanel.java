@@ -73,6 +73,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.useSaveCaption", false);
 
   /**
+   * Specifies whether to include a {@link EntityPopupMenu} on this edit panel, triggered with CTRL-ALT-V.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> INCLUDE_ENTITY_MENU =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityEditPanel.includeEntityMenu", true);
+
+  /**
    * The standard controls available to the EditPanel
    */
   public enum ControlCode {
@@ -750,11 +758,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void bindEventsInternal() {
-    KeyEvents.builder(KeyEvent.VK_V)
-            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(Control.control(this::showEntityMenu))
-            .enable(this);
+    if (INCLUDE_ENTITY_MENU.get()) {
+      KeyEvents.builder(KeyEvent.VK_V)
+              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(Control.control(this::showEntityMenu))
+              .enable(this);
+    }
     editModel().refreshingObserver().addDataListener(this::onRefreshingChanged);
     editModel().addConfirmSetEntityObserver(confirmationState -> {
       int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this),

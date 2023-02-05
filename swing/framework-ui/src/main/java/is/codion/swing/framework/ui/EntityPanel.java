@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -208,7 +209,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * It splits the lower section of this EntityPanel into the EntityTablePanel
    * on the left, and the detail panels on the right.
    */
-  private JSplitPane horizontalSplitPane;
+  private JSplitPane tableDetailSplitPane;
 
   /**
    * The parent panel, if any, so that detail panels can refer to their parents
@@ -333,7 +334,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(editControlPanel, editControlTablePanel, horizontalSplitPane, tablePanel, editPanel, detailPanelTabbedPane);
+    Utilities.updateUI(editControlPanel, editControlTablePanel, tableDetailSplitPane, tablePanel, editPanel, detailPanelTabbedPane);
     if (detailEntityPanels != null) {
       Utilities.updateUI(detailEntityPanels);
     }
@@ -873,10 +874,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (state == EMBEDDED) {
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
+      tableDetailSplitPane.setRightComponent(detailPanelTabbedPane);
     }
     else if (state == HIDDEN) {
-      horizontalSplitPane.setRightComponent(null);
+      tableDetailSplitPane.setRightComponent(null);
     }
     else {
       showDetailWindow();
@@ -934,14 +935,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         }
         break;
       case RIGHT:
-        if (horizontalSplitPane != null) {
-          horizontalSplitPane.setDividerLocation(Math.min(horizontalSplitPane.getDividerLocation() + pixelAmount,
-                  horizontalSplitPane.getMaximumDividerLocation()));
+        if (tableDetailSplitPane != null) {
+          tableDetailSplitPane.setDividerLocation(Math.min(tableDetailSplitPane.getDividerLocation() + pixelAmount,
+                  tableDetailSplitPane.getMaximumDividerLocation()));
         }
         break;
       case LEFT:
-        if (horizontalSplitPane != null) {
-          horizontalSplitPane.setDividerLocation(Math.max(horizontalSplitPane.getDividerLocation() - pixelAmount, 0));
+        if (tableDetailSplitPane != null) {
+          tableDetailSplitPane.setDividerLocation(Math.max(tableDetailSplitPane.getDividerLocation() - pixelAmount, 0));
         }
         break;
       default:
@@ -1042,16 +1043,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     setLayout(borderLayout());
     if (!includeDetailTabPane || detailEntityPanels.isEmpty()) {
-      horizontalSplitPane = null;
+      tableDetailSplitPane = null;
       detailPanelTabbedPane = null;
       add(editControlTablePanel, BorderLayout.CENTER);
     }
     else {
-      horizontalSplitPane = createHorizontalSplitPane();
-      detailPanelTabbedPane = createDetailTabPane();
-      horizontalSplitPane.setLeftComponent(editControlTablePanel);
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-      add(horizontalSplitPane, BorderLayout.CENTER);
+      tableDetailSplitPane = createTableDetailSplitPane();
+      detailPanelTabbedPane = createDetailTabbedPane();
+      add(tableDetailSplitPane, BorderLayout.CENTER);
     }
     setDetailPanelState(detailPanelState);
     if (containsEditPanel()) {
@@ -1347,32 +1346,37 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Creates the horizontal split pane, used in the case of detail panel(s)
    * @return the horizontal split pane
    */
-  private JSplitPane createHorizontalSplitPane() {
-    JSplitPane splitPane = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT, true);
-    splitPane.setBorder(BorderFactory.createEmptyBorder());
-    splitPane.setOneTouchExpandable(true);
-    splitPane.setResizeWeight(detailSplitPanelResizeWeight);
-    splitPane.setDividerSize(SPLIT_PANE_DIVIDER_SIZE.get());
-
-    return splitPane;
+  private JSplitPane createTableDetailSplitPane() {
+    return Components.splitPane()
+            .orientation(JSplitPane.HORIZONTAL_SPLIT)
+            .continuousLayout(true)
+            .border(BorderFactory.createEmptyBorder())
+            .oneTouchExpandable(true)
+            .resizeWeight(detailSplitPanelResizeWeight)
+            .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
+            .leftComponent(editControlTablePanel)
+            .rightComponent(detailPanelTabbedPane)
+            .build();
   }
 
   /**
    * Creates the JTabbedPane containing the detail panels, used in case of multiple detail panels
    * @return the JTabbedPane for holding detail panels
    */
-  private JTabbedPane createDetailTabPane() {
-    JTabbedPane tabbedPane = new JTabbedPane();
-    tabbedPane.setFocusable(false);
+  private JTabbedPane createDetailTabbedPane() {
+    TabbedPaneBuilder builder = Components.tabbedPane()
+            .focusable(false)
+            .changeListener(e -> selectedDetailPanel().activatePanel());
     for (EntityPanel detailPanel : detailEntityPanels) {
-      tabbedPane.addTab(detailPanel.caption, null, detailPanel, detailPanel.description);
+      builder.tabBuilder(detailPanel.caption, detailPanel)
+              .toolTipText(detailPanel.description)
+              .add();
     }
-    tabbedPane.addChangeListener(e -> selectedDetailPanel().activatePanel());
     if (showDetailPanelControls) {
-      tabbedPane.addMouseListener(new TabbedPaneMouseReleasesListener());
+      builder.mouseListener(new TabbedPaneMouseReleasesListener());
     }
 
-    return tabbedPane;
+    return builder.build();
   }
 
   /**
