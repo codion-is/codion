@@ -71,15 +71,15 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
   // end::importJSON[]
 
-  // tag::createToolsControls[]
+  // tag::createToolsMenuControls[]
   @Override
-  protected Controls createToolsControls() {
-    return super.createToolsControls()
+  protected Controls createToolsMenuControls() {
+    return super.createToolsMenuControls()
             .add(Control.builder(this::importJSON)
                     .caption("Import JSON")
                     .build());
   }
-  // end::createToolsControls[]
+  // end::createToolsMenuControls[]
 
   // tag::createApplicationModel[]
   @Override

@@ -1752,9 +1752,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     Builder caption(String caption);
 
     /**
-     * @return the caption to use when the EntityPanel is shown in f.x. menus
+     * @return the caption, an empty Optional if none has been set
      */
-    String getCaption();
+    Optional<String> caption();
 
     /**
      * Adds the given detail panel builder to this panel builder, if it hasn't been previously added

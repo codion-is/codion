@@ -36,6 +36,7 @@ import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
@@ -89,8 +90,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public String getCaption() {
-    return caption;
+  public Optional<String> caption() {
+    return Optional.ofNullable(caption);
   }
 
   @Override

@@ -540,38 +540,38 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * @return the controls on which to base the main menu
-   * @see #createFileControls()
-   * @see #createViewControls()
-   * @see #createToolsControls()
-   * @see #createHelpControls()
+   * @see #createFileMenuControls()
+   * @see #createViewMenuControls()
+   * @see #createToolsMenuControls()
+   * @see #createHelpMenuControls()
    */
   protected Controls createMainMenuControls() {
     Controls menuControls = Controls.controls();
-    Controls fileControls = createFileControls();
-    if (fileControls != null && !fileControls.isEmpty()) {
-      menuControls.add(fileControls);
+    Controls fileMenuControls = createFileMenuControls();
+    if (fileMenuControls != null && !fileMenuControls.isEmpty()) {
+      menuControls.add(fileMenuControls);
     }
-    Controls viewControls = createViewControls();
-    if (viewControls != null && !viewControls.isEmpty()) {
-      menuControls.add(viewControls);
+    Controls viewMenuControls = createViewMenuControls();
+    if (viewMenuControls != null && !viewMenuControls.isEmpty()) {
+      menuControls.add(viewMenuControls);
     }
-    Controls toolsControls = createToolsControls();
-    if (toolsControls != null && !toolsControls.isEmpty()) {
-      menuControls.add(toolsControls);
+    Controls toolsMenuControls = createToolsMenuControls();
+    if (toolsMenuControls != null && !toolsMenuControls.isEmpty()) {
+      menuControls.add(toolsMenuControls);
     }
-    Controls supportTableControls = createSupportTableControls();
-    if (supportTableControls != null && !supportTableControls.isEmpty()) {
-      menuControls.add(supportTableControls);
+    Controls supportTableMenuControls = createSupportTableMenuControls();
+    if (supportTableMenuControls != null && !supportTableMenuControls.isEmpty()) {
+      menuControls.add(supportTableMenuControls);
     }
-    List<Controls> additionalMenus = createAdditionalMenuControls();
-    if (additionalMenus != null) {
-      for (Controls set : additionalMenus) {
-        menuControls.add(set);
+    List<Controls> additionalMenuControls = createAdditionalMenuControls();
+    if (additionalMenuControls != null) {
+      for (Controls controls : additionalMenuControls) {
+        menuControls.add(controls);
       }
     }
-    Controls helpControls = createHelpControls();
-    if (helpControls != null && !helpControls.isEmpty()) {
-      menuControls.add(helpControls);
+    Controls helpMenuControls = createHelpMenuControls();
+    if (helpMenuControls != null && !helpMenuControls.isEmpty()) {
+      menuControls.add(helpMenuControls);
     }
 
     return menuControls;
@@ -580,7 +580,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'File' menu
    */
-  protected Controls createFileControls() {
+  protected Controls createFileMenuControls() {
     return Controls.builder()
             .caption(FrameworkMessages.file())
             .mnemonic(FrameworkMessages.fileMnemonic())
@@ -591,7 +591,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'Tools' menu
    */
-  protected Controls createToolsControls() {
+  protected Controls createToolsMenuControls() {
     Controls.Builder toolsControlsBuilder = Controls.builder()
             .caption(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
@@ -605,7 +605,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'View' menu
    */
-  protected Controls createViewControls() {
+  protected Controls createViewMenuControls() {
     return Controls.builder()
             .caption(FrameworkMessages.view())
             .mnemonic(FrameworkMessages.viewMnemonic())
@@ -619,7 +619,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls specifying the items in the 'Help' menu
    */
-  protected Controls createHelpControls() {
+  protected Controls createHelpMenuControls() {
     return Controls.builder()
             .caption(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
@@ -805,26 +805,19 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the Controls on which to base the Support Tables menu
    */
-  protected Controls createSupportTableControls() {
+  protected Controls createSupportTableMenuControls() {
     if (supportPanelBuilders.isEmpty()) {
       return null;
     }
 
-    Comparator<String> comparator = Text.spaceAwareCollator();
-    Entities entities = applicationModel.entities();
-    supportPanelBuilders.sort((ep1, ep2) -> {
-      String thisCompare = ep1.getCaption() == null ? entities.definition(ep1.entityType()).caption() : ep1.getCaption();
-      String thatCompare = ep2.getCaption() == null ? entities.definition(ep2.entityType()).caption() : ep2.getCaption();
-
-      return comparator.compare(thisCompare, thatCompare);
-    });
-    Controls.Builder controlsBuilder = Controls.builder()
+    return Controls.builder()
             .caption(FrameworkMessages.supportTables())
-            .mnemonic(FrameworkMessages.supportTablesMnemonic());
-    supportPanelBuilders.forEach(panelBuilder -> controlsBuilder.control(Control.builder(() -> displayEntityPanel(panelBuilder))
-            .caption(panelBuilder.getCaption() == null ? entities.definition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())));
-
-    return controlsBuilder.build();
+            .mnemonic(FrameworkMessages.supportTablesMnemonic())
+            .controls(supportPanelBuilders.stream()
+                    .sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
+                    .map(this::createSupportPanelControl)
+                    .toArray(Control[]::new))
+            .build();
   }
 
   /**
@@ -859,7 +852,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .locationRelativeTo(this)
-                .title(panelBuilder.getCaption() == null ? applicationModel.entities().definition(panelBuilder.entityType()).caption() : panelBuilder.getCaption())
+                .title(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   entityPanel.model().savePreferences();
@@ -898,9 +891,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        String dialogTitle = panelBuilder.getCaption() == null ?
-                applicationModel.entities().definition(panelBuilder.entityType()).caption() :
-                panelBuilder.getCaption();
+        String dialogTitle = panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption());
         Dialogs.componentDialog(entityPanel)
                 .owner(parentWindow().orElse(null))
                 .title(dialogTitle)
@@ -1286,6 +1277,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     bindEvents();
   }
 
+  private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
+    return Control.builder(() -> displayEntityPanel(panelBuilder))
+            .caption(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+            .build();
+  }
+
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
     if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
       return persistentEntityPanels.get(panelBuilder);
@@ -1489,6 +1486,24 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * Starts the application, should be called on the Event Dispatch Thread
      */
     void start();
+  }
+
+  private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
+
+    private final Entities entities;
+    private final Comparator<String> comparator = Text.spaceAwareCollator();
+
+    private SupportPanelBuilderComparator(Entities entities) {
+      this.entities = entities;
+    }
+
+    @Override
+    public int compare(EntityPanel.Builder ep1, EntityPanel.Builder ep2) {
+      String caption1 = ep1.caption().orElse(entities.definition(ep1.entityType()).caption());
+      String caption2 = ep2.caption().orElse(entities.definition(ep2.entityType()).caption());
+
+      return comparator.compare(caption1, caption2);
+    }
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
