@@ -8689,3 +8689,4 @@
   EntityApplicationPanel.createViewControls() (and similar methods) renamed createViewMenuControls()
   EntityApplicationPanel.createSupportTableMenuControls() refactored
   EntityPanel.Builder.getCaption() renamed caption(), now returns an Optional
+  AbstractEntityModel.containsUnsavedData() bug fixed, no longer tests column properties that are part of a foreign key, since the default value does not reflect the default foreign key property value

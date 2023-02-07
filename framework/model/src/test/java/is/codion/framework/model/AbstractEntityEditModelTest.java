@@ -31,6 +31,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -504,6 +505,20 @@ public final class AbstractEntityEditModelTest {
     assertEquals(king.get(Employee.DEPARTMENT_FK), employeeEditModel.get(Employee.DEPARTMENT_FK));
 
     employeeEditModel.setWarnAboutUnsavedData(false);
+
+    employeeEditModel.setEntity(null);
+
+    //default value for hiredate is TODAY
+    employeeEditModel.put(Employee.HIREDATE, LocalDate.now().minus(1, ChronoUnit.MONTHS));
+    assertTrue(employeeEditModel.containsUnsavedData());
+
+    employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
+    assertFalse(employeeEditModel.containsUnsavedData());
+
+    employeeEditModel.setPersistValue(Employee.MGR_FK, false);
+
+    employeeEditModel.put(Employee.MGR_FK, null);//default value JONES
+    assertTrue(employeeEditModel.containsUnsavedData());
   }
 
   @Test
@@ -661,6 +676,13 @@ public final class AbstractEntityEditModelTest {
     private TestEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
       super(entityType, connectionProvider);
       setDefaultValueSupplier(Employee.HIREDATE, LocalDate::now);
+      try {
+        Entity jones = connectionProvider.connection().selectSingle(Employee.ID, 3);//JONES, used in containsUnsavedData()
+        setDefaultValueSupplier(Employee.MGR_FK, () -> jones);
+      }
+      catch (DatabaseException e) {
+        throw new RuntimeException(e);
+      }
     }
 
     @Override
