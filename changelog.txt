@@ -8686,3 +8686,6 @@
   EntityApplicationPanel, EntityPanel, EntityEditComponentPanel and EntityTablePanel.displayException() bug fixed, now uses the current focus owner as dialog parent
   ColumnSummaryPanel bug fixed, now the initially selected summary is selected in the popup menu
   Value.link() now throws IllegalStateException instead of IllegalArgumentException in case the values are already linked
+  EntityApplicationPanel.createViewControls() (and similar methods) renamed createViewMenuControls()
+  EntityApplicationPanel.createSupportTableMenuControls() refactored
+  EntityPanel.Builder.getCaption() renamed caption(), now returns an Optional
