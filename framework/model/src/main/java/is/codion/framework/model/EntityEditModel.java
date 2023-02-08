@@ -106,10 +106,11 @@ public interface EntityEditModel {
   boolean isEntityNew();
 
   /**
-   * Returns true if an entity is selected and a value has been modified or if the entity is new
-   * and one or more non-default values have been entered
+   * Returns true if a value of an existing entity has been modified but not saved.
    * @return true if this edit model contains unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
+   * @see #isEntityNew()
+   * @see #setModifiedSupplier(Supplier)
    */
   boolean containsUnsavedData();
 

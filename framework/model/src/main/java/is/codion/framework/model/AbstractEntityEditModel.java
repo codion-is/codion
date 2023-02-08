@@ -630,13 +630,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    if (isEntityNew()) {
-      return entityDefinition().properties().stream()
-              .filter(property -> !entityDefinition().isForeignKeyAttribute(property.attribute()))
-              .anyMatch(this::valueModified);
-    }
-
-    return modifiedSupplier.get();
+    return !isEntityNew() && modifiedSupplier.get();
   }
 
   @Override
@@ -961,10 +955,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     updateModifiedAttributeStates();
 
     entityEvent.onEvent(entity);
-  }
-
-  private boolean valueModified(Property<?> property) {
-    return !Objects.equals(get(property.attribute()), defaultValue(property));
   }
 
   private <T> Event<T> editEvent(Attribute<T> attribute) {
