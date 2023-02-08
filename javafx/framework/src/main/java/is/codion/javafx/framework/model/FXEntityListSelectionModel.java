@@ -200,7 +200,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
 
   @Override
   public void setSelectedIndex(int index) {
-    selectionModel.selectedIndexProperty().add(index);
+    selectionModel.clearSelection();
+    selectionModel.select(index);
   }
 
   @Override

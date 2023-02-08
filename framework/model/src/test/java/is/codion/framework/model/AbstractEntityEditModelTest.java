@@ -31,7 +31,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -492,6 +491,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.setDefaultValues();
     employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
 
+    employeeEditModel.setEntity(adams);
     employeeEditModel.put(Employee.NAME, "A name");
     employeeEditModel.setEntity(king);
     assertEquals("A name", employeeEditModel.get(Employee.NAME));
@@ -500,19 +500,18 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.setDefaultValues();
     employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
 
+    employeeEditModel.setEntity(adams);
     employeeEditModel.put(Employee.DEPARTMENT_FK, king.get(Employee.DEPARTMENT_FK));
     employeeEditModel.setEntity(adams);
     assertEquals(king.get(Employee.DEPARTMENT_FK), employeeEditModel.get(Employee.DEPARTMENT_FK));
 
     employeeEditModel.setWarnAboutUnsavedData(false);
 
-    employeeEditModel.setEntity(null);
-
-    //default value for hiredate is TODAY
-    employeeEditModel.put(Employee.HIREDATE, LocalDate.now().minus(1, ChronoUnit.MONTHS));
+    employeeEditModel.setEntity(adams);
+    employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
     assertTrue(employeeEditModel.containsUnsavedData());
 
-    employeeEditModel.put(Employee.HIREDATE, LocalDate.now());
+    employeeEditModel.put(Employee.HIREDATE, adams.get(Employee.HIREDATE));
     assertFalse(employeeEditModel.containsUnsavedData());
 
     employeeEditModel.setPersistValue(Employee.MGR_FK, false);

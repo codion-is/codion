@@ -8692,3 +8692,4 @@
   AbstractEntityModel.containsUnsavedData() bug fixed, no longer tests column properties that are part of a foreign key, since the default value does not reflect the default foreign key property value
   AbstractEntityModel.containsUnsavedData() now only reports unsaved modification if the entity is not new, based on modifiedSupplier
   NullableCheckBox.NullableIcon, minor icon center adjustment
+  FXEntityListSelectionModel.setSelectedIndex() bug fixed
