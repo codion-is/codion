@@ -68,8 +68,8 @@ public class NullableCheckBox extends JCheckBox {
     setIcon(new NullableIcon());
     addMouseListener(new NullableMouseListener());
     KeyEvents.builder(KeyEvent.VK_SPACE)
-             .action(new NextStateAction(model))
-             .enable(this);
+            .action(new NextStateAction(model))
+            .enable(this);
   }
 
   /**
@@ -143,8 +143,8 @@ public class NullableCheckBox extends JCheckBox {
       int height = getIconHeight();
 
       double radius = width / 2d * 0.4;
-      double centerX = x + width / 2d;
-      double centerY = y + height / 2d;
+      double centerX = x + width / 2d + 0.5;
+      double centerY = y + height / 2d - 0.5;
 
       Ellipse2D circle = new Ellipse2D.Double();
       circle.setFrameFromCenter(centerX, centerY, centerX + radius, centerY + radius);
