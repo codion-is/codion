@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import javax.swing.ImageIcon;
@@ -44,11 +45,21 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   EntityApplicationBuilder<M> applicationVersion(Version applicationVersion);
 
   /**
-   * Sets the default look and feel name, used in case no look and feel settings are found in user preferences.
-   * @param defaultLookAndFeelName the default look and feel name
+   * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
+   * @param defaultLookAndFeelClassName the default look and feel classname
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M> defaultLookAndFeelName(String defaultLookAndFeelName);
+  EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName);
+
+  /**
+   * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
+   * Note that for the given look to be enabled it must be made available via
+   * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+   * before starting the application.
+   * @param lookAndFeelClassName the look and feel classname
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> lookAndFeelClassName(String lookAndFeelClassName);
 
   /**
    * @param connectionProviderFactory the connection provider factory
@@ -69,19 +80,20 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   EntityApplicationBuilder<M> panelFactory(Function<M, ? extends EntityApplicationPanel<M>> panelFactory);
 
   /**
-   * @param defaultLoginUser the default user to display in the login dialog
+   * @param defaultLoginUser the default user credentials to display in the login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> defaultLoginUser(User defaultLoginUser);
 
   /**
-   * @param silentLoginUser if specified the application is started silently with that user, displaying no login dialog
+   * @param automaticLoginUser if specified the application is started automatically with that user,
+   * instead of displaying a login dialog
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M> silentLoginUser(User silentLoginUser);
+  EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser);
 
   /**
-   * @param loginValidator the login validator
+   * @param loginValidator the login validator for the login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator);

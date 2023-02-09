@@ -77,14 +77,15 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
   private EventDataListener<EntityApplicationPanel<M>> onApplicationStarted;
 
-  private String defaultLookAndFeelName = Utilities.systemLookAndFeelClassName();
+  private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
+  private String lookAndFeelClassName;
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean includeMainMenu = true;
-  private Dimension frameSize = Windows.screenSizeRatio(0.5);
+  private Dimension frameSize;
   private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
   private User defaultLoginUser;
-  private User silentLoginUser;
+  private User automaticLoginUser;
 
   DefaultEntityApplicationBuilder(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass) {
     this.panelClass = requireNonNull(panelClass);
@@ -103,8 +104,14 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> defaultLookAndFeelName(String defaultLookAndFeelName) {
-    this.defaultLookAndFeelName = requireNonNull(defaultLookAndFeelName);
+  public EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
+    this.defaultLookAndFeelClassName = requireNonNull(defaultLookAndFeelClassName);
+    return this;
+  }
+
+  @Override
+  public EntityApplicationBuilder<M> lookAndFeelClassName(String lookAndFeelClassName) {
+    this.lookAndFeelClassName = requireNonNull(lookAndFeelClassName);
     return this;
   }
 
@@ -139,8 +146,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> silentLoginUser(User silentLoginUser) {
-    this.silentLoginUser = silentLoginUser;
+  public EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser) {
+    this.automaticLoginUser = automaticLoginUser;
     return this;
   }
 
@@ -228,7 +235,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
     setVersionProperty();
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
+    LookAndFeelProvider.findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
     int fontSizePercentage = fontSizePercentage();
     if (fontSizePercentage != 100) {
       Utilities.setFontSizePercentage(fontSizePercentage);
@@ -251,8 +258,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private String lookAndFeelName() {
-    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelName);
+  private String lookAndFeelClassName() {
+    if (lookAndFeelClassName != null) {
+      return lookAndFeelClassName;
+    }
+
+    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
   }
 
   private int fontSizePercentage() {
@@ -288,8 +299,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private User user() {
-    if (silentLoginUser != null) {
-      return silentLoginUser;
+    if (automaticLoginUser != null) {
+      return automaticLoginUser;
     }
     if (!loginRequired) {
       return null;

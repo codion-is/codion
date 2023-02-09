@@ -21,13 +21,13 @@ import static java.util.Objects.requireNonNull;
 public interface LookAndFeelProvider {
 
   /**
-   * The name of the underlying LookAndFeel class
+   * The classname of the underlying LookAndFeel
    * @return the look and feel classname
    */
   String className();
 
   /**
-   * @return a unique name representing this look and feel, the classname by default
+   * @return a user-friendly name representing this look and feel, the classname by default
    */
   default String name() {
     return className();
@@ -48,13 +48,13 @@ public interface LookAndFeelProvider {
 
   /**
    * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
-   * @param classname the look and feel classname
+   * @param className the look and feel classname
    * @return a look and feel provider
    */
-  static LookAndFeelProvider lookAndFeelProvider(String classname) {
-    return lookAndFeelProvider(classname, () -> {
+  static LookAndFeelProvider lookAndFeelProvider(String className) {
+    return lookAndFeelProvider(className, () -> {
       try {
-        UIManager.setLookAndFeel(classname);
+        UIManager.setLookAndFeel(className);
       }
       catch (Exception e) {
         throw new RuntimeException(e);
@@ -64,24 +64,24 @@ public interface LookAndFeelProvider {
 
   /**
    * Instantiates a new LookAndFeelProvider.
-   * @param classname the look and feel classname
+   * @param className the look and feel classname
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider lookAndFeelProvider(String classname, Runnable enabler) {
-    return lookAndFeelProvider(classname, classname, enabler);
+  static LookAndFeelProvider lookAndFeelProvider(String className, Runnable enabler) {
+    return lookAndFeelProvider(className, className, enabler);
   }
 
   /**
    * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
-   * @param classname the look and feel classname
-   * @param name a unique name
+   * @param className the look and feel classname
+   * @param name a user-friendly name
    * @return a look and feel provider
    */
-  static LookAndFeelProvider lookAndFeelProvider(String classname, String name) {
-    return lookAndFeelProvider(classname, name, () -> {
+  static LookAndFeelProvider lookAndFeelProvider(String className, String name) {
+    return lookAndFeelProvider(className, name, () -> {
       try {
-        UIManager.setLookAndFeel(classname);
+        UIManager.setLookAndFeel(className);
       }
       catch (Exception e) {
         throw new RuntimeException(e);
@@ -92,7 +92,7 @@ public interface LookAndFeelProvider {
   /**
    * Instantiates a new LookAndFeelProvider.
    * @param classname the look and feel classname
-   * @param name a unique name
+   * @param name a user-friendly name
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
@@ -102,28 +102,28 @@ public interface LookAndFeelProvider {
 
   /**
    * Adds the given look and feel provider.
-   * Note that this overrides any existing look and feel provider with the same name.
+   * Note that this replaces any existing look and feel provider based on the same classname.
    * @param lookAndFeelProvider the look and feel provider to add
    */
   static void addLookAndFeelProvider(LookAndFeelProvider lookAndFeelProvider) {
-    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).name(), lookAndFeelProvider);
+    DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.put(requireNonNull(lookAndFeelProvider).className(), lookAndFeelProvider);
   }
 
   /**
    * @return the available {@link LookAndFeelProvider}s
    * @see #addLookAndFeelProvider(LookAndFeelProvider)
    */
-  static Map<String, LookAndFeelProvider> getLookAndFeelProviders() {
+  static Map<String, LookAndFeelProvider> lookAndFeelProviders() {
     return Collections.unmodifiableMap(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS);
   }
 
   /**
-   * Returns a look and feel provider with the given name, if available
-   * @param name the look and feel name
+   * Returns a look and feel provider with the given classname, if available
+   * @param className the look and feel classname
    * @return a look and feel provider, an empty Optional if not found
    */
-  static Optional<LookAndFeelProvider> getLookAndFeelProvider(String name) {
-    return name == null ? Optional.empty() : Optional.ofNullable(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.get(name));
+  static Optional<LookAndFeelProvider> findLookAndFeelProvider(String className) {
+    return className == null ? Optional.empty() : Optional.ofNullable(DefaultLookAndFeelProvider.LOOK_AND_FEEL_PROVIDERS.get(className));
   }
 
   /**
@@ -131,7 +131,7 @@ public interface LookAndFeelProvider {
    * @param userPreferencePropertyName the name of the user preference look and feel property
    * @return the look and feel specified by user preference or the default system look and feel
    */
-  static String getDefaultLookAndFeelName(String userPreferencePropertyName) {
+  static String defaultLookAndFeelName(String userPreferencePropertyName) {
     return UserPreferences.getUserPreference(userPreferencePropertyName, Utilities.systemLookAndFeelClassName());
   }
 

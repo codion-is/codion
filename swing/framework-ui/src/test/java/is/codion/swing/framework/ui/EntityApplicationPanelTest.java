@@ -60,7 +60,7 @@ public class EntityApplicationPanelTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     entityApplicationBuilder(TestApplicationModel.class, TestApplicationPanel.class)
-            .silentLoginUser(UNIT_TEST_USER)
+            .automaticLoginUser(UNIT_TEST_USER)
             .loginRequired(false)
             .displayFrame(false)
             .includeMainMenu(true)

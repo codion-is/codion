@@ -261,7 +261,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {
       try {
-        LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))
+        LookAndFeelProvider.findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))
                 .ifPresent(LookAndFeelProvider::enable);
         new EntityServerMonitorPanel().showFrame();
       }

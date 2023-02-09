@@ -134,7 +134,7 @@ public final class LookAndFeelSelectionPanel extends JPanel {
   }
 
   private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
-    return LookAndFeelProvider.getLookAndFeelProviders().values().stream()
+    return LookAndFeelProvider.lookAndFeelProviders().values().stream()
             .sorted(Comparator.comparing(LookAndFeelProvider::name))
             .map(provider -> Item.item(provider, provider.name()))
             .collect(Collectors.toList());

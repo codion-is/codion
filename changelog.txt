@@ -8695,3 +8695,7 @@
   FXEntityListSelectionModel.setSelectedIndex() bug fixed
   EntityApplicationBuilder added, EntityApplicationPanel.Starter removed, major related refactoring
   EntityApplicationPanel.clientVersion() removed, EntityApplicationModel.version() added
+  EntityApplicationBuilder.silentLoginUser() renamed automaticLoginUser()
+  EntityApplicationBuilder.defaultLookAndFeelName() renamed defaultLookAndFeelClassName()
+  EntityApplicationBuilder.lookAndFeelClassName() added
+  LookAndFeelProvider, minor renaming and refactoring
