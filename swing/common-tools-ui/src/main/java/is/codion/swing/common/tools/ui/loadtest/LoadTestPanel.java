@@ -77,7 +77,7 @@ public final class LoadTestPanel<T> extends JPanel {
     LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
-    LookAndFeelProvider.getLookAndFeelProvider(getDefaultLookAndFeelName(LoadTestPanel.class.getName()))
+    LookAndFeelProvider.findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
             .ifPresent(LookAndFeelProvider::enable);
   }
 

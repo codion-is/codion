@@ -235,7 +235,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
     setVersionProperty();
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
+    LookAndFeelProvider.findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
     int fontSizePercentage = fontSizePercentage();
     if (fontSizePercentage != 100) {
       Utilities.setFontSizePercentage(fontSizePercentage);

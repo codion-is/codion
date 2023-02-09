@@ -18,10 +18,10 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
 
   static {
     LookAndFeelProvider systemProvider = lookAndFeelProvider(Utilities.systemLookAndFeelClassName());
-    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.name(), systemProvider);
+    LOOK_AND_FEEL_PROVIDERS.put(systemProvider.className(), systemProvider);
     LookAndFeelProvider crossPlatformProvider = lookAndFeelProvider(UIManager.getCrossPlatformLookAndFeelClassName());
-    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.name())) {
-      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.name(), crossPlatformProvider);
+    if (!LOOK_AND_FEEL_PROVIDERS.containsKey(crossPlatformProvider.className())) {
+      LOOK_AND_FEEL_PROVIDERS.put(crossPlatformProvider.className(), crossPlatformProvider);
     }
   }
 
