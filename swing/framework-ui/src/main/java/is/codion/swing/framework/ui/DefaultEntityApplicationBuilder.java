@@ -77,7 +77,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
   private EventDataListener<EntityApplicationPanel<M>> onApplicationStarted;
 
-  private String defaultLookAndFeelName = Utilities.systemLookAndFeelClassName();
+  private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean includeMainMenu = true;
@@ -103,8 +103,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> defaultLookAndFeelName(String defaultLookAndFeelName) {
-    this.defaultLookAndFeelName = requireNonNull(defaultLookAndFeelName);
+  public EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
+    this.defaultLookAndFeelClassName = requireNonNull(defaultLookAndFeelClassName);
     return this;
   }
 
@@ -228,7 +228,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
     setVersionProperty();
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
+    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
     int fontSizePercentage = fontSizePercentage();
     if (fontSizePercentage != 100) {
       Utilities.setFontSizePercentage(fontSizePercentage);
@@ -251,8 +251,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private String lookAndFeelName() {
-    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelName);
+  private String lookAndFeelClassName() {
+    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
   }
 
   private int fontSizePercentage() {

@@ -8658,3 +8658,4 @@
   EntityApplicationBuilder added, EntityApplicationPanel.Starter removed, major related refactoring
   EntityApplicationPanel.clientVersion() removed, EntityApplicationModel.version() added
   EntityApplicationBuilder.silentLoginUser() renamed automaticLoginUser()
+  EntityApplicationBuilder.defaultLookAndFeelName() renamed defaultLookAndFeelClassName()

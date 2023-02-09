@@ -71,7 +71,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
             .applicationVersion(WorldAppModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .defaultLookAndFeelName(FlatDarkLaf.class.getName())
+            .defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
             .start());
   }
 }

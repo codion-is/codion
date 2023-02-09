@@ -44,11 +44,11 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   EntityApplicationBuilder<M> applicationVersion(Version applicationVersion);
 
   /**
-   * Sets the default look and feel name, used in case no look and feel settings are found in user preferences.
-   * @param defaultLookAndFeelName the default look and feel name
+   * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
+   * @param defaultLookAndFeelClassName the default look and feel classname
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M> defaultLookAndFeelName(String defaultLookAndFeelName);
+  EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName);
 
   /**
    * @param connectionProviderFactory the connection provider factory
