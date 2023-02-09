@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 import javax.swing.ImageIcon;
@@ -49,6 +50,16 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName);
+
+  /**
+   * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
+   * Note that for the given look to be enabled it must be made available via
+   * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+   * before starting the application.
+   * @param lookAndFeelClassName the look and feel classname
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> lookAndFeelClassName(String lookAndFeelClassName);
 
   /**
    * @param connectionProviderFactory the connection provider factory

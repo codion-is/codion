@@ -78,6 +78,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private EventDataListener<EntityApplicationPanel<M>> onApplicationStarted;
 
   private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
+  private String lookAndFeelClassName;
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean includeMainMenu = true;
@@ -105,6 +106,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   @Override
   public EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
     this.defaultLookAndFeelClassName = requireNonNull(defaultLookAndFeelClassName);
+    return this;
+  }
+
+  @Override
+  public EntityApplicationBuilder<M> lookAndFeelClassName(String lookAndFeelClassName) {
+    this.lookAndFeelClassName = requireNonNull(lookAndFeelClassName);
     return this;
   }
 
@@ -252,6 +259,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private String lookAndFeelClassName() {
+    if (lookAndFeelClassName != null) {
+      return lookAndFeelClassName;
+    }
+
     return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
   }
 
