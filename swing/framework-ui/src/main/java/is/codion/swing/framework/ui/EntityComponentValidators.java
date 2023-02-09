@@ -72,15 +72,15 @@ public final class EntityComponentValidators {
     new FormattedTextValidator<>(attribute, textComponent, editModel, defaultToolTip).validate();
   }
 
-  private abstract static class AbstractValidator<T> {
+  private static class DefaultValidator<T> {
 
     private final Attribute<T> attribute;
     private final JComponent component;
     private final EntityEditModel editModel;
     private final String defaultToolTip;
 
-    private AbstractValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
-                              String defaultToolTip) {
+    private DefaultValidator(Attribute<T> attribute, JComponent component, EntityEditModel editModel,
+                             String defaultToolTip) {
       this.attribute = attribute;
       this.component = component;
       this.editModel = editModel;
@@ -130,7 +130,7 @@ public final class EntityComponentValidators {
     }
   }
 
-  private static class TextValidator<T> extends AbstractValidator<T> {
+  private static class TextValidator<T> extends DefaultValidator<T> {
 
     protected Color backgroundColor;
     protected Color inactiveBackgroundColor;
