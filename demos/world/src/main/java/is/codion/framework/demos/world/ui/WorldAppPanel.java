@@ -4,7 +4,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
@@ -55,11 +54,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   }
   // end::initializeEntityPanels[]
 
-  @Override
-  protected Version clientVersion() {
-    return WorldAppModel.VERSION;
-  }
-
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
@@ -74,6 +68,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     SwingUtilities.invokeLater(() -> entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
+            .applicationVersion(WorldAppModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .defaultLookAndFeelName(FlatDarkLaf.class.getName())

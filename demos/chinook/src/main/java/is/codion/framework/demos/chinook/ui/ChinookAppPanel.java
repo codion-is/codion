@@ -8,7 +8,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
@@ -107,11 +106,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
                     .preferredSize(new Dimension(1000, 500));
 
     return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
-  }
-
-  @Override
-  protected Version clientVersion() {
-    return ChinookApplicationModel.VERSION;
   }
 
   @Override

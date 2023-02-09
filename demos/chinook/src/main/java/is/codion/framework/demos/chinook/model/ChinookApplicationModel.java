@@ -15,7 +15,7 @@ public final class ChinookApplicationModel extends SwingEntityApplicationModel {
   public static final Version VERSION = Version.parsePropertiesFile(ChinookApplicationModel.class, "/version.properties");
 
   public ChinookApplicationModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
+    super(connectionProvider, VERSION);
     addEntityModel(createArtistModel(connectionProvider));
     addEntityModel(createPlaylistModel(connectionProvider));
     addEntityModel(createCustomerModel(connectionProvider));

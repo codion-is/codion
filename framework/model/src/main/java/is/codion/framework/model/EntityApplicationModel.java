@@ -7,11 +7,13 @@ import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * A central application model class.
@@ -59,6 +61,11 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return the EntityConnectionProvider instance being used by this EntityApplicationModel
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * @return the application version, an empty Optional in case no version information is available
+   */
+  Optional<Version> version();
 
   /**
    * Returns a StateObserver which is active while the underlying application connection provider is connected.

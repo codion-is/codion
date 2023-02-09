@@ -702,11 +702,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel createAboutPanel() {
     PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
             .border(createEmptyBorder(5, 5, 5, 5));
-    if (clientVersion() != null) {
-      versionMemoryPanel
-              .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
-              .add(new JLabel(clientVersion().toString()));
-    }
+    model().version().ifPresent(version -> versionMemoryPanel
+            .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
+            .add(new JLabel(version.toString())));
     versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
             .add(new JLabel(Version.versionAndMetadataString()))
@@ -718,13 +716,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST)
             .add(versionMemoryPanel.build(), BorderLayout.CENTER)
             .build();
-  }
-
-  /**
-   * @return the client version if specified, null by default
-   */
-  protected Version clientVersion() {
-    return null;
   }
 
   /**

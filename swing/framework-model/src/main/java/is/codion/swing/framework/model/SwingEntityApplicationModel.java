@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.DefaultEntityApplicationModel;
 
@@ -14,9 +15,18 @@ public class SwingEntityApplicationModel
 
   /**
    * Instantiates a new {@link SwingEntityApplicationModel}
-   * @param connectionProvider the connectio provider
+   * @param connectionProvider the connection provider
    */
   public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
+    this(connectionProvider, null);
+  }
+
+  /**
+   * Instantiates a new {@link SwingEntityApplicationModel}
+   * @param connectionProvider the connection provider
+   * @param version the application version
+   */
+  public SwingEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
+    super(connectionProvider, version);
   }
 }
