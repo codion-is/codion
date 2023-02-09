@@ -81,10 +81,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean includeMainMenu = true;
-  private Dimension frameSize = Windows.screenSizeRatio(0.5);
+  private Dimension frameSize;
   private boolean loginRequired = EntityApplicationModel.AUTHENTICATION_REQUIRED.get();
   private User defaultLoginUser;
-  private User silentLoginUser;
+  private User automaticLoginUser;
 
   DefaultEntityApplicationBuilder(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass) {
     this.panelClass = requireNonNull(panelClass);
@@ -139,8 +139,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> silentLoginUser(User silentLoginUser) {
-    this.silentLoginUser = silentLoginUser;
+  public EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser) {
+    this.automaticLoginUser = automaticLoginUser;
     return this;
   }
 
@@ -288,8 +288,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private User user() {
-    if (silentLoginUser != null) {
-      return silentLoginUser;
+    if (automaticLoginUser != null) {
+      return automaticLoginUser;
     }
     if (!loginRequired) {
       return null;

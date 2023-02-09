@@ -51,7 +51,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
                 throw new RuntimeException(e);
               }
             })
-            .silentLoginUser(user)
+            .automaticLoginUser(user)
             .displayStartupDialog(false)
             .displayFrame(false)
             .start();

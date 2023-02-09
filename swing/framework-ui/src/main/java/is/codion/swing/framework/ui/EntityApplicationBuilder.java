@@ -69,19 +69,20 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   EntityApplicationBuilder<M> panelFactory(Function<M, ? extends EntityApplicationPanel<M>> panelFactory);
 
   /**
-   * @param defaultLoginUser the default user to display in the login dialog
+   * @param defaultLoginUser the default user credentials to display in the login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> defaultLoginUser(User defaultLoginUser);
 
   /**
-   * @param silentLoginUser if specified the application is started silently with that user, displaying no login dialog
+   * @param automaticLoginUser if specified the application is started automatically with that user,
+   * instead of displaying a login dialog
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M> silentLoginUser(User silentLoginUser);
+  EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser);
 
   /**
-   * @param loginValidator the login validator
+   * @param loginValidator the login validator for the login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator);
