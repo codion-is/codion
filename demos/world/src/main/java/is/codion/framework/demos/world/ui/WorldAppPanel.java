@@ -4,7 +4,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
@@ -29,12 +28,13 @@ import java.util.Locale;
 
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
-  public WorldAppPanel() {
-    super("World");
+  public WorldAppPanel(WorldAppModel applicationModel) {
+    super(applicationModel);
   }
 
   // tag::initializeEntityPanels[]
@@ -54,21 +54,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
   }
   // end::initializeEntityPanels[]
 
-  @Override
-  protected WorldAppModel createApplicationModel(EntityConnectionProvider connectionProvider) {
-    return new WorldAppModel(connectionProvider);
-  }
-
-  @Override
-  protected Version clientVersion() {
-    return WorldAppModel.VERSION;
-  }
-
-  @Override
-  protected String defaultLookAndFeelName() {
-    return FlatDarkLaf.class.getName();
-  }
-
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
@@ -81,9 +66,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
-    SwingUtilities.invokeLater(() -> new WorldAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
+            .applicationName("World")
+            .applicationVersion(WorldAppModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
+            .defaultLookAndFeelName(FlatDarkLaf.class.getName())
             .start());
   }
 }

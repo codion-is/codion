@@ -1,0 +1,195 @@
+/*
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.swing.framework.ui;
+
+import is.codion.common.event.EventDataListener;
+import is.codion.common.user.User;
+import is.codion.common.version.Version;
+import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComponent;
+import javax.swing.JFrame;
+import java.awt.Dimension;
+import java.util.function.Function;
+import java.util.function.Supplier;
+
+/**
+ * Builds a {@link EntityApplicationPanel} and starts the application.
+ * @param <M> the application model type
+ * @see EntityApplicationBuilder#entityApplicationBuilder(Class, Class)
+ * @see #start()
+ */
+public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel> {
+
+  /**
+   * @param applicationName the application name
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> applicationName(String applicationName);
+
+  /**
+   * @param applicationIcon the application icon
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> applicationIcon(ImageIcon applicationIcon);
+
+  /**
+   * @param applicationVersion the application version
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> applicationVersion(Version applicationVersion);
+
+  /**
+   * Sets the default look and feel name, used in case no look and feel settings are found in user preferences.
+   * @param defaultLookAndFeelName the default look and feel name
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> defaultLookAndFeelName(String defaultLookAndFeelName);
+
+  /**
+   * @param connectionProviderFactory the connection provider factory
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory);
+
+  /**
+   * @param modelFactory the application model factory
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> modelFactory(Function<EntityConnectionProvider, M> modelFactory);
+
+  /**
+   * @param panelFactory the application panel factory
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> panelFactory(Function<M, ? extends EntityApplicationPanel<M>> panelFactory);
+
+  /**
+   * @param defaultLoginUser the default user to display in the login dialog
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> defaultLoginUser(User defaultLoginUser);
+
+  /**
+   * @param silentLoginUser if specified the application is started silently with that user, displaying no login dialog
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> silentLoginUser(User silentLoginUser);
+
+  /**
+   * @param loginValidator the login validator
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator);
+
+  /**
+   * @param saveDefaultUsername true if the username should be saved after a successful login
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> saveDefaultUsername(boolean saveDefaultUsername);
+
+  /**
+   * @param loginPanelSouthComponentSupplier supplies the component to add to the BorderLayout.SOUTH position of the
+   * login panel
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier);
+
+  /**
+   * @param onApplicationStarted called after a successful application start
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> onApplicationStarted(EventDataListener<EntityApplicationPanel<M>> onApplicationStarted);
+
+  /**
+   * @param frameSupplier the frame supplier
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> frameSupplier(Supplier<JFrame> frameSupplier);
+
+  /**
+   * @param frameTitleFactory the frame title factory
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> frameTitleFactory(Function<M, String> frameTitleFactory);
+
+  /**
+   * @param includeMainMenu if true then a main menu is included
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> includeMainMenu(boolean includeMainMenu);
+
+  /**
+   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> maximizeFrame(boolean maximizeFrame);
+
+  /**
+   * @param displayFrame specifies whether the frame should be displayed or left invisible
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> displayFrame(boolean displayFrame);
+
+  /**
+   * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> displayStartupDialog(boolean displayProgressDialog);
+
+  /**
+   * @param frameSize the frame size when not maximized
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> frameSize(Dimension frameSize);
+
+  /**
+   * If this is set to false, the {@link #connectionProviderFactory(ConnectionProviderFactory)}
+   * {@link User} argument will be null.
+   * @param loginRequired true if a user login is required for this application, false if the user is supplied differently
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> loginRequired(boolean loginRequired);
+
+  /**
+   * Starts the application, should be called on the Event Dispatch Thread
+   */
+  void start();
+
+  /**
+   * @param <M> the application model type
+   * @param modelClass the application model class
+   * @param panelClass the application panel class
+   * @return a {@link EntityApplicationBuilder}
+   */
+  static <M extends SwingEntityApplicationModel> EntityApplicationBuilder<M> entityApplicationBuilder(
+          Class<M> modelClass, Class<?extends EntityApplicationPanel<M>> panelClass) {
+    return new DefaultEntityApplicationBuilder<>(modelClass, panelClass);
+  }
+
+  /**
+   * A factory for a {@link EntityConnectionProvider} instance.
+   */
+  interface ConnectionProviderFactory {
+
+    /**
+     * Creates a new {@link EntityConnectionProvider} instance.
+     * @param user the user, is null in case login is not required {@link EntityApplicationBuilder#loginRequired(boolean)}.
+     * @param clientTypeId the client type id
+     * @param clientVersion the client version
+     * @return a new {@link EntityConnectionProvider} instance.
+     */
+    default EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
+      return EntityConnectionProvider.builder()
+              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+              .clientTypeId(clientTypeId)
+              .clientVersion(clientVersion)
+              .user(user)
+              .build();
+    }
+  }
+}

@@ -7,6 +7,7 @@ import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityType;
@@ -15,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
@@ -31,6 +33,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 30;
 
   private final EntityConnectionProvider connectionProvider;
+  private final Version version;
   private final State connectionValidState = State.state();
   private final TaskScheduler validityCheckScheduler = TaskScheduler.builder(this::checkConnectionValidity)
           .interval(VALIDITY_CHECK_INTERVAL_SECONDS)
@@ -47,10 +50,21 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
    * @throws NullPointerException in case connectionProvider is null
    */
   public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider) {
-    requireNonNull(connectionProvider, "connectionProvider");
-    this.connectionProvider = connectionProvider;
+    this(connectionProvider, null);
+  }
+
+  /**
+   * Instantiates a new DefaultEntityApplicationModel
+   * @param connectionProvider the EntityConnectionProvider instance
+   * @param version the application version
+   * @throws NullPointerException in case connectionProvider is null
+   */
+  public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
+    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+    this.version = version;
     if (SCHEDULE_CONNECTION_VALIDATION.get()) {
       validityCheckScheduler.start();
+      connectionValidState.set(connectionProvider.isConnectionValid());
       connectionProvider.addOnConnectListener(connection -> {
         connectionValidState.set(true);
         validityCheckScheduler.start();
@@ -66,6 +80,11 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public final EntityConnectionProvider connectionProvider() {
     return connectionProvider;
+  }
+
+  @Override
+  public final Optional<Version> version() {
+    return Optional.ofNullable(version);
   }
 
   @Override

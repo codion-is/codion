@@ -11,7 +11,6 @@ import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
-import is.codion.common.i18n.Messages;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -19,7 +18,6 @@ import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -37,7 +35,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -48,11 +45,8 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
@@ -63,7 +57,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -75,11 +68,8 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Desktop;
 import java.awt.Dimension;
-import java.awt.Frame;
 import java.awt.KeyboardFocusManager;
 import java.awt.Window;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -93,9 +83,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
-import java.util.function.Supplier;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -109,7 +98,6 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
         extends JPanel implements HierarchyPanel {
 
-  private static final String CODION_CLIENT_VERSION = "codion.client.version";
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
   private static final String HELP = "help";
@@ -121,6 +109,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static final String MEMORY_USAGE = "memory_usage";
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
+
+  static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
+  static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
+  static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
 
   /**
    * Specifies the URL to the application help<br>
@@ -169,10 +161,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", SwingConstants.TOP);
 
-  private static final String DEFAULT_USERNAME_PROPERTY = "is.codion.swing.framework.ui.defaultUsername";
-  private static final String LOOK_AND_FEEL_PROPERTY = "is.codion.swing.framework.ui.LookAndFeel";
-  private static final String FONT_SIZE_PROPERTY = "is.codion.swing.framework.ui.FontSize";
-
   private static final int DEFAULT_LOGO_SIZE = 68;
 
   /** Non-static so that Locale.setDefault(...) can be called in the main method of a subclass */
@@ -182,56 +170,29 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
-  private final Supplier<JFrame> frameProvider;
+  private final M applicationModel;
   private final List<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
 
-  private M applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event<JFrame> applicationStartedEvent = Event.event();
+  final Event<JFrame> applicationStartedEvent = Event.event();
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
 
   private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
 
-  private final Map<Object, State> logLevelStates;
+  private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-  private final String applicationName;
+  private boolean panelInitialized = false;
 
-  private ImageIcon applicationIcon;
-
-  /**
-   * @param applicationName the application name
-   */
-  public EntityApplicationPanel(String applicationName) {
-    this(applicationName, null);
-  }
-
-  /**
-   * @param applicationName the application name
-   * @param applicationIcon the application icon
-   */
-  public EntityApplicationPanel(String applicationName, ImageIcon applicationIcon) {
-    this(applicationName, applicationIcon, JFrame::new);
-  }
-
-  /**
-   * @param applicationName the application name
-   * @param applicationIcon the application icon
-   * @param frameProvider the JFrame provider
-   */
-  public EntityApplicationPanel(String applicationName, ImageIcon applicationIcon, Supplier<JFrame> frameProvider) {
-    this.frameProvider = frameProvider;
-    this.applicationName = applicationName == null ? "" : applicationName;
-    this.applicationIcon = applicationIcon;
+  public EntityApplicationPanel(M applicationModel) {
+    this.applicationModel = requireNonNull(applicationModel);
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
-    this.logLevelStates = createLogLevelStateMap();
     //initialize button captions, not in a static initializer since applications may set the locale in main()
     UiManagerDefaults.initialize();
-    setUncaughtExceptionHandler();
   }
 
   /**
@@ -276,25 +237,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final Optional<Window> parentWindow() {
     return Optional.ofNullable(getParentWindow(this));
-  }
-
-  /**
-   * @return the application name
-   */
-  public final String applicationName() {
-    return applicationName;
-  }
-
-  /**
-   * @return the application icon, the default logo icon if none has been specified
-   * @see FrameworkIcons#logo(int)
-   */
-  public final ImageIcon applicationIcon() {
-    if (applicationIcon == null) {
-      applicationIcon = FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE);
-    }
-
-    return applicationIcon;
   }
 
   /**
@@ -479,6 +421,24 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * Initializes this panel and marks is as initialized, subsequent calls have no effect.
+   */
+  public void initializePanel() {
+    if (!panelInitialized) {
+      try {
+        this.entityPanels.addAll(createEntityPanels(applicationModel));
+        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders(applicationModel));
+        initializeUI();
+        bindEventsInternal();
+        bindEvents();
+      }
+      finally {
+        panelInitialized = true;
+      }
+    }
+  }
+
+  /**
    * @param listener a listener notified each time the always on top status changes
    */
   public final void addAlwaysOnTopListener(EventDataListener<Boolean> listener) {
@@ -520,13 +480,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return new DefaultTreeModel(root);
-  }
-
-  /**
-   * @return a {@link Starter} for this application panel.
-   */
-  public Starter starter() {
-    return new EntityApplicationPanelStarter(this);
   }
 
   /**
@@ -749,11 +702,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel createAboutPanel() {
     PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
             .border(createEmptyBorder(5, 5, 5, 5));
-    if (clientVersion() != null) {
-      versionMemoryPanel
-              .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
-              .add(new JLabel(clientVersion().toString()));
-    }
+    model().version().ifPresent(version -> versionMemoryPanel
+            .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
+            .add(new JLabel(version.toString())));
     versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(CODION_VERSION) + ":"))
             .add(new JLabel(Version.versionAndMetadataString()))
@@ -765,29 +716,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST)
             .add(versionMemoryPanel.build(), BorderLayout.CENTER)
             .build();
-  }
-
-  /**
-   * Initializes the entity connection provider
-   * @param user the user
-   * @param clientTypeId a string specifying the client type
-   * @return an initialized EntityConnectionProvider
-   * @throws CancelException in case the initialization is cancelled
-   */
-  protected EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId) {
-    return EntityConnectionProvider.builder()
-            .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-            .clientTypeId(clientTypeId)
-            .clientVersion(clientVersion())
-            .user(user)
-            .build();
-  }
-
-  /**
-   * @return the client version if specified, null by default
-   */
-  protected Version clientVersion() {
-    return null;
   }
 
   /**
@@ -942,36 +870,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Returns the name of the look and feel to use, this default implementation fetches
-   * it from user preferences, if no preference is available the default system look and feel is used.
-   * @return the look and feel name to use
-   * @see #defaultLookAndFeelName()
-   */
-  protected String lookAndFeelName() {
-    return UserPreferences.getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelName());
-  }
-
-  /**
-   * @return the default look and feel to use for the system we're running on.
-   * @see Utilities#systemLookAndFeelClassName()
-   */
-  protected String defaultLookAndFeelName() {
-    return Utilities.systemLookAndFeelClassName();
-  }
-
-  /**
-   * Returns the font size multiplier to use, from user preferences, in percentages, e.g:<br>
-   * 85 = decrease the default font size by 15%<br>
-   * 100 = use the default font size<br>
-   * 125 = increase the default font size by 25%<br>
-   * @return the font size percentage to use
-   * @see #selectFontSize()
-   */
-  protected int fontSizePercentage() {
-    return Integer.parseInt(UserPreferences.getUserPreference(applicationFontSizeProperty, "100"));
-  }
-
-  /**
    * Creates a panel to display in the NORTH position of this application panel.
    * override to provide a north panel.
    * @return a panel for the NORTH position
@@ -990,87 +888,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes the icon panel to show in the startup dialog
-   * @param icon the icon
-   * @return an initialized startup icon panel
-   */
-  protected JPanel createStartupIconPanel(Icon icon) {
-    JPanel panel = new JPanel(new BorderLayout());
-    if (icon != null) {
-      panel.add(new JLabel(icon), BorderLayout.CENTER);
-    }
-
-    return panel;
-  }
-
-  /**
-   * @return a frame title based on the application name, version and the logged-in user
-   */
-  protected String frameTitle() {
-    StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
-    Version version = clientVersion();
-    if (version != null) {
-      if (builder.length() > 0) {
-        builder.append(" - ");
-      }
-      builder.append(version);
-    }
-    if (builder.length() > 0) {
-      builder.append(" - ");
-    }
-    builder.append(userInfo(model().connectionProvider()));
-
-    return builder.toString();
-  }
-
-  /**
-   * Initializes a JFrame according to the given parameters, containing this EntityApplicationPanel
-   * @param displayFrame specifies whether the frame should be displayed or left invisible
-   * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-   * @param frameSize if the JFrame is not maximized then its preferredSize is set to this value
-   * @param mainMenu yes if the main menu should be included
-   * @return an initialized, but non-visible JFrame
-   */
-  protected final JFrame prepareFrame(boolean displayFrame, boolean maximizeFrame, Dimension frameSize,
-                                      boolean mainMenu) {
-    JFrame frame = frameProvider.get();
-    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    frame.setIconImage(applicationIcon().getImage());
-    frame.addWindowListener(new WindowAdapter() {
-      @Override
-      public void windowClosing(WindowEvent e) {
-        try {
-          exit();
-        }
-        catch (CancelException ignored) {/*ignored*/}
-      }
-    });
-    frame.getContentPane().setLayout(new BorderLayout());
-    frame.getContentPane().add(this, BorderLayout.CENTER);
-    if (frameSize != null) {
-      frame.setSize(frameSize);
-    }
-    else {
-      frame.pack();
-      Windows.setSizeWithinScreenBounds(frame);
-    }
-    frame.setLocationRelativeTo(null);
-    if (maximizeFrame) {
-      frame.setExtendedState(Frame.MAXIMIZED_BOTH);
-    }
-    frame.setTitle(frameTitle());
-    if (mainMenu) {
-      frame.setJMenuBar(createMenuBar());
-    }
-    frame.setAlwaysOnTop(alwaysOnTopState.get());
-    if (displayFrame) {
-      frame.setVisible(true);
-    }
-
-    return frame;
-  }
-
-  /**
    * Adds a listener notified when the application is about to exit.
    * To cancel the exit throw a {@link CancelException}.
    * @param listener a listener notified when the application is about to exit
@@ -1085,62 +902,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see #createMainMenuControls()
    */
   protected JMenuBar createMenuBar() {
-    return createMainMenuControls().createMenuBar();
+    Controls mainMenuControls = createMainMenuControls();
+
+    return mainMenuControls == null || mainMenuControls.isEmpty() ? null : mainMenuControls.createMenuBar();
   }
 
   /**
-   * Creates the application model
-   * @param connectionProvider the connection provider
-   * @return an initialized application model
-   * @throws CancelException in case the initialization is cancelled
+   * @return the default username, that is, the username of the last successful login from user preferences,
+   * or the operating system username, if no username is found in user preferences.
    */
-  protected abstract M createApplicationModel(EntityConnectionProvider connectionProvider);
-
-  /**
-   * Returns the user, either via a login dialog or via override, called during startup if login is required
-   * @param defaultUser the default user to display in the login dialog
-   * @param loginValidator the user login validator
-   * @return the application user
-   * @throws CancelException in case a login dialog is cancelled
-   */
-  protected User loginUser(User defaultUser, LoginValidator loginValidator) {
-    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
-    User user = Dialogs.loginDialog()
-            .defaultUser(defaultUser == null ? User.user(defaultUsername()) : defaultUser)
-            .validator(loginValidator)
-            .title(loginDialogTitle)
-            .icon(applicationIcon())
-            .show();
-    if (nullOrEmpty(user.username())) {
-      throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
-    }
-
-    return user;
-  }
-
-  /**
-   * Saves the username so that it can be used as default the next time this application is started.
-   * @param username the username
-   */
-  protected void saveDefaultUsername(String username) {
-    UserPreferences.setUserPreference(applicationDefaultUsernameProperty, username);
-  }
-
-  /**
-   * @return a default username previously saved to user preferences or the OS username
-   */
-  protected String defaultUsername() {
-    return UserPreferences.getUserPreference(applicationDefaultUsernameProperty,
+  protected final String defaultUsername() {
+    return getUserPreference(applicationDefaultUsernameProperty,
             EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name"));
-  }
-
-  /**
-   * Returns a String identifying the application this EntityApplicationPanel represents,
-   * by default the full class name is returned.
-   * @return a String identifying the application type this panel represents
-   */
-  protected String applicationIdentifier() {
-    return getClass().getName();
   }
 
   /**
@@ -1151,86 +924,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected void savePreferences() {
     entityPanels().forEach(EntityPanel::savePreferences);
     model().savePreferences();
-  }
-
-  final void startApplication(User defaultUser, User silentLoginUser, boolean loginRequired,
-                              Dimension frameSize, boolean maximizeFrame, boolean displayFrame,
-                              boolean includeMainMenu, boolean displayProgressDialog) {
-    LOG.debug("{} application starting", applicationName);
-    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
-    LookAndFeelProvider.getLookAndFeelProvider(lookAndFeelName()).ifPresent(LookAndFeelProvider::enable);
-    int fontSizePercentage = fontSizePercentage();
-    if (fontSizePercentage != 100) {
-      Utilities.setFontSizePercentage(fontSizePercentage);
-      FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
-    }
-
-    EntityConnectionProvider connectionProvider = createConnectionProvider(defaultUser, silentLoginUser, loginRequired);
-
-    if (silentLoginUser == null && EntityApplicationModel.SAVE_DEFAULT_USERNAME.get()) {
-      saveDefaultUsername(connectionProvider.user().username());
-    }
-
-    startApplication(frameSize, maximizeFrame, displayFrame, includeMainMenu, displayProgressDialog, connectionProvider);
-  }
-
-  private void startApplication(Dimension frameSize, boolean maximizeFrame, boolean displayFrame,
-                                boolean includeMainMenu, boolean displayProgressDialog,
-                                EntityConnectionProvider connectionProvider) {
-    setVersionProperty();
-    long initializationStarted = System.currentTimeMillis();
-    if (displayProgressDialog) {
-      Dialogs.progressWorkerDialog(() -> createApplicationModel(connectionProvider))
-              .title(applicationName)
-              .icon(applicationIcon())
-              .westPanel(createStartupIconPanel(applicationIcon()))
-              .onResult(model -> startApplication(model, frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted))
-              .onException(this::displayException)
-              .execute();
-    }
-    else {
-      startApplication(createApplicationModel(connectionProvider), frameSize, maximizeFrame, displayFrame, includeMainMenu, initializationStarted);
-    }
-  }
-
-  private void startApplication(M applicationModel, Dimension frameSize, boolean maximizeFrame,
-                                boolean displayFrame, boolean includeMainMenu, long initializationStarted) {
-    try {
-      this.applicationModel = applicationModel;
-      initializePanel();
-      JFrame frame = prepareFrame(displayFrame, maximizeFrame, frameSize, includeMainMenu);
-      applicationStartedEvent.onEvent(frame);
-      LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
-    }
-    catch (Exception exception) {
-      displayException(exception);
-      throw new CancelException();
-    }
-  }
-
-  /**
-   * Sets the application version as a system property, so that it appears automatically in exception dialogs.
-   */
-  private void setVersionProperty() {
-    Version version = clientVersion();
-    if (version != null) {
-      System.setProperty(CODION_CLIENT_VERSION, version.toString());
-    }
-  }
-
-  private EntityConnectionProvider createConnectionProvider(User defaultUser, User silentLoginUser,
-                                                            boolean loginRequired) {
-    if (silentLoginUser == null && loginRequired) {
-      EntityLoginValidator loginValidator = new EntityLoginValidator();
-      loginUser(defaultUser, loginValidator);
-
-      return loginValidator.connectionProvider;
-    }
-
-    EntityConnectionProvider connectionProvider = initializeConnectionProvider(silentLoginUser, applicationIdentifier());
-    connectionProvider.connection();//throws exception if the server is not reachable
-
-    return connectionProvider;
   }
 
   private JTabbedPane createApplicationTabPane() {
@@ -1255,26 +948,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return tabbedPane;
   }
 
-  /**
-   * Sets the uncaught exception handler
-   */
-  private void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
-  }
-
   private void bindEventsInternal() {
-    applicationModel.connectionValidObserver().addDataListener(connectionValid -> SwingUtilities.invokeLater(() ->
-            setParentWindowTitle(connectionValid ? frameTitle() : (frameTitle() + " - " + resourceBundle.getString("not_connected")))));
     alwaysOnTopState.addDataListener(alwaysOnTop ->
             parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
-  }
-
-  private void initializePanel() {
-    this.entityPanels.addAll(createEntityPanels(applicationModel));
-    this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders(applicationModel));
-    initializeUI();
-    bindEventsInternal();
-    bindEvents();
   }
 
   private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
@@ -1303,16 +979,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private JScrollPane createDependencyTree() {
     return createTree(createDependencyTreeModel(applicationModel.entities()));
-  }
-
-  private void setParentWindowTitle(String title) {
-    Window parentWindow = getParentWindow(this);
-    if (parentWindow instanceof JFrame) {
-      ((JFrame) parentWindow).setTitle(title);
-    }
-    else if (parentWindow instanceof JDialog) {
-      ((JDialog) parentWindow).setTitle(title);
-    }
   }
 
   private boolean cancelExit() {
@@ -1408,84 +1074,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
-  private static String userInfo(EntityConnectionProvider connectionProvider) {
-    String description = connectionProvider.description();
-
-    return removePrefix(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
-  }
-
-  private static String removePrefix(String username) {
-    String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
-    if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
-      return username.substring(usernamePrefix.length());
-    }
-
-    return username;
-  }
-
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.definition(entityType).foreignKeys().stream()
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
-  }
-
-  /**
-   * A starter for entity application panels.
-   */
-  public interface Starter {
-
-    /**
-     * @param includeMainMenu if true then a main menu is included
-     * @return this Starter instance
-     */
-    Starter includeMainMenu(boolean includeMainMenu);
-
-    /**
-     * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
-     * @return this Starter instance
-     */
-    Starter maximizeFrame(boolean maximizeFrame);
-
-    /**
-     * @param displayFrame specifies whether the frame should be displayed or left invisible
-     * @return this Starter instance
-     */
-    Starter displayFrame(boolean displayFrame);
-
-    /**
-     * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
-     * @return this Starter instance
-     */
-    Starter displayProgressDialog(boolean displayProgressDialog);
-
-    /**
-     * @param frameSize the frame size when not maximized
-     * @return this Starter instance
-     */
-    Starter frameSize(Dimension frameSize);
-
-    /**
-     * @param loginRequired true if a login dialog is required for this application,
-     * false if the user is supplied differently
-     * @return this Starter instance
-     */
-    Starter loginRequired(boolean loginRequired);
-
-    /**
-     * @param defaultLoginUser the default user to display in the login dialog
-     * @return this Starter instance
-     */
-    Starter defaultLoginUser(User defaultLoginUser);
-
-    /**
-     * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
-     * @return this Starter instance
-     */
-    Starter silentLoginUser(User silentLoginUser);
-
-    /**
-     * Starts the application, should be called on the Event Dispatch Thread
-     */
-    void start();
   }
 
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
@@ -1555,17 +1146,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
 
       return false;
-    }
-  }
-
-  private final class EntityLoginValidator implements LoginValidator {
-
-    private EntityConnectionProvider connectionProvider;
-
-    @Override
-    public void validate(User user) throws Exception {
-      connectionProvider = initializeConnectionProvider(user, applicationIdentifier());
-      connectionProvider.connection();//throws exception if the server is not reachable
     }
   }
 }

@@ -8,7 +8,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
@@ -42,6 +41,7 @@ import java.util.ResourceBundle;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
@@ -57,8 +57,8 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   /* Non-static so this is not initialized before main(), which sets the locale */
   private final ResourceBundle bundle = ResourceBundle.getBundle(ChinookAppPanel.class.getName());
 
-  public ChinookAppPanel() {
-    super("Chinook");
+  public ChinookAppPanel(ChinookApplicationModel applicationModel) {
+    super(applicationModel);
   }
 
   @Override
@@ -109,16 +109,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected ChinookApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
-    return new ChinookApplicationModel(connectionProvider);
-  }
-
-  @Override
-  protected Version clientVersion() {
-    return ChinookApplicationModel.VERSION;
-  }
-
-  @Override
   protected Controls createViewMenuControls() {
     return super.createViewMenuControls()
             .addAt(4, Control.builder(this::selectLanguage)
@@ -166,7 +156,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
-    SwingUtilities.invokeLater(() -> new ChinookAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(ChinookApplicationModel.class, ChinookAppPanel.class)
+            .applicationName("Chinook")
+            .applicationVersion(ChinookApplicationModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

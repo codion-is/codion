@@ -4,17 +4,18 @@
 package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.user.User;
+import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel.EmpDeptApplicationModel;
 import is.codion.swing.framework.ui.test.EntityApplicationPanelTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-public class EmpDeptAppPanelTest extends EntityApplicationPanelTestUnit {
+public class EmpDeptAppPanelTest extends EntityApplicationPanelTestUnit<EmpDeptApplicationModel> {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public EmpDeptAppPanelTest() {
-    super(EmpDeptAppPanel.class, UNIT_TEST_USER);
+    super(EmpDeptApplicationModel.class, EmpDeptAppPanel.class, UNIT_TEST_USER);
   }
 
   @Test

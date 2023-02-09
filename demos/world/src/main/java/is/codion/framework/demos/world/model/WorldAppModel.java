@@ -10,7 +10,7 @@ public final class WorldAppModel extends SwingEntityApplicationModel {
   public static final Version VERSION = Version.parsePropertiesFile(WorldAppModel.class, "/version.properties");
 
   public WorldAppModel(EntityConnectionProvider connectionProvider) {
-    super(connectionProvider);
+    super(connectionProvider, VERSION);
     CountryModel countryModel = new CountryModel(connectionProvider);
     SwingEntityModel lookupModel = new SwingEntityModel(new LookupTableModel(connectionProvider));
     ContinentModel continentModel = new ContinentModel(connectionProvider);

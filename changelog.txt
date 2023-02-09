@@ -8693,3 +8693,5 @@
   AbstractEntityModel.containsUnsavedData() now only reports unsaved modification if the entity is not new, based on modifiedSupplier
   NullableCheckBox.NullableIcon, minor icon center adjustment
   FXEntityListSelectionModel.setSelectedIndex() bug fixed
+  EntityApplicationBuilder added, EntityApplicationPanel.Starter removed, major related refactoring
+  EntityApplicationPanel.clientVersion() removed, EntityApplicationModel.version() added

@@ -24,11 +24,13 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
+
 // tag::storeAppPanel[]
 public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
-  public StoreAppPanel() {
-    super("Store");
+  public StoreAppPanel(StoreAppModel appModel) {
+    super(appModel);
   }
 
   @Override
@@ -63,11 +65,6 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
   // end::createSupportEntityPanelBuilders[]
 
-  @Override
-  protected StoreAppModel createApplicationModel(EntityConnectionProvider connectionProvider) {
-    return new StoreAppModel(connectionProvider);
-  }
-
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en", "EN"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
@@ -77,7 +74,8 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
     Report.REPORT_PATH.set("http://test.io");
-    SwingUtilities.invokeLater(() -> new StoreAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(StoreAppModel.class, StoreAppPanel.class)
+            .applicationName("Store")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
