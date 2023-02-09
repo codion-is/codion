@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.empdept.minimal;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -33,6 +32,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Property.*;
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 /**
  * EmpDept minimal application demo
@@ -241,8 +241,8 @@ public final class EmpDeptMinimalApp {
    */
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
-    private EmpDeptApplicationPanel() {
-      super("EmpDept Minimal");
+    private EmpDeptApplicationPanel(EmpDeptApplicationModel applicationModel) {
+      super(applicationModel);
     }
 
     @Override
@@ -258,12 +258,6 @@ public final class EmpDeptMinimalApp {
       departmentPanel.addDetailPanel(employeePanel);
 
       return Collections.singletonList(departmentPanel);
-    }
-
-    @Override
-    protected EmpDeptApplicationModel createApplicationModel(
-            EntityConnectionProvider connectionProvider) throws CancelException {
-      return new EmpDeptApplicationModel(connectionProvider);
     }
   }
 
@@ -282,7 +276,8 @@ public final class EmpDeptMinimalApp {
     System.setProperty("java.security.policy", "resources/config/codion_demos.policy");
 
     //we create an instance of our application panel and start it
-    SwingUtilities.invokeLater(() -> new EmpDeptApplicationPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
+            .applicationName("EmpDept Minimal")
             .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

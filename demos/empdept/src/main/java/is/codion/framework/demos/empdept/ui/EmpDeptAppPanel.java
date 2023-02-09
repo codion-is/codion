@@ -4,7 +4,6 @@
 package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.Text;
-import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
@@ -28,11 +27,13 @@ import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
+
 // tag::createEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
 
-  public EmpDeptAppPanel() {
-    super("Emp-Dept");
+  public EmpDeptAppPanel(EmpDeptAppPanel.EmpDeptApplicationModel applicationModel) {
+    super(applicationModel);
   }
 
   @Override
@@ -81,18 +82,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   }
   // end::createToolsMenuControls[]
 
-  // tag::createApplicationModel[]
-  @Override
-  protected EmpDeptApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
-    return new EmpDeptApplicationModel(connectionProvider);
-  }
-  // end::createApplicationModel[]
-
   // tag::main[]
   public static void main(String[] args) {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
-    SwingUtilities.invokeLater(() -> new EmpDeptAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptAppPanel.class)
+            .applicationName("Emp-Dept")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

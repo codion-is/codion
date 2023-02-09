@@ -191,13 +191,6 @@ We override *createToolsMenuControls()* to add our import action to the Tools me
 include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=createToolsMenuControls]
 ----
 
-We implement *createApplicationModel()* by returning an instance of the *EmpDeptApplicationModel* class, which we'll define later.
-
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=createApplicationModel]
-----
-
 We create a *main()* method for configuring and running the application. See <<{basedir}/technical/client.adoc#_client_configuration, client configuration>> for what configuration is required for running the client.
 
 [source,java]

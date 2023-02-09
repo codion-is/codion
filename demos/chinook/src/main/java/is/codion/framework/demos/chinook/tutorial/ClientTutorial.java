@@ -34,6 +34,7 @@ import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.property.Property.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Collections.singletonList;
 
 /**
@@ -129,27 +130,27 @@ public final class ClientTutorial {
     }
   }
 
-  private static final class ApplicationPanel extends EntityApplicationPanel<SwingEntityApplicationModel> {
+  private static final class ApplicationModel extends SwingEntityApplicationModel {
 
-    private ApplicationPanel() {
-      super("Artists and Albums");
-    }
-
-    @Override
-    protected SwingEntityApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) {
+    private ApplicationModel(EntityConnectionProvider connectionProvider) {
+      super(connectionProvider);
       SwingEntityModel artistModel = new SwingEntityModel(Artist.TYPE, connectionProvider);
       SwingEntityModel albumModel = new SwingEntityModel(Album.TYPE, connectionProvider);
       artistModel.addDetailModel(albumModel);
       artistModel.tableModel().refresh();
 
-      SwingEntityApplicationModel applicationModel = new SwingEntityApplicationModel(connectionProvider);
-      applicationModel.addEntityModel(artistModel);
+      addEntityModel(artistModel);
+    }
+  }
 
-      return applicationModel;
+  private static final class ApplicationPanel extends EntityApplicationPanel<ApplicationModel> {
+
+    private ApplicationPanel(ApplicationModel applicationModel) {
+      super(applicationModel);
     }
 
     @Override
-    protected List<EntityPanel> createEntityPanels(SwingEntityApplicationModel applicationModel) {
+    protected List<EntityPanel> createEntityPanels(ApplicationModel applicationModel) {
       SwingEntityModel artistModel = applicationModel.entityModel(Artist.TYPE);
       SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
       EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.editModel()));
@@ -167,7 +168,8 @@ public final class ClientTutorial {
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    SwingUtilities.invokeLater(() -> new ApplicationPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
+            .applicationName("Artists and Albums")
             .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

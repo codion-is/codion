@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.schemabrowser.client.ui;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
@@ -23,10 +22,12 @@ import javax.swing.SwingUtilities;
 import java.util.Collections;
 import java.util.List;
 
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
+
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
-  public SchemaBrowserAppPanel() {
-    super("Schema Browser");
+  public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
+    super(applicationModel);
   }
 
   @Override
@@ -55,21 +56,12 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     return Collections.singletonList(schemaPanel);
   }
 
-  @Override
-  protected SchemaBrowserApplicationModel createApplicationModel(EntityConnectionProvider connectionProvider) throws CancelException {
-    return new SchemaBrowserApplicationModel(connectionProvider);
-  }
-
-  @Override
-  protected String applicationIdentifier() {
-    return "is.codion.demo.SchemaBrowser";
-  }
-
   public static void main(String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
-    SwingUtilities.invokeLater(() -> new SchemaBrowserAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+            .applicationName("Schema Browser")
             .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

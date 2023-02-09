@@ -5,24 +5,29 @@ package is.codion.swing.framework.ui.test;
 
 import is.codion.common.user.User;
 import is.codion.framework.model.EntityApplicationModel;
+import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Objects.requireNonNull;
 
 /**
  * A class for testing {@link EntityApplicationPanel} classes
  */
-public class EntityApplicationPanelTestUnit {
+public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationModel> {
 
-  private final Class<? extends EntityApplicationPanel<?>> panelClass;
+  private final Class<M> modelClass;
+  private final Class<? extends EntityApplicationPanel<M>> panelClass;
   private final User user;
 
   /**
    * Instantiates a new entity application panel test unit
-   * @param panelClass the panel class
+   * @param modelClass the application model class
+   * @param panelClass the application panel class
    * @param user the user
    */
-  protected EntityApplicationPanelTestUnit(Class<? extends EntityApplicationPanel<?>> panelClass, User user) {
+  protected EntityApplicationPanelTestUnit(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass, User user) {
+    this.modelClass = requireNonNull(modelClass, "modelClass");
     this.panelClass = requireNonNull(panelClass, "panelClass");
     this.user = requireNonNull(user, "user");
   }
@@ -34,9 +39,22 @@ public class EntityApplicationPanelTestUnit {
   protected final void testInitializePanel() throws Exception {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
-    EntityApplicationPanel<?> panel = createApplicationPanel();
-    panel.addApplicationStartedListener(frame -> panel.model().connectionProvider().close());
-    panel.starter().silentLoginUser(user).displayFrame(false).displayProgressDialog(false).start();
+    entityApplicationBuilder(modelClass, panelClass)
+            .panelFactory(applicationModel -> {
+              try {
+                EntityApplicationPanel<M> applicationPanel = panelClass.getConstructor(modelClass).newInstance(applicationModel);
+                applicationPanel.addApplicationStartedListener(frame -> applicationModel.connectionProvider().close());
+
+                return applicationPanel;
+              }
+              catch (Exception e) {
+                throw new RuntimeException(e);
+              }
+            })
+            .silentLoginUser(user)
+            .displayStartupDialog(false)
+            .displayFrame(false)
+            .start();
   }
 
   /**

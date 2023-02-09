@@ -26,17 +26,13 @@ import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Locale;
 
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
-  public PetclinicAppPanel() {
-    super("Petclinic");
-  }
-
-  @Override
-  protected PetclinicAppModel createApplicationModel(EntityConnectionProvider connectionProvider) {
-    return new PetclinicAppModel(connectionProvider);
+  public PetclinicAppPanel(PetclinicAppModel appModel) {
+    super(appModel);
   }
 
   @Override
@@ -89,7 +85,8 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
-    SwingUtilities.invokeLater(() -> new PetclinicAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
+            .applicationName("Petclinic")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());

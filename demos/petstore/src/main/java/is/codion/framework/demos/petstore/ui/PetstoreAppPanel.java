@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.petstore.ui;
 
-import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
@@ -19,11 +18,12 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
-  public PetstoreAppPanel() {
-    super("The Pet Store");
+  public PetstoreAppPanel(PetstoreAppModel applicationModel) {
+    super(applicationModel);
   }
 
   @Override
@@ -83,17 +83,12 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                     .detailPanelState(EntityPanel.PanelState.HIDDEN));
   }
 
-  @Override
-  protected PetstoreAppModel createApplicationModel(EntityConnectionProvider connectionProvider)
-          throws CancelException {
-    return new PetstoreAppModel(connectionProvider);
-  }
-
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
-    SwingUtilities.invokeLater(() -> new PetstoreAppPanel().starter()
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(PetstoreAppModel.class, PetstoreAppPanel.class)
+            .applicationName("The Pet Store")
             .frameSize(Windows.screenSizeRatio(0.8))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
