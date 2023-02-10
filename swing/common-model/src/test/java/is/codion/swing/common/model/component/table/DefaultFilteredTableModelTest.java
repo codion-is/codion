@@ -91,10 +91,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   private static List<FilteredTableColumn<Integer>> createColumns() {
-    FilteredTableColumn<Integer> column = filteredTableColumn(0);
-    column.setHeaderValue(0);
-
-    return singletonList(column);
+    return singletonList(filteredTableColumn(0));
   }
 
   private static List<ColumnConditionModel<Integer, String>> createFilterModels() {

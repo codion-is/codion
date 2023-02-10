@@ -10,6 +10,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A {@link TableColumn} with a typed identifier.
  * For instances use factory method {@link #filteredTableColumn(int)} or {@link #filteredTableColumn(int, Object)}.
+ * Note that the identifier is used as a default header value.
  * @param <C> the column identifier type
  * @see #filteredTableColumn(int, Object)
  */
@@ -18,6 +19,7 @@ public final class FilteredTableColumn<C> extends TableColumn {
   private FilteredTableColumn(int modelIndex, C identifier) {
     super(modelIndex);
     super.setIdentifier(requireNonNull(identifier));
+    setHeaderValue(identifier);
   }
 
   @Override
