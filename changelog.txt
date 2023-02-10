@@ -8668,3 +8668,4 @@
   EntityTablePanel, copy cell key shortcut (CTRL-ALT-C) moved to FilteredTable
   EntityTableModel.tableDataAsDelimitedString() moved to FilteredTableModel
   FilteredTableColumn now uses the identifier as the default header value
+  FilteredTableModel.RowsRemoved renamed RemovedRows
