@@ -240,21 +240,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
-   */
-  public final boolean isAlwaysOnTop() {
-    return alwaysOnTopState.get();
-  }
-
-  /**
-   * @param alwaysOnTop the new value
-   * @see #addAlwaysOnTopListener(EventDataListener)
-   */
-  public final void setAlwaysOnTop(boolean alwaysOnTop) {
-    alwaysOnTopState.set(alwaysOnTop);
-  }
-
-  /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
   public final State alwaysOnTopState() {
