@@ -98,7 +98,8 @@ public class StoreDemo {
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.tablePanel().table()
             .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.tablePanel().setConditionPanelVisible(true);
+    addressPanel.tablePanel()
+            .setConditionPanelVisible(true);
 
     customerModel.tableModel().refresh();
     customerPanel.initializePanel();
