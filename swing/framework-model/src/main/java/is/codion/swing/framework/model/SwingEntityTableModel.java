@@ -233,9 +233,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public final SwingEntityEditModel editModel() {
-    if (editModel == null) {
-      throw new IllegalStateException("No edit model has been set for table model: " + this);
-    }
     return editModel;
   }
 
