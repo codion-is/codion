@@ -62,16 +62,16 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   }
 
   @Override
-  protected List<EntityPanel> createEntityPanels(ChinookApplicationModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels() {
     return Arrays.asList(
-            new CustomerPanel(applicationModel.entityModel(Customer.TYPE)),
-            new ArtistPanel(applicationModel.entityModel(Artist.TYPE)),
-            new PlaylistPanel(applicationModel.entityModel(Playlist.TYPE))
+            new CustomerPanel(model().entityModel(Customer.TYPE)),
+            new ArtistPanel(model().entityModel(Artist.TYPE)),
+            new PlaylistPanel(model().entityModel(Playlist.TYPE))
     );
   }
 
   @Override
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(ChinookApplicationModel applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     EntityPanel.Builder trackBuilder =
             EntityPanel.builder(SwingEntityModel.builder(Track.TYPE))
                     .tablePanelClass(TrackTablePanel.class);

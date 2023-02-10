@@ -426,8 +426,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public void initializePanel() {
     if (!panelInitialized) {
       try {
-        this.entityPanels.addAll(createEntityPanels(applicationModel));
-        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders(applicationModel));
+        this.entityPanels.addAll(createEntityPanels());
+        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
         initializeUI();
         bindEventsInternal();
         bindEvents();
@@ -860,12 +860,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Creates the {@link EntityPanel}s to include in this application panel.
-   * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    */
-  protected abstract List<EntityPanel> createEntityPanels(M applicationModel);
+  protected abstract List<EntityPanel> createEntityPanels();
 
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(M applicationModel) {
+  /**
+   * Returns a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   * @return a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   */
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     return Collections.emptyList();
   }
 
