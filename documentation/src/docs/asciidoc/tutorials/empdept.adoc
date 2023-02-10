@@ -208,13 +208,6 @@ We create a *main()* method for configuring and running the application. See <<{
 include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=main]
 ----
 
-We then define the *EmpDeptApplicationModel* class by extending *SwingEntityApplicationModel*.
-
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/EmpDeptAppPanel.java[tags=applicationModel]
-----
-
 [#_load_test]
 == Load test
 
