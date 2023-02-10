@@ -8666,3 +8666,4 @@
   EntityApplicationPanel.get/setAlwaysOnTop() removed, covered by alwaysOnTopState()
   EntityApplicationPanel.setLogLevel() removed
   EntityTablePanel, copy cell key shortcut (CTRL-ALT-C) moved to FilteredTable
+  EntityTableModel.tableDataAsDelimitedString() moved to FilteredTableModel

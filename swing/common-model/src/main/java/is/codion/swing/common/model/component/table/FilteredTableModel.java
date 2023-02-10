@@ -163,6 +163,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   <T> Collection<T> selectedValues(C columnIdentifier);
 
   /**
+   * @param delimiter the delimiter
+   * @return the table rows as a tab delimited string, with column names as a header
+   */
+  String rowsAsDelimitedString(char delimiter);
+
+  /**
    * @return true if merge on refresh is enabled
    */
   boolean isMergeOnRefresh();

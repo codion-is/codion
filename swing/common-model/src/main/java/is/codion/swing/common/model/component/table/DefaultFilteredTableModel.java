@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -390,6 +391,23 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
+  public final String rowsAsDelimitedString(char delimiter) {
+    List<Integer> rows = selectionModel.isSelectionEmpty() ?
+            IntStream.range(0, getRowCount())
+                    .boxed()
+                    .collect(toList()) :
+            selectionModel.getSelectedIndexes();
+
+    List<FilteredTableColumn<C>> visibleColumns = columnModel().visibleColumns();
+
+    return Text.delimitedString(visibleColumns.stream()
+            .map(column -> String.valueOf(column.getHeaderValue()))
+            .collect(toList()), rows.stream()
+            .map(row -> stringValues(row, visibleColumns))
+            .collect(toList()), String.valueOf(delimiter));
+  }
+
+  @Override
   public final void addRefreshListener(EventListener listener) {
     refreshEvent.addListener(listener);
   }
@@ -564,6 +582,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
     return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
+  }
+
+  private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
+    return columns.stream()
+            .map(column -> getStringValueAt(row, column.getIdentifier()))
+            .collect(toList());
   }
 
   private boolean addItemInternal(R item) {

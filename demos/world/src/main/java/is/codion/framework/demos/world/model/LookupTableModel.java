@@ -17,6 +17,6 @@ public final class LookupTableModel extends SwingEntityTableModel {
   }
 
   public void exportCSV(File file) throws IOException {
-    Files.write(file.toPath(), singletonList(tableDataAsDelimitedString(',')));
+    Files.write(file.toPath(), singletonList(rowsAsDelimitedString(',')));
   }
 }

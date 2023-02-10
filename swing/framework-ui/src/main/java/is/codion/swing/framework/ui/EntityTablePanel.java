@@ -1375,7 +1375,7 @@ public class EntityTablePanel extends JPanel {
     return Controls.builder()
             .caption(Messages.copy())
             .smallIcon(FrameworkIcons.instance().copy())
-            .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
+            .controls(createCopyCellControl(), createCopyTableRowsWithHeaderControl())
             .build();
   }
 
@@ -1386,14 +1386,10 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private Control createCopyTableWithHeaderControl() {
-    return Control.builder(this::copyTableAsDelimitedString)
+  private Control createCopyTableRowsWithHeaderControl() {
+    return Control.builder(table::copyRowsAsTabDelimitedString)
             .caption(FrameworkMessages.copyTableWithHeader())
             .build();
-  }
-
-  private void copyTableAsDelimitedString() {
-    Utilities.setClipboard(tableModel.tableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {

@@ -372,6 +372,14 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   }
 
   /**
+   * Copies the table data as a TAB delimited string, with header, to the clipboard.
+   * Note that if the selection is empty all rows are copied, otherwise only selected rows.
+   */
+  public void copyRowsAsTabDelimitedString() {
+    Utilities.setClipboard(tableModel.rowsAsDelimitedString('\t'));
+  }
+
+  /**
    * @return a control for showing the column selection dialog
    */
   public Control createSelectColumnsControl() {

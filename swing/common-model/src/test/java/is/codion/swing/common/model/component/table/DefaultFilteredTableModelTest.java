@@ -91,7 +91,10 @@ public final class DefaultFilteredTableModelTest {
   }
 
   private static List<FilteredTableColumn<Integer>> createColumns() {
-    return singletonList(filteredTableColumn(0));
+    FilteredTableColumn<Integer> column = filteredTableColumn(0);
+    column.setHeaderValue(0);
+
+    return singletonList(column);
   }
 
   private static List<ColumnConditionModel<Integer, String>> createFilterModels() {
@@ -858,6 +861,18 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void getColumnClass() {
     assertEquals(String.class, tableModel.getColumnClass(0));
+  }
+
+  @Test
+  public void tableDataAsDelimitedString() {
+    tableModel.refresh();
+    String expected = "0\n" +
+            "a\n" +
+            "b\n" +
+            "c\n" +
+            "d\n" +
+            "e";
+    assertEquals(expected, tableModel.rowsAsDelimitedString('\t'));
   }
 
   private static boolean tableModelContainsAll(List<List<String>> rows, boolean includeFiltered,
