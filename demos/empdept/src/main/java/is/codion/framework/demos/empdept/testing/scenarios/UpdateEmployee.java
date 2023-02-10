@@ -6,7 +6,7 @@ package is.codion.framework.demos.empdept.testing.scenarios;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
+import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
@@ -17,12 +17,12 @@ import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
-public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
+public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptAppModel> {
 
   private final Random random = new Random();
 
   @Override
-  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) throws Exception {
+  protected void perform(EmpDeptAppModel application) throws Exception {
     SwingEntityModel departmentModel = application.entityModel(Department.TYPE);
     selectRandomRow(departmentModel.tableModel());
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);

@@ -3,18 +3,18 @@
  */
 package is.codion.framework.demos.empdept.testing.scenarios;
 
-import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
+import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.Random;
 
 // tag::loadTest[]
-public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppPanel.EmpDeptApplicationModel> {
+public final class LoginLogout extends AbstractEntityUsageScenario<EmpDeptAppModel> {
 
   final Random random = new Random();
 
   @Override
-  protected void perform(EmpDeptAppPanel.EmpDeptApplicationModel application) {
+  protected void perform(EmpDeptAppModel application) {
     try {
       application.connectionProvider().close();
       Thread.sleep(random.nextInt(1500));

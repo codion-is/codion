@@ -8,13 +8,12 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
-import is.codion.framework.demos.empdept.model.EmployeeEditModel;
+import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -30,14 +29,14 @@ import java.util.List;
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 // tag::createEntityPanels[]
-public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
+public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
 
-  public EmpDeptAppPanel(EmpDeptAppPanel.EmpDeptApplicationModel applicationModel) {
+  public EmpDeptAppPanel(EmpDeptAppModel applicationModel) {
     super(applicationModel);
   }
 
   @Override
-  protected List<EntityPanel> createEntityPanels(EmpDeptApplicationModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels(EmpDeptAppModel applicationModel) {
     SwingEntityModel departmentModel = applicationModel.entityModel(Department.TYPE);
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
@@ -86,24 +85,11 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
   public static void main(String[] args) {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptAppPanel.class)
+    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start());
   }
   // end::main[]
-
-  // tag::applicationModel[]
-  public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
-
-    public EmpDeptApplicationModel(EntityConnectionProvider connectionProvider) {
-      super(connectionProvider);
-      SwingEntityModel departmentModel = new SwingEntityModel(Department.TYPE, connectionProvider);
-      departmentModel.addDetailModel(new SwingEntityModel(new EmployeeEditModel(connectionProvider)));
-      departmentModel.tableModel().refresh();
-      addEntityModel(departmentModel);
-    }
-  }
-  // end::applicationModel[]
 }

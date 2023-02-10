@@ -167,10 +167,20 @@ All we have to do is override *initializeUI*.
 include::{dir-source}/is/codion/framework/demos/empdept/ui/EmployeeEditPanel.java[tags=initializeUI]
 ----
 
+[#_main_application_model]
+=== Main application model
+
+We create a main application model by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/model/SwingEntityApplicationModel.html[SwingEntityApplicationModel] and add an entity model for the department entity.
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/empdept/model/EmpDeptAppModel.java[tags=applicationModel]
+----
+
 [#_main_application_panel]
 === Main application panel
 
-We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
+We create a main application panel by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityApplicationPanel.html[EntityApplicationPanel]. A constructor with a single *EmpDeptAppModel* argument is required. Overriding *createEntityPanels()* we create two *EntityPanels* using the *SwingEntityModels* from the application model and return the department panel, which will act as the root panel.
 
 [source,java]
 ----
