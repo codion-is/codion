@@ -1375,7 +1375,7 @@ public class EntityTablePanel extends JPanel {
     return Controls.builder()
             .caption(Messages.copy())
             .smallIcon(FrameworkIcons.instance().copy())
-            .controls(createCopyCellControl(), createCopyTableWithHeaderControl())
+            .controls(createCopyCellControl(), createCopyTableRowsWithHeaderControl())
             .build();
   }
 
@@ -1386,14 +1386,10 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private Control createCopyTableWithHeaderControl() {
-    return Control.builder(this::copyTableAsDelimitedString)
+  private Control createCopyTableRowsWithHeaderControl() {
+    return Control.builder(table::copyRowsAsTabDelimitedString)
             .caption(FrameworkMessages.copyTableWithHeader())
             .build();
-  }
-
-  private void copyTableAsDelimitedString() {
-    Utilities.setClipboard(tableModel.tableDataAsDelimitedString('\t'));
   }
 
   private boolean includeUpdateSelectedControls() {
@@ -1501,10 +1497,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEvents() {
-    KeyEvents.builder(KeyEvent.VK_C)
-            .action(Control.control(table::copySelectedCell))
-            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-            .enable(table);
     if (includeDeleteSelectedControl()) {
       KeyEvents.builder(KeyEvent.VK_DELETE)
               .action(createDeleteSelectedControl())

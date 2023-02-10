@@ -860,6 +860,18 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(String.class, tableModel.getColumnClass(0));
   }
 
+  @Test
+  public void tableDataAsDelimitedString() {
+    tableModel.refresh();
+    String expected = "0\n" +
+            "a\n" +
+            "b\n" +
+            "c\n" +
+            "d\n" +
+            "e";
+    assertEquals(expected, tableModel.rowsAsDelimitedString('\t'));
+  }
+
   private static boolean tableModelContainsAll(List<List<String>> rows, boolean includeFiltered,
                                                FilteredTableModel<List<String>, Integer> model) {
     for (List<String> row : rows) {

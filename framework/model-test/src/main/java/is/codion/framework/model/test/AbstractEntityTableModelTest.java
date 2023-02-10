@@ -4,7 +4,6 @@
 package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
-import is.codion.common.Separators;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -295,20 +294,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void noVisibleColumns() {
     assertThrows(IllegalArgumentException.class, this::createMasterTableModel);
-  }
-
-  @Test
-  public void tableDataAsDelimitedString() {
-    TableModel deptModel = createDepartmentTableModel();
-    deptModel.setVisibleColumns(Department.ID, Department.NAME, Department.LOCATION);
-    deptModel.refresh();
-    String newline = Separators.LINE_SEPARATOR;
-    String expected = "deptno\tdname\tloc" + newline +
-            "10\tACCOUNTING\tNEW YORK" + newline +
-            "40\tOPERATIONS\tBOSTON" + newline +
-            "20\tRESEARCH\tDALLAS" + newline +
-            "30\tSALES\tCHICAGO";
-    assertEquals(expected, deptModel.tableDataAsDelimitedString('\t'));
   }
 
   @Test

@@ -83,12 +83,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
 
   public FXEntityListModel(FXEntityEditModel editModel) {
-    this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
+    this(requireNonNull(editModel), entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
             null, new FXConditionModelFactory(editModel.connectionProvider())));
   }
 
   public FXEntityListModel(FXEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(editModel.entityType(), editModel.connectionProvider());
+    super(requireNonNull(editModel).entityType(), editModel.connectionProvider());
     requireNonNull(tableConditionModel);
     if (!tableConditionModel.entityType().equals(entityType())) {
       throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + tableConditionModel.entityType()
@@ -414,7 +414,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
-  @Override
   public final String tableDataAsDelimitedString(char delimiter) {
     List<String> header = new ArrayList<>();
     List<Attribute<?>> attributes = new ArrayList<>();

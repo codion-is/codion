@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -59,7 +60,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> dataChangedEvent = Event.event();
   private final Event<?> clearEvent = Event.event();
-  private final Event<RowsRemoved> rowsRemovedEvent = Event.event();
+  private final Event<RemovedRows> rowsRemovedEvent = Event.event();
   private final State refreshingState = State.state();
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final List<R> visibleItems = new ArrayList<>();
@@ -355,12 +356,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addRowsRemovedListener(EventDataListener<RowsRemoved> listener) {
+  public final void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRowsRemovedListener(EventDataListener<RowsRemoved> listener) {
+  public final void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.removeDataListener(listener);
   }
 
@@ -387,6 +388,23 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final String getStringValueAt(int rowIndex, C columnIdentifier) {
     return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
+  }
+
+  @Override
+  public final String rowsAsDelimitedString(char delimiter) {
+    List<Integer> rows = selectionModel.isSelectionEmpty() ?
+            IntStream.range(0, getRowCount())
+                    .boxed()
+                    .collect(toList()) :
+            selectionModel.getSelectedIndexes();
+
+    List<FilteredTableColumn<C>> visibleColumns = columnModel().visibleColumns();
+
+    return Text.delimitedString(visibleColumns.stream()
+            .map(column -> String.valueOf(column.getHeaderValue()))
+            .collect(toList()), rows.stream()
+            .map(row -> stringValues(row, visibleColumns))
+            .collect(toList()), String.valueOf(delimiter));
   }
 
   @Override
@@ -557,13 +575,19 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsRemovedEvent.onEvent(new DefaultRowsRemoved(e.getFirstRow(), e.getLastRow()));
+        rowsRemovedEvent.onEvent(new DefaultRemovedRows(e.getFirstRow(), e.getLastRow()));
       }
     });
   }
 
   private List<Object> columnValues(Stream<Integer> rowIndexStream, int columnModelIndex) {
     return rowIndexStream.map(rowIndex -> getValueAt(rowIndex, columnModelIndex)).collect(toList());
+  }
+
+  private List<String> stringValues(int row, List<FilteredTableColumn<C>> columns) {
+    return columns.stream()
+            .map(column -> getStringValueAt(row, column.getIdentifier()))
+            .collect(toList());
   }
 
   private boolean addItemInternal(R item) {
@@ -725,12 +749,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
   }
 
-  private static final class DefaultRowsRemoved implements RowsRemoved {
+  private static final class DefaultRemovedRows implements RemovedRows {
 
     private final int fromRow;
     private final int toRow;
 
-    private DefaultRowsRemoved(int fromRow, int toRow) {
+    private DefaultRemovedRows(int fromRow, int toRow) {
       this.fromRow = fromRow;
       this.toRow = toRow;
     }

@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
@@ -234,9 +233,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public final SwingEntityEditModel editModel() {
-    if (editModel == null) {
-      throw new IllegalStateException("No edit model has been set for table model: " + this);
-    }
     return editModel;
   }
 
@@ -483,21 +479,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
         LOG.error("Error while saving preferences", e);
       }
     }
-  }
-
-  @Override
-  public final String tableDataAsDelimitedString(char delimiter) {
-    List<String> header = new ArrayList<>();
-    List<Attribute<?>> attributes = new ArrayList<>();
-    for (FilteredTableColumn<Attribute<?>> column : columnModel().visibleColumns()) {
-      Attribute<?> attribute = column.getIdentifier();
-      attributes.add(attribute);
-      header.add(entityDefinition().property(attribute).caption());
-    }
-
-    return Text.delimitedString(header, Entity.getStringValueList(attributes,
-                    selectionModel().isSelectionEmpty() ? visibleItems() : selectionModel().getSelectedItems()),
-            String.valueOf(delimiter));
   }
 
   @Override

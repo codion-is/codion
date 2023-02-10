@@ -352,12 +352,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setVisibleColumns(List<Attribute<?>> attributes);
 
   /**
-   * @param delimiter the delimiter
-   * @return the table data as a tab delimited string, with column names as a header
-   */
-  String tableDataAsDelimitedString(char delimiter);
-
-  /**
    * Refreshes the items in this table model, according to the underlying condition
    * @see #tableConditionModel()
    */
