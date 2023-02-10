@@ -604,6 +604,10 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
+    KeyEvents.builder(KeyEvent.VK_C)
+            .action(Control.control(this::copySelectedCell))
+            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+            .enable(this);
   }
 
   private boolean noRowVisible(List<Integer> rows) {
