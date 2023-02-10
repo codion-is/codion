@@ -43,9 +43,6 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -244,23 +241,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final State alwaysOnTopState() {
     return alwaysOnTopState;
-  }
-
-  /**
-   * Shows a dialog for setting the log level
-   */
-  public final void setLogLevel() {
-    LoggerProxy loggerProxy = LoggerProxy.instance();
-    if (loggerProxy == LoggerProxy.NULL_PROXY) {
-      throw new RuntimeException("No LoggerProxy implementation available");
-    }
-    ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.logLevels().toArray());
-    model.setSelectedItem(loggerProxy.getLogLevel());
-    Dialogs.okCancelDialog(new JComboBox<>(model))
-            .owner(this)
-            .title(resourceBundle.getString(LOG_LEVEL))
-            .onOk(() -> logLevelStates.get(model.getSelectedItem()).set(true))
-            .show();
   }
 
   /**
