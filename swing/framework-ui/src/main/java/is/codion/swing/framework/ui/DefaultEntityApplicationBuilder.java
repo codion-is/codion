@@ -351,7 +351,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     if (maximizeFrame) {
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
-    frame.setTitle(frameTitle(applicationPanel.model()));
+    frame.setTitle(frameTitle(applicationPanel.applicationModel()));
     if (includeMainMenu) {
       JMenuBar menuBar = applicationPanel.createMenuBar();
       if (menuBar != null) {

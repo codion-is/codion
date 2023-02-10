@@ -64,9 +64,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   @Override
   protected List<EntityPanel> createEntityPanels() {
     return Arrays.asList(
-            new CustomerPanel(model().entityModel(Customer.TYPE)),
-            new ArtistPanel(model().entityModel(Artist.TYPE)),
-            new PlaylistPanel(model().entityModel(Playlist.TYPE))
+            new CustomerPanel(applicationModel().entityModel(Customer.TYPE)),
+            new ArtistPanel(applicationModel().entityModel(Artist.TYPE)),
+            new PlaylistPanel(applicationModel().entityModel(Playlist.TYPE))
     );
   }
 

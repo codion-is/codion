@@ -8662,3 +8662,4 @@
   EntityApplicationBuilder.lookAndFeelClassName() added
   LookAndFeelProvider, minor renaming and refactoring
   EntityApplicationPanel.createEntityPanels() and createSupportEntityPanelBuilders(), applicationModel parameter removed
+  EntityApplicationPanel.model() renamed applicationModel()

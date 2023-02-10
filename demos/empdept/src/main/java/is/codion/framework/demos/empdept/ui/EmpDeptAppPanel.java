@@ -37,7 +37,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
 
   @Override
   protected List<EntityPanel> createEntityPanels() {
-    SwingEntityModel departmentModel = model().entityModel(Department.TYPE);
+    SwingEntityModel departmentModel = applicationModel().entityModel(Department.TYPE);
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
     EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
@@ -61,8 +61,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
             .selectFile();
 
     EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
-            EntityObjectMapper.entityObjectMapper(model().entities()).deserializeEntities(
-                    Text.textFileContents(file.getAbsolutePath(), Charset.defaultCharset())), model().connectionProvider());
+            EntityObjectMapper.entityObjectMapper(applicationModel().entities()).deserializeEntities(
+                    Text.textFileContents(file.getAbsolutePath(), Charset.defaultCharset())), applicationModel().connectionProvider());
 
     Dialogs.componentDialog(tablePanel)
             .owner(this)

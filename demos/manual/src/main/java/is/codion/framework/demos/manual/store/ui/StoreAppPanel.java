@@ -36,7 +36,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   @Override
   protected List<EntityPanel> createEntityPanels() {
     CustomerModel customerModel =
-            (CustomerModel) model().entityModel(Customer.TYPE);
+            (CustomerModel) applicationModel().entityModel(Customer.TYPE);
     //populate model with rows from database
     customerModel.tableModel().refresh();
 

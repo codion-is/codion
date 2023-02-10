@@ -84,7 +84,7 @@ public class EntityApplicationPanelTest {
 
     @Override
     protected List<EntityPanel> createEntityPanels() {
-      return singletonList(new EntityPanel(model().entityModel(Employee.TYPE)));
+      return singletonList(new EntityPanel(applicationModel().entityModel(Employee.TYPE)));
     }
   }
 }

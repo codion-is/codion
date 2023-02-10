@@ -210,7 +210,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the application model this application panel is based on
    */
-  public final M model() {
+  public final M applicationModel() {
     return applicationModel;
   }
 
@@ -702,7 +702,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel createAboutPanel() {
     PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
             .border(createEmptyBorder(5, 5, 5, 5));
-    model().version().ifPresent(version -> versionMemoryPanel
+    applicationModel().version().ifPresent(version -> versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
             .add(new JLabel(version.toString())));
     versionMemoryPanel
@@ -926,7 +926,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void savePreferences() {
     entityPanels().forEach(EntityPanel::savePreferences);
-    model().savePreferences();
+    applicationModel().savePreferences();
   }
 
   private JTabbedPane createApplicationTabPane() {
@@ -985,7 +985,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    boolean cancelForUnsavedData = model().isWarnAboutUnsavedData() && model().containsUnsavedData() &&
+    boolean cancelForUnsavedData = applicationModel().isWarnAboutUnsavedData() && applicationModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
                     FrameworkMessages.unsavedDataWarningTitle(),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;

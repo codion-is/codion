@@ -37,7 +37,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   @Override
   protected List<EntityPanel> createEntityPanels() {
-    SwingEntityModel ownersModel = model().entityModel(Owner.TYPE);
+    SwingEntityModel ownersModel = applicationModel().entityModel(Owner.TYPE);
     SwingEntityModel petsModel = ownersModel.detailModel(Pet.TYPE);
     SwingEntityModel visitsModel = petsModel.detailModel(Visit.TYPE);
 
@@ -51,7 +51,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ownersPanel.addDetailPanel(petsPanel);
     petsPanel.addDetailPanel(visitsPanel);
 
-    SwingEntityModel vetsModel = model().entityModel(Vet.TYPE);
+    SwingEntityModel vetsModel = applicationModel().entityModel(Vet.TYPE);
     SwingEntityModel vetSpecialtiesModel = vetsModel.detailModel(VetSpecialty.TYPE);
 
     EntityPanel vetsPanel = new EntityPanel(vetsModel,
