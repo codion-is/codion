@@ -8699,3 +8699,7 @@
   EntityApplicationBuilder.defaultLookAndFeelName() renamed defaultLookAndFeelClassName()
   EntityApplicationBuilder.lookAndFeelClassName() added
   LookAndFeelProvider, minor renaming and refactoring
+  EntityApplicationPanel.createEntityPanels() and createSupportEntityPanelBuilders(), applicationModel parameter removed
+  EntityApplicationPanel.model() renamed applicationModel()
+  EntityApplicationPanel.get/setAlwaysOnTop() removed, covered by alwaysOnTopState()
+  EntityApplicationPanel.setLogLevel() removed

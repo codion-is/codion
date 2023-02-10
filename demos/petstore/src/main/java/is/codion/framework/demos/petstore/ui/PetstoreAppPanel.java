@@ -27,13 +27,13 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel> createEntityPanels(PetstoreAppModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels() {
     /* CATEGORY
      *   PRODUCT
      *     ITEM
      *       ITEMTAG
      */
-    SwingEntityModel categoryModel = applicationModel.entityModel(Category.TYPE);
+    SwingEntityModel categoryModel = applicationModel().entityModel(Category.TYPE);
     SwingEntityModel productModel = categoryModel.detailModel(Product.TYPE);
     SwingEntityModel itemModel = productModel.detailModel(Item.TYPE);
     SwingEntityModel tagItemModel = itemModel.detailModel(TagItem.TYPE);
@@ -57,7 +57,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   }
 
   @Override
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(PetstoreAppModel applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     SwingEntityModel.Builder tagModelBuilder =
             SwingEntityModel.builder(Tag.TYPE)
                     .detailModelBuilder(SwingEntityModel.builder(TagItem.TYPE));

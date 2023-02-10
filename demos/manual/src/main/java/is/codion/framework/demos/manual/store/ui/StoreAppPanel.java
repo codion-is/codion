@@ -34,9 +34,9 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   }
 
   @Override
-  protected List<EntityPanel> createEntityPanels(StoreAppModel applicationModel) {
+  protected List<EntityPanel> createEntityPanels() {
     CustomerModel customerModel =
-            (CustomerModel) applicationModel.entityModel(Customer.TYPE);
+            (CustomerModel) applicationModel().entityModel(Customer.TYPE);
     //populate model with rows from database
     customerModel.tableModel().refresh();
 
@@ -56,7 +56,7 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
 
   // tag::createSupportEntityPanelBuilders[]
   @Override
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(StoreAppModel applicationModel) {
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     EntityPanel.Builder addressPanelBuilder =
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class);

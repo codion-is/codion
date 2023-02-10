@@ -43,9 +43,6 @@ import is.codion.swing.framework.ui.icons.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -210,7 +207,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return the application model this application panel is based on
    */
-  public final M model() {
+  public final M applicationModel() {
     return applicationModel;
   }
 
@@ -240,42 +237,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @return true if the frame this application panel is shown in should be 'alwaysOnTop'
-   */
-  public final boolean isAlwaysOnTop() {
-    return alwaysOnTopState.get();
-  }
-
-  /**
-   * @param alwaysOnTop the new value
-   * @see #addAlwaysOnTopListener(EventDataListener)
-   */
-  public final void setAlwaysOnTop(boolean alwaysOnTop) {
-    alwaysOnTopState.set(alwaysOnTop);
-  }
-
-  /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
   public final State alwaysOnTopState() {
     return alwaysOnTopState;
-  }
-
-  /**
-   * Shows a dialog for setting the log level
-   */
-  public final void setLogLevel() {
-    LoggerProxy loggerProxy = LoggerProxy.instance();
-    if (loggerProxy == LoggerProxy.NULL_PROXY) {
-      throw new RuntimeException("No LoggerProxy implementation available");
-    }
-    ComboBoxModel<Object> model = new DefaultComboBoxModel<>(loggerProxy.logLevels().toArray());
-    model.setSelectedItem(loggerProxy.getLogLevel());
-    Dialogs.okCancelDialog(new JComboBox<>(model))
-            .owner(this)
-            .title(resourceBundle.getString(LOG_LEVEL))
-            .onOk(() -> logLevelStates.get(model.getSelectedItem()).set(true))
-            .show();
   }
 
   /**
@@ -426,8 +391,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public void initializePanel() {
     if (!panelInitialized) {
       try {
-        this.entityPanels.addAll(createEntityPanels(applicationModel));
-        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders(applicationModel));
+        this.entityPanels.addAll(createEntityPanels());
+        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
         initializeUI();
         bindEventsInternal();
         bindEvents();
@@ -702,7 +667,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected JPanel createAboutPanel() {
     PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
             .border(createEmptyBorder(5, 5, 5, 5));
-    model().version().ifPresent(version -> versionMemoryPanel
+    applicationModel().version().ifPresent(version -> versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
             .add(new JLabel(version.toString())));
     versionMemoryPanel
@@ -860,12 +825,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Creates the {@link EntityPanel}s to include in this application panel.
-   * @param applicationModel the application model responsible for providing EntityModels for the panels
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    */
-  protected abstract List<EntityPanel> createEntityPanels(M applicationModel);
+  protected abstract List<EntityPanel> createEntityPanels();
 
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders(M applicationModel) {
+  /**
+   * Returns a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   * @return a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   */
+  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     return Collections.emptyList();
   }
 
@@ -923,7 +891,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void savePreferences() {
     entityPanels().forEach(EntityPanel::savePreferences);
-    model().savePreferences();
+    applicationModel().savePreferences();
   }
 
   private JTabbedPane createApplicationTabPane() {
@@ -982,7 +950,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private boolean cancelExit() {
-    boolean cancelForUnsavedData = model().isWarnAboutUnsavedData() && model().containsUnsavedData() &&
+    boolean cancelForUnsavedData = applicationModel().isWarnAboutUnsavedData() && applicationModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.unsavedDataWarning(),
                     FrameworkMessages.unsavedDataWarningTitle(),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION;

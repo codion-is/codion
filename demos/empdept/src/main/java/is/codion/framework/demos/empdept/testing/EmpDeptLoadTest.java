@@ -9,12 +9,12 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
+import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.framework.demos.empdept.testing.scenarios.InsertDepartment;
 import is.codion.framework.demos.empdept.testing.scenarios.InsertEmployee;
 import is.codion.framework.demos.empdept.testing.scenarios.LoginLogout;
 import is.codion.framework.demos.empdept.testing.scenarios.SelectDepartment;
 import is.codion.framework.demos.empdept.testing.scenarios.UpdateEmployee;
-import is.codion.framework.demos.empdept.ui.EmpDeptAppPanel;
 import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
@@ -24,7 +24,7 @@ import javax.swing.SwingUtilities;
 import static java.util.Arrays.asList;
 
 // tag::loadTest[]
-public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.EmpDeptApplicationModel> {
+public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppModel> {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -35,9 +35,9 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppPanel.E
   }
 
   @Override
-  protected EmpDeptAppPanel.EmpDeptApplicationModel createApplication() throws CancelException {
-    EmpDeptAppPanel.EmpDeptApplicationModel applicationModel =
-            new EmpDeptAppPanel.EmpDeptApplicationModel(EntityConnectionProvider.builder()
+  protected EmpDeptAppModel createApplication() throws CancelException {
+    EmpDeptAppModel applicationModel =
+            new EmpDeptAppModel(EntityConnectionProvider.builder()
                     .domainClassName(EmpDept.class.getName())
                     .clientTypeId(EmpDeptLoadTest.class.getSimpleName())
                     .user(getUser())
