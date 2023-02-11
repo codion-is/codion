@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.model.DefaultEntityModel;
 
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -92,21 +93,21 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @param modelFactory creates the model
      * @return this builder instance
      */
-    Builder modelFactory(ModelFactory<SwingEntityModel> modelFactory);
+    Builder modelFactory(Function<EntityConnectionProvider, SwingEntityModel> modelFactory);
 
     /**
      * Takes precedence over {@link #editModelClass(Class)}.
      * @param editModelFactory creates the edit model
      * @return this builder instance
      */
-    Builder editModelFactory(ModelFactory<SwingEntityEditModel> editModelFactory);
+    Builder editModelFactory(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory);
 
     /**
      * Takes precedence over {@link #tableModelClass(Class)}.
      * @param tableModelFactory creates the table model
      * @return this builder instance
      */
-    Builder tableModelFactory(ModelFactory<SwingEntityTableModel> tableModelFactory);
+    Builder tableModelFactory(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory);
 
     /**
      * @param onBuildModel called after the entity model has been built
@@ -153,18 +154,5 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
      * @return a SwingEntityTableModel instance
      */
     SwingEntityTableModel buildTableModel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Creates a model instance.
-     */
-    interface ModelFactory<T> {
-
-      /**
-       * @param connectionProvider the connection provider to base the model on
-       * @return a new model instance
-       * @throws Exception in case of an exception
-       */
-      T create(EntityConnectionProvider connectionProvider) throws Exception;
-    }
   }
 }

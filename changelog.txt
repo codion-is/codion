@@ -8677,3 +8677,4 @@
   EntityApplicationPanel.add/removeAlwaysOnTopListener() removed, covered by alwaysOnTopState(), selectFontSize() removed
   EntityApplicationPanel.createAdditionalMenuControls() removed, minor refactoring
   CompletionDocument.model() renamed comboBoxModel()
+  SwingEntityModel.ModelFactory removed, replaced with Function

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 
@@ -32,9 +33,9 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   private Class<? extends SwingEntityEditModel> editModelClass;
   private Class<? extends SwingEntityTableModel> tableModelClass;
 
-  private ModelFactory<SwingEntityModel> modelFactory;
-  private ModelFactory<SwingEntityEditModel> editModelFactory;
-  private ModelFactory<SwingEntityTableModel> tableModelFactory;
+  private Function<EntityConnectionProvider, SwingEntityModel> modelFactory;
+  private Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory;
+  private Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory;
 
   private Consumer<SwingEntityModel> onBuildModel = new EmptyOnBuild<>();
   private Consumer<SwingEntityEditModel> onBuildEditModel = new EmptyOnBuild<>();
@@ -87,19 +88,19 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   @Override
-  public SwingEntityModel.Builder modelFactory(ModelFactory<SwingEntityModel> modelFactory) {
+  public SwingEntityModel.Builder modelFactory(Function<EntityConnectionProvider, SwingEntityModel> modelFactory) {
     this.modelFactory = requireNonNull(modelFactory);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder editModelFactory(ModelFactory<SwingEntityEditModel> editModelFactory) {
+  public SwingEntityModel.Builder editModelFactory(Function<EntityConnectionProvider, SwingEntityEditModel> editModelFactory) {
     this.editModelFactory = requireNonNull(editModelFactory);
     return this;
   }
 
   @Override
-  public SwingEntityModel.Builder tableModelFactory(ModelFactory<SwingEntityTableModel> tableModelFactory) {
+  public SwingEntityModel.Builder tableModelFactory(Function<EntityConnectionProvider, SwingEntityTableModel> tableModelFactory) {
     this.tableModelFactory = requireNonNull(tableModelFactory);
     return this;
   }
@@ -139,7 +140,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       SwingEntityModel model;
       if (modelFactory != null) {
         LOG.debug("{} modelBuilder initializing entity model", this);
-        model = modelFactory.create(connectionProvider);
+        model = modelFactory.apply(connectionProvider);
       }
       else if (modelClass().equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
@@ -171,7 +172,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       SwingEntityEditModel editModel;
       if (editModelFactory != null) {
         LOG.debug("{} editModelBuilder initializing edit model", this);
-        editModel = editModelFactory.create(connectionProvider);
+        editModel = editModelFactory.apply(connectionProvider);
       }
       else if (editModelClass().equals(SwingEntityEditModel.class)) {
         LOG.debug("{} initializing a default edit model", this);
@@ -200,7 +201,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
       SwingEntityTableModel tableModel;
       if (tableModelFactory != null) {
         LOG.debug("{} tableModelBuilder initializing table model", this);
-        tableModel = tableModelFactory.create(connectionProvider);
+        tableModel = tableModelFactory.apply(connectionProvider);
       }
       else if (tableModelClass().equals(SwingEntityTableModel.class)) {
         LOG.debug("{} initializing a default table model", this);
