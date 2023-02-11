@@ -8670,3 +8670,4 @@
   FilteredTableColumn now uses the identifier as the default header value
   FilteredTableModel.RowsRemoved renamed RemovedRows
   SwingEntityTableModel.editModel() no longer handles null edit model, which is never null
+  DefaultEntityApplicationBuilder bug fixed, uncaught exception handler did not use the current focus owner as dialog parent

@@ -43,6 +43,8 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 
@@ -250,7 +252,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
               .icon(applicationIcon)
               .westPanel(createStartupIconPanel())
               .onResult(model -> startApplication(model, initializationStarted))
-              .onException(this::displayException)
+              .onException(DefaultEntityApplicationBuilder::displayException)
               .execute();
     }
     else {
@@ -283,15 +285,15 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     EntityApplicationPanel<M> applicationPanel = applicationPanel(applicationModel);
     applicationPanel.initializePanel();
 
-    JFrame frame = applicationFrame(applicationPanel);
+    JFrame applicationFrame = applicationFrame(applicationPanel);
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
-            SwingUtilities.invokeLater(() -> frame.setTitle(frameTitle(applicationModel))));
+            SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
-    applicationPanel.applicationStartedEvent.onEvent(frame);
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, frame));
-    LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+    applicationPanel.applicationStartedEvent.onEvent(applicationFrame);
+    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+    LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     if (displayFrame) {
-      frame.setVisible(true);
+      applicationFrame.setVisible(true);
     }
     if (onApplicationStarted != null) {
       onApplicationStarted.onEvent(applicationPanel);
@@ -366,14 +368,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return frame;
   }
 
-  private void displayException(Throwable exception) {
-    displayException(exception, null);
-  }
-
-  private void displayException(Throwable exception, Window dialogParent) {
-    Dialogs.showExceptionDialog(exception, dialogParent);
-  }
-
   private JPanel createStartupIconPanel() {
     JPanel panel = new JPanel(new BorderLayout());
     if (applicationIcon != null) {
@@ -410,6 +404,15 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.create(user, clientTypeId, clientVersion);
+  }
+
+  private static void displayException(Throwable exception) {
+    displayException(exception, null);
+  }
+
+  private static void displayException(Throwable exception, JFrame applicationFrame) {
+    Window focusOwnerParentWindow = getParentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
+    Dialogs.showExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
   }
 
   private final class DefaultLoginValidator implements LoginValidator {
