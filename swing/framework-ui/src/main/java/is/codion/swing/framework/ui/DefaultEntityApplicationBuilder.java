@@ -68,8 +68,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelProvider();
   private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelProvider();
 
-  private ConnectionProviderFactory connectionProviderFactory = new ConnectionProviderFactory() {};
-  private LoginValidator loginValidator = new DefaultLoginValidator();
+  private LoginProvider loginProvider = new DefaultDialogLoginProvider();
+  private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Supplier<JFrame> frameSupplier = JFrame::new;
   private Function<M, String> frameTitleFactory = new DefaultFrameTitleProvider();
   private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
@@ -154,8 +154,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator) {
-    this.loginValidator = requireNonNull(loginValidator);
+  public EntityApplicationBuilder<M> loginProvider(LoginProvider loginProvider) {
+    this.loginProvider = requireNonNull(loginProvider);
     return this;
   }
 
@@ -307,12 +307,18 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       return null;
     }
 
-    return loginDialog(defaultLoginUser, loginValidator);
+    User user = loginProvider.login();
+    if (saveDefaultUsername) {
+      UserPreferences.setUserPreference(applicationDefaultUsernameProperty, user.username());
+    }
+
+    return user;
   }
 
   private EntityConnectionProvider connectionProvider(User user) {
-    if (loginValidator instanceof DefaultEntityApplicationBuilder.DefaultLoginValidator && ((DefaultLoginValidator) loginValidator).connectionProvider != null) {
-      return ((DefaultLoginValidator) loginValidator).connectionProvider;
+    if (loginProvider instanceof DefaultEntityApplicationBuilder.DefaultDialogLoginProvider &&
+            ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
+      return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
     }
 
     return initializeConnectionProvider(user, panelClass.getName(), applicationVersion);
@@ -382,25 +388,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return applicationModel.connectionValidObserver().get() ? title : title + " - " + RESOURCE_BUNDLE.getString("not_connected");
   }
 
-  private User loginDialog(User defaultUser, LoginValidator loginValidator) {
-    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
-    User user = Dialogs.loginDialog()
-            .defaultUser(defaultUser)
-            .validator(loginValidator)
-            .title(loginDialogTitle)
-            .icon(applicationIcon)
-            .southComponent(loginPanelSouthComponentSupplier.get())
-            .show();
-    if (nullOrEmpty(user.username())) {
-      throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
-    }
-    if (saveDefaultUsername) {
-      UserPreferences.setUserPreference(applicationDefaultUsernameProperty, user.username());
-    }
-
-    return user;
-  }
-
   private EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.create(user, clientTypeId, clientVersion);
   }
@@ -412,6 +399,31 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private static void displayException(Throwable exception, JFrame applicationFrame) {
     Window focusOwnerParentWindow = getParentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
     Dialogs.showExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+  }
+
+  private final class DefaultDialogLoginProvider implements LoginProvider {
+
+    private final DefaultLoginValidator loginValidator = new DefaultLoginValidator();
+
+    @Override
+    public User login() {
+      User user = Dialogs.loginDialog()
+              .defaultUser(defaultLoginUser)
+              .validator(loginValidator)
+              .title(loginDialogTitle())
+              .icon(applicationIcon)
+              .southComponent(loginPanelSouthComponentSupplier.get())
+              .show();
+      if (nullOrEmpty(user.username())) {
+        throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
+      }
+
+      return user;
+    }
+
+    private String loginDialogTitle() {
+      return (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
+    }
   }
 
   private final class DefaultLoginValidator implements LoginValidator {
@@ -490,6 +502,19 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       }
 
       return username;
+    }
+  }
+
+  private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {
+
+    @Override
+    public EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
+      return EntityConnectionProvider.builder()
+              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+              .clientTypeId(clientTypeId)
+              .clientVersion(clientVersion)
+              .user(user)
+              .build();
     }
   }
 }
