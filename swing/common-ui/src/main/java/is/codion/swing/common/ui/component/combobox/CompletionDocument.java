@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 class CompletionDocument extends PlainDocument {
 
   private final JComboBox<?> comboBox;
-  private final ComboBoxModel<?> model;
+  private final ComboBoxModel<?> comboBoxModel;
   private final boolean normalize;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
@@ -42,7 +42,7 @@ class CompletionDocument extends PlainDocument {
     this.comboBox = requireNonNull(comboBox);
     this.comboBox.setEditable(true);
     this.normalize = normalize;
-    this.model = comboBox.getModel();
+    this.comboBoxModel = comboBox.getModel();
     setEditorComponent((JTextComponent) comboBox.getEditor().getEditorComponent());
     comboBox.addPropertyChangeListener("editor", new EditorChangedListener());
     comboBox.addActionListener(new HighlightCompletedOnActionPerformedListener());
@@ -72,8 +72,8 @@ class CompletionDocument extends PlainDocument {
       else {
         selectFirst = true;
       }
-      if (selectFirst && model.getSize() > 0) {
-        setSelectedItem(model.getElementAt(0));
+      if (selectFirst && comboBoxModel.getSize() > 0) {
+        setSelectedItem(comboBoxModel.getElementAt(0));
         setTextAccordingToSelectedItem();
       }
       highlightCompletedText(offs);
@@ -87,8 +87,8 @@ class CompletionDocument extends PlainDocument {
     return comboBox;
   }
 
-  protected final ComboBoxModel<?> model() {
-    return model;
+  protected final ComboBoxModel<?> comboBoxModel() {
+    return comboBoxModel;
   }
 
   protected final boolean isNormalize() {
@@ -122,19 +122,19 @@ class CompletionDocument extends PlainDocument {
    */
   protected final void setSelectedItem(Object item) {
     selecting = true;
-    model.setSelectedItem(item);
+    comboBoxModel.setSelectedItem(item);
     selecting = false;
   }
 
   protected final Object lookupItem(String pattern) {
-    Object selectedItem = model.getSelectedItem();
+    Object selectedItem = comboBoxModel.getSelectedItem();
     // only search for a different item if the currently selected does not match
     if (selectedItem != null && startsWithIgnoreCase(selectedItem.toString(), pattern, normalize)) {
       return selectedItem;
     }
     else {
-      for (int i = 0; i < model.getSize(); i++) {
-        Object currentItem = model.getElementAt(i);
+      for (int i = 0; i < comboBoxModel.getSize(); i++) {
+        Object currentItem = comboBoxModel.getElementAt(i);
         // current item starts with the pattern?
         if (currentItem != null && startsWithIgnoreCase(currentItem.toString(), pattern, normalize)) {
           return currentItem;
