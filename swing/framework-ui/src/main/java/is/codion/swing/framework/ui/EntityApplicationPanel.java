@@ -441,12 +441,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (supportTableMenuControls != null && !supportTableMenuControls.isEmpty()) {
       menuControls.add(supportTableMenuControls);
     }
-    List<Controls> additionalMenuControls = createAdditionalMenuControls();
-    if (additionalMenuControls != null) {
-      for (Controls controls : additionalMenuControls) {
-        menuControls.add(controls);
-      }
-    }
     Controls helpMenuControls = createHelpMenuControls();
     if (helpMenuControls != null && !helpMenuControls.isEmpty()) {
       menuControls.add(helpMenuControls);
@@ -505,6 +499,20 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .control(createViewKeyboardShortcutsControl())
             .separator()
             .control(createAboutControl())
+            .build();
+  }
+
+  /**
+   * @return the Controls on which to base the Support Tables menu
+   */
+  protected Controls createSupportTableMenuControls() {
+    return Controls.builder()
+            .caption(FrameworkMessages.supportTables())
+            .mnemonic(FrameworkMessages.supportTablesMnemonic())
+            .controls(supportPanelBuilders.stream()
+                    .sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
+                    .map(this::createSupportPanelControl)
+                    .toArray(Control[]::new))
             .build();
   }
 
@@ -647,31 +655,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Override to add event bindings after initialization
    */
   protected void bindEvents() {}
-
-  /**
-   * @return a List of Controls instances which should be added to the main menu bar
-   */
-  protected List<Controls> createAdditionalMenuControls() {
-    return new ArrayList<>(0);
-  }
-
-  /**
-   * @return the Controls on which to base the Support Tables menu
-   */
-  protected Controls createSupportTableMenuControls() {
-    if (supportPanelBuilders.isEmpty()) {
-      return null;
-    }
-
-    return Controls.builder()
-            .caption(FrameworkMessages.supportTables())
-            .mnemonic(FrameworkMessages.supportTablesMnemonic())
-            .controls(supportPanelBuilders.stream()
-                    .sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
-                    .map(this::createSupportPanelControl)
-                    .toArray(Control[]::new))
-            .build();
-  }
 
   /**
    * Displays the panel provided by the given builder in a frame or dialog,
