@@ -8679,3 +8679,4 @@
   CompletionDocument.model() renamed comboBoxModel()
   SwingEntityModel.ModelFactory removed, replaced with Function
   Dialogs.showExceptionDialog() renamed displayExceptionDialog()
+  EntityTablePanel.showDependenciesDialog() renamed displayDependenciesDialog()

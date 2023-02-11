@@ -290,7 +290,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(exception);
     requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      EntityTablePanel.showDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
+      EntityTablePanel.displayDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
