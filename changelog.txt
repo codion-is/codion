@@ -8711,3 +8711,6 @@
   DefaultEntityApplicationBuilder bug fixed, uncaught exception handler did not use the current focus owner as dialog parent
   EntityApplicationPanel.addApplicationStartedListener() removed, use EntityApplicationBuilder.onApplicationStarted() instead
   EntityApplicationBuilder.loginProvider() added for custom login functionality
+  EntityApplicationBuilder, type parameter P added for application panel type
+  EntityApplicationPanel.add/removeAlwaysOnTopListener() removed, covered by alwaysOnTopState(), selectFontSize() removed
+  EntityApplicationPanel.createAdditionalMenuControls() removed, minor refactoring

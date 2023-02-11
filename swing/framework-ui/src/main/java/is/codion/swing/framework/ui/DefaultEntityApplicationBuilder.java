@@ -48,7 +48,7 @@ import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationModel> implements EntityApplicationBuilder<M> {
+final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> implements EntityApplicationBuilder<M, P> {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityApplicationBuilder.class);
 
@@ -57,17 +57,17 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private static final String CODION_APPLICATION_VERSION = "codion.application.version";
   private static final int DEFAULT_LOGO_SIZE = 68;
 
-  private final Class<? extends EntityApplicationPanel<M>> panelClass;
   private final Class<M> modelClass;
+  private final Class<P> panelClass;
 
   private final String applicationDefaultUsernameProperty;
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
-  private String applicationName;
+  private String applicationName = "";
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelFactory();
-  private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelFactory();
+  private Function<M, P> panelFactory = new DefaultPanelFactory();
   private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
@@ -77,7 +77,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Version applicationVersion;
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
-  private EventDataListener<EntityApplicationPanel<M>> onApplicationStarted;
+  private EventDataListener<P> onApplicationStarted;
 
   private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
   private String lookAndFeelClassName;
@@ -89,7 +89,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private User defaultLoginUser;
   private User automaticLoginUser;
 
-  DefaultEntityApplicationBuilder(Class<M> modelClass, Class<? extends EntityApplicationPanel<M>> panelClass) {
+  DefaultEntityApplicationBuilder(Class<M> modelClass, Class<P> panelClass) {
     this.panelClass = requireNonNull(panelClass);
     this.modelClass = requireNonNull(modelClass);
     this.applicationDefaultUsernameProperty = EntityApplicationPanel.DEFAULT_USERNAME_PROPERTY + "#" + panelClass.getSimpleName();
@@ -100,133 +100,133 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> applicationIcon(ImageIcon applicationIcon) {
+  public EntityApplicationBuilder<M, P> applicationIcon(ImageIcon applicationIcon) {
     this.applicationIcon = requireNonNull(applicationIcon);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
+  public EntityApplicationBuilder<M, P> defaultLookAndFeelClassName(String defaultLookAndFeelClassName) {
     this.defaultLookAndFeelClassName = requireNonNull(defaultLookAndFeelClassName);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> lookAndFeelClassName(String lookAndFeelClassName) {
+  public EntityApplicationBuilder<M, P> lookAndFeelClassName(String lookAndFeelClassName) {
     this.lookAndFeelClassName = requireNonNull(lookAndFeelClassName);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> applicationName(String applicationName) {
+  public EntityApplicationBuilder<M, P> applicationName(String applicationName) {
     this.applicationName = requireNonNull(applicationName);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> applicationVersion(Version applicationVersion) {
+  public EntityApplicationBuilder<M, P> applicationVersion(Version applicationVersion) {
     this.applicationVersion = requireNonNull(applicationVersion);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> modelFactory(Function<EntityConnectionProvider, M> modelFactory) {
+  public EntityApplicationBuilder<M, P> modelFactory(Function<EntityConnectionProvider, M> modelFactory) {
     this.modelFactory = requireNonNull(modelFactory);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> panelFactory(Function<M, ? extends EntityApplicationPanel<M>> panelFactory) {
+  public EntityApplicationBuilder<M, P> panelFactory(Function<M, P> panelFactory) {
     this.panelFactory = requireNonNull(panelFactory);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> defaultLoginUser(User defaultLoginUser) {
+  public EntityApplicationBuilder<M, P> defaultLoginUser(User defaultLoginUser) {
     this.defaultLoginUser = requireNonNull(defaultLoginUser);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser) {
+  public EntityApplicationBuilder<M, P> automaticLoginUser(User automaticLoginUser) {
     this.automaticLoginUser = automaticLoginUser;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> loginProvider(LoginProvider loginProvider) {
+  public EntityApplicationBuilder<M, P> loginProvider(LoginProvider loginProvider) {
     this.loginProvider = requireNonNull(loginProvider);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> saveDefaultUsername(boolean saveDefaultUsername) {
+  public EntityApplicationBuilder<M, P> saveDefaultUsername(boolean saveDefaultUsername) {
     this.saveDefaultUsername = saveDefaultUsername;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> frameSupplier(Supplier<JFrame> frameSupplier) {
+  public EntityApplicationBuilder<M, P> frameSupplier(Supplier<JFrame> frameSupplier) {
     this.frameSupplier = requireNonNull(frameSupplier);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> frameTitleFactory(Function<M, String> frameTitleFactory) {
+  public EntityApplicationBuilder<M, P> frameTitleFactory(Function<M, String> frameTitleFactory) {
     this.frameTitleFactory = requireNonNull(frameTitleFactory);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> includeMainMenu(boolean includeMainMenu) {
+  public EntityApplicationBuilder<M, P> includeMainMenu(boolean includeMainMenu) {
     this.includeMainMenu = includeMainMenu;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> maximizeFrame(boolean maximizeFrame) {
+  public EntityApplicationBuilder<M, P> maximizeFrame(boolean maximizeFrame) {
     this.maximizeFrame = maximizeFrame;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> displayFrame(boolean displayFrame) {
+  public EntityApplicationBuilder<M, P> displayFrame(boolean displayFrame) {
     this.displayFrame = displayFrame;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> displayStartupDialog(boolean displayStartupDialog) {
+  public EntityApplicationBuilder<M, P> displayStartupDialog(boolean displayStartupDialog) {
     this.displayStartupDialog = displayStartupDialog;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> frameSize(Dimension frameSize) {
+  public EntityApplicationBuilder<M, P> frameSize(Dimension frameSize) {
     this.frameSize = frameSize;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> loginRequired(boolean loginRequired) {
+  public EntityApplicationBuilder<M, P> loginRequired(boolean loginRequired) {
     this.loginRequired = loginRequired;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier) {
+  public EntityApplicationBuilder<M, P> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier) {
     this.loginPanelSouthComponentSupplier = requireNonNull(loginPanelSouthComponentSupplier);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> onApplicationStarted(EventDataListener<EntityApplicationPanel<M>> onApplicationStarted) {
+  public EntityApplicationBuilder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted) {
     this.onApplicationStarted = onApplicationStarted;
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory) {
+  public EntityApplicationBuilder<M, P> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory) {
     this.connectionProviderFactory = requireNonNull(connectionProviderFactory);
     return this;
   }
@@ -282,7 +282,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private void startApplication(M applicationModel, long initializationStarted) {
-    EntityApplicationPanel<M> applicationPanel = applicationPanel(applicationModel);
+    P applicationPanel = applicationPanel(applicationModel);
     applicationPanel.initializePanel();
 
     JFrame applicationFrame = applicationFrame(applicationPanel);
@@ -328,11 +328,11 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return modelFactory.apply(connectionProvider);
   }
 
-  private EntityApplicationPanel<M> applicationPanel(M applicationModel) {
+  private P applicationPanel(M applicationModel) {
     return panelFactory.apply(applicationModel);
   }
 
-  private JFrame applicationFrame(EntityApplicationPanel<M> applicationPanel) {
+  private JFrame applicationFrame(P applicationPanel) {
     JFrame frame = frameSupplier.get();
     frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
@@ -422,7 +422,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
 
     private String loginDialogTitle() {
-      return (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
+      return applicationName.isEmpty() ? Messages.login() : applicationName + " - " + Messages.login();
     }
   }
 
@@ -460,10 +460,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private class DefaultPanelFactory implements Function<M, EntityApplicationPanel<M>> {
+  private class DefaultPanelFactory implements Function<M, P> {
 
     @Override
-    public EntityApplicationPanel<M> apply(M model) {
+    public P apply(M model) {
       try {
         return panelClass.getConstructor(model.getClass()).newInstance(model);
       }
@@ -480,7 +480,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
     @Override
     public String apply(M applicationModel) {
-      StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
+      StringBuilder builder = new StringBuilder(applicationName);
       if (applicationVersion != null) {
         if (builder.length() > 0) {
           builder.append(" - ");
