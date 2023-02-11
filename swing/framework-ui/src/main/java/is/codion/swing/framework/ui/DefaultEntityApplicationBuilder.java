@@ -398,7 +398,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private static void displayException(Throwable exception, JFrame applicationFrame) {
     Window focusOwnerParentWindow = getParentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
-    Dialogs.showExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+    Dialogs.displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
   }
 
   private final class DefaultDialogLoginProvider implements LoginProvider {

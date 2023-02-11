@@ -135,7 +135,7 @@ public final class DatabaseExplorerPanel extends JPanel {
       System.exit(0);
     }
     catch (Exception e) {
-      Dialogs.showExceptionDialog(e, null);
+      Dialogs.displayExceptionDialog(e, null);
       System.exit(0);
     }
   }

@@ -870,7 +870,7 @@ public class EntityTablePanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityTablePanel.this;
     }
-    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**
@@ -901,7 +901,7 @@ public class EntityTablePanel extends JPanel {
       showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
-      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent));
+      Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
     }
   }
 
