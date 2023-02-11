@@ -64,7 +64,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
-  private String applicationName;
+  private String applicationName = "";
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelFactory();
   private Function<M, P> panelFactory = new DefaultPanelFactory();
@@ -422,7 +422,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
 
     private String loginDialogTitle() {
-      return (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
+      return applicationName.isEmpty() ? Messages.login() : applicationName + " - " + Messages.login();
     }
   }
 
@@ -480,7 +480,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
     @Override
     public String apply(M applicationModel) {
-      StringBuilder builder = new StringBuilder(applicationName == null ? "" : applicationName);
+      StringBuilder builder = new StringBuilder(applicationName);
       if (applicationVersion != null) {
         if (builder.length() > 0) {
           builder.append(" - ");
