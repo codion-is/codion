@@ -44,7 +44,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -173,7 +172,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private JTabbedPane applicationTabPane;
 
-  final Event<JFrame> applicationStartedEvent = Event.event();
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
 
@@ -415,20 +413,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final void removeAlwaysOnTopListener(EventListener listener) {
     alwaysOnTopState.removeListener(listener);
-  }
-
-  /**
-   * @param listener a listener notified when to application has been successfully started
-   */
-  public final void addApplicationStartedListener(EventDataListener<JFrame> listener) {
-    applicationStartedEvent.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeApplicationStartedListener(EventDataListener<JFrame> listener) {
-    applicationStartedEvent.removeDataListener(listener);
   }
 
   /**

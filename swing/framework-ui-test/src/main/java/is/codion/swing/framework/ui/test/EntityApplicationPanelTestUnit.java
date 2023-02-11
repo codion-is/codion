@@ -40,29 +40,10 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     entityApplicationBuilder(modelClass, panelClass)
-            .panelFactory(applicationModel -> {
-              try {
-                EntityApplicationPanel<M> applicationPanel = panelClass.getConstructor(modelClass).newInstance(applicationModel);
-                applicationPanel.addApplicationStartedListener(frame -> applicationModel.connectionProvider().close());
-
-                return applicationPanel;
-              }
-              catch (Exception e) {
-                throw new RuntimeException(e);
-              }
-            })
             .automaticLoginUser(user)
             .displayStartupDialog(false)
             .displayFrame(false)
+            .onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
             .start();
-  }
-
-  /**
-   * Creates the panel to test
-   * @return the panel to test
-   * @throws Exception in case of an exception
-   */
-  protected EntityApplicationPanel<?> createApplicationPanel() throws Exception {
-    return panelClass.getConstructor().newInstance();
   }
 }

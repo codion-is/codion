@@ -43,6 +43,8 @@ import java.util.function.Supplier;
 
 import static is.codion.common.Util.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.Integer.parseInt;
 import static java.util.Objects.requireNonNull;
 
@@ -63,13 +65,13 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private final String applicationFontSizeProperty;
 
   private String applicationName;
-  private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelProvider();
-  private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelProvider();
+  private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
+  private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelFactory();
+  private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelFactory();
+  private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
 
-  private ConnectionProviderFactory connectionProviderFactory = new ConnectionProviderFactory() {};
-  private LoginValidator loginValidator = new DefaultLoginValidator();
+  private LoginProvider loginProvider = new DefaultDialogLoginProvider();
   private Supplier<JFrame> frameSupplier = JFrame::new;
-  private Function<M, String> frameTitleFactory = new DefaultFrameTitleProvider();
   private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
   private ImageIcon applicationIcon = FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE);
   private Version applicationVersion;
@@ -152,8 +154,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator) {
-    this.loginValidator = requireNonNull(loginValidator);
+  public EntityApplicationBuilder<M> loginProvider(LoginProvider loginProvider) {
+    this.loginProvider = requireNonNull(loginProvider);
     return this;
   }
 
@@ -249,8 +251,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
               .title(applicationName)
               .icon(applicationIcon)
               .westPanel(createStartupIconPanel())
-              .onResult(model -> startApplication(model, initializationStarted))
-              .onException(this::displayException)
+              .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
+              .onException(DefaultEntityApplicationBuilder::displayException)
               .execute();
     }
     else {
@@ -283,15 +285,14 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     EntityApplicationPanel<M> applicationPanel = applicationPanel(applicationModel);
     applicationPanel.initializePanel();
 
-    JFrame frame = applicationFrame(applicationPanel);
+    JFrame applicationFrame = applicationFrame(applicationPanel);
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
-            SwingUtilities.invokeLater(() -> frame.setTitle(frameTitle(applicationModel))));
+            SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
-    applicationPanel.applicationStartedEvent.onEvent(frame);
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, frame));
-    LOG.info(frame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
+    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+    LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     if (displayFrame) {
-      frame.setVisible(true);
+      applicationFrame.setVisible(true);
     }
     if (onApplicationStarted != null) {
       onApplicationStarted.onEvent(applicationPanel);
@@ -306,12 +307,18 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       return null;
     }
 
-    return loginDialog(defaultLoginUser, loginValidator);
+    User user = loginProvider.login();
+    if (saveDefaultUsername) {
+      UserPreferences.setUserPreference(applicationDefaultUsernameProperty, user.username());
+    }
+
+    return user;
   }
 
   private EntityConnectionProvider connectionProvider(User user) {
-    if (loginValidator instanceof DefaultEntityApplicationBuilder.DefaultLoginValidator && ((DefaultLoginValidator) loginValidator).connectionProvider != null) {
-      return ((DefaultLoginValidator) loginValidator).connectionProvider;
+    if (loginProvider instanceof DefaultEntityApplicationBuilder.DefaultDialogLoginProvider &&
+            ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
+      return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
     }
 
     return initializeConnectionProvider(user, panelClass.getName(), applicationVersion);
@@ -366,14 +373,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return frame;
   }
 
-  private void displayException(Throwable exception) {
-    displayException(exception, null);
-  }
-
-  private void displayException(Throwable exception, Window dialogParent) {
-    Dialogs.showExceptionDialog(exception, dialogParent);
-  }
-
   private JPanel createStartupIconPanel() {
     JPanel panel = new JPanel(new BorderLayout());
     if (applicationIcon != null) {
@@ -389,27 +388,42 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return applicationModel.connectionValidObserver().get() ? title : title + " - " + RESOURCE_BUNDLE.getString("not_connected");
   }
 
-  private User loginDialog(User defaultUser, LoginValidator loginValidator) {
-    String loginDialogTitle = (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
-    User user = Dialogs.loginDialog()
-            .defaultUser(defaultUser)
-            .validator(loginValidator)
-            .title(loginDialogTitle)
-            .icon(applicationIcon)
-            .southComponent(loginPanelSouthComponentSupplier.get())
-            .show();
-    if (nullOrEmpty(user.username())) {
-      throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
-    }
-    if (saveDefaultUsername) {
-      UserPreferences.setUserPreference(applicationDefaultUsernameProperty, user.username());
-    }
-
-    return user;
-  }
-
   private EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.create(user, clientTypeId, clientVersion);
+  }
+
+  private static void displayException(Throwable exception) {
+    displayException(exception, null);
+  }
+
+  private static void displayException(Throwable exception, JFrame applicationFrame) {
+    Window focusOwnerParentWindow = getParentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
+    Dialogs.showExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+  }
+
+  private final class DefaultDialogLoginProvider implements LoginProvider {
+
+    private final DefaultLoginValidator loginValidator = new DefaultLoginValidator();
+
+    @Override
+    public User login() {
+      User user = Dialogs.loginDialog()
+              .defaultUser(defaultLoginUser)
+              .validator(loginValidator)
+              .title(loginDialogTitle())
+              .icon(applicationIcon)
+              .southComponent(loginPanelSouthComponentSupplier.get())
+              .show();
+      if (nullOrEmpty(user.username())) {
+        throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
+      }
+
+      return user;
+    }
+
+    private String loginDialogTitle() {
+      return (!nullOrEmpty(applicationName) ? (applicationName + " - ") : "") + Messages.login();
+    }
   }
 
   private final class DefaultLoginValidator implements LoginValidator {
@@ -430,33 +444,39 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private class DefaultModelProvider implements Function<EntityConnectionProvider, M> {
+  private class DefaultModelFactory implements Function<EntityConnectionProvider, M> {
 
     @Override
     public M apply(EntityConnectionProvider connectionProvider) {
       try {
         return modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
+      catch (RuntimeException e) {
+        throw e;
+      }
       catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private class DefaultPanelProvider implements Function<M, EntityApplicationPanel<M>> {
+  private class DefaultPanelFactory implements Function<M, EntityApplicationPanel<M>> {
 
     @Override
     public EntityApplicationPanel<M> apply(M model) {
       try {
         return panelClass.getConstructor(model.getClass()).newInstance(model);
       }
+      catch (RuntimeException e) {
+        throw e;
+      }
       catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private class DefaultFrameTitleProvider implements Function<M, String> {
+  private class DefaultFrameTitleFactory implements Function<M, String> {
 
     @Override
     public String apply(M applicationModel) {
@@ -488,6 +508,19 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       }
 
       return username;
+    }
+  }
+
+  private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {
+
+    @Override
+    public EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
+      return EntityConnectionProvider.builder()
+              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+              .clientTypeId(clientTypeId)
+              .clientVersion(clientVersion)
+              .user(user)
+              .build();
     }
   }
 }

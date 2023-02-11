@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
@@ -46,6 +45,9 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
 
   /**
    * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
+   * Note that for an external Look and Feels to be enabled, it must be registered via
+   * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+   * before starting the application.
    * @param defaultLookAndFeelClassName the default look and feel classname
    * @return this Builder instance
    */
@@ -53,7 +55,7 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
 
   /**
    * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
-   * Note that for the given look to be enabled it must be made available via
+   * Note that for an external Look and Feels to be enabled, it must be registered via
    * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
    * before starting the application.
    * @param lookAndFeelClassName the look and feel classname
@@ -80,33 +82,34 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   EntityApplicationBuilder<M> panelFactory(Function<M, ? extends EntityApplicationPanel<M>> panelFactory);
 
   /**
+   * @param loginProvider provides a way for a user to login
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M> loginProvider(LoginProvider loginProvider);
+
+  /**
    * @param defaultLoginUser the default user credentials to display in the login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> defaultLoginUser(User defaultLoginUser);
 
   /**
-   * @param automaticLoginUser if specified the application is started automatically with that user,
+   * @param automaticLoginUser if specified the application is started automatically with the given user,
    * instead of displaying a login dialog
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> automaticLoginUser(User automaticLoginUser);
 
   /**
-   * @param loginValidator the login validator for the login dialog
-   * @return this Builder instance
-   */
-  EntityApplicationBuilder<M> loginValidator(LoginValidator loginValidator);
-
-  /**
-   * @param saveDefaultUsername true if the username should be saved after a successful login
+   * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> saveDefaultUsername(boolean saveDefaultUsername);
 
   /**
-   * @param loginPanelSouthComponentSupplier supplies the component to add to the BorderLayout.SOUTH position of the
-   * login panel
+   * Note that this does not apply when a custom {@link LoginProvider} has been specified.
+   * @param loginPanelSouthComponentSupplier supplies the component to add to the
+   * {@link java.awt.BorderLayout#SOUTH} position of the default login panel
    * @return this Builder instance
    */
   EntityApplicationBuilder<M> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier);
@@ -184,24 +187,31 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
   }
 
   /**
+   * Provides a way for a user to login.
+   */
+  interface LoginProvider {
+
+    /**
+     * Performs the login and returns the User, may not return null.
+     * @return the user, not null
+     * @throws RuntimeException in case the login failed
+     * @throws is.codion.common.model.CancelException in case the login is cancelled
+     */
+    User login();
+  }
+
+  /**
    * A factory for a {@link EntityConnectionProvider} instance.
    */
   interface ConnectionProviderFactory {
 
     /**
      * Creates a new {@link EntityConnectionProvider} instance.
-     * @param user the user, is null in case login is not required {@link EntityApplicationBuilder#loginRequired(boolean)}.
+     * @param user the user, may be null in case login is not required {@link EntityApplicationBuilder#loginRequired(boolean)}.
      * @param clientTypeId the client type id
      * @param clientVersion the client version
      * @return a new {@link EntityConnectionProvider} instance.
      */
-    default EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
-      return EntityConnectionProvider.builder()
-              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-              .clientTypeId(clientTypeId)
-              .clientVersion(clientVersion)
-              .user(user)
-              .build();
-    }
+    EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion);
   }
 }
