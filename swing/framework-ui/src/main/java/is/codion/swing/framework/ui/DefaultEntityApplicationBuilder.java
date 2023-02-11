@@ -251,7 +251,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
               .title(applicationName)
               .icon(applicationIcon)
               .westPanel(createStartupIconPanel())
-              .onResult(model -> startApplication(model, initializationStarted))
+              .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
               .onException(DefaultEntityApplicationBuilder::displayException)
               .execute();
     }
@@ -289,7 +289,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
             SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
-    applicationPanel.applicationStartedEvent.onEvent(applicationFrame);
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
     LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     if (displayFrame) {
