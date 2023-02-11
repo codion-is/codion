@@ -65,13 +65,13 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private final String applicationFontSizeProperty;
 
   private String applicationName;
-  private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelProvider();
-  private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelProvider();
+  private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
+  private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelFactory();
+  private Function<M, ? extends EntityApplicationPanel<M>> panelFactory = new DefaultPanelFactory();
+  private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
-  private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Supplier<JFrame> frameSupplier = JFrame::new;
-  private Function<M, String> frameTitleFactory = new DefaultFrameTitleProvider();
   private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
   private ImageIcon applicationIcon = FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE);
   private Version applicationVersion;
@@ -444,33 +444,39 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private class DefaultModelProvider implements Function<EntityConnectionProvider, M> {
+  private class DefaultModelFactory implements Function<EntityConnectionProvider, M> {
 
     @Override
     public M apply(EntityConnectionProvider connectionProvider) {
       try {
         return modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
+      catch (RuntimeException e) {
+        throw e;
+      }
       catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private class DefaultPanelProvider implements Function<M, EntityApplicationPanel<M>> {
+  private class DefaultPanelFactory implements Function<M, EntityApplicationPanel<M>> {
 
     @Override
     public EntityApplicationPanel<M> apply(M model) {
       try {
         return panelClass.getConstructor(model.getClass()).newInstance(model);
       }
+      catch (RuntimeException e) {
+        throw e;
+      }
       catch (Exception e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private class DefaultFrameTitleProvider implements Function<M, String> {
+  private class DefaultFrameTitleFactory implements Function<M, String> {
 
     @Override
     public String apply(M applicationModel) {

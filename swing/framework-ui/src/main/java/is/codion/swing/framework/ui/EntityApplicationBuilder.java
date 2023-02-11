@@ -45,6 +45,9 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
 
   /**
    * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
+   * Note that for an external Look and Feels to be enabled, it must be registered via
+   * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+   * before starting the application.
    * @param defaultLookAndFeelClassName the default look and feel classname
    * @return this Builder instance
    */
@@ -52,7 +55,7 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel>
 
   /**
    * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
-   * Note that for the given look to be enabled it must be made available via
+   * Note that for an external Look and Feels to be enabled, it must be registered via
    * {@link is.codion.swing.common.ui.laf.LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
    * before starting the application.
    * @param lookAndFeelClassName the look and feel classname
