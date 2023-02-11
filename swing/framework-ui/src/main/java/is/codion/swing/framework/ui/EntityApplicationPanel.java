@@ -9,7 +9,6 @@ import is.codion.common.Text;
 import is.codion.common.credentials.CredentialsException;
 import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
@@ -263,15 +262,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .show();
   }
 
-  /**
-   * Display a dialog for selecting the application font size percentage
-   */
-  public final void selectFontSize() {
-    Dialogs.fontSizeSelectionDialog(applicationFontSizeProperty)
-            .owner(this)
-            .selectFontSize();
-  }
-
   @Override
   public final Optional<HierarchyPanel> parentPanel() {
     return Optional.empty();
@@ -402,20 +392,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * @param listener a listener notified each time the always on top status changes
-   */
-  public final void addAlwaysOnTopListener(EventDataListener<Boolean> listener) {
-    alwaysOnTopState.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeAlwaysOnTopListener(EventListener listener) {
-    alwaysOnTopState.removeListener(listener);
-  }
-
-  /**
    * @param entities the entities
    * @return a tree model showing the dependencies between entities via foreign keys
    */
@@ -433,7 +409,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Returns the JTabbedPane used by the default UI, note that this can be null if the default UI
-   * initialization has been overridden. Returns null until {@link #initializeUI()} has been called
+   * initialization has been overridden. Returns null until the panel has been intialized via {@link #initializePanel()}.
    * @return the default application tab pane
    */
   protected final JTabbedPane applicationTabPane() {

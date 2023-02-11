@@ -8674,3 +8674,4 @@
   EntityApplicationPanel.addApplicationStartedListener() removed, use EntityApplicationBuilder.onApplicationStarted() instead
   EntityApplicationBuilder.loginProvider() added for custom login functionality
   EntityApplicationBuilder, type parameter P added for application panel type
+  EntityApplicationPanel.add/removeAlwaysOnTopListener() removed, covered by alwaysOnTopState(), selectFontSize() removed
