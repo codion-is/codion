@@ -8714,3 +8714,10 @@
   EntityApplicationBuilder, type parameter P added for application panel type
   EntityApplicationPanel.add/removeAlwaysOnTopListener() removed, covered by alwaysOnTopState(), selectFontSize() removed
   EntityApplicationPanel.createAdditionalMenuControls() removed, minor refactoring
+  CompletionDocument.model() renamed comboBoxModel()
+  SwingEntityModel.ModelFactory removed, replaced with Function
+  Dialogs.showExceptionDialog() renamed displayExceptionDialog()
+  EntityTablePanel.showDependenciesDialog() renamed displayDependenciesDialog()
+  Utilities.loadIcon() now with explicit resource not found exception
+  LoginPanel.initializeUI() refactored
+  LoadTestPanel refactored

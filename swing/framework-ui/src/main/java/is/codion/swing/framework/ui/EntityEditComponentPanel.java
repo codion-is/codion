@@ -350,7 +350,7 @@ public class EntityEditComponentPanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityEditComponentPanel.this;
     }
-    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**

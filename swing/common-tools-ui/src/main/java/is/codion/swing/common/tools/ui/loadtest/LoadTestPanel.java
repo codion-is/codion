@@ -13,7 +13,6 @@ import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
-import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -29,7 +28,6 @@ import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 import org.jfree.chart.renderer.xy.DeviationRenderer;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -38,7 +36,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -46,8 +43,6 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
@@ -205,18 +200,14 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createApplicationCountButtonPanel() {
     return Components.panel(new GridLayout(1, 2, 0, 0))
-            .add(createAddRemoveApplicationButton(false))
-            .add(createAddRemoveApplicationButton(true))
-            .build();
-  }
-
-  private JButton createAddRemoveApplicationButton(boolean add) {
-    return Components.button(Control.builder(add ? loadTestModel::addApplicationBatch : loadTestModel::removeApplicationBatch)
-                    .caption(add ? "+" : "-")
-                    .description(add ? "Add application batch" : "Remove application batch")
-                    .build())
-            .preferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE)
-            .margin(new Insets(0, 0, 0, 0))
+            .add(Control.builder(loadTestModel::addApplicationBatch)
+                    .caption("+")
+                    .description("Add application batch")
+                    .build().createButton())
+            .add(Control.builder(loadTestModel::removeApplicationBatch)
+                    .caption("-")
+                    .description("Remove application batch")
+                    .build().createButton())
             .build();
   }
 
@@ -321,101 +312,96 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private void onScenarioSelectionChanged(List<ItemRandomizer.RandomItem<UsageScenario<T>>> selectedScenarios) {
     scenarioBase.removeAll();
-    for (ItemRandomizer.RandomItem<UsageScenario<T>> selectedItem : selectedScenarios) {
-      scenarioBase.add(createScenarioPanel(selectedItem.item()));
-    }
+    selectedScenarios.forEach(scenario -> scenarioBase.add(createScenarioPanel(scenario.item())));
     validate();
     repaint();
   }
 
   private JPanel createScenarioPanel(UsageScenario<T> item) {
+    return Components.panel(Layouts.borderLayout())
+            .add(Components.tabbedPane()
+                    .tab("Duration", createScenarioDurationChartPanel(item))
+                    .tab("Exceptions", createScenarioExceptionsPanel(item))
+                    .build(), BorderLayout.CENTER)
+            .build();
+  }
+
+  private ChartPanel createScenarioDurationChartPanel(UsageScenario<T> scenario) {
     JFreeChart scenarioDurationChart = ChartFactory.createXYStepChart(null,
-            null, null, loadTestModel.scenarioDurationDataset(item.name()),
+            null, null, loadTestModel.scenarioDurationDataset(scenario.name()),
             PlotOrientation.VERTICAL, true, true, false);
     setColors(scenarioDurationChart);
     ChartPanel scenarioDurationChartPanel = new ChartPanel(scenarioDurationChart);
     scenarioDurationChartPanel.setBorder(BorderFactory.createEtchedBorder());
-
     DeviationRenderer renderer = new DeviationRenderer();
     renderer.setDefaultShapesVisible(false);
     scenarioDurationChart.getXYPlot().setRenderer(renderer);
 
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    JTabbedPane tabPanel = new JTabbedPane();
-    tabPanel.addTab("Duration", scenarioDurationChartPanel);
+    return scenarioDurationChartPanel;
+  }
 
-    JTextArea exceptionsArea = new JTextArea();
-    JPanel scenarioExceptionPanel = new JPanel(Layouts.borderLayout());
-    scenarioExceptionPanel.add(exceptionsArea, BorderLayout.CENTER);
-    JButton refreshButton = new JButton(new RefreshExceptionsAction(exceptionsArea, item));
+  private JPanel createScenarioExceptionsPanel(UsageScenario<T> scenario) {
+    JTextArea exceptionsArea = Components.textArea()
+            .editable(false)
+            .build();
+    JButton refreshButton = Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
+            .caption("Refresh")
+            .build()
+            .createButton();
     refreshButton.doClick();
-    JButton clearButton = new JButton(new ClearExceptionsAction(exceptionsArea, item));
 
-    JScrollPane exceptionScroller = new JScrollPane(exceptionsArea);
+    JButton clearButton = Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
+            .caption("Clear")
+            .build()
+            .createButton();
 
-    scenarioExceptionPanel.add(exceptionScroller, BorderLayout.CENTER);
-    JPanel buttonPanel = new JPanel(Layouts.borderLayout());
-    buttonPanel.add(refreshButton, BorderLayout.NORTH);
-    buttonPanel.add(clearButton, BorderLayout.SOUTH);
-
-    scenarioExceptionPanel.add(buttonPanel, BorderLayout.EAST);
-
-    tabPanel.addTab("Exceptions", scenarioExceptionPanel);
-
-    basePanel.add(tabPanel, BorderLayout.CENTER);
-
-    return basePanel;
+    return Components.panel(Layouts.borderLayout())
+            .add(new JScrollPane(exceptionsArea), BorderLayout.CENTER)
+            .add(Components.panel(Layouts.borderLayout())
+                    .add(refreshButton, BorderLayout.NORTH)
+                    .add(clearButton, BorderLayout.SOUTH)
+                    .build(), BorderLayout.EAST)
+            .build();
   }
 
   private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
   }
 
-  private abstract static class ExceptionsAction extends AbstractAction {
+  private static final class ClearExceptionsCommand implements Control.Command {
+
     private final JTextArea exceptionsTextArea;
     private final UsageScenario<?> scenario;
 
-    private ExceptionsAction(String name, JTextArea exceptionsTextArea, UsageScenario<?> scenario) {
-      super(name);
+    private ClearExceptionsCommand(JTextArea exceptionsTextArea, UsageScenario<?> scenario) {
       this.exceptionsTextArea = exceptionsTextArea;
       this.scenario = scenario;
     }
 
-    JTextArea exceptionsTextArea() {
-      return exceptionsTextArea;
-    }
-
-    UsageScenario<?> scenario() {
-      return scenario;
+    @Override
+    public void perform() throws Exception {
+      scenario.clearExceptions();
+      exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
     }
   }
 
-  private static final class ClearExceptionsAction extends ExceptionsAction {
+  private static final class RefreshExceptionsCommand implements Control.Command {
 
-    private ClearExceptionsAction(JTextArea exceptionsArea, UsageScenario<?> scenario) {
-      super("Clear", exceptionsArea, scenario);
+    private final JTextArea exceptionsTextArea;
+    private final UsageScenario<?> scenario;
+
+    private RefreshExceptionsCommand(JTextArea exceptionsTextArea, UsageScenario<?> scenario) {
+      this.exceptionsTextArea = exceptionsTextArea;
+      this.scenario = scenario;
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-      scenario().clearExceptions();
-      exceptionsTextArea().replaceRange("", 0, exceptionsTextArea().getDocument().getLength());
-    }
-  }
-
-  private static final class RefreshExceptionsAction extends ExceptionsAction {
-
-    private RefreshExceptionsAction(JTextArea exceptionsArea, UsageScenario<?> scenario) {
-      super("Refresh", exceptionsArea, scenario);
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      exceptionsTextArea().replaceRange("", 0, exceptionsTextArea().getDocument().getLength());
-      for (Throwable exception : scenario().exceptions()) {
-        exceptionsTextArea().append(exception.getMessage());
-        exceptionsTextArea().append(Separators.LINE_SEPARATOR);
-        exceptionsTextArea().append(Separators.LINE_SEPARATOR);
+    public void perform() throws Exception {
+      exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
+      for (Throwable exception : scenario.exceptions()) {
+        exceptionsTextArea.append(exception.getMessage());
+        exceptionsTextArea.append(Separators.LINE_SEPARATOR);
+        exceptionsTextArea.append(Separators.LINE_SEPARATOR);
       }
     }
   }

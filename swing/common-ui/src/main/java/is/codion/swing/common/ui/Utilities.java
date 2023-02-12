@@ -197,10 +197,13 @@ public final class Utilities {
    * @param resourceClass the class owning the resource
    * @param resourceName the resource name
    * @return an icon
+   * @throws IllegalArgumentException in case the given resource was not found
    */
   public static ImageIcon loadIcon(Class<?> resourceClass, String resourceName) {
     URL url = requireNonNull(resourceClass).getResource(resourceName);
-    requireNonNull(url, "Resource: " + resourceName + " for " + resourceClass);
+    if (url == null) {
+      throw new IllegalArgumentException("Resource: " + resourceName + " for class " + resourceClass + " not found");
+    }
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }

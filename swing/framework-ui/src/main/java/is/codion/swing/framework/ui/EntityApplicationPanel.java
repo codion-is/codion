@@ -198,7 +198,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (focusOwner == null) {
       focusOwner = EntityApplicationPanel.this;
     }
-    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**

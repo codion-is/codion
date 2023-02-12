@@ -785,7 +785,7 @@ public class EntityTablePanel extends JPanel {
       Map<EntityType, Collection<Entity>> dependencies =
               tableModel.connectionProvider().connection()
                       .selectDependencies(tableModel.selectionModel().getSelectedItems());
-      showDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
+      displayDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
               MESSAGES.getString("no_dependent_records"));
     }
     catch (Exception e) {
@@ -843,7 +843,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     requireNonNull(entities);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      showDependenciesDialog(entities, tableModel.connectionProvider(),
+      displayDependenciesDialog(entities, tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -870,7 +870,7 @@ public class EntityTablePanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityTablePanel.this;
     }
-    Dialogs.showExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
   }
 
   /**
@@ -879,9 +879,9 @@ public class EntityTablePanel extends JPanel {
    * @param connectionProvider the connection provider
    * @param dialogParent the dialog parent
    */
-  public static void showDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-                                            JComponent dialogParent) {
-    showDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependent_records"));
+  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+                                               JComponent dialogParent) {
+    displayDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependent_records"));
   }
 
   /**
@@ -891,17 +891,17 @@ public class EntityTablePanel extends JPanel {
    * @param dialogParent the dialog parent
    * @param noDependenciesMessage the message to show in case of no dependencies
    */
-  public static void showDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-                                            JComponent dialogParent, String noDependenciesMessage) {
+  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+                                               JComponent dialogParent, String noDependenciesMessage) {
     requireNonNull(entities);
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     try {
       Map<EntityType, Collection<Entity>> dependencies = connectionProvider.connection().selectDependencies(entities);
-      showDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
+      displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
     catch (DatabaseException e) {
-      Dialogs.showExceptionDialog(e, getParentWindow(dialogParent));
+      Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
     }
   }
 
@@ -1714,9 +1714,9 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  private static void showDependenciesDialog(Map<EntityType, Collection<Entity>> dependencies,
-                                             EntityConnectionProvider connectionProvider,
-                                             JComponent dialogParent, String noDependenciesMessage) {
+  private static void displayDependenciesDialog(Map<EntityType, Collection<Entity>> dependencies,
+                                                EntityConnectionProvider connectionProvider,
+                                                JComponent dialogParent, String noDependenciesMessage) {
     if (dependencies.isEmpty()) {
       JOptionPane.showMessageDialog(dialogParent, noDependenciesMessage,
               MESSAGES.getString("none_found"), JOptionPane.INFORMATION_MESSAGE);
