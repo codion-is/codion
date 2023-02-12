@@ -8680,3 +8680,4 @@
   SwingEntityModel.ModelFactory removed, replaced with Function
   Dialogs.showExceptionDialog() renamed displayExceptionDialog()
   EntityTablePanel.showDependenciesDialog() renamed displayDependenciesDialog()
+  Utilities.loadIcon() now with explicit resource not found exception
