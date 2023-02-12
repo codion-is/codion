@@ -8682,3 +8682,4 @@
   EntityTablePanel.showDependenciesDialog() renamed displayDependenciesDialog()
   Utilities.loadIcon() now with explicit resource not found exception
   LoginPanel.initializeUI() refactored
+  LoadTestPanel refactored
