@@ -94,6 +94,43 @@ final class LoginPanel extends JPanel {
   }
 
   private void initializeUI(JComponent southComponent) {
+    if (usernameField.getText().isEmpty()) {
+      Utilities.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+    }
+    else {
+      Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+    }
+
+    setLayout(new GridBagLayout());
+    setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+
+    GridBagConstraints constraints = createGridBagConstraints();
+    if (icon != null) {
+      add(new JLabel(icon, SwingConstants.CENTER), constraints);
+    }
+    add(createCredentialsBasePanel(southComponent), constraints);
+  }
+
+  private JPanel createCredentialsBasePanel(JComponent southComponent) {
+    JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
+    credentialsBasePanel.add(createCredentialsPanel(), BorderLayout.CENTER);
+    if (southComponent != null) {
+      credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
+    }
+
+    return credentialsBasePanel;
+  }
+
+  private JPanel createCredentialsPanel() {
+    return Components.panel(Layouts.flexibleGridLayout(2, 2))
+            .add(new JLabel(Messages.username(), SwingConstants.RIGHT))
+            .add(usernameField)
+            .add(new JLabel(Messages.password(), SwingConstants.RIGHT))
+            .add(createPasswordProgressPanel())
+            .build();
+  }
+
+  private JPanel createPasswordProgressPanel() {
     JProgressBar progressBar = new JProgressBar();
     progressBar.setPreferredSize(passwordField.getPreferredSize());
     progressBar.setIndeterminate(true);
@@ -105,32 +142,7 @@ final class LoginPanel extends JPanel {
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));
 
-    JPanel credentialsPanel = Components.panel(Layouts.flexibleGridLayout(2, 2))
-            .add(new JLabel(Messages.username(), SwingConstants.RIGHT))
-            .add(usernameField)
-            .add(new JLabel(Messages.password(), SwingConstants.RIGHT))
-            .add(passwordProgressPanel)
-            .build();
-    JPanel credentialsBasePanel = new JPanel(Layouts.borderLayout());
-    credentialsBasePanel.add(credentialsPanel, BorderLayout.CENTER);
-    if (southComponent != null) {
-      credentialsBasePanel.add(southComponent, BorderLayout.SOUTH);
-    }
-    if (usernameField.getText().isEmpty()) {
-      Utilities.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
-    }
-    else {
-      Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
-    }
-    GridBagConstraints constraints = new GridBagConstraints();
-    int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    constraints.insets = new Insets(insets, insets, insets, insets);
-    setLayout(new GridBagLayout());
-    if (icon != null) {
-      add(new JLabel(icon, SwingConstants.CENTER), constraints);
-    }
-    add(credentialsBasePanel, constraints);
-    setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
+    return passwordProgressPanel;
   }
 
   private void onOkPressed() {
@@ -166,5 +178,13 @@ final class LoginPanel extends JPanel {
 
   private void closeDialog() {
     Utilities.disposeParentWindow(this);
+  }
+
+  private static GridBagConstraints createGridBagConstraints() {
+    GridBagConstraints constraints = new GridBagConstraints();
+    int insets = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    constraints.insets = new Insets(insets, insets, insets, insets);
+
+    return constraints;
   }
 }
