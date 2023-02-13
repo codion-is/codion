@@ -214,6 +214,13 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
      * @param clientVersion the client version
      * @return a new {@link EntityConnectionProvider} instance.
      */
-    EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion);
+    default EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
+      return EntityConnectionProvider.builder()
+              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+              .clientTypeId(clientTypeId)
+              .clientVersion(clientVersion)
+              .user(user)
+              .build();
+    }
   }
 }
