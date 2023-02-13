@@ -8721,3 +8721,4 @@
   Utilities.loadIcon() now with explicit resource not found exception
   LoginPanel.initializeUI() refactored
   LoadTestPanel refactored
+  EntityApplicationBuilder.ConnectionProviderFactory.create() now has a default implementation

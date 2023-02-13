@@ -511,16 +511,5 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {
-
-    @Override
-    public EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
-      return EntityConnectionProvider.builder()
-              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
-              .clientTypeId(clientTypeId)
-              .clientVersion(clientVersion)
-              .user(user)
-              .build();
-    }
-  }
+  private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {}
 }
