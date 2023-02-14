@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.layout.Layouts;
+import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.Box;
 import javax.swing.JComponent;
@@ -56,7 +56,9 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
       }
     });
     this.columnComponents = Collections.unmodifiableMap(columnComponents);
-    this.basePanel = new JPanel(Layouts.flexibleGridLayout(1, 0));
+    this.basePanel = new JPanel(FlexibleGridLayout.builder()
+            .rows(1)
+            .build());
     Dimension fillerSize = new Dimension(UIManager.getInt("ScrollBar.width"), 0);
     this.scrollBarFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
     setLayout(new BorderLayout());

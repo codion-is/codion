@@ -8684,3 +8684,4 @@
   LoginPanel.initializeUI() refactored
   LoadTestPanel refactored
   EntityApplicationBuilder.ConnectionProviderFactory.create() now has a default implementation
+  TableColumnComponentPanel bug fixed, reckless refactoring added horizontal/vertical gap to layout
