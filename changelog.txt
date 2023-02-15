@@ -8685,3 +8685,4 @@
   LoadTestPanel refactored
   EntityApplicationBuilder.ConnectionProviderFactory.create() now has a default implementation
   TableColumnComponentPanel bug fixed, reckless refactoring added horizontal/vertical gap to layout
+  DefaultEntityApplicationBuilder, bug fixed, application exits instead of hanging after displaying a startup exception
