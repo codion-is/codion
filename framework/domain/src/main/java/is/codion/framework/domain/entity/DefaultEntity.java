@@ -155,7 +155,8 @@ final class DefaultEntity implements Entity, Serializable {
   @Override
   public boolean isModified(Attribute<?> attribute) {
     definition.property(requireNonNull(attribute, ATTRIBUTE));
-    return originalValues != null && originalValues.containsKey(attribute);
+
+    return isModifiedInternal(attribute);
   }
 
   @Override
@@ -435,7 +436,7 @@ final class DefaultEntity implements Entity, Serializable {
     if (property instanceof DerivedProperty) {
       return derivedValue((DerivedProperty<T>) property, true);
     }
-    if (isModified(property.attribute())) {
+    if (isModifiedInternal(property.attribute())) {
       return (T) originalValues.get(property.attribute());
     }
 
@@ -768,8 +769,8 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> void updateOriginalValue(Attribute<T> attribute, T value, T previousValue) {
-    boolean modified = isModified(attribute);
-    if (modified && Objects.equals(getOriginal(attribute), value)) {
+    boolean modified = isModifiedInternal(attribute);
+    if (modified && Objects.equals(originalValues.get(attribute), value)) {
       removeOriginalValue(attribute);//we're back to the original value
     }
     else if (!modified) {//only the first original value is kept
@@ -787,6 +788,10 @@ final class DefaultEntity implements Entity, Serializable {
     }
 
     return Objects.equals(get(property), entity.get(attribute));
+  }
+
+  private boolean isModifiedInternal(Attribute<?> attribute) {
+    return originalValues != null && originalValues.containsKey(attribute);
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {

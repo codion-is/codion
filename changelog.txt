@@ -8686,3 +8686,4 @@
   EntityApplicationBuilder.ConnectionProviderFactory.create() now has a default implementation
   TableColumnComponentPanel bug fixed, reckless refactoring added horizontal/vertical gap to layout
   DefaultEntityApplicationBuilder, bug fixed, application exits instead of hanging after displaying a startup exception
+  DefaultEntity.isModifiedInternal() added, which does not validate the attribute, minor performance improvement for internal class usage
