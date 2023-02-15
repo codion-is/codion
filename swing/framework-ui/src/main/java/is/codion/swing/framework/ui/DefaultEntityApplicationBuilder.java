@@ -234,7 +234,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   @Override
   public void start() {
     LOG.debug("{} application starting", applicationName);
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception));
+    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     setVersionProperty();
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     LookAndFeelProvider.findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
@@ -252,7 +252,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
               .icon(applicationIcon)
               .westPanel(createStartupIconPanel())
               .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
-              .onException(DefaultEntityApplicationBuilder::displayException)
+              .onException(DefaultEntityApplicationBuilder::displayExceptionAndExit)
               .execute();
     }
     else {
@@ -366,9 +366,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       }
     }
     frame.setAlwaysOnTop(applicationPanel.alwaysOnTopState().get());
-    if (displayFrame) {
-      frame.setVisible(true);
-    }
 
     return frame;
   }
@@ -392,8 +389,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return connectionProviderFactory.create(user, clientTypeId, clientVersion);
   }
 
-  private static void displayException(Throwable exception) {
+  private static void displayExceptionAndExit(Throwable exception) {
+    LOG.error(exception.getMessage(), exception);
     displayException(exception, null);
+    System.exit(1);
   }
 
   private static void displayException(Throwable exception, JFrame applicationFrame) {
