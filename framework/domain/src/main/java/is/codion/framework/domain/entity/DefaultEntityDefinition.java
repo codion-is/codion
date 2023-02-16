@@ -38,7 +38,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.*;
 import static java.util.Comparator.comparingInt;
 import static java.util.Objects.requireNonNull;

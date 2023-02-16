@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.common.ProxyBuilder;
+import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.framework.db.AbstractEntityConnectionProvider.AbstractBuilder;

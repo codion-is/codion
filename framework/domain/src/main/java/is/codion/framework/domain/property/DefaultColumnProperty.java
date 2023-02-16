@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProperty<T> {

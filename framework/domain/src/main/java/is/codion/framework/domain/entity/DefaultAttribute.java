@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Objects;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 class DefaultAttribute<T> implements Attribute<T>, Serializable {

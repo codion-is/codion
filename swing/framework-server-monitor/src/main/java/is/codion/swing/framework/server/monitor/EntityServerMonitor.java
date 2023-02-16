@@ -12,7 +12,7 @@ import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 
 /**
  * A monitor for the EntityServer

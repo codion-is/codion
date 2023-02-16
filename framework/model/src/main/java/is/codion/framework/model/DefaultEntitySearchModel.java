@@ -30,7 +30,7 @@ import java.util.Map;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.combination;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Collections.*;

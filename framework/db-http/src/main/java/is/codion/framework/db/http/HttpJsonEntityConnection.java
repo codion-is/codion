@@ -4,7 +4,6 @@
 package is.codion.framework.db.http;
 
 import is.codion.common.Serializer;
-import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.MultipleRecordsFoundException;
 import is.codion.common.db.exception.RecordNotFoundException;
@@ -48,6 +47,7 @@ import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.UUID;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
@@ -354,7 +354,7 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
   @Override
   public Entity selectSingle(Condition condition) throws DatabaseException {
     List<Entity> selected = select(condition);
-    if (Util.nullOrEmpty(selected)) {
+    if (nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
     if (selected.size() > 1) {

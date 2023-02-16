@@ -20,11 +20,12 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
@@ -88,7 +89,7 @@ public final class Text {
    * @param values the list to sort (collate)
    */
   public static void collate(List<?> values) {
-    values.sort(spaceAwareCollator());
+    requireNonNull(values).sort(spaceAwareCollator());
   }
 
   /**
@@ -111,7 +112,7 @@ public final class Text {
    * @see #DEFAULT_COLLATOR_LANGUAGE
    */
   public static <T> Comparator<T> spaceAwareCollator(Locale locale) {
-    return new ComparatorSansSpace<>(locale);
+    return new ComparatorSansSpace<>(requireNonNull(locale));
   }
 
   /**
@@ -120,7 +121,7 @@ public final class Text {
    * @param list the list
    */
   public static void collateSansSpaces(Collator collator, List<?> list) {
-    list.sort((o1, o2) -> collateSansSpaces(collator, o1.toString(), o2.toString()));
+    requireNonNull(list).sort((o1, o2) -> collateSansSpaces(collator, Objects.toString(o1), Objects.toString(o2)));
   }
 
   /**
@@ -148,6 +149,7 @@ public final class Text {
    */
   public static String padString(String string, int length, char padChar, Alignment alignment) {
     requireNonNull(string, "string");
+    requireNonNull(alignment, "alignment");
     if (string.length() >= length) {
       return string;
     }
@@ -172,8 +174,7 @@ public final class Text {
    * @param columnDelimiter the column delimiter
    * @return a String comprised of the given header and lines using the given column delimiter
    */
-  public static String delimitedString(List<String> header, List<List<String>> lines,
-                                       String columnDelimiter) {
+  public static String delimitedString(List<String> header, List<List<String>> lines, String columnDelimiter) {
     requireNonNull(header, "header");
     requireNonNull(lines, "lines");
     requireNonNull(columnDelimiter, "delimiter");
@@ -255,6 +256,7 @@ public final class Text {
    */
   public static String textFileContents(InputStream inputStream, Charset charset) throws IOException {
     requireNonNull(inputStream, "inputStream");
+    requireNonNull(charset, "charset");
     StringBuilder contents = new StringBuilder();
     try (BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();

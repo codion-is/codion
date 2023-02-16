@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.tools.loadtest;
 
-import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
@@ -17,6 +16,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.emptyList;
 
 /**
@@ -150,7 +150,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     private void setStatementParameters(PreparedStatement statement) throws SQLException {
       List<Object> parameters = parameters();
-      if (!Util.nullOrEmpty(parameters)) {
+      if (!nullOrEmpty(parameters)) {
         int index = 1;
         for (Object parameter : parameters) {
           statement.setObject(index++, parameter);

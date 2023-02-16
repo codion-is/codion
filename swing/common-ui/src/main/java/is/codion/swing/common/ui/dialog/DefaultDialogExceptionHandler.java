@@ -15,7 +15,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 

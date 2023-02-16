@@ -15,7 +15,7 @@ import java.io.Serializable;
 import java.util.Comparator;
 import java.util.Objects;
 
-import static is.codion.common.Util.notNull;
+import static is.codion.common.NullOrEmpty.notNull;
 
 /**
  * World domain api.

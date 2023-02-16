@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -239,19 +239,11 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     /**
-     * Sets the exit time using the current time
+     * Sets the exit time as the current time
      */
     private void setExitTime() {
-      setExitTime(System.currentTimeMillis(), System.nanoTime());
-    }
-
-    /**
-     * @param exitTime the exit time
-     * @param exitTimeNano the exit time in nanoseconds
-     */
-    private void setExitTime(long exitTime, long exitTimeNano) {
-      this.exitTime = exitTime;
-      this.exitTimeNano = exitTimeNano;
+      exitTime = System.currentTimeMillis();
+      exitTimeNano = System.nanoTime();
     }
 
     /**
@@ -259,7 +251,7 @@ final class DefaultMethodLogger implements MethodLogger {
      */
     private void setException(Throwable exception) {
       if (exception != null) {
-        this.stackTrace = stackTrace(exception);
+        stackTrace = stackTrace(exception);
       }
     }
 
@@ -284,10 +276,10 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     private static String stackTrace(Throwable exception) {
-      StringWriter sw = new StringWriter();
-      exception.printStackTrace(new PrintWriter(sw));
+      StringWriter writer = new StringWriter();
+      exception.printStackTrace(new PrintWriter(writer));
 
-      return sw.toString();
+      return writer.toString();
     }
 
     private static boolean isMultiLine(String accessMessage) {

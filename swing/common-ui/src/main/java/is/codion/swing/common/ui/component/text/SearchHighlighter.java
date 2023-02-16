@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.Util;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -26,6 +25,7 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.util.Objects.requireNonNull;
 
@@ -156,7 +156,7 @@ public final class SearchHighlighter {
     selectedSearchTextPosition.set(null);
     highlighter.removeAllHighlights();
     searchTextPositions.clear();
-    if (!Util.nullOrEmpty(searchStringValue.get())) {
+    if (!nullOrEmpty(searchStringValue.get())) {
       Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
       try {
         Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));

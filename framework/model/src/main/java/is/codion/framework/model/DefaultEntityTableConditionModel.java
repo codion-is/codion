@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
-import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -31,6 +30,7 @@ import java.util.Map;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
@@ -138,7 +138,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
       conditionModel.setOperator(Operator.EQUAL);
       conditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       conditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
-      conditionModel.setEnabled(!Util.nullOrEmpty(values));
+      conditionModel.setEnabled(!nullOrEmpty(values));
     }
     return !condition.equals(condition());
   }
@@ -209,7 +209,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
             conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition())));
     simpleConditionStringValue.addDataListener(conditionString -> {
       clearConditions();
-      if (!Util.nullOrEmpty(conditionString)) {
+      if (!nullOrEmpty(conditionString)) {
         setConditionString(conditionString);
       }
     });

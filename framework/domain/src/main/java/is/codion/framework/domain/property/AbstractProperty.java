@@ -5,7 +5,6 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Rounder;
 import is.codion.common.Text;
-import is.codion.common.Util;
 import is.codion.common.formats.Formats;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
@@ -24,7 +23,8 @@ import java.util.Comparator;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.notNull;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
@@ -672,7 +672,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       if (numberFormat instanceof DecimalFormat) {
         Character defaultGroupingSeparator = GROUPING_SEPARATOR.get();
         Character defaultDecimalSeparator = DECIMAL_SEPARATOR.get();
-        if (Util.notNull(defaultGroupingSeparator, defaultDecimalSeparator)) {
+        if (notNull(defaultGroupingSeparator, defaultDecimalSeparator)) {
           DecimalFormatSymbols symbols = ((DecimalFormat) numberFormat).getDecimalFormatSymbols();
           symbols.setDecimalSeparator(defaultDecimalSeparator);
           symbols.setGroupingSeparator(defaultGroupingSeparator);

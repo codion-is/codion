@@ -3,8 +3,6 @@
  */
 package is.codion.common.scheduler;
 
-import is.codion.common.event.EventDataListener;
-
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
@@ -57,12 +55,6 @@ public interface TaskScheduler {
    * @return true if this TaskScheduler is running
    */
   boolean isRunning();
-
-  /**
-   * Adds a listener notified when the interval is set.
-   * @param listener a listener notified each time the interval is set
-   */
-  void addIntervalListener(EventDataListener<Integer> listener);
 
   /**
    * @param task the task to run

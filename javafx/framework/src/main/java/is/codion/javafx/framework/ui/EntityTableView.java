@@ -40,7 +40,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 
 /**
  * A {@link TableView} extension based on entities

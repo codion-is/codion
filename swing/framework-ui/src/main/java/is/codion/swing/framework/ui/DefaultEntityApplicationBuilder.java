@@ -41,7 +41,7 @@ import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
