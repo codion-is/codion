@@ -6,6 +6,8 @@ package is.codion.common;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A utility class for rounding doubles.
  */
@@ -31,6 +33,6 @@ public final class Rounder {
    * @return the rounded value or null if the parameter value was null
    */
   public static Double roundDouble(Double d, int places, RoundingMode roundingMode) {
-    return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, roundingMode).doubleValue();
+    return d == null ? null : new BigDecimal(Double.toString(d)).setScale(places, requireNonNull(roundingMode)).doubleValue();
   }
 }
