@@ -3,7 +3,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.ConnectionRequest;
