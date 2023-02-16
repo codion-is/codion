@@ -3,9 +3,6 @@
  */
 package is.codion.common.scheduler;
 
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadFactory;
@@ -20,7 +17,6 @@ final class DefaultTaskScheduler implements TaskScheduler {
   private final int initialDelay;
   private final TimeUnit timeUnit;
   private final ThreadFactory threadFactory;
-  private final Event<Integer> intervalChangedEvent = Event.event();
 
   private ScheduledExecutorService executorService;
   private int interval;
@@ -51,7 +47,6 @@ final class DefaultTaskScheduler implements TaskScheduler {
         }
       }
     }
-    intervalChangedEvent.onEvent(interval);
   }
 
   @Override
@@ -80,11 +75,6 @@ final class DefaultTaskScheduler implements TaskScheduler {
     synchronized (lock) {
       return executorService != null && !executorService.isShutdown();
     }
-  }
-
-  @Override
-  public void addIntervalListener(EventDataListener<Integer> listener) {
-    intervalChangedEvent.addDataListener(listener);
   }
 
   static final class DefaultBuilder implements Builder {
