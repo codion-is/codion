@@ -62,6 +62,11 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
   }
 
   @Override
+  public boolean isNull() {
+    return false;
+  }
+
+  @Override
   protected void setValue(Set<T> values) {
     this.values.clear();
     this.values.addAll(values);
