@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.local;
 
-import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
@@ -24,7 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -146,7 +145,7 @@ final class SelectQueries {
     }
 
     Builder where(String where) {
-      if (!Util.nullOrEmpty(where)) {
+      if (!nullOrEmpty(where)) {
         this.where.add(where);
       }
       return this;

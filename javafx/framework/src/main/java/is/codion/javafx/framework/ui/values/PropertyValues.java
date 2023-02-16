@@ -30,7 +30,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.Temporal;
 import java.util.List;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 
 /**
  * A factory class for {@link Value} instances based on JavaFX models and properties

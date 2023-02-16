@@ -19,7 +19,7 @@ import java.io.File;
 import java.util.Collection;
 import java.util.function.Supplier;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
 /**

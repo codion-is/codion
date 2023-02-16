@@ -13,7 +13,7 @@ import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
 
 /**

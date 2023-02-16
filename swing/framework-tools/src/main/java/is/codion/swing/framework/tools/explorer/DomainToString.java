@@ -14,8 +14,8 @@ import is.codion.framework.domain.property.Property;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.Separators.LINE_SEPARATOR;
-import static is.codion.common.Util.nullOrEmpty;
 import static java.util.stream.Collectors.toList;
 
 final class DomainToString {

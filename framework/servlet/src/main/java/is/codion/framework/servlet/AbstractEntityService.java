@@ -4,7 +4,6 @@
 package is.codion.framework.servlet;
 
 import is.codion.common.Serializer;
-import is.codion.common.Util;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
@@ -28,6 +27,8 @@ import java.rmi.RemoteException;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 
 /**
  * A base class for a http entity service.
@@ -122,7 +123,7 @@ abstract class AbstractEntityService extends Application {
 
   private static User user(MultivaluedMap<String, String> headers) throws ServerAuthenticationException {
     List<String> basic = headers.get(AUTHORIZATION);
-    if (Util.nullOrEmpty(basic)) {
+    if (nullOrEmpty(basic)) {
       throw new ServerAuthenticationException("Authorization information missing");
     }
 
@@ -136,7 +137,7 @@ abstract class AbstractEntityService extends Application {
 
   private static String checkHeaderParameter(List<String> headers, String headerParameter)
           throws ServerAuthenticationException {
-    if (Util.nullOrEmpty(headers)) {
+    if (nullOrEmpty(headers)) {
       throw new ServerAuthenticationException(headerParameter + " header parameter is missing");
     }
 

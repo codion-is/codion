@@ -13,7 +13,7 @@ import javax.swing.JPanel;
 import java.util.ArrayList;
 import java.util.List;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultControlsTest {

@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.proxy.ProxyBuilder;
@@ -34,6 +33,7 @@ import java.util.Set;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Collections.*;
@@ -278,7 +278,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    */
   public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Key> keys) {
     requireNonNull(foreignKey);
-    if (Util.nullOrEmpty(keys)) {
+    if (nullOrEmpty(keys)) {
       foreignKeyFilterKeys.remove(foreignKey);
     }
     else {
@@ -471,7 +471,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
     //if foreign key filter keys have been set previously, initialize with one of those
     Collection<Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
-    if (!Util.nullOrEmpty(filterKeys)) {
+    if (!nullOrEmpty(filterKeys)) {
       foreignKeyModel.selectByKey(filterKeys.iterator().next());
     }
     if (filter) {

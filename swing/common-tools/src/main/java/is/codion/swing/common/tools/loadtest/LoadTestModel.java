@@ -4,7 +4,6 @@
 package is.codion.swing.common.tools.loadtest;
 
 import is.codion.common.Memory;
-import is.codion.common.Util;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.scheduler.TaskScheduler;
@@ -37,6 +36,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
@@ -612,7 +612,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     private void calculateScenarioDuration(UsageScenario<T> scenario) {
       synchronized (scenarioDurations) {
         Collection<Integer> durations = scenarioDurations.get(scenario.name());
-        if (!Util.nullOrEmpty(durations)) {
+        if (!nullOrEmpty(durations)) {
           int totalDuration = 0;
           int minDuration = -1;
           int maxDuration = -1;

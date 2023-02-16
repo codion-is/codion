@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.Util;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
@@ -86,7 +85,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
@@ -913,7 +912,7 @@ public class EntityTablePanel extends JPanel {
    */
   public static EntityTablePanel createReadOnlyEntityTablePanel(Collection<Entity> entities,
                                                                 EntityConnectionProvider connectionProvider) {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
@@ -939,7 +938,7 @@ public class EntityTablePanel extends JPanel {
    */
   public static EntityTablePanel createEntityTablePanel(Collection<Entity> entities,
                                                         EntityConnectionProvider connectionProvider) {
-    if (Util.nullOrEmpty(entities)) {
+    if (nullOrEmpty(entities)) {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 

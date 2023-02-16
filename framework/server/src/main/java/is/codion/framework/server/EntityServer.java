@@ -3,7 +3,6 @@
  */
 package is.codion.framework.server;
 
-import is.codion.common.Util;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
@@ -44,6 +43,7 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -407,7 +407,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
                                             Collection<User> connectionPoolUsers) throws DatabaseException {
     if (!connectionPoolUsers.isEmpty()) {
       ConnectionPoolFactory poolFactory;
-      if (Util.nullOrEmpty(connectionPoolFactoryClassName)) {
+      if (nullOrEmpty(connectionPoolFactoryClassName)) {
         poolFactory = ConnectionPoolFactory.instance();
       }
       else {

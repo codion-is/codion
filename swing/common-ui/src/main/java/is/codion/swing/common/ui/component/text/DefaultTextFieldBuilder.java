@@ -18,7 +18,7 @@ import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.text.Format;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
 

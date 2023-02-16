@@ -74,7 +74,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.darker;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;

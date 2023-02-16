@@ -13,7 +13,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.domain.entity.ForeignKey.reference;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

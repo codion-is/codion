@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.Util;
-
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.text.Document;
@@ -18,6 +16,7 @@ import java.awt.event.FocusListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
@@ -74,7 +73,7 @@ public class HintTextField extends JTextField {
   @Override
   public final void paint(Graphics graphics) {
     super.paint(graphics);
-    if (!Util.nullOrEmpty(hintText) && !isFocusOwner() && getText().isEmpty()) {
+    if (!nullOrEmpty(hintText) && !isFocusOwner() && getText().isEmpty()) {
       paintHintText(graphics);
     }
   }

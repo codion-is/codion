@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Objects;
 
 /**
- * Misc. utilities.
+ * Utility methods for checking if arguments are null or empty, if applicable.
  */
-public final class Util {
+public final class NullOrEmpty {
 
-  private Util() {}
+  private NullOrEmpty() {}
 
   /**
    * Returns true if the given string is null or empty.

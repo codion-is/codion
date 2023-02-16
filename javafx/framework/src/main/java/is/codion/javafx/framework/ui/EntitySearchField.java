@@ -21,7 +21,7 @@ import javafx.scene.paint.Color;
 
 import java.util.List;
 
-import static is.codion.common.Util.nullOrEmpty;
+import static is.codion.common.NullOrEmpty.nullOrEmpty;
 
 /**
  * A {@link TextField} allowing entity search based on the text entered
