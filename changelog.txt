@@ -8689,3 +8689,4 @@
   DefaultEntity.isModifiedInternal() added, which does not validate the attribute, minor performance improvement for internal class usage
   TaskScheduler.addIntervalListener() removed
   DefaultValueSet.isNull() overridden, no longer uses get() which copies the set and wraps it in unmodifiableSet
+  ProxyBuilder moved to common.proxy package

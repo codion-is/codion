@@ -4,8 +4,8 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.ProxyBuilder;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;

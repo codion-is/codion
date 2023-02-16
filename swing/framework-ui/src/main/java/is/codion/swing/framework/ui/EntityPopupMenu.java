@@ -3,10 +3,10 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.ProxyBuilder;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
+import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
