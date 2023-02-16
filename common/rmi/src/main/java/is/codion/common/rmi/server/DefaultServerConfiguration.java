@@ -3,8 +3,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.NullOrEmpty;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -227,7 +225,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
         throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
                 + JAVAX_NET_KEYSTORE + " is already set to " + KEYSTORE.get());
       }
-      try (InputStream inputStream = NullOrEmpty.class.getClassLoader().getResourceAsStream(keystore)) {
+      try (InputStream inputStream = DefaultServerConfiguration.class.getClassLoader().getResourceAsStream(keystore)) {
         if (inputStream == null) {
           LOG.debug("Specified key store not found on classpath: {}", keystore);
           return;

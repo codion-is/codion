@@ -8692,3 +8692,4 @@
   ProxyBuilder moved to common.proxy package
   Rounder, Text, null checks added
   Util renamed NullOrEmpty
+  DefaultServerConfiguration and DefaultHttpServerConfiguration.resolveClasspathKeyStore() no longer use NullOrEmpty.class (previously Util) for resource loading

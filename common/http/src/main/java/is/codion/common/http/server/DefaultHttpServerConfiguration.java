@@ -3,8 +3,6 @@
  */
 package is.codion.common.http.server;
 
-import is.codion.common.NullOrEmpty;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -115,7 +113,7 @@ final class DefaultHttpServerConfiguration implements HttpServerConfiguration {
         throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
                 + HTTP_SERVER_KEYSTORE_PATH.propertyName() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
       }
-      try (InputStream inputStream = NullOrEmpty.class.getClassLoader().getResourceAsStream(keystore)) {
+      try (InputStream inputStream = DefaultHttpServerConfiguration.class.getClassLoader().getResourceAsStream(keystore)) {
         if (inputStream == null) {
           LOG.debug("Specified key store not found on classpath: {}", keystore);
           return;
