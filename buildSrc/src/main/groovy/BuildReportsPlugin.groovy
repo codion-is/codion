@@ -38,6 +38,9 @@ class BuildReportsPlugin implements Plugin<Project> {
                 project.getTasks().stream()
                         .filter { it.getName().startsWith("run") }
                         .each { it.dependsOn(buildReports) }
+                project.getTasks().stream()
+                        .filter { (it.getName() == "domainJar") }
+                        .each { it.dependsOn(buildReports) }
             }
         }
     }
