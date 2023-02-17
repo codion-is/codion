@@ -35,6 +35,9 @@ class BuildReportsPlugin implements Plugin<Project> {
                 project.getTasks().named('classes').get().finalizedBy(buildReports)
                 project.getTasks().named('jar').get().dependsOn(buildReports)
                 project.getTasks().named('compileTestJava').get().dependsOn(buildReports)
+                project.getTasks().stream()
+                        .filter { it.getName().startsWith("run") }
+                        .each { it.dependsOn(buildReports) }
             }
         }
     }
