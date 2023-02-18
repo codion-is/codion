@@ -32,7 +32,8 @@ configurations {
     domain
 }
 
-task domainJar(type: Jar, dependsOn: classes) {
+tasks.register('domainJar', Jar) {
+    dependsOn classes
     group 'build'
     archiveBaseName.set(archiveBaseName.get() + '-domain')
     from sourceSets.main.output

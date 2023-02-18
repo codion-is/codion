@@ -72,7 +72,7 @@ applicationDistribution.into('config') {
     from(files('src/main/config/logback.xml'))
 }
 
-task runDatabaseExplorerH2(type: ModularJavaExec) {
+tasks.register('runDatabaseExplorerH2', ModularJavaExec) {
     group 'application'
     mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
     mainModule.set(moduleName)
@@ -88,7 +88,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
     ]
 }
 
-//task runDatabaseExplorerOracle(type: ModularJavaExec) {
+//tasks.register('runDatabaseExplorerOracle', ModularJavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    mainModule.set(moduleName)
@@ -98,7 +98,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 //    ]
 //}
 
-//task runDatabaseExplorerPostgres(type: ModularJavaExec) {
+//tasks.register('runDatabaseExplorerPostgres', ModularJavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    mainModule.set(moduleName)
@@ -108,7 +108,7 @@ task runDatabaseExplorerH2(type: ModularJavaExec) {
 //    ]
 //}
 
-//task runDatabaseExplorerMariaDB(type: ModularJavaExec) {
+//tasks.register('runDatabaseExplorerMariaDB', ModularJavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    mainModule.set(moduleName)

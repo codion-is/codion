@@ -80,7 +80,7 @@ asciidoctor {
 /**
  * An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects.
  */
-task combinedJavadoc {
+tasks.register('combinedJavadoc') {
     group 'documentation'
 
     def tempDir = "${buildDir}/tmp"
@@ -125,7 +125,8 @@ task combinedJavadoc {
     }
 }
 
-task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
+tasks.register('assembleDocs') {
+    dependsOn combinedJavadoc, asciidoctor
     group 'documentation'
     def docFolder = "${buildDir}/${documentationDir}"
     doLast {
@@ -139,14 +140,16 @@ task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
     }
 }
 
-task copyToGitHubPages(type: Sync, dependsOn: assembleDocs) {
+tasks.register('copyToGitHubPages', Sync) {
+    dependsOn assembleDocs
     group 'documentation'
     def ghPagesDocDir = "../../codion-pages/doc/${documentationDir}"
     from "${buildDir}/${documentationDir}"
     into ghPagesDocDir
 }
 
-task documentationZip(type: Zip, dependsOn: assembleDocs) {
+tasks.register('documentationZip', Zip) {
+    dependsOn assembleDocs
     group 'documentation'
     from "${buildDir}/${documentationDir}"
 }
