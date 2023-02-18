@@ -82,7 +82,7 @@ test {
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
 }
 
-task runClientLocal(type: ModularJavaExec) {
+tasks.register('runClientLocal', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -94,7 +94,7 @@ task runClientLocal(type: ModularJavaExec) {
     ]
 }
 
-task runClientRMI(type: ModularJavaExec) {
+tasks.register('runClientRMI', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -107,7 +107,7 @@ task runClientRMI(type: ModularJavaExec) {
     ]
 }
 
-task runClientHttp(type: ModularJavaExec) {
+tasks.register('runClientHttp', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -119,7 +119,7 @@ task runClientHttp(type: ModularJavaExec) {
     ]
 }
 
-task clientLocalScript(type: ModularCreateStartScripts) {
+tasks.register('clientLocalScript', ModularCreateStartScripts) {
     runTask = tasks.runClientLocal
     applicationName = project.name + '-local'
     defaultJvmOpts = [
@@ -130,7 +130,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientRMIScript(type: ModularCreateStartScripts) {
+tasks.register('clientRMIScript', ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
@@ -142,7 +142,7 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientHttpScript(type: ModularCreateStartScripts) {
+tasks.register('clientHttpScript', ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
     defaultJvmOpts = [

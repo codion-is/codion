@@ -38,13 +38,13 @@ startScripts {
     mainClass.set(execMainClass)
 }
 
-task runClientLocal(type: ModularJavaExec) {
+tasks.register('runClientLocal', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'        : 'src/main/sql/create_schema_minimal.sql'
+            'codion.db.initScripts'       : 'src/main/sql/create_schema_minimal.sql'
     ]
 }

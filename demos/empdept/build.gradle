@@ -90,7 +90,7 @@ test {
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
 }
 
-task runClientLocal(type: ModularJavaExec) {
+tasks.register('runClientLocal', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -101,7 +101,7 @@ task runClientLocal(type: ModularJavaExec) {
     ]
 }
 
-task runClientLocalFX(type: ModularJavaExec) {
+tasks.register('runClientLocalFX', ModularJavaExec) {
     group 'application'
     mainClass.set(fxMainClass)
     mainModule.set(moduleName)
@@ -112,7 +112,7 @@ task runClientLocalFX(type: ModularJavaExec) {
     ]
 }
 
-task runClientRMI(type: ModularJavaExec) {
+tasks.register('runClientRMI', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -124,7 +124,7 @@ task runClientRMI(type: ModularJavaExec) {
     ]
 }
 
-task runClientHttp(type: ModularJavaExec) {
+tasks.register('runClientHttp', ModularJavaExec) {
     group 'application'
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
@@ -135,7 +135,7 @@ task runClientHttp(type: ModularJavaExec) {
     ]
 }
 
-task runLoadTestRMI(type: ModularJavaExec) {
+tasks.register('runLoadTestRMI', ModularJavaExec) {
     group 'application'
     mainClass.set(execLoadTestMainClass)
     mainModule.set(moduleName)
@@ -147,7 +147,7 @@ task runLoadTestRMI(type: ModularJavaExec) {
     ]
 }
 
-task runLoadTestHttp(type: ModularJavaExec) {
+tasks.register('runLoadTestHttp', ModularJavaExec) {
     group 'application'
     mainClass.set(execLoadTestMainClass)
     mainModule.set(moduleName)
@@ -158,7 +158,7 @@ task runLoadTestHttp(type: ModularJavaExec) {
     ]
 }
 
-task clientLocalScript(type: ModularCreateStartScripts) {
+tasks.register('clientLocalScript', ModularCreateStartScripts) {
     runTask = tasks.runClientLocal
     applicationName = project.name + '-local'
     defaultJvmOpts = [
@@ -168,7 +168,7 @@ task clientLocalScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientRMIScript(type: ModularCreateStartScripts) {
+tasks.register('clientRMIScript', ModularCreateStartScripts) {
     runTask = tasks.runClientRMI
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
@@ -179,7 +179,7 @@ task clientRMIScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task clientHttpScript(type: ModularCreateStartScripts) {
+tasks.register('clientHttpScript', ModularCreateStartScripts) {
     runTask = tasks.runClientHttp
     applicationName = project.name + '-http'
     defaultJvmOpts = [
@@ -189,7 +189,7 @@ task clientHttpScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task loadTestRMIScript(type: ModularCreateStartScripts) {
+tasks.register('loadTestRMIScript', ModularCreateStartScripts) {
     runTask = tasks.runLoadTestRMI
     applicationName = project.name + '-loadtest-remote'
     defaultJvmOpts = [
@@ -200,7 +200,7 @@ task loadTestRMIScript(type: ModularCreateStartScripts) {
     ]
 }
 
-task loadTestHttpScript(type: ModularCreateStartScripts) {
+tasks.register('loadTestHttpScript', ModularCreateStartScripts) {
     runTask = tasks.runLoadTestHttp
     applicationName = project.name + '-loadtest-http'
     defaultJvmOpts = [
