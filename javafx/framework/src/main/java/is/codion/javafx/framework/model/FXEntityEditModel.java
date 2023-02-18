@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.AbstractEntityEditModel;
 
 import java.util.Collection;
@@ -44,8 +45,7 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
    */
-  public FXEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                           EntityValidator validator) {
+  public FXEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider, EntityValidator validator) {
     super(entityType, connectionProvider, validator);
   }
 
@@ -56,7 +56,18 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
    */
   public final FXEntityListModel foreignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    return foreignKeyListModels.computeIfAbsent(foreignKey, k -> createForeignKeyListModel(foreignKey));
+    synchronized (foreignKeyListModels) {
+      // can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
+      // box models, createForeignKeyListModel() may for example call this function
+      // see javadoc: must not attempt to update any other mappings of this map
+      FXEntityListModel entityListModel = foreignKeyListModels.get(foreignKey);
+      if (entityListModel == null) {
+        entityListModel = createForeignKeyListModel(foreignKey);
+        foreignKeyListModels.put(foreignKey, entityListModel);
+      }
+
+      return entityListModel;
+    }
   }
 
   /**
@@ -66,7 +77,8 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
    */
   public FXEntityListModel createForeignKeyListModel(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    FXEntityListModel entityListModel = new FXEntityListModel(foreignKey.referencedType(), connectionProvider());
+    ForeignKeyProperty foreignKeyProperty = entityDefinition().foreignKeyProperty(foreignKey);
+    FXEntityListModel entityListModel = new FXEntityListModel(foreignKeyProperty.referencedType(), connectionProvider());
     refreshingObserver.addState(entityListModel.refreshingObserver());
 
     return entityListModel;

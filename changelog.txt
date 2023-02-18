@@ -8696,3 +8696,4 @@
   NullableCheckBox bug fixed, did not update icon on UI change
   BuildReportsPlugin bug fixed, now adds the buildReports task as a dependency for all run tasks
   BuildReportsPlugin bug fixed, now adds the buildReports task as a dependency for domainJar tasks
+  FXEntityEditModel bug fixed, no longer uses computeIfAbsent, see code comment
