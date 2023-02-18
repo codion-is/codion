@@ -91,7 +91,8 @@ applicationDefaultJvmArgs = [
         '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
-task runServer(type: JavaExec, dependsOn: createServerKeystore) {
+tasks.register('runServer', JavaExec) {
+    dependsOn createServerKeystore
     group 'application'
     classpath = configurations.serverRuntime
     mainClass.set(mainClassName)

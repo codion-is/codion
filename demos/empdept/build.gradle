@@ -76,7 +76,7 @@ runClientLocal {
     mainClass.set(execMainClass)
 }
 
-task runClientLocalFX(type: JavaExec) {
+tasks.register('runClientLocalFX', JavaExec) {
     group 'application'
     mainClass.set('is.codion.framework.demos.empdept.javafx.EmpDeptFX')
     classpath = sourceSets.main.runtimeClasspath

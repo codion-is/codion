@@ -77,7 +77,7 @@ asciidoctor {
     }
 }
 
-task combinedJavadoc(type: Javadoc) {
+tasks.register('combinedJavadoc', Javadoc) {
     group 'documentation'
     title "Codion Framework API ${documentationVersion}"
     options.links 'https://docs.oracle.com/javase/8/docs/api/'
@@ -90,7 +90,8 @@ task combinedJavadoc(type: Javadoc) {
     }
 }
 
-task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
+tasks.register('assembleDocs') {
+    dependsOn combinedJavadoc, asciidoctor
     group 'documentation'
     def docFolder = "${buildDir}/${documentationDir}"
     doLast {
@@ -104,14 +105,16 @@ task assembleDocs(dependsOn: [combinedJavadoc, asciidoctor]) {
     }
 }
 
-task copyToGitHubPages(type: Sync, dependsOn: assembleDocs) {
+tasks.register('copyToGitHubPages', Sync) {
+    dependsOn assembleDocs
     group 'documentation'
     def ghPagesDocDir = "../../codion-pages/doc/${documentationDir}"
     from "${buildDir}/${documentationDir}"
     into ghPagesDocDir
 }
 
-task documentationZip(type: Zip, dependsOn: assembleDocs) {
+tasks.register('documentationZip', Zip) {
+    dependsOn assembleDocs
     group 'documentation'
     from "${buildDir}/${documentationDir}"
 }

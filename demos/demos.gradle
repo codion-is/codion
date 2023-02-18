@@ -20,7 +20,8 @@ configurations {
     domain
 }
 
-task domainJar(type: Jar, dependsOn: classes) {
+tasks.register('domainJar', Jar) {
+    dependsOn classes
     group 'build'
     archiveBaseName.set(archiveBaseName.get() + '-domain')
     from sourceSets.main.output
@@ -71,7 +72,7 @@ startScripts {
     ]
 }
 
-task clientRMIScript(type: CreateStartScripts) {
+tasks.register('clientRMIScript', CreateStartScripts) {
     applicationName = project.name + '-remote'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
@@ -83,7 +84,7 @@ task clientRMIScript(type: CreateStartScripts) {
     ]
 }
 
-task clientHttpScript(type: CreateStartScripts) {
+tasks.register('clientHttpScript', CreateStartScripts) {
     applicationName = project.name + '-http'
     classpath = startScripts.classpath
     outputDir = startScripts.outputDir
@@ -94,7 +95,7 @@ task clientHttpScript(type: CreateStartScripts) {
     ]
 }
 
-task loadTestRMIScript(type: CreateStartScripts) {
+tasks.register('loadTestRMIScript', CreateStartScripts) {
     applicationName = project.name + '-loadtest-remote'
     mainClass.set('is.codion.framework.demos.DummyLoadTest')
     classpath = startScripts.classpath
@@ -107,7 +108,7 @@ task loadTestRMIScript(type: CreateStartScripts) {
     ]
 }
 
-task loadTestHttpScript(type: CreateStartScripts) {
+tasks.register('loadTestHttpScript', CreateStartScripts) {
     applicationName = project.name + '-loadtest-http'
     mainClass.set('is.codion.framework.demos.DummyLoadTest')
     classpath = startScripts.classpath
@@ -136,7 +137,7 @@ applicationDistribution.into('bin') {
     from(loadTestRMIScript)
 }
 
-task runClientLocal(type: JavaExec) {
+tasks.register('runClientLocal', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
@@ -147,7 +148,7 @@ task runClientLocal(type: JavaExec) {
     ]
 }
 
-task runClientRMI(type: JavaExec) {
+tasks.register('runClientRMI', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
@@ -159,7 +160,7 @@ task runClientRMI(type: JavaExec) {
     ]
 }
 
-task runClientHttp(type: JavaExec) {
+tasks.register('runClientHttp', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
@@ -170,7 +171,7 @@ task runClientHttp(type: JavaExec) {
     ]
 }
 
-task runLoadTestRMI(type: JavaExec) {
+tasks.register('runLoadTestRMI', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
@@ -181,7 +182,7 @@ task runLoadTestRMI(type: JavaExec) {
     ]
 }
 
-task runLoadTestHttp(type: JavaExec) {
+tasks.register('runLoadTestHttp', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [

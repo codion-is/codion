@@ -50,7 +50,7 @@ applicationDistribution.into('config') {
     from(files('src/main/config/logback.xml'))
 }
 
-task runDatabaseExplorerH2(type: JavaExec) {
+tasks.register('runDatabaseExplorerH2', JavaExec) {
     group 'application'
     mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
     classpath = sourceSets.main.runtimeClasspath
@@ -65,7 +65,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
     ]
 }
 
-//task runDatabaseExplorerOracle(type: JavaExec) {
+//tasks.register('runDatabaseExplorerOracle', JavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath
@@ -74,7 +74,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
 //    ]
 //}
 
-//task runDatabaseExplorerPostgres(type: JavaExec) {
+//tasks.register('runDatabaseExplorerPostgres', JavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath
@@ -83,7 +83,7 @@ task runDatabaseExplorerH2(type: JavaExec) {
 //    ]
 //}
 
-//task runDatabaseExplorerMariaDB(type: JavaExec) {
+//tasks.register('runDatabaseExplorerMariaDB', JavaExec) {
 //    group 'application'
 //    mainClass.set('is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel')
 //    classpath = sourceSets.main.runtimeClasspath

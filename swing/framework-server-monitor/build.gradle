@@ -43,7 +43,7 @@ applicationDefaultJvmArgs = [
         '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
-task runServerMonitor(type: JavaExec) {
+tasks.register('runServerMonitor', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
     mainClass.set(mainClassName)
