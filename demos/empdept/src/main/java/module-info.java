@@ -15,7 +15,7 @@ module is.codion.framework.demos.empdept {
   exports is.codion.framework.demos.empdept.domain
           to is.codion.framework.domain, is.codion.framework.db.local;
   exports is.codion.framework.demos.empdept.model
-          to is.codion.swing.framework.model, is.codion.swing.framework.ui;
+          to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.empdept.ui
           to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.empdept.javafx

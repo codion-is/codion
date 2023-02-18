@@ -20,5 +20,6 @@ module is.codion.framework.demos.manual {
 
   exports is.codion.framework.demos.manual.store.domain;
   exports is.codion.framework.demos.manual.store.minimal.domain;
+  exports is.codion.framework.demos.manual.store.model;
   exports is.codion.framework.demos.manual.store.ui;
 }

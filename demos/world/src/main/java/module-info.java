@@ -11,7 +11,7 @@ module is.codion.framework.demos.world {
 
   exports is.codion.framework.demos.world.domain;
   exports is.codion.framework.demos.world.model
-          to is.codion.swing.framework.model;
+          to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.world.ui
           to is.codion.swing.framework.ui;
   //for loading reports from classpath

@@ -2,7 +2,7 @@ module is.codion.framework.demos.petclinic {
   requires is.codion.swing.framework.ui;
 
   exports is.codion.framework.demos.petclinic.model
-          to is.codion.swing.framework.model;
+          to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.petclinic.ui
           to is.codion.swing.framework.ui;
 
