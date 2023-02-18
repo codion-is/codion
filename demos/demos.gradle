@@ -28,6 +28,9 @@ task domainJar(type: Jar, dependsOn: classes) {
     include '**/server/**/*'
     include '**/services/**/*'
     includeEmptyDirs false
+    manifest {
+        attributes 'Automatic-Module-Name' : "is." + project.name.replace('-', '.') + ".domain"
+    }
 }
 
 jar.finalizedBy domainJar
