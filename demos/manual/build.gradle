@@ -43,8 +43,8 @@ task runClientLocal(type: ModularJavaExec) {
     mainClass.set(execMainClass)
     mainModule.set(moduleName)
     systemProperties = [
-            'jminor.client.connectionType': 'local',
-            'jminor.db.url'               : 'jdbc:h2:mem:h2db',
-            'jminor.db.initScript'        : 'src/main/sql/create_schema.sql'
+            'codion.client.connectionType': 'local',
+            'codion.db.url'               : 'jdbc:h2:mem:h2db',
+            'codion.db.initScripts'        : 'src/main/sql/create_schema_minimal.sql'
     ]
 }
