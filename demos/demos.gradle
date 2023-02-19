@@ -79,7 +79,7 @@ tasks.register('clientRMIScript', CreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
             "-Dcodion.server.hostname=${serverHostName}",
-            '-Dcodion.client..trustStore=../config/truststore.jks',
+            '-Dcodion.client.trustStore=../config/truststore.jks',
             '-Dcodion.client.trustStorePassword=crappypass'
     ]
 }
