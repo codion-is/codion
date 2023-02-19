@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
@@ -149,15 +148,6 @@ public interface EntityTableConditionModel {
    * @return true if the filter model behind column with index {@code columnIndex} is enabled
    */
   boolean isFilterEnabled(Attribute<?> attribute);
-
-  /**
-   * Note that modifying this value may (and probably will) change the automatic prefix and case sensetivity settings of
-   * the underlying {@link ColumnConditionModel}s
-   * @see ColumnConditionModel#caseSensitiveState()
-   * @see ColumnConditionModel#automaticWildcardValue()
-   * @return the value used when performing a simple search.
-   */
-  Value<String> simpleConditionStringValue();
 
   /**
    * @param listener a listener notified each time the search condition changes

@@ -240,7 +240,7 @@ public class EntityTablePanel extends JPanel {
 
   private final JScrollPane tableScrollPane;
 
-  private final AbstractEntityTableConditionPanel conditionPanel;
+  private final EntityTableConditionPanel conditionPanel;
 
   private final JScrollPane conditionScrollPane;
 
@@ -339,7 +339,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the EntityTableModel instance
    * @param conditionPanel the condition panel, if any
    */
-  public EntityTablePanel(SwingEntityTableModel tableModel, AbstractEntityTableConditionPanel conditionPanel) {
+  public EntityTablePanel(SwingEntityTableModel tableModel, EntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
     this.conditionPanel = conditionPanel;
@@ -543,35 +543,29 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the condition panel being used by this EntityTablePanel
    */
-  public final AbstractEntityTableConditionPanel conditionPanel() {
+  public final EntityTableConditionPanel conditionPanel() {
     return conditionPanel;
   }
 
   /**
-   * Toggles the condition panel through the states hidden, visible and in case it can, advanced
-   * @see AbstractEntityTableConditionPanel#hasAdvancedView()
+   * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
     if (conditionPanel == null) {
       return;
     }
-    if (conditionPanel.hasAdvancedView()) {
-      State advancedState = conditionPanel.advancedState();
-      if (isConditionPanelVisible()) {
-        if (advancedState.get()) {
-          setConditionPanelVisible(false);
-        }
-        else {
-          advancedState.set(true);
-        }
+    State advancedState = conditionPanel.advancedViewState();
+    if (isConditionPanelVisible()) {
+      if (advancedState.get()) {
+        setConditionPanelVisible(false);
       }
       else {
-        advancedState.set(false);
-        setConditionPanelVisible(true);
+        advancedState.set(true);
       }
     }
     else {
-      setConditionPanelVisible(!isConditionPanelVisible());
+      advancedState.set(false);
+      setConditionPanelVisible(true);
     }
   }
 
@@ -1522,16 +1516,12 @@ public class EntityTablePanel extends JPanel {
               .action(refreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
-      if (conditionPanel instanceof EntityTableConditionPanel) {
-        addRefreshOnEnterControl((EntityTableConditionPanel) conditionPanel, refreshControl);
-      }
-      if (conditionPanel.hasAdvancedView()) {
-        conditionPanel.addAdvancedViewListener(advanced -> {
-          if (isConditionPanelVisible()) {
-            revalidate();
-          }
-        });
-      }
+      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, refreshControl);
+      conditionPanel.addAdvancedViewListener(advanced -> {
+        if (isConditionPanelVisible()) {
+          revalidate();
+        }
+      });
     }
   }
 
@@ -1671,15 +1661,6 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
-    if (component instanceof JComboBox) {
-      new ComboBoxEnterPressedAction((JComboBox<?>) component, refreshControl);
-    }
-    else if (component instanceof TemporalField) {
-      ((TemporalField<?>) component).addActionListener(refreshControl);
-    }
-  }
-
   private static GridBagConstraints createHorizontalFillConstraints() {
     GridBagConstraints constraints = new GridBagConstraints();
     constraints.fill = GridBagConstraints.HORIZONTAL;
@@ -1689,8 +1670,9 @@ public class EntityTablePanel extends JPanel {
     return constraints;
   }
 
-  private static void addRefreshOnEnterControl(EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
-    tableConditionPanel.tableColumns().forEach(column -> {
+  private static void addRefreshOnEnterControl(Collection<FilteredTableColumn<Attribute<?>>> columns,
+                                               EntityTableConditionPanel tableConditionPanel, Control refreshControl) {
+    columns.forEach(column -> {
       ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
@@ -1699,6 +1681,15 @@ public class EntityTablePanel extends JPanel {
         enableRefreshOnEnterControl(columnConditionPanel.upperBoundField(), refreshControl);
       }
     });
+  }
+
+  private static void enableRefreshOnEnterControl(JComponent component, Control refreshControl) {
+    if (component instanceof JComboBox) {
+      new ComboBoxEnterPressedAction((JComboBox<?>) component, refreshControl);
+    }
+    else if (component instanceof TemporalField) {
+      ((TemporalField<?>) component).addActionListener(refreshControl);
+    }
   }
 
   private static void addAdditionalControls(Controls popupControls, List<Controls> additionalPopupControls) {

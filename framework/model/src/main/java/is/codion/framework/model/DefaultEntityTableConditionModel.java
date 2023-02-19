@@ -8,8 +8,6 @@ import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.AttributeCondition;
 import is.codion.framework.db.condition.Condition;
@@ -44,7 +42,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   private final EntityConnectionProvider connectionProvider;
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels;
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels;
-  private final Value<String> simpleConditionStringValue = Value.value();
   private final Event<Condition> conditionChangedEvent = Event.event();
   private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
@@ -180,11 +177,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public Value<String> simpleConditionStringValue() {
-    return simpleConditionStringValue;
-  }
-
-  @Override
   public Conjunction getConjunction() {
     return conjunction;
   }
@@ -207,21 +199,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   private void bindEvents() {
     conditionModels.values().forEach(conditionModel ->
             conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition())));
-    simpleConditionStringValue.addDataListener(conditionString -> {
-      clearConditions();
-      if (!nullOrEmpty(conditionString)) {
-        setConditionString(conditionString);
-      }
-    });
-  }
-
-  private void setConditionString(String searchString) {
-    Collection<Attribute<String>> searchAttributes =
-            connectionProvider.entities().definition(entityType).searchAttributes();
-    conditionModels.values().stream()
-            .filter(conditionModel -> searchAttributes.contains(conditionModel.columnIdentifier()))
-            .map(conditionModel -> (ColumnConditionModel<Attribute<String>, String>) conditionModel)
-            .forEach(conditionModel -> setConditionString(conditionModel, searchString));
   }
 
   private Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> createFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
@@ -260,14 +237,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
     }
 
     return unmodifiableMap(models);
-  }
-
-  private static void setConditionString(ColumnConditionModel<Attribute<String>, String> conditionModel, String searchString) {
-    conditionModel.caseSensitiveState().set(false);
-    conditionModel.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
-    conditionModel.setEqualValue(searchString);
-    conditionModel.setOperator(Operator.EQUAL);
-    conditionModel.setEnabled(true);
   }
 
   private static Condition condition(ColumnConditionModel<?, ?> conditionModel) {

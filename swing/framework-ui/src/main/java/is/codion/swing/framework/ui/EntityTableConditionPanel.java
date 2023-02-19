@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -20,6 +21,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
+import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.HashMap;
 import java.util.List;
@@ -38,20 +40,22 @@ import static java.util.stream.Collectors.toList;
  * @see #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel)
  * @see #entityTableConditionPanel(EntityTableConditionModel, FilteredTableColumnModel, ConditionPanelFactory)
  */
-public final class EntityTableConditionPanel extends AbstractEntityTableConditionPanel {
+public final class EntityTableConditionPanel extends JPanel {
 
-  private final TableColumnComponentPanel<Attribute<?>, ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
+  private final EntityTableConditionModel tableConditionModel;
   private final FilteredTableColumnModel<Attribute<?>> columnModel;
+  private final TableColumnComponentPanel<Attribute<?>, ColumnConditionPanel<Attribute<?>, ?>> conditionPanel;
+  private final State advancedViewState = State.state();
 
   private EntityTableConditionPanel(EntityTableConditionModel tableConditionModel,
                                     FilteredTableColumnModel<Attribute<?>> columnModel,
                                     ConditionPanelFactory conditionPanelFactory) {
-    super(tableConditionModel, requireNonNull(columnModel).columns());
-    requireNonNull(conditionPanelFactory);
-    this.conditionPanel = tableColumnComponentPanel(columnModel, createConditionPanels(columnModel, conditionPanelFactory));
+    this.tableConditionModel = requireNonNull(tableConditionModel);
+    this.conditionPanel = tableColumnComponentPanel(columnModel, createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
     this.columnModel = columnModel;
     setLayout(new BorderLayout());
     add(conditionPanel, BorderLayout.CENTER);
+    advancedViewState.addDataListener(this::setAdvancedView);
   }
 
   @Override
@@ -61,18 +65,9 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   /**
-   * @return true if this panel has an advanced view which can be toggled on/off
-   */
-  @Override
-  public boolean hasAdvancedView() {
-    return true;
-  }
-
-  /**
    * Allows the user to select one of the available condition panels for keyboard input focus,
    * if only one condition panel is available that one is selected automatically.
    */
-  @Override
   public void selectConditionPanel() {
     List<Property<?>> conditionProperties = conditionPanelProperties();
     if (!conditionProperties.isEmpty()) {
@@ -91,30 +86,25 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
   }
 
   /**
-   * @param listener a listener notified when a condition panel receives focus, note this does not apply
-   * for custom search panels
-   */
-  @Override
-  public void addFocusGainedListener(EventDataListener<Attribute<?>> listener) {
-    conditionPanel.columnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
-  }
-
-  /**
    * @return the controls provided by this condition panel, for toggling the advanced mode and clearing the condition
    */
-  @Override
   public Controls controls() {
     Controls.Builder controls = Controls.builder()
             .caption(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().filter());
-    if (hasAdvancedView()) {
-      controls.control(ToggleControl.builder(advancedState())
-              .caption(FrameworkMessages.advanced()));
-    }
-    controls.control(Control.builder(tableConditionModel()::clearConditions)
+    controls.control(ToggleControl.builder(advancedViewState)
+            .caption(FrameworkMessages.advanced()));
+    controls.control(Control.builder(tableConditionModel::clearConditions)
             .caption(FrameworkMessages.clear()));
 
     return controls.build();
+  }
+
+  /**
+   * @return the state controlling the advanced view state of this condition panel
+   */
+  public State advancedViewState() {
+    return advancedViewState;
   }
 
   /**
@@ -125,13 +115,34 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
    * @throws IllegalArgumentException in case no condition panel exists for the given attribute
    */
   public <C extends Attribute<T>, T> ColumnConditionPanel<C, T> conditionPanel(C attribute) {
-    for (FilteredTableColumn<Attribute<?>> column : tableColumns()) {
+    for (FilteredTableColumn<Attribute<?>> column : columnModel.columns()) {
       if (column.getIdentifier().equals(attribute)) {
         return (ColumnConditionPanel<C, T>) conditionPanel.columnComponents().get(column);
       }
     }
 
     throw new IllegalArgumentException("No condition panel available for attribute: " + attribute);
+  }
+
+  /**
+   * @param listener a listener notified when a condition panel receives focus
+   */
+  public void addFocusGainedListener(EventDataListener<Attribute<?>> listener) {
+    conditionPanel.columnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
+  }
+
+  /**
+   * @param listener a listener notified each time the advanced search state changes
+   */
+  public void addAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.addDataListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
+    advancedViewState.removeDataListener(listener);
   }
 
   /**
@@ -160,15 +171,14 @@ public final class EntityTableConditionPanel extends AbstractEntityTableConditio
     return new EntityTableConditionPanel(tableConditionModel, columnModel, conditionPanelFactory);
   }
 
-  @Override
-  protected void setAdvancedView(boolean advanced) {
+  private void setAdvancedView(boolean advanced) {
     conditionPanel.columnComponents().forEach((column, panel) -> panel.setAdvancedView(advanced));
   }
 
   private List<Property<?>> conditionPanelProperties() {
     return conditionPanel.columnComponents().values().stream()
             .filter(panel -> columnModel.isColumnVisible(panel.model().columnIdentifier()))
-            .map(panel -> tableConditionModel().entityDefinition().property(panel.model().columnIdentifier()))
+            .map(panel -> tableConditionModel.entityDefinition().property(panel.model().columnIdentifier()))
             .collect(toList());
   }
 
