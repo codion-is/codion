@@ -34,6 +34,7 @@ import is.codion.swing.common.ui.component.text.HintTextField;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -320,17 +321,15 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private JPopupMenu createPopupMenu() {
-    JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
-                    .owner(EntitySearchField.this)
-                    .title(FrameworkMessages.settings())
-                    .icon(FrameworkIcons.instance().settings())
-                    .show())
-            .caption(FrameworkMessages.settings())
-            .smallIcon(FrameworkIcons.instance().settings())
-            .build());
-
-    return popupMenu;
+    return Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
+                            .owner(EntitySearchField.this)
+                            .title(FrameworkMessages.settings())
+                            .icon(FrameworkIcons.instance().settings())
+                            .show())
+                    .caption(FrameworkMessages.settings())
+                    .smallIcon(FrameworkIcons.instance().settings())
+                    .build())
+            .createPopupMenu();
   }
 
   /**
@@ -430,7 +429,7 @@ public final class EntitySearchField extends HintTextField {
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
       int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-      setBorder(BorderFactory.createEmptyBorder(gap, gap, 0, gap));
+      setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
     }
 
     private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
