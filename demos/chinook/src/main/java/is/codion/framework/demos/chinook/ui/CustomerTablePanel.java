@@ -32,14 +32,12 @@ public final class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPrintControls() {
-    Controls printControls = super.createPrintControls();
-    printControls.add(Control.builder(this::viewCustomerReport)
-            .caption(BUNDLE.getString("customer_report"))
-            .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
-            .build());
-
-    return printControls;
+  protected Controls createPrintMenuControls() {
+    return super.createPrintMenuControls()
+            .add(Control.builder(this::viewCustomerReport)
+                    .caption(BUNDLE.getString("customer_report"))
+                    .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
+                    .build());
   }
 
   private void viewCustomerReport() throws Exception {

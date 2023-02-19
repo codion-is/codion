@@ -1333,7 +1333,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       tablePanel.addToolBarControls(toolbarControls);
     }
     if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      tablePanel.addPopupControls(createDetailPanelControls(EMBEDDED));
+      tablePanel.addPopupMenuControls(createDetailPanelControls(EMBEDDED));
     }
     if (tablePanel.table().getDoubleClickAction() == null) {
       tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());

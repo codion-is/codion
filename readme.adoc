@@ -50,6 +50,7 @@ Codion uses a limited set of third-party libraries, a Swing CRUD client with loc
 
 * *https://www.json.org[org.json:json]* for persisting client preferences
 * *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
+* *https://github.com/Hakky54/sslcontext-kickstart[io.github.hakky54:sslcontext-kickstart]* for truststore handling
 * *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*
 * *Logging framework*

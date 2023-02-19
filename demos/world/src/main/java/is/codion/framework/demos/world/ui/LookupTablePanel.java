@@ -28,8 +28,8 @@ final class LookupTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
-    return super.createPopupControls(additionalPopupControls)
+  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+    return super.createPopupMenuControls(additionalPopupMenuControls)
             .addSeparatorAt(2)
             .addAt(3, Control.builder(this::exportCSV)
                     .caption("Export CSV...")

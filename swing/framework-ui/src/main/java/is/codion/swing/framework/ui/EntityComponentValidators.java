@@ -9,6 +9,7 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 
 import javax.swing.JComponent;
+import javax.swing.JFormattedTextField;
 import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
@@ -147,7 +148,12 @@ public final class EntityComponentValidators {
                             String defaultToolTip) {
       super(attribute, textComponent, editModel, defaultToolTip);
       configureColors();
-      textComponent.getDocument().addDocumentListener((DocumentAdapter) event -> validate());
+      if (textComponent instanceof JFormattedTextField) {
+        editModel.addValueListener(attribute, value -> validate());
+      }
+      else {
+        textComponent.getDocument().addDocumentListener((DocumentAdapter) event -> validate());
+      }
       textComponent.addPropertyChangeListener("UI", event -> configureColors());
     }
 

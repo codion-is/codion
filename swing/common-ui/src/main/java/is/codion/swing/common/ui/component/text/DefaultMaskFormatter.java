@@ -83,7 +83,7 @@ final class DefaultMaskFormatter extends MaskFormatter {
     private String invalidCharacters;
     private boolean overwriteMode = true;
     private boolean emptyStringToNullValue = true;
-    private boolean invalidStringToNullValue = true;
+    private boolean invalidStringToNullValue = false;
 
     @Override
     public MaskFormatterBuilder mask(String mask) {

@@ -19,6 +19,7 @@ import net.sf.jasperreports.swing.JRViewer;
 import java.awt.Dimension;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Map;
 
 // tag::constructor[]
 public class DepartmentTablePanel extends EntityTablePanel {
@@ -33,7 +34,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     Collection<Integer> departmentNumbers =
             Entity.getDistinct(Department.ID,
                     tableModel().selectionModel().getSelectedItems());
-    HashMap<String, Object> reportParameters = new HashMap<>();
+    Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
 
     JasperPrint employeeReport = tableModel().connectionProvider().connection()
@@ -47,17 +48,17 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
   // end::viewEmployeeReport[]
 
-  // tag::createPrintControls[]
+  // tag::createPrintMenuControls[]
   @Override
-  protected Controls createPrintControls() {
+  protected Controls createPrintMenuControls() {
     StateObserver selectionNotEmptyObserver =
             tableModel().selectionModel().selectionNotEmptyObserver();
 
-    return super.createPrintControls()
+    return super.createPrintMenuControls()
             .add(Control.builder(this::viewEmployeeReport)
                     .caption("Employee Report")
                     .enabledState(selectionNotEmptyObserver)
                     .build());
   }
 }
-// end::createPrintControls[]
+// end::createPrintMenuControls[]

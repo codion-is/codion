@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
-import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
@@ -142,25 +141,5 @@ public class DefaultEntityTableConditionModelTest {
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());
-  }
-
-  @Test
-  void testSimpleSearchString() {
-    final String value = "test";
-    char wildcard = Text.WILDCARD_CHARACTER.get();
-    conditionModel.simpleConditionStringValue().set(value);
-    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
-      if (model.columnClass().equals(String.class)) {
-        assertEquals(wildcard + value + wildcard, model.getEqualValue());
-        assertTrue(model.isEnabled());
-      }
-    }
-    conditionModel.simpleConditionStringValue().set(null);
-    for (ColumnConditionModel<?, ?> model : conditionModel.conditionModels().values()) {
-      if (model.columnClass().equals(String.class)) {
-        assertNull(model.getUpperBound());
-        assertFalse(model.isEnabled());
-      }
-    }
   }
 }

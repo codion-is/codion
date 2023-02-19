@@ -34,14 +34,12 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
-    Controls popupControls = super.createPopupControls(additionalPopupControls);
-    popupControls.addAt(0, Control.builder(this::createRandomPlaylist)
-            .caption(BUNDLE.getString("create_random_playlist"))
-            .build());
-    popupControls.addSeparatorAt(1);
-
-    return popupControls;
+  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+    return super.createPopupMenuControls(additionalPopupMenuControls)
+            .addAt(0, Control.builder(this::createRandomPlaylist)
+                    .caption(BUNDLE.getString("create_random_playlist"))
+                    .build())
+            .addSeparatorAt(1);
   }
 
   private void createRandomPlaylist() throws DatabaseException {
