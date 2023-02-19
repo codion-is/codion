@@ -29,20 +29,20 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPrintControls() {
-    Controls printControls = super.createPrintControls();
+  protected Controls createPrintMenuControls() {
+    Controls printMenuControls = super.createPrintMenuControls();
     //add a Control which calls the viewCustomerReport method in this class
     //enabled only when the selection is not empty
-    printControls.add(Control.builder(this::viewCustomerReport)
+    printMenuControls.add(Control.builder(this::viewCustomerReport)
             .caption("Customer report")
-            .enabledState(table().getModel().selectionModel().selectionNotEmptyObserver())
+            .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
             .build());
 
-    return printControls;
+    return printMenuControls;
   }
 
   private void viewCustomerReport() throws Exception {
-    List<Entity> selectedCustomers = table().getModel().selectionModel().getSelectedItems();
+    List<Entity> selectedCustomers = tableModel().selectionModel().getSelectedItems();
     if (selectedCustomers.isEmpty()) {
       return;
     }

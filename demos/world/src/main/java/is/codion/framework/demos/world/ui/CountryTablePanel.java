@@ -27,8 +27,8 @@ final class CountryTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPrintControls() {
-    return super.createPrintControls().removeAll();
+  protected Controls createPrintMenuControls() {
+    return super.createPrintMenuControls().removeAll();
   }
 
   private void viewCountryReport() throws Exception {

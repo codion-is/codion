@@ -33,8 +33,8 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   @Override
-  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
-    return super.createPopupControls(additionalPopupControls)
+  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+    return super.createPopupMenuControls(additionalPopupMenuControls)
             .addAt(0, Control.builder(this::raisePriceOfSelected)
                     .caption(BUNDLE.getString("raise_price") + "...")
                     .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())

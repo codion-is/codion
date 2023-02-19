@@ -344,10 +344,10 @@ public class EntityTablePanel extends JPanel {
     this.table = createTable();
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
-    this.conditionScrollPane = createConditionScrollPane(tableScrollPane);
+    this.conditionScrollPane = createConditionScrollPane();
     this.summaryPanel = createSummaryPanel();
-    this.summaryScrollPane = createSummaryScrollPane(tableScrollPane);
-    this.tablePanel = createTablePanel(tableScrollPane);
+    this.summaryScrollPane = createSummaryScrollPane();
+    this.tablePanel = createTablePanel();
     this.refreshToolBar = createRefreshToolBar();
     this.statusPanel = createStatusPanel();
   }
@@ -389,13 +389,13 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @param additionalPopupControls a set of controls to add to the table popup menu
+   * @param additionalPopupMenuControls a set of controls to add to the table popup menu
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void addPopupControls(Controls additionalPopupControls) {
+  public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
     checkIfInitialized();
-    this.additionalPopupControls.add(requireNonNull(additionalPopupControls));
+    this.additionalPopupControls.add(requireNonNull(additionalPopupMenuControls));
   }
 
   /**
@@ -957,22 +957,22 @@ public class EntityTablePanel extends JPanel {
   public static EntityTablePanel createEntityTablePanel(SwingEntityTableModel tableModel) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
-      protected Controls createPopupControls(List<Controls> additionalPopupControls) {
-        return additionalPopupControls.get(0);
+      protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+        return additionalPopupMenuControls.get(0);
       }
     };
-    Controls popupControls = Controls.controls();
+    Controls popupMenuControls = Controls.controls();
     if (tablePanel.includeUpdateSelectedControls()) {
-      popupControls.add(tablePanel.createUpdateSelectedControls());
+      popupMenuControls.add(tablePanel.createUpdateSelectedControls());
     }
     if (tablePanel.includeDeleteSelectedControl()) {
-      popupControls.add(tablePanel.createDeleteSelectedControl());
+      popupMenuControls.add(tablePanel.createDeleteSelectedControl());
     }
-    if (!popupControls.isEmpty()) {
-      popupControls.addSeparator();
+    if (!popupMenuControls.isEmpty()) {
+      popupMenuControls.addSeparator();
     }
-    popupControls.add(tablePanel.createViewDependenciesControl());
-    tablePanel.addPopupControls(popupControls);
+    popupMenuControls.add(tablePanel.createViewDependenciesControl());
+    tablePanel.addPopupMenuControls(popupMenuControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.initializePanel();
 
@@ -1104,19 +1104,19 @@ public class EntityTablePanel extends JPanel {
   /**
    * Creates a Controls instance containing the controls to include in the table popup menu.
    * Returns null or an empty Controls instance to indicate that no popup menu should be included.
-   * @param additionalPopupControls any additional controls to include in the popup menu
+   * @param additionalPopupMenuControls any additional controls to include in the popup menu
    * @return Controls on which to base the table popup menu, null or an empty Controls instance
    * if no popup menu should be included
    */
-  protected Controls createPopupControls(List<Controls> additionalPopupControls) {
-    requireNonNull(additionalPopupControls);
+  protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+    requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
     popupControls.add(controls.get(ControlCode.REFRESH));
     if (controls.containsKey(ControlCode.CLEAR)) {
       popupControls.add(controls.get(ControlCode.CLEAR));
     }
     popupControls.addSeparator();
-    addAdditionalControls(popupControls, additionalPopupControls);
+    addAdditionalControls(popupControls, additionalPopupMenuControls);
     boolean separatorRequired = false;
     if (controls.containsKey(ControlCode.UPDATE_SELECTED)) {
       popupControls.add(controls.get(ControlCode.UPDATE_SELECTED));
@@ -1142,7 +1142,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.addSeparator();
       separatorRequired = false;
     }
-    Controls printControls = createPrintControls();
+    Controls printControls = createPrintMenuControls();
     if (printControls != null && !printControls.isEmpty()) {
       popupControls.add(printControls);
       separatorRequired = true;
@@ -1177,7 +1177,7 @@ public class EntityTablePanel extends JPanel {
     return popupControls;
   }
 
-  protected Controls createPrintControls() {
+  protected Controls createPrintMenuControls() {
     Controls.Builder builder = Controls.builder()
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
@@ -1455,7 +1455,7 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private JScrollPane createConditionScrollPane(JScrollPane tableScrollPane) {
+  private JScrollPane createConditionScrollPane() {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
@@ -1468,7 +1468,7 @@ public class EntityTablePanel extends JPanel {
     return tableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
   }
 
-  private JScrollPane createSummaryScrollPane(JScrollPane tableScrollPane) {
+  private JScrollPane createSummaryScrollPane() {
     if (summaryPanel == null) {
       return null;
     }
@@ -1476,7 +1476,7 @@ public class EntityTablePanel extends JPanel {
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
-  private JPanel createTablePanel(JScrollPane tableScrollPane) {
+  private JPanel createTablePanel() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
     if (conditionScrollPane != null) {
@@ -1557,7 +1557,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void addTablePopupMenu() {
-    Controls popupControls = createPopupControls(additionalPopupControls);
+    Controls popupControls = createPopupMenuControls(additionalPopupControls);
     if (popupControls == null || popupControls.isEmpty()) {
       return;
     }

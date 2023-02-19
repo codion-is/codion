@@ -146,11 +146,11 @@ We create a method for viewing a report, which is called via an action we'll ini
 include::{dir-source}/is/codion/framework/demos/empdept/ui/DepartmentTablePanel.java[tags=viewEmployeeReport]
 ----
 
-Next we override *createPrintControls()* to add our report action to the popup print control set.
+Next we override *createPrintMenuControls()* to add our report action to the popup print controls.
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/empdept/ui/DepartmentTablePanel.java[tags=createPrintControls]
+include::{dir-source}/is/codion/framework/demos/empdept/ui/DepartmentTablePanel.java[tags=createPrintMenuControls]
 ----
 
 For editing employee entities we create the *EmployeeEditPanel* class.
