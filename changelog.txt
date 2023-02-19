@@ -8700,3 +8700,4 @@
   EntityTableSimpleConditionPanel removed along with AbstractEntityTableConditionPanel and DefaultEntityTableConditionModel.simpleConditionStringValue
   EntityTablePanel.createPopupControls() renamed createPopupMenuControls(), addPopupControls() renamed addPopupMenuControls(), createPrintControls() renamed createPrintMenuControls()
   EntityComponentValidators.TextValidator bug fixed, now validates on value change for JFormattedTextField
+  DefaultMaskFormatter.DefaultMaskFormatterBuilder.invalidStringToNullValue now defaults to false instead of true, true causes TemporalField to clear the text on focus lost with an invalid value
