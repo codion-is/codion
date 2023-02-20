@@ -8739,3 +8739,6 @@
   EntityTablePanel.createPopupControls() renamed createPopupMenuControls(), addPopupControls() renamed addPopupMenuControls(), createPrintControls() renamed createPrintMenuControls()
   EntityComponentValidators.TextValidator bug fixed, now validates on value change for JFormattedTextField
   DefaultMaskFormatter.DefaultMaskFormatterBuilder.invalidStringToNullValue now defaults to false instead of true, true causes TemporalField to clear the text on focus lost with an invalid value
+  DefaultEntityApplicationBuilder bug fixed, no longer exits with exit code 1 when login is cancelled
+  DefaultEntityTableCellRenderer.UISettings.configure() renamed update()
+  EntityEditComponentPanel, minor refactoring

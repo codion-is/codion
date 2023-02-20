@@ -390,9 +390,13 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private static void displayExceptionAndExit(Throwable exception) {
-    LOG.error(exception.getMessage(), exception);
-    displayException(exception, null);
-    System.exit(1);
+    if (exception instanceof CancelException) {
+      System.exit(0);
+    }
+    else {
+      displayException(exception, null);
+      System.exit(1);
+    }
   }
 
   private static void displayException(Throwable exception, JFrame applicationFrame) {

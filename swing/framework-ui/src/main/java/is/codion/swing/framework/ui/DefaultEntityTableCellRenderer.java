@@ -52,7 +52,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
   public void updateUI() {
     super.updateUI();
     if (settings != null) {
-      settings.configure();
+      settings.update();
     }
   }
 
@@ -128,7 +128,7 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     public void updateUI() {
       super.updateUI();
       if (settings != null) {
-        settings.configure();
+        settings.update();
       }
     }
 
@@ -184,10 +184,10 @@ final class DefaultEntityTableCellRenderer<T> extends DefaultTableCellRenderer i
     private UISettings(int leftPadding, int rightPadding) {
       this.leftPadding = leftPadding;
       this.rightPadding = rightPadding;
-      configure();
+      update();
     }
 
-    private void configure() {
+    private void update() {
       foregroundColor = UIManager.getColor("Table.foreground");
       backgroundColor = UIManager.getColor("Table.background");
       alternateBackgroundColor = UIManager.getColor("Table.alternateRowColor");

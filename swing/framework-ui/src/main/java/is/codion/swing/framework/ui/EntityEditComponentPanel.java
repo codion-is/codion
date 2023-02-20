@@ -56,6 +56,7 @@ import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -70,6 +71,7 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.collectingAndThen;
 
 /**
  * A base class for entity edit panels, providing components for editing entities.
@@ -178,13 +180,13 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return the attributes that have associated components.
+   * @return an unmodifiable view of the attributes that have associated components.
    */
   public final Collection<Attribute<?>> componentAttributes() {
     Set<Attribute<?>> attributes = new HashSet<>(components.keySet());
     attributes.addAll(componentBuilders.keySet());
 
-    return attributes;
+    return Collections.unmodifiableCollection(attributes);
   }
 
   /**
@@ -308,19 +310,17 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * @return a collection of attributes to use when selecting an input component in this panel,
-   * this returns all attributes that have an associated component in this panel
+   * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
+   * this returns all (non-excluded) attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
    * @see #excludeComponentFromSelection(Attribute)
    * @see #setComponent(Attribute, JComponent)
    */
   public final Collection<Attribute<?>> selectComponentAttributes() {
-    Collection<Attribute<?>> attributes = componentAttributes();
-    attributes.removeIf(attribute ->
-            excludeFromSelection.contains(attribute) ||
-                    !isComponentSelectable(getComponentInternal(attribute)));
-
-    return attributes;
+    return components.keySet().stream()
+            .filter(attribute -> !excludeFromSelection.contains(attribute))
+            .filter(attribute -> isComponentSelectable(getComponentInternal(attribute)))
+            .collect(collectingAndThen(Collectors.toList(), Collections::unmodifiableCollection));
   }
 
   /**
