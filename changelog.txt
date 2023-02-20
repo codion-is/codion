@@ -8703,3 +8703,4 @@
   DefaultMaskFormatter.DefaultMaskFormatterBuilder.invalidStringToNullValue now defaults to false instead of true, true causes TemporalField to clear the text on focus lost with an invalid value
   DefaultEntityApplicationBuilder bug fixed, no longer exits with exit code 1 when login is cancelled
   DefaultEntityTableCellRenderer.UISettings.configure() renamed update()
+  EntityEditComponentPanel, minor refactoring
