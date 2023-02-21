@@ -183,7 +183,7 @@ dependencyResolutionManagement {
             //plugins
             version('hikari', '5.0.1')
             version('jackson', '2.14.2')
-            version('log4j', '2.19.0')
+            version('log4j', '2.20.0')
             version('tomcat', '10.1.2')
             //jasperreports
             version('jasperreports', '6.20.0')

@@ -8742,3 +8742,4 @@
   DefaultEntityApplicationBuilder bug fixed, no longer exits with exit code 1 when login is cancelled
   DefaultEntityTableCellRenderer.UISettings.configure() renamed update()
   EntityEditComponentPanel, minor refactoring
+  DatabaseExplorerPanel, UI now initialized on EDT
