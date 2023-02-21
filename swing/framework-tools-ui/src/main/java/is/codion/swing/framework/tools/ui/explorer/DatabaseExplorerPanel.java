@@ -129,14 +129,14 @@ public final class DatabaseExplorerPanel extends JPanel {
                       .icon(Logos.logoTransparent())
                       .validator(user -> database.createConnection(user).close())
                       .show());
-      new DatabaseExplorerPanel(explorerModel).showFrame();
+      SwingUtilities.invokeLater(() -> new DatabaseExplorerPanel(explorerModel).showFrame());
     }
     catch (CancelException ignored) {
       System.exit(0);
     }
     catch (Exception e) {
       Dialogs.displayExceptionDialog(e, null);
-      System.exit(0);
+      System.exit(1);
     }
   }
 }
