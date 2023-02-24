@@ -845,6 +845,19 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
+   * Displays the exception message.
+   * @param exception the exception
+   */
+  public void onValidationException(ValidationException exception) {
+    requireNonNull(exception);
+    String title = tableModel.entities()
+            .definition(exception.attribute().entityType())
+            .property(exception.attribute())
+            .caption();
+    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
+  }
+
+  /**
    * Handles the given exception, simply displays the error message to the user by default.
    * @param exception the exception to handle
    * @see #displayException(Throwable)
@@ -1630,8 +1643,8 @@ public class EntityTablePanel extends JPanel {
       }
     }
     catch (ValidationException e) {
-      JOptionPane.showMessageDialog(this, e.getMessage(),
-              Messages.error(), JOptionPane.ERROR_MESSAGE);
+      LOG.debug(e.getMessage(), e);
+      onValidationException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
