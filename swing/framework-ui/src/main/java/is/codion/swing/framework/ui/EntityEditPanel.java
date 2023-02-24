@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -303,8 +302,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param exception the exception
    */
   public void onValidationException(ValidationException exception) {
-    JOptionPane.showMessageDialog(this, exception.getMessage(),
-            Messages.error(), JOptionPane.ERROR_MESSAGE);
+    requireNonNull(exception);
+    String title = editModel().entities()
+            .definition(exception.attribute().entityType())
+            .property(exception.attribute())
+            .caption();
+    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.attribute());
   }
 

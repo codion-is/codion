@@ -263,7 +263,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * displays a status message or a refresh progress bar when refreshing
    */
-  private final JPanel statusPanel;
+  private final StatusPanel statusPanel;
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
@@ -311,11 +311,6 @@ public class EntityTablePanel extends JPanel {
   private boolean includePopupMenu = true;
 
   /**
-   * specifies whether to display an indeterminate progress bar while the model is refreshing
-   */
-  private boolean showRefreshingProgressBar = false;
-
-  /**
    * True after {@code initializePanel()} has been called
    */
   private boolean panelInitialized = false;
@@ -349,7 +344,7 @@ public class EntityTablePanel extends JPanel {
     this.summaryScrollPane = createSummaryScrollPane();
     this.tablePanel = createTablePanel();
     this.refreshToolBar = createRefreshToolBar();
-    this.statusPanel = createStatusPanel();
+    this.statusPanel = new StatusPanel(tableModel);
   }
 
   @Override
@@ -487,14 +482,14 @@ public class EntityTablePanel extends JPanel {
    * @return true if a progress bar is shown while the model is refreshing
    */
   public final boolean isShowRefreshingProgressBar() {
-    return showRefreshingProgressBar;
+    return statusPanel.showRefreshingProgressBar;
   }
 
   /**
    * @param showRefreshingProgressBar true if an indeterminate progress bar should be shown while the model is refreshing
    */
   public final void setShowRefreshingProgressBar(boolean showRefreshingProgressBar) {
-    this.showRefreshingProgressBar = showRefreshingProgressBar;
+    statusPanel.showRefreshingProgressBar = showRefreshingProgressBar;
   }
 
   /**
@@ -842,6 +837,19 @@ public class EntityTablePanel extends JPanel {
     else {
       onException(exception);
     }
+  }
+
+  /**
+   * Displays the exception message.
+   * @param exception the exception
+   */
+  public void onValidationException(ValidationException exception) {
+    requireNonNull(exception);
+    String title = tableModel.entities()
+            .definition(exception.attribute().entityType())
+            .property(exception.attribute())
+            .caption();
+    JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
   }
 
   /**
@@ -1437,24 +1445,6 @@ public class EntityTablePanel extends JPanel {
     return toolBar;
   }
 
-  private JPanel createStatusPanel() {
-    String status = "status";
-    String refreshing = "refreshing";
-    CardLayout refreshStatusLayout = new CardLayout();
-
-    return Components.panel(refreshStatusLayout)
-            .add(Components.label(tableModel.statusMessageObserver())
-                    .horizontalAlignment(SwingConstants.CENTER)
-                    .build(), status)
-            .add(createRefreshingProgressPanel(), refreshing)
-            .onBuild(panel -> tableModel().refreshingObserver().addDataListener(isRefreshing -> {
-              if (showRefreshingProgressBar) {
-                refreshStatusLayout.show(panel, isRefreshing ? refreshing : status);
-              }
-            }))
-            .build();
-  }
-
   private JScrollPane createConditionScrollPane() {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
@@ -1630,8 +1620,8 @@ public class EntityTablePanel extends JPanel {
       }
     }
     catch (ValidationException e) {
-      JOptionPane.showMessageDialog(this, e.getMessage(),
-              Messages.error(), JOptionPane.ERROR_MESSAGE);
+      LOG.debug(e.getMessage(), e);
+      onValidationException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -1648,17 +1638,6 @@ public class EntityTablePanel extends JPanel {
     else {
       WaitCursor.hide(EntityTablePanel.this);
     }
-  }
-
-  private static JPanel createRefreshingProgressPanel() {
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setIndeterminate(true);
-    progressBar.setString(MESSAGES.getString("refreshing"));
-    progressBar.setStringPainted(true);
-
-    return Components.panel(new GridBagLayout())
-            .add(progressBar, createHorizontalFillConstraints())
-            .build();
   }
 
   private static GridBagConstraints createHorizontalFillConstraints() {
@@ -1806,5 +1785,38 @@ public class EntityTablePanel extends JPanel {
 
       return super.createComponentValue(attribute, editModel, initialValue);
     }
+  }
+
+  private static final class StatusPanel extends JPanel {
+
+    private static final String STATUS = "status";
+    private static final String REFRESHING = "refreshing";
+
+    private boolean showRefreshingProgressBar = false;
+
+    private StatusPanel(SwingEntityTableModel tableModel) {
+      super(new CardLayout());
+      add(Components.label(tableModel.statusMessageObserver())
+              .horizontalAlignment(SwingConstants.CENTER)
+              .build(), STATUS);
+      add(createRefreshingProgressPanel(), REFRESHING);
+      CardLayout layout = (CardLayout) getLayout();
+      tableModel.refreshingObserver().addDataListener(isRefreshing -> {
+        if (showRefreshingProgressBar) {
+          layout.show(this, isRefreshing ? REFRESHING : STATUS);
+        }
+      });
+    }
+  }
+
+  private static JPanel createRefreshingProgressPanel() {
+    JProgressBar progressBar = new JProgressBar();
+    progressBar.setIndeterminate(true);
+    progressBar.setString(MESSAGES.getString("refreshing"));
+    progressBar.setStringPainted(true);
+
+    return Components.panel(new GridBagLayout())
+            .add(progressBar, createHorizontalFillConstraints())
+            .build();
   }
 }

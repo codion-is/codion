@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.List;
 import java.util.Objects;
@@ -41,6 +42,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   @Override
   public ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted) {
     progressDialogBuilder.stringPainted(stringPainted);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> border(Border border) {
+    progressDialogBuilder.border(border);
     return this;
   }
 
