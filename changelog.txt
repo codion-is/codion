@@ -8705,3 +8705,4 @@
   DefaultEntityTableCellRenderer.UISettings.configure() renamed update()
   EntityEditComponentPanel, minor refactoring
   DatabaseExplorerPanel, UI now initialized on EDT
+  EntityEditPanel.onValidationException(), now displays the attribute caption as the dialog title

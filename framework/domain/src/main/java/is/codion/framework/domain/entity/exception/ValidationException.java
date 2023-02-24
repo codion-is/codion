@@ -8,7 +8,7 @@ import is.codion.framework.domain.entity.Attribute;
 import static java.util.Objects.requireNonNull;
 
 /**
- * An exception used to indicate that an invalid value is being associated with a key.
+ * An exception used to indicate that an attribute value is invalid.
  */
 public class ValidationException extends Exception {
 
