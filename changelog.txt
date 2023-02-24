@@ -8708,3 +8708,4 @@
   EntityEditPanel.onValidationException(), now displays the attribute caption as the dialog title
   EntityTablePanel.onValidationException() added
   EntityTablePanel.StatusPanel added, related refactoring
+  ProgressDialog.Builder, ProgressWorkerDialogBuilder.border() added, DefaultEntityApplicationBuilder now adds an empty border

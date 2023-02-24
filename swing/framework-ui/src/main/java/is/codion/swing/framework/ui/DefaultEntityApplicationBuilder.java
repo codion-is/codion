@@ -17,12 +17,14 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -247,9 +249,11 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     EntityConnectionProvider connectionProvider = connectionProvider(user());
     long initializationStarted = System.currentTimeMillis();
     if (displayStartupDialog) {
+      int borderSize = Layouts.HORIZONTAL_VERTICAL_GAP.get();
       Dialogs.progressWorkerDialog(() -> applicationModel(connectionProvider))
               .title(applicationName)
               .icon(applicationIcon)
+              .border(BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize))
               .westPanel(createStartupIconPanel())
               .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
               .onException(DefaultEntityApplicationBuilder::displayExceptionAndExit)

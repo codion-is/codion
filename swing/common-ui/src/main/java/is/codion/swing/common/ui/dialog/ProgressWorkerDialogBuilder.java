@@ -7,6 +7,7 @@ import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JPanel;
+import javax.swing.border.Border;
 import java.awt.Dimension;
 import java.util.function.Consumer;
 
@@ -28,9 +29,15 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
 
   /**
    * @param stringPainted the string painted status of the progress bar
-   * @return this ProgressDialogBuilder instance
+   * @return this Builder instance
    */
   ProgressWorkerDialogBuilder<T, V> stringPainted(boolean stringPainted);
+
+  /**
+   * @param border the border to add around the progress bar
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> border(Border border);
 
   /**
    * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
