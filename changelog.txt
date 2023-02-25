@@ -8709,3 +8709,4 @@
   EntityTablePanel.onValidationException() added
   EntityTablePanel.StatusPanel added, related refactoring
   ProgressDialog.Builder, ProgressWorkerDialogBuilder.border() added, DefaultEntityApplicationBuilder now adds an empty border
+  DefaultEntityApplicationBuilder, old hack to initialize FrameworkMessages removed, looks unnecessary
