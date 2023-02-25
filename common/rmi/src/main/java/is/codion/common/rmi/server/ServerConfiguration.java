@@ -15,6 +15,9 @@ import java.util.function.Supplier;
 
 /**
  * Configuration values for a {@link Server}.
+ * @see #builder(int)
+ * @see #builder(int, int)
+ * @see #builderFromSystemProperties()
  */
 public interface ServerConfiguration {
 
@@ -309,12 +312,5 @@ public interface ServerConfiguration {
             .connectionMaintenanceIntervalMs(ServerConfiguration.CONNECTION_MAINTENANCE_INTERVAL_MS.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())
             .serializationFilterDryRun(SERIALIZATION_FILTER_DRYRUN.get());
-  }
-
-  /**
-   * @return a configuration according to system properties.
-   */
-  static ServerConfiguration fromSystemProperties() {
-    return builderFromSystemProperties().build();
   }
 }
