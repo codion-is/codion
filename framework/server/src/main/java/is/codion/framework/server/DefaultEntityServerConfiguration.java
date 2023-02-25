@@ -16,6 +16,8 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.function.Supplier;
 
+import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -25,18 +27,27 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
   private final ServerConfiguration serverConfiguration;
 
-  private Database database;
-  private User adminUser;
-  private int connectionLimit;
-  private boolean clientLoggingEnabled;
-  private int idleConnectionTimeout;
-  private String connectionPoolProvider;
-  private final Collection<String> domainModelClassNames = new HashSet<>();
-  private final Collection<User> connectionPoolUsers = new HashSet<>();
-  private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
+  private final Database database;
+  private final User adminUser;
+  private final int connectionLimit;
+  private final boolean clientLoggingEnabled;
+  private final int idleConnectionTimeout;
+  private final String connectionPoolProvider;
+  private final Collection<String> domainModelClassNames;
+  private final Collection<User> connectionPoolUsers;
+  private final Map<String, Integer> clientTypeIdleConnectionTimeouts;
 
-  DefaultEntityServerConfiguration(ServerConfiguration serverConfiguration) {
-    this.serverConfiguration = requireNonNull(serverConfiguration);
+  DefaultEntityServerConfiguration(DefaultEntityServerConfiguration.DefaultBuilder builder) {
+    this.serverConfiguration = requireNonNull(builder.serverConfigurationBuilder.build());
+    this.database = builder.database;
+    this.adminUser = builder.adminUser;
+    this.connectionLimit = builder.connectionLimit;
+    this.clientLoggingEnabled = builder.clientLoggingEnabled;
+    this.idleConnectionTimeout = builder.idleConnectionTimeout;
+    this.connectionPoolProvider = builder.connectionPoolProvider;
+    this.domainModelClassNames = unmodifiableCollection(builder.domainModelClassNames);
+    this.connectionPoolUsers = unmodifiableCollection(builder.connectionPoolUsers);
+    this.clientTypeIdleConnectionTimeouts = unmodifiableMap(builder.clientTypeIdleConnectionTimeouts);
   }
 
   @Override
@@ -147,7 +158,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private User adminUser;
     private int connectionLimit = DEFAULT_SERVER_CONNECTION_LIMIT;
     private boolean clientLoggingEnabled = false;
-    private int clientConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
+    private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
     private final Collection<String> domainModelClassNames = new HashSet<>();
     private final Collection<User> connectionPoolUsers = new HashSet<>();
@@ -251,7 +262,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     @Override
     public Builder idleConnectionTimeout(int idleConnectionTimeout) {
-      this.clientConnectionTimeout = idleConnectionTimeout;
+      this.idleConnectionTimeout = idleConnectionTimeout;
       return this;
     }
 
@@ -281,18 +292,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
 
     @Override
     public EntityServerConfiguration build() {
-      DefaultEntityServerConfiguration configuration = new DefaultEntityServerConfiguration(serverConfigurationBuilder.build());
-      configuration.database = database;
-      configuration.adminUser = adminUser;
-      configuration.connectionLimit = connectionLimit;
-      configuration.clientLoggingEnabled = clientLoggingEnabled;
-      configuration.idleConnectionTimeout = clientConnectionTimeout;
-      configuration.connectionPoolProvider = connectionPoolProvider;
-      configuration.domainModelClassNames.addAll(domainModelClassNames);
-      configuration.connectionPoolUsers.addAll(connectionPoolUsers);
-      configuration.clientTypeIdleConnectionTimeouts.putAll(clientTypeIdleConnectionTimeouts);
-      
-      return configuration;
+      return new DefaultEntityServerConfiguration(this);
     }
   }
 }
