@@ -34,10 +34,11 @@ import java.util.Random;
 import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static java.util.Collections.unmodifiableCollection;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
 
 /**
@@ -74,7 +75,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private volatile boolean shuttingDown = false;
 
   private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
-  private final Map<String, UsageScenario<T>> usageScenarios = new HashMap<>();
+  private final Map<String, UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
   private final ScheduledExecutorService scheduledExecutor =
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
@@ -134,7 +135,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.applicationBatchSizeValue.addValidator(new MinimumValidator(1));
     this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
     this.maximumThinkTimeValue.addValidator(new MaximumThinkTimeValidator());
-    usageScenarios.forEach(scenario -> this.usageScenarios.put(scenario.name(), scenario));
+    this.usageScenarios = unmodifiableMap(usageScenarios.stream()
+            .collect(Collectors.toMap(UsageScenario::name, Function.identity())));
     this.scenarioChooser = createScenarioChooser();
     initializeChartModels();
     this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
@@ -163,15 +165,15 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   public final UsageScenario<T> usageScenario(String usageScenarioName) {
     UsageScenario<T> scenario = usageScenarios.get(usageScenarioName);
     if (scenario != null) {
-      return scenario;
+      throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
     }
 
-    throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
+    return scenario;
   }
 
   @Override
   public final Collection<String> usageScenarios() {
-    return unmodifiableCollection(usageScenarios.keySet());
+    return usageScenarios.keySet();
   }
 
   @Override
@@ -358,7 +360,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   /**
    * @param listener a listener notified when this load test model has been shutdown.
    */
-  protected void addShutdownListener(EventListener listener) {
+  protected final void addShutdownListener(EventListener listener) {
     shutdownEvent.addListener(listener);
   }
 

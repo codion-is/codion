@@ -20,6 +20,7 @@ import java.util.HashSet;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -31,20 +32,31 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
   private final int serverPort;
   private final int registryPort;
-  private final Collection<String> auxiliaryServerFactoryClassNames = new HashSet<>();
-  private int serverAdminPort;
-  private boolean sslEnabled;
-  private String serverName;
-  private Supplier<String> serverNameProvider = () -> serverName;
-  private RMIClientSocketFactory rmiClientSocketFactory;
-  private RMIServerSocketFactory rmiServerSocketFactory;
-  private String serializationFilterWhitelist;
-  private boolean serializationFilterDryRun;
-  private int connectionMaintenanceIntervalMs;
+  private final Collection<String> auxiliaryServerFactoryClassNames;
+  private final int serverAdminPort;
+  private final boolean sslEnabled;
+  private final Supplier<String> serverNameProvider;
+  private final RMIClientSocketFactory rmiClientSocketFactory;
+  private final RMIServerSocketFactory rmiServerSocketFactory;
+  private final String serializationFilterWhitelist;
+  private final boolean serializationFilterDryRun;
+  private final int connectionMaintenanceIntervalMs;
 
-  DefaultServerConfiguration(int serverPort, int registryPort) {
-    this.serverPort = serverPort;
-    this.registryPort = registryPort;
+  private String serverName;
+
+  DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
+    this.serverPort = builder.serverPort;
+    this.registryPort = builder.registryPort;
+    this.auxiliaryServerFactoryClassNames = unmodifiableCollection(builder.auxiliaryServerFactoryClassNames);
+    this.serverAdminPort = builder.serverAdminPort;
+    this.sslEnabled = builder.sslEnabled;
+    this.serverName = builder.serverName;
+    this.serverNameProvider = builder.serverNameProvider == null ? () -> serverName : builder.serverNameProvider;
+    this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
+    this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
+    this.serializationFilterWhitelist = builder.serializationFilterWhitelist;
+    this.serializationFilterDryRun = builder.serializationFilterDryRun;
+    this.connectionMaintenanceIntervalMs = builder.connectionMaintenanceIntervalMs;
   }
 
   @Override
@@ -200,19 +212,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
     @Override
     public ServerConfiguration build() {
-      DefaultServerConfiguration configuration = new DefaultServerConfiguration(serverPort, registryPort);
-      configuration.auxiliaryServerFactoryClassNames.addAll(auxiliaryServerFactoryClassNames);
-      configuration.serverAdminPort = serverAdminPort;
-      configuration.sslEnabled = sslEnabled;
-      configuration.serverName = serverName;
-      configuration.serverNameProvider = serverNameProvider;
-      configuration.rmiClientSocketFactory = rmiClientSocketFactory;
-      configuration.rmiServerSocketFactory = rmiServerSocketFactory;
-      configuration.serializationFilterWhitelist = serializationFilterWhitelist;
-      configuration.serializationFilterDryRun = serializationFilterDryRun;
-      configuration.connectionMaintenanceIntervalMs = connectionMaintenanceIntervalMs;
-
-      return configuration;
+      return new DefaultServerConfiguration(this);
     }
 
     private static synchronized void resolveClasspathKeyStore() {

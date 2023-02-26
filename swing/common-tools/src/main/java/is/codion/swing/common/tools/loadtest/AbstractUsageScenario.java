@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * An abstract usage scenario.
- * @param <T> the type used to run this scenario
+ * @param <T> the application type used to run this scenario
  */
 public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
 

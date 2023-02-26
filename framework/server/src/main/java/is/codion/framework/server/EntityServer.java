@@ -425,7 +425,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    */
   public static EntityServer startServer() throws RemoteException {
-    return startServer(EntityServerConfiguration.fromSystemProperties());
+    return startServer(EntityServerConfiguration.builderFromSystemProperties().build());
   }
 
   /**
@@ -452,7 +452,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
-    EntityServerConfiguration configuration = EntityServerConfiguration.fromSystemProperties();
+    EntityServerConfiguration configuration = EntityServerConfiguration.builderFromSystemProperties().build();
     String serverName = configuration.serverName();
     int registryPort = configuration.registryPort();
     User adminUser = configuration.adminUser();

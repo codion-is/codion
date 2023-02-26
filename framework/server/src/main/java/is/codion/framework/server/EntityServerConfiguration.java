@@ -25,6 +25,8 @@ import static java.util.stream.Collectors.toList;
 
 /**
  * Configuration values for a {@link EntityServer}.
+ * @see #builder(int, int)
+ * @see #builderFromSystemProperties()
  */
 public interface EntityServerConfiguration extends ServerConfiguration {
 
@@ -233,13 +235,5 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     }
 
     return builder;
-  }
-
-  /**
-   * Parses configuration from system properties.
-   * @return the server configuration according to system properties
-   */
-  static EntityServerConfiguration fromSystemProperties() {
-    return builderFromSystemProperties().build();
   }
 }
