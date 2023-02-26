@@ -164,7 +164,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   @Override
   public final UsageScenario<T> usageScenario(String usageScenarioName) {
     UsageScenario<T> scenario = usageScenarios.get(usageScenarioName);
-    if (scenario != null) {
+    if (scenario == null) {
       throw new IllegalArgumentException("UsageScenario not found: " + usageScenarioName);
     }
 
