@@ -631,10 +631,10 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
             .execute();
   }
 
-  private void refreshSync(Consumer<Collection<R>> onRefresh) {
+  private void refreshSync(Consumer<Collection<R>> afterRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(refreshItems(), onRefresh);
+      onRefreshResult(refreshItems(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -646,7 +646,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void onRefreshFailedAsync(Throwable throwable) {
-    cleanupRefreshWorker();
+    refreshWorker = null;
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
@@ -661,7 +661,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void onRefreshResult(Collection<R> items, Consumer<Collection<R>> afterRefresh) {
-    cleanupRefreshWorker();
+    refreshWorker = null;
     refreshingState.set(false);
     if (mergeOnRefresh && !items.isEmpty()) {
       merge(items);
@@ -679,12 +679,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     ProgressWorker<?, ?> worker = refreshWorker;
     if (worker != null) {
       worker.cancel(true);
-    }
-  }
-
-  private void cleanupRefreshWorker() {
-    if (refreshWorker != null) {
-      refreshWorker = null;
     }
   }
 

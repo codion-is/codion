@@ -68,6 +68,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
   private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
+  private ProgressWorker<Collection<T>, ?> refreshWorker;
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -554,7 +555,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   private void refreshAsync(Consumer<Collection<T>> afterRefresh) {
-    ProgressWorker.builder(this::refreshItems)
+    cancelCurrentRefresh();
+    refreshWorker = ProgressWorker.builder(this::refreshItems)
             .onStarted(this::onRefreshStarted)
             .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
@@ -576,6 +578,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   private void onRefreshFailedAsync(Throwable throwable) {
+    refreshWorker = null;
     refreshingState.set(false);
     refreshFailedEvent.onEvent(throwable);
   }
@@ -590,12 +593,20 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
+    refreshWorker = null;
     refreshingState.set(false);
     setItems(items);
     if (afterRefresh != null) {
       afterRefresh.accept(items);
     }
     refreshEvent.onEvent();
+  }
+
+  private void cancelCurrentRefresh() {
+    ProgressWorker<?, ?> worker = refreshWorker;
+    if (worker != null) {
+      worker.cancel(true);
+    }
   }
 
   /**

@@ -8712,3 +8712,4 @@
   DefaultEntityApplicationBuilder, old hack to initialize FrameworkMessages removed, looks unnecessary
   DefaultServerConfiguration and DefaultEntityServerConfiguration refactored, constructors now take Builder as parameter
   ServerConfiguration, EntityServerConfiguration.fromSystemProperties() removed
+  FilteredComboBoxModel, now cancels refresh in progress when refresh is called
