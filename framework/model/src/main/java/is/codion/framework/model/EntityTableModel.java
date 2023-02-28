@@ -299,6 +299,20 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setRemoveDeletedEntities(boolean removeDeletedEntities);
 
   /**
+   * True if this table model reacts to entity edit events, by replacing foreign key values.
+   * @return true if this combo box model listens edit events
+   * @see EntityEditEvents
+   */
+  boolean isListenToEditEvents();
+
+  /**
+   * Set to true if this table model should react to entity edit events, by replacing foreign key values.
+   * @param listenToEditEvents if true then this model listens to entity edit events
+   * @see EntityEditEvents
+   */
+  void setListenToEditEvents(boolean listenToEditEvents);
+
+  /**
    * @return the action performed when entities are inserted via the associated edit model
    */
   InsertAction getInsertAction();

@@ -30,6 +30,6 @@ public class TagItemEditPanel extends EntityEditPanel {
             .build();
     addInputPanel(TagItem.TAG_FK, Panels.createEastButtonPanel(itemTagBox,
             EntityPanel.builder(Tag.TYPE).editPanelClass(TagEditPanel.class)
-                    .createEditPanelAction(itemTagBox)));
+                    .createInsertControl(itemTagBox)));
   }
 }
