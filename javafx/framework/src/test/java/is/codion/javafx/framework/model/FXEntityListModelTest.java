@@ -3,8 +3,11 @@
  */
 package is.codion.javafx.framework.model;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -135,5 +138,37 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
     assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+  }
+
+  @Test
+  void editEvents() throws DatabaseException, ValidationException {
+    EntityConnectionProvider connectionProvider = connectionProvider();
+    Entity researchDept = connectionProvider.connection().select(connectionProvider.entities().primaryKey(Department.TYPE, 20));
+
+    FXEntityListModel tableModel = createEmployeeTableModel();
+    assertTrue(tableModel.isListenToEditEvents());
+    tableModel.tableConditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
+    tableModel.refresh();
+
+    tableModel.items().forEach(emp ->
+            assertEquals("RESEARCH", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
+
+    FXEntityEditModel editModel = new FXEntityEditModel(Department.TYPE, connectionProvider);
+    editModel.setEntity(researchDept);
+    editModel.put(Department.NAME, "R&D");
+    editModel.update();
+
+    assertTrue(tableModel.getRowCount() > 0);
+
+    tableModel.items().forEach(emp ->
+            assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
+
+    tableModel.setListenToEditEvents(false);
+
+    editModel.put(Department.NAME, "RESEARCH");
+    editModel.update();
+
+    tableModel.items().forEach(emp ->
+            assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
   }
 }

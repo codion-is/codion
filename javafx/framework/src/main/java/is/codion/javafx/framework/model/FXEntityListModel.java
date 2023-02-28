@@ -5,6 +5,7 @@ package is.codion.javafx.framework.model;
 
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -21,6 +22,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -49,8 +51,7 @@ import static is.codion.framework.model.EntityTableConditionModel.entityTableCon
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -63,6 +64,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private final State queryConditionRequiredState = State.state();
   private final FXEntityEditModel editModel;
   private final State conditionChangedState = State.state();
+  private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
 
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
   private ObservableList<TableColumn<Entity, ?>> columnSortOrder;
@@ -76,6 +78,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private int limit = -1;
   private boolean queryHiddenColumns = QUERY_HIDDEN_COLUMNS.get();
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
+  private boolean listenToEditEvents = true;
 
   public FXEntityListModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     this(new FXEntityEditModel(entityType, connectionProvider));
@@ -100,6 +103,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     this.editModel = editModel;
     this.tableConditionModel = tableConditionModel;
     this.refreshCondition = tableConditionModel.condition();
+    addEditEventListeners();
     bindEvents();
   }
 
@@ -337,6 +341,22 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
     this.removeDeletedEntities = removeDeletedEntities;
+  }
+
+  @Override
+  public final boolean isListenToEditEvents() {
+    return listenToEditEvents;
+  }
+
+  @Override
+  public final void setListenToEditEvents(boolean listenToEditEvents) {
+    this.listenToEditEvents = listenToEditEvents;
+    if (listenToEditEvents) {
+      addEditEventListeners();
+    }
+    else {
+      removeEditEventListeners();
+    }
   }
 
   @Override
@@ -656,6 +676,14 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     });
   }
 
+  private void addEditEventListeners() {
+    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+  }
+
+  private void removeEditEventListeners() {
+    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
+  }
+
   private void rememberCondition() {
     refreshCondition = tableConditionModel.condition();
     conditionChangedState.set(false);
@@ -691,6 +719,18 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return EntityTableModel.columnPreferences(attribute,
             jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
             jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
+  }
+
+  private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
+
+    @Override
+    public void onEvent(Map<Key, Entity> updated) {
+      updated.values().stream()
+              .collect(groupingBy(Entity::type, HashMap::new, toList()))
+              .forEach((entityType, entities) ->
+                      entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
+                              replaceForeignKeyValues(foreignKey, entities)));
+    }
   }
 
   /**

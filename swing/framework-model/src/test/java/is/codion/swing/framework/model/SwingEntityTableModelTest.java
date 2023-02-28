@@ -6,10 +6,12 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.DefaultConditionModelFactory;
 import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
@@ -277,5 +279,37 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
     assertTrue(orderBy.orderByAttributes().get(1).isAscending());
     assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+  }
+
+  @Test
+  void editEvents() throws DatabaseException, ValidationException {
+    EntityConnectionProvider connectionProvider = connectionProvider();
+    Entity researchDept = connectionProvider.connection().select(connectionProvider.entities().primaryKey(Department.TYPE, 20));
+
+    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    assertTrue(tableModel.isListenToEditEvents());
+    tableModel.tableConditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
+    tableModel.refresh();
+
+    tableModel.items().forEach(emp ->
+            assertEquals("RESEARCH", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
+
+    SwingEntityEditModel editModel = new SwingEntityEditModel(Department.TYPE, connectionProvider);
+    editModel.setEntity(researchDept);
+    editModel.put(Department.NAME, "R&D");
+    editModel.update();
+
+    assertTrue(tableModel.getRowCount() > 0);
+
+    tableModel.items().forEach(emp ->
+            assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
+
+    tableModel.setListenToEditEvents(false);
+
+    editModel.put(Department.NAME, "RESEARCH");
+    editModel.update();
+
+    tableModel.items().forEach(emp ->
+            assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
   }
 }

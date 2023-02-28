@@ -4,6 +4,7 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
@@ -26,6 +27,7 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.DefaultFilterModelFactory;
+import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -59,8 +61,7 @@ import static is.codion.swing.common.model.component.table.FilteredTableColumn.f
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.*;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -81,6 +82,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
+  private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
   /** the condition active during the last refresh */
   private Condition refreshCondition;
   /** the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched */
@@ -101,6 +103,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private boolean editable = false;
   /** Specifies whether to use the current sort order as the query order by clause */
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
+  private boolean listenToEditEvents = true;
 
   /**
    * Instantiates a new SwingEntityTableModel.
@@ -147,6 +150,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     this.tableConditionModel = tableConditionModel;
     this.refreshCondition = tableConditionModel.condition();
     this.editModel = editModel;
+    addEditEventListeners();
     bindEventsInternal();
     applyPreferences();
   }
@@ -219,6 +223,22 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   @Override
   public final void setRemoveDeletedEntities(boolean removeDeletedEntities) {
     this.removeDeletedEntities = removeDeletedEntities;
+  }
+
+  @Override
+  public final boolean isListenToEditEvents() {
+    return listenToEditEvents;
+  }
+
+  @Override
+  public final void setListenToEditEvents(boolean listenToEditEvents) {
+    this.listenToEditEvents = listenToEditEvents;
+    if (listenToEditEvents) {
+      addEditEventListeners();
+    }
+    else {
+      removeEditEventListeners();
+    }
   }
 
   @Override
@@ -661,6 +681,14 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     addDataChangedListener(statusListener);
   }
 
+  private void addEditEventListeners() {
+    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+  }
+
+  private void removeEditEventListeners() {
+    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
+  }
+
   private void rememberCondition() {
     refreshCondition = tableConditionModel.condition();
     conditionChangedState.set(false);
@@ -865,6 +893,18 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     return EntityTableModel.columnPreferences(attribute,
             jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
             jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
+  }
+
+  private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
+
+    @Override
+    public void onEvent(Map<Key, Entity> updated) {
+      updated.values().stream()
+              .collect(groupingBy(Entity::type, HashMap::new, toList()))
+              .forEach((entityType, entities) ->
+                      entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
+                              replaceForeignKeyValues(foreignKey, entities)));
+    }
   }
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
