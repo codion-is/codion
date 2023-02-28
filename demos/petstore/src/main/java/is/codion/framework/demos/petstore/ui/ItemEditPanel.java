@@ -46,11 +46,11 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.CONTACT_INFO_FK, Panels.createEastButtonPanel(contactInfoBox,
             EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
-                    .createEditPanelAction(contactInfoBox)));
+                    .createInsertControl(contactInfoBox)));
     addInputPanel(Item.ADDRESS_FK, Panels.createEastButtonPanel(addressBox,
             EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class)
-                    .createEditPanelAction(addressBox)));
+                    .createInsertControl(addressBox)));
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);

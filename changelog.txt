@@ -8714,3 +8714,5 @@
   ServerConfiguration, EntityServerConfiguration.fromSystemProperties() removed
   FilteredComboBoxModel, now cancels refresh in progress when refresh is called
   EntityTableModel.is/setListenToEditEvents() added, implemented in SwingEntityTableModel and FXEntityListModel replace foreign key values on update
+  EntityPanel.Builder.createEditPanelAction() renamed createInsertControl(), related refactoring
+  EntityPanel.Builder.createUpdateControl() added
