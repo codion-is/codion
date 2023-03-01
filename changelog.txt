@@ -8716,3 +8716,5 @@
   EntityTableModel.is/setListenToEditEvents() added, implemented in SwingEntityTableModel and FXEntityListModel replace foreign key values on update
   EntityPanel.Builder.createEditPanelAction() renamed createInsertControl(), related refactoring
   EntityPanel.Builder.createUpdateControl() added
+  EntityPanelBuilder.UpdateEntityCommand now refreshes the entity before presenting the edit panel, since some values may not have been loaded
+  EntityPanelBuilder.UpdateEntityCommand bug fixed, no longer displays error when the user presses OK to update when no values have been modified
