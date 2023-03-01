@@ -9,6 +9,9 @@ import static java.util.Objects.requireNonNull;
  * Encapsulates a username and password.
  * Factory class for {@link User} instances.
  * Note that a {@link User} instance is mutable as the password can be set and cleared.
+ * @see #user(String)
+ * @see #user(String, char[])
+ * @see #parse(String)
  */
 public interface User {
 
@@ -36,6 +39,7 @@ public interface User {
    * Creates a new User with an empty password.
    * @param username the username
    * @return a new User
+   * @throws IllegalArgumentException in case username is an empty string
    */
   static User user(String username) {
     return user(username, null);
@@ -46,6 +50,7 @@ public interface User {
    * @param username the username
    * @param password the password
    * @return a new User
+   * @throws IllegalArgumentException in case username is an empty string
    */
   static User user(String username, char[] password) {
     return new DefaultUser(username, password);
@@ -58,19 +63,15 @@ public interface User {
    * to be part of the password.
    * @param userPassword the username and password string
    * @return a User with the given username and password
+   * @throws IllegalArgumentException in case the username portion is empty
    */
   static User parse(String userPassword) {
     String[] split = requireNonNull(userPassword).split(":", 2);
     if (split.length == 1) {
       return new DefaultUser(split[0].trim(), null);
     }
-    //here split is of length 2, as per split limit
-    String username = split[0];
-    String password = split[1];
-    if (username.isEmpty() || password.isEmpty()) {
-      throw new IllegalArgumentException("Both username and password are required");
-    }
 
-    return new DefaultUser(username.trim(), password.toCharArray());
+    //here split is of length 2, as per split limit
+    return new DefaultUser(split[0].trim(), split[1].toCharArray());
   }
 }
