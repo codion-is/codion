@@ -594,7 +594,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         entityToUpdate = ((EntitySearchField) component).model().getSelectedEntities().get(0);
       }
       EntityEditPanel editPanel = createEditPanel();
-      editPanel.editModel().setEntity(entityToUpdate);
+      editPanel.editModel().setEntity(connectionProvider.connection().select(entityToUpdate.primaryKey()));
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
@@ -637,7 +637,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       try {
         WaitCursor.show(component);
         try {
-          editModel.update();
+          if (editModel.isModified()) {
+            editModel.update();
+          }
 
           return true;
         }
