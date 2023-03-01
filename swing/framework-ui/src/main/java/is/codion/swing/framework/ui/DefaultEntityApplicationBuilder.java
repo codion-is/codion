@@ -58,6 +58,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private static final String CODION_APPLICATION_VERSION = "codion.application.version";
   private static final int DEFAULT_LOGO_SIZE = 68;
+  private static final String DASH = " - ";
 
   private final Class<M> modelClass;
   private final Class<P> panelClass;
@@ -385,7 +386,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private String frameTitle(M applicationModel) {
     String title = frameTitleFactory.apply(applicationModel);
 
-    return applicationModel.connectionValidObserver().get() ? title : title + " - " + RESOURCE_BUNDLE.getString("not_connected");
+    return applicationModel.connectionValidObserver().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
   }
 
   private EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId, Version clientVersion) {
@@ -428,7 +429,17 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
 
     private String loginDialogTitle() {
-      return applicationName.isEmpty() ? Messages.login() : applicationName + " - " + Messages.login();
+      StringBuilder builder = new StringBuilder(Messages.login());
+      if (applicationName.isEmpty()) {
+        return builder.toString();
+      }
+
+      builder.append(DASH).append(applicationName);
+      if (applicationVersion != null) {
+        builder.append(DASH).append(applicationVersion);
+      }
+
+      return builder.toString();
     }
   }
 
@@ -489,12 +500,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       StringBuilder builder = new StringBuilder(applicationName);
       if (applicationVersion != null) {
         if (builder.length() > 0) {
-          builder.append(" - ");
+          builder.append(DASH);
         }
         builder.append(applicationVersion);
       }
       if (builder.length() > 0) {
-        builder.append(" - ");
+        builder.append(DASH);
       }
       builder.append(userInfo(applicationModel.connectionProvider()));
 
