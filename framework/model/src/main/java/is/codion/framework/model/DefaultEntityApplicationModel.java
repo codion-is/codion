@@ -36,9 +36,8 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   private final Version version;
   private final State connectionValidState = State.state();
   private final TaskScheduler validityCheckScheduler = TaskScheduler.builder(this::checkConnectionValidity)
-          .interval(VALIDITY_CHECK_INTERVAL_SECONDS)
+          .interval(VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS)
           .initialDelay(VALIDITY_CHECK_INTERVAL_SECONDS)
-          .timeUnit(TimeUnit.SECONDS)
           .build();
   private final List<M> entityModels = new ArrayList<>();
 

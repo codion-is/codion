@@ -50,6 +50,11 @@ final class DefaultTaskScheduler implements TaskScheduler {
   }
 
   @Override
+  public TimeUnit timeUnit() {
+    return timeUnit;
+  }
+
+  @Override
   public DefaultTaskScheduler start() {
     synchronized (lock) {
       stop();
@@ -91,11 +96,12 @@ final class DefaultTaskScheduler implements TaskScheduler {
     }
 
     @Override
-    public Builder interval(int interval) {
+    public Builder interval(int interval, TimeUnit timeUnit) {
       if (interval <= 0) {
         throw new IllegalArgumentException("Interval must be a positive integer");
       }
       this.interval = interval;
+      this.timeUnit = requireNonNull(timeUnit);
       return this;
     }
 
@@ -105,12 +111,6 @@ final class DefaultTaskScheduler implements TaskScheduler {
         throw new IllegalArgumentException("Initial delay can not be negative");
       }
       this.initialDelay = initialDelay;
-      return this;
-    }
-
-    @Override
-    public Builder timeUnit(TimeUnit timeUnit) {
-      this.timeUnit = requireNonNull(timeUnit);
       return this;
     }
 

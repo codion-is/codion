@@ -46,8 +46,7 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
     this.updateScheduler = TaskScheduler.builder(this::doUpdateStatistics)
-            .interval(updateRate)
-            .timeUnit(TimeUnit.SECONDS)
+            .interval(updateRate, TimeUnit.SECONDS)
             .start();
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
   }

@@ -16,7 +16,7 @@ public class TaskSchedulerTest {
 
   @Test
   void constructorNegativeInterval() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(-1, TimeUnit.SECONDS));
   }
 
   @Test
@@ -31,7 +31,7 @@ public class TaskSchedulerTest {
 
   @Test
   void constructorNullTimUnit() {
-    assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).timeUnit(null));
+    assertThrows(NullPointerException.class, () -> TaskScheduler.builder(runnable).interval(1, null));
   }
 
   @Test
@@ -41,14 +41,15 @@ public class TaskSchedulerTest {
 
   @Test
   void setIntervalNegative() {
-    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1).timeUnit(TimeUnit.SECONDS).build().setInterval(-1));
+    assertThrows(IllegalArgumentException.class, () -> TaskScheduler.builder(runnable).interval(1, TimeUnit.SECONDS).build().setInterval(-1));
   }
 
   @Test
   void startStop() throws InterruptedException {
     AtomicInteger counter = new AtomicInteger();
-    TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1).timeUnit(TimeUnit.MILLISECONDS).build();
+    TaskScheduler scheduler = TaskScheduler.builder(counter::incrementAndGet).interval(1, TimeUnit.MILLISECONDS).build();
     assertFalse(scheduler.isRunning());
+    assertEquals(TimeUnit.MILLISECONDS, scheduler.timeUnit());
     scheduler.start();
     assertTrue(scheduler.isRunning());
     Thread.sleep(100);

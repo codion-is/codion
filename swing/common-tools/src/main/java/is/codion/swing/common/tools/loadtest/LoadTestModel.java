@@ -140,8 +140,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.scenarioChooser = createScenarioChooser();
     initializeChartModels();
     this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
-            .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS)
-            .timeUnit(TimeUnit.MILLISECONDS)
+            .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .build();
     bindEvents();
   }

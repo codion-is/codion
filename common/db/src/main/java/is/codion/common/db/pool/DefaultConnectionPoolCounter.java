@@ -30,8 +30,7 @@ final class DefaultConnectionPoolCounter {
   private volatile boolean collectSnapshotStatistics = false;
   private volatile boolean collectCheckOutTimes = false;
   private final TaskScheduler snapshotStatisticsCollector = TaskScheduler.builder(new StatisticsCollector())
-          .interval(SNAPSHOT_COLLECTION_INTERVAL_MS)
-          .timeUnit(TimeUnit.MILLISECONDS)
+          .interval(SNAPSHOT_COLLECTION_INTERVAL_MS, TimeUnit.MILLISECONDS)
           .build();
 
   private final AtomicLong resetDate = new AtomicLong(creationDate);

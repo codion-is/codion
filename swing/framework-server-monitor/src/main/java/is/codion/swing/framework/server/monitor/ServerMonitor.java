@@ -135,8 +135,7 @@ public final class ServerMonitor {
     this.databaseMonitor = new DatabaseMonitor(server, updateRate);
     this.clientMonitor = new ClientUserMonitor(server, updateRate);
     this.updateScheduler = TaskScheduler.builder(this::updateStatistics)
-            .interval(updateRate)
-            .timeUnit(TimeUnit.SECONDS)
+            .interval(updateRate, TimeUnit.SECONDS)
             .start();
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
     refreshDomainList();
