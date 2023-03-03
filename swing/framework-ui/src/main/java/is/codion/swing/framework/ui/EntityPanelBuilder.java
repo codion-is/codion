@@ -45,6 +45,7 @@ import static java.util.Objects.requireNonNull;
 final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
+  private static final String ENABLED = "enabled";
 
   private final EntityType entityType;
   private final SwingEntityModel.Builder modelBuilder;
@@ -291,7 +292,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
                                      EventDataListener<List<Entity>> onInsert) {
     requireNonNull(component);
     State enabledState = State.state(component.isEnabled());
-    component.addPropertyChangeListener("enabled", changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
+    component.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
 
     Control control = Control.builder(new InsertEntityCommand(component, connectionProvider, onInsert))
             .smallIcon(FrameworkIcons.instance().add())
@@ -313,7 +314,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     State enabledState = State.state(comboBox.isEnabled() && !comboBox.getModel().isSelectionEmpty());
-    comboBox.addPropertyChangeListener("enabled", changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
+    comboBox.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
     comboBox.getModel().addSelectionListener(selected -> enabledState.set(selected != null));
 
     return createUpdateControl(new UpdateEntityCommand(comboBox), comboBox, enabledState);
@@ -327,7 +328,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     State enabledState = State.state(searchField.isEnabled() && !searchField.model().getSelectedEntities().isEmpty());
-    searchField.addPropertyChangeListener("enabled", changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
+    searchField.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
     searchField.model().addSelectedEntitiesListener(selected -> enabledState.set(!selected.isEmpty()));
 
     return createUpdateControl(new UpdateEntityCommand(searchField), searchField, enabledState);

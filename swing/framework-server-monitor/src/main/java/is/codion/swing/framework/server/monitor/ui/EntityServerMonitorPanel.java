@@ -208,13 +208,6 @@ public final class EntityServerMonitorPanel extends JPanel {
             .build();
   }
 
-  private Control createExitControl() {
-    return Control.builder(() -> System.exit(0))
-            .caption("Exit")
-            .mnemonic('X')
-            .build();
-  }
-
   private void setUpdateInterval() {
     NumberField<Integer> field = Components.integerField()
             .initialValue(5)
@@ -239,6 +232,13 @@ public final class EntityServerMonitorPanel extends JPanel {
         monitorFrame.setAlwaysOnTop(alwaysOnTop);
       }
     });
+  }
+
+  private static Control createExitControl() {
+    return Control.builder(() -> System.exit(0))
+            .caption("Exit")
+            .mnemonic('X')
+            .build();
   }
 
   private static JPanel createSouthPanel() {
