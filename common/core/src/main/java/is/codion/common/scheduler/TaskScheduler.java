@@ -41,6 +41,11 @@ public interface TaskScheduler {
   void setInterval(int interval);
 
   /**
+   * @return the time unit
+   */
+  TimeUnit timeUnit();
+
+  /**
    * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
    * @return this TaskScheduler instance
    */
@@ -71,21 +76,16 @@ public interface TaskScheduler {
 
     /**
      * @param interval the interval
+     * @param timeUnit the time unit
      * @return this builder instance
      */
-    Builder interval(int interval);
+    Builder interval(int interval, TimeUnit timeUnit);
 
     /**
      * @param initialDelay the initial start delay, used on restarts as well
      * @return this builder instance
      */
     Builder initialDelay(int initialDelay);
-
-    /**
-     * @param timeUnit the time unit
-     * @return this builder instance
-     */
-    Builder timeUnit(TimeUnit timeUnit);
 
     /**
      * @param threadFactory the thread factory to use

@@ -84,9 +84,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.serverName(),
               configuration.serverPort(), ZonedDateTime.now());
       this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
-              .interval(configuration.connectionMaintenanceInterval())
+              .interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
               .initialDelay(configuration.connectionMaintenanceInterval())
-              .timeUnit(TimeUnit.MILLISECONDS)
               .start();
       configureSerializationWhitelist(configuration);
       startAuxiliaryServers(configuration.auxiliaryServerFactoryClassNames());

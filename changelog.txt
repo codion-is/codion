@@ -8758,3 +8758,4 @@
   EntityPanelBuilder.UpdateEntityCommand bug fixed, no longer displays error when the user presses OK to update when no values have been modified
   DefaultEntityApplicationBuilder, login dialog title now includes the application version
   User.parse() simplified, javadoc improved
+  TaskScheduler.Builder.timeUnit() removed, timeUnit parameter added to interval(), TaskScheduler.timeUnit() accessor added

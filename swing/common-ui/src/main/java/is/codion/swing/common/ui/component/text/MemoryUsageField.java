@@ -24,8 +24,7 @@ public final class MemoryUsageField extends JTextField {
     setEditable(false);
     setHorizontalAlignment(SwingConstants.CENTER);
     TaskScheduler.builder(() -> SwingUtilities.invokeLater(() -> setText(Memory.memoryUsage())))
-            .interval(updateIntervalMilliseconds)
-            .timeUnit(TimeUnit.MILLISECONDS)
+            .interval(updateIntervalMilliseconds, TimeUnit.MILLISECONDS)
             .start();
   }
 }
