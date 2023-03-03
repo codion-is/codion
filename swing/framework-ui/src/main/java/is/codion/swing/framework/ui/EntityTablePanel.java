@@ -1807,16 +1807,16 @@ public class EntityTablePanel extends JPanel {
         }
       });
     }
-  }
 
-  private static JPanel createRefreshingProgressPanel() {
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setIndeterminate(true);
-    progressBar.setString(MESSAGES.getString("refreshing"));
-    progressBar.setStringPainted(true);
+    private static JPanel createRefreshingProgressPanel() {
+      JProgressBar progressBar = new JProgressBar();
+      progressBar.setIndeterminate(true);
+      progressBar.setString(MESSAGES.getString(REFRESHING));
+      progressBar.setStringPainted(true);
 
-    return Components.panel(new GridBagLayout())
-            .add(progressBar, createHorizontalFillConstraints())
-            .build();
+      return Components.panel(new GridBagLayout())
+              .add(progressBar, createHorizontalFillConstraints())
+              .build();
+    }
   }
 }

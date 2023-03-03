@@ -34,9 +34,8 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
 
   /**
    * Instantiates the panel and initializes it
-   * @throws Exception in case of an exception
    */
-  protected final void testInitializePanel() throws Exception {
+  protected final void testInitializePanel() {
     EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     entityApplicationBuilder(modelClass, panelClass)
