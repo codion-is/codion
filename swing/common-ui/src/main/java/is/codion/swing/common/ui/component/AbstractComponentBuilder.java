@@ -258,7 +258,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B clientProperty(Object key, Object value) {
-    this.clientProperties.put(key, value);
+    this.clientProperties.put(requireNonNull(key), value);
     return (B) this;
   }
 
@@ -306,7 +306,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B onSetVisible(Consumer<C> onSetVisible) {
-    this.onSetVisible = onSetVisible;
+    this.onSetVisible = requireNonNull(onSetVisible);
     return (B) this;
   }
 
@@ -318,7 +318,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
     }
-    this.linkedValue = linkedValue;
+    this.linkedValue = requireNonNull(linkedValue);
     return (B) this;
   }
 
@@ -330,7 +330,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (linkedValue != null) {
       throw new IllegalStateException("linkedValue has already been set");
     }
-    this.linkedValueObserver = linkedValueObserver;
+    this.linkedValueObserver = requireNonNull(linkedValueObserver);
     return (B) this;
   }
 
@@ -347,7 +347,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B onBuild(Consumer<C> onBuild) {
-    buildEvent.addDataListener(onBuild::accept);
+    buildEvent.addDataListener(requireNonNull(onBuild)::accept);
     return (B) this;
   }
 
