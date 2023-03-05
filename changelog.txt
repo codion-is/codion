@@ -8759,3 +8759,4 @@
   DefaultEntityApplicationBuilder, login dialog title now includes the application version
   User.parse() simplified, javadoc improved
   TaskScheduler.Builder.timeUnit() removed, timeUnit parameter added to interval(), TaskScheduler.timeUnit() accessor added
+  AbstractComponentBuilder, added a few null checks
