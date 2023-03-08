@@ -10,7 +10,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -414,32 +413,25 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
     @Override
     public User login() {
-      User user = Dialogs.loginDialog()
+      return Dialogs.loginDialog()
               .defaultUser(defaultLoginUser)
               .validator(loginValidator)
               .title(loginDialogTitle())
               .icon(applicationIcon)
               .southComponent(loginPanelSouthComponentSupplier.get())
               .show();
-      if (nullOrEmpty(user.username())) {
-        throw new IllegalArgumentException(FrameworkMessages.emptyUsername());
-      }
-
-      return user;
     }
 
     private String loginDialogTitle() {
-      StringBuilder builder = new StringBuilder(Messages.login());
-      if (applicationName.isEmpty()) {
-        return builder.toString();
-      }
-
-      builder.append(DASH).append(applicationName);
-      if (applicationVersion != null) {
+      StringBuilder builder = new StringBuilder(applicationName);
+      if (builder.length() > 0 && applicationVersion != null) {
         builder.append(DASH).append(applicationVersion);
       }
+      if (builder.length() > 0) {
+        builder.append(DASH);
+      }
 
-      return builder.toString();
+      return builder.append(Messages.login()).toString();
     }
   }
 
