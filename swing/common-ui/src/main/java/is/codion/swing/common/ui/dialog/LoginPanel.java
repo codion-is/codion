@@ -52,11 +52,15 @@ final class LoginPanel extends JPanel {
   private final ImageIcon icon;
   private final Control okControl;
   private final Control cancelControl;
+  private final Value<String> usernameValue = Value.value();
+  private final State usernameSpecifiedState;
   private final State validatingState = State.state();
 
   LoginPanel(User defaultUser, LoginValidator loginValidator, ImageIcon icon, JComponent southComponent, int inputFieldColumns) {
-    this.usernameField = Components.textField()
-            .initialValue(defaultUser == null ? "" : defaultUser.username())
+    this.usernameValue.set(defaultUser == null ? null : defaultUser.username());
+    this.usernameSpecifiedState = State.state(usernameValue.isNotNull());
+    this.usernameValue.addDataListener(username -> usernameSpecifiedState.set(username != null));
+    this.usernameField = Components.textField(usernameValue)
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .enabledState(validatingState.reversedObserver())
@@ -70,7 +74,7 @@ final class LoginPanel extends JPanel {
     this.okControl = Control.builder(this::onOkPressed)
             .caption(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabledState(validatingState.reversedObserver())
+            .enabledState(State.and(usernameSpecifiedState, validatingState.reversedObserver()))
             .build();
     this.cancelControl = Control.builder(this::closeDialog)
             .caption(Messages.cancel())

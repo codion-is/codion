@@ -43,7 +43,6 @@ public final class FrameworkMessages {
   private static final String ADD_TIP = "add_tip";
   private static final String SAVE = "save";
   private static final String SAVE_MNEMONIC = "save_mnemonic";
-  private static final String EMPTY_USERNAME = "empty_username";
   private static final String CONFIRM_EXIT = "confirm_exit";
   private static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
   private static final String UNSAVED_DATA_WARNING = "unsaved_data_warning";
@@ -282,13 +281,6 @@ public final class FrameworkMessages {
    */
   public static char saveMnemonic() {
     return get(SAVE_MNEMONIC).charAt(0);
-  }
-
-  /**
-   * @return empty username
-   */
-  public static String emptyUsername() {
-    return get(EMPTY_USERNAME);
   }
 
   /**
