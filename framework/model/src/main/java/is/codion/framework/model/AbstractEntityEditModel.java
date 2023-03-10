@@ -162,7 +162,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.validator = validator;
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
-    configurePersistentValues();
+    configurePersistentForeignKeyValues();
     bindEventsInternal();
     doSetEntity(defaultEntity(Property::defaultValue));
   }
@@ -971,10 +971,19 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
-  private void configurePersistentValues() {
+  private void configurePersistentForeignKeyValues() {
     if (EntityEditModel.PERSIST_FOREIGN_KEY_VALUES.get()) {
-      entityDefinition().foreignKeys().forEach(foreignKey -> setPersistValue(foreignKey, true));
+      entityDefinition().foreignKeys().forEach(foreignKey -> setPersistValue(foreignKey, isForeignKeyWritable(foreignKey)));
     }
+  }
+
+  private boolean isForeignKeyWritable(ForeignKey foreignKey) {
+    return foreignKey.references().stream()
+            .map(ForeignKey.Reference::attribute)
+            .map(entityDefinition()::property)
+            .filter(ColumnProperty.class::isInstance)
+            .map(ColumnProperty.class::cast)
+            .anyMatch(columnProperty -> !columnProperty.isReadOnly());
   }
 
   /**

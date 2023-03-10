@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 public interface EntityEditModel {
 
   /**
-   * Specifies whether foreign key values should persist when the UI is cleared or be reset to null<br>
+   * Specifies whether writable foreign key values should persist when the model is cleared or be initialized to null<br>
    * Value type: Boolean<br>
    * Default value: true
    */
