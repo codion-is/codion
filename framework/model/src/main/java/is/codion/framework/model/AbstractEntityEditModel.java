@@ -514,7 +514,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    LOG.debug("{} - update {}", this, entities);
 
     List<Entity> modifiedEntities = modifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
@@ -523,6 +522,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities)));
     validate(modifiedEntities);
+    //entity.toString() could potentially cause NullPointerException if null-validation
+    //has not been performed, hence why this logging is performed after validation
+    LOG.debug("{} - update {}", this, entities);
 
     List<Entity> updatedEntities = doUpdate(modifiedEntities);
     int index = updatedEntities.indexOf(entity());
@@ -925,9 +927,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private List<Entity> insertEntities(List<Entity> entities) throws DatabaseException, ValidationException {
-    LOG.debug("{} - insert {}", this, entities.toString());
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
+    //entity.toString() could potentially cause NullPointerException if null-validation
+    //has not been performed, hence why this logging is performed after validation
+    LOG.debug("{} - insert {}", this, entities);
 
     return connectionProvider.connection().select(doInsert(entities));
   }

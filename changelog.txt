@@ -8724,3 +8724,4 @@
   AbstractComponentBuilder, added a few null checks
   LoginPanel, OK control now enabled only when a username has been specified
   DefaultEntityApplicationBuilder, login dialog title changed, Login caption moved last
+  AbstractEntityEditModel, logging of insert and update entities postponed until after validation, due to potential NullPointerException in toString()
