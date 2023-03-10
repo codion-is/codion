@@ -549,18 +549,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void derivedProperties() {
-    EntityEditModel editModel = new AbstractEntityEditModel(Detail.TYPE, employeeEditModel.connectionProvider()) {
-      @Override
-      public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
-      @Override
-      public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
-      @Override
-      public StateObserver refreshingObserver() {
-        return null;
-      }
-      @Override
-      public void addRefreshingObserver(StateObserver refreshingObserver) {}
-    };
+    EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
 
     AtomicInteger derivedCounter = new AtomicInteger();
     AtomicInteger derivedEditCounter = new AtomicInteger();
@@ -582,6 +571,12 @@ public final class AbstractEntityEditModelTest {
     editModel.setEntity(detail);
     assertEquals(3, derivedCounter.get());
     assertEquals(2, derivedEditCounter.get());
+  }
+
+  @Test
+  void persistWritableForeignKey() {
+    EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
+    assertFalse(editModel.isPersistValue(Detail.MASTER_FK));//not writable
   }
 
   @Test
@@ -682,6 +677,27 @@ public final class AbstractEntityEditModelTest {
       catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
+    }
+
+    @Override
+    public void addForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+
+    @Override
+    public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
+
+    @Override
+    public StateObserver refreshingObserver() {
+      return null;
+    }
+
+    @Override
+    public void addRefreshingObserver(StateObserver refreshingObserver) {}
+  }
+
+  private static final class DetailEditModel extends AbstractEntityEditModel {
+
+    private DetailEditModel(EntityConnectionProvider connectionProvider) {
+      super(Detail.TYPE, connectionProvider);
     }
 
     @Override

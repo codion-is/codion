@@ -95,7 +95,8 @@ public final class TestDomain extends DefaultDomain {
                     .description("A boolean property"),
             columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.name())
                     .defaultValue(true),
-            columnProperty(Detail.MASTER_ID),
+            columnProperty(Detail.MASTER_ID)
+                    .readOnly(true),//AbstractEntityEditModelTest.persistWritableForeignKey()
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.name()),
             denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
             denormalizedViewProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.name(), Detail.MASTER_FK, Master.CODE),
