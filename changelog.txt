@@ -8726,3 +8726,5 @@
   DefaultEntityApplicationBuilder, login dialog title changed, Login caption moved last
   AbstractEntityEditModel, logging of insert and update entities postponed until after validation, due to potential NullPointerException in toString()
   AbstractEntityEditModel.configurePersistentValues() renamed to configurePersistentForeignKeyValues(), now only writable foreign keys are set as persistent by default
+  EntityDefinition.denormalizedProperties(entityAttribute), getForeignKeys(referencedEntityType) and foreignKeyProperties(columnAttribute) now return Collection instead of List
+  DefaultEntityDefinition, minor refactoring + code cleanup

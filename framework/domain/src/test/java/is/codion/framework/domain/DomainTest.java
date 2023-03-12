@@ -355,7 +355,7 @@ public class DomainTest {
   @Test
   void foreignKeys() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
-    List<ForeignKey> foreignKeys = definition.foreignKeys(Employee.TYPE);
+    Collection<ForeignKey> foreignKeys = definition.foreignKeys(Employee.TYPE);
     assertEquals(0, foreignKeys.size());
     foreignKeys = definition.foreignKeys(Master.TYPE);
     assertEquals(2, foreignKeys.size());
@@ -398,10 +398,10 @@ public class DomainTest {
 
   @Test
   void denormalizedProperties() {
-    List<DenormalizedProperty<?>> denormalized =
+    Collection<DenormalizedProperty<?>> denormalized =
             entities.definition(Detail.TYPE).denormalizedProperties(Detail.MASTER_FK);
     assertFalse(denormalized.isEmpty());
-    assertEquals(Detail.MASTER_CODE_DENORM, denormalized.get(0).attribute());
+    assertEquals(Detail.MASTER_CODE_DENORM, denormalized.iterator().next().attribute());
   }
 
   @Test
