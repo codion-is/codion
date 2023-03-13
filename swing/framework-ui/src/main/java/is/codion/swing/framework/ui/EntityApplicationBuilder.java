@@ -71,16 +71,16 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   EntityApplicationBuilder<M, P> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory);
 
   /**
-   * @param modelFactory the application model factory
+   * @param applicationModelFactory the application model factory
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M, P> modelFactory(Function<EntityConnectionProvider, M> modelFactory);
+  EntityApplicationBuilder<M, P> applicationModelFactory(Function<EntityConnectionProvider, M> applicationModelFactory);
 
   /**
-   * @param panelFactory the application panel factory
+   * @param applicationPanelFactory the application panel factory
    * @return this Builder instance
    */
-  EntityApplicationBuilder<M, P> panelFactory(Function<M, P> panelFactory);
+  EntityApplicationBuilder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
 
   /**
    * @param loginProvider provides a way for a user to login
@@ -179,13 +179,13 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   /**
    * @param <M> the application model type
    * @param <P> the application panel type
-   * @param modelClass the application model class
-   * @param panelClass the application panel class
+   * @param applicationModelClass the application model class
+   * @param applicationPanelClass the application panel class
    * @return a {@link EntityApplicationBuilder}
    */
   static <M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> EntityApplicationBuilder<M, P> entityApplicationBuilder(
-          Class<M> modelClass, Class<P> panelClass) {
-    return new DefaultEntityApplicationBuilder<>(modelClass, panelClass);
+          Class<M> applicationModelClass, Class<P> applicationPanelClass) {
+    return new DefaultEntityApplicationBuilder<>(applicationModelClass, applicationPanelClass);
   }
 
   /**

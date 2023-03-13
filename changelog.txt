@@ -8729,3 +8729,4 @@
   EntityDefinition.denormalizedProperties(entityAttribute), getForeignKeys(referencedEntityType) and foreignKeyProperties(columnAttribute) now return Collection instead of List
   DefaultEntityDefinition, minor refactoring + code cleanup
   DefaultEntityApplicationBuilder.start() now starts the application on the EDT
+  EntityApplicationBuilder.modelFactory() and panelFactory() renamed applicationModelFactory() and applicationPanelFactory() respectively
