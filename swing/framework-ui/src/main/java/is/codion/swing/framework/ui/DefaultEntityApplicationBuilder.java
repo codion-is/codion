@@ -79,6 +79,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Version applicationVersion;
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
+  private Runnable beforeApplicationStarted;
   private EventDataListener<P> onApplicationStarted;
 
   private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
@@ -222,6 +223,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
+  public EntityApplicationBuilder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted) {
+    this.beforeApplicationStarted = beforeApplicationStarted;
+    return this;
+  }
+
+  @Override
   public EntityApplicationBuilder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted) {
     this.onApplicationStarted = onApplicationStarted;
     return this;
@@ -248,7 +255,9 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       Utilities.setFontSizePercentage(fontSizePercentage);
       FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
     }
-
+    if (beforeApplicationStarted != null) {
+      beforeApplicationStarted.run();
+    }
     EntityConnectionProvider connectionProvider = connectionProvider(user());
     long initializationStarted = System.currentTimeMillis();
     if (displayStartupDialog) {

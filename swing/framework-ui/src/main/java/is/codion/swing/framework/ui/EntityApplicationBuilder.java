@@ -116,6 +116,14 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   EntityApplicationBuilder<M, P> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier);
 
   /**
+   * Runs before the application is started, but after Look and Feel initialization.
+   * Throw {@link is.codion.common.model.CancelException} in order to cancel the application startup.
+   * @param beforeApplicationStarted run before the application is started
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted);
+
+  /**
    * @param onApplicationStarted called after a successful application start
    * @return this Builder instance
    */
