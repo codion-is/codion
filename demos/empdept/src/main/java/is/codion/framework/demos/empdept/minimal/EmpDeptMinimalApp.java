@@ -20,7 +20,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.time.LocalDate;
@@ -276,10 +275,10 @@ public final class EmpDeptMinimalApp {
     System.setProperty("java.security.policy", "resources/config/codion_demos.policy");
 
     //we create an instance of our application panel and start it
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
+    entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
             .applicationName("EmpDept Minimal")
             .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
   }
 }

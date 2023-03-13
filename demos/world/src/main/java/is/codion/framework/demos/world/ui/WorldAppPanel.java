@@ -20,7 +20,6 @@ import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.util.Arrays;
 import java.util.List;
@@ -66,12 +65,12 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
+    entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
             .applicationVersion(WorldAppModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
-            .start());
+            .start();
   }
 }

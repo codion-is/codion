@@ -30,7 +30,6 @@ import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
-import javax.swing.SwingUtilities;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.util.Arrays;
@@ -156,12 +155,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(ChinookApplicationModel.class, ChinookAppPanel.class)
+    entityApplicationBuilder(ChinookApplicationModel.class, ChinookAppPanel.class)
             .applicationName("Chinook")
             .applicationVersion(ChinookApplicationModel.VERSION)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
 
   }
 }

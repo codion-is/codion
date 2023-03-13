@@ -172,7 +172,7 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   EntityApplicationBuilder<M, P> loginRequired(boolean loginRequired);
 
   /**
-   * Starts the application, should be called on the Event Dispatch Thread
+   * Starts the application on the Event Dispatch Thread.
    */
   void start();
 

@@ -8728,3 +8728,4 @@
   AbstractEntityEditModel.configurePersistentValues() renamed to configurePersistentForeignKeyValues(), now only writable foreign keys are set as persistent by default
   EntityDefinition.denormalizedProperties(entityAttribute), getForeignKeys(referencedEntityType) and foreignKeyProperties(columnAttribute) now return Collection instead of List
   DefaultEntityDefinition, minor refactoring + code cleanup
+  DefaultEntityApplicationBuilder.start() now starts the application on the EDT

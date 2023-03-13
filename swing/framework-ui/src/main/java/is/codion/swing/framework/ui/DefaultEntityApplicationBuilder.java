@@ -235,6 +235,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   @Override
   public void start() {
+    SwingUtilities.invokeLater(this::startApplication);
+  }
+
+  private void startApplication() {
     LOG.debug("{} application starting", applicationName);
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     setVersionProperty();

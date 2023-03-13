@@ -22,7 +22,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
-import javax.swing.SwingUtilities;
 import java.util.List;
 import java.util.Locale;
 
@@ -85,10 +84,10 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
+    entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
   }
 }

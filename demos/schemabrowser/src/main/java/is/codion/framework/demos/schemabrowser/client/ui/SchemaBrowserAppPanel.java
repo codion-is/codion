@@ -18,7 +18,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import java.util.Collections;
 import java.util.List;
 
@@ -60,11 +59,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+    entityApplicationBuilder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
             .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
   }
 
   public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
