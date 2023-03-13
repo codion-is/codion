@@ -108,13 +108,13 @@ public interface EntityDefinition {
   boolean isKeyGenerated();
 
   /**
-   * @return the default order by clause to use when querying entities of this type
+   * @return the default order by clause to use when querying entities of this type, null if none is available
    */
   OrderBy orderBy();
 
   /**
    * @return the group by clause to use when querying entities of this type,
-   * without the "group by" keywords
+   * without the "group by" keywords, null if no group by clause is available
    */
   String groupByClause();
 
@@ -235,10 +235,10 @@ public interface EntityDefinition {
   /**
    * Retrieves the denormalized properties which values originate from the entity referenced by the given entity attribute
    * @param entityAttribute the entity attribute
-   * @return a list containing the denormalized properties which values originate from the entity
-   * referenced by the given foreign key property
+   * @return a collection containing the denormalized properties which values originate from the entity
+   * referenced by the given entity attribute, an empty collection in case none exist
    */
-  List<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute);
+  Collection<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
    * @param attribute the attribute
@@ -336,9 +336,9 @@ public interface EntityDefinition {
   /**
    * Returns the foreign keys referencing entities of the given type
    * @param referencedEntityType the referenced entity type
-   * @return a List containing the foreign keys, an empty list is returned in case no foreign keys are found
+   * @return the foreign keys referencing the given entity type, an empty collection is returned in case no foreign keys are found
    */
-  List<ForeignKey> foreignKeys(EntityType referencedEntityType);
+  Collection<ForeignKey> foreignKeys(EntityType referencedEntityType);
 
   /**
    * @param foreignKey the foreign key
@@ -350,9 +350,9 @@ public interface EntityDefinition {
   /**
    * @param columnAttribute the column attribute
    * @param <T> the attribute type
-   * @return the ForeignKeyProperties based on the given column attribute
+   * @return the ForeignKeyProperties based on the given column attribute, an empty collection in case none are found
    */
-  <T> List<ForeignKeyProperty> foreignKeyProperties(Attribute<T> columnAttribute);
+  <T> Collection<ForeignKeyProperty> foreignKeyProperties(Attribute<T> columnAttribute);
 
   /**
    * Returns the background color provider, never null

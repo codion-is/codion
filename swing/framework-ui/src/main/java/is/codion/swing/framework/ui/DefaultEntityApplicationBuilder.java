@@ -59,8 +59,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private static final int DEFAULT_LOGO_SIZE = 68;
   private static final String DASH = " - ";
 
-  private final Class<M> modelClass;
-  private final Class<P> panelClass;
+  private final Class<M> applicationModelClass;
+  private final Class<P> applicationPanelClass;
 
   private final String applicationDefaultUsernameProperty;
   private final String applicationLookAndFeelProperty;
@@ -68,8 +68,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private String applicationName = "";
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
-  private Function<EntityConnectionProvider, M> modelFactory = new DefaultModelFactory();
-  private Function<M, P> panelFactory = new DefaultPanelFactory();
+  private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
+  private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
   private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
@@ -79,6 +79,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private Version applicationVersion;
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
+  private Runnable beforeApplicationStarted;
   private EventDataListener<P> onApplicationStarted;
 
   private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
@@ -91,12 +92,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private User defaultLoginUser;
   private User automaticLoginUser;
 
-  DefaultEntityApplicationBuilder(Class<M> modelClass, Class<P> panelClass) {
-    this.panelClass = requireNonNull(panelClass);
-    this.modelClass = requireNonNull(modelClass);
-    this.applicationDefaultUsernameProperty = EntityApplicationPanel.DEFAULT_USERNAME_PROPERTY + "#" + panelClass.getSimpleName();
-    this.applicationLookAndFeelProperty = EntityApplicationPanel.LOOK_AND_FEEL_PROPERTY + "#" + panelClass.getSimpleName();
-    this.applicationFontSizeProperty = EntityApplicationPanel.FONT_SIZE_PROPERTY + "#" + panelClass.getSimpleName();
+  DefaultEntityApplicationBuilder(Class<M> applicationModelClass, Class<P> applicationPanelClass) {
+    this.applicationModelClass = requireNonNull(applicationModelClass);
+    this.applicationPanelClass = requireNonNull(applicationPanelClass);
+    this.applicationDefaultUsernameProperty = EntityApplicationPanel.DEFAULT_USERNAME_PROPERTY + "#" + applicationPanelClass.getSimpleName();
+    this.applicationLookAndFeelProperty = EntityApplicationPanel.LOOK_AND_FEEL_PROPERTY + "#" + applicationPanelClass.getSimpleName();
+    this.applicationFontSizeProperty = EntityApplicationPanel.FONT_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
     this.defaultLoginUser = User.user(getUserPreference(applicationDefaultUsernameProperty,
             EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name")));
   }
@@ -132,14 +133,14 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
-  public EntityApplicationBuilder<M, P> modelFactory(Function<EntityConnectionProvider, M> modelFactory) {
-    this.modelFactory = requireNonNull(modelFactory);
+  public EntityApplicationBuilder<M, P> applicationModelFactory(Function<EntityConnectionProvider, M> applicationModelFactory) {
+    this.applicationModelFactory = requireNonNull(applicationModelFactory);
     return this;
   }
 
   @Override
-  public EntityApplicationBuilder<M, P> panelFactory(Function<M, P> panelFactory) {
-    this.panelFactory = requireNonNull(panelFactory);
+  public EntityApplicationBuilder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory) {
+    this.applicationPanelFactory = requireNonNull(applicationPanelFactory);
     return this;
   }
 
@@ -222,6 +223,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
+  public EntityApplicationBuilder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted) {
+    this.beforeApplicationStarted = beforeApplicationStarted;
+    return this;
+  }
+
+  @Override
   public EntityApplicationBuilder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted) {
     this.onApplicationStarted = onApplicationStarted;
     return this;
@@ -235,6 +242,10 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   @Override
   public void start() {
+    SwingUtilities.invokeLater(this::startApplication);
+  }
+
+  private void startApplication() {
     LOG.debug("{} application starting", applicationName);
     Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     setVersionProperty();
@@ -244,7 +255,9 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       Utilities.setFontSizePercentage(fontSizePercentage);
       FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
     }
-
+    if (beforeApplicationStarted != null) {
+      beforeApplicationStarted.run();
+    }
     EntityConnectionProvider connectionProvider = connectionProvider(user());
     long initializationStarted = System.currentTimeMillis();
     if (displayStartupDialog) {
@@ -324,15 +337,15 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
       return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
     }
 
-    return initializeConnectionProvider(user, panelClass.getName(), applicationVersion);
+    return initializeConnectionProvider(user, applicationPanelClass.getName(), applicationVersion);
   }
 
   private M applicationModel(EntityConnectionProvider connectionProvider) {
-    return modelFactory.apply(connectionProvider);
+    return applicationModelFactory.apply(connectionProvider);
   }
 
   private P applicationPanel(M applicationModel) {
-    return panelFactory.apply(applicationModel);
+    return applicationPanelFactory.apply(applicationModel);
   }
 
   private JFrame applicationFrame(P applicationPanel) {
@@ -441,7 +454,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
     @Override
     public void validate(User user) throws Exception {
-      connectionProvider = initializeConnectionProvider(user, panelClass.getName(), applicationVersion);
+      connectionProvider = initializeConnectionProvider(user, applicationPanelClass.getName(), applicationVersion);
       try {
         connectionProvider.connection();//throws exception if the server is not reachable
       }
@@ -453,12 +466,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private class DefaultModelFactory implements Function<EntityConnectionProvider, M> {
+  private class DefaultApplicationModelFactory implements Function<EntityConnectionProvider, M> {
 
     @Override
     public M apply(EntityConnectionProvider connectionProvider) {
       try {
-        return modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
+        return applicationModelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
       catch (RuntimeException e) {
         throw e;
@@ -469,12 +482,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private class DefaultPanelFactory implements Function<M, P> {
+  private class DefaultApplicationPanelFactory implements Function<M, P> {
 
     @Override
     public P apply(M model) {
       try {
-        return panelClass.getConstructor(model.getClass()).newInstance(model);
+        return applicationPanelClass.getConstructor(model.getClass()).newInstance(model);
       }
       catch (RuntimeException e) {
         throw e;

@@ -21,7 +21,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
-import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Color;
 import java.util.List;
@@ -168,10 +167,10 @@ public final class ClientTutorial {
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
+    entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")
             .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
   }
 }

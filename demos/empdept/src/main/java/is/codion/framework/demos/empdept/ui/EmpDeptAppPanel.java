@@ -19,7 +19,6 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
-import javax.swing.SwingUtilities;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 import java.nio.charset.Charset;
@@ -85,11 +84,11 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
   public static void main(String[] args) {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
-    SwingUtilities.invokeLater(() -> entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
+    entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
-            .start());
+            .start();
   }
   // end::main[]
 }

@@ -588,14 +588,9 @@ final class DefaultEntity implements Entity, Serializable {
    * @param referencedEntity the foreign key entity containing the values to denormalize
    */
   private void setDenormalizedValues(ForeignKeyProperty foreignKeyProperty, Entity referencedEntity) {
-    List<DenormalizedProperty<?>> denormalizedProperties =
-            definition.denormalizedProperties(foreignKeyProperty.attribute());
-    if (denormalizedProperties != null) {
-      for (int i = 0; i < denormalizedProperties.size(); i++) {
-        DenormalizedProperty<Object> denormalizedProperty = (DenormalizedProperty<Object>) denormalizedProperties.get(i);
-        put(denormalizedProperty, referencedEntity == null ? null :
+    for (DenormalizedProperty<?> denormalizedProperty : definition.denormalizedProperties(foreignKeyProperty.attribute())) {
+      put(((DenormalizedProperty<Object>) denormalizedProperty), referencedEntity == null ? null :
                 referencedEntity.get(denormalizedProperty.denormalizedAttribute()));
-      }
     }
   }
 
