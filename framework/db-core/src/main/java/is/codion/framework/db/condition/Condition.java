@@ -140,8 +140,8 @@ public interface Condition {
     if (firstKey.attributes().size() > 1) {
       Map<Attribute<?>, Attribute<?>> attributeMap = firstKey.attributes().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
-      List<Map<Attribute<?>, Object>> valueMaps = new ArrayList<>(keys.size());
-      keys.forEach(key -> {
+      List<Map<Attribute<?>, ?>> valueMaps = new ArrayList<>(keys.size());
+      keys.forEach(key -> {//can't use stream and toMap() due to possible null values
         Map<Attribute<?>, Object> valueMap = new HashMap<>();
         key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
         valueMaps.add(valueMap);

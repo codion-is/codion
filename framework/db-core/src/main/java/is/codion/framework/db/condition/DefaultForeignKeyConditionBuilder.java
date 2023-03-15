@@ -103,7 +103,7 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   static Condition compositeKeyCondition(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
-                                         List<Map<Attribute<?>, Object>> valueMaps) {
+                                         List<Map<Attribute<?>, ?>> valueMaps) {
     if (valueMaps.size() == 1) {
       return compositeCondition(attributes, operator, valueMaps.get(0));
     }
@@ -114,14 +114,14 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   static Condition compositeCondition(Map<Attribute<?>, Attribute<?>> attributes,
-                                      Operator operator, Map<Attribute<?>, Object> valueMap) {
+                                      Operator operator, Map<Attribute<?>, ?> valueMap) {
     return Condition.combination(AND, attributes.entrySet().stream()
             .map(entry -> condition(entry.getKey(), operator, valueMap.get(entry.getValue())))
             .collect(toList()));
   }
 
   private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
-                                               List<Map<Attribute<?>, Object>> valueMaps) {
+                                               List<Map<Attribute<?>, ?>> valueMaps) {
     if (foreignKey.references().size() > 1) {
       return compositeKeyCondition(attributeMap(foreignKey), operator, valueMaps);
     }
