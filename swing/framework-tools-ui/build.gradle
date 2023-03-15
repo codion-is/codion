@@ -13,7 +13,7 @@ dependencies {
     runtimeOnly (libs.h2)
 
 //    runtimeOnly project(':codion-dbms-postgresql')
-//    runtimeOnly 'org.postgresql:postgresql:42.3.8'
+//    runtimeOnly 'org.postgresql:postgresql:42.5.4'
 
 //    runtimeOnly project(':codion-dbms-oracle')
 //    runtimeOnly ('com.oracle.database.jdbc:ojdbc8:21.7.0.0') { transitive false }
