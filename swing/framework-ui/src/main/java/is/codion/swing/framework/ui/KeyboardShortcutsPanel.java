@@ -114,10 +114,10 @@ final class KeyboardShortcutsPanel extends JPanel {
 
   private static JPanel searchField() {
     return panel(gridLayout(0, 2))
-            .addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + UP))
-            .addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + UP))
-            .addAll(new JLabel(MESSAGES.getString("find_previous")), new JLabel(DOWN))
-            .addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_previous")), new JLabel(UP))
+            .addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + UP))
             .addAll(new JLabel(MESSAGES.getString("move_focus_to_table")), new JLabel("Esc"))
             .border(createTitledBorder(MESSAGES.getString("table_search_field")))
             .build();
