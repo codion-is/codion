@@ -8731,3 +8731,4 @@
   DefaultEntityApplicationBuilder.start() now starts the application on the EDT
   EntityApplicationBuilder.modelFactory() and panelFactory() renamed applicationModelFactory() and applicationPanelFactory() respectively
   EntityApplicationBuilder.beforeApplicationStarted() added
+  ItemComboBoxBuilder.itemListener() added
