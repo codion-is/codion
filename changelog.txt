@@ -8773,3 +8773,4 @@
   EntityDependenciesPanel added, now with key bindings for navigating between tabs
   KeyboardShortcutsPanel, client help, table search field keyboard shorcuts fixed, next means down, previous means up
   EntityTablePanel.displayDependenciesDialog() moved to EntityDependenciesPanel
+  ConnectionProvider.connection(), empty username check removed since a User can not be instantiated without a username
