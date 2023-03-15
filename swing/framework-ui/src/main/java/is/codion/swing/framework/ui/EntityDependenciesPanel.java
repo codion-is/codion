@@ -3,28 +3,38 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.dialog.Dialogs;
 
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
 import java.util.Map;
+import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
 import static java.awt.event.KeyEvent.VK_RIGHT;
+import static java.util.Objects.requireNonNull;
 
 /**
  * Displays the given dependencies in a tabbed pane.
+ * @see #displayDependenciesDialog(Collection, EntityConnectionProvider, JComponent)
  */
-final class EntityDependenciesPanel extends JPanel {
+public final class EntityDependenciesPanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityDependenciesPanel.class.getName());
 
   private final JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
 
@@ -45,6 +55,55 @@ final class EntityDependenciesPanel extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(Control.control(new NavigateLeftCommand()))
             .enable(tabPane);
+  }
+
+  /**
+   * Displays a dialog containing the entities depending on the given entities.
+   * @param entities the entities for which to display dependencies
+   * @param connectionProvider the connection provider
+   * @param dialogParent the dialog parent
+   */
+  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+                                               JComponent dialogParent) {
+    displayDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependencies"));
+  }
+
+  /**
+   * Shows a dialog containing the entities depending on the given entities.
+   * @param entities the entities for which to display dependencies
+   * @param connectionProvider the connection provider
+   * @param dialogParent the dialog parent
+   * @param noDependenciesMessage the message to show in case of no dependencies
+   */
+  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
+                                               JComponent dialogParent, String noDependenciesMessage) {
+    requireNonNull(entities);
+    requireNonNull(connectionProvider);
+    requireNonNull(dialogParent);
+    try {
+      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.connection().selectDependencies(entities);
+      displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
+    }
+    catch (DatabaseException e) {
+      Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
+    }
+  }
+
+  private static void displayDependenciesDialog(Map<EntityType, Collection<Entity>> dependencies,
+                                                EntityConnectionProvider connectionProvider,
+                                                JComponent dialogParent, String noDependenciesMessage) {
+    if (dependencies.isEmpty()) {
+      JOptionPane.showMessageDialog(dialogParent, noDependenciesMessage,
+              MESSAGES.getString("no_dependencies_title"), JOptionPane.INFORMATION_MESSAGE);
+    }
+    else {
+      EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
+      Dialogs.componentDialog(dependenciesPanel)
+              .owner(dialogParent)
+              .title(MESSAGES.getString("dependencies_found"))
+              .onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
+              .show();
+    }
   }
 
   void requestSelectedTableFocus() {
