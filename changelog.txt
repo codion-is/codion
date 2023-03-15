@@ -8770,3 +8770,6 @@
   EntityApplicationBuilder.modelFactory() and panelFactory() renamed applicationModelFactory() and applicationPanelFactory() respectively
   EntityApplicationBuilder.beforeApplicationStarted() added
   ItemComboBoxBuilder.itemListener() added
+  EntityDependenciesPanel added, now with key bindings for navigating between tabs
+  KeyboardShortcutsPanel, client help, table search field keyboard shorcuts fixed, next means down, previous means up
+  EntityTablePanel.displayDependenciesDialog() moved to EntityDependenciesPanel

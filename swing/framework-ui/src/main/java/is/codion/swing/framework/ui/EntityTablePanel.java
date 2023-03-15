@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyValue;
@@ -53,7 +52,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
@@ -770,11 +768,8 @@ public class EntityTablePanel extends JPanel {
 
     WaitCursor.show(this);
     try {
-      Map<EntityType, Collection<Entity>> dependencies =
-              tableModel.connectionProvider().connection()
-                      .selectDependencies(tableModel.selectionModel().getSelectedItems());
-      displayDependenciesDialog(dependencies, tableModel.connectionProvider(), this,
-              MESSAGES.getString("no_dependent_records"));
+      EntityDependenciesPanel.displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(),
+              tableModel.connectionProvider(), this);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -831,7 +826,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     requireNonNull(entities);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      displayDependenciesDialog(entities, tableModel.connectionProvider(),
+      EntityDependenciesPanel.displayDependenciesDialog(entities, tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -872,38 +867,6 @@ public class EntityTablePanel extends JPanel {
       focusOwner = EntityTablePanel.this;
     }
     Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
-  }
-
-  /**
-   * Shows a dialog containing the entities depending on the given entities.
-   * @param entities the entities for which to display dependencies
-   * @param connectionProvider the connection provider
-   * @param dialogParent the dialog parent
-   */
-  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-                                               JComponent dialogParent) {
-    displayDependenciesDialog(entities, connectionProvider, dialogParent, MESSAGES.getString("no_dependent_records"));
-  }
-
-  /**
-   * Shows a dialog containing the entities depending on the given entities.
-   * @param entities the entities for which to display dependencies
-   * @param connectionProvider the connection provider
-   * @param dialogParent the dialog parent
-   * @param noDependenciesMessage the message to show in case of no dependencies
-   */
-  public static void displayDependenciesDialog(Collection<Entity> entities, EntityConnectionProvider connectionProvider,
-                                               JComponent dialogParent, String noDependenciesMessage) {
-    requireNonNull(entities);
-    requireNonNull(connectionProvider);
-    requireNonNull(dialogParent);
-    try {
-      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.connection().selectDependencies(entities);
-      displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
-    }
-    catch (DatabaseException e) {
-      Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
-    }
   }
 
   /**
@@ -1683,21 +1646,6 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  private static void displayDependenciesDialog(Map<EntityType, Collection<Entity>> dependencies,
-                                                EntityConnectionProvider connectionProvider,
-                                                JComponent dialogParent, String noDependenciesMessage) {
-    if (dependencies.isEmpty()) {
-      JOptionPane.showMessageDialog(dialogParent, noDependenciesMessage,
-              MESSAGES.getString("none_found"), JOptionPane.INFORMATION_MESSAGE);
-    }
-    else {
-      Dialogs.componentDialog(createDependenciesPanel(dependencies, connectionProvider))
-              .owner(dialogParent)
-              .title(MESSAGES.getString("dependent_records_found"))
-              .show();
-    }
-  }
-
   private static Map<FilteredTableColumn<Attribute<?>>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
     Map<FilteredTableColumn<Attribute<?>>, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
@@ -1714,22 +1662,6 @@ public class EntityTablePanel extends JPanel {
     scrollPane.setVisible(false);
 
     return scrollPane;
-  }
-
-  private static JPanel createDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies,
-                                                EntityConnectionProvider connectionProvider) {
-    JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
-    for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
-      Collection<Entity> dependentEntities = entry.getValue();
-      if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
-                createEntityTablePanel(dependentEntities, connectionProvider));
-      }
-    }
-
-    return Components.panel(new BorderLayout())
-            .add(tabPane, BorderLayout.CENTER)
-            .build();
   }
 
   private static Point popupLocation(JTable table) {

@@ -45,6 +45,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .add(calendar())
             .add(entityField())
             .add(textInput())
+            .add(viewDependencies())
             .scrollPane()
             .verticalUnitIncrement(VERTICAL_UNIT_INCREMENT)
             .build(this::add);
@@ -113,10 +114,10 @@ final class KeyboardShortcutsPanel extends JPanel {
 
   private static JPanel searchField() {
     return panel(gridLayout(0, 2))
-            .addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + UP))
-            .addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + UP))
-            .addAll(new JLabel(MESSAGES.getString("find_previous")), new JLabel(DOWN))
-            .addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_next")), new JLabel(ENTER + OR + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_and_select_next")), new JLabel(SHIFT + ENTER + OR + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("find_previous")), new JLabel(UP))
+            .addAll(new JLabel(MESSAGES.getString("find_and_select_previous")), new JLabel(SHIFT + UP))
             .addAll(new JLabel(MESSAGES.getString("move_focus_to_table")), new JLabel("Esc"))
             .border(createTitledBorder(MESSAGES.getString("table_search_field")))
             .build();
@@ -153,6 +154,13 @@ final class KeyboardShortcutsPanel extends JPanel {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("display_input_dialog")), new JLabel(INSERT))
             .border(createTitledBorder(MESSAGES.getString("text_input_panel")))
+            .build();
+  }
+
+  private static JPanel viewDependencies() {
+    return panel(gridLayout(0, 2))
+            .addAll(new JLabel(MESSAGES.getString("navigate_left_right")), new JLabel(CTRL + ALT + LEFT_RIGHT))
+            .border(createTitledBorder(FrameworkMessages.viewDependencies()))
             .build();
   }
 }
