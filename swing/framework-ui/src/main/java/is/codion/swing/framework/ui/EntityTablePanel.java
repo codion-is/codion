@@ -53,7 +53,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
 import javax.swing.ScrollPaneConstants;
@@ -1691,9 +1690,11 @@ public class EntityTablePanel extends JPanel {
               MESSAGES.getString("none_found"), JOptionPane.INFORMATION_MESSAGE);
     }
     else {
-      Dialogs.componentDialog(createDependenciesPanel(dependencies, connectionProvider))
+      EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
+      Dialogs.componentDialog(dependenciesPanel)
               .owner(dialogParent)
               .title(MESSAGES.getString("dependent_records_found"))
+              .onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
               .show();
     }
   }
@@ -1714,22 +1715,6 @@ public class EntityTablePanel extends JPanel {
     scrollPane.setVisible(false);
 
     return scrollPane;
-  }
-
-  private static JPanel createDependenciesPanel(Map<EntityType, Collection<Entity>> dependencies,
-                                                EntityConnectionProvider connectionProvider) {
-    JTabbedPane tabPane = new JTabbedPane(SwingConstants.TOP);
-    for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
-      Collection<Entity> dependentEntities = entry.getValue();
-      if (!dependentEntities.isEmpty()) {
-        tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
-                createEntityTablePanel(dependentEntities, connectionProvider));
-      }
-    }
-
-    return Components.panel(new BorderLayout())
-            .add(tabPane, BorderLayout.CENTER)
-            .build();
   }
 
   private static Point popupLocation(JTable table) {

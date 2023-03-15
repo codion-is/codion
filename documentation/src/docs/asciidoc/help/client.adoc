@@ -188,3 +188,10 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 
 |kbd:[Insert]|Display multi-line input dialog
 |===
+
+[cols="1,3"]
+|===
+2+|View dependencies
+
+|kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Navigate left/right
+|===
