@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import javax.swing.ComboBoxEditor;
 import javax.swing.JComboBox;
 import javax.swing.ListCellRenderer;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,6 +29,7 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
         implements ItemComboBoxBuilder<T> {
 
   private final List<Item<T>> items;
+  private final List<ItemListener> itemListeners = new ArrayList<>();
 
   private ItemComboBoxModel<T> comboBoxModel;
   private Comparator<Item<T>> sortComparator;
@@ -127,10 +129,22 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
   }
 
   @Override
+  public ItemComboBoxBuilder<T> itemListener(ItemListener itemListener) {
+    this.itemListeners.add(requireNonNull(itemListener));
+    return this;
+  }
+
+  @Override
   protected JComboBox<Item<T>> createComponent() {
     ItemComboBoxModel<T> itemComboBoxModel = initializeItemComboBoxModel();
     JComboBox<Item<T>> comboBox = new FocusableComboBox<>(itemComboBoxModel);
     Completion.enable(comboBox, completionMode);
+    if (renderer != null) {
+      comboBox.setRenderer(renderer);
+    }
+    if (editor != null) {
+      comboBox.setEditor(editor);
+    }
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(itemComboBoxModel, false));
     }
@@ -140,14 +154,9 @@ final class DefaultItemComboBoxBuilder<T> extends AbstractComponentBuilder<T, JC
     if (maximumRowCount >= 0) {
       comboBox.setMaximumRowCount(maximumRowCount);
     }
+    itemListeners.forEach(comboBox::addItemListener);
     if (Utilities.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
-    }
-    if (renderer != null) {
-      comboBox.setRenderer(renderer);
-    }
-    if (editor != null) {
-      comboBox.setEditor(editor);
     }
     comboBox.addPropertyChangeListener("editor", new CopyEditorActionsListener());
 

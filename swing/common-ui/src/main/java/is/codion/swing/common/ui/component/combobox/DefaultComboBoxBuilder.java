@@ -112,17 +112,20 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   @Override
   protected final C createComponent() {
     C comboBox = createComboBox();
-    if (renderer != null) {
-      comboBox.setRenderer(renderer);
-    }
-    if (editor != null) {
-      comboBox.setEditor(editor);
-    }
     if (editable) {
       comboBox.setEditable(true);
     }
     if (!editable && editor == null) {
       Completion.enable(comboBox, completionMode);
+    }
+    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
+      ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
+    }
+    if (renderer != null) {
+      comboBox.setRenderer(renderer);
+    }
+    if (editor != null) {
+      comboBox.setEditor(editor);
     }
     if (mouseWheelScrolling) {
       comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBoxModel, false));
@@ -134,9 +137,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
       comboBox.setMaximumRowCount(maximumRowCount);
     }
     itemListeners.forEach(comboBox::addItemListener);
-    if (comboBoxModel instanceof FilteredComboBoxModel && comboBox.isEditable() && moveCaretToFrontOnSelection) {
-      ((FilteredComboBoxModel<T>) comboBoxModel).addSelectionListener(new MoveCaretListener<>(comboBox));
-    }
     if (Utilities.isSystemOrCrossPlatformLookAndFeelEnabled()) {
       new SteppedComboBoxUI(comboBox, popupWidth);
     }
