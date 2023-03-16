@@ -8774,3 +8774,7 @@
   KeyboardShortcutsPanel, client help, table search field keyboard shorcuts fixed, next means down, previous means up
   EntityTablePanel.displayDependenciesDialog() moved to EntityDependenciesPanel
   ConnectionProvider.connection(), empty username check removed since a User can not be instantiated without a username
+  EntityApplicationPanel.initializePanel() now final
+  EntityApplicationPanel.createSupportEntityPanelBuilders() now returns a Collection instead of a List
+  EntityApplicationPanel.createApplicationTabPane() bug fixed, no longer tries to initialize a non existing tab component
+  EntityApplicationPanel.applicationTabPane() now returns Optional

@@ -166,7 +166,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final String applicationFontSizeProperty;
 
   private final M applicationModel;
-  private final List<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
+  private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
 
   private JTabbedPane applicationTabPane;
@@ -269,7 +269,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   @Override
   public final Optional<HierarchyPanel> selectedChildPanel() {
-    if (applicationTabPane != null) {//initializeUI() may have been overridden
+    if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {//initializeUI() may have been overridden
       return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
     }
 
@@ -278,7 +278,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   @Override
   public final void selectChildPanel(HierarchyPanel childPanel) {
-    if (applicationTabPane != null) {//initializeUI() may have been overridden
+    if (applicationTabPane != null && applicationTabPane.indexOfComponent((JComponent) childPanel) != -1) {//initializeUI() may have been overridden
       applicationTabPane.setSelectedComponent((JComponent) childPanel);
     }
   }
@@ -376,7 +376,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Initializes this panel and marks is as initialized, subsequent calls have no effect.
    */
-  public void initializePanel() {
+  public final void initializePanel() {
     if (!panelInitialized) {
       try {
         this.entityPanels.addAll(createEntityPanels());
@@ -408,12 +408,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Returns the JTabbedPane used by the default UI, note that this can be null if the default UI
-   * initialization has been overridden. Returns null until the panel has been intialized via {@link #initializePanel()}.
-   * @return the default application tab pane
+   * Returns the JTabbedPane used by the default UI, an empty Optional in case the default UI
+   * initialization has been overridden. Returns an empty Optional until the panel has been intialized via {@link #initializePanel()}.
+   * @return the default application tab pane or an empty Optional if none is available
    */
-  protected final JTabbedPane applicationTabPane() {
-    return applicationTabPane;
+  protected final Optional<JTabbedPane> applicationTabPane() {
+    return Optional.ofNullable(applicationTabPane);
   }
 
   /**
@@ -746,11 +746,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Initializes this EntityApplicationPanel
+   * Initializes this EntityApplicationPanel UI
    */
   protected void initializeUI() {
-    setLayout(new BorderLayout());
     applicationTabPane = createApplicationTabPane();
+    setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     add(Components.panel(borderLayout())
             .add(applicationTabPane, BorderLayout.CENTER)
@@ -767,16 +767,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Creates the {@link EntityPanel}s to include in this application panel.
-   * @return a List containing the {@link EntityPanel}s to include in this application panel
+   * Creates the {@link EntityPanel}s to include in this application panel, in the order they should appear in the tab pane.
+   * Returns an empty list in case this panel contains no entity panels or has a custom UI.
+   * @return a List containing the {@link EntityPanel}s to include in this application panel or an empty list in case of no entity panels.
    */
   protected abstract List<EntityPanel> createEntityPanels();
 
   /**
-   * Returns a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
-   * @return a list of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   * Returns a Collection of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
+   * Returns an empty Collection in case of no support table panels.
+   * @return a Collection of {@link EntityPanel.Builder} instances to use to populate the Support Table menu.
    */
-  protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
+  protected Collection<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     return Collections.emptyList();
   }
 
@@ -840,7 +842,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private JTabbedPane createApplicationTabPane() {
     JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
     tabbedPane.setFocusable(false);
-    tabbedPane.addChangeListener(e -> ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel());
+    tabbedPane.addChangeListener(e -> {
+      if (tabbedPane.getTabCount() > 0) {
+        ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
+      }
+    });
     for (EntityPanel entityPanel : entityPanels) {
       tabbedPane.addTab(entityPanel.getCaption(), null, entityPanel, entityPanel.getDescription());
       if (entityPanel.editPanel() != null) {
