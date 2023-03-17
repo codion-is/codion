@@ -146,7 +146,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Transaction already open");
     }
 
-    logAccess("beginTransaction");
+    logEntry("beginTransaction");
     transactionOpen = true;
     logExit("beginTransaction", null);
   }
@@ -160,7 +160,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      logAccess("rollbackTransaction");
+      logEntry("rollbackTransaction");
       connection.rollback();
     }
     catch (SQLException e) {
@@ -181,7 +181,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
         throw new IllegalStateException("Transaction is not open");
       }
 
-      logAccess("commitTransaction");
+      logEntry("commitTransaction");
       connection.commit();
     }
     catch (SQLException e) {
@@ -207,7 +207,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
     SQLException exception = null;
     try {
-      logAccess("commit");
+      logEntry("commit");
       connection.commit();
     }
     catch (SQLException e) {
@@ -227,7 +227,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
 
-    logAccess("rollback");
+    logEntry("rollback");
     SQLException exception = null;
     try {
       connection.rollback();
@@ -248,7 +248,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     try {
-      logAccess("select", sql);
+      logEntry("select", sql);
       statement = connection.createStatement();
       resultSet = statement.executeQuery(sql);
 
@@ -265,21 +265,21 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private void logAccess(String method) {
+  private void logEntry(String method) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logAccess(method);
+      methodLogger.enter(method);
     }
   }
 
-  private void logAccess(String method, Object argument) {
+  private void logEntry(String method, Object argument) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logAccess(method, argument);
+      methodLogger.enter(method, argument);
     }
   }
 
   private MethodLogger.Entry logExit(String method, Throwable exception) {
     if (methodLogger != null && methodLogger.isEnabled()) {
-      return methodLogger.logExit(method, exception);
+      return methodLogger.exit(method, exception);
     }
 
     return null;

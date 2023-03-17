@@ -671,7 +671,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(functionType, "functionType");
     DatabaseException exception = null;
     try {
-      logAccess("executeFunction: " + functionType, argument);
+      logEntry("executeFunction: " + functionType, argument);
       synchronized (connection) {
         return functionType.execute((C) this, domain.function(functionType), argument);
       }
@@ -696,7 +696,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(procedureType, "procedureType");
     DatabaseException exception = null;
     try {
-      logAccess("executeProcedure: " + procedureType, argument);
+      logEntry("executeProcedure: " + procedureType, argument);
       synchronized (connection) {
         procedureType.execute((C) this, domain.procedure(procedureType), argument);
       }
@@ -717,7 +717,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     Exception exception = null;
     synchronized (connection) {
       try {
-        logAccess("fillReport: " + reportType, reportParameters);
+        logEntry("fillReport: " + reportType, reportParameters);
         R result = reportType.fillReport(connection.getConnection(), domain.report(reportType), reportParameters);
         commitIfTransactionIsNotOpen();
 
@@ -759,7 +759,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Exception exception = null;
       PreparedStatement statement = null;
       try {
-        logAccess("writeBlob", updateQuery);
+        logEntry("writeBlob", updateQuery);
         statement = prepareStatement(updateQuery);
         setParameterValues(statement, statementProperties, statementValues);
         statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
@@ -803,7 +803,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .build();
     synchronized (connection) {
       try {
-        logAccess("readBlob", selectQuery);
+        logEntry("readBlob", selectQuery);
         statement = prepareStatement(selectQuery);
         setParameterValues(statement, statementProperties, condition.values());
 
@@ -972,7 +972,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       if (isWithinFetchDepthLimit(currentForeignKeyFetchDepth, conditionFetchDepthLimit)
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
-          logAccess("setForeignKeys", foreignKeyProperty);
+          logEntry("setForeignKeys", foreignKeyProperty);
           List<Key> referencedKeys = new ArrayList<>(Entity.getReferencedKeys(entities, foreignKey));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
@@ -1064,7 +1064,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                List<?> statementValues) throws SQLException {
     SQLException exception = null;
     try {
-      logAccess(EXECUTE_STATEMENT, statementValues);
+      logEntry(EXECUTE_STATEMENT, statementValues);
       setParameterValues(statement, statementProperties, statementValues);
 
       return statement.executeUpdate();
@@ -1088,7 +1088,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     List<?> statementValues = condition.values();
     List<ColumnProperty<?>> statementProperties = entityDefinition.columnProperties(condition.attributes());
     try {
-      logAccess(EXECUTE_STATEMENT, statementValues);
+      logEntry(EXECUTE_STATEMENT, statementValues);
       setParameterValues(statement, statementProperties, statementValues);
 
       return statement.executeQuery();
@@ -1117,7 +1117,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private PreparedStatement prepareStatement(String query, boolean returnGeneratedKeys,
                                              int queryTimeout) throws SQLException {
     try {
-      logAccess("prepareStatement", query);
+      logEntry("prepareStatement", query);
       PreparedStatement statement = returnGeneratedKeys ?
               connection.getConnection().prepareStatement(query, Statement.RETURN_GENERATED_KEYS) :
               connection.getConnection().prepareStatement(query);
@@ -1149,7 +1149,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException packingException = null;
     List<Entity> result = new ArrayList<>();
     try {
-      logAccess("packResult");
+      logEntry("packResult");
       while (iterator.hasNext()) {
         result.add(iterator.next());
       }
@@ -1239,21 +1239,21 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void logExit(String method, Throwable exception, String exitMessage) {
     MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logExit(method, exception, exitMessage);
+      methodLogger.exit(method, exception, exitMessage);
     }
   }
 
-  private void logAccess(String method) {
+  private void logEntry(String method) {
     MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logAccess(method);
+      methodLogger.enter(method);
     }
   }
 
-  private void logAccess(String method, Object argument) {
+  private void logEntry(String method, Object argument) {
     MethodLogger methodLogger = connection.getMethodLogger();
     if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.logAccess(method, argument);
+      methodLogger.enter(method, argument);
     }
   }
 
