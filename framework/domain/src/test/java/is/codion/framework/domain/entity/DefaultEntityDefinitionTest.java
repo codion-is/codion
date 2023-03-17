@@ -122,7 +122,6 @@ public class DefaultEntityDefinitionTest {
     assertTrue(defaultSelectAttributes.contains(Detail.MASTER_VIA_CODE_FK));
     assertTrue(defaultSelectAttributes.contains(Detail.INT_VALUE_LIST));
     assertFalse(defaultSelectAttributes.contains(Detail.INT_DERIVED));
-    assertTrue(defaultSelectAttributes.contains(Detail.MASTER_CODE_DENORM));
     assertFalse(defaultSelectAttributes.contains(Detail.BYTES));
   }
 

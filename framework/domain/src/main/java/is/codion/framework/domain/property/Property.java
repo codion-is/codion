@@ -583,37 +583,6 @@ public interface Property<T> {
   }
 
   /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from an entity attribute.
-   * @param attribute the attribute to base this property on
-   * @param entityAttribute the entity attribute owning the attribute which value to mirror
-   * @param denormalizedAttribute the attribute from which this attribute should get its value
-   * @param <T> the attribute value type
-   * @param <B> the builder type
-   * @return a new {@link ColumnProperty.Builder}
-   */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute,
-                                                                                                       Attribute<Entity> entityAttribute,
-                                                                                                       Attribute<T> denormalizedAttribute) {
-    return denormalizedProperty(attribute, null, entityAttribute, denormalizedAttribute);
-  }
-
-  /**
-   * Creates a new {@link ColumnProperty.Builder} instance, which value should mirror the value from an entity attribute.
-   * @param attribute the attribute to base this property on
-   * @param caption the property caption
-   * @param entityAttribute the entity attribute owning the attribute which value to mirror
-   * @param denormalizedAttribute the attribute from which this attribute should get its value
-   * @param <T> the attribute value type
-   * @param <B> the builder type
-   * @return a new {@link ColumnProperty.Builder}
-   */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
-                                                                                                       Attribute<Entity> entityAttribute,
-                                                                                                       Attribute<T> denormalizedAttribute) {
-    return new DefaultDenormalizedProperty.DefaultDenormalizedPropertyBuilder<>(attribute, caption, entityAttribute, denormalizedAttribute);
-  }
-
-  /**
    * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
    * @param attribute the attribute
    * @param subquery the sql query

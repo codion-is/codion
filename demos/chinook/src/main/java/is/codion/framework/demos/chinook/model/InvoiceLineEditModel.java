@@ -10,6 +10,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -23,6 +24,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
   public InvoiceLineEditModel(EntityConnectionProvider connectionProvider) {
     super(InvoiceLine.TYPE, connectionProvider);
+    addEditListener(InvoiceLine.TRACK_FK, this::setUnitPrice);
   }
 
   void addTotalsUpdatedListener(EventDataListener<Collection<Entity>> listener) {
@@ -78,6 +80,10 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
       connection.rollbackTransaction();
       throw e;
     }
+  }
+
+  private void setUnitPrice(Entity track) {
+    put(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE));
   }
 
   private void updateTotals(List<Entity> entities, EntityConnection connection) throws DatabaseException {
