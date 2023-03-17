@@ -8,7 +8,6 @@ import is.codion.common.Text;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.BlobProperty;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
@@ -198,11 +197,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    */
   private final EntityProperties entityProperties;
 
-  /**
-   * True if this entity type contains one or more denormalized properties.
-   */
-  private final boolean hasDenormalizedProperties;
-
   private DefaultEntityDefinition(DefaultBuilder builder) {
     this.domainName = builder.properties.entityType.domainName();
     this.entityType = builder.properties.entityType;
@@ -226,7 +220,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.selectQuery = builder.selectQuery;
     this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
     this.entityProperties = builder.properties;
-    this.hasDenormalizedProperties = !entityProperties.denormalizedProperties.isEmpty();
     this.groupByClause = createGroupByClause();
     resolveEntityClassMethods();
   }
@@ -567,21 +560,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean hasDenormalizedProperties() {
-    return hasDenormalizedProperties;
-  }
-
-  @Override
-  public boolean hasDenormalizedProperties(Attribute<Entity> entityAttribute) {
-    return hasDenormalizedProperties && entityProperties.denormalizedProperties.containsKey(requireNonNull(entityAttribute));
-  }
-
-  @Override
-  public Collection<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute) {
-    return entityProperties.denormalizedProperties.getOrDefault(requireNonNull(entityAttribute), emptyList());
-  }
-
-  @Override
   public String toString() {
     return entityType.name();
   }
@@ -814,7 +792,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Set<Attribute<?>> foreignKeyColumnAttributes = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
-    private final Map<Attribute<Entity>, Collection<DenormalizedProperty<?>>> denormalizedProperties;
     private final List<Attribute<?>> defaultSelectAttributes;
 
     private final int serializationVersion;
@@ -837,7 +814,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.columnPropertyForeignKeyProperties = unmodifiableMap(columnPropertyForeignKeyProperties());
       this.derivedAttributes = unmodifiableMap(derivedAttributes());
       this.transientProperties = unmodifiableList(transientProperties());
-      this.denormalizedProperties = unmodifiableMap(denormalizedProperties());
       this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
       this.serializationVersion = createSerializationVersion();
     }
@@ -922,18 +898,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .filter(property -> property.attribute().isByteArray())
               .filter(property -> !(property instanceof BlobProperty) || !((BlobProperty) property).isEagerlyLoaded())
               .collect(toList());
-    }
-
-    private Map<Attribute<Entity>, List<DenormalizedProperty<?>>> denormalizedProperties() {
-      Map<Attribute<Entity>, List<DenormalizedProperty<?>>> denormalizedPropertyMap = new HashMap<>(properties.size());
-      properties.stream()
-              .filter(DenormalizedProperty.class::isInstance)
-              .map(DenormalizedProperty.class::cast)
-              .forEach(denormalizedProperty ->
-                      denormalizedPropertyMap.computeIfAbsent(denormalizedProperty.entityAttribute(), attribute ->
-                              new ArrayList<>()).add(denormalizedProperty));
-
-      return denormalizedPropertyMap;
     }
 
     private List<Attribute<?>> defaultSelectAttributes() {

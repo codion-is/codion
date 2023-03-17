@@ -17,28 +17,28 @@ import static java.util.stream.Collectors.joining;
 public interface MethodLogger {
 
   /**
-   * @param method the method being accessed
+   * @param method the method being entered
    */
-  void logAccess(String method);
+  void enter(String method);
 
   /**
-   * @param method the method being accessed
+   * @param method the method being entered
    * @param argument the method argument, can be an Object, a collection or an array
    */
-  void logAccess(String method, Object argument);
+  void enter(String method, Object argument);
 
   /**
    * @param method the method being exited
    * @return the Entry
    */
-  Entry logExit(String method);
+  Entry exit(String method);
 
   /**
    * @param method the method being exited
    * @param exception the exception, if any
    * @return the Entry
    */
-  Entry logExit(String method, Throwable exception);
+  Entry exit(String method, Throwable exception);
 
   /**
    * @param method the method being exited
@@ -46,7 +46,7 @@ public interface MethodLogger {
    * @param exitMessage the message to associate with exiting the method
    * @return the Entry, or null if this logger is not enabled
    */
-  Entry logExit(String method, Throwable exception, String exitMessage);
+  Entry exit(String method, Throwable exception, String exitMessage);
 
   /**
    * @return true if this logger is enabled
@@ -108,9 +108,9 @@ public interface MethodLogger {
     boolean isComplete();
 
     /**
-     * @return the method access time
+     * @return the method entry time
      */
-    long accessTime();
+    long enterTime();
 
     /**
      * @return the exit time
@@ -118,9 +118,9 @@ public interface MethodLogger {
     long exitTime();
 
     /**
-     * @return the access message
+     * @return the entry message
      */
-    String accessMessage();
+    String enterMessage();
 
     /**
      * Returns the duration of the method call this entry represents in nanoseconds,

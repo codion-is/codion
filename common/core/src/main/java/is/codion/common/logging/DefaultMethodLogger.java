@@ -40,31 +40,31 @@ final class DefaultMethodLogger implements MethodLogger {
   }
 
   @Override
-  public synchronized void logAccess(String method) {
+  public synchronized void enter(String method) {
     if (enabled) {
       callStack.push(new DefaultEntry(method, null));
     }
   }
 
   @Override
-  public synchronized void logAccess(String method, Object argument) {
+  public synchronized void enter(String method, Object argument) {
     if (enabled) {
       callStack.push(new DefaultEntry(method, argumentToString.argumentToString(method, argument)));
     }
   }
 
   @Override
-  public Entry logExit(String method) {
-    return logExit(method, null);
+  public Entry exit(String method) {
+    return exit(method, null);
   }
 
   @Override
-  public Entry logExit(String method, Throwable exception) {
-    return logExit(method, exception, null);
+  public Entry exit(String method, Throwable exception) {
+    return exit(method, exception, null);
   }
 
   @Override
-  public synchronized Entry logExit(String method, Throwable exception, String exitMessage) {
+  public synchronized Entry exit(String method, Throwable exception, String exitMessage) {
     if (!enabled) {
       return null;
     }
@@ -119,9 +119,9 @@ final class DefaultMethodLogger implements MethodLogger {
 
     private final LinkedList<Entry> childEntries = new LinkedList<>();
     private final String method;
-    private final String accessMessage;
-    private final long accessTime;
-    private final long accessTimeNano;
+    private final String enterMessage;
+    private final long enterTime;
+    private final long enterTimeNano;
     private String exitMessage;
     private long exitTime;
     private long exitTimeNano;
@@ -130,24 +130,24 @@ final class DefaultMethodLogger implements MethodLogger {
     /**
      * Creates a new Entry, using the current time
      * @param method the method being logged
-     * @param accessMessage the message associated with accessing the method
+     * @param enterMessage the message associated with entering the method
      */
-    private DefaultEntry(String method, String accessMessage) {
-      this(method, accessMessage, System.currentTimeMillis(), System.nanoTime());
+    private DefaultEntry(String method, String enterMessage) {
+      this(method, enterMessage, System.currentTimeMillis(), System.nanoTime());
     }
 
     /**
      * Creates a new Entry
      * @param method the method being logged
-     * @param accessMessage the message associated with accessing the method
-     * @param accessTime the time to associate with accessing the method
-     * @param accessTimeNano the nano time to associate with accessing the method
+     * @param enterMessage the message associated with entering the method
+     * @param enterTime the time to associate with entering the method
+     * @param enterTimeNano the nano time to associate with entering the method
      */
-    private DefaultEntry(String method, String accessMessage, long accessTime, long accessTimeNano) {
+    private DefaultEntry(String method, String enterMessage, long enterTime, long enterTimeNano) {
       this.method = method;
-      this.accessTime = accessTime;
-      this.accessTimeNano = accessTimeNano;
-      this.accessMessage = accessMessage;
+      this.enterTime = enterTime;
+      this.enterTimeNano = enterTimeNano;
+      this.enterMessage = enterMessage;
     }
 
     @Override
@@ -171,8 +171,8 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public long accessTime() {
-      return accessTime;
+    public long enterTime() {
+      return enterTime;
     }
 
     @Override
@@ -181,13 +181,13 @@ final class DefaultMethodLogger implements MethodLogger {
     }
 
     @Override
-    public String accessMessage() {
-      return accessMessage;
+    public String enterMessage() {
+      return enterMessage;
     }
 
     @Override
     public long duration() {
-      return exitTimeNano - accessTimeNano;
+      return exitTimeNano - enterTimeNano;
     }
 
     @Override
@@ -203,18 +203,18 @@ final class DefaultMethodLogger implements MethodLogger {
 
     @Override
     public String toString(int indentation) {
-      LocalDateTime accessDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(accessTime), TimeZone.getDefault().toZoneId());
+      LocalDateTime enterDateTime = LocalDateTime.ofInstant(Instant.ofEpochMilli(enterTime), TimeZone.getDefault().toZoneId());
       String indentString = indentation > 0 ? Text.padString("", indentation * INDENTATION_CHARACTERS, ' ', Text.Alignment.RIGHT) : "";
-      StringBuilder stringBuilder = new StringBuilder(indentString).append(TIMESTAMP_FORMATTER.format(accessDateTime)).append(" @ ");
+      StringBuilder stringBuilder = new StringBuilder(indentString).append(TIMESTAMP_FORMATTER.format(enterDateTime)).append(" @ ");
       int timestampLength = stringBuilder.length();
       stringBuilder.append(method);
       String padString = Text.padString("", timestampLength, ' ', Text.Alignment.RIGHT);
-      if (!nullOrEmpty(accessMessage)) {
-        if (isMultiLine(accessMessage)) {
-          stringBuilder.append(NEWLINE).append(padString).append(accessMessage.replace(NEWLINE, NEWLINE + padString));
+      if (!nullOrEmpty(enterMessage)) {
+        if (isMultiLine(enterMessage)) {
+          stringBuilder.append(NEWLINE).append(padString).append(enterMessage.replace(NEWLINE, NEWLINE + padString));
         }
         else {
-          stringBuilder.append(" : ").append(accessMessage);
+          stringBuilder.append(" : ").append(enterMessage);
         }
       }
       if (isComplete()) {
@@ -282,8 +282,8 @@ final class DefaultMethodLogger implements MethodLogger {
       return writer.toString();
     }
 
-    private static boolean isMultiLine(String accessMessage) {
-      return accessMessage.contains(NEWLINE);
+    private static boolean isMultiLine(String enterMessage) {
+      return enterMessage.contains(NEWLINE);
     }
   }
 }

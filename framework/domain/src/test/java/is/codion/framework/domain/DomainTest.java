@@ -29,7 +29,6 @@ import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.Property;
 
 import org.junit.jupiter.api.Test;
@@ -388,20 +387,6 @@ public class DomainTest {
     derivedAttributes = definition.derivedAttributes(Detail.INT);
     assertEquals(1, derivedAttributes.size());
     assertTrue(derivedAttributes.contains(Detail.INT_DERIVED));
-  }
-
-  @Test
-  void hasDenormalizedProperties() {
-    assertTrue(entities.definition(Detail.TYPE).hasDenormalizedProperties());
-    assertTrue(entities.definition(Detail.TYPE).hasDenormalizedProperties(Detail.MASTER_FK));
-  }
-
-  @Test
-  void denormalizedProperties() {
-    Collection<DenormalizedProperty<?>> denormalized =
-            entities.definition(Detail.TYPE).denormalizedProperties(Detail.MASTER_FK);
-    assertFalse(denormalized.isEmpty());
-    assertEquals(Detail.MASTER_CODE_DENORM, denormalized.iterator().next().attribute());
   }
 
   @Test

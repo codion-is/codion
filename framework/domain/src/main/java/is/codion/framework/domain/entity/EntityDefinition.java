@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.entity.query.SelectQuery;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
@@ -220,25 +219,6 @@ public interface EntityDefinition {
    * @return the definition of the referenced entity
    */
   EntityDefinition referencedEntityDefinition(ForeignKey foreignKey);
-
-  /**
-   * @return true if this entity type has any denormalized properties
-   */
-  boolean hasDenormalizedProperties();
-
-  /**
-   * @param entityAttribute the entity attribute
-   * @return true if this entity type has any denormalized properties associated with the give entity attribute
-   */
-  boolean hasDenormalizedProperties(Attribute<Entity> entityAttribute);
-
-  /**
-   * Retrieves the denormalized properties which values originate from the entity referenced by the given entity attribute
-   * @param entityAttribute the entity attribute
-   * @return a collection containing the denormalized properties which values originate from the entity
-   * referenced by the given entity attribute, an empty collection in case none exist
-   */
-  Collection<DenormalizedProperty<?>> denormalizedProperties(Attribute<Entity> entityAttribute);
 
   /**
    * @param attribute the attribute

@@ -131,7 +131,6 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey MASTER_VIA_CODE_FK = TYPE.foreignKey("master_via_code_fk", MASTER_CODE_NON_DENORM, Master.CODE);
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
-    Attribute<Integer> MASTER_CODE_DENORM = TYPE.integerAttribute("master_code_denorm");
     Attribute<byte[]> BYTES = TYPE.byteArrayAttribute("bytes");
 
     Optional<Long> getId();
@@ -193,7 +192,6 @@ public final class TestDomain extends DefaultDomain {
 
               return intValue * 10;
             }, Detail.INT),
-            denormalizedProperty(Detail.MASTER_CODE_DENORM, Detail.MASTER_FK, Master.CODE),
             columnProperty(Detail.BYTES)
                     .updatable(false))
             .keyGenerator(queried("select id from dual"))

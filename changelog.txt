@@ -8778,3 +8778,5 @@
   EntityApplicationPanel.createSupportEntityPanelBuilders() now returns a Collection instead of a List
   EntityApplicationPanel.createApplicationTabPane() bug fixed, no longer tries to initialize a non existing tab component
   EntityApplicationPanel.applicationTabPane() now returns Optional
+  MethodLogger.logAccess() renamed enter() and logExit() renamed exit(), related renaming
+  DenormalizedProperty removed, buggy, could cause entities in a select result being modified, such as InvoiceLine.UNITPRICE in Chinook, when the associated Track.UNIPRICE had been raised

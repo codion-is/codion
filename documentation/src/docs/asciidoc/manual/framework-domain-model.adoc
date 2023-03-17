@@ -241,37 +241,6 @@ An entity can include a read-only property value from an entity referenced via f
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedViewProperty]
 ----
 
-=== DenormalizedProperty
-
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/DenormalizedProperty.html[DenormalizedProperty] is used for columns that should automatically get their value from a column in a referenced table. This property automatically gets the value from the attribute in the referenced table when the corresponding reference property value is set.
-
-[source,java]
-----
-denormalizedProperty(Customer.CITY, Customer.ADDRESS_FK, Address.CITY, "City")
-----
-
-NOTE: The property is not kept in sync if the value of the denormalized property is modified in the referenced entity.
-
-[source,java]
-----
-Entities entities = getEntities();
-
-Entity address = entities.entity(Address.TYPE);
-address.put(Address.CITY, "Syracuse");
-
-Entity customer = entities.entity(Customer.TYPE);
-customer.put(Customer.ADDRESS_FK, address);
-
-customer.get(Customer.CITY);//returns "Syracuse"
-
-//NB
-address.put(Address.CITY, "Canastota");
-customer.get(Customer.CITY, still returns "Syracuse"
-
-customer.put(Customer.ADDRESS_FK, address);//set the referenced value again
-customer.get(Customer.CITY);//now this returns "Canastota"
-----
-
 === TransientProperty
 
 {url-javadoc}{framework-domain}/is/codion/framework/domain/property/TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.

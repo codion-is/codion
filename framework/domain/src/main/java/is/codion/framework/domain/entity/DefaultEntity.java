@@ -5,7 +5,6 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Primitives;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DenormalizedProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
@@ -464,7 +463,7 @@ final class DefaultEntity implements Entity, Serializable {
     }
     toString = null;
     if (property instanceof ForeignKeyProperty) {
-      propagateForeignKeyValues((ForeignKeyProperty) property, (Entity) newValue);
+      setForeignKeyValues((ForeignKeyProperty) property, (Entity) newValue);
     }
 
     return previousValue;
@@ -540,13 +539,6 @@ final class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private void propagateForeignKeyValues(ForeignKeyProperty foreignKeyProperty, Entity newValue) {
-    setForeignKeyValues(foreignKeyProperty, newValue);
-    if (definition.hasDenormalizedProperties()) {
-      setDenormalizedValues(foreignKeyProperty, newValue);
-    }
-  }
-
   private <T> void removeInvalidForeignKeyValues(Attribute<T> attribute, T value) {
     for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties(attribute)) {
       Entity foreignKeyEntity = get(foreignKeyProperty);
@@ -579,18 +571,6 @@ final class DefaultEntity implements Entity, Serializable {
         Property<Object> columnProperty = definition.columnProperty((Attribute<Object>) reference.attribute());
         put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedAttribute()));
       }
-    }
-  }
-
-  /**
-   * Sets the denormalized property values
-   * @param foreignKeyProperty the foreign key property from which to denormalize the values
-   * @param referencedEntity the foreign key entity containing the values to denormalize
-   */
-  private void setDenormalizedValues(ForeignKeyProperty foreignKeyProperty, Entity referencedEntity) {
-    for (DenormalizedProperty<?> denormalizedProperty : definition.denormalizedProperties(foreignKeyProperty.attribute())) {
-      put(((DenormalizedProperty<Object>) denormalizedProperty), referencedEntity == null ? null :
-                referencedEntity.get(denormalizedProperty.denormalizedAttribute()));
     }
   }
 

@@ -383,7 +383,6 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isNull(Detail.MASTER_NAME));
     assertFalse(testEntity.getOptional(Detail.MASTER_NAME).isPresent());
     assertTrue(testEntity.isNull(Detail.MASTER_CODE));
-    assertTrue(testEntity.isNull(Detail.MASTER_CODE_DENORM));
 
     testEntity.put(Detail.MASTER_FK, referencedEntityValue);
     assertFalse(testEntity.isNull(Detail.MASTER_ID));
@@ -392,8 +391,6 @@ public class DefaultEntityTest {
     assertEquals(testEntity.get(Detail.MASTER_NAME),
             referencedEntityValue.get(Master.NAME));
     assertEquals(testEntity.get(Detail.MASTER_CODE),
-            referencedEntityValue.get(Master.CODE));
-    assertEquals(testEntity.get(Detail.MASTER_CODE_DENORM),
             referencedEntityValue.get(Master.CODE));
 
     referencedEntityValue.put(Master.CODE, 20);

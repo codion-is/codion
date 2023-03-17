@@ -144,7 +144,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     String methodName = method.getName();
     Exception exception = null;
     try {
-      logAccess(methodName, args);
+      logEntry(methodName, args);
 
       return method.invoke(fetchConnection(), args);
     }
@@ -164,17 +164,17 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
   }
 
-  private void logAccess(String methodName, Object[] args) {
+  private void logEntry(String methodName, Object[] args) {
     MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
     REQUEST_COUNTER.incrementRequestsPerSecondCounter();
     if (methodLogger.isEnabled()) {
-      methodLogger.logAccess(methodName, args);
+      methodLogger.enter(methodName, args);
     }
   }
 
   private void logExit(String methodName, Exception exception) {
     if (methodLogger.isEnabled()) {
-      MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
+      MethodLogger.Entry entry = methodLogger.exit(methodName, exception);
       StringBuilder messageBuilder = new StringBuilder(remoteClient.toString()).append("\n");
       entry.appendTo(messageBuilder);
       LOG.info(messageBuilder.toString());
@@ -230,7 +230,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     DatabaseException exception = null;
     try {
       if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(FETCH_CONNECTION, userDescription);
+        methodLogger.enter(FETCH_CONNECTION, userDescription);
       }
       if (connectionPool != null) {
         return pooledEntityConnection();
@@ -244,7 +244,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
     finally {
       if (methodLogger.isEnabled()) {
-        methodLogger.logExit(FETCH_CONNECTION, exception);
+        methodLogger.exit(FETCH_CONNECTION, exception);
       }
     }
   }
@@ -278,7 +278,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
     try {
       if (methodLogger.isEnabled()) {
-        methodLogger.logAccess(RETURN_CONNECTION, userDescription);
+        methodLogger.enter(RETURN_CONNECTION, userDescription);
       }
       poolEntityConnection.databaseConnection().setMethodLogger(null);
       returnConnectionToPool();
@@ -288,7 +288,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
     finally {
       if (methodLogger.isEnabled()) {
-        methodLogger.logExit(RETURN_CONNECTION, null, null);
+        methodLogger.exit(RETURN_CONNECTION, null, null);
       }
     }
   }
