@@ -89,8 +89,8 @@ distributions {
 }
 applicationDefaultJvmArgs = [
         '-Xmx256m',
-        '--add-modules', 'is.codion.plugin.jasperreports,is.codion.demos.chinook.domain,is.codion.demos.world.domain',
-        '--add-reads', 'is.codion.framework.domain=codion.demos.chinook.domain,codion.demos.world.domain',
+        '--add-modules', 'is.codion.plugin.jasperreports',
+        '--add-reads', 'is.codion.framework.domain=is.codion.demos.chinook.domain,is.codion.demos.world.domain',
         '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml'
 ]
@@ -103,8 +103,7 @@ tasks.register('runServer', ModularJavaExec) {
     mainModule.set(moduleName)
     maxHeapSize = '256m'
     jvmArgs = [
-            //using the automatic module name, since domain jars do not contain module-info
-            '--add-modules', 'is.codion.plugin.jasperreports,is.codion.demos.chinook.domain,is.codion.demos.world.domain',
+            '--add-modules', 'is.codion.plugin.jasperreports',
             '--add-reads', 'is.codion.framework.domain=is.codion.demos.chinook.domain,is.codion.demos.world.domain'
     ]
     systemProperties = [
