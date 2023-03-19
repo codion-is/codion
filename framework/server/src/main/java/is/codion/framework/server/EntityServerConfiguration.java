@@ -110,7 +110,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
   /**
    * @return the domain model classes to load on startup
    */
-  Collection<String> domainModelClassNames();
+  Collection<String> domainClassNames();
 
   /**
    * @return the users for which to initialize connection pools on startup
@@ -164,10 +164,10 @@ public interface EntityServerConfiguration extends ServerConfiguration {
     Builder connectionPoolProvider(String connectionPoolProvider);
 
     /**
-     * @param domainModelClassNames the domain model classes to load on startup
+     * @param domainClassNames the domain model classes to load on startup
      * @return this builder instance
      */
-    Builder domainModelClassNames(Collection<String> domainModelClassNames);
+    Builder domainClassNames(Collection<String> domainClassNames);
 
     /**
      * @param connectionPoolUsers the users for which to initialize connection pools on startup
@@ -209,7 +209,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
             .adminPort(requireNonNull(SERVER_ADMIN_PORT.get(), SERVER_ADMIN_PORT.toString()))
             .connectionLimit(SERVER_CONNECTION_LIMIT.get())
             .database(Database.instance())
-            .domainModelClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
+            .domainClassNames(Text.parseCommaSeparatedValues(SERVER_DOMAIN_MODEL_CLASSES.get()))
             .connectionPoolUsers(Text.parseCommaSeparatedValues(SERVER_CONNECTION_POOL_USERS.get()).stream()
                     .map(User::parse)
                     .collect(toList()))

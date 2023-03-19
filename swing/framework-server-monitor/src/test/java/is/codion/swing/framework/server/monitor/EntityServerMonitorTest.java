@@ -97,7 +97,7 @@ public class EntityServerMonitorTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .connectionPoolUsers(Collections.singletonList(UNIT_TEST_USER))
-            .domainModelClassNames(Collections.singletonList(TestDomain.class.getName()))
+            .domainClassNames(Collections.singletonList(TestDomain.class.getName()))
             .database(Database.instance())
             .sslEnabled(false)
             .build();
