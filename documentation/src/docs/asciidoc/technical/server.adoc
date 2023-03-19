@@ -47,7 +47,7 @@ javax.net.ssl.keyStorePassword=password
 [source]
 ----
 codion.client.trustStore=truststore.jks
-codion.client.trustStore=password
+codion.client.trustStorePassword=password
 ----
 
 === Class loading

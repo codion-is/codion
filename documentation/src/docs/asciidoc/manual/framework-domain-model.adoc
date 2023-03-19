@@ -320,9 +320,9 @@ The framework can select new primary key values from a query.
 ----
 //Using a query returning the new value
 .keyGenerator(queried(
-    "select new_id
-     from store.id_values
-     where table_name = 'store.customer'"));
+    "select new_id " +
+    "from store.id_values " +
+    "where table_name = 'store.customer'"));
 ----
 
 === Increment

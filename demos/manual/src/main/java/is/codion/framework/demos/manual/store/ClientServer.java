@@ -37,7 +37,7 @@ public final class ClientServer {
                     "src/main/sql/create_schema.sql");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-            .domainModelClassNames(singletonList(Store.class.getName()))
+            .domainClassNames(singletonList(Store.class.getName()))
             .database(database)
             .sslEnabled(false)
             .build();
@@ -46,7 +46,6 @@ public final class ClientServer {
 
     RemoteEntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
-                    .serverHostName("localhost")
                     .serverPort(SERVER_PORT)
                     .registryPort(REGISTRY_PORT)
                     .domainClassName(Store.class.getName())
@@ -75,7 +74,7 @@ public final class ClientServer {
     HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
-            .domainModelClassNames(singletonList(Store.class.getName()))
+            .domainClassNames(singletonList(Store.class.getName()))
             .database(database)
             .sslEnabled(false)
             .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))

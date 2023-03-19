@@ -102,7 +102,7 @@ public class RemoteEntityConnectionProviderTest {
             .adminPort(3223)
             .adminUser(User.parse("scott:tiger"))
             .database(Database.instance())
-            .domainModelClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
+            .domainClassNames(singletonList("is.codion.framework.db.rmi.TestDomain"))
             .sslEnabled(true)
             .build();
   }

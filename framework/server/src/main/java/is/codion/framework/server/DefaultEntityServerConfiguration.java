@@ -33,7 +33,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   private final boolean clientLoggingEnabled;
   private final int idleConnectionTimeout;
   private final String connectionPoolProvider;
-  private final Collection<String> domainModelClassNames;
+  private final Collection<String> domainClassNames;
   private final Collection<User> connectionPoolUsers;
   private final Map<String, Integer> clientTypeIdleConnectionTimeouts;
 
@@ -45,7 +45,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     this.clientLoggingEnabled = builder.clientLoggingEnabled;
     this.idleConnectionTimeout = builder.idleConnectionTimeout;
     this.connectionPoolProvider = builder.connectionPoolProvider;
-    this.domainModelClassNames = unmodifiableCollection(builder.domainModelClassNames);
+    this.domainClassNames = unmodifiableCollection(builder.domainClassNames);
     this.connectionPoolUsers = unmodifiableCollection(builder.connectionPoolUsers);
     this.clientTypeIdleConnectionTimeouts = unmodifiableMap(builder.clientTypeIdleConnectionTimeouts);
   }
@@ -136,8 +136,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public Collection<String> domainModelClassNames() {
-    return domainModelClassNames;
+  public Collection<String> domainClassNames() {
+    return domainClassNames;
   }
 
   @Override
@@ -160,7 +160,7 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     private boolean clientLoggingEnabled = false;
     private int idleConnectionTimeout = ServerConfiguration.IDLE_CONNECTION_TIMEOUT.get();
     private String connectionPoolProvider;
-    private final Collection<String> domainModelClassNames = new HashSet<>();
+    private final Collection<String> domainClassNames = new HashSet<>();
     private final Collection<User> connectionPoolUsers = new HashSet<>();
     private final Map<String, Integer> clientTypeIdleConnectionTimeouts = new HashMap<>();
 
@@ -273,8 +273,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
     }
 
     @Override
-    public Builder domainModelClassNames(Collection<String> domainModelClassNames) {
-      this.domainModelClassNames.addAll(requireNonNull(domainModelClassNames));
+    public Builder domainClassNames(Collection<String> domainClassNames) {
+      this.domainClassNames.addAll(requireNonNull(domainClassNames));
       return this;
     }
 

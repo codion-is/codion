@@ -30,7 +30,7 @@ States are instantiated via factory methods in the {url-javadoc}{common-core}/is
 include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=state]
 ----
 
-Any *Action* object can be linked to a *State* object via the *Components.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
+Any *Action* object can be linked to a *State* object via the *Utilities.linkToEnabledState* method, where the action's *enabled* status is updated according to the state.
 
 [source,java,indent=0]
 ----
