@@ -33,8 +33,8 @@ When connecting to the database with a local JDBC connection the DBMS module for
 The most used and tested DBMS modules are:
 
 1. Oracle
-2. H2 Database
-3. PostgreSQL
+2. PostgreSQL
+3. H2 Database
 
 [cols="1,4"]
 |===
