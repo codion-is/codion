@@ -24,9 +24,9 @@ I started developing Codion back in 2004, when the only Swing rich client CRUD f
 
 == License
 
-Codion is dual-licensed under the Open Source https://en.wikipedia.org/wiki/Affero_General_Public_License[AGPLv3] license and a commercial license.
+Codion is licensed under the Open Source https://en.wikipedia.org/wiki/GNU_General_Public_License[GPLv3] license.
 
-*Keep in mind that you can freely use the AGPL licensed version to create closed-source applications for personal or internal company use, since it only kicks in when the application is distributed*.
+*Keep in mind that you can freely use the GPL licensed version to create closed-source applications for personal or internal company use, since the license only kicks in when the application is distributed*.
 
 See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
 
@@ -48,14 +48,14 @@ Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features,
 
 Codion uses a limited set of third-party libraries, a Swing CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
-* *https://www.json.org[org.json:json]* for persisting client preferences
+* *https://www.json.org[org.json:json]* for persisting application preferences
 * *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
 * *https://github.com/Hakky54/sslcontext-kickstart[io.github.hakky54:sslcontext-kickstart]* for truststore handling
 * *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*
 * *Logging framework*
 
-A simple CRUD client pulls in ~15 Codion modules totalling ~1.5MB, so the combined weight of the Pet Clinic demo client for example is ~2MB (excluding the JDBC driver and logging framework).
+A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Pet Clinic demo client, with RMI and local connection capabilities, is around 2MB (excluding the JDBC driver and logging framework).
 
 == Rich Swing Client
 
