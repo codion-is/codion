@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,6 +39,11 @@ public interface EntitySearchModel {
    * @return the connection provider used by this search model
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * @return the first selected entity or an empty Optional in case no entity is selected
+   */
+  Optional<Entity> getSelectedEntity();
 
   /**
    * @return an unmodifiable view of the selected entities

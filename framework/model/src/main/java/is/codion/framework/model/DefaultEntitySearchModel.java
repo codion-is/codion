@@ -27,6 +27,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -125,6 +126,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public void setSelectedEntity(Entity entity) {
     setSelectedEntities(entity != null ? singletonList(entity) : null);
+  }
+
+  @Override
+  public Optional<Entity> getSelectedEntity() {
+    return selectedEntities.isEmpty() ? Optional.empty() : Optional.of(selectedEntities.get(0));
   }
 
   @Override
