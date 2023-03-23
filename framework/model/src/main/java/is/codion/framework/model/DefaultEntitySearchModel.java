@@ -83,10 +83,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                            Collection<Attribute<String>> searchAttributes) {
-    validateSearchAttributes(entityType, searchAttributes);
-    this.connectionProvider = connectionProvider;
+    validateSearchAttributes(requireNonNull(entityType), requireNonNull(searchAttributes));
+    this.connectionProvider = requireNonNull(connectionProvider);
     this.entityType = entityType;
-    this.searchAttributes = searchAttributes;
+    this.searchAttributes = unmodifiableCollection(searchAttributes);
     this.description = createDescription();
     this.searchAttributes.forEach(attribute -> attributeSearchSettings.put(attribute, new DefaultSearchSettings()));
     bindEventsInternal();
@@ -104,13 +104,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public Collection<Attribute<String>> searchAttributes() {
-    return unmodifiableCollection(searchAttributes);
+    return searchAttributes;
   }
 
   @Override
   public void setResultSorter(Comparator<Entity> resultSorter) {
-    requireNonNull(resultSorter, "resultSorter");
-    this.resultSorter = resultSorter;
+    this.resultSorter = requireNonNull(resultSorter, "resultSorter");
   }
 
   @Override
@@ -135,9 +134,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public void setSelectedEntities(List<Entity> entities) {
-    if (nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
-      return;
-    }//no change
+    if (nullOrEmpty(entities) && selectedEntities.isEmpty()) {
+      return;//no change
+    }
     if (entities != null) {
       if (entities.size() > 1 && !multipleSelectionEnabledState.get()) {
         throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
@@ -145,9 +144,9 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       entities.forEach(this::validateType);
     }
     //todo handle non-loaded entities, select from db?
-    this.selectedEntities.clear();
+    selectedEntities.clear();
     if (entities != null) {
-      this.selectedEntities.addAll(entities);
+      selectedEntities.addAll(entities);
     }
     resetSearchString();
     selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
@@ -185,24 +184,24 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public void resetSearchString() {
-    setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
+    setSearchString(selectedEntitiesToString());
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
   @Override
   public void setSearchString(String searchString) {
-    this.searchStringValue.set(searchString == null ? "" : searchString);
+    searchStringValue.set(searchString == null ? "" : searchString);
     searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
   }
 
   @Override
   public String getSearchString() {
-    return this.searchStringValue.get();
+    return searchStringValue.get();
   }
 
   @Override
   public boolean searchStringRepresentsSelected() {
-    String selectedAsString = toString(getSelectedEntities());
+    String selectedAsString = selectedEntitiesToString();
     return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
             || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
@@ -302,8 +301,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
             .collect(joining(", "));
   }
 
-  private String toString(List<Entity> entities) {
-    return entities.stream()
+  private String selectedEntitiesToString() {
+    return selectedEntities.stream()
             .map(toStringProvider)
             .collect(joining(multipleItemSeparatorValue.get()));
   }

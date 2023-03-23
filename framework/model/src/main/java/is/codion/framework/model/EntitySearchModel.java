@@ -195,8 +195,8 @@ public interface EntitySearchModel {
    * @return a new {@link EntitySearchModel} instance
    */
   static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    return entitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider),
-            connectionProvider.entities().definition(entityType).searchAttributes());
+    return entitySearchModel(entityType, connectionProvider,
+            requireNonNull(connectionProvider).entities().definition(entityType).searchAttributes());
   }
 
   /**
@@ -208,6 +208,6 @@ public interface EntitySearchModel {
    */
   static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                                              Collection<Attribute<String>> searchAttributes) {
-    return new DefaultEntitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider), requireNonNull(searchAttributes));
+    return new DefaultEntitySearchModel(entityType, connectionProvider, searchAttributes);
   }
 }

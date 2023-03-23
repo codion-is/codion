@@ -8744,3 +8744,4 @@
   DenormalizedProperty removed, buggy, could cause entities in a select result being modified, such as InvoiceLine.UNITPRICE in Chinook, when the associated Track.UNIPRICE had been raised
   EntityServerConfiguration.domainModelClassNames() renamed domainClassNames()
   EntitySearchModel.getSelectedEntity() added
+  DefaultEntitySearchModel, minor refactoring
