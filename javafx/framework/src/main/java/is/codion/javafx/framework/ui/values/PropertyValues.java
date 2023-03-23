@@ -459,9 +459,7 @@ public final class PropertyValues {
 
     @Override
     public Entity get() {
-      List<Entity> selected = searchModel.getSelectedEntities();
-
-      return selected.isEmpty() ? null : selected.iterator().next();
+      return searchModel.getSelectedEntity().orElse(null);
     }
 
     @Override

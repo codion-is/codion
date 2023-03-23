@@ -646,9 +646,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected Entity getComponentValue() {
-      List<Entity> selectedEntities = component().model().getSelectedEntities();
-
-      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
+      return component().model().getSelectedEntity().orElse(null);
     }
 
     @Override

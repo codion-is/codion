@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -38,6 +39,11 @@ public interface EntitySearchModel {
    * @return the connection provider used by this search model
    */
   EntityConnectionProvider connectionProvider();
+
+  /**
+   * @return the first selected entity or an empty Optional in case no entity is selected
+   */
+  Optional<Entity> getSelectedEntity();
 
   /**
    * @return an unmodifiable view of the selected entities
@@ -189,8 +195,8 @@ public interface EntitySearchModel {
    * @return a new {@link EntitySearchModel} instance
    */
   static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    return entitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider),
-            connectionProvider.entities().definition(entityType).searchAttributes());
+    return entitySearchModel(entityType, connectionProvider,
+            requireNonNull(connectionProvider).entities().definition(entityType).searchAttributes());
   }
 
   /**
@@ -202,6 +208,6 @@ public interface EntitySearchModel {
    */
   static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                                              Collection<Attribute<String>> searchAttributes) {
-    return new DefaultEntitySearchModel(requireNonNull(entityType), requireNonNull(connectionProvider), requireNonNull(searchAttributes));
+    return new DefaultEntitySearchModel(entityType, connectionProvider, searchAttributes);
   }
 }
