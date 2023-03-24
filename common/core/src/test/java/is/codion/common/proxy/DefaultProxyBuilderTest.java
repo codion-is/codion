@@ -21,7 +21,7 @@ public final class DefaultProxyBuilderTest {
     try {
       //non-existing method
       ProxyBuilder.builder(List.class)
-              .method("nonexistingMethod", arguments -> null);
+              .method("nonexistingMethod", parameters -> null);
       fail();
     }
     catch (Exception e) {
@@ -30,9 +30,9 @@ public final class DefaultProxyBuilderTest {
 
     List<Object> proxyInstance = ProxyBuilder.builder(List.class)
             .delegate(emptyList())
-            .method("toString", arguments -> "toStringResult")
-            .method("equals", Object.class, arguments ->
-                    arguments.arguments().get(0) == emptyList())
+            .method("toString", parameters -> "toStringResult")
+            .method("equals", Object.class, parameters ->
+                    parameters.arguments().get(0) == emptyList())
             .build();
     assertEquals("toStringResult", proxyInstance.toString());
     assertNotEquals(proxyInstance, proxyInstance);

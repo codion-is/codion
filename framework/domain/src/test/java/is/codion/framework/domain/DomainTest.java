@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 
 import static is.codion.framework.domain.TestDomain.DOMAIN;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -223,9 +224,9 @@ public class DomainTest {
     assertTrue(key.isNull());
 
     assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType, 1));
-    assertThrows(IllegalStateException.class, key::get);
-    assertThrows(IllegalStateException.class, key::getOptional);
-    assertThrows(IllegalStateException.class, key::attribute);
+    assertThrows(NoSuchElementException.class, key::get);
+    assertThrows(NoSuchElementException.class, key::getOptional);
+    assertThrows(NoSuchElementException.class, key::attribute);
 
     key = key.copyBuilder()
             .with(attribute1, 1)

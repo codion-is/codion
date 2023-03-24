@@ -189,7 +189,7 @@ final class EntityPopupMenu extends JPopupMenu {
     catch (RecordNotFoundException e) {
       return ProxyBuilder.builder(Entity.class)
             .delegate(Entity.entity(primaryKey))
-            .method("toString", arguments -> primaryKey.toString() + " <RECORD NOT FOUND>")
+            .method("toString", parameters -> primaryKey.toString() + " <RECORD NOT FOUND>")
             .build();
     }
     catch (DatabaseException e) {

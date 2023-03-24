@@ -130,15 +130,17 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Enables the null item and sets the null item caption.
-   * @param caption the null item caption
+   * @param nullCaption the null item caption
    * @see #setIncludeNull(boolean)
    * @see #setNullItem(Object)
+   * @throws NullPointerException in case {@code nullCaption} is null
    */
-  public final void setNullCaption(String caption) {
+  public final void setNullCaption(String nullCaption) {
+    requireNonNull(nullCaption, "nullCaption");
     setIncludeNull(true);
     setNullItem(ProxyBuilder.builder(Entity.class)
             .delegate(entities.entity(entityType))
-            .method("toString", arguments -> caption)
+            .method("toString", parameters -> nullCaption)
             .build());
   }
 

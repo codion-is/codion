@@ -47,11 +47,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity.Builder withDefaultValues() {
-    definition.properties().forEach(property -> {
-      if (!(property instanceof DerivedProperty)) {
-        builderValues.put(property.attribute(), property.defaultValue());
-      }
-    });
+    definition.properties().stream()
+            .filter(property -> !(property instanceof DerivedProperty))
+            .forEach(property -> builderValues.put(property.attribute(), property.defaultValue()));
 
     return this;
   }
