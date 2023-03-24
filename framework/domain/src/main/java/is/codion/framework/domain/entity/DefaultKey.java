@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
@@ -282,7 +283,7 @@ class DefaultKey implements Key, Serializable {
 
   private void assertSingleValueKey() {
     if (attributes.isEmpty()) {
-      throw new IllegalStateException("Key contains no values");
+      throw new NoSuchElementException("Key contains no values");
     }
     if (attributes.size() > 1) {
       throw new IllegalStateException("Key is a composite key");

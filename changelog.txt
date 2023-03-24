@@ -8745,3 +8745,4 @@
   EntityServerConfiguration.domainModelClassNames() renamed domainClassNames()
   EntitySearchModel.getSelectedEntity() added
   DefaultEntitySearchModel, minor refactoring
+  Key.attribute(), get() and getOptional() now throw NoSuchElementException in case of an empty key, instead of IllegalStateException

@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Optional;
 
 /**
@@ -60,7 +61,8 @@ public interface Key {
    * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
    * @param <T> the attribute type
    * @return the key attribute, useful for single attribute keys
-   * @throws IllegalStateException in case this is a composite key or if it contains no attributes
+   * @throws IllegalStateException in case this is a composite key
+   * @throws NoSuchElementException in case this key contains no values
    */
   <T> Attribute<T> attribute();
 
@@ -68,7 +70,8 @@ public interface Key {
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
    * @param <T> the value type
    * @return the first value contained in this key, useful for single attribute keys
-   * @throws IllegalStateException in case this is a composite key or if it contains no values
+   * @throws IllegalStateException in case this is a composite key
+   * @throws NoSuchElementException in case this key contains no values
    */
   <T> T get();
 
@@ -77,6 +80,7 @@ public interface Key {
    * @param <T> the value type
    * @return the first value contained in this key, wrapped in an {@link Optional}, useful for single attribute keys
    * @throws IllegalStateException in case this is a composite key
+   * @throws NoSuchElementException in case this key contains no values
    */
   <T> Optional<T> getOptional();
 
