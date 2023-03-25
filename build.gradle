@@ -22,9 +22,6 @@ configure(project.frameworkModules) {
     apply plugin: 'com.vanniktech.dependency.graph.generator'
     apply plugin: 'com.diffplug.spotless'
 
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
-
     dependencies {
         testImplementation (libs.junit.api)
         testImplementation (libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
@@ -38,6 +35,9 @@ configure(project.frameworkModules) {
     }
 
     java {
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(11)
+        }
         withJavadocJar()
         withSourcesJar()
     }
