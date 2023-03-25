@@ -8,14 +8,6 @@ JDK 11 compatible, built with JDK 11, fully modular.
 
 Maven/Gradle groupId *is.codion.jdk11*.
 
-=== jdk8
-
-*Main development branch*, JDK 8 compatible, built with JDK 8.
-
-Requires a JDK with JavaFX, for example the https://www.azul.com/downloads/?version=java-8-lts&package=jdk-fx[Zulu JDK FX].
-
-Maven/Gradle groupId *is.codion.jdk8*.
-
 == Building
 
 The Codion framework is built with https://gradle.org[Gradle] and includes the https://docs.gradle.org/current/userguide/gradle_wrapper.html[Gradle Wrapper], so assuming you have cloned the repository and worked your way into the project directory you can build the framework by running the following command.
