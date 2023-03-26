@@ -1,3 +1,6 @@
+/**
+ * Manual demo.
+ */
 module is.codion.framework.demos.manual {
   requires java.desktop;
   requires jasperreports;

@@ -1,3 +1,6 @@
+/**
+ * Common Swing UI classes.
+ */
 module is.codion.swing.common.ui {
   requires java.rmi;
   requires transitive is.codion.swing.common.model;

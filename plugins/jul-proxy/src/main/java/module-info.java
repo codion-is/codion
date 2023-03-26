@@ -1,3 +1,6 @@
+/**
+ * Java Util Logging.
+ */
 module is.codion.plugin.jul.proxy {
   requires java.logging;
   requires is.codion.common.core;

@@ -1,3 +1,6 @@
+/**
+ * Tomcat connection pool.
+ */
 module is.codion.plugin.tomcat.pool {
   requires java.management;
   requires tomcat.jdbc;

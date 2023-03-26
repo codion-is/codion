@@ -1,3 +1,6 @@
+/**
+ * Common Swing tools model classes.
+ */
 module is.codion.swing.common.tools {
   requires org.slf4j;
   requires org.jfree.jfreechart;

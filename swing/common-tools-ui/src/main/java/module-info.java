@@ -1,3 +1,6 @@
+/**
+ * Common Swing tools UI classes.
+ */
 module is.codion.swing.common.tools.ui {
   requires org.jfree.jfreechart;
   requires com.formdev.flatlaf.intellijthemes;

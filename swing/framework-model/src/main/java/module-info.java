@@ -1,3 +1,6 @@
+/**
+ * Framework Swing model classes.
+ */
 module is.codion.swing.framework.model {
   requires org.slf4j;
   requires org.json;

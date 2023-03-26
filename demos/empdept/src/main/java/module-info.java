@@ -1,3 +1,6 @@
+/**
+ * EmpDept demo.
+ */
 module is.codion.framework.demos.empdept {
   requires jasperreports;
   requires is.codion.framework.db.http;

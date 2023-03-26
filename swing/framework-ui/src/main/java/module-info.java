@@ -1,3 +1,6 @@
+/**
+ * Framework Swing UI classes.
+ */
 module is.codion.swing.framework.ui {
   requires org.slf4j;
   requires org.kordamp.ikonli.core;

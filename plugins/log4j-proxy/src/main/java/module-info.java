@@ -1,3 +1,6 @@
+/**
+ * Log4J.
+ */
 module is.codion.plugin.log4j.proxy {
   requires org.apache.logging.log4j.core;
   requires org.apache.logging.log4j;

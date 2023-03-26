@@ -1,3 +1,6 @@
+/**
+ * Unit test base classes.
+ */
 module is.codion.framework.domain.test {
   requires org.slf4j;
   requires org.junit.jupiter.api;

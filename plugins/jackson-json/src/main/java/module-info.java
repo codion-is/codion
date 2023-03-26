@@ -1,3 +1,6 @@
+/**
+ * Jackson JSON.
+ */
 module is.codion.plugin.jackson.json {
   requires transitive com.fasterxml.jackson.databind;
   requires transitive com.fasterxml.jackson.datatype.jsr310;

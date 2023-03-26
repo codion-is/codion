@@ -1,3 +1,6 @@
+/**
+ * Chinook demo.
+ */
 module is.codion.framework.demos.chinook {
   requires is.codion.common.rmi;
   requires is.codion.framework.db.local;

@@ -1,3 +1,6 @@
+/**
+ * Hikari connection pool.
+ */
 module is.codion.plugin.hikari.pool {
   requires com.zaxxer.hikari;
   requires is.codion.common.db;

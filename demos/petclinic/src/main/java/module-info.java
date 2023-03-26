@@ -1,3 +1,6 @@
+/**
+ * Petclinic demo.
+ */
 module is.codion.framework.demos.petclinic {
   requires is.codion.swing.framework.ui;
 

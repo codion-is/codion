@@ -1,3 +1,6 @@
+/**
+ * Framework Swing tools model classes.
+ */
 module is.codion.swing.framework.tools {
   requires org.slf4j;
   requires transitive is.codion.swing.common.tools;
