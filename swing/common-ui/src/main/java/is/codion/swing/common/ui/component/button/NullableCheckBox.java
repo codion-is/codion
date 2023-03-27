@@ -20,7 +20,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Ellipse2D;
+import java.awt.geom.Rectangle2D;
 
 import static java.util.Objects.requireNonNull;
 
@@ -137,6 +137,7 @@ public class NullableCheckBox extends JCheckBox {
   private final class NullableIcon implements Icon {
 
     private final Icon icon = UIManager.getIcon("CheckBox.icon");
+    private final boolean flatLaf = getUI().getClass().getSimpleName().startsWith("Flat");
 
     @Override
     public void paintIcon(Component component, Graphics graphics, int x, int y) {
@@ -145,20 +146,19 @@ public class NullableCheckBox extends JCheckBox {
         return;
       }
 
-      int width = getIconWidth();
-      int height = getIconHeight();
+      double width = getIconWidth() / 2d;
+      double height = getIconHeight() / 2d;
 
-      double radius = width / 2d * 0.4;
-      double centerX = x + width / 2d + 0.5;
-      double centerY = y + height / 2d - 0.5;
+      //todo remove x/y adjustment hack for FlatLaf
+      double xCorner = (x + width / 2d) + (flatLaf ? 0.5 : 0);
+      double yCorner = (y + height / 2d) - (flatLaf ? 0.25 : 0);
 
-      Ellipse2D circle = new Ellipse2D.Double();
-      circle.setFrameFromCenter(centerX, centerY, centerX + radius, centerY + radius);
+      Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, width, height);
 
       Graphics2D graphics2D = (Graphics2D) graphics;
       graphics2D.setColor(isEnabled() ? getForeground() : UIManager.getColor("CheckBoxMenuItem.disabledForeground"));
       graphics2D.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-      graphics2D.fill(circle);
+      graphics2D.fill(rectangle);
     }
 
     @Override
