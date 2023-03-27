@@ -81,8 +81,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * @param loadTestModel the LoadTestModel to base this panel on
    */
   public LoadTestPanel(LoadTest<T> loadTestModel) {
-    requireNonNull(loadTestModel, "loadTestModel");
-    this.loadTestModel = loadTestModel;
+    this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
     this.scenarioPanel = createScenarioPanel();
     initializeUI();
   }
@@ -183,31 +182,35 @@ public final class LoadTestPanel<T> extends JPanel {
     return Components.panel(Layouts.borderLayout())
             .border(BorderFactory.createTitledBorder("Applications"))
             .add(Components.panel(Layouts.borderLayout())
-                    .add(createApplicationCountButtonPanel(), BorderLayout.WEST)
-                    .add(Components.integerField()
-                            .editable(false)
-                            .horizontalAlignment(SwingConstants.CENTER)
-                            .linkedValueObserver(loadTestModel.applicationCountObserver())
-                            .build(), BorderLayout.CENTER)
-                    .add(Components.integerSpinner(loadTestModel.applicationBatchSizeValue())
-                            .editable(false)
-                            .columns(SMALL_TEXT_FIELD_COLUMNS)
-                            .toolTipText("Application batch size")
-                            .build(), BorderLayout.EAST)
+                    .add(Components.panel(Layouts.flexibleGridLayout(1, 2))
+                            .add(new JLabel("Batch size"))
+                            .add(Components.integerSpinner(loadTestModel.applicationBatchSizeValue())
+                                    .editable(false)
+                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                                    .toolTipText("Application batch size")
+                                    .build())
+                            .build(), BorderLayout.WEST)
+                    .add(createAddRemoveApplicationPanel(), BorderLayout.CENTER)
                     .build(), BorderLayout.NORTH)
             .build();
   }
 
-  private JPanel createApplicationCountButtonPanel() {
-    return Components.panel(new GridLayout(1, 2, 0, 0))
-            .add(Control.builder(loadTestModel::addApplicationBatch)
-                    .caption("+")
-                    .description("Add application batch")
-                    .build().createButton())
+  private JPanel createAddRemoveApplicationPanel() {
+    return Components.panel(new BorderLayout())
             .add(Control.builder(loadTestModel::removeApplicationBatch)
                     .caption("-")
                     .description("Remove application batch")
-                    .build().createButton())
+                    .build().createButton(), BorderLayout.WEST)
+            .add(Components.integerField()
+                    .editable(false)
+                    .horizontalAlignment(SwingConstants.CENTER)
+                    .columns(5)
+                    .linkedValueObserver(loadTestModel.applicationCountObserver())
+                    .build(), BorderLayout.CENTER)
+            .add(Control.builder(loadTestModel::addApplicationBatch)
+                    .caption("+")
+                    .description("Add application batch")
+                    .build().createButton(), BorderLayout.EAST)
             .build();
   }
 
