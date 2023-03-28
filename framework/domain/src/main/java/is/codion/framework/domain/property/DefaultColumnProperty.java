@@ -106,11 +106,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public boolean isDenormalized() {
-    return false;
-  }
-
-  @Override
   public final int primaryKeyIndex() {
     return primaryKeyIndex;
   }
@@ -341,11 +336,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B primaryKeyIndex(int index) {
-      if (index < 0) {
+    public final B primaryKeyIndex(int primaryKeyIndex) {
+      if (primaryKeyIndex < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0: " + attribute);
       }
-      this.primaryKeyIndex = index;
+      this.primaryKeyIndex = primaryKeyIndex;
       nullable(false);
       updatable(false);
       return (B) this;

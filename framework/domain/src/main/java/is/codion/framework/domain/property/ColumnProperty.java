@@ -85,12 +85,6 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isReadOnly();
 
   /**
-   * @return true if this column is a denormalized column, one which should receives a value
-   * from a column in a table referenced via a foreign key
-   */
-  boolean isDenormalized();
-
-  /**
    * @return true if the underlying column has a default value
    */
   boolean columnHasDefaultValue();
