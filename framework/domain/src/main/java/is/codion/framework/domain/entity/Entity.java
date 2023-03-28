@@ -468,8 +468,7 @@ public interface Entity extends Comparable<Entity> {
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
             .filter(Objects::nonNull)
-            .distinct()
-            .collect(toList());
+            .collect(toSet());
   }
 
   /**
@@ -483,8 +482,7 @@ public interface Entity extends Comparable<Entity> {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
-            .distinct()
-            .collect(toList());
+            .collect(toSet());
   }
 
   /**

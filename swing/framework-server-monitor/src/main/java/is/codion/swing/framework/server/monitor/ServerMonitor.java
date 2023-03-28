@@ -316,11 +316,11 @@ public final class ServerMonitor {
    * @throws RemoteException in case of an exception
    */
   public void refreshReportList() throws RemoteException {
-    reportTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Report Name", "Report Description", "Is Cached"});
+    reportTableModel.setDataVector(new Object[][] {}, new Object[] {DOMAIN, "Report Name", "Report Type", "Report Path", "Is Cached"});
     Map<String, Collection<DomainReport>> reports = server.domainReports();
     for (Map.Entry<String, Collection<DomainReport>> domainReports : reports.entrySet()) {
       for (DomainReport domainReport : domainReports.getValue()) {
-        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.description(), domainReport.isCached()});
+        reportTableModel.addRow(new Object[] {domainReports.getKey(), domainReport.name(), domainReport.type(), domainReport.path(), domainReport.isCached()});
       }
     }
   }

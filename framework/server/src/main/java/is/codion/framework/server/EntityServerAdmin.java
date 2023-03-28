@@ -278,9 +278,14 @@ public interface EntityServerAdmin extends ServerAdmin {
     String name();
 
     /**
-     * @return the report description
+     * @return the report type
      */
-    String description();
+    String type();
+
+    /**
+     * @return the report path
+     */
+    String path();
 
     /**
      * @return true if the report has been cached
