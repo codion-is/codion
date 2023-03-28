@@ -1000,7 +1000,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
     for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.columnProperties()) {
-      if (!definition.isForeignKeyAttribute(property.attribute()) && !property.isDenormalized()//these are set via their respective parent properties
+      if (!definition.isForeignKeyAttribute(property.attribute())//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
         newEntity.put(property.attribute(), valueSupplier.get(property));
       }

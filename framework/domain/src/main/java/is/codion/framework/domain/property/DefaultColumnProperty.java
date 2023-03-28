@@ -106,11 +106,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public boolean isDenormalized() {
-    return false;
-  }
-
-  @Override
   public final int primaryKeyIndex() {
     return primaryKeyIndex;
   }
