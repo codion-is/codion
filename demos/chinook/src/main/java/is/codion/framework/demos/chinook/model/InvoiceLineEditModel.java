@@ -87,6 +87,6 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   private void updateTotals(List<Entity> entities, EntityConnection connection) throws DatabaseException {
-    totalsUpdatedEvent.onEvent(connection.executeFunction(Invoice.UPDATE_TOTALS, Entity.get(InvoiceLine.INVOICE_ID, entities)));
+    totalsUpdatedEvent.onEvent(connection.executeFunction(Invoice.UPDATE_TOTALS, Entity.getDistinct(InvoiceLine.INVOICE_ID, entities)));
   }
 }

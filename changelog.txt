@@ -8748,3 +8748,4 @@
   Key.attribute(), get() and getOptional() now throw NoSuchElementException in case of an empty key, instead of IllegalStateException
   NullableCheckBox, use hack to center indeterminate icon rectangle in FlatLaf check boxes
   LoadTestPanel, minor UI improvements
+  Entity.getDistinct() and getDistinctIncludingNull(), use Collectors.toSet() instead of Stream.distinct()
