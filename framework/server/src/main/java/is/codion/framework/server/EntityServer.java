@@ -246,7 +246,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     Map<DomainType, Collection<DomainReport>> domainReports = new HashMap<>();
     for (Domain domain : domainModels.values()) {
       domainReports.put(domain.type(), domain.reports().entrySet().stream()
-              .map(entry -> new DefaultDomainReport(entry.getKey().name(), entry.getValue().toString(), entry.getValue().isCached()))
+              .map(entry -> new DefaultDomainReport(entry.getKey().name(), entry.getValue().getClass().getSimpleName(),
+                      entry.getValue().toString(), entry.getValue().isCached()))
               .collect(toList()));
     }
 
@@ -544,12 +545,14 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     private static final long serialVersionUID = 1;
 
     private final String name;
-    private final String description;
+    private final String type;
+    private final String path;
     private final boolean cached;
 
-    private DefaultDomainReport(String name, String description, boolean cached) {
+    private DefaultDomainReport(String name, String type, String path, boolean cached) {
       this.name = name;
-      this.description = description;
+      this.type = type;
+      this.path = path;
       this.cached = cached;
     }
 
@@ -559,8 +562,13 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
 
     @Override
-    public String description() {
-      return description;
+    public String type() {
+      return type;
+    }
+
+    @Override
+    public String path() {
+      return path;
     }
 
     @Override

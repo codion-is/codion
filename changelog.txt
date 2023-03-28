@@ -8749,3 +8749,4 @@
   NullableCheckBox, use hack to center indeterminate icon rectangle in FlatLaf check boxes
   LoadTestPanel, minor UI improvements
   Entity.getDistinct() and getDistinctIncludingNull(), use Collectors.toSet() instead of Stream.distinct()
+  EntityServerAdmin.DomainReport, type() added and description() renamed path(), EntityServer and ServerMonitor changed accordingly
