@@ -272,11 +272,11 @@ public interface Property<T> {
     Attribute<T> attribute();
 
     /**
-     * Specifies the resource bundle from which to retrieve the caption
-     * for this property, assuming the resource key is the attribute name ({@link Attribute#name()}).
-     * Note that this sets the property to be not hidden.
+     * Specifies the key to use when retrieving the caption for this property from the entity resource bundle,
+     * in case it differes from the attribute name ({@link Attribute#name()}), which is the default value.
+     * Note that this configures the property to not be hidden.
      * @param captionResourceKey the caption resource bundle key
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case the caption has already been set
      * @throws IllegalStateException in case no resource bundle is specified for the entity
      * @throws IllegalStateException in case the caption resource is not found in the entity resource bundle
@@ -287,35 +287,35 @@ public interface Property<T> {
     /**
      * Sets the bean name property to associate with this property
      * @param beanProperty the bean property name
-     * @return this instance
+     * @return this builder instance
      */
     B beanProperty(String beanProperty);
 
     /**
      * Sets the default value for this property, overrides the underlying column default value, if any
      * @param defaultValue the value to use as default
-     * @return this instance
+     * @return this builder instance
      */
     B defaultValue(T defaultValue);
 
     /**
      * Sets the default value supplier, use in case of dynamic default values.
      * @param supplier the default value supplier
-     * @return this instance
+     * @return this builder instance
      */
     B defaultValueSupplier(ValueSupplier<T> supplier);
 
     /**
      * Specifies whether this property should be hidden in table views
      * @param hidden true if this property should be hidden
-     * @return this instance
+     * @return this builder instance
      */
     B hidden(boolean hidden);
 
     /**
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a numerical property
      */
     B minimumValue(Number minimumValue);
@@ -323,7 +323,7 @@ public interface Property<T> {
     /**
      * Only applicable to numerical properties
      * @param maximumValue the maximum allowed value for this property
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a numerical property
      */
     B maximumValue(Number maximumValue);
@@ -332,7 +332,7 @@ public interface Property<T> {
      * Only applicable to numerical properties
      * @param minimumValue the minimum allowed value for this property
      * @param maximumValue the maximum allowed value for this property
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a numerical property
      */
     B valueRange(Number minimumValue, Number maximumValue);
@@ -342,7 +342,7 @@ public interface Property<T> {
      * This setting is overridden during subsequent calls to {@link #format(Format)}.
      * Note that values associated with this property are automatically rounded to {@code maximumFractionDigits} digits.
      * @param maximumFractionDigits the maximum fraction digits
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a decimal property
      * @see #decimalRoundingMode(RoundingMode)
      */
@@ -351,7 +351,7 @@ public interface Property<T> {
     /**
      * Sets the rounding mode to use when working with decimals
      * @param decimalRoundingMode the rounding mode
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a decimal property
      * @see #maximumFractionDigits(int)
      */
@@ -364,7 +364,7 @@ public interface Property<T> {
      * Only applicable to numerical properties.
      * This setting is overridden during subsequent calls to {@link #format(Format)}
      * @param numberFormatGrouping if true then number grouping is used
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a numerical property
      */
     B numberFormatGrouping(boolean numberFormatGrouping);
@@ -372,7 +372,7 @@ public interface Property<T> {
     /**
      * Specifies the preferred column width when displaying this property in a table.
      * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalArgumentException in case the value is less than 1
      */
     B preferredColumnWidth(int preferredColumnWidth);
@@ -381,14 +381,14 @@ public interface Property<T> {
      * Specifies whether this property is nullable. Note that this will not prevent
      * the value from being set to null, only prevent successful validation of the entity.
      * @param nullable specifies whether null is a valid value for this property
-     * @return this instance
+     * @return this builder instance
      */
     B nullable(boolean nullable);
 
     /**
      * Sets the maximum length of this property value, this applies to String (varchar) based properties
      * @param maximumLength the maximum length
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a String property
      */
     B maximumLength(int maximumLength);
@@ -396,27 +396,27 @@ public interface Property<T> {
     /**
      * Sets the mnemonic to use when creating a label for this property
      * @param mnemonic the mnemonic character
-     * @return this instance
+     * @return this builder instance
      */
     B mnemonic(Character mnemonic);
 
     /**
      * Sets the description for this property, used for tooltips f.ex.
      * @param description a String describing this property
-     * @return this instance
+     * @return this builder instance
      */
     B description(String description);
 
     /**
      * @param comparator the Comparator to use when comparing values for this attribute
-     * @return this instance
+     * @return this builder instance
      */
     B comparator(Comparator<T> comparator);
 
     /**
      * Sets the Format to use when presenting property values
      * @param format the format to use
-     * @return this instance
+     * @return this builder instance
      * @throws NullPointerException in case format is null
      * @throws IllegalArgumentException in case this is a numerical property and the given format is not a NumberFormat.
      * @throws IllegalStateException if the underlying attribute is temporal, in which case
@@ -427,7 +427,7 @@ public interface Property<T> {
     /**
      * Sets the date/time format pattern used when presenting and inputtind values
      * @param dateTimePattern the format pattern
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalArgumentException in case the pattern is invalid
      * @throws IllegalStateException in case this is not a temporal property
      * @throws IllegalStateException in case {@link #localeDateTimePattern(LocaleDateTimePattern)} has been set
@@ -437,7 +437,7 @@ public interface Property<T> {
     /**
      * Sets the locale aware date/time format pattern used when presenting and inputting values
      * @param localeDateTimePattern the format pattern
-     * @return this instance
+     * @return this builder instance
      * @throws IllegalStateException in case this is not a temporal property
      * @throws IllegalStateException in case {@link #dateTimePattern(String)} has been set
      */
