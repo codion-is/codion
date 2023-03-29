@@ -33,6 +33,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   @Override
   public <T> Reference<T> reference(Attribute<T> attribute) {
+    requireNonNull(attribute);
     for (int i = 0; i < references.size(); i++) {
       Reference<?> reference = references.get(i);
       if (reference.attribute().equals(attribute)) {
