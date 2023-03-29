@@ -91,6 +91,9 @@ public final class SerializationWhitelist {
       if (requireNonNull(whitelistFile).toLowerCase().startsWith(CLASSPATH_PREFIX)) {
         throw new IllegalArgumentException("Filter dry run can not be performed with a classpath whitelist: " + whitelistFile);
       }
+      if (new File(whitelistFile).exists()) {
+        throw new IllegalArgumentException("Whitelist file to write to after dry-run already exists");
+      }
       this.whitelistFile = requireNonNull(whitelistFile, "whitelistFile");
     }
 
@@ -107,7 +110,9 @@ public final class SerializationWhitelist {
     private void writeToFile() {
       try {
         File file = new File(whitelistFile);
-        file.createNewFile();
+        if (!file.createNewFile()) {
+          throw new IOException("Whitelist file already exists: " + whitelistFile);
+        }
         Files.write(file.toPath(), deserializedClasses.stream()
                 .map(Class::getName)
                 .sorted()

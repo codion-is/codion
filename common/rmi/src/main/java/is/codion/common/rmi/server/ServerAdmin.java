@@ -225,7 +225,7 @@ public interface ServerAdmin extends Remote {
     int daemonThreadCount();
 
     /**
-     * @return the number of threads in each state
+     * @return a map containing the number of threads mapped to each thread state
      */
     Map<Thread.State, Integer> threadStateCount();
   }

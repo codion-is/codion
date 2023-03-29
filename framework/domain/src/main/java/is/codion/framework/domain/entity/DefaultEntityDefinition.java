@@ -987,7 +987,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
                 if (usedPrimaryKeyIndexes.size() != maxPrimaryKeyIndex + 1) {
                   throw new IllegalArgumentException("Expecting " + (maxPrimaryKeyIndex + 1)
                           + " primary key properties for entity " + entityType + ", but found only "
-                          + usedPrimaryKeyIndexes.size() + " distinct primary key indexes " + usedPrimaryKeyIndexes + "");
+                          + usedPrimaryKeyIndexes.size() + " distinct primary key indexes " + usedPrimaryKeyIndexes);
                 }
               });
     }

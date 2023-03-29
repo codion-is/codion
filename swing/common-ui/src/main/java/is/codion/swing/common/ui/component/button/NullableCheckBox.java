@@ -27,7 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JCheckBox implementation, which allows null values, via {@link NullableToggleButtonModel}.
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz.
- * https://www.javaspecialists.eu/archive/Issue145.html
+ * <a href="https://www.javaspecialists.eu/archive/Issue145.html">https://www.javaspecialists.eu/archive/Issue145.html</a>
  * Included with permission.
  */
 public class NullableCheckBox extends JCheckBox {

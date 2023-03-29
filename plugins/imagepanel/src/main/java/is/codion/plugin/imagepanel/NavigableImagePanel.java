@@ -111,7 +111,8 @@ import static java.util.Arrays.asList;
  * {@code HIGH_QUALITY_RENDERING_SCALE_THRESHOLD}.
  * <p>
  * Author: Slav Boleslawski
- * http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html
+ * <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html</a>
+ * Included with permission.
  */
 public class NavigableImagePanel extends JPanel {
 

@@ -16,8 +16,7 @@ import java.nio.file.Files;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class SerializationWhitelistTest {
 
@@ -25,7 +24,8 @@ public final class SerializationWhitelistTest {
   void dryRun() throws IOException, ClassNotFoundException {
     assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.configureDryRun("classpath:dryrun"));
     File tempFile = File.createTempFile("serialization_dry_run_test", "txt");
-    tempFile.deleteOnExit();
+    assertThrows(IllegalArgumentException.class, () -> SerializationWhitelist.configureDryRun(tempFile.getAbsolutePath()));
+    tempFile.delete();
     SerializationWhitelist.configureDryRun(tempFile.getAbsolutePath());
     Serializer.deserialize(Serializer.serialize(Integer.valueOf(42)));
     Serializer.deserialize(Serializer.serialize(Double.valueOf(42)));
@@ -37,6 +37,7 @@ public final class SerializationWhitelistTest {
     assertEquals(Integer.class.getName(), classNames.get(1));
     assertEquals(Long.class.getName(), classNames.get(2));
     assertEquals(Number.class.getName(), classNames.get(3));
+    assertTrue(tempFile.exists());
     tempFile.delete();
   }
 

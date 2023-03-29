@@ -8790,3 +8790,4 @@
   EntityServerAdmin.DomainReport, type() added and description() renamed path(), EntityServer and ServerMonitor changed accordingly
   ColumnProperty.isDenormalized() removed, was overridden only in DenormalizedProperty, which has been removed
   FrameworkIcons.addIcon() and getIcon() added
+  SerializationWhitelist.SerializationFilterDryRun now throws exception in case the dry-run whitelist file already exists

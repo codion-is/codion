@@ -13,7 +13,7 @@ import javax.swing.text.BadLocationException;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Code originally from: http://www.orbital-computer.de/JComboBox
+ * Code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a>
  * Selects an item in a JComboBox based on values typed in on the keyboard.
  * @author Thomas Bierhance
  */
