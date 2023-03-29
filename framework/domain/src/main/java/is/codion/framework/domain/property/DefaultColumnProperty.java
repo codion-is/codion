@@ -433,11 +433,6 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     public B columnExpression(String columnExpression) {
       throw new UnsupportedOperationException("Column expression can not be set on a subquery property: " + attribute);
     }
-
-    @Override
-    public Property<T> build() {
-      return new DefaultColumnProperty<>(this);
-    }
   }
 
   private static final class ShortFetcher implements ValueFetcher<Short> {
