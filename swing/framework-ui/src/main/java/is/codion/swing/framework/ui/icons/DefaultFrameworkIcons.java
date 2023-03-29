@@ -13,6 +13,8 @@ import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 public final class DefaultFrameworkIcons implements FrameworkIcons {
 
   private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
@@ -151,6 +153,23 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   @Override
   public ImageIcon logo(int size) {
     return LOGOS.computeIfAbsent(size, k -> new LogoImageIcon(size)).imageIcon;
+  }
+
+  @Override
+  public void addIcon(Ikon ikon) {
+    if (ICONS.containsKey(requireNonNull(ikon))) {
+      throw new IllegalArgumentException("Icon has already been added: " + ikon);
+    }
+    ICONS.put(ikon, FontImageIcon.of(ikon));
+  }
+
+  @Override
+  public ImageIcon getIcon(Ikon ikon) {
+    if (!ICONS.containsKey(requireNonNull(ikon))) {
+      throw new IllegalArgumentException("No icon has been added for key: " + ikon);
+    }
+
+    return ICONS.get(ikon).imageIcon;
   }
 
   private static class FontImageIcon {

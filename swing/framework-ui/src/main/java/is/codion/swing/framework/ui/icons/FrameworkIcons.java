@@ -7,6 +7,8 @@ import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.swing.common.ui.icon.Logos;
 
+import org.kordamp.ikonli.Ikon;
+
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
@@ -15,6 +17,8 @@ import java.util.ServiceLoader;
 
 /**
  * Provides icons for framework ui components.
+ * The icon color follows the 'Button.foreground' color of the current Look and feel.
+ * Add custom icons via {@link #addIcon(Ikon)} and retrieve them via {@link #getIcon(Ikon)}.
  */
 public interface FrameworkIcons extends Logos {
 
@@ -136,6 +140,22 @@ public interface FrameworkIcons extends Logos {
    * @return a logo icon
    */
   ImageIcon logo(int size);
+
+  /**
+   * Adds the given ikon to this FrameworkIcons instance. Retrieve it via {@link #getIcon(Ikon)}.
+   * @param ikon the ikon to add
+   * @throws IllegalArgumentException in case an icon has already been associated with the given ikon
+   */
+  void addIcon(Ikon ikon);
+
+  /**
+   * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
+   * @param ikon the ikon
+   * @return the ImageIcon associated with the given ikon
+   * @throws IllegalArgumentException in case no icon has been associated with the given ikon
+   * @see #addIcon(Ikon)
+   */
+  ImageIcon getIcon(Ikon ikon);
 
   /**
    * @return a {@link FrameworkIcons} implementation of the type specified by

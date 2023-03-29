@@ -8751,3 +8751,4 @@
   Entity.getDistinct() and getDistinctIncludingNull(), use Collectors.toSet() instead of Stream.distinct()
   EntityServerAdmin.DomainReport, type() added and description() renamed path(), EntityServer and ServerMonitor changed accordingly
   ColumnProperty.isDenormalized() removed, was overridden only in DenormalizedProperty, which has been removed
+  FrameworkIcons.addIcon() and getIcon() added
