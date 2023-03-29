@@ -170,7 +170,7 @@ public final class Utilities {
   }
 
   /**
-   * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
+   * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574</a>
    * @param component the component
    * @param onFocusAction the action to run when the focus has been requested
    */

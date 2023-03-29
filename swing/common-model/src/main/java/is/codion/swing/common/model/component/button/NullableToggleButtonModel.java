@@ -13,9 +13,9 @@ import java.util.Objects;
 /**
  * A ToggleButtonModel implementation, which allows the null state.
  * The states are null -&gt; false -&gt; true.
- *
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
- * http://www.javaspecialists.eu/archive/Issue145.html
+ * <a href="http://www.javaspecialists.eu/archive/Issue145.html">http://www.javaspecialists.eu/archive/Issue145.html</a>
+ * Included with permission.
  */
 public final class NullableToggleButtonModel extends DefaultButtonModel {
 
