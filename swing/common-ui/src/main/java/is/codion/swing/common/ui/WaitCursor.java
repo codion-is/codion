@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui;
 
 import javax.swing.JComponent;
+import javax.swing.SwingUtilities;
 import java.awt.Cursor;
 import java.awt.Window;
 import java.util.HashMap;
@@ -91,7 +92,7 @@ public final class WaitCursor {
       }
 
       if ((requests == 1 && on) || (requests == 0 && !on)) {
-        window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR);
+        SwingUtilities.invokeLater(() -> window.setCursor(on ? WAIT_CURSOR : DEFAULT_CURSOR));
       }
       if (requests == 0) {
         WAIT_CURSOR_REQUESTS.remove(window);
