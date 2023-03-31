@@ -8754,3 +8754,4 @@
   FrameworkIcons.addIcon() and getIcon() added
   SerializationWhitelist.SerializationFilterDryRun now throws exception in case the dry-run whitelist file already exists
   WaitCursor now enabled and disabled on the Event Dispatch Thread
+  EntityPanelBuilder, description added to insert and update controls

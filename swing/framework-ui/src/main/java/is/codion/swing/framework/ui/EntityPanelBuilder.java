@@ -38,11 +38,14 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
 final class EntityPanelBuilder implements EntityPanel.Builder {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanelBuilder.class.getName());
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
   private static final String ENABLED = "enabled";
@@ -296,6 +299,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     Control control = Control.builder(new InsertEntityCommand(component, connectionProvider, onInsert))
             .smallIcon(FrameworkIcons.instance().add())
+            .description(MESSAGES.getString("insert_new_item"))
             .enabledState(enabledState)
             .build();
 
@@ -337,6 +341,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private Control createUpdateControl(UpdateEntityCommand updateEntityCommand, JComponent component, State enabledState) {
     Control control = Control.builder(updateEntityCommand)
             .smallIcon(FrameworkIcons.instance().edit())
+            .description(MESSAGES.getString("update_selected_item"))
             .enabledState(enabledState)
             .build();
 
