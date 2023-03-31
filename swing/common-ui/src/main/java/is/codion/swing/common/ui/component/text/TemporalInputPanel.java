@@ -28,6 +28,7 @@ import java.time.temporal.Temporal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
 
@@ -36,6 +37,8 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Temporal type supplied by this panel
  */
 public final class TemporalInputPanel<T extends Temporal> extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalInputPanel.class.getName());
 
   private final TemporalField<T> inputField;
   private final JButton calendarButton;
@@ -47,6 +50,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     if (supportsCalendar(temporalField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
               .caption("...")
+              .description(MESSAGES.getString("display_calendar"))
               .build();
       KeyEvents.builder(KeyEvent.VK_INSERT)
               .action(displayCalendarControl)

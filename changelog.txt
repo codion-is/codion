@@ -8756,3 +8756,4 @@
   WaitCursor now enabled and disabled on the Event Dispatch Thread
   EntityPanelBuilder, description added to insert and update controls
   TextInputPanel, button tooltip added
+  TemporalInputPanel, button tooltip added
