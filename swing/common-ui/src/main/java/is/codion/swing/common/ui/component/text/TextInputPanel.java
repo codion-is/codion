@@ -26,6 +26,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
+import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
 import static java.util.Objects.requireNonNull;
@@ -36,6 +37,8 @@ import static java.util.Objects.requireNonNull;
  * @see #builder()
  */
 public final class TextInputPanel extends JPanel {
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TextInputPanel.class.getName());
 
   private final JTextField textField;
   private final JButton button;
@@ -224,6 +227,7 @@ public final class TextInputPanel extends JPanel {
             .enable(textField);
     JButton actionButton = new JButton(buttonAction);
     actionButton.setFocusable(buttonFocusable);
+    actionButton.setToolTipText(MESSAGES.getString("show_input_dialog"));
     if (buttonSize != null) {
       actionButton.setPreferredSize(buttonSize);
     }
