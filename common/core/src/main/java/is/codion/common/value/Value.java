@@ -41,7 +41,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * Note that after a call to this method this value is the same as {@code originalValue}.
    * @param originalValue the original value to link this value to
    * @throws IllegalStateException in case the values are already linked
-   * @throws IllegalArgumentException in case the original value is not valid
+   * @throws IllegalArgumentException in case the original value is not valid according to this values validators
    */
   void link(Value<T> originalValue);
 
@@ -57,7 +57,7 @@ public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
    * so that changes in the original value are reflected in this one.
    * Note that after a call to this method the value of this value is the same as the original value.
    * @param originalValueObserver the original value to link this value to
-   * @throws IllegalArgumentException in case the original value is not valid
+   * @throws IllegalArgumentException in case the original value is not valid according to this values validators
    */
   void link(ValueObserver<T> originalValueObserver);
 

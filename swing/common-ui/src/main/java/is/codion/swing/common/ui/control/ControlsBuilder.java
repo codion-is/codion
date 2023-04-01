@@ -11,6 +11,7 @@ import javax.swing.KeyStroke;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -90,7 +91,7 @@ final class ControlsBuilder implements Controls.Builder {
   @Override
   public Controls.Builder controls(Control.Builder... controlBuilders) {
     this.controls.addAll(Arrays.stream(controlBuilders)
-            .map(Control.Builder::build)
+            .map(new BuildControl())
             .collect(Collectors.toList()));
     return this;
   }
@@ -119,5 +120,13 @@ final class ControlsBuilder implements Controls.Builder {
             .setLargeIcon(largeIcon)
             .setDescription(description)
             .setKeyStroke(keyStroke);
+  }
+
+  private static final class BuildControl implements Function<Control.Builder, Control> {
+
+    @Override
+    public Control apply(Control.Builder builder) {
+      return builder.build();
+    }
   }
 }

@@ -8795,3 +8795,5 @@
   EntityPanelBuilder, description added to insert and update controls
   TextInputPanel, button tooltip added
   TemporalInputPanel, button tooltip added
+  ProxyBuilder.Parameters.arguments() now List<?> instead of List<Object>
+  FXDetailModelLink and FXForeignKeyDetailModelLink added, for completeness sake

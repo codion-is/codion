@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -87,9 +88,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   @Override
   public void onInsert(List<Entity> insertedEntities) {
-    List<Entity> entities = insertedEntities.stream()
-            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
-            .collect(toList());
+    List<Entity> entities = ofReferencedType(insertedEntities);
     detailModel().editModel().addForeignKeyValues(foreignKey, entities);
     if (!entities.isEmpty()) {
       detailModel().editModel().put(foreignKey, entities.get(0));
@@ -102,9 +101,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   @Override
   public void onUpdate(Map<Key, Entity> updatedEntities) {
-    List<Entity> entities = updatedEntities.values().stream()
-            .filter(entity -> entity.type().equals(foreignKey.referencedType()))
-            .collect(toList());
+    List<Entity> entities = ofReferencedType(updatedEntities.values());
     detailModel().editModel().replaceForeignKeyValues(foreignKey, entities);
     if (detailModel().containsTableModel()) {
       detailModel().tableModel().replaceForeignKeyValues(foreignKey, entities);
@@ -113,10 +110,13 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   @Override
   public void onDelete(List<Entity> deletedEntities) {
-    List<Entity> entities = deletedEntities.stream()
+    detailModel().editModel().removeForeignKeyValues(foreignKey, ofReferencedType(deletedEntities));
+  }
+
+  private List<Entity> ofReferencedType(Collection<Entity> entities) {
+    return entities.stream()
             .filter(entity -> entity.type().equals(foreignKey.referencedType()))
             .collect(toList());
-    detailModel().editModel().removeForeignKeyValues(foreignKey, entities);
   }
 
   private void setEditModelForeignKeyValue(List<Entity> selectedEntities) {

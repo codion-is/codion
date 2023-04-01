@@ -11,7 +11,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -80,13 +82,21 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
     }
 
     List<Class<?>> superInterfaces = interfaces.stream()
-            .flatMap(anInterface -> Arrays.stream(anInterface.getInterfaces()))
+            .flatMap(new GetSuperInterfaces())
             .collect(Collectors.toList());
     if (superInterfaces.isEmpty()) {
       return new MethodKey(Object.class.getMethod(methodName, parameterTypes.toArray(new Class[0])));
     }
 
     return findMethod(superInterfaces, methodName, parameterTypes);
+  }
+
+  private static final class GetSuperInterfaces implements Function<Class<?>, Stream<Class<?>>> {
+
+    @Override
+    public Stream<Class<?>> apply(Class<?> anInterface) {
+      return Arrays.stream(anInterface.getInterfaces());
+    }
   }
 
   private static final class DefaultHandler<T> implements InvocationHandler {
@@ -128,7 +138,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
     private final T proxy;
     private final T delegate;
-    private final List<Object> arguments;
+    private final List<?> arguments;
 
     private DefaultProxyMethodParameters(T proxy, T delegate, Object[] arguments) {
       this.proxy = requireNonNull(proxy);
@@ -151,7 +161,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
     }
 
     @Override
-    public List<Object> arguments() {
+    public List<?> arguments() {
       return arguments;
     }
   }
