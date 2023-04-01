@@ -116,7 +116,7 @@ public interface ProxyBuilder<T> {
       /**
        * @return the method arguments or an empty list in case of no arguments
        */
-      List<Object> arguments();
+      List<?> arguments();
     }
   }
 

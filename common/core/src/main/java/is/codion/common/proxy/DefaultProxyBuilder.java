@@ -128,7 +128,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
     private final T proxy;
     private final T delegate;
-    private final List<Object> arguments;
+    private final List<?> arguments;
 
     private DefaultProxyMethodParameters(T proxy, T delegate, Object[] arguments) {
       this.proxy = requireNonNull(proxy);
@@ -151,7 +151,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
     }
 
     @Override
-    public List<Object> arguments() {
+    public List<?> arguments() {
       return arguments;
     }
   }
