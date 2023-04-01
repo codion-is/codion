@@ -88,6 +88,7 @@ import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
@@ -641,22 +642,19 @@ public class EntityTablePanel extends JPanel {
     }
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
     StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
-    StateObserver enabled = State.and(selectionNotEmpty, updateEnabled);
+    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls updateControls = Controls.builder()
             .caption(FrameworkMessages.update())
-            .enabledState(enabled)
+            .enabledState(enabledState)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Property.sort(tableModel.entityDefinition().updatableProperties()).forEach(property -> {
-      if (!excludeFromUpdateMenu.contains(property.attribute())) {
-        String caption = property.caption() == null ? property.attribute().name() : property.caption();
-        updateControls.add(Control.builder(() -> updateSelectedEntities(property))
-                .caption(caption)
-                .enabledState(enabled)
-                .build());
-      }
-    });
+    Property.sort(tableModel.entityDefinition().updatableProperties()).stream()
+            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
+            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property))
+                    .caption(property.caption() == null ? property.attribute().name() : property.caption())
+                    .enabledState(enabledState)
+                    .build()));
 
     return updateControls;
   }
@@ -768,8 +766,7 @@ public class EntityTablePanel extends JPanel {
 
     WaitCursor.show(this);
     try {
-      EntityDependenciesPanel.displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(),
-              tableModel.connectionProvider(), this);
+      displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(), this);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -826,7 +823,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     requireNonNull(entities);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      EntityDependenciesPanel.displayDependenciesDialog(entities, tableModel.connectionProvider(),
+      displayDependenciesDialog(entities, tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -871,7 +868,7 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Creates a static read-only entity table panel showing the given entities
-   * @param entities the entities to show in the panel
+   * @param entities the entities to show in the panel, assumed to be of the same type
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
