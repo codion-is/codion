@@ -80,6 +80,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -90,6 +91,7 @@ import static is.codion.swing.common.ui.component.table.TableColumnComponentPane
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
 
@@ -167,12 +169,13 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
-   * Specifies whether the refresh button toolbar should always be visible or hidden when the condition panel is not visible<br>
+   * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
    */
-  public static final PropertyValue<Boolean> REFRESH_TOOLBAR_ALWAYS_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.refreshToolbarAlwaysVisible", false);
+  public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
+          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
+                  RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   /**
    * Specifies how column selection is presented to the user.<br>
@@ -192,7 +195,6 @@ public class EntityTablePanel extends JPanel {
     UPDATE_SELECTED,
     SELECT_COLUMNS,
     RESET_COLUMNS,
-    EXPORT_JSON,
     SELECTION_MODE,
     CLEAR,
     REFRESH,
@@ -207,6 +209,20 @@ public class EntityTablePanel extends JPanel {
     REQUEST_SEARCH_FIELD_FOCUS,
     SELECT_CONDITION_PANEL,
     CONFIGURE_COLUMNS
+  }
+
+  /**
+   * Specifies the refresh button visibility.
+   */
+  public enum RefreshButtonVisible {
+    /**
+     * Refresh button should always be visible
+     */
+    ALWAYS,
+    /**
+     * Refresh button should only be visible when the table condition panel is visible
+     */
+    WHEN_CONDITION_PANEL_IS_VISIBLE
   }
 
   /**
@@ -241,11 +257,11 @@ public class EntityTablePanel extends JPanel {
 
   private final EntityTableConditionPanel conditionPanel;
 
-  private final JScrollPane conditionScrollPane;
+  private final JScrollPane conditionPanelScrollPane;
 
   private final TableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
 
-  private final JScrollPane summaryScrollPane;
+  private final JScrollPane summaryPanelScrollPane;
 
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
@@ -257,7 +273,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * the toolbar containing the refresh button
    */
-  private final JToolBar refreshToolBar;
+  private final JToolBar refreshButtonToolBar;
 
   /**
    * displays a status message or a refresh progress bar when refreshing
@@ -268,6 +284,8 @@ public class EntityTablePanel extends JPanel {
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
+  private final Control conditionRefreshControl;
+
   private JPanel searchFieldPanel;
 
   private JSplitPane southPanelSplitPane;
@@ -275,9 +293,9 @@ public class EntityTablePanel extends JPanel {
   private JToolBar southToolBar;
 
   /**
-   * specifies whether the refresh toolbar should always be visible, instead of being hidding along with the condition panel
+   * specifies when the refresh button toolbar should be visible
    */
-  private boolean refreshToolbarAlwaysVisible = REFRESH_TOOLBAR_ALWAYS_VISIBLE.get();
+  private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 
   /**
    * specifies whether to include the south panel
@@ -336,21 +354,22 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
+    this.conditionRefreshControl = createConditionRefreshControl();
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
-    this.conditionScrollPane = createConditionScrollPane();
+    this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.summaryPanel = createSummaryPanel();
-    this.summaryScrollPane = createSummaryScrollPane();
+    this.summaryPanelScrollPane = createSummaryPanelScrollPane();
     this.tablePanel = createTablePanel();
-    this.refreshToolBar = createRefreshToolBar();
+    this.refreshButtonToolBar = createRefreshButtonToolBar();
     this.statusPanel = new StatusPanel(tableModel);
   }
 
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionScrollPane,
-            summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
+    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane, summaryPanelScrollPane,
+            summaryPanel, southPanel, refreshButtonToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -462,19 +481,18 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return true if the refresh toolbar should always be visible
+   * @return the refresh button visible setting
    */
-  public final boolean isRefreshToolbarAlwaysVisible() {
-    return refreshToolbarAlwaysVisible;
+  public final RefreshButtonVisible getRefreshButtonVisible() {
+    return refreshButtonVisible;
   }
 
   /**
-   * @param refreshToolbarAlwaysVisible true if the refresh toolbar should always be visible,
-   * instead of being hidden when the condition panel is not visible
+   * @param refreshButtonVisible the refresh button visible setting
    */
-  public final void setRefreshToolbarAlwaysVisible(boolean refreshToolbarAlwaysVisible) {
-    this.refreshToolbarAlwaysVisible = refreshToolbarAlwaysVisible;
-    this.refreshToolBar.setVisible(refreshToolbarAlwaysVisible || isConditionPanelVisible());
+  public final void setRefreshToolbarVisible(RefreshButtonVisible refreshButtonVisible) {
+    this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
+    this.refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
   }
 
   /**
@@ -503,7 +521,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the condition panel is visible, false if it is hidden
    */
   public final boolean isConditionPanelVisible() {
-    return conditionScrollPane != null && conditionScrollPane.isVisible();
+    return conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible();
   }
 
   /**
@@ -589,7 +607,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the column summary panel is visible, false if it is hidden
    */
   public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane != null && summaryScrollPane.isVisible();
+    return summaryPanelScrollPane != null && summaryPanelScrollPane.isVisible();
   }
 
   /**
@@ -606,24 +624,10 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param controlCode the control code
-   * @return true if this table panel contains the given control
+   * @return the control associated with {@code controlCode} or an empty Optional if the control is not available
    */
-  public final boolean containsControl(ControlCode controlCode) {
-    return controls.containsKey(requireNonNull(controlCode));
-  }
-
-  /**
-   * @param controlCode the control code
-   * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given control code
-   * @see #containsControl(ControlCode)
-   */
-  public final Control getControl(ControlCode controlCode) {
-    if (!containsControl(controlCode)) {
-      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
-    }
-
-    return controls.get(controlCode);
+  public final Optional<Control> getControl(ControlCode controlCode) {
+    return Optional.ofNullable(controls.get(controlCode));
   }
 
   /**
@@ -989,7 +993,7 @@ public class EntityTablePanel extends JPanel {
             .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
-    southPanel.add(refreshToolBar, BorderLayout.WEST);
+    southPanel.add(refreshButtonToolBar, BorderLayout.WEST);
     southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
@@ -1005,23 +1009,30 @@ public class EntityTablePanel extends JPanel {
    * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
-    KeyEvents.builder(KeyEvent.VK_T)
-            .modifiers(CTRL_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(getControl(ControlCode.REQUEST_TABLE_FOCUS))
-            .enable(this);
-    KeyEvents.builder(KeyEvent.VK_F)
-            .modifiers(CTRL_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
-            .enable(this);
-    if (conditionPanel() != null) {
-      KeyEvents.builder(KeyEvent.VK_S)
-              .modifiers(CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(getControl(ControlCode.SELECT_CONDITION_PANEL))
-              .enable(this);
-    }
+    getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_T)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_F)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_S)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_S)
+                    .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
   }
 
   /**
@@ -1044,23 +1055,19 @@ public class EntityTablePanel extends JPanel {
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
-    if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
-      toolbarControls.add(controls.get(ControlCode.TOGGLE_SUMMARY_PANEL));
-    }
-    if (controls.containsKey(ControlCode.TOGGLE_CONDITION_PANEL)) {
-      toolbarControls.add(controls.get(ControlCode.TOGGLE_CONDITION_PANEL));
+    getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
+    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control -> {
+      toolbarControls.add(control);
       toolbarControls.addSeparator();
-    }
-    if (controls.containsKey(ControlCode.DELETE_SELECTED)) {
-      toolbarControls.add(controls.get(ControlCode.DELETE_SELECTED));
-    }
-    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
-      toolbarControls.add(controls.get(ControlCode.PRINT_TABLE));
-    }
-    toolbarControls.add(controls.get(ControlCode.CLEAR_SELECTION));
-    toolbarControls.addSeparator();
-    toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_UP));
-    toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_DOWN));
+    });
+    getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
+    getControl(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
+    getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
+      toolbarControls.add(control);
+      toolbarControls.addSeparator();
+    });
+    getControl(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
+    getControl(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
       additionalControls.actions().forEach(toolbarControls::add);
@@ -1079,68 +1086,66 @@ public class EntityTablePanel extends JPanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
-    popupControls.add(controls.get(ControlCode.REFRESH));
-    if (controls.containsKey(ControlCode.CLEAR)) {
-      popupControls.add(controls.get(ControlCode.CLEAR));
+    getControl(ControlCode.REFRESH).ifPresent(popupControls::add);
+    getControl(ControlCode.CLEAR).ifPresent(popupControls::add);
+    if (!popupControls.isEmpty()) {
+      popupControls.addSeparator();
     }
-    popupControls.addSeparator();
     addAdditionalControls(popupControls, additionalPopupMenuControls);
-    boolean separatorRequired = false;
-    if (controls.containsKey(ControlCode.UPDATE_SELECTED)) {
-      popupControls.add(controls.get(ControlCode.UPDATE_SELECTED));
-      separatorRequired = true;
-    }
-    if (controls.containsKey(ControlCode.DELETE_SELECTED)) {
-      popupControls.add(controls.get(ControlCode.DELETE_SELECTED));
-      separatorRequired = true;
-    }
-    if (controls.containsKey(ControlCode.EXPORT_JSON)) {
-      popupControls.add(controls.get(ControlCode.EXPORT_JSON));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
+    State separatorRequired = State.state();
+    getControl(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    if (separatorRequired.get()) {
       popupControls.addSeparator();
-      separatorRequired = false;
+      separatorRequired.set(false);
     }
-    if (controls.containsKey(ControlCode.VIEW_DEPENDENCIES)) {
-      popupControls.add(controls.get(ControlCode.VIEW_DEPENDENCIES));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
+    getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    if (separatorRequired.get()) {
       popupControls.addSeparator();
-      separatorRequired = false;
+      separatorRequired.set(false);
     }
     Controls printControls = createPrintMenuControls();
     if (printControls != null && !printControls.isEmpty()) {
       popupControls.add(printControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
     Controls columnControls = createColumnControls();
     if (!columnControls.isEmpty()) {
-      if (separatorRequired) {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       popupControls.add(columnControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
-    if (controls.containsKey(ControlCode.SELECTION_MODE)) {
-      if (separatorRequired) {
+    getControl(ControlCode.SELECTION_MODE).ifPresent(control -> {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
-      popupControls.add(controls.get(ControlCode.SELECTION_MODE));
-      separatorRequired = true;
-    }
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
     if (includeConditionPanel && conditionPanel != null) {
-      if (separatorRequired) {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       addConditionControls(popupControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
-    if (separatorRequired) {
-      popupControls.addSeparator();
-    }
-    popupControls.add(controls.get(ControlCode.COPY_TABLE_DATA));
+    getControl(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
+      if (separatorRequired.get()) {
+        popupControls.addSeparator();
+      }
+      popupControls.add(control);
+    });
 
     return popupControls;
   }
@@ -1150,9 +1155,7 @@ public class EntityTablePanel extends JPanel {
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
-      builder.control(controls.get(ControlCode.PRINT_TABLE));
-    }
+    getControl(ControlCode.PRINT_TABLE).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1252,12 +1255,13 @@ public class EntityTablePanel extends JPanel {
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
     controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
     controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
-    if (summaryScrollPane != null) {
+    if (summaryPanelScrollPane != null) {
       controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
     }
     if (includeConditionPanel && conditionPanel != null) {
       controls.putIfAbsent(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
       controls.putIfAbsent(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
+      controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     }
     controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
     controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
@@ -1269,7 +1273,6 @@ public class EntityTablePanel extends JPanel {
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
     controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
-    controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
@@ -1316,12 +1319,8 @@ public class EntityTablePanel extends JPanel {
   private Controls createColumnControls() {
     Controls.Builder builder = Controls.builder()
             .caption(MESSAGES.getString("columns"));
-    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
-      builder.control(controls.get(ControlCode.SELECT_COLUMNS));
-    }
-    if (controls.containsKey(ControlCode.RESET_COLUMNS)) {
-      builder.control(controls.get(ControlCode.RESET_COLUMNS));
-    }
+    getControl(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
+    getControl(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1373,6 +1372,13 @@ public class EntityTablePanel extends JPanel {
     return filteredTable;
   }
 
+  private Control createConditionRefreshControl() {
+    return Control.builder(tableModel::refresh)
+            .enabledState(tableModel.conditionChangedObserver())
+            .smallIcon(FrameworkIcons.instance().refreshRequired())
+            .build();
+  }
+
   private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
             new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
@@ -1383,18 +1389,13 @@ public class EntityTablePanel extends JPanel {
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
-  private JToolBar createRefreshToolBar() {
-    Control refreshControl = Control.builder(tableModel::refresh)
-            .enabledState(tableModel.conditionChangedObserver())
-            .smallIcon(FrameworkIcons.instance().refreshRequired())
-            .build();
-
+  private JToolBar createRefreshButtonToolBar() {
     KeyEvents.builder(KeyEvent.VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(refreshControl)
+            .action(conditionRefreshControl)
             .enable(this);
 
-    JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
+    JToolBar toolBar = Controls.controls(conditionRefreshControl).createHorizontalToolBar();
     toolBar.setFocusable(false);
     toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
@@ -1405,7 +1406,7 @@ public class EntityTablePanel extends JPanel {
     return toolBar;
   }
 
-  private JScrollPane createConditionScrollPane() {
+  private JScrollPane createConditionPanelScrollPane() {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
@@ -1418,7 +1419,7 @@ public class EntityTablePanel extends JPanel {
     return tableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
   }
 
-  private JScrollPane createSummaryScrollPane() {
+  private JScrollPane createSummaryPanelScrollPane() {
     if (summaryPanel == null) {
       return null;
     }
@@ -1429,11 +1430,11 @@ public class EntityTablePanel extends JPanel {
   private JPanel createTablePanel() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
-    if (conditionScrollPane != null) {
-      panel.add(conditionScrollPane, BorderLayout.NORTH);
+    if (conditionPanelScrollPane != null) {
+      panel.add(conditionPanelScrollPane, BorderLayout.NORTH);
     }
-    if (summaryScrollPane != null) {
-      panel.add(summaryScrollPane, BorderLayout.SOUTH);
+    if (summaryPanelScrollPane != null) {
+      panel.add(summaryPanelScrollPane, BorderLayout.SOUTH);
     }
 
     return panel;
@@ -1458,15 +1459,12 @@ public class EntityTablePanel extends JPanel {
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
-      Control refreshControl = Control.builder(tableModel::refresh)
-              .enabledState(tableModel.conditionChangedObserver())
-              .build();
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(refreshControl)
+              .action(conditionRefreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
-      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, refreshControl);
+      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
       conditionPanel.addAdvancedViewListener(advanced -> {
         if (isConditionPanelVisible()) {
           revalidate();
@@ -1476,16 +1474,16 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setConditionPanelVisibleInternal(boolean visible) {
-    if (conditionScrollPane != null) {
-      conditionScrollPane.setVisible(visible);
-      refreshToolBar.setVisible(refreshToolbarAlwaysVisible || visible);
+    if (conditionPanelScrollPane != null) {
+      conditionPanelScrollPane.setVisible(visible);
+      refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
       revalidate();
     }
   }
 
   private void setSummaryPanelVisibleInternal(boolean visible) {
-    if (summaryScrollPane != null) {
-      summaryScrollPane.setVisible(visible);
+    if (summaryPanelScrollPane != null) {
+      summaryPanelScrollPane.setVisible(visible);
       revalidate();
     }
   }
@@ -1537,9 +1535,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
-    if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
-      conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
-    }
+    getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
     Controls searchPanelControls = conditionPanel.controls();
     if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
