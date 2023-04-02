@@ -195,7 +195,6 @@ public class EntityTablePanel extends JPanel {
     UPDATE_SELECTED,
     SELECT_COLUMNS,
     RESET_COLUMNS,
-    EXPORT_JSON,
     SELECTION_MODE,
     CLEAR,
     REFRESH,
@@ -1099,10 +1098,6 @@ public class EntityTablePanel extends JPanel {
       separatorRequired.set(true);
     });
     getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
-      popupControls.add(control);
-      separatorRequired.set(true);
-    });
-    getControl(ControlCode.EXPORT_JSON).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
