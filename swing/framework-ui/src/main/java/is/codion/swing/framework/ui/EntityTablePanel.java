@@ -80,6 +80,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
 
@@ -170,7 +171,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
    * Value type: Boolean<br>
-   * Default value: {@link RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE}
+   * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
    */
   public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
           Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
@@ -624,24 +625,10 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param controlCode the control code
-   * @return true if this table panel contains the given control
+   * @return the control associated with {@code controlCode} or an empty Optional if the control is not available
    */
-  public final boolean containsControl(ControlCode controlCode) {
-    return controls.containsKey(requireNonNull(controlCode));
-  }
-
-  /**
-   * @param controlCode the control code
-   * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given control code
-   * @see #containsControl(ControlCode)
-   */
-  public final Control getControl(ControlCode controlCode) {
-    if (!containsControl(controlCode)) {
-      throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
-    }
-
-    return controls.get(controlCode);
+  public final Optional<Control> getControl(ControlCode controlCode) {
+    return Optional.ofNullable(controls.get(controlCode));
   }
 
   /**
@@ -1023,30 +1010,30 @@ public class EntityTablePanel extends JPanel {
    * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
-    KeyEvents.builder(KeyEvent.VK_T)
-            .modifiers(CTRL_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(getControl(ControlCode.REQUEST_TABLE_FOCUS))
-            .enable(this);
-    KeyEvents.builder(KeyEvent.VK_F)
-            .modifiers(CTRL_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
-            .enable(this);
-    if (includeConditionPanel && conditionPanel() != null) {
-      KeyEvents.builder(KeyEvent.VK_S)
-              .modifiers(CTRL_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(getControl(ControlCode.SELECT_CONDITION_PANEL))
-              .enable(this);
-      if (containsControl(ControlCode.TOGGLE_CONDITION_PANEL)) {
-        KeyEvents.builder(KeyEvent.VK_S)
-                .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                .action(getControl(ControlCode.TOGGLE_CONDITION_PANEL))
-                .enable(this);
-      }
-    }
+    getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_T)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_F)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_S)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+            KeyEvents.builder(KeyEvent.VK_S)
+                    .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
   }
 
   /**
@@ -1069,23 +1056,19 @@ public class EntityTablePanel extends JPanel {
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
-    if (controls.containsKey(ControlCode.TOGGLE_SUMMARY_PANEL)) {
-      toolbarControls.add(controls.get(ControlCode.TOGGLE_SUMMARY_PANEL));
-    }
-    if (controls.containsKey(ControlCode.TOGGLE_CONDITION_PANEL)) {
-      toolbarControls.add(controls.get(ControlCode.TOGGLE_CONDITION_PANEL));
+    getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
+    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control -> {
+      toolbarControls.add(control);
       toolbarControls.addSeparator();
-    }
-    if (controls.containsKey(ControlCode.DELETE_SELECTED)) {
-      toolbarControls.add(controls.get(ControlCode.DELETE_SELECTED));
-    }
-    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
-      toolbarControls.add(controls.get(ControlCode.PRINT_TABLE));
-    }
-    toolbarControls.add(controls.get(ControlCode.CLEAR_SELECTION));
-    toolbarControls.addSeparator();
-    toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_UP));
-    toolbarControls.add(controls.get(ControlCode.MOVE_SELECTION_DOWN));
+    });
+    getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
+    getControl(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
+    getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
+      toolbarControls.add(control);
+      toolbarControls.addSeparator();
+    });
+    getControl(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
+    getControl(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
       additionalControls.actions().forEach(toolbarControls::add);
@@ -1104,68 +1087,70 @@ public class EntityTablePanel extends JPanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
-    popupControls.add(controls.get(ControlCode.REFRESH));
-    if (controls.containsKey(ControlCode.CLEAR)) {
-      popupControls.add(controls.get(ControlCode.CLEAR));
+    getControl(ControlCode.REFRESH).ifPresent(popupControls::add);
+    getControl(ControlCode.CLEAR).ifPresent(popupControls::add);
+    if (!popupControls.isEmpty()) {
+      popupControls.addSeparator();
     }
-    popupControls.addSeparator();
     addAdditionalControls(popupControls, additionalPopupMenuControls);
-    boolean separatorRequired = false;
-    if (controls.containsKey(ControlCode.UPDATE_SELECTED)) {
-      popupControls.add(controls.get(ControlCode.UPDATE_SELECTED));
-      separatorRequired = true;
-    }
-    if (controls.containsKey(ControlCode.DELETE_SELECTED)) {
-      popupControls.add(controls.get(ControlCode.DELETE_SELECTED));
-      separatorRequired = true;
-    }
-    if (controls.containsKey(ControlCode.EXPORT_JSON)) {
-      popupControls.add(controls.get(ControlCode.EXPORT_JSON));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
+    State separatorRequired = State.state();
+    getControl(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    getControl(ControlCode.EXPORT_JSON).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    if (separatorRequired.get()) {
       popupControls.addSeparator();
-      separatorRequired = false;
+      separatorRequired.set(false);
     }
-    if (controls.containsKey(ControlCode.VIEW_DEPENDENCIES)) {
-      popupControls.add(controls.get(ControlCode.VIEW_DEPENDENCIES));
-      separatorRequired = true;
-    }
-    if (separatorRequired) {
+    getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
+    if (separatorRequired.get()) {
       popupControls.addSeparator();
-      separatorRequired = false;
+      separatorRequired.set(false);
     }
     Controls printControls = createPrintMenuControls();
     if (printControls != null && !printControls.isEmpty()) {
       popupControls.add(printControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
     Controls columnControls = createColumnControls();
     if (!columnControls.isEmpty()) {
-      if (separatorRequired) {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       popupControls.add(columnControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
-    if (controls.containsKey(ControlCode.SELECTION_MODE)) {
-      if (separatorRequired) {
+    getControl(ControlCode.SELECTION_MODE).ifPresent(control -> {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
-      popupControls.add(controls.get(ControlCode.SELECTION_MODE));
-      separatorRequired = true;
-    }
+      popupControls.add(control);
+      separatorRequired.set(true);
+    });
     if (includeConditionPanel && conditionPanel != null) {
-      if (separatorRequired) {
+      if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
       addConditionControls(popupControls);
-      separatorRequired = true;
+      separatorRequired.set(true);
     }
-    if (separatorRequired) {
-      popupControls.addSeparator();
-    }
-    popupControls.add(controls.get(ControlCode.COPY_TABLE_DATA));
+    getControl(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
+      if (separatorRequired.get()) {
+        popupControls.addSeparator();
+      }
+      popupControls.add(control);
+    });
 
     return popupControls;
   }
@@ -1175,9 +1160,7 @@ public class EntityTablePanel extends JPanel {
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    if (controls.containsKey(ControlCode.PRINT_TABLE)) {
-      builder.control(controls.get(ControlCode.PRINT_TABLE));
-    }
+    getControl(ControlCode.PRINT_TABLE).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1341,12 +1324,8 @@ public class EntityTablePanel extends JPanel {
   private Controls createColumnControls() {
     Controls.Builder builder = Controls.builder()
             .caption(MESSAGES.getString("columns"));
-    if (controls.containsKey(ControlCode.SELECT_COLUMNS)) {
-      builder.control(controls.get(ControlCode.SELECT_COLUMNS));
-    }
-    if (controls.containsKey(ControlCode.RESET_COLUMNS)) {
-      builder.control(controls.get(ControlCode.RESET_COLUMNS));
-    }
+    getControl(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
+    getControl(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1561,9 +1540,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
-    if (this.controls.containsKey(ControlCode.CONDITION_PANEL_VISIBLE)) {
-      conditionControls.add(getControl(ControlCode.CONDITION_PANEL_VISIBLE));
-    }
+    getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
     Controls searchPanelControls = conditionPanel.controls();
     if (!searchPanelControls.isEmpty()) {
       conditionControls.addAll(searchPanelControls);
