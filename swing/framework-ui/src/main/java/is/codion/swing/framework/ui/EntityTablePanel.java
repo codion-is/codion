@@ -167,12 +167,13 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
-   * Specifies whether the refresh button toolbar should always be visible or hidden when the condition panel is not visible<br>
+   * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: {@link RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE}
    */
-  public static final PropertyValue<Boolean> REFRESH_TOOLBAR_ALWAYS_VISIBLE =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.refreshToolbarAlwaysVisible", false);
+  public static final PropertyValue<RefreshButtonVisible> REFRESH_BUTTON_VISIBLE =
+          Configuration.enumValue("is.codion.swing.framework.ui.EntityTablePanel.refreshButtonVisible",
+                  RefreshButtonVisible.class, RefreshButtonVisible.WHEN_CONDITION_PANEL_IS_VISIBLE);
 
   /**
    * Specifies how column selection is presented to the user.<br>
@@ -207,6 +208,20 @@ public class EntityTablePanel extends JPanel {
     REQUEST_SEARCH_FIELD_FOCUS,
     SELECT_CONDITION_PANEL,
     CONFIGURE_COLUMNS
+  }
+
+  /**
+   * Specifies the refresh button visibility.
+   */
+  public enum RefreshButtonVisible {
+    /**
+     * Refresh button should always be visible
+     */
+    ALWAYS,
+    /**
+     * Refresh button should only be visible when the table condition panel is visible
+     */
+    WHEN_CONDITION_PANEL_IS_VISIBLE
   }
 
   /**
@@ -257,7 +272,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * the toolbar containing the refresh button
    */
-  private final JToolBar refreshToolBar;
+  private final JToolBar refreshButtonToolBar;
 
   /**
    * displays a status message or a refresh progress bar when refreshing
@@ -268,6 +283,8 @@ public class EntityTablePanel extends JPanel {
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
+  private final Control conditionRefreshControl;
+
   private JPanel searchFieldPanel;
 
   private JSplitPane southPanelSplitPane;
@@ -275,9 +292,9 @@ public class EntityTablePanel extends JPanel {
   private JToolBar southToolBar;
 
   /**
-   * specifies whether the refresh toolbar should always be visible, instead of being hidding along with the condition panel
+   * specifies when the refresh button toolbar should be visible
    */
-  private boolean refreshToolbarAlwaysVisible = REFRESH_TOOLBAR_ALWAYS_VISIBLE.get();
+  private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
 
   /**
    * specifies whether to include the south panel
@@ -336,21 +353,22 @@ public class EntityTablePanel extends JPanel {
   public EntityTablePanel(SwingEntityTableModel tableModel, EntityTableConditionPanel conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
+    this.conditionRefreshControl = createConditionRefreshControl();
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.summaryPanel = createSummaryPanel();
     this.summaryPanelScrollPane = createSummaryPanelScrollPane();
     this.tablePanel = createTablePanel();
-    this.refreshToolBar = createRefreshToolBar();
+    this.refreshButtonToolBar = createRefreshButtonToolBar();
     this.statusPanel = new StatusPanel(tableModel);
   }
 
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane,
-            summaryPanelScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
+    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane, summaryPanelScrollPane,
+            summaryPanel, southPanel, refreshButtonToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -462,19 +480,18 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return true if the refresh toolbar should always be visible
+   * @return the refresh button visible setting
    */
-  public final boolean isRefreshToolbarAlwaysVisible() {
-    return refreshToolbarAlwaysVisible;
+  public final RefreshButtonVisible getRefreshButtonVisible() {
+    return refreshButtonVisible;
   }
 
   /**
-   * @param refreshToolbarAlwaysVisible true if the refresh toolbar should always be visible,
-   * instead of being hidden when the condition panel is not visible
+   * @param refreshButtonVisible the refresh button visible setting
    */
-  public final void setRefreshToolbarAlwaysVisible(boolean refreshToolbarAlwaysVisible) {
-    this.refreshToolbarAlwaysVisible = refreshToolbarAlwaysVisible;
-    this.refreshToolBar.setVisible(refreshToolbarAlwaysVisible || isConditionPanelVisible());
+  public final void setRefreshToolbarVisible(RefreshButtonVisible refreshButtonVisible) {
+    this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
+    this.refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
   }
 
   /**
@@ -989,7 +1006,7 @@ public class EntityTablePanel extends JPanel {
             .rightComponent(statusPanel)
             .build();
     southPanel.add(southPanelSplitPane, BorderLayout.CENTER);
-    southPanel.add(refreshToolBar, BorderLayout.WEST);
+    southPanel.add(refreshButtonToolBar, BorderLayout.WEST);
     southToolBar = createSouthToolBar();
     if (southToolBar != null) {
       southPanel.add(southToolBar, BorderLayout.EAST);
@@ -1373,6 +1390,13 @@ public class EntityTablePanel extends JPanel {
     return filteredTable;
   }
 
+  private Control createConditionRefreshControl() {
+    return Control.builder(tableModel::refresh)
+            .enabledState(tableModel.conditionChangedObserver())
+            .smallIcon(FrameworkIcons.instance().refreshRequired())
+            .build();
+  }
+
   private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
             new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
@@ -1383,18 +1407,13 @@ public class EntityTablePanel extends JPanel {
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
-  private JToolBar createRefreshToolBar() {
-    Control refreshControl = Control.builder(tableModel::refresh)
-            .enabledState(tableModel.conditionChangedObserver())
-            .smallIcon(FrameworkIcons.instance().refreshRequired())
-            .build();
-
+  private JToolBar createRefreshButtonToolBar() {
     KeyEvents.builder(KeyEvent.VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(refreshControl)
+            .action(conditionRefreshControl)
             .enable(this);
 
-    JToolBar toolBar = Controls.controls(refreshControl).createHorizontalToolBar();
+    JToolBar toolBar = Controls.controls(conditionRefreshControl).createHorizontalToolBar();
     toolBar.setFocusable(false);
     toolBar.getComponentAtIndex(0).setFocusable(false);
     toolBar.setFloatable(false);
@@ -1458,15 +1477,12 @@ public class EntityTablePanel extends JPanel {
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
-      Control refreshControl = Control.builder(tableModel::refresh)
-              .enabledState(tableModel.conditionChangedObserver())
-              .build();
       KeyEvents.builder(KeyEvent.VK_ENTER)
               .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(refreshControl)
+              .action(conditionRefreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
-      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, refreshControl);
+      addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
       conditionPanel.addAdvancedViewListener(advanced -> {
         if (isConditionPanelVisible()) {
           revalidate();
@@ -1478,7 +1494,7 @@ public class EntityTablePanel extends JPanel {
   private void setConditionPanelVisibleInternal(boolean visible) {
     if (conditionPanelScrollPane != null) {
       conditionPanelScrollPane.setVisible(visible);
-      refreshToolBar.setVisible(refreshToolbarAlwaysVisible || visible);
+      refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || visible);
       revalidate();
     }
   }

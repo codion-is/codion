@@ -26,7 +26,7 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#TABLE_AUTO_RESIZE_MODE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_CLEAR_CONTROL}<br>
- * {@link is.codion.swing.framework.ui.EntityTablePanel#REFRESH_TOOLBAR_ALWAYS_VISIBLE}<br>
+ * {@link is.codion.swing.framework.ui.EntityTablePanel#REFRESH_BUTTON_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#COLUMN_SELECTION}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
  */

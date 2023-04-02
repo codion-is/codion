@@ -8759,3 +8759,4 @@
   TemporalInputPanel, button tooltip added
   ProxyBuilder.Parameters.arguments() now List<?> instead of List<Object>
   FXDetailModelLink and FXForeignKeyDetailModelLink added, for completeness sake
+  EntityTablePanel.setRefreshToolbarAlwaysVisible(true) replaced with setRefreshButtonVisible() with enum, some related refactoring
