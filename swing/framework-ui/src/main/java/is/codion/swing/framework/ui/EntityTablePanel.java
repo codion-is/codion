@@ -241,11 +241,11 @@ public class EntityTablePanel extends JPanel {
 
   private final EntityTableConditionPanel conditionPanel;
 
-  private final JScrollPane conditionScrollPane;
+  private final JScrollPane conditionPanelScrollPane;
 
   private final TableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
 
-  private final JScrollPane summaryScrollPane;
+  private final JScrollPane summaryPanelScrollPane;
 
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
@@ -338,9 +338,9 @@ public class EntityTablePanel extends JPanel {
     this.table = createTable();
     this.conditionPanel = conditionPanel;
     this.tableScrollPane = new JScrollPane(table);
-    this.conditionScrollPane = createConditionScrollPane();
+    this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.summaryPanel = createSummaryPanel();
-    this.summaryScrollPane = createSummaryScrollPane();
+    this.summaryPanelScrollPane = createSummaryPanelScrollPane();
     this.tablePanel = createTablePanel();
     this.refreshToolBar = createRefreshToolBar();
     this.statusPanel = new StatusPanel(tableModel);
@@ -349,8 +349,8 @@ public class EntityTablePanel extends JPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionScrollPane,
-            summaryScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
+    Utilities.updateUI(tablePanel, table, statusPanel, conditionPanel, conditionPanelScrollPane,
+            summaryPanelScrollPane, summaryPanel, southPanel, refreshToolBar, southToolBar, southPanelSplitPane, searchFieldPanel);
     if (tableScrollPane != null) {
       Utilities.updateUI(tableScrollPane, tableScrollPane.getViewport(),
               tableScrollPane.getHorizontalScrollBar(), tableScrollPane.getVerticalScrollBar());
@@ -503,7 +503,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the condition panel is visible, false if it is hidden
    */
   public final boolean isConditionPanelVisible() {
-    return conditionScrollPane != null && conditionScrollPane.isVisible();
+    return conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible();
   }
 
   /**
@@ -589,7 +589,7 @@ public class EntityTablePanel extends JPanel {
    * @return true if the column summary panel is visible, false if it is hidden
    */
   public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane != null && summaryScrollPane.isVisible();
+    return summaryPanelScrollPane != null && summaryPanelScrollPane.isVisible();
   }
 
   /**
@@ -1252,7 +1252,7 @@ public class EntityTablePanel extends JPanel {
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
     controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
     controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
-    if (summaryScrollPane != null) {
+    if (summaryPanelScrollPane != null) {
       controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
     }
     if (includeConditionPanel && conditionPanel != null) {
@@ -1405,7 +1405,7 @@ public class EntityTablePanel extends JPanel {
     return toolBar;
   }
 
-  private JScrollPane createConditionScrollPane() {
+  private JScrollPane createConditionPanelScrollPane() {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
 
@@ -1418,7 +1418,7 @@ public class EntityTablePanel extends JPanel {
     return tableColumnComponentPanel(tableModel.columnModel(), columnSummaryPanels);
   }
 
-  private JScrollPane createSummaryScrollPane() {
+  private JScrollPane createSummaryPanelScrollPane() {
     if (summaryPanel == null) {
       return null;
     }
@@ -1429,11 +1429,11 @@ public class EntityTablePanel extends JPanel {
   private JPanel createTablePanel() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
-    if (conditionScrollPane != null) {
-      panel.add(conditionScrollPane, BorderLayout.NORTH);
+    if (conditionPanelScrollPane != null) {
+      panel.add(conditionPanelScrollPane, BorderLayout.NORTH);
     }
-    if (summaryScrollPane != null) {
-      panel.add(summaryScrollPane, BorderLayout.SOUTH);
+    if (summaryPanelScrollPane != null) {
+      panel.add(summaryPanelScrollPane, BorderLayout.SOUTH);
     }
 
     return panel;
@@ -1476,16 +1476,16 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void setConditionPanelVisibleInternal(boolean visible) {
-    if (conditionScrollPane != null) {
-      conditionScrollPane.setVisible(visible);
+    if (conditionPanelScrollPane != null) {
+      conditionPanelScrollPane.setVisible(visible);
       refreshToolBar.setVisible(refreshToolbarAlwaysVisible || visible);
       revalidate();
     }
   }
 
   private void setSummaryPanelVisibleInternal(boolean visible) {
-    if (summaryScrollPane != null) {
-      summaryScrollPane.setVisible(visible);
+    if (summaryPanelScrollPane != null) {
+      summaryPanelScrollPane.setVisible(visible);
       revalidate();
     }
   }
