@@ -1152,7 +1152,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsTablePanel()) {
       Control selectTablePanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS);
       Control selectSearchFieldControl = tablePanel().getControl(EntityTablePanel.ControlCode.REQUEST_SEARCH_FIELD_FOCUS);
-      Control selectConditionPanelControl = tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL);
       KeyEvents.builder(KeyEvent.VK_T)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1163,11 +1162,18 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectSearchFieldControl)
               .enable(this);
-      if (tablePanel.conditionPanel() != null) {
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL)) {
         KeyEvents.builder(KeyEvent.VK_S)
                 .modifiers(CTRL_DOWN_MASK)
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                .action(selectConditionPanelControl)
+                .action(tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL))
+                .enable(this);
+      }
+      if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL)) {
+        KeyEvents.builder(KeyEvent.VK_S)
+                .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(tablePanel().getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL))
                 .enable(this);
       }
       if (containsEditPanel()) {
@@ -1181,11 +1187,18 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                 .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                 .action(selectSearchFieldControl)
                 .enable(editControlPanel);
-        if (tablePanel.conditionPanel() != null) {
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL)) {
           KeyEvents.builder(KeyEvent.VK_S)
                   .modifiers(CTRL_DOWN_MASK)
                   .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                  .action(selectConditionPanelControl)
+                  .action(tablePanel().getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL))
+                  .enable(editControlPanel);
+        }
+        if (tablePanel.containsControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL)) {
+          KeyEvents.builder(KeyEvent.VK_S)
+                  .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                  .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                  .action(tablePanel().getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL))
                   .enable(editControlPanel);
         }
       }

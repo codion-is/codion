@@ -90,6 +90,7 @@ import static is.codion.swing.common.ui.component.table.TableColumnComponentPane
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.util.Objects.requireNonNull;
 
@@ -1032,12 +1033,19 @@ public class EntityTablePanel extends JPanel {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS))
             .enable(this);
-    if (conditionPanel() != null) {
+    if (includeConditionPanel && conditionPanel() != null) {
       KeyEvents.builder(KeyEvent.VK_S)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(getControl(ControlCode.SELECT_CONDITION_PANEL))
               .enable(this);
+      if (containsControl(ControlCode.TOGGLE_CONDITION_PANEL)) {
+        KeyEvents.builder(KeyEvent.VK_S)
+                .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                .action(getControl(ControlCode.TOGGLE_CONDITION_PANEL))
+                .enable(this);
+      }
     }
   }
 
@@ -1275,6 +1283,7 @@ public class EntityTablePanel extends JPanel {
     if (includeConditionPanel && conditionPanel != null) {
       controls.putIfAbsent(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
       controls.putIfAbsent(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
+      controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     }
     controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
     controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
@@ -1286,7 +1295,6 @@ public class EntityTablePanel extends JPanel {
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
     controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
-    controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
