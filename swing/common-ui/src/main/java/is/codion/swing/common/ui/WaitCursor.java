@@ -61,6 +61,10 @@ public final class WaitCursor {
     hide(Utilities.getParentWindow(component));
   }
 
+  /**
+   * Adds a wait cursor request for the given window
+   * @param window the window
+   */
   public static void show(Window window) {
     setWaitCursor(true, window);
   }
