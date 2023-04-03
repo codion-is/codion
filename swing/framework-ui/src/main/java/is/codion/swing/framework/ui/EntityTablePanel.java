@@ -490,7 +490,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param refreshButtonVisible the refresh button visible setting
    */
-  public final void setRefreshToolbarVisible(RefreshButtonVisible refreshButtonVisible) {
+  public final void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
     this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
     this.refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
   }

@@ -8762,3 +8762,4 @@
   EntityTablePanel.setRefreshToolbarAlwaysVisible(true) replaced with setRefreshButtonVisible() with enum, some related refactoring
   EntityTablePanel, EntityPanel, CTRL-ALT-S keyboard shortcut added for toggling the search condition panel state
   EntityTablePanel.containsControl() removed, getControl() returns Optional instead
+  EntityTablePanel.setRefreshToolbarVisible() renamed setRefreshButtonVisible()
