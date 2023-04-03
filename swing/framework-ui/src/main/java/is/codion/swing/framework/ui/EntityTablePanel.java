@@ -498,15 +498,15 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return true if a progress bar is shown while the model is refreshing
    */
-  public final boolean isShowRefreshingProgressBar() {
-    return statusPanel.showRefreshingProgressBar;
+  public final boolean isShowRefreshProgressBar() {
+    return statusPanel.showRefreshProgressBar;
   }
 
   /**
-   * @param showRefreshingProgressBar true if an indeterminate progress bar should be shown while the model is refreshing
+   * @param showRefreshProgressBar true if an indeterminate progress bar should be shown while the model is refreshing
    */
-  public final void setShowRefreshingProgressBar(boolean showRefreshingProgressBar) {
-    statusPanel.showRefreshingProgressBar = showRefreshingProgressBar;
+  public final void setShowRefreshProgressBar(boolean showRefreshProgressBar) {
+    statusPanel.showRefreshProgressBar = showRefreshProgressBar;
   }
 
   /**
@@ -1717,7 +1717,7 @@ public class EntityTablePanel extends JPanel {
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
-    private boolean showRefreshingProgressBar = false;
+    private boolean showRefreshProgressBar = false;
 
     private StatusPanel(SwingEntityTableModel tableModel) {
       super(new CardLayout());
@@ -1727,7 +1727,7 @@ public class EntityTablePanel extends JPanel {
       add(createRefreshingProgressPanel(), REFRESHING);
       CardLayout layout = (CardLayout) getLayout();
       tableModel.refreshingObserver().addDataListener(isRefreshing -> {
-        if (showRefreshingProgressBar) {
+        if (showRefreshProgressBar) {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });
