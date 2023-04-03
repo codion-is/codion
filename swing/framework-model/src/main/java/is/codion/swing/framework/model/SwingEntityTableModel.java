@@ -78,30 +78,55 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel tableConditionModel;
   private final State queryConditionRequiredState = State.state();
-  /** Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)} */
+
+  /**
+   * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
+   */
   private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
-  /** the condition active during the last refresh */
+
+  /**
+   * the condition active during the last refresh
+   */
   private Condition refreshCondition;
-  /** the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched */
+
+  /**
+   * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
+   */
   private int limit = -1;
-  /** Specifies whether the values of hidden columns are included in the underlying query */
+
+  /**
+   * Specifies whether the values of hidden columns are included in the underlying query
+   */
   private boolean queryHiddenColumns = EntityTableModel.QUERY_HIDDEN_COLUMNS.get();
-  /** If true then items deleted via the edit model are removed from this table model */
+
+  /**
+   * If true then items deleted via the edit model are removed from this table model
+   */
   private boolean removeDeletedEntities = true;
-  /** The action to perform when entities are inserted via the edit model */
+
+  /**
+   * The action to perform when entities are inserted via the edit model
+   */
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  /** Specifies whether multiple entities can be updated at a time */
+
+  /**
+   * Specifies whether multiple entities can be updated at a time
+   */
   private boolean batchUpdateEnabled = true;
+
   /**
    * Specifies whether this table model is editable.
    * @see #isCellEditable(int, int)
    * @see #setValueAt(Object, int, int)
    */
   private boolean editable = false;
-  /** Specifies whether to use the current sort order as the query order by clause */
+
+  /**
+   * Specifies whether to use the current sort order as the query order by clause
+   */
   private boolean orderQueryBySortOrder = ORDER_QUERY_BY_SORT_ORDER.get();
   private boolean listenToEditEvents = true;
 
