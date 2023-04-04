@@ -8776,3 +8776,4 @@
   EntityTablePanel.viewSelectionDependencies() refactored, no longer sets the wait cursor, which is now handled by EntityDependenciesPanel.selectDependencies()
   Utilities.printFocusOwner() focus owner debug output method added
   World demo bug fixed, CityEditPanel NullPointerException when invoked in an insert action, minor refactoring
+  World demo, minor refactoring, move calls to initializeComboBoxModels() to their relevant edit models or as close as possible
