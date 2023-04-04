@@ -8,6 +8,9 @@ import is.codion.swing.common.model.worker.ProgressWorker.ProgressTask;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
+
+import org.kordamp.ikonli.foundation.Foundation;
 
 import java.util.List;
 
@@ -28,6 +31,7 @@ final class CityTablePanel extends ChartTablePanel {
     return Control.builder(this::fetchLocation)
             .caption("Fetch location")
             .enabledState(((CityTableModel) tableModel()).citiesWithoutLocationSelectedObserver())
+            .smallIcon(FrameworkIcons.instance().getIcon(Foundation.MAP))
             .build();
   }
 
