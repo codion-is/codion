@@ -7,6 +7,7 @@ module is.codion.framework.demos.world {
   requires is.codion.plugin.jackson.json;
   requires com.formdev.flatlaf;
   requires com.formdev.flatlaf.intellijthemes;
+  requires org.kordamp.ikonli.foundation;
   requires jasperreports;
   requires org.jfree.jfreechart;
   requires org.json;
