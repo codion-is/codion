@@ -31,11 +31,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.HierarchyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
 
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -366,6 +369,25 @@ public final class Utilities {
 
     return lookAndFeelClassName.equals(systemLookAndFeelClassName()) ||
             lookAndFeelClassName.equals(UIManager.getCrossPlatformLookAndFeelClassName());
+  }
+
+  /**
+   * For focus debug purposes, prints the new and old values to the standard output
+   * when the 'focusOwner' value changes in the current keyboard focus manager.
+   */
+  public static void printFocusOwner() {
+    getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new PrintFocusOwnerPropertyChangeListener());
+  }
+
+  private static final class PrintFocusOwnerPropertyChangeListener implements PropertyChangeListener {
+
+    @Override
+    public void propertyChange(PropertyChangeEvent changeEvent) {
+      Component oldValue = (Component) changeEvent.getOldValue();
+      Component newValue = (Component) changeEvent.getNewValue();
+      System.out.println((oldValue == null ? "null" : oldValue.getClass().getSimpleName()) + " -> " +
+              (newValue == null ? "null" : newValue.getClass().getSimpleName()));
+    }
   }
 
   private static final class EnableComponentListener implements EventDataListener<Boolean> {
