@@ -8,6 +8,8 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
+import org.kordamp.ikonli.foundation.Foundation;
+
 import javax.swing.JTable;
 import java.io.File;
 import java.io.IOException;
@@ -33,6 +35,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .addSeparatorAt(2)
             .addAt(3, Control.builder(this::exportCSV)
                     .caption("Export CSV...")
+                    .smallIcon(FrameworkIcons.instance().getIcon(Foundation.PAGE_EXPORT_CSV))
                     .build());
   }
 
