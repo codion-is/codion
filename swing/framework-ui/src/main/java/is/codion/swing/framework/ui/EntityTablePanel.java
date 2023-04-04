@@ -668,10 +668,9 @@ public class EntityTablePanel extends JPanel {
    */
   public final Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
-            .caption(FrameworkMessages.viewDependencies() + "...")
+            .caption(FrameworkMessages.dependencies())
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .description(FrameworkMessages.viewDependenciesTip())
-            .mnemonic('W')
+            .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
   }
@@ -764,20 +763,9 @@ public class EntityTablePanel extends JPanel {
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public final void viewSelectionDependencies() {
-    if (tableModel.selectionModel().isSelectionEmpty()) {
-      return;
-    }
-
-    WaitCursor.show(this);
-    try {
+    if (!tableModel.selectionModel().isSelectionEmpty()) {
       displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(), this);
-    }
-    catch (Exception e) {
-      LOG.error(e.getMessage(), e);
-      onException(e);
-    }
-    finally {
-      WaitCursor.hide(this);
+      table.requestFocusInWindow();//otherwise the JRootPane keeps the focus after the popup menu has been closed
     }
   }
 

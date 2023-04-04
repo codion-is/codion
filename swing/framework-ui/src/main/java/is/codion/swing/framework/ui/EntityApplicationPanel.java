@@ -257,7 +257,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void viewDependencyTree() {
     Dialogs.componentDialog(createDependencyTree())
             .owner(this)
-            .title(FrameworkMessages.viewDependencies())
+            .title(FrameworkMessages.dependencies())
             .modal(false)
             .show();
   }
@@ -565,7 +565,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewDependencyTree() {
     return Control.builder(this::viewDependencyTree)
-            .caption(FrameworkMessages.viewDependencies())
+            .caption(FrameworkMessages.dependencies())
             .build();
   }
 

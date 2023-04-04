@@ -45,7 +45,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .add(calendar())
             .add(entityField())
             .add(textInput())
-            .add(viewDependencies())
+            .add(dependencies())
             .scrollPane()
             .verticalUnitIncrement(VERTICAL_UNIT_INCREMENT)
             .build(this::add);
@@ -158,10 +158,10 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private static JPanel viewDependencies() {
+  private static JPanel dependencies() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("navigate_left_right")), new JLabel(CTRL + ALT + LEFT_RIGHT))
-            .border(createTitledBorder(FrameworkMessages.viewDependencies()))
+            .border(createTitledBorder(FrameworkMessages.dependencies()))
             .build();
   }
 }
