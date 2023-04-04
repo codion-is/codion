@@ -17,7 +17,7 @@ final class CountryPanel extends EntityPanel {
 
     SwingEntityModel cityModel = countryModel.detailModel(City.TYPE);
     EntityPanel cityPanel = new EntityPanel(cityModel,
-            new CityEditPanel(cityModel.editModel(), (CityTableModel) cityModel.tableModel()),
+            new CityEditPanel((CityTableModel) cityModel.tableModel()),
             new CityTablePanel((CityTableModel) cityModel.tableModel()));
 
     SwingEntityModel countryLanguageModel = countryModel.detailModel(CountryLanguage.TYPE);

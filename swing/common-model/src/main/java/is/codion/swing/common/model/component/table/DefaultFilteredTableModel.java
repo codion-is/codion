@@ -81,6 +81,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * Instantiates a new table model.
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
+   * @throws IllegalArgumentException in case {@code tableColumns} is empty
+   * @throws NullPointerException in case {@code tableColumns} or {@code columnValueProvider} is null
    */
   public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider) {
     this(tableColumns, columnValueProvider, null);
@@ -91,6 +93,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @param tableColumns the table columns to base this table model on
    * @param columnValueProvider the column value provider
    * @param columnFilterModels the filter models if any, may be null
+   * @throws IllegalArgumentException in case {@code tableColumns} is empty
+   * @throws NullPointerException in case {@code tableColumns} or {@code columnValueProvider} is null
    */
   public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
                                    Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilterModels) {

@@ -14,6 +14,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
 
   CountryEditModel(EntityConnectionProvider connectionProvider) {
     super(Country.TYPE, connectionProvider);
+    initializeComboBoxModels(Country.CAPITAL_FK);
   }
 
   @Override

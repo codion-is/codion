@@ -47,12 +47,14 @@ public final class CityEditPanel extends EntityEditPanel {
   private final EventDataListener<Collection<Entity>> displayLocationListener;
 
   public CityEditPanel(SwingEntityEditModel editModel) {
-    this(editModel, null);
+    super(editModel);
+    this.mapKit = null;
+    this.displayLocationListener = null;
   }
 
-  CityEditPanel(SwingEntityEditModel editModel, CityTableModel tableModel) {
-    super(editModel);
-    this.mapKit = tableModel == null ? null : createMapKit();
+  CityEditPanel(CityTableModel tableModel) {
+    super(tableModel.editModel());
+    this.mapKit = createMapKit();
     this.displayLocationListener = new DisplayLocationListener(mapKit.getMainMap());
     tableModel.addDisplayLocationListener(displayLocationListener);
   }
