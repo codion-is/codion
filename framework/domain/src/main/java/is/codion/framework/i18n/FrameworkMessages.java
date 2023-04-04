@@ -36,8 +36,8 @@ public final class FrameworkMessages {
   private static final String REFRESH = "refresh";
   private static final String REFRESH_MNEMONIC = "refresh_mnemonic";
   private static final String REFRESH_TIP = "refresh_tip";
-  private static final String VIEW_DEPENDENCIES = "view_dependencies";
-  private static final String VIEW_DEPENDENCIES_TIP = "view_dependencies_tip";
+  private static final String DEPENDENCIES = "dependencies";
+  private static final String DEPENDENCIES_TIP = "dependencies_tip";
   private static final String ADD = "add";
   private static final String ADD_MNEMONIC = "add_mnemonic";
   private static final String ADD_TIP = "add_tip";
@@ -237,15 +237,15 @@ public final class FrameworkMessages {
   /**
    * @return view dependencies
    */
-  public static String viewDependencies() {
-    return get(VIEW_DEPENDENCIES);
+  public static String dependencies() {
+    return get(DEPENDENCIES);
   }
 
   /**
    * @return view dependencies tip
    */
-  public static String viewDependenciesTip() {
-    return get(VIEW_DEPENDENCIES_TIP);
+  public static String dependenciesTip() {
+    return get(DEPENDENCIES_TIP);
   }
 
   /**

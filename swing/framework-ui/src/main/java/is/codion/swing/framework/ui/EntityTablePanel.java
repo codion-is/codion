@@ -668,10 +668,9 @@ public class EntityTablePanel extends JPanel {
    */
   public final Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
-            .caption(FrameworkMessages.viewDependencies() + "...")
+            .caption(FrameworkMessages.dependencies())
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .description(FrameworkMessages.viewDependenciesTip())
-            .mnemonic('W')
+            .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
   }
