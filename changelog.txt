@@ -8775,3 +8775,4 @@
   EntityTablePanel.viewSelectionDependencies() bug fixed, table now requests the focus after the dialog has been closed, otherwise it can get lost on the JRootPane (which handles popup menu keybindings)
   EntityTablePanel.viewSelectionDependencies() refactored, no longer sets the wait cursor, which is now handled by EntityDependenciesPanel.selectDependencies()
   Utilities.printFocusOwner() focus owner debug output method added
+  World demo bug fixed, CityEditPanel NullPointerException when invoked in an insert action, minor refactoring
