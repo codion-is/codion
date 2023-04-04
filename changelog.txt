@@ -8764,3 +8764,5 @@
   EntityTablePanel.containsControl() removed, getControl() returns Optional instead
   EntityTablePanel.setRefreshToolbarVisible() renamed setRefreshButtonVisible()
   EntityTablePanel.setShowRefreshingProgressBar() renamed setShowRefreshProgressBar()
+  FilteredComboBox.validItem() added
+  EntityComboBoxModel overrides FilteredComboBox.validItem() to validate items by entityType

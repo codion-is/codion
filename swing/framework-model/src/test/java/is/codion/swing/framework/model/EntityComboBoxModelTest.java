@@ -43,9 +43,9 @@ public final class EntityComboBoxModelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
-            .user(UNIT_TEST_USER)
-            .build();
+          .domainClassName(TestDomain.class.getName())
+          .user(UNIT_TEST_USER)
+          .build();
 
   private final EntityComboBoxModel comboBoxModel;
 
@@ -373,5 +373,22 @@ public final class EntityComboBoxModelTest {
     assertNull(comboBoxModel.selectedValue());
     comboBoxModel.setIncludeNull(false);
     assertFalse(comboBoxModel.containsItem(null));
+  }
+
+  @Test
+  void validItems() {
+    comboBoxModel.refresh();
+    Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.ID, 1)
+            .with(Department.NAME, "dept")
+            .build();
+
+    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.addItem(dept));
+    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.replaceItem(comboBoxModel.getElementAt(2), dept));
+    assertThrows(IllegalArgumentException.class, () -> comboBoxModel.setNullItem(dept));
+
+    assertThrows(NullPointerException.class, () -> comboBoxModel.addItem(null));
+    assertThrows(NullPointerException.class, () -> comboBoxModel.replaceItem(comboBoxModel.getElementAt(2), null));
+    assertThrows(NullPointerException.class, () -> comboBoxModel.setNullItem(null));
   }
 }
