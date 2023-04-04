@@ -42,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An {@link ObservableList} based on a {@link Entity}
  */
-public class ObservableEntityList extends SimpleListProperty<Entity> implements ObservableList<Entity>, FilteredModel<Entity> {
+public class EntityObservableList extends SimpleListProperty<Entity> implements ObservableList<Entity>, FilteredModel<Entity> {
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
@@ -66,14 +66,14 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
-   * Instantiates a new {@link ObservableEntityList}
+   * Instantiates a new {@link EntityObservableList}
    * @param entityType the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(EntityType entityType, EntityConnectionProvider connectionProvider) {
+  public EntityObservableList(EntityType entityType, EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
-    this.entityType = entityType;
-    this.connectionProvider = connectionProvider;
+    this.entityType = requireNonNull(entityType);
+    this.connectionProvider = requireNonNull(connectionProvider);
     this.entityDefinition =  connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
@@ -322,7 +322,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   @Override
   public final void set(ObservableList<Entity> list) {
     requireNonNull(list);
-    if (list instanceof ObservableEntityList && !((ObservableEntityList) list).entityType.equals(entityType)) {
+    if (list instanceof EntityObservableList && !((EntityObservableList) list).entityType.equals(entityType)) {
       throw new IllegalArgumentException("List is not compatible: " + list);
     }
     requireNonNull(list).forEach(this::validate);

@@ -12,17 +12,17 @@ import java.util.Collection;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A foreign key condition model based on an {@link ObservableEntityList}
- * For instances use the {@link #entityListConditionModel(ForeignKey, ObservableEntityList)} factory method.
- * @see #entityListConditionModel(ForeignKey, ObservableEntityList)
+ * A foreign key condition model based on an {@link EntityObservableList}
+ * For instances use the {@link #entityListConditionModel(ForeignKey, EntityObservableList)} factory method.
+ * @see #entityListConditionModel(ForeignKey, EntityObservableList)
  */
 public final class EntityListConditionModel extends AbstractForeignKeyConditionModel {
 
-  private final ObservableEntityList listModel;
+  private final EntityObservableList listModel;
 
   private boolean updatingModel = false;
 
-  private EntityListConditionModel(ForeignKey foreignKey, ObservableEntityList listModel) {
+  private EntityListConditionModel(ForeignKey foreignKey, EntityObservableList listModel) {
     super(foreignKey);
     this.listModel = requireNonNull(listModel, "listModel");
     listModel.refresh();
@@ -30,9 +30,9 @@ public final class EntityListConditionModel extends AbstractForeignKeyConditionM
   }
 
   /**
-   * @return the {@link ObservableEntityList} this model is based on, null if none is available
+   * @return the {@link EntityObservableList} this model is based on, null if none is available
    */
-  public ObservableEntityList listModel() {
+  public EntityObservableList listModel() {
     return listModel;
   }
 
@@ -49,7 +49,7 @@ public final class EntityListConditionModel extends AbstractForeignKeyConditionM
    * @param listModel the list model to use
    * @return a new {@link EntityListConditionModel} instance
    */
-  public static EntityListConditionModel entityListConditionModel(ForeignKey foreignKey, ObservableEntityList listModel) {
+  public static EntityListConditionModel entityListConditionModel(ForeignKey foreignKey, EntityObservableList listModel) {
     return new EntityListConditionModel(foreignKey, listModel);
   }
 

@@ -26,7 +26,7 @@ import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class ObservableEntityListTest {
+public final class EntityObservableListTest {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -43,7 +43,7 @@ public final class ObservableEntityListTest {
 
   @Test
   void selectCondition() {
-    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
+    EntityObservableList list = new EntityObservableList(Department.TYPE, CONNECTION_PROVIDER);
     list.refresh();
     assertEquals(4, list.size());
     list.setSelectCondition(Condition.where(Department.NAME).notEqualTo("SALES", "OPERATIONS"));
@@ -54,7 +54,7 @@ public final class ObservableEntityListTest {
   @Test
   void includeCondition() throws DatabaseException {
     AtomicInteger counter = new AtomicInteger();
-    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
+    EntityObservableList list = new EntityObservableList(Department.TYPE, CONNECTION_PROVIDER);
     EventListener listener = counter::incrementAndGet;
     list.addFilterListener(listener);
     list.refresh();
@@ -85,7 +85,7 @@ public final class ObservableEntityListTest {
 
   @Test
   void selection() throws DatabaseException {
-    ObservableEntityList list = new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER);
+    EntityObservableList list = new EntityObservableList(Department.TYPE, CONNECTION_PROVIDER);
     ListView<Entity> listView = new ListView<>(list);
     list.setSelectionModel(listView.getSelectionModel());
     try {
@@ -115,7 +115,7 @@ public final class ObservableEntityListTest {
 
   @Test
   void validItems() {
-    ObservableEntityList entityList = new ObservableEntityList(Employee.TYPE, CONNECTION_PROVIDER);
+    EntityObservableList entityList = new EntityObservableList(Employee.TYPE, CONNECTION_PROVIDER);
     Entity dept = CONNECTION_PROVIDER.entities().builder(Department.TYPE)
             .with(Department.ID, 1)
             .with(Department.NAME, "dept")
@@ -127,7 +127,7 @@ public final class ObservableEntityListTest {
     assertThrows(IllegalArgumentException.class, () -> entityList.addAll(0, singletonList(dept)));
 
     assertThrows(IllegalArgumentException.class, () -> entityList.setAll(singletonList(dept)));
-    assertThrows(IllegalArgumentException.class, () -> entityList.set(new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER)));
+    assertThrows(IllegalArgumentException.class, () -> entityList.set(new EntityObservableList(Department.TYPE, CONNECTION_PROVIDER)));
 
     assertThrows(NullPointerException.class, () -> entityList.add(null));
     assertThrows(NullPointerException.class, () -> entityList.add(0, null));
