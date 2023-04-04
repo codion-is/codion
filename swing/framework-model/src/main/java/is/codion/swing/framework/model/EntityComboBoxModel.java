@@ -430,6 +430,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
+  @Override
+  protected boolean validItem(Entity item) {
+    return item.type().equals(entityType);
+  }
+
   private int indexOfKey(Key primaryKey) {
     int size = getSize();
     int startIndex = isIncludeNull() ? 1 : 0;

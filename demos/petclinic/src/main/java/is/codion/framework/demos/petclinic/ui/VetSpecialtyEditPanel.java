@@ -3,6 +3,7 @@
  */
 package is.codion.framework.demos.petclinic.ui;
 
+import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -28,8 +29,8 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(VetSpecialty.VET_FK);
     EntityComboBox specialtyComboBox = createForeignKeyComboBox(VetSpecialty.SPECIALTY_FK).build();
 
-    Control newSpecialtyControl = EntityPanel.builder(VetSpecialty.TYPE)
-            .editPanelClass(VetSpecialtyEditPanel.class)
+    Control newSpecialtyControl = EntityPanel.builder(Specialty.TYPE)
+            .editPanelClass(SpecialtyEditPanel.class)
             .createInsertControl(specialtyComboBox);
     JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyControl);
 

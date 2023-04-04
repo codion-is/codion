@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static is.codion.framework.db.condition.Condition.condition;
 import static java.util.Collections.emptyList;
@@ -41,7 +42,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * An {@link ObservableList} based on a {@link Entity}
  */
-public class ObservableEntityList extends SimpleListProperty<Entity> implements ObservableList<Entity>, FilteredModel<Entity> {
+public class EntityObservableList extends SimpleListProperty<Entity> implements ObservableList<Entity>, FilteredModel<Entity> {
 
   private static final String SELECTION_MODEL_HAS_NOT_BEEN_SET = "Selection model has not been set";
 
@@ -65,14 +66,14 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
-   * Instantiates a new {@link ObservableEntityList}
+   * Instantiates a new {@link EntityObservableList}
    * @param entityType the entity on which to base the list
    * @param connectionProvider the connection provider
    */
-  public ObservableEntityList(EntityType entityType, EntityConnectionProvider connectionProvider) {
+  public EntityObservableList(EntityType entityType, EntityConnectionProvider connectionProvider) {
     super(FXCollections.observableArrayList());
-    this.entityType = entityType;
-    this.connectionProvider = connectionProvider;
+    this.entityType = requireNonNull(entityType);
+    this.connectionProvider = requireNonNull(connectionProvider);
     this.entityDefinition =  connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
@@ -289,6 +290,58 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
+  public final boolean add(Entity element) {
+    validate(element);
+    return super.add(element);
+  }
+
+  @Override
+  public final boolean addAll(Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.addAll(elements);
+  }
+
+  @Override
+  public final boolean addAll(int i, Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.addAll(i, elements);
+  }
+
+  @Override
+  public final void add(int i, Entity element) {
+    validate(element);
+    super.add(i, element);
+  }
+
+  @Override
+  public final boolean addAll(Entity... elements) {
+    Stream.of(elements).forEach(this::validate);
+    return super.addAll(elements);
+  }
+
+  @Override
+  public final void set(ObservableList<Entity> list) {
+    requireNonNull(list);
+    if (list instanceof EntityObservableList && !((EntityObservableList) list).entityType.equals(entityType)) {
+      throw new IllegalArgumentException("List is not compatible: " + list);
+    }
+    requireNonNull(list).forEach(this::validate);
+    super.set(list);
+  }
+
+  @Override
+  public final boolean setAll(Entity... elements) {
+    Stream.of(elements).forEach(this::validate);
+    return super.setAll(elements);
+  }
+
+  @Override
+  public final boolean setAll(Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.setAll(elements);
+  }
+
+  @Override
   public final void addFilterListener(EventListener listener) {
     filterEvent.addListener(listener);
   }
@@ -351,10 +404,25 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   /**
+   * @param entity the entity to validate
+   * @return true if the entity is of the correct type
+   */
+  protected boolean validItem(Entity entity) {
+    return entity.type().equals(entityType);
+  }
+
+  /**
    * Binds model events to the selection model
    */
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionListener(selectionChangedEvent);
+  }
+
+  private void validate(Entity entity) {
+    requireNonNull(entity);
+    if (!validItem(entity)) {
+      throw new IllegalArgumentException("Invalid item: " + entity);
+    }
   }
 
   private void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {

@@ -25,6 +25,7 @@ import org.testfx.api.FxToolkit;
 
 import java.util.List;
 
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityEditModel, FXEntityListModel> {
@@ -170,5 +171,21 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
     tableModel.items().forEach(emp ->
             assertEquals("R&D", emp.get(Employee.DEPARTMENT_FK).get(Department.NAME)));
+  }
+
+  @Test
+  void validItems() {
+    FXEntityListModel tableModel = createEmployeeTableModel();
+    Entity dept = tableModel.entities().builder(Department.TYPE)
+            .with(Department.ID, 1)
+            .with(Department.NAME, "dept")
+            .build();
+    assertThrows(IllegalArgumentException.class, () -> tableModel.addEntities(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.addEntitiesSorted(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.addEntitiesAt(0, singletonList(dept)));
+
+    assertThrows(NullPointerException.class, () -> tableModel.addEntities(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> tableModel.addEntitiesSorted(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> tableModel.addEntitiesAt(0, singletonList(null)));
   }
 }

@@ -11,7 +11,7 @@ import is.codion.framework.model.ConditionModelFactory;
 import is.codion.framework.model.DefaultConditionModelFactory;
 
 /**
- * A {@link ConditionModelFactory} implementation using {@link ObservableEntityList} for foreign keys based on small datasets
+ * A {@link ConditionModelFactory} implementation using {@link EntityObservableList} for foreign keys based on small datasets
  */
 public class FXConditionModelFactory extends DefaultConditionModelFactory {
 
@@ -25,7 +25,7 @@ public class FXConditionModelFactory extends DefaultConditionModelFactory {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (definition(foreignKey.referencedType()).isSmallDataset()) {
         return (ColumnConditionModel<A, T>) EntityListConditionModel.entityListConditionModel(foreignKey,
-                new ObservableEntityList(foreignKey.referencedType(), connectionProvider()));
+                new EntityObservableList(foreignKey.referencedType(), connectionProvider()));
       }
     }
 

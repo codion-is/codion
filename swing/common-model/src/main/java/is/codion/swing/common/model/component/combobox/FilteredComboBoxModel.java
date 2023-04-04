@@ -140,12 +140,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Resets the items of this model using the values found in {@code items},
    * if items is null then the model is considered to be cleared.
    * @param items the items to display in this combo box model
+   * @throws IllegalArgumentException in case an item fails validation
    * @see #isCleared()
+   * @see #validItem(Object)
    */
   public final void setItems(Collection<T> items) {
     filteredItems.clear();
     visibleItems.clear();
     if (items != null) {
+      items.forEach(this::validate);
       visibleItems.addAll(items);
       if (includeNull) {
         visibleItems.add(0, null);
@@ -204,7 +207,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     List<T> entities = new ArrayList<>(visibleItems());
     entities.addAll(filteredItems);
 
-    return entities;
+    return unmodifiableList(entities);
   }
 
   @Override
@@ -247,10 +250,11 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * If this model already contains the item, calling this method has no effect.
    * Note that if the item does not satisfy the include condition, it will be filtered right away.
    * @param item the item to add
+   * @throws IllegalArgumentException in case the item fails validation
    * @see #setIncludeCondition(Predicate)
    */
   public final void addItem(T item) {
-    requireNonNull(item);
+    validate(item);
     if (includeCondition == null || includeCondition.test(item)) {
       if (!visibleItems.contains(item)) {
         visibleItems.add(item);
@@ -268,17 +272,20 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void removeItem(T item) {
     requireNonNull(item);
-    visibleItems.remove(item);
     filteredItems.remove(item);
-    fireContentsChanged();
+    if (visibleItems.remove(item)) {
+      fireContentsChanged();
+    }
   }
 
   /**
    * Replaces the given item in this combo box model
    * @param item the item to replace
    * @param replacement the replacement item
+   * @throws IllegalArgumentException in case the replacement item fails validation
    */
   public final void replaceItem(T item, T replacement) {
+    validate(replacement);
     removeItem(item);
     addItem(replacement);
     if (Objects.equals(selectedItem, item)) {
@@ -335,9 +342,11 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Sets the item that should represent the null value in this model.
    * Note that {@link #setIncludeNull(boolean)} must be called as well to enable the null value.
    * @param nullItem the item representing null
+   * @throws IllegalArgumentException in case the item fails validation
    * @see #setIncludeNull(boolean)
    */
   public final void setNullItem(T nullItem) {
+    validate(nullItem);
     this.nullItem = nullItem;
   }
 
@@ -519,6 +528,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * Override to validate that the given item can be added to this model.
+   * @param item the item being added
+   * @return true if the item can be added to this model, false otherwise
+   */
+  protected boolean validItem(T item) {
+    return true;
+  }
+
+  /**
    * @param itemToSelect the item to be selected
    * @return true if the selection change is ok, false if it should be vetoed
    */
@@ -541,6 +559,13 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
+    }
+  }
+
+  private void validate(T item) {
+    requireNonNull(item);
+    if (!validItem(item)) {
+      throw new IllegalArgumentException("Invalid item: " + item);
     }
   }
 

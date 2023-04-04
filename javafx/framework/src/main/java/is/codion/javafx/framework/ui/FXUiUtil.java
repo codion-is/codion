@@ -19,9 +19,9 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.javafx.framework.model.EntityObservableList;
 import is.codion.javafx.framework.model.FXEntityEditModel;
 import is.codion.javafx.framework.model.FXEntityListModel;
-import is.codion.javafx.framework.model.ObservableEntityList;
 import is.codion.javafx.framework.ui.values.PropertyValues;
 import is.codion.javafx.framework.ui.values.StringValue;
 
@@ -924,7 +924,7 @@ public final class FXUiUtil {
 
   private static SortedList<Entity> createEntityListModel(ForeignKeyProperty property,
                                                           EntityConnectionProvider connectionProvider) {
-    ObservableEntityList entityList = new ObservableEntityList(property.referencedType(), connectionProvider);
+    EntityObservableList entityList = new EntityObservableList(property.referencedType(), connectionProvider);
     entityList.refresh();
 
     return entityList.sortedList();

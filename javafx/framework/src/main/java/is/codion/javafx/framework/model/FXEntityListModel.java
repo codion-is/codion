@@ -56,7 +56,7 @@ import static java.util.stream.Collectors.*;
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
  */
-public class FXEntityListModel extends ObservableEntityList implements EntityTableModel<FXEntityEditModel> {
+public class FXEntityListModel extends EntityObservableList implements EntityTableModel<FXEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 

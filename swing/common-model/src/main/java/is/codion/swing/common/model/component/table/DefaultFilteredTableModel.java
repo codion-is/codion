@@ -478,6 +478,15 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   /**
+   * Override to validate that the given item can be added to this model.
+   * @param item the item being added
+   * @return true if the item can be added to this model, false otherwise
+   */
+  protected boolean validItem(R item) {
+    return true;
+  }
+
+  /**
    * Creates a ColumnValueProvider for the given column
    * @param columnIdentifier the column identifier
    * @param <T> the value type
@@ -591,6 +600,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private boolean addItemInternal(R item) {
+    validate(item);
     if (include(item)) {
       visibleItems.add(item);
 
@@ -602,7 +612,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private boolean addItemsAtInternal(int index, Collection<R> items) {
-    requireNonNull(items);
+    requireNonNull(items).forEach(this::validate);
     boolean visible = false;
     int counter = 0;
     for (R item : items) {
@@ -616,6 +626,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     }
 
     return visible;
+  }
+
+  private void validate(R item) {
+    requireNonNull(item);
+    if (!validItem(item)) {
+      throw new IllegalArgumentException("Invalid item: " + item);
+    }
   }
 
   private boolean include(R item) {
