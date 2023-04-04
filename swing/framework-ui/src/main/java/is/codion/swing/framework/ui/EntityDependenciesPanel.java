@@ -8,6 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
@@ -80,12 +81,26 @@ public final class EntityDependenciesPanel extends JPanel {
     requireNonNull(entities);
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
-    try {
-      Map<EntityType, Collection<Entity>> dependencies = connectionProvider.connection().selectDependencies(entities);
+    Map<EntityType, Collection<Entity>> dependencies = selectDependencies(entities, connectionProvider, dialogParent);
+    if (dependencies != null) {
       displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
+    }
+  }
+
+  private static Map<EntityType, Collection<Entity>> selectDependencies(Collection<Entity> entities,
+                                                                        EntityConnectionProvider connectionProvider,
+                                                                        JComponent dialogParent) {
+    WaitCursor.show(dialogParent);
+    try {
+      return connectionProvider.connection().selectDependencies(entities);
     }
     catch (DatabaseException e) {
       Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
+
+      return null;
+    }
+    finally {
+      WaitCursor.hide(dialogParent);
     }
   }
 
