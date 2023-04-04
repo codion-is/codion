@@ -83,7 +83,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   private void setUnitPrice(Entity track) {
-    put(InvoiceLine.UNITPRICE, track.get(Track.UNITPRICE));
+    put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
   }
 
   private void updateTotals(List<Entity> entities, EntityConnection connection) throws DatabaseException {
