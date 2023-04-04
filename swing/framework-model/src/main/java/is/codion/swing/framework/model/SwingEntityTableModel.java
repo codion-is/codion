@@ -606,6 +606,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     }
   }
 
+  @Override
+  protected boolean validItem(Entity item) {
+    return item.type().equals(editModel.entityType());
+  }
+
   /**
    * Returns a {@link java.awt.Color} instance from the given Object.
    * {@link java.awt.Color} instances are returned as-is, but instances of

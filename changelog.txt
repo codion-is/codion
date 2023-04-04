@@ -8766,3 +8766,6 @@
   EntityTablePanel.setShowRefreshingProgressBar() renamed setShowRefreshProgressBar()
   FilteredComboBox.validItem() added
   EntityComboBoxModel overrides FilteredComboBox.validItem() to validate items by entityType
+  DefaultFilteredTableModel.validItem() added
+  SwingEntityTableModel overrides DefaultFilteredTableModel.validItem() to validate items by entityType
+  ObservableEntityList.validItem() added, type validation added

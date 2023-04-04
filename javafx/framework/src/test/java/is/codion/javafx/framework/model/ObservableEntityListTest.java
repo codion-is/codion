@@ -12,6 +12,7 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
+import is.codion.framework.model.test.TestDomain.Employee;
 
 import javafx.scene.control.ListView;
 import org.junit.jupiter.api.BeforeAll;
@@ -22,6 +23,7 @@ import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ObservableEntityListTest {
@@ -109,5 +111,27 @@ public final class ObservableEntityListTest {
     assertTrue(list.selectionEmptyObserver().get());
     assertFalse(list.singleSelectionObserver().get());
     assertFalse(list.multipleSelectionObserver().get());
+  }
+
+  @Test
+  void validItems() {
+    ObservableEntityList entityList = new ObservableEntityList(Employee.TYPE, CONNECTION_PROVIDER);
+    Entity dept = CONNECTION_PROVIDER.entities().builder(Department.TYPE)
+            .with(Department.ID, 1)
+            .with(Department.NAME, "dept")
+            .build();
+    assertThrows(IllegalArgumentException.class, () -> entityList.add(dept));
+    assertThrows(IllegalArgumentException.class, () -> entityList.add(0, dept));
+    assertThrows(IllegalArgumentException.class, () -> entityList.addAll(dept));
+    assertThrows(IllegalArgumentException.class, () -> entityList.addAll(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> entityList.addAll(0, singletonList(dept)));
+
+    assertThrows(IllegalArgumentException.class, () -> entityList.setAll(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> entityList.set(new ObservableEntityList(Department.TYPE, CONNECTION_PROVIDER)));
+
+    assertThrows(NullPointerException.class, () -> entityList.add(null));
+    assertThrows(NullPointerException.class, () -> entityList.add(0, null));
+    assertThrows(NullPointerException.class, () -> entityList.addAll(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> entityList.addAll(0, singletonList(null)));
   }
 }

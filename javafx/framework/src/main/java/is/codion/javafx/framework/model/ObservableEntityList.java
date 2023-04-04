@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.stream.Stream;
 
 import static is.codion.framework.db.condition.Condition.condition;
 import static java.util.Collections.emptyList;
@@ -289,6 +290,58 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
+  public final boolean add(Entity element) {
+    validate(element);
+    return super.add(element);
+  }
+
+  @Override
+  public final boolean addAll(Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.addAll(elements);
+  }
+
+  @Override
+  public final boolean addAll(int i, Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.addAll(i, elements);
+  }
+
+  @Override
+  public final void add(int i, Entity element) {
+    validate(element);
+    super.add(i, element);
+  }
+
+  @Override
+  public final boolean addAll(Entity... elements) {
+    Stream.of(elements).forEach(this::validate);
+    return super.addAll(elements);
+  }
+
+  @Override
+  public final void set(ObservableList<Entity> list) {
+    requireNonNull(list);
+    if (list instanceof ObservableEntityList && !((ObservableEntityList) list).entityType.equals(entityType)) {
+      throw new IllegalArgumentException("List is not compatible: " + list);
+    }
+    requireNonNull(list).forEach(this::validate);
+    super.set(list);
+  }
+
+  @Override
+  public final boolean setAll(Entity... elements) {
+    Stream.of(elements).forEach(this::validate);
+    return super.setAll(elements);
+  }
+
+  @Override
+  public final boolean setAll(Collection<? extends Entity> elements) {
+    requireNonNull(elements).forEach(this::validate);
+    return super.setAll(elements);
+  }
+
+  @Override
   public final void addFilterListener(EventListener listener) {
     filterEvent.addListener(listener);
   }
@@ -351,10 +404,25 @@ public class ObservableEntityList extends SimpleListProperty<Entity> implements 
   }
 
   /**
+   * @param entity the entity to validate
+   * @return true if the entity is of the correct type
+   */
+  protected boolean validItem(Entity entity) {
+    return entity.type().equals(entityType);
+  }
+
+  /**
    * Binds model events to the selection model
    */
   protected void bindSelectionModelEvents() {
     selectionModel.addSelectionListener(selectionChangedEvent);
+  }
+
+  private void validate(Entity entity) {
+    requireNonNull(entity);
+    if (!validItem(entity)) {
+      throw new IllegalArgumentException("Invalid item: " + entity);
+    }
   }
 
   private void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {

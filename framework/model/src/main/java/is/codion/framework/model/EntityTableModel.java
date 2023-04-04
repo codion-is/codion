@@ -119,6 +119,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * It is recommended to only manually add entities directly to this table model after they have
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
+   * @throws IllegalArgumentException in case the entities fail validation
    */
   void addEntities(Collection<Entity> entities);
 
@@ -127,6 +128,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * It is recommended to only manually add entities directly to this table model after they have
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
+   * @throws IllegalArgumentException in case the entities fail validation
    */
   void addEntitiesSorted(Collection<Entity> entities);
 
@@ -136,6 +138,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param index the index at which to add
    * @param entities the entities to add
+   * @throws IllegalArgumentException in case the entities fail validation
    */
   void addEntitiesAt(int index, Collection<Entity> entities);
 
@@ -145,12 +148,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
    * @param index the index at which to add
    * @param entities the entities to add
+   * @throws IllegalArgumentException in case the entities fail validation
    */
   void addEntitiesAtSorted(int index, Collection<Entity> entities);
 
   /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
+   * @throws IllegalArgumentException in case the replacement entities fail validation
    */
   void replaceEntities(Collection<Entity> entities);
 
