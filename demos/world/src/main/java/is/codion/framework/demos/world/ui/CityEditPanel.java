@@ -1,13 +1,20 @@
 package is.codion.framework.demos.world.ui;
 
+import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Location;
+import is.codion.framework.demos.world.model.CityEditModel;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;
@@ -17,16 +24,19 @@ import org.jxmapviewer.viewer.DefaultWaypoint;
 import org.jxmapviewer.viewer.GeoPosition;
 import org.jxmapviewer.viewer.Waypoint;
 import org.jxmapviewer.viewer.WaypointPainter;
+import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Objects;
 import java.util.Set;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 
 public final class CityEditPanel extends EntityEditPanel {
@@ -34,6 +44,7 @@ public final class CityEditPanel extends EntityEditPanel {
   private static final int MIN_ZOOM = 19;
 
   private final JXMapKit mapKit;
+  private final EventDataListener<Collection<Entity>> displayLocationListener;
 
   public CityEditPanel(SwingEntityEditModel editModel) {
     this(editModel, null);
@@ -41,7 +52,9 @@ public final class CityEditPanel extends EntityEditPanel {
 
   CityEditPanel(SwingEntityEditModel editModel, CityTableModel tableModel) {
     super(editModel);
-    this.mapKit = tableModel == null ? null : createMapKit(tableModel);
+    this.mapKit = tableModel == null ? null : createMapKit();
+    this.displayLocationListener = new DisplayLocationListener(mapKit.getMainMap());
+    tableModel.addDisplayLocationListener(displayLocationListener);
   }
 
   @Override
@@ -71,7 +84,23 @@ public final class CityEditPanel extends EntityEditPanel {
     add(centerPanel, BorderLayout.CENTER);
   }
 
-  private static JXMapKit createMapKit(CityTableModel tableModel) {
+  @Override
+  protected Controls createControlPanelControls() {
+    return super.createControlPanelControls()
+            .addAt(4, Control.builder(this::setLocation)
+                    .enabledState(State.and(activeObserver(),
+                            editModel().nullObserver(City.LOCATION),
+                            editModel().entityNewObserver().reversedObserver()))
+                    .smallIcon(FrameworkIcons.instance().getIcon(Foundation.MAP))
+                    .build());
+  }
+
+  private void setLocation() throws ValidationException, IOException, DatabaseException {
+    ((CityEditModel) editModel()).setLocation();
+    displayLocationListener.onEvent(singletonList(editModel().entityCopy()));
+  }
+
+  private static JXMapKit createMapKit() {
     JXMapKit mapKit = new JXMapKit();
     mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
     mapKit.setMiniMapVisible(false);
@@ -79,8 +108,6 @@ public final class CityEditPanel extends EntityEditPanel {
     mapKit.setZoomButtonsVisible(false);
     mapKit.getMainMap().setZoom(MIN_ZOOM);
     mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
-
-    tableModel.addDisplayLocationListener(new DisplayLocationListener(mapKit.getMainMap()));
 
     return mapKit;
   }

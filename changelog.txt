@@ -8770,3 +8770,4 @@
   SwingEntityTableModel overrides DefaultFilteredTableModel.validItem() to validate items by entityType
   ObservableEntityList.validItem() added, type validation added
   ObservableEntityList renamed EntityObservableList
+  World demo, custom ikonli icon usage demonstrated with a fetch location edit panel control
