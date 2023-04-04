@@ -700,6 +700,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void merge(Collection<R> items) {
+    items.forEach(this::validate);
     Set<R> itemSet = new HashSet<>(items);
     items().forEach(item -> {
       if (!itemSet.contains(item)) {
