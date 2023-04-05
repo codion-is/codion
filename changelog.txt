@@ -8778,3 +8778,4 @@
   World demo bug fixed, CityEditPanel NullPointerException when invoked in an insert action, minor refactoring
   World demo, minor refactoring, move calls to initializeComboBoxModels() to their relevant edit models or as close as possible
   World demo, another icon added
+  ColumnConditionPanel, operator combo box specific font size removed
