@@ -5,7 +5,7 @@
 
 The Codion Server Monitor provides a way to monitor the Codion server.
 
-Below are screenshots of the different server monitor tabs, after ~1 1/2 hours of running the <<{basedir}/tutorials/chinook.adoc#_load_test, Chinook load test>>, with ~5 minutes of ramping up. The server is running on a Raspberry Pi 4, Ubuntu 18.04, JDK 14, using a https://github.com/brettwooldridge/HikariCP[HikariCP] connection pool on top of an http://h2database.com/[H2] in-memory database.
+Below are screenshots of the different server monitor tabs, after ~1 1/2 hours of running the <<{basedir}/tutorials/chinook.adoc#_load_test, Chinook load test>>, with ~10 minutes of ramping up to 100 client instances. The server is running on a Raspberry Pi 4, Ubuntu Server 20.10, JDK 19, -Xmx256m, using a https://github.com/brettwooldridge/HikariCP[HikariCP] connection pool on top of an http://h2database.com/[H2] in-memory database.
 
 == Server performance
 
@@ -29,6 +29,10 @@ image::technical/server_monitor/clients_users.png[Clients users]
 
 image::technical/server_monitor/environment_system.png[System]
 
-=== Domain
+=== Entities
 
 image::technical/server_monitor/environment_domain.png[Domain]
+
+=== Operations
+
+image::technical/server_monitor/environment_operations.png[Domain]

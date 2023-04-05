@@ -25,7 +25,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JToggleButton;
 import javax.swing.ListCellRenderer;
-import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -75,8 +74,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
      */
     NO
   }
-
-  private static final float OPERATOR_FONT_SIZE = 18f;
 
   private final ColumnConditionModel<C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
@@ -476,7 +473,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     return itemComboBox(operatorComboBoxModel, conditionModel.operatorValue())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
-            .font(UIManager.getFont("ComboBox.font").deriveFont(OPERATOR_FONT_SIZE))
             .maximumRowCount(operators.size())
             .toolTipText(operatorComboBoxModel.selectedValue().value().description())
             .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
