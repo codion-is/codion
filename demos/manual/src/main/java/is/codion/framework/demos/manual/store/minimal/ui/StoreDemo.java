@@ -15,7 +15,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import com.formdev.flatlaf.FlatDarculaLaf;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
 
 import javax.swing.UIManager;
 
@@ -67,7 +67,7 @@ public class StoreDemo {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(new FlatDarculaLaf());
+    UIManager.setLookAndFeel(new FlatMaterialDarkerContrastIJTheme());
 
     Database database = new H2DatabaseFactory()
             .createDatabase("jdbc:h2:mem:h2db",
