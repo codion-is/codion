@@ -33,7 +33,7 @@ public final class AlbumTablePanel extends EntityTablePanel {
 
   private void viewSelectedCover() throws IOException {
     Entity selectedAlbum = tableModel().selectionModel().getSelectedItem();
-    if (selectedAlbum.isNotNull(Album.COVER)) {
+    if (selectedAlbum != null && selectedAlbum.isNotNull(Album.COVER)) {
       displayImage(selectedAlbum.get(Album.TITLE), selectedAlbum.get(Album.COVER));
     }
   }
