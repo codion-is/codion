@@ -17,18 +17,26 @@ import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
 
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
+
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
+
+  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.FlatArcIJTheme";
 
   public PetclinicAppPanel(PetclinicAppModel appModel) {
     super(appModel);
@@ -79,6 +87,9 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
 
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
+    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
+            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
@@ -86,6 +97,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
+            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

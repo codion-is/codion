@@ -29,6 +29,8 @@ dependencies {
 
     testImplementation project(':codion-swing-framework-ui-test')
 
+    implementation (libs.flatlaf.intellij.themes)
+
     runtimeOnly project(':codion-plugin-logback-proxy')
 
     implementation(libs.jasperreports) {

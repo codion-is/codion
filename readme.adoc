@@ -67,6 +67,28 @@ Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and F
 
 And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic client functionality] (keep your music on, it's silent).
 
+== Demo application projects
+
+The following applications can be found in the /demos folder of the Codion project, but are available in separate Git repositories as fully configured Gradle projects.
+
+All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
+
+=== https://github.com/bjorndarri/petclinic[Petclinic]
+
+Minimalistic bare-bones project, with a local JDBC connection option. A good place to start.
+
+=== https://github.com/bjorndarri/world[World]
+
+Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+
+Includes a server and server monitor modules and jlink/jpackage configurations.
+
+=== https://github.com/bjorndarri/chinook[Chinook]
+
+Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
+
+Includes a load-test, server, and server monitor modules and jlink/jpackage configurations.
+
 == Domain model
 
 [cols="2,4"]

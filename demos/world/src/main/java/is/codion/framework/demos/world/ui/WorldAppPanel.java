@@ -33,6 +33,8 @@ import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplic
 import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
+  
+  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 
   public WorldAppPanel(WorldAppModel applicationModel) {
     super(applicationModel);
@@ -72,6 +74,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
             .applicationVersion(WorldAppModel.VERSION)
+            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .defaultLookAndFeelClassName(FlatDarkLaf.class.getName())
