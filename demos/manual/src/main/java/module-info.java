@@ -19,7 +19,7 @@ module is.codion.framework.demos.manual {
   requires is.codion.plugin.jasperreports;
   requires is.codion.framework.domain.test;
   requires org.junit.jupiter.api;
-  requires com.formdev.flatlaf;
+  requires com.formdev.flatlaf.intellijthemes;
 
   exports is.codion.framework.demos.manual.store.domain;
   exports is.codion.framework.demos.manual.store.minimal.domain;
