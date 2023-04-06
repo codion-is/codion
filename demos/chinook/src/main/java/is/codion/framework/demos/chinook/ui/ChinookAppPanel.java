@@ -45,6 +45,7 @@ import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
 
+  private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
   private static final String LANGUAGE_PREFERENCES_KEY = ChinookAppPanel.class.getSimpleName() + ".language";
   private static final Locale LOCALE_IS = new Locale("is", "IS");
   private static final Locale LOCALE_EN = new Locale("en", "EN");
@@ -158,6 +159,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     entityApplicationBuilder(ChinookApplicationModel.class, ChinookAppPanel.class)
             .applicationName("Chinook")
             .applicationVersion(ChinookApplicationModel.VERSION)
+            .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
