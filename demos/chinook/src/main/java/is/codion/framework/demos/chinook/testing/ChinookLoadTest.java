@@ -12,7 +12,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.testing.scenarios.InsertDeleteAlbum;
 import is.codion.framework.demos.chinook.testing.scenarios.LogoutLogin;
 import is.codion.framework.demos.chinook.testing.scenarios.RaisePrices;
@@ -33,7 +33,7 @@ import static is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 import static java.util.Arrays.asList;
 
-public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicationModel> {
+public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> {
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -44,8 +44,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookApplicatio
   }
 
   @Override
-  protected ChinookApplicationModel createApplication() throws CancelException {
-    ChinookApplicationModel applicationModel = new ChinookApplicationModel(EntityConnectionProvider.builder()
+  protected ChinookAppModel createApplication() throws CancelException {
+    ChinookAppModel applicationModel = new ChinookAppModel(EntityConnectionProvider.builder()
             .domainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
             .clientTypeId(ChinookAppPanel.class.getName())
             .user(getUser())

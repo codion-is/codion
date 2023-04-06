@@ -4,7 +4,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -22,14 +22,14 @@ import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selec
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 import static java.util.Arrays.asList;
 
-public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   private static final Random RANDOM = new Random();
   private static final Collection<String> GENRES =
           asList("Classical", "Easy Listening", "Jazz", "Latin", "Reggae", "Soundtrack");
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
     artistModel.tableModel().refresh();
     selectRandomRow(artistModel.tableModel());

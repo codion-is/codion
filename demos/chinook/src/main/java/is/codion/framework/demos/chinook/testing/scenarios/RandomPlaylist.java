@@ -7,7 +7,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -22,7 +22,7 @@ import java.util.UUID;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 
-public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   private static final Random RANDOM = new Random();
   private static final String PLAYLIST_NAME = "Random playlist";
@@ -30,7 +30,7 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
           asList("Alternative", "Rock", "Metal", "Heavy Metal", "Pop");
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel playlistModel = application.entityModel(Playlist.TYPE);
     PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.tableModel();
     playlistTableModel.refresh();
