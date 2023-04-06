@@ -219,19 +219,25 @@ public interface Chinook {
       private static final long serialVersionUID = 1;
 
       private final String playlistName;
-      private final int noOfTracks;
+      private final Integer noOfTracks;
+      private final Collection<Entity> genres;
 
-      public RandomPlaylistParameters(String playlistName, int noOfTracks) {
-        this.playlistName = requireNonNull(playlistName);
+      public RandomPlaylistParameters(String playlistName, Integer noOfTracks, Collection<Entity> genres) {
+        this.playlistName = playlistName;
         this.noOfTracks = noOfTracks;
+        this.genres = requireNonNull(genres);
       }
 
       public String playlistName() {
         return playlistName;
       }
 
-      public int noOfTracks() {
+      public Integer noOfTracks() {
         return noOfTracks;
+      }
+
+      public Collection<Entity> genres() {
+        return genres;
       }
     }
   }
