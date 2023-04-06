@@ -5,7 +5,6 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.db.result.ResultPacker;
 import is.codion.common.formats.LocaleDateTimePattern;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
@@ -20,12 +19,10 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
+import java.util.Random;
 
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -400,8 +397,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
   private static final class CreateRandomPlaylistFunction implements DatabaseFunction<EntityConnection, RandomPlaylistParameters, Entity> {
 
-    private static final ResultPacker<Long> TRACK_ID_PACKER = resultSet -> resultSet.getLong(1);
-    private static final String TRACK_ID_QUERY = "select trackid from chinook.track order by random() limit";
+    private static final Random RANDOM = new Random();
 
     private final Entities entities;
 
@@ -415,7 +411,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
       connection.beginTransaction();
       try {
         Key playlistKey = insertPlaylistTracks(connection, parameters.playlistName(),
-                randomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks()));
+                randomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks(), parameters.genres()));
 
         connection.commitTransaction();
 
@@ -455,15 +451,14 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
               .build();
     }
 
-    private static List<Long> randomTrackIds(LocalEntityConnection connection,
-                                             int noOfTracks) throws DatabaseException {
-      try (Statement statement = connection.databaseConnection().getConnection().createStatement();
-           ResultSet resultSet = statement.executeQuery(TRACK_ID_QUERY + " " + noOfTracks)) {
-        return TRACK_ID_PACKER.pack(resultSet);
+    private static List<Long> randomTrackIds(LocalEntityConnection connection, int noOfTracks,
+                                             Collection<Entity> genres) throws DatabaseException {
+      List<Long> trackIds = connection.select(Track.ID, where(Track.GENRE_FK).equalTo(genres));
+      while (trackIds.size() > noOfTracks) {
+        trackIds.remove(RANDOM.nextInt(trackIds.size()));
       }
-      catch (SQLException e) {
-        throw new DatabaseException(e);
-      }
+
+      return trackIds;
     }
   }
 

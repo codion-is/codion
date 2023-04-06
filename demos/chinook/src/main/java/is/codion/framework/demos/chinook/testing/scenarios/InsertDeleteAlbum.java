@@ -2,8 +2,9 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
+import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -12,14 +13,23 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.math.BigDecimal;
+import java.util.Collection;
+import java.util.List;
+import java.util.Random;
 
+import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomItem;
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import static java.util.Arrays.asList;
 
-public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<ChinookAppModel> {
+
+  private static final Random RANDOM = new Random();
+  private static final Collection<String> GENRES =
+          asList("Classical", "Easy Listening", "Jazz", "Latin", "Reggae", "Soundtrack");
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
     artistModel.tableModel().refresh();
     selectRandomRow(artistModel.tableModel());
@@ -32,8 +42,8 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
             .build());
     Entity insertedAlbum = albumEditModel.insert();
     SwingEntityEditModel trackEditModel = albumModel.detailModel(Track.TYPE).editModel();
-    EntityComboBoxModel genreComboBoxModel = trackEditModel.foreignKeyComboBoxModel(Track.GENRE_FK);
-    selectRandomItem(genreComboBoxModel);
+    List<Entity> genres = trackEditModel.connectionProvider().connection()
+            .select(where(Genre.NAME).equalTo(GENRES));
     EntityComboBoxModel mediaTypeComboBoxModel =
             trackEditModel.foreignKeyComboBoxModel(Track.MEDIATYPE_FK);
     selectRandomItem(mediaTypeComboBoxModel);
@@ -44,7 +54,7 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
       trackEditModel.put(Track.COMPOSER, "Composer");
       trackEditModel.put(Track.MILLISECONDS, 1000000);
       trackEditModel.put(Track.UNITPRICE, BigDecimal.valueOf(2));
-      trackEditModel.put(Track.GENRE_FK, genreComboBoxModel.selectedValue());
+      trackEditModel.put(Track.GENRE_FK, genres.get(RANDOM.nextInt(genres.size())));
       trackEditModel.put(Track.MEDIATYPE_FK, mediaTypeComboBoxModel.selectedValue());
       trackEditModel.insert();
     }

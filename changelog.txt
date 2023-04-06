@@ -8817,3 +8817,5 @@
   World demo, minor refactoring, move calls to initializeComboBoxModels() to their relevant edit models or as close as possible
   World demo, another icon added
   ColumnConditionPanel, operator combo box specific font size removed
+  Chinook demo, genres added to random playlist parameters
+  Chinook demo load-test improved, conflict between RandomPlaylist and InsertDeleteAlbum resolved, by using different genres (newly created track being in a playlist prevented it from being deleted)

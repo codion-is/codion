@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -17,12 +17,12 @@ import java.util.Random;
 
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRows;
 
-public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   private final Random random = new Random();
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
     customerModel.tableModel().refresh();
     selectRandomRows(customerModel.tableModel(), random.nextInt(6) + 2);

@@ -84,7 +84,7 @@ include::{dir-source}/is/codion/framework/demos/chinook/model/TrackTableModel.ja
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookApplicationModel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/chinook/model/ChinookAppModel.java[lines=4..-1]
 ----
 
 === Model unit test

@@ -316,9 +316,12 @@ public final class EntityConnectionDemo {
 
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
+    Collection<Entity> playlistGenres =
+            connection.select(where(Genre.NAME)
+                    .equalTo("Classical", "Soundtrack"));
 
     Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
-            new RandomPlaylistParameters(playlistName, numberOfTracks));
+            new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));
     // end::function[]
   }
 

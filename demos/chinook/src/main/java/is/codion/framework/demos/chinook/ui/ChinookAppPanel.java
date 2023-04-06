@@ -9,7 +9,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.control.Control;
@@ -43,7 +43,7 @@ import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvi
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static javax.swing.JOptionPane.showMessageDialog;
 
-public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplicationModel> {
+public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppModel> {
 
   private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
   private static final String LANGUAGE_PREFERENCES_KEY = ChinookAppPanel.class.getSimpleName() + ".language";
@@ -57,7 +57,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
   /* Non-static so this is not initialized before main(), which sets the locale */
   private final ResourceBundle bundle = ResourceBundle.getBundle(ChinookAppPanel.class.getName());
 
-  public ChinookAppPanel(ChinookApplicationModel applicationModel) {
+  public ChinookAppPanel(ChinookAppModel applicationModel) {
     super(applicationModel);
   }
 
@@ -156,9 +156,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookApplica
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
-    entityApplicationBuilder(ChinookApplicationModel.class, ChinookAppPanel.class)
+    entityApplicationBuilder(ChinookAppModel.class, ChinookAppPanel.class)
             .applicationName("Chinook")
-            .applicationVersion(ChinookApplicationModel.VERSION)
+            .applicationVersion(ChinookAppModel.VERSION)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))

@@ -5,16 +5,16 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
-public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
     customerModel.tableModel().refresh();
     selectRandomRow(customerModel.tableModel());

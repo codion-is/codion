@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.testing.scenarios;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
-import is.codion.framework.demos.chinook.model.ChinookApplicationModel;
+import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
@@ -15,10 +15,10 @@ import java.math.BigDecimal;
 
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRows;
 
-public final class RaisePrices extends AbstractEntityUsageScenario<ChinookApplicationModel> {
+public final class RaisePrices extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   @Override
-  protected void perform(ChinookApplicationModel application) throws Exception {
+  protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel artistModel = application.entityModel(Artist.TYPE);
     artistModel.tableModel().refresh();
     selectRandomRows(artistModel.tableModel(), 2);
