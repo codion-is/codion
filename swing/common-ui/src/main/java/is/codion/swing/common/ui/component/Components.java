@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -699,7 +700,7 @@ public final class Components {
    * @return a JList builder
    */
   public static <T> ListBuilder<T> list(ListModel<T> listModel) {
-    return new DefaultListBuilder<>(listModel, null);
+    return ListBuilder.builder(listModel, null);
   }
 
   /**
@@ -710,7 +711,7 @@ public final class Components {
    * @return a JList builder
    */
   public static <T> ListBuilder<T> list(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
-    return new DefaultListBuilder<>(listModel, requireNonNull(linkedValueSet));
+    return ListBuilder.builder(listModel, requireNonNull(linkedValueSet));
   }
 
   /**

@@ -1,10 +1,14 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.list;
+
+import is.codion.common.value.ValueSet;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
+import javax.swing.ListModel;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.Set;
@@ -62,4 +66,23 @@ public interface ListBuilder<T> extends ComponentBuilder<Set<T>, JList<T>, ListB
    * @return this builder instance
    */
   ListBuilder<T> listSelectionListener(ListSelectionListener listSelectionListener);
+
+  /**
+   * @param <T> the list element type
+   * @param listModel the list model
+   * @return a new builder instance
+   */
+  static <T> ListBuilder<T> builder(ListModel<T> listModel) {
+    return new DefaultListBuilder<>(listModel, null);
+  }
+
+  /**
+   * @param <T> the list element type
+   * @param listModel the list model
+   * @param linkedValueSet value set to link to the component
+   * @return a new builder instance
+   */
+  static <T> ListBuilder<T> builder(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
+    return new DefaultListBuilder<>(listModel, linkedValueSet);
+  }
 }

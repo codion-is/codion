@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.list;
+
+import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JList;
 import javax.swing.ListModel;

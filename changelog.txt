@@ -8784,3 +8784,4 @@
   EntityServerMonitorPanel, Clear charts main menu action added
   EntityServerMonitor, use static imports
   ListBuilder now ValueSet based, no longer restricted to single-selection
+  ListBuilder moved to list package
