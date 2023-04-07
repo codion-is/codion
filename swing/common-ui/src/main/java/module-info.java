@@ -10,6 +10,8 @@ module is.codion.swing.common.ui {
   exports is.codion.swing.common.ui.component.button;
   exports is.codion.swing.common.ui.component.calendar;
   exports is.codion.swing.common.ui.component.combobox;
+  exports is.codion.swing.common.ui.component.label;
+  exports is.codion.swing.common.ui.component.list;
   exports is.codion.swing.common.ui.component.panel;
   exports is.codion.swing.common.ui.component.slider;
   exports is.codion.swing.common.ui.component.spinner;
