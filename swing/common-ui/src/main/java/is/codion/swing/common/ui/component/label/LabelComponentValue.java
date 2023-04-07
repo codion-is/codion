@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2022 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.label;
+
+import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JLabel;
 

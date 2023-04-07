@@ -1,10 +1,12 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
+import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -63,4 +65,31 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
    * @return this builder instance
    */
   LabelBuilder<T> iconTextGap(int iconTextGap);
+
+  /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
+   * @param icon the icon
+   * @return a new builder
+   */
+  static <T> LabelBuilder<T> builder(Icon icon) {
+    return new DefaultLabelBuilder<>(icon);
+  }
+
+  /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
+   * @param text the label text
+   * @return a new builder
+   */
+  static <T> LabelBuilder<T> builder(String text) {
+    return new DefaultLabelBuilder<>(text);
+  }
+
+  /**
+   * @param <T> the type to display in the label (using value.toString() or "" for null).
+   * @param linkedValueObserver the value observer to link to the label text
+   * @return a new builder
+   */
+  static <T> LabelBuilder<T> builder(ValueObserver<T> linkedValueObserver) {
+    return new DefaultLabelBuilder<>(linkedValueObserver);
+  }
 }

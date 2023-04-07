@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
@@ -719,7 +720,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label() {
-    return new DefaultLabelBuilder<>((String) null);
+    return LabelBuilder.builder((String) null);
   }
 
   /**
@@ -728,7 +729,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(ValueObserver<T> linkedValueObserver) {
-    return new DefaultLabelBuilder<>(linkedValueObserver);
+    return LabelBuilder.builder(linkedValueObserver);
   }
 
   /**
@@ -737,7 +738,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(Icon icon) {
-    return new DefaultLabelBuilder<>(icon);
+    return LabelBuilder.builder(icon);
   }
 
   /**
@@ -745,7 +746,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static LabelBuilder<String> label(String text) {
-    return new DefaultLabelBuilder<>(text);
+    return LabelBuilder.builder(text);
   }
 
   /**
