@@ -4,8 +4,13 @@
 package is.codion.swing.common.ui.component;
 
 import javax.swing.JList;
+import javax.swing.ListModel;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
-final class ListValue<T> extends AbstractComponentValue<T, JList<T>> {
+final class ListValue<T> extends AbstractComponentValue<Set<T>, JList<T>> {
 
   ListValue(JList<T> list) {
     super(list);
@@ -13,12 +18,32 @@ final class ListValue<T> extends AbstractComponentValue<T, JList<T>> {
   }
 
   @Override
-  protected T getComponentValue() {
-    return component().getSelectedValue();
+  protected Set<T> getComponentValue() {
+    return new HashSet<>(component().getSelectedValuesList());
   }
 
   @Override
-  protected void setComponentValue(T value) {
-    component().setSelectedValue(value, true);
+  protected void setComponentValue(Set<T> value) {
+    selectValues(component(), value);
+  }
+
+  static <T> void selectValues(JList<T> list, Set<T> valueSet) {
+    list.setSelectedIndices(valueSet.stream()
+            .map(value -> indexOf(list, value))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .mapToInt(Integer::intValue)
+            .toArray());
+  }
+
+  private static <T> Optional<Integer> indexOf(JList<T> list, T element) {
+    ListModel<T> model = list.getModel();
+    for (int i = 0; i < model.getSize(); i++) {
+      if (Objects.equals(model.getElementAt(i), element)) {
+        return Optional.of(i);
+      }
+    }
+
+    return Optional.empty();
   }
 }

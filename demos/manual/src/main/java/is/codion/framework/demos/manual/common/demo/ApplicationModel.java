@@ -3,6 +3,7 @@ package is.codion.framework.demos.manual.common.demo;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 
 import javax.swing.ComboBoxModel;
@@ -18,6 +19,7 @@ import java.util.Arrays;
 import java.util.Collection;
 
 import static is.codion.common.value.Value.value;
+import static is.codion.common.value.ValueSet.valueSet;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Arrays.asList;
@@ -47,7 +49,7 @@ public final class ApplicationModel {
   private final Value<Integer> integerSpinValue = value();
   private final Value<Integer> integerSelectionValue = value();
   private final Value<String> itemSpinValue = value();
-  private final Value<String> stringListValue = value();
+  private final ValueSet<String> stringListValue = valueSet();
   private final Value<String> messageValue = value();
 
   private final Collection<Value<?>> values = asList(
@@ -143,7 +145,7 @@ public final class ApplicationModel {
     return stringSelectionValue;
   }
 
-  public Value<String> stringListValue() {
+  public ValueSet<String> stringListValueSet() {
     return stringListValue;
   }
 

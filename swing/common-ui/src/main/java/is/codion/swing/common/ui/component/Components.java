@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -692,7 +693,7 @@ public final class Components {
   }
 
   /**
-   * A single selection JList builder.
+   * A multi selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
    * @return a JList builder
@@ -702,14 +703,14 @@ public final class Components {
   }
 
   /**
-   * A single selection JList builder.
+   * A multi selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
-   * @param linkedValue the value to link to the component
+   * @param linkedValueSet the value set to link to the component
    * @return a JList builder
    */
-  public static <T> ListBuilder<T> list(ListModel<T> listModel, Value<T> linkedValue) {
-    return new DefaultListBuilder<>(listModel, requireNonNull(linkedValue));
+  public static <T> ListBuilder<T> list(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
+    return new DefaultListBuilder<>(listModel, requireNonNull(linkedValueSet));
   }
 
   /**

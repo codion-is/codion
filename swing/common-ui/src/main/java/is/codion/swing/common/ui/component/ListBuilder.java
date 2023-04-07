@@ -7,12 +7,13 @@ import javax.swing.JList;
 import javax.swing.ListCellRenderer;
 import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
+import java.util.Set;
 
 /**
- * Builds a single-selection JList.
+ * Builds a multi-selection JList.
  * @param <T> the value type
  */
-public interface ListBuilder<T> extends ComponentBuilder<T, JList<T>, ListBuilder<T>> {
+public interface ListBuilder<T> extends ComponentBuilder<Set<T>, JList<T>, ListBuilder<T>> {
 
   /**
    * @param visibleRowCount the visible row count

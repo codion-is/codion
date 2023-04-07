@@ -22,7 +22,6 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
@@ -280,9 +279,8 @@ public final class ApplicationPanel extends JPanel {
                     .build(inputPanel::add))
             .build(inputPanel::add);
 
-    Components.list(model.createStringListModel(), model.stringListValue())
+    Components.list(model.createStringListModel(), model.stringListValueSet())
             .visibleRowCount(4)
-            .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.HORIZONTAL_WRAP)
             .transferFocusOnEnter(true)
             .label(label("Text List Selection (H)")
