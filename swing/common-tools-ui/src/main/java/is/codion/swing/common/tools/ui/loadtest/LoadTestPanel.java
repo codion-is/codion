@@ -223,8 +223,8 @@ public final class LoadTestPanel<T> extends JPanel {
             .add(checkBox(loadTestModel.collectChartDataState())
                     .caption("Collect chart data")
                     .build())
-            .add(Control.builder(loadTestModel::resetChartData)
-                    .caption("Reset")
+            .add(Control.builder(loadTestModel::clearChartData)
+                    .caption("Clear")
                     .build().createButton())
             .build();
   }

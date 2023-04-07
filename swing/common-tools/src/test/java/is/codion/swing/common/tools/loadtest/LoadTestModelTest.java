@@ -131,7 +131,7 @@ public class LoadTestModelTest {
     SCENARIO.resetRunCount();
     assertEquals(0, SCENARIO.successfulRunCount());
     assertEquals(0, SCENARIO.unsuccessfulRunCount());
-    model.resetChartData();
+    model.clearChartData();
     model.removeApplicationBatch();
     assertEquals(0, model.applicationCount());
 

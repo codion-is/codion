@@ -234,7 +234,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final void resetChartData() {
+  public final void clearChartData() {
     scenariosRunSeries.clear();
     delayedScenarioRunsSeries.clear();
     minimumThinkTimeSeries.clear();
