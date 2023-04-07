@@ -19,8 +19,8 @@ public final class TransferFocusOnEnter {
   private TransferFocusOnEnter() {}
 
   /**
-   * Adds a key event to the component which transfers focus
-   * on enter, and backwards if shift is down
+   * Adds a key event to the component which transfers focus on enter, and backwards if SHIFT is down.
+   * Note that for JTextArea CTRL is added to move focus forward.
    * @param component the component
    * @param <T> the component type
    * @see #disable(JComponent)

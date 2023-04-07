@@ -43,7 +43,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
 
   /**
    * Specifies whether focus should be transferred from components on enter.<br>
-   * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards<br>
+   * Note that for JTextArea CTRL is added to move focus forward<br>
    * Value type: Boolean<br>
    * Default value: false
    */
