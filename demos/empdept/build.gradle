@@ -175,7 +175,7 @@ tasks.register('clientRMIScript', ModularCreateStartScripts) {
     applicationName = project.name + '-remote'
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
-            '-Dcodion.server.hostname=localhost',
+            "-Dcodion.server.hostname=" + "${serverHostName}",
             '-Dcodion.client.trustStore=../config/truststore.jks',
             '-Dcodion.client.trustStorePassword=crappypass'
     ]
@@ -187,7 +187,7 @@ tasks.register('clientHttpScript', ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            '-Dcodion.client.http.hostname=localhost'
+            "-Dcodion.client.http.hostname=" + "${serverHostName}",
     ]
 }
 
@@ -196,7 +196,7 @@ tasks.register('loadTestRMIScript', ModularCreateStartScripts) {
     applicationName = project.name + '-loadtest-remote'
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=remote',
-            '-Dcodion.server.hostname=localhost',
+            "-Dcodion.server.hostname=" + "${serverHostName}",
             '-Dcodion.client.trustStore=../config/truststore.jks',
             '-Dcodion.client.trustStorePassword=crappypass'
     ]
@@ -208,7 +208,7 @@ tasks.register('loadTestHttpScript', ModularCreateStartScripts) {
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=http',
             '-Dcodion.client.http.secure=false',
-            '-Dcodion.client.http.hostname=localhost'
+            "-Dcodion.client.http.hostname=" + "${serverHostName}",
     ]
 }
 
