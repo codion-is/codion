@@ -1,9 +1,11 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.label;
 
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;

@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component;
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -13,6 +14,8 @@ import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
@@ -692,24 +695,24 @@ public final class Components {
   }
 
   /**
-   * A single selection JList builder.
+   * A multi selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
    * @return a JList builder
    */
   public static <T> ListBuilder<T> list(ListModel<T> listModel) {
-    return new DefaultListBuilder<>(listModel, null);
+    return ListBuilder.builder(listModel, null);
   }
 
   /**
-   * A single selection JList builder.
+   * A multi selection JList builder.
    * @param <T> the value type
    * @param listModel the list model
-   * @param linkedValue the value to link to the component
+   * @param linkedValueSet the value set to link to the component
    * @return a JList builder
    */
-  public static <T> ListBuilder<T> list(ListModel<T> listModel, Value<T> linkedValue) {
-    return new DefaultListBuilder<>(listModel, requireNonNull(linkedValue));
+  public static <T> ListBuilder<T> list(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
+    return ListBuilder.builder(listModel, requireNonNull(linkedValueSet));
   }
 
   /**
@@ -717,7 +720,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label() {
-    return new DefaultLabelBuilder<>((String) null);
+    return LabelBuilder.builder((String) null);
   }
 
   /**
@@ -726,7 +729,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(ValueObserver<T> linkedValueObserver) {
-    return new DefaultLabelBuilder<>(linkedValueObserver);
+    return LabelBuilder.builder(linkedValueObserver);
   }
 
   /**
@@ -735,7 +738,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static <T> LabelBuilder<T> label(Icon icon) {
-    return new DefaultLabelBuilder<>(icon);
+    return LabelBuilder.builder(icon);
   }
 
   /**
@@ -743,7 +746,7 @@ public final class Components {
    * @return a JLabel builder
    */
   public static LabelBuilder<String> label(String text) {
-    return new DefaultLabelBuilder<>(text);
+    return LabelBuilder.builder(text);
   }
 
   /**

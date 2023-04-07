@@ -1,9 +1,11 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.list;
 
-import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -12,10 +14,11 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, ListBuilder<T>> implements ListBuilder<T> {
+final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList<T>, ListBuilder<T>> implements ListBuilder<T> {
 
   private final ListModel<T> listModel;
   private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
@@ -29,8 +32,8 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   private int fixedCellWidth = -1;
   private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
 
-  DefaultListBuilder(ListModel<T> listModel, Value<T> linkedValue) {
-    super(linkedValue);
+  DefaultListBuilder(ListModel<T> listModel, ValueSet<T> linkedValueSet) {
+    super(linkedValueSet);
     this.listModel = requireNonNull(listModel);
   }
 
@@ -102,12 +105,12 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<T, JList<T>, 
   }
 
   @Override
-  protected ComponentValue<T, JList<T>> createComponentValue(JList<T> component) {
+  protected ComponentValue<Set<T>, JList<T>> createComponentValue(JList<T> component) {
     return new ListValue<>(component);
   }
 
   @Override
-  protected void setInitialValue(JList<T> component, T initialValue) {
-    component.setSelectedValue(initialValue, true);
+  protected void setInitialValue(JList<T> component, Set<T> initialValue) {
+    ListValue.selectValues(component, initialValue);
   }
 }

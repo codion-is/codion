@@ -5,9 +5,11 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.component.list.ListBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
@@ -35,7 +37,6 @@ import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
-import javax.swing.ListSelectionModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -50,13 +51,15 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ComponentsTest {
@@ -550,7 +553,7 @@ public final class ComponentsTest {
   @Test
   void listSpinner() {
     Value<String> value = Value.value();
-    ComponentValue<String, JSpinner> componentValue = Components.<String>listSpinner(new SpinnerListModel(Arrays.asList("One", "Two")))
+    ComponentValue<String, JSpinner> componentValue = Components.<String>listSpinner(new SpinnerListModel(asList("One", "Two")))
             .columns(5)
             .horizontalAlignment(SwingConstants.CENTER)
             .mouseWheelScrolling(true)
@@ -619,19 +622,21 @@ public final class ComponentsTest {
     listModel.addElement("two");
     listModel.addElement("three");
 
-    Value<String> textValue = Value.value("two");
+    ValueSet<String> textValue = ValueSet.valueSet(new HashSet<>(singletonList("two")));
     ListBuilder<String> listBuilder = Components.list(listModel)
             .visibleRowCount(4)
-            .selectionMode(ListSelectionModel.SINGLE_SELECTION)
             .layoutOrientation(JList.VERTICAL)
             .fixedCellHeight(10)
             .fixedCellWidth(10)
             .linkedValue(textValue);
-    ComponentValue<String, JList<String>> componentValue = listBuilder
+    ComponentValue<Set<String>, JList<String>> componentValue = listBuilder
             .buildValue();
-    assertEquals("two", componentValue.get());
-    textValue.set("three");
-    assertEquals("three", componentValue.get());
+    assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+    assertEquals(new HashSet<>(singletonList("two")), componentValue.get());
+    textValue.add("three");
+    assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("two")));
+    assertTrue(componentValue.component().isSelectedIndex(listModel.indexOf("three")));
+    assertEquals(new HashSet<>(asList("two", "three")), componentValue.get());
     listBuilder.scrollPane().build();
   }
 
