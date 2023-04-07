@@ -4,10 +4,8 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 
@@ -20,7 +18,9 @@ import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 /**
  * A ClientMonitorPanel
@@ -54,18 +54,18 @@ public final class ClientMonitorPanel extends JPanel {
   private void initializeUI() {
     clientList.setComponentPopupMenu(createPopupMenu());
 
-    JScrollPane clientInstanceScroller = Components.scrollPane(clientList)
+    JScrollPane clientInstanceScroller = scrollPane(clientList)
             .border(BorderFactory.createTitledBorder("Clients"))
             .build();
-    JPanel clientInstanceBase = Components.panel(Layouts.borderLayout())
+    JPanel clientInstanceBase = panel(borderLayout())
             .add(clientInstanceScroller, BorderLayout.CENTER)
-            .add(Components.button(control(this::refresh))
+            .add(button(control(this::refresh))
                     .caption("Refresh")
                     .build(), BorderLayout.SOUTH)
             .build();
 
-    JPanel clientInstancePanel = Components.panel(Layouts.borderLayout()).build();
-    JSplitPane splitPane = Components.splitPane()
+    JPanel clientInstancePanel = panel(borderLayout()).build();
+    JSplitPane splitPane = splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .oneTouchExpandable(true)
             .continuousLayout(true)
@@ -88,7 +88,7 @@ public final class ClientMonitorPanel extends JPanel {
         throw new RuntimeException(ex);
       }
     });
-    setLayout(Layouts.borderLayout());
+    setLayout(borderLayout());
     add(splitPane, BorderLayout.CENTER);
   }
 

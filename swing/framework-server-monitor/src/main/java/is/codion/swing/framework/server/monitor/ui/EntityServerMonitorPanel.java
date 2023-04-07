@@ -12,18 +12,15 @@ import is.codion.common.user.User;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.TabbedPaneBuilder;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -31,7 +28,6 @@ import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -46,7 +42,12 @@ import java.io.IOException;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 
+import static is.codion.common.model.UserPreferences.setUserPreference;
+import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -72,7 +73,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     this(new EntityServerMonitor(Clients.SERVER_HOST_NAME.get(),
             ServerConfiguration.REGISTRY_PORT.get(), adminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            Dialogs.displayExceptionDialog(e, Utilities.getParentWindow(EntityServerMonitorPanel.this)));
+            displayExceptionDialog(e, Utilities.getParentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**
@@ -128,19 +129,19 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public static synchronized void setJDKDir(JComponent dialogParent) {
     try {
-      jdkDir = Dialogs.fileSelectionDialog()
+      jdkDir = fileSelectionDialog()
               .owner(dialogParent)
               .startDirectory(jdkDir)
               .title("Set JDK home")
               .selectDirectory()
               .getAbsolutePath();
-      UserPreferences.setUserPreference(JDK_PREFERENCE_KEY, jdkDir);
+      setUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
     catch (CancelException ignored) {/*ignored*/}
   }
 
   private void initializeUI() throws RemoteException {
-    TabbedPaneBuilder tabbedPaneBuilder = Components.tabbedPane();
+    TabbedPaneBuilder tabbedPaneBuilder = tabbedPane();
     for (HostMonitor hostMonitor : model.hostMonitors()) {
       tabbedPaneBuilder.tab(hostMonitor.hostName() + ":" + hostMonitor.registryPort(), new HostMonitorPanel(hostMonitor));
     }
@@ -162,7 +163,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .control(createUpateIntervalControl())
                     .control(createClearChartsControl())
                     .separator()
-                    .control(Dialogs.lookAndFeelSelectionDialog()
+                    .control(lookAndFeelSelectionDialog()
                             .owner(this)
                             .userPreferencePropertyName(EntityServerMonitorPanel.class.getName())
                             .createControl())
@@ -216,7 +217,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private void setUpdateInterval() {
-    NumberField<Integer> field = Components.integerField()
+    NumberField<Integer> field = integerField()
             .initialValue(5)
             .columns(6)
             .minimumValue(1d)
@@ -224,7 +225,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             .selectAllOnFocusGained(true)
             .build();
 
-    Dialogs.okCancelDialog(Components.panel(new FlowLayout(FlowLayout.CENTER))
+    okCancelDialog(panel(new FlowLayout(FlowLayout.CENTER))
                     .add(field)
                     .build())
             .owner(this)
@@ -249,8 +250,8 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel createSouthPanel() {
-    return Components.panel(Layouts.flowLayout(FlowLayout.TRAILING))
-            .border(BorderFactory.createEtchedBorder())
+    return panel(flowLayout(FlowLayout.TRAILING))
+            .border(createEtchedBorder())
             .add(new JLabel("Memory usage:"))
             .add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS))
             .build();
@@ -268,13 +269,13 @@ public final class EntityServerMonitorPanel extends JPanel {
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {
       try {
-        LookAndFeelProvider.findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))
+        findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))
                 .ifPresent(LookAndFeelProvider::enable);
         new EntityServerMonitorPanel().showFrame();
       }
       catch (Exception exception) {
         LOG.error(exception.getMessage(), exception);
-        Dialogs.exceptionDialog()
+        exceptionDialog()
                 .title("Error during startup")
                 .show(exception);
         System.exit(1);
