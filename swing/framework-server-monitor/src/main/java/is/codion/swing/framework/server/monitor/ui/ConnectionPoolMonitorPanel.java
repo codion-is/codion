@@ -218,7 +218,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .caption("Check out times")
                     .maximumSize(TextComponents.preferredTextFieldSize())
                     .build())
-            .add(Components.button(control(model::clearInPoolStatistics))
+            .add(Components.button(control(model::clearStatistics))
                     .caption("Clear")
                     .maximumSize(TextComponents.preferredTextFieldSize())
                     .build())
@@ -239,8 +239,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             .add(createWestCenterPanel(new JLabel("Created"), createdField))
             .add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField))
             .add(createWestCenterPanel(new JLabel("Since"), resetTimeField))
-            .add(Components.button(control(model::clearStatistics))
-                    .caption("Clear")
+            .add(Components.button(control(model::resetStatistics))
+                    .caption("Reset")
                     .build(), BorderLayout.SOUTH)
             .build();
   }

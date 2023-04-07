@@ -39,8 +39,8 @@ public class EntityServerMonitorPanelTest {
     poolMonitor.updateIntervalValue().set(1);
 
     Thread.sleep(1000);
+    poolMonitor.resetStatistics();
     poolMonitor.clearStatistics();
-    poolMonitor.clearInPoolStatistics();
     serverMonitor.shutdown();
     Thread.sleep(500);
   }

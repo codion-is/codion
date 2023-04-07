@@ -160,6 +160,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                     .mnemonic('V')
                     .control(createRefreshControl())
                     .control(createUpateIntervalControl())
+                    .control(createClearChartsControl())
                     .separator()
                     .control(Dialogs.lookAndFeelSelectionDialog()
                             .owner(this)
@@ -191,6 +192,12 @@ public final class EntityServerMonitorPanel extends JPanel {
   private Control createUpateIntervalControl() {
     return Control.builder(this::setUpdateInterval)
             .caption("Chart update interval...")
+            .build();
+  }
+
+  private Control createClearChartsControl() {
+    return Control.builder(model::clearCharts)
+            .caption("Clear charts")
             .build();
   }
 
