@@ -7,10 +7,8 @@ image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
 
 Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components.
 
-Some highlights.
-
-* Domain modelling in plain Java code (no XML, no annotations).
-* Integrated JUnit testing of the domain model.
+* Domain modelling in plain Java code.
+* Integrated https://github.com/junit-team/junit5[JUnit] testing of the domain model.
 * A minimal but complete JDBC abstraction layer.
 * Wiring together a rich Swing client based on the domain model is very straight forward.
 * Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
@@ -69,13 +67,17 @@ And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic
 
 == Demo application projects
 
-The following applications can be found in the /demos folder of the Codion project, but are available in separate Git repositories as fully configured Gradle projects.
+The following applications can be found in the /demos folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
 
 All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
+
+Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
 === https://github.com/bjorndarri/petclinic[Petclinic]
 
 Minimalistic bare-bones project, with a local JDBC connection option. A good place to start.
+
+image::documentation/src/docs/asciidoc/images/tutorials/petclinic/owners.png[Petclinic client]
 
 === https://github.com/bjorndarri/world[World]
 
@@ -83,11 +85,15 @@ Fully configured multi-module project, with separate client modules configured f
 
 Includes a server and server monitor modules and jlink/jpackage configurations.
 
+image::documentation/src/docs/asciidoc/images/tutorials/world/country_cities_table.png[World client]
+
 === https://github.com/bjorndarri/chinook[Chinook]
 
 Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
 Includes a load-test, server, and server monitor modules and jlink/jpackage configurations.
+
+image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
 == Domain model
 
@@ -393,8 +399,6 @@ public class StoreDemo {
 ...and the result, all in all around 150 lines of code.
 
 image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
-
-Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
 
 == Database access
 

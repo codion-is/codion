@@ -78,6 +78,17 @@ public final class EntityServerMonitor {
     }
   }
 
+  public void clearCharts() {
+    for (HostMonitor hostMonitor : hostMonitors) {
+      hostMonitor.serverMonitors().forEach(serverMonitor -> {
+        serverMonitor.clearStatistics();
+        serverMonitor.databaseMonitor().clearStatistics();
+        serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
+                .forEach(ConnectionPoolMonitor::clearStatistics);
+      });
+    }
+  }
+
   private void addHost(String hostname, int registryPort, User adminUser) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPort, adminUser, SERVER_MONITOR_UPDATE_RATE.get()));
     hostAddedEvent.onEvent(hostname);

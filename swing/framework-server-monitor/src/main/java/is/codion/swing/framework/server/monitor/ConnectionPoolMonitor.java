@@ -186,14 +186,14 @@ public final class ConnectionPoolMonitor {
   /**
    * Resets all collected pool statistics
    */
-  public void clearStatistics() {
+  public void resetStatistics() {
     connectionPool.resetStatistics();
   }
 
   /**
    * Clears all graph data sets
    */
-  public void clearInPoolStatistics() {
+  public void clearStatistics() {
     inPoolSeries.clear();
     inUseSeries.clear();
     connectionRequestsPerSecond.clear();

@@ -117,7 +117,7 @@ public class EntityLoadTestModelTest {
 
     loadTest.pausedState().set(true);
 
-    loadTest.resetChartData();
+    loadTest.clearChartData();
 
     loadTest.applicationBatchSizeValue().set(1);
     loadTest.removeApplicationBatch();

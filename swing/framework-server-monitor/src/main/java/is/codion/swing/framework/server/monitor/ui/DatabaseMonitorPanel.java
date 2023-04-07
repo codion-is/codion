@@ -3,8 +3,6 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -12,12 +10,16 @@ import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.PlotOrientation;
 
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static javax.swing.BorderFactory.createEtchedBorder;
+import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
  * A DatabaseMonitorPanel
@@ -46,31 +48,31 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(new BorderLayout());
-    add(Components.tabbedPane()
+    add(tabbedPane()
             .tab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()))
             .tab("Performance", chartPanel())
                     .build(), BorderLayout.CENTER);
   }
 
   private JPanel chartPanel() {
-    JPanel chartConfig = Components.panel(Layouts.flexibleGridLayout(1, 3))
-            .border(BorderFactory.createTitledBorder("Charts"))
+    JPanel chartConfig = panel(flexibleGridLayout(1, 3))
+            .border(createTitledBorder("Charts"))
             .add(new JLabel("Update interval (s)"))
-            .add(Components.integerSpinner(model.updateIntervalValue())
+            .add(integerSpinner(model.updateIntervalValue())
                     .minimum(1)
                     .columns(SPINNER_COLUMNS)
                     .editable(false)
                     .build())
-            .add(Components.button(control(model::clearStatistics))
+            .add(button(control(model::clearStatistics))
                     .caption("Clear")
                     .build())
             .build();
 
-    queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
+    queriesPerSecondChartPanel.setBorder(createEtchedBorder());
 
-    return Components.panel(Layouts.borderLayout())
+    return panel(borderLayout())
             .add(queriesPerSecondChartPanel, BorderLayout.CENTER)
-            .add(Components.panel(Layouts.borderLayout())
+            .add(panel(borderLayout())
                     .add(chartConfig, BorderLayout.WEST)
                     .build(), BorderLayout.SOUTH)
             .build();

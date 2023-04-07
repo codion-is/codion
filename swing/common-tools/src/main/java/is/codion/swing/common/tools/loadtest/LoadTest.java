@@ -136,9 +136,9 @@ public interface LoadTest<T> {
   void removeApplicationBatch();
 
   /**
-   * Resets the accumulated chart data
+   * Clears the accumulated chart data
    */
-  void resetChartData();
+  void clearChartData();
 
   /**
    * @return a dataset plotting the average scenario duration
