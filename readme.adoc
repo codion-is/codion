@@ -10,15 +10,15 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 * Domain modelling in plain Java code.
 * Integrated https://github.com/junit-team/junit5[JUnit] testing of the domain model.
 * A minimal but complete JDBC abstraction layer.
-* Wiring together a rich Swing client based on the domain model is very straight forward.
+* Assembling a Swing client based on the domain model is very straight forward.
 * Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
-* Integrated JasperReports support.
+* Integrated https://github.com/TIBCOSoftware/jasperreports[JasperReports] support.
 * Extremely rapid prototyping.
 * Excellent replacement for legacy https://en.wikipedia.org/wiki/Oracle_Forms[Oracle Forms] applications.
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming all the rage in the world of CRUD applications. I've been developing and using Codion professionally since 2004, always with the aim of eventually open sourcing it.
+I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming all the rage in the world of CRUD applications.
 
 == License
 
@@ -54,16 +54,6 @@ Codion uses a limited set of third-party libraries, a Swing CRUD client with loc
 * *Logging framework*
 
 A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Pet Clinic demo client, with RMI and local connection capabilities, is around 2MB (excluding the JDBC driver and logging framework).
-
-== Rich Swing Client
-
-Here is a screenshot of the Chinook demo client (included in the project), a rather typical Codion client.
-
-image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
-
-Look & Feel provided by https://github.com/JFormDesigner/FlatLaf[Flat Look and Feel].
-
-And here's a https://youtu.be/HeZocS89QkE[~1 min. video demonstrating some basic client functionality] (keep your music on, it's silent).
 
 == Demo application projects
 
