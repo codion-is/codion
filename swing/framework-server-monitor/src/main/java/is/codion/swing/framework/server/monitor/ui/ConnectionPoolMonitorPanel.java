@@ -231,17 +231,19 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel statisticsPanel() {
-    return Components.panel(Layouts.flexibleGridLayout(1, 0))
+    return Components.panel(Layouts.borderLayout())
             .border(BorderFactory.createTitledBorder("Statistics"))
-            .add(createWestCenterPanel(new JLabel("Connections"), poolSizeField))
-            .add(createWestCenterPanel(new JLabel("Requested"), requestedField))
-            .add(createWestCenterPanel(new JLabel("Failed"), failedField))
-            .add(createWestCenterPanel(new JLabel("Created"), createdField))
-            .add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField))
-            .add(createWestCenterPanel(new JLabel("Since"), resetTimeField))
+            .add(Components.panel(Layouts.flexibleGridLayout(1, 0))
+                    .add(createWestCenterPanel(new JLabel("Connections"), poolSizeField))
+                    .add(createWestCenterPanel(new JLabel("Requested"), requestedField))
+                    .add(createWestCenterPanel(new JLabel("Failed"), failedField))
+                    .add(createWestCenterPanel(new JLabel("Created"), createdField))
+                    .add(createWestCenterPanel(new JLabel("Destroyed"), destroyedField))
+                    .add(createWestCenterPanel(new JLabel("Since"), resetTimeField))
+                    .build(), BorderLayout.CENTER)
             .add(Components.button(control(model::resetStatistics))
                     .caption("Reset")
-                    .build(), BorderLayout.SOUTH)
+                    .build(), BorderLayout.EAST)
             .build();
   }
 }
