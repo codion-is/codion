@@ -92,10 +92,11 @@ import static java.util.Objects.requireNonNull;
  * fitting the condition is shown in a dialog allowing either a single or multiple
  * selection based on the search model settings.
  * {@link ListSelectionProvider} is the default {@link SelectionProvider}.
- * Use {@link EntitySearchField#builder(EntitySearchModel)} for a builder instance.
+ * Use {@link EntitySearchField#builder(EntitySearchModel)} or {@link EntitySearchField#builder(EntityType, EntityConnectionProvider)} for a builder instance.
  * @see EntitySearchModel
+ * @see #builder(EntityType, EntityConnectionProvider)
  * @see #builder(EntitySearchModel)
- * @see #lookupDialogBuilder(EntityType, EntityConnectionProvider)
+ * @see #searchDialogBuilder()
  * @see #setSelectionProvider(SelectionProvider)
  */
 public final class EntitySearchField extends HintTextField {
@@ -161,11 +162,11 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Instantiates a new {@link LookupDialogBuilder} instance based on this search field
-   * @return a new {@link LookupDialogBuilder} instance
+   * Instantiates a new {@link SearchDialogBuilder} instance based on this search field
+   * @return a new {@link SearchDialogBuilder} instance
    */
-  public LookupDialogBuilder lookupDialogBuilder() {
-    return new DefaultLookupDialogBuilder(this);
+  public SearchDialogBuilder searchDialogBuilder() {
+    return new DefaultSearchDialogBuilder(this);
   }
 
   /**
@@ -232,34 +233,36 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * A builder for a dialog for performing a entity lookup via a {@link EntitySearchField}.
+   * A builder for a dialog presenting a {@link EntitySearchField}.
    * @see EntityDefinition#searchAttributes()
    */
-  public interface LookupDialogBuilder {
+  public interface SearchDialogBuilder {
 
     /**
      * @param owner the dialog owner
      * @return this builder instance
      */
-    LookupDialogBuilder owner(JComponent owner);
+    SearchDialogBuilder owner(JComponent owner);
 
     /**
      * @param title the title to display on the dialog
      * @return this builder instance
      */
-    LookupDialogBuilder title(String title);
+    SearchDialogBuilder title(String title);
 
     /**
+     * Presents the dialog, returning the selected entity if OK was pressed.
      * @return the selected entity, an empty Optional in case none was selected
      * @throws is.codion.common.model.CancelException in case the user cancelled
      */
-    Optional<Entity> lookupSingle();
+    Optional<Entity> searchSingle();
 
     /**
-     * @return the selected entities
+     * Presents the dialog, returning the selected entities if OK was pressed.
+     * @return the selected entities, an empty list in case none were selected
      * @throws is.codion.common.model.CancelException in case the user cancelled
      */
-    List<Entity> lookup();
+    List<Entity> searchMultiple();
   }
 
   private void linkToModel() {
@@ -813,38 +816,38 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private static final class DefaultLookupDialogBuilder implements LookupDialogBuilder {
+  private static final class DefaultSearchDialogBuilder implements SearchDialogBuilder {
 
     private final EntitySearchField searchField;
 
     private JComponent owner;
     private String title;
 
-    private DefaultLookupDialogBuilder(EntitySearchField searchField) {
+    private DefaultSearchDialogBuilder(EntitySearchField searchField) {
       this.searchField = requireNonNull(searchField);
     }
 
     @Override
-    public LookupDialogBuilder owner(JComponent owner) {
+    public SearchDialogBuilder owner(JComponent owner) {
       this.owner = owner;
       return this;
     }
 
     @Override
-    public LookupDialogBuilder title(String title) {
+    public SearchDialogBuilder title(String title) {
       this.title = title;
       return this;
     }
 
     @Override
-    public Optional<Entity> lookupSingle() {
+    public Optional<Entity> searchSingle() {
       List<Entity> entities = lookupEntities(true, owner, title);
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }
 
     @Override
-    public List<Entity> lookup() {
+    public List<Entity> searchMultiple() {
       return lookupEntities(false, owner, title);
     }
 
