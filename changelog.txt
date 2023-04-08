@@ -8789,3 +8789,4 @@
   InputDialogBuilder.inputValidState() added
   EntityTablePanel.updateSelectedEntities() uses the above to disable OK button on null value for non-null properties
   EntitySearchField.lookupDialogBuilder() now an instance method, EntitySearchField.builder(EntityType, EntityConnectionProvider) added
+  Chinook demo, random playlist parameter input validation added
