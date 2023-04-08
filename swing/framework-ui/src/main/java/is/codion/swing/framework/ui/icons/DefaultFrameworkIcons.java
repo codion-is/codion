@@ -53,6 +53,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
         LOGOS.values().forEach(logo -> logo.setColor(color));
       }
     });
+    ICON_SIZE.addListener(() -> ICONS.keySet().forEach(ikon -> ICONS.put(ikon, FontImageIcon.of(ikon))));
   }
 
   @Override
