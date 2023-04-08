@@ -16,6 +16,7 @@ import java.util.Objects;
  * Heavily influenced by TristateCheckBox by Heinz M. Kabutz
  * <a href="http://www.javaspecialists.eu/archive/Issue145.html">http://www.javaspecialists.eu/archive/Issue145.html</a>
  * Included with permission.
+ * @author Heinz M. Kabutz
  */
 public final class NullableToggleButtonModel extends DefaultButtonModel {
 
