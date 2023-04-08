@@ -38,6 +38,9 @@ public interface FrameworkIcons extends Logos {
    */
   PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 
+  /**
+   * Specifies the name of the {@link FrameworkIcons} implementation class to use.
+   */
   PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
@@ -121,7 +124,7 @@ public interface FrameworkIcons extends Logos {
   ImageIcon editPanel();
 
   /**
-   * @return icon for the 'view dependencies' action.
+   * @return icon for the 'dependencies' action.
    */
   ImageIcon dependencies();
 
@@ -171,6 +174,6 @@ public interface FrameworkIcons extends Logos {
       }
     }
 
-    throw new IllegalArgumentException("No FrameworkIcons implementation available of type: " + iconsClassName);
+    throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
   }
 }

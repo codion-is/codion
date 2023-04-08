@@ -11,7 +11,6 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.model.EntityApplicationModel;
-import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
@@ -44,9 +43,12 @@ import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.Integer.parseInt;
+import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> implements EntityApplicationBuilder<M, P> {
@@ -75,14 +77,14 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
   private Supplier<JFrame> frameSupplier = JFrame::new;
   private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
-  private ImageIcon applicationIcon = FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE);
+  private ImageIcon applicationIcon;
   private Version applicationVersion;
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
   private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
   private Runnable beforeApplicationStarted;
   private EventDataListener<P> onApplicationStarted;
 
-  private String defaultLookAndFeelClassName = Utilities.systemLookAndFeelClassName();
+  private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
   private String lookAndFeelClassName;
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
@@ -247,13 +249,18 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private void startApplication() {
     LOG.debug("{} application starting", applicationName);
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
+    setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     setVersionProperty();
-    LookAndFeelProvider.findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
+    findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
     int fontSizePercentage = fontSizePercentage();
+    int logoSize = DEFAULT_LOGO_SIZE;
     if (fontSizePercentage != 100) {
-      Utilities.setFontSizePercentage(fontSizePercentage);
+      setFontSizePercentage(fontSizePercentage);
       FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
+      logoSize = Math.round(logoSize * (fontSizePercentage / 100f));
+    }
+    if (applicationIcon == null) {
+      applicationIcon = FrameworkIcons.instance().logo(logoSize);
     }
     if (beforeApplicationStarted != null) {
       beforeApplicationStarted.run();
@@ -305,7 +312,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
             SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
-    Thread.setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+    setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
     LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     if (displayFrame) {
       applicationFrame.setVisible(true);
@@ -417,7 +424,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private static void displayException(Throwable exception, JFrame applicationFrame) {
     Window focusOwnerParentWindow = getParentWindow(getCurrentKeyboardFocusManager().getFocusOwner());
-    Dialogs.displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
+    displayExceptionDialog(exception, focusOwnerParentWindow == null ? applicationFrame : focusOwnerParentWindow);
   }
 
   private final class DefaultDialogLoginProvider implements LoginProvider {
