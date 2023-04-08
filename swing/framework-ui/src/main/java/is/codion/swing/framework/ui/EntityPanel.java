@@ -585,10 +585,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     parentPanel().ifPresent(panel ->
             panel.selectChildPanel(this));
     initializePanel();
-    requestInitialFocus();
+    Window parentWindow = getParentWindow(this);
+    if (parentWindow != null) {
+      parentWindow.toFront();
+    }
     if (editPanelWindow != null) {
       editPanelWindow.toFront();
     }
+    requestInitialFocus();
   }
 
   @Override

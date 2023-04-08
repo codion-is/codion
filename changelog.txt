@@ -8791,3 +8791,4 @@
   EntitySearchField.lookupDialogBuilder() now an instance method, EntitySearchField.builder(EntityType, EntityConnectionProvider) added
   Chinook demo, random playlist parameter input validation added
   EntitySearchField.LookupDialogBuilder renamed SearchDialogBuilder
+  EntityPanel.activatePanel() now brings the parent window to front
