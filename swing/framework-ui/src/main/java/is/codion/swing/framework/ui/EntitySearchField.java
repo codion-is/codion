@@ -491,8 +491,7 @@ public final class EntitySearchField extends HintTextField {
      * @param searchModel the {@link EntitySearchModel}
      */
     public ListSelectionProvider(EntitySearchModel searchModel) {
-      requireNonNull(searchModel);
-      selectControl = Control.builder(createSelectCommand(searchModel))
+      selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .caption(Messages.ok())
               .build();
       list.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
@@ -534,11 +533,21 @@ public final class EntitySearchField extends HintTextField {
       Utilities.updateUI(basePanel, list, scrollPane, scrollPane.getVerticalScrollBar(), scrollPane.getHorizontalScrollBar());
     }
 
-    private Control.Command createSelectCommand(EntitySearchModel searchModel) {
-      return () -> {
+    private static final class SelectCommand implements Control.Command {
+
+      private final EntitySearchModel searchModel;
+      private final JList<Entity> list;
+
+      private SelectCommand(EntitySearchModel searchModel, JList<Entity> list) {
+        this.searchModel = searchModel;
+        this.list = list;
+      }
+
+      @Override
+      public void perform() throws Exception {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Utilities.disposeParentWindow(list);
-      };
+      }
     }
   }
 
