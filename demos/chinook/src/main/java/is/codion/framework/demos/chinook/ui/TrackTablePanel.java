@@ -4,12 +4,14 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.state.State;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSecondsPanel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -49,9 +51,16 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private BigDecimal getAmountFromUser() {
-    return Dialogs.inputDialog(Components.bigDecimalField().buildValue())
+    ComponentValue<BigDecimal, NumberField<BigDecimal>> amountValue =
+            Components.bigDecimalField()
+                    .buildValue();
+    State validAmountState = State.state();
+    amountValue.addDataListener(amount -> validAmountState.set(amount != null));
+
+    return Dialogs.inputDialog(amountValue)
             .owner(this)
             .title(BUNDLE.getString("amount"))
+            .inputValidState(validAmountState)
             .show();
   }
 

@@ -5,7 +5,10 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
@@ -23,6 +26,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   private JComponent owner;
   private String title;
   private String caption;
+  private StateObserver inputValidState;
 
   DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
     this.componentValue = requireNonNull(componentValue);
@@ -47,6 +51,12 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   }
 
   @Override
+  public InputDialogBuilder<T> inputValidState(StateObserver inputValidState) {
+    this.inputValidState = inputValidState;
+    return this;
+  }
+
+  @Override
   public T show() {
     State okPressed = State.state();
     JPanel basePanel = new JPanel(Layouts.borderLayout());
@@ -58,12 +68,29 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     new DefaultOkCancelDialogBuilder(basePanel)
             .owner(owner)
             .title(title)
-            .onOk(() -> okPressed.set(true))
+            .okAction(Control.builder(new OkCommand(okPressed))
+                    .enabledState(inputValidState)
+                    .build())
             .show();
     if (okPressed.get()) {
       return componentValue.get();
     }
 
     throw new CancelException();
+  }
+
+  private final class OkCommand implements Control.Command {
+
+    private final State okPressed;
+
+    private OkCommand(State okPressed) {
+      this.okPressed = okPressed;
+    }
+
+    @Override
+    public void perform() throws Exception {
+      Utilities.getParentDialog(componentValue.component()).dispose();
+      okPressed.set(true);
+    }
   }
 }

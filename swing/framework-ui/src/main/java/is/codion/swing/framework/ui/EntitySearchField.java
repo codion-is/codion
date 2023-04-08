@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
+import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -160,22 +161,30 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Initializes a new {@link EntitySearchField.Builder}
+   * Instantiates a new {@link LookupDialogBuilder} instance based on this search field
+   * @return a new {@link LookupDialogBuilder} instance
+   */
+  public LookupDialogBuilder lookupDialogBuilder() {
+    return new DefaultLookupDialogBuilder(this);
+  }
+
+  /**
+   * Instantiates a new {@link EntitySearchField.Builder}
+   * @param entityType the entity type
+   * @param connectionProvider the connection provider
+   * @return a new builder instance
+   */
+  public static Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return new DefaultEntitySearchFieldBuilder(EntitySearchModel.entitySearchModel(entityType, connectionProvider));
+  }
+
+  /**
+   * Instantiates a new {@link EntitySearchField.Builder}
    * @param searchModel the search model on which to base the search field
    * @return a new builder instance
    */
   public static Builder builder(EntitySearchModel searchModel) {
     return new DefaultEntitySearchFieldBuilder(requireNonNull(searchModel));
-  }
-
-  /**
-   * Instantiates a new {@link LookupDialogBuilder} instance
-   * @param entityType the entity type to lookup
-   * @param connectionProvider the connection provider
-   * @return a new {@link LookupDialogBuilder} instance
-   */
-  public static LookupDialogBuilder lookupDialogBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    return new DefaultLookupDialogBuilder(entityType, connectionProvider);
   }
 
   /**
@@ -239,14 +248,6 @@ public final class EntitySearchField extends HintTextField {
      * @return this builder instance
      */
     LookupDialogBuilder title(String title);
-
-    /**
-     * If no search field is specified one is created.
-     * @param searchField the search field to use for lookup
-     * @return this builder instance
-     * @throws IllegalArgumentException in case the search field entity type does not match the builder entity type
-     */
-    LookupDialogBuilder searchField(EntitySearchField searchField);
 
     /**
      * @return the selected entity, an empty Optional in case none was selected
@@ -814,16 +815,13 @@ public final class EntitySearchField extends HintTextField {
 
   private static final class DefaultLookupDialogBuilder implements LookupDialogBuilder {
 
-    private final EntityType entityType;
-    private final EntityConnectionProvider connectionProvider;
+    private final EntitySearchField searchField;
 
-    private EntitySearchField searchField;
     private JComponent owner;
     private String title;
 
-    private DefaultLookupDialogBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-      this.entityType = requireNonNull(entityType);
-      this.connectionProvider = requireNonNull(connectionProvider);
+    private DefaultLookupDialogBuilder(EntitySearchField searchField) {
+      this.searchField = requireNonNull(searchField);
     }
 
     @Override
@@ -839,36 +837,26 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public LookupDialogBuilder searchField(EntitySearchField searchField) {
-      if (!requireNonNull(searchField).model().entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Search field entity type must be the same as lookup entity type: " + entityType);
-      }
-      this.searchField = searchField;
-      return this;
-    }
-
-    @Override
     public Optional<Entity> lookupSingle() {
-      List<Entity> entities = lookupEntities(entityType, connectionProvider, true, owner, title);
+      List<Entity> entities = lookupEntities(true, owner, title);
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }
 
     @Override
     public List<Entity> lookup() {
-      return lookupEntities(entityType, connectionProvider, false, owner, title);
+      return lookupEntities(false, owner, title);
     }
 
-    private List<Entity> lookupEntities(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                        boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
-      if (searchField == null) {
-        searchField = new EntitySearchField(EntitySearchModel.entitySearchModel(entityType, connectionProvider), true);
-      }
+    private List<Entity> lookupEntities(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
       searchField.model.multipleSelectionEnabledState().set(!singleSelection);
+      State entitiesSelectedState = State.state(!searchField.model.getSelectedEntities().isEmpty());
+      searchField.model.addSelectedEntitiesListener(selectedEntities -> entitiesSelectedState.set(!selectedEntities.isEmpty()));
 
       return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
               .owner(dialogOwner)
               .title(dialogTitle)
+              .inputValidState(entitiesSelectedState)
               .show();
     }
   }

@@ -747,12 +747,15 @@ public class EntityTablePanel extends JPanel {
     Collection<T> values = Entity.getDistinct(propertyToUpdate.attribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
+    State validValueState = State.state(propertyToUpdate.isNullable() ? true : initialValue != null);
+    componentValue.addDataListener(value -> validValueState.set(propertyToUpdate.isNullable() ? true : value != null));
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(MESSAGES.getString("update"))
               .caption(propertyToUpdate.caption())
+              .inputValidState(validValueState)
               .show();
       Entity.put(propertyToUpdate.attribute(), newValue, selectedEntities);
       updatePerformed = update(selectedEntities);

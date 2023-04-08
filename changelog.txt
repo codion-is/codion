@@ -8824,3 +8824,7 @@
   ListBuilder now ValueSet based, no longer restricted to single-selection
   ListBuilder moved to list package
   LabelBuilder moved to label package
+  InputDialogBuilder.inputValidState() added
+  EntityTablePanel.updateSelectedEntities() uses the above to disable OK button on null value for non-null properties
+  EntitySearchField.lookupDialogBuilder() now an instance method, EntitySearchField.builder(EntityType, EntityConnectionProvider) added
+  Chinook demo, random playlist parameter input validation added
