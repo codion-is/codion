@@ -49,7 +49,7 @@ public class EntitySearchFieldTest {
   }
 
   @Test
-  void lookupDialog() {
-    EntitySearchField.builder(Employee.TYPE, CONNECTION_PROVIDER).build().lookupDialogBuilder();
+  void searchDialog() {
+    EntitySearchField.builder(Employee.TYPE, CONNECTION_PROVIDER).build().searchDialogBuilder();
   }
 }

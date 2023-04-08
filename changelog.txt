@@ -8828,3 +8828,7 @@
   EntityTablePanel.updateSelectedEntities() uses the above to disable OK button on null value for non-null properties
   EntitySearchField.lookupDialogBuilder() now an instance method, EntitySearchField.builder(EntityType, EntityConnectionProvider) added
   Chinook demo, random playlist parameter input validation added
+  EntitySearchField.LookupDialogBuilder renamed SearchDialogBuilder
+  EntityPanel.activatePanel() now brings the parent window to front
+  DefaultEntityApplicationBuilder bug fixed, no longer initializes the applicationIcon on construction since it initialized all the framework icons, before FrameworkIcons.ICON_SIZE was set according to the font size
+  DefaultFrameworkIcons, now recreates icons when ICON_SIZE changes
