@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import java.util.List;
 import java.util.ResourceBundle;
@@ -30,6 +31,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
     return super.createPopupMenuControls(additionalPopupMenuControls)
             .addAt(0, Control.builder(this::createRandomPlaylist)
                     .caption(BUNDLE.getString("create_random_playlist"))
+                    .smallIcon(FrameworkIcons.instance().add())
                     .build())
             .addSeparatorAt(1);
   }
