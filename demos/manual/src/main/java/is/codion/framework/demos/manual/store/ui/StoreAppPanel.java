@@ -36,15 +36,12 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
   protected List<EntityPanel> createEntityPanels() {
     CustomerModel customerModel =
             (CustomerModel) applicationModel().entityModel(Customer.TYPE);
-    //populate model with rows from database
-    customerModel.tableModel().refresh();
+    CustomerAddressModel customerAddressModel =
+            (CustomerAddressModel) customerModel.detailModel(CustomerAddress.TYPE);
 
     EntityPanel customerPanel = new EntityPanel(customerModel,
             new CustomerEditPanel(customerModel.editModel()),
             new CustomerTablePanel(customerModel.tableModel()));
-
-    CustomerAddressModel customerAddressModel =
-            (CustomerAddressModel) customerModel.detailModel(CustomerAddress.TYPE);
     EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
             new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
