@@ -24,6 +24,15 @@ public abstract class AbstractTextComponentValue<T, C extends JTextComponent> ex
 
   /**
    * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
+   * update on policy and no null value.
+   * @param component the component
+   */
+  protected AbstractTextComponentValue(C component) {
+    this(component, null);
+  }
+
+  /**
+   * Instantiates a new {@link AbstractTextComponentValue}, with the {@link UpdateOn#KEYSTROKE}
    * update on policy.
    * @param component the component
    * @param nullValue the value to use instead of null
