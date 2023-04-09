@@ -9,7 +9,7 @@ import java.util.Locale;
 /**
  * Specifies a locale sensitive numerical date format pattern.
  * Note that the time part is 24 hour based and is not locale sensitive.
- *
+ * <br>
  * Orders the year and month parts according to locale,
  * with two-digit month and day parts and two or four digit year.
  *
