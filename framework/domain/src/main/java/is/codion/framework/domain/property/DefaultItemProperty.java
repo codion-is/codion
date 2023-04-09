@@ -53,7 +53,8 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
 
   @Override
   public String toString(T value) {
-    if (!isValid(value)) {
+    Item<T> item = itemMap.get(value);
+    if (item == null) {//invalid
       if (value == null && isNullable()) {
         //technically valid
         return "";
@@ -62,7 +63,7 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
       return value + " <" + INVALID_ITEM_SUFFIX + ">";
     }
 
-    return item(value).caption();
+    return item.caption();
   }
 
   static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {

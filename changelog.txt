@@ -8795,3 +8795,4 @@
   DefaultEntityApplicationBuilder bug fixed, no longer initializes the applicationIcon on construction since it initialized all the framework icons, before FrameworkIcons.ICON_SIZE was set according to the font size
   DefaultFrameworkIcons, now recreates icons when ICON_SIZE changes
   AbstractTextComponentValue, constructor overloaded with a component parameter
+  DefaultItemProperty.toString(value), minor optimization
