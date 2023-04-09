@@ -7,9 +7,9 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
 // tag::storeAppModel[]
-public class StoreAppModel extends SwingEntityApplicationModel {
+public class StoreApplicationModel extends SwingEntityApplicationModel {
 
-  public StoreAppModel(EntityConnectionProvider connectionProvider) {
+  public StoreApplicationModel(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
 
     CustomerModel customerModel = new CustomerModel(connectionProvider);

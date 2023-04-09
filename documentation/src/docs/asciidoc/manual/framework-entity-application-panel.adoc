@@ -8,7 +8,7 @@ The EntityApplicationPanel class serves as the main application UI. When extendi
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreAppPanel.java[tags=storeAppPanel]
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/StoreApplicationPanel.java[tags=storeAppPanel]
 ----
 
 == Examples

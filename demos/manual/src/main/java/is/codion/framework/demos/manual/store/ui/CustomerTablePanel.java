@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
@@ -52,7 +51,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     reportParameters.put("CUSTOMER_IDS", customerIds);
 
     JasperPrint customerReport = tableModel().connectionProvider().connection()
-            .fillReport(Store.CUSTOMER_REPORT, reportParameters);
+            .fillReport(Customer.REPORT, reportParameters);
 
     Dialogs.componentDialog(new JRViewer(customerReport))
             .owner(this)

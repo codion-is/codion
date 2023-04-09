@@ -46,7 +46,7 @@ Detail models can be added to a model, this relies on a foreign key reference be
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/StoreAppModel.java[tags=storeAppModel]
+include::{dir-source}/is/codion/framework/demos/manual/store/model/StoreApplicationModel.java[tags=storeAppModel]
 ----
 
 [#_event_binding]
