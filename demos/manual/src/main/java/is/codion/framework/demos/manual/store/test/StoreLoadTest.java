@@ -8,7 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
-import is.codion.framework.demos.manual.store.model.StoreAppModel;
+import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
@@ -18,14 +18,14 @@ import java.util.UUID;
 import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
-public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
+public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
 
   public StoreLoadTest(User user) {
     super(user, singletonList(new UsageScenario()));
   }
 
   @Override
-  protected StoreAppModel createApplication() {
+  protected StoreApplicationModel createApplication() {
     EntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
                     .clientId(UUID.randomUUID())
@@ -33,14 +33,14 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreAppModel> {
                     .domainClassName(Store.class.getName())
                     .build();
 
-    return new StoreAppModel(connectionProvider);
+    return new StoreApplicationModel(connectionProvider);
   }
 
   private static class UsageScenario extends
-          AbstractEntityUsageScenario<StoreAppModel> {
+          AbstractEntityUsageScenario<StoreApplicationModel> {
 
     @Override
-    protected void perform(StoreAppModel application)
+    protected void perform(StoreApplicationModel application)
             throws Exception {
       SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
       customerModel.tableModel().refresh();

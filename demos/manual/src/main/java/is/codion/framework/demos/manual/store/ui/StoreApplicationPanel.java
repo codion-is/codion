@@ -3,17 +3,17 @@
  */
 package is.codion.framework.demos.manual.store.ui;
 
-import is.codion.common.db.report.Report;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.demos.manual.store.model.CustomerAddressModel;
 import is.codion.framework.demos.manual.store.model.CustomerModel;
-import is.codion.framework.demos.manual.store.model.StoreAppModel;
+import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -26,25 +26,22 @@ import java.util.Locale;
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 // tag::storeAppPanel[]
-public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
+public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicationModel> {
 
-  public StoreAppPanel(StoreAppModel appModel) {
-    super(appModel);
+  public StoreApplicationPanel(StoreApplicationModel applicationModel) {
+    super(applicationModel);
   }
 
   @Override
   protected List<EntityPanel> createEntityPanels() {
     CustomerModel customerModel =
             (CustomerModel) applicationModel().entityModel(Customer.TYPE);
-    //populate model with rows from database
-    customerModel.tableModel().refresh();
+    CustomerAddressModel customerAddressModel =
+            (CustomerAddressModel) customerModel.detailModel(CustomerAddress.TYPE);
 
     EntityPanel customerPanel = new EntityPanel(customerModel,
             new CustomerEditPanel(customerModel.editModel()),
             new CustomerTablePanel(customerModel.tableModel()));
-
-    CustomerAddressModel customerAddressModel =
-            (CustomerAddressModel) customerModel.detailModel(CustomerAddress.TYPE);
     EntityPanel customerAddressPanel = new EntityPanel(customerAddressModel,
             new CustomerAddressEditPanel(customerAddressModel.editModel()));
 
@@ -71,9 +68,8 @@ public class StoreAppPanel extends EntityApplicationPanel<StoreAppModel> {
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.manual.store.domain.Store");
-    Report.REPORT_PATH.set("http://test.io");
-    entityApplicationBuilder(StoreAppModel.class, StoreAppPanel.class)
+    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Store.class.getName());
+    entityApplicationBuilder(StoreApplicationModel.class, StoreApplicationPanel.class)
             .applicationName("Store")
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))

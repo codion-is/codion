@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] contains the controls (text fields, combo boxes and such) for editing an entity instance.
+The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] manages the input components (text fields, combo boxes and such) for editing an entity instance.
 
 When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
 
@@ -19,6 +19,22 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/AddressEditPanel
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/ui/CustomerAddressEditPanel.java[tags=customerAddressEditPanel]
+----
+
+== Detailed example
+
+Here's how a text field is created and added to the edit panel.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.java[tags=basic]
+----
+
+And here's the equivilent code, showing what's going on behind the scenes.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.java[tags=expanded]
 ----
 
 == Input controls

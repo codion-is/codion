@@ -110,9 +110,9 @@ import static java.util.Arrays.asList;
  * can be controlled by adjusting the value of
  * {@code HIGH_QUALITY_RENDERING_SCALE_THRESHOLD}.
  * <p>
- * Author: Slav Boleslawski
  * <a href="http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html">http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html</a>
  * Included with permission.
+ * @author Slav Boleslawski
  */
 public class NavigableImagePanel extends JPanel {
 

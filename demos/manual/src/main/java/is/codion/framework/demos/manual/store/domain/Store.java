@@ -30,6 +30,7 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Property.*;
+import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public final class Store extends DefaultDomain {
 
@@ -52,6 +53,9 @@ public final class Store extends DefaultDomain {
     Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
     Attribute<String> EMAIL = TYPE.stringAttribute("email");
     Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+
+    ReportType<JasperReport, JasperPrint, Map<String, Object>> REPORT =
+            JasperReports.reportType("customer_report");
   }
 
   public interface CustomerAddress {
@@ -64,9 +68,6 @@ public final class Store extends DefaultDomain {
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
     ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);
   }
-
-  public static final ReportType<JasperReport, JasperPrint, Map<String, Object>> CUSTOMER_REPORT =
-          JasperReports.reportType("customer_report");
 
   public Store() {
     super(STORE);
@@ -94,6 +95,8 @@ public final class Store extends DefaultDomain {
             .stringFactory(new CustomerToString())
             // end::customerStringFactory[]
             .caption("Customer"));
+
+    add(Customer.REPORT, classPathReport(Store.class, "customer_report.jasper"));
     // end::customer[]
   }
 
