@@ -4,15 +4,21 @@
 :dir-manual-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
+The Codion server provides RMI and HTTP connection options to clients.
+
 == Features
 
-* Firewall friendly; uses one way communications without callbacks and can be configured to serve on a single fixed port
-* Integrated web server for serving Web Start applications and files, based on Jetty
+* Firewall friendly RMI; uses one way communications without callbacks and can be configured to serve on a single fixed port
+* Integrated web server for serving HTTP client connections, based on https://github.com/eclipse/jetty.project[Jetty]
 * All user authentication left to the database by default
 * Comprehensive administration and monitoring facilities via the <<server-monitor.adoc#_server_monitor, ServerMonitor>>
 * Featherweight server with moderate memory and CPU usage
 
 == Security
+
+Here's a great overview of RMI security risks and mitigations.
+
+https://blog.tneitzel.eu/posts/01-attacking-java-rmi-via-ssrf[Attacking Java RMI via SSRF]
 
 === Authentication
 
@@ -28,7 +34,7 @@ codion.server.loginProxyClasses=com.app.server.AppLoginProxy # <1>
 
 <<{dir-tutorials}/chinook.adoc#_login_proxy, ChinookLoginProxy>>
 
-=== SSL encryption
+=== RMI SSL encryption
 
 To enable SSL encryption between client and server, create a keystore and truststore pair and set the following system properties.
 
@@ -52,7 +58,7 @@ codion.client.trustStorePassword=password
 
 === Class loading
 
-No dynamic class loading is performed.
+No dynamic class loading is required.
 
 === Serialization whitelist
 
