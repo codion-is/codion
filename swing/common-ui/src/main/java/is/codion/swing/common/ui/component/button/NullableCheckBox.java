@@ -30,6 +30,7 @@ import static java.util.Objects.requireNonNull;
  * <a href="https://www.javaspecialists.eu/archive/Issue145.html">https://www.javaspecialists.eu/archive/Issue145.html</a>
  * Included with permission.
  * @author Heinz M. Kabutz
+ * @author Björn Darri Sigurðsson
  */
 public class NullableCheckBox extends JCheckBox {
 

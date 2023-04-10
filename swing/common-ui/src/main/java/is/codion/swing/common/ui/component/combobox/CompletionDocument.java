@@ -26,6 +26,7 @@ import static java.util.Objects.requireNonNull;
  * Based on code originally from: <a href="http://www.orbital-computer.de/JComboBox">http://www.orbital-computer.de/JComboBox</a><br>
  * Included with permission.
  * @author Thomas Bierhance
+ * @author Björn Darri Sigurðsson
  */
 class CompletionDocument extends PlainDocument {
 

@@ -17,6 +17,7 @@ import java.util.Objects;
  * <a href="http://www.javaspecialists.eu/archive/Issue145.html">http://www.javaspecialists.eu/archive/Issue145.html</a>
  * Included with permission.
  * @author Heinz M. Kabutz
+ * @author Björn Darri Sigurðsson
  */
 public final class NullableToggleButtonModel extends DefaultButtonModel {
 
