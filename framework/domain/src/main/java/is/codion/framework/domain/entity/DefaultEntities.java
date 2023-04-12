@@ -96,7 +96,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   /**
    * Retrieves the Entities for the given domain type.
-   * @param domainType the domain type for which to retrieve the entity definitions
+   * @param domainName the name of the domain for which to retrieve the entity definitions
    * @return the Entities instance registered for the given domainType
    * @throws IllegalArgumentException in case the domain has not been registered
    */
