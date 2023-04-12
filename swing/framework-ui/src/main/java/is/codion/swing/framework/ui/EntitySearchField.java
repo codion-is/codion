@@ -115,6 +115,7 @@ public final class EntitySearchField extends HintTextField {
   private Color backgroundColor;
   private Color invalidBackgroundColor;
   private boolean performingSearch = false;
+  private boolean searchOnFocusLost = true;
 
   private EntitySearchField(EntitySearchModel searchModel, boolean searchHintEnabled) {
     super(searchHintEnabled ? Messages.search() + "..." : null);
@@ -170,6 +171,20 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
+   * @return true if this field triggers a search when it loses focus
+   */
+  public boolean isSearchOnFocusLost() {
+    return searchOnFocusLost;
+  }
+
+  /**
+   * @param searchOnFocusLost true if this field should trigger a search when it loses focus
+   */
+  public void setSearchOnFocusLost(boolean searchOnFocusLost) {
+    this.searchOnFocusLost = searchOnFocusLost;
+  }
+
+  /**
    * Instantiates a new {@link EntitySearchField.Builder}
    * @param entityType the entity type
    * @param connectionProvider the connection provider
@@ -218,6 +233,12 @@ public final class EntitySearchField extends HintTextField {
      * @return this builder instance
      */
     Builder searchHintEnabled(boolean searchHintEnabled);
+
+    /**
+     * @param searchOnFocusLost true if search should be performed on focus lost
+     * @return this builder instance
+     */
+    Builder searchOnFocusLost(boolean searchOnFocusLost);
 
     /**
      * @param selectionProviderFactory the selection provider factory to use
@@ -707,7 +728,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return !performingSearch && !model.searchStringRepresentsSelected();
+      return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsSelected();
     }
   }
 
@@ -736,6 +757,7 @@ public final class EntitySearchField extends HintTextField {
     private boolean upperCase;
     private boolean lowerCase;
     private boolean searchHintEnabled = true;
+    private boolean searchOnFocusLost = true;
     private Function<EntitySearchModel, SelectionProvider> selectionProviderFactory;
 
     private DefaultEntitySearchFieldBuilder(EntitySearchModel searchModel) {
@@ -773,6 +795,12 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
+    public Builder searchOnFocusLost(boolean searchOnFocusLost) {
+      this.searchOnFocusLost = searchOnFocusLost;
+      return this;
+    }
+
+    @Override
     public Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory) {
       this.selectionProviderFactory = requireNonNull(selectionProviderFactory);
       return this;
@@ -793,6 +821,7 @@ public final class EntitySearchField extends HintTextField {
       if (lowerCase) {
         TextComponents.lowerCase(searchField.getDocument());
       }
+      searchField.setSearchOnFocusLost(searchOnFocusLost);
       if (selectionProviderFactory != null) {
         searchField.setSelectionProvider(selectionProviderFactory.apply(searchField.model()));
       }

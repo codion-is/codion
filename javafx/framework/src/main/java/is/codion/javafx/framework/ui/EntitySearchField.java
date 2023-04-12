@@ -31,6 +31,7 @@ public final class EntitySearchField extends TextField {
   private final EntitySearchModel model;
   //todo used during focus lost, todo implement
   private boolean performingSearch = false;
+  private boolean searchOnFocusLost = true;
 
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
@@ -69,6 +70,20 @@ public final class EntitySearchField extends TextField {
    */
   public void setInvalidBackgroundColor(Color invalidBackgroundColor) {
     this.invalidBackgroundColor = invalidBackgroundColor;
+  }
+
+  /**
+   * @return true if this field triggers a search when it loses focus
+   */
+  public boolean isSearchOnFocusLost() {
+    return searchOnFocusLost;
+  }
+
+  /**
+   * @param searchOnFocusLost true if this field should trigger a search when it loses focus
+   */
+  public void setSearchOnFocusLost(boolean searchOnFocusLost) {
+    this.searchOnFocusLost = searchOnFocusLost;
   }
 
   private void performSearch(boolean promptUser) {
@@ -125,11 +140,15 @@ public final class EntitySearchField extends TextField {
       if (getText().isEmpty()) {
         model().setSelectedEntity(null);
       }
-      else if (!performingSearch && !model.searchStringRepresentsSelected()) {
+      else if (shouldPerformSearch()) {
         performSearch(false);
       }
       updateColors();
     }
+  }
+
+  private boolean shouldPerformSearch() {
+    return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsSelected();
   }
 
   private static void showEmptyResultMessage() {
