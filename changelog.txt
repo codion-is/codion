@@ -8796,3 +8796,4 @@
   DefaultFrameworkIcons, now recreates icons when ICON_SIZE changes
   AbstractTextComponentValue, constructor overloaded with a component parameter
   DefaultItemProperty.toString(value), minor optimization
+  EntitySearchField.setSearchOnFocusLost() added
