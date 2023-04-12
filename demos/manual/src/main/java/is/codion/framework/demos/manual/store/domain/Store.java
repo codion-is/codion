@@ -30,7 +30,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Property.*;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 
 public final class Store extends DefaultDomain {
 
@@ -95,8 +94,6 @@ public final class Store extends DefaultDomain {
             .stringFactory(new CustomerToString())
             // end::customerStringFactory[]
             .caption("Customer"));
-
-    add(Customer.REPORT, classPathReport(Store.class, "customer_report.jasper"));
     // end::customer[]
   }
 
