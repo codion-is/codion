@@ -8797,3 +8797,4 @@
   AbstractTextComponentValue, constructor overloaded with a component parameter
   DefaultItemProperty.toString(value), minor optimization
   EntitySearchField.setSearchOnFocusLost() added
+  OracleDatabase, PostgreSQLDatabase, english unique key error message improved
