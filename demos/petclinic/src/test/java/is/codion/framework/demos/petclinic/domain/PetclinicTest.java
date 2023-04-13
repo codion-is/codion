@@ -15,10 +15,10 @@ import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;
 
-public final class PetClinicTest extends EntityTestUnit {
+public final class PetclinicTest extends EntityTestUnit {
 
-  public PetClinicTest() {
-    super(PetClinic.class.getName());
+  public PetclinicTest() {
+    super(Petclinic.class.getName());
   }
 
   @Test
