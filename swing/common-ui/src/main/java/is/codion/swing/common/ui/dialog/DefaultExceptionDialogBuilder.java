@@ -53,7 +53,7 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
             .owner(owner)
             .closeEvent(exceptionPanel.closeObserver())
             .build();
-    exceptionPanel.addDetailsListener(details -> {
+    exceptionPanel.addShowDetailsListener(showDetails -> {
       dialog.pack();
       dialog.setLocationRelativeTo(owner);
     });

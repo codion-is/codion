@@ -27,7 +27,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -59,7 +58,6 @@ final class ExceptionPanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionPanel.displaySystemProperties", true);
 
   private static final int DESCRIPTION_LABEL_WIDTH = 320;
-  private static final int MESSAGE_LABEL_WIDTH = 50;
   private static final int SCROLL_PANE_WIDTH = 500;
   private static final int SCROLL_PANE_HEIGHT = 200;
   private static final int MAX_MESSAGE_LENGTH = 100;
@@ -120,8 +118,8 @@ final class ExceptionPanel extends JPanel {
     setException(throwable, message);
   }
 
-  void addDetailsListener(EventDataListener<Boolean> detailsListener) {
-    showDetailsState.addDataListener(detailsListener);
+  void addShowDetailsListener(EventDataListener<Boolean> showDetailsListener) {
+    showDetailsState.addDataListener(showDetailsListener);
   }
 
   public EventObserver<?> closeObserver() {
@@ -138,24 +136,17 @@ final class ExceptionPanel extends JPanel {
     add(panel, BorderLayout.CENTER);
   }
 
-  private void initializeDetailView(boolean show) {
-    printButton.setVisible(show);
-    saveButton.setVisible(show);
-    copyButton.setVisible(show);
-    detailPanel.setVisible(show);
-    centerPanel.setVisible(show);
+  private void initializeDetailView(boolean showDetails) {
+    printButton.setVisible(showDetails);
+    saveButton.setVisible(showDetails);
+    copyButton.setVisible(showDetails);
+    detailPanel.setVisible(showDetails);
+    centerPanel.setVisible(showDetails);
     detailPanel.revalidate();
   }
 
   private JPanel createNorthPanel() {
-    JLabel label = new JLabel(Messages.error() + ": ");
-    label.setHorizontalAlignment(SwingConstants.LEFT);
-    detailPanel.add(label);
     detailPanel.add(exceptionField);
-    JLabel message = new JLabel(MESSAGES.getString("message") + ": ");
-    message.setHorizontalAlignment(SwingConstants.LEFT);
-    Sizes.setPreferredWidth(message, MESSAGE_LABEL_WIDTH);
-    detailPanel.add(message);
     detailPanel.add(new JScrollPane(messageArea,
             ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
             ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
