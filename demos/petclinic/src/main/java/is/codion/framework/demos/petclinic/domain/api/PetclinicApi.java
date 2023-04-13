@@ -8,7 +8,7 @@ import is.codion.framework.domain.DomainType;
 /**
  * The domain model type.
  */
-public interface PetClinicApi {
+public interface PetclinicApi {
 
-  DomainType DOMAIN = DomainType.domainType("PetClinic");
+  DomainType DOMAIN = DomainType.domainType("Petclinic");
 }
