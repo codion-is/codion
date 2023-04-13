@@ -8799,3 +8799,4 @@
   EntitySearchField.setSearchOnFocusLost() added
   OracleDatabase, PostgreSQLDatabase, english unique key error message improved
   ExceptionPanel, unused message label removed
+  StringLengthValidator, null check added
