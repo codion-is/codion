@@ -9,7 +9,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.chinook.domain.Chinook;
+import is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.Components;
@@ -83,9 +83,9 @@ final class RandomPlaylistParametersPanel extends JPanel {
   private DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
     DefaultListModel<Entity> listModel = new DefaultListModel<>();
     try {
-      connectionProvider.connection().select(condition(Chinook.Genre.TYPE)
+      connectionProvider.connection().select(condition(Genre.TYPE)
                       .selectBuilder()
-                      .orderBy(ascending(Chinook.Genre.NAME))
+                      .orderBy(ascending(Genre.NAME))
                       .build())
               .forEach(listModel::addElement);
 
