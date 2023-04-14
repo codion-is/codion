@@ -160,6 +160,14 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   EntityApplicationBuilder<M, P> displayFrame(boolean displayFrame);
 
   /**
+   * Specifies whether or not to set the default uncaught exception handler when starting the application, true by default.
+   * @param setUncaughtExceptionHandler if true the default uncaught exception handler is set on application start
+   * @return this Builder instance
+   * @see Thread#setDefaultUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
+   */
+  EntityApplicationBuilder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler);
+
+  /**
    * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
    * @return this Builder instance
    */

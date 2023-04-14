@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.TestDomain.Detail;
@@ -58,9 +57,10 @@ public class EntityApplicationPanelTest {
   void test() throws Exception {
     EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(TestDomain.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
     entityApplicationBuilder(TestApplicationModel.class, TestApplicationPanel.class)
             .automaticLoginUser(UNIT_TEST_USER)
+            .setUncaughtExceptionHandler(false)
+            .saveDefaultUsername(false)
             .loginRequired(false)
             .displayFrame(false)
             .includeMainMenu(true)

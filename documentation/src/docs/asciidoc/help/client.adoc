@@ -11,16 +11,16 @@
 [cols="2,^1,6"]
 |===
 
-|*EQUAL*|=|Equal to a given value
-|*NOT EQUAL*|&#x2260;|Not equal to a given value
-|*LESS THAN*|<|Less than a given value
-|*LESS THAN OR EQUAL*|&#x2264;|Less than or equal to a given value
-|*GREATER THAN*|>|Greater than a given value
-|*GREATER THAN OR EQUAL*|&#x2265;|Greater than or equal to a given value
-|*BETWEEN EXCLUSIVE*|<&#x2219;<|Between an upper and lower bound, excluding the bounds
-|*BETWEEN*|&#x2264;&#x2219;&#x2264;|Between an upper and lower bound, including the bounds
-|*NOT BETWEEN EXCLUSIVE*|>&#x2219;>|Not between an upper and lower bound, excluding the bounds
-|*NOT BETWEEN*|&#x2265;&#x2219;&#x2265;|Not between an upper and lower bound, including the bounds
+|*EQUAL*| α = |Equal to a given value
+|*NOT EQUAL*| α ≠ |Not equal to a given value
+|*LESS THAN*| α < |Less than a given value
+|*LESS THAN OR EQUAL*| α ≤ |Less than or equal to a given value
+|*GREATER THAN*| α > |Greater than a given value
+|*GREATER THAN OR EQUAL*| α ≥ |Greater than or equal to a given value
+|*BETWEEN EXCLUSIVE*| < α < |Between an upper and lower bound, excluding the bounds
+|*BETWEEN*| ≤ α ≤ |Between an upper and lower bound, including the bounds
+|*NOT BETWEEN EXCLUSIVE*| ≥ α ≥ |Not between an upper and lower bound, excluding the bounds
+|*NOT BETWEEN*| > α > |Not between an upper and lower bound, including the bounds
 |===
 
 Each table has an associated search panel, which can be displayed by using the button highlighted in the screenshot below. This button toggles through the available search panel states; *hidden*, *visible* and *advanced*.
@@ -192,7 +192,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 
 [cols="1,3"]
 |===
-2+|View dependencies
+2+|Viewing dependencies
 
 |kbd:[Ctrl + Alt + &#x2190;/&#x2192;]|Navigate left/right
 |===

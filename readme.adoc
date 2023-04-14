@@ -1,4 +1,8 @@
 = Codion Application Framework
+:version: 0.17.16
+:url-help: https://codion.is/doc/{version}/jdk11/help
+:url-manual: https://codion.is/doc/{version}/jdk11/manual
+:url-technical: https://codion.is/doc/{version}/jdk11/technical
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
@@ -9,12 +13,14 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 
 * Domain modelling in plain Java code.
 * Integrated https://github.com/junit-team/junit5[JUnit] testing of the domain model.
-* A minimal but complete JDBC abstraction layer.
+* A minimal but complete {url-manual}/manual.html#_entityconnection[JDBC abstraction layer].
 * Assembling a Swing client based on the domain model is very straight forward.
-* Clients use either a local JDBC connection or are served by a featherweight RMI/HTTP server.
+* Swing client provides:
+** A {url-help}/client.html#_keyboard_shortcuts[practically mouse free] user experience.
+** Extensive {url-help}/client.html#_searching[searching] capabilities.
+* Clients use either a local JDBC connection or are served by a {url-technical}/technical.html#_server[featherweight RMI/HTTP server].
 * Integrated https://github.com/TIBCOSoftware/jasperreports[JasperReports] support.
 * Extremely rapid prototyping.
-* Excellent replacement for legacy https://en.wikipedia.org/wiki/Oracle_Forms[Oracle Forms] applications.
 
 == Motivation
 
