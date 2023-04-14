@@ -408,19 +408,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     @Override
     public Entity execute(EntityConnection connection,
                           RandomPlaylistParameters parameters) throws DatabaseException {
-      connection.beginTransaction();
-      try {
-        Key playlistKey = insertPlaylistTracks(connection, parameters.playlistName(),
-                randomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks(), parameters.genres()));
+      Key playlistKey = insertPlaylistTracks(connection, parameters.playlistName(),
+              randomTrackIds((LocalEntityConnection) connection, parameters.noOfTracks(), parameters.genres()));
 
-        connection.commitTransaction();
-
-        return connection.select(playlistKey);
-      }
-      catch (DatabaseException e) {
-        connection.rollbackTransaction();
-        throw e;
-      }
+      return connection.select(playlistKey);
     }
 
     private Key insertPlaylistTracks(EntityConnection connection, String playlistName,

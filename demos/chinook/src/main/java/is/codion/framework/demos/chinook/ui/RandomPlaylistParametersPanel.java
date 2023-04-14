@@ -44,16 +44,17 @@ final class RandomPlaylistParametersPanel extends JPanel {
   RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
     super(borderLayout());
     this.playlistNameField = Components.textField(model.playlistNameValue)
-          .transferFocusOnEnter(true)
-          .selectAllOnFocusGained(true)
-          .columns(10)
-          .build();
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .maximumLength(120)
+            .columns(10)
+            .build();
     this.noOfTracksField = Components.integerField(model.noOfTracksValue)
-          .valueRange(1, 5000)
-          .transferFocusOnEnter(true)
-          .selectAllOnFocusGained(true)
-          .columns(3)
-          .build();
+            .valueRange(1, 5000)
+            .transferFocusOnEnter(true)
+            .selectAllOnFocusGained(true)
+            .columns(3)
+            .build();
     this.genreList = Components.list(createGenreListModel(connectionProvider), model.genresValue)
             .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
             .visibleRowCount(5)
