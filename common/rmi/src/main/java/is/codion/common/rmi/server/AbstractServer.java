@@ -225,13 +225,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
     shuttingDown = true;
     connectionMaintenanceScheduler.stop();
-    if (registry != null) {
-      unexportSilently(registry);
-    }
-    unexportSilently(this);
-    if (admin != null) {
-      unexportSilently(admin);
-    }
+    unexportSilently(registry, this, admin);
     for (UUID clientId : new ArrayList<>(connections.keySet())) {
       try {
         disconnect(clientId);
@@ -283,7 +277,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     requireNonNull(user);
 
     return connections().keySet().stream()
-            .filter(remoteClient -> user == null || remoteClient.user().equals(user))
+            .filter(remoteClient -> remoteClient.user().equals(user))
             .collect(toList());
   }
 
@@ -336,7 +330,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param clientTypeId the client type id
    * @return all clients of the given type
    */
-  protected Collection<RemoteClient> clients(String clientTypeId) {
+  protected final Collection<RemoteClient> clients(String clientTypeId) {
+    requireNonNull(clientTypeId);
+
     return connections().keySet().stream()
             .filter(client -> Objects.equals(client.clientTypeId(), clientTypeId))
             .collect(toList());
@@ -344,10 +340,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   protected final Registry registry() throws RemoteException {
     if (registry == null) {
-      this.registry = LocateRegistry.createRegistry(configuration.registryPort());
+      registry = LocateRegistry.createRegistry(configuration.registryPort());
     }
 
-    return this.registry;
+    return registry;
   }
 
   protected final <T extends Throwable> T logShutdownAndReturn(T exception) {
@@ -455,12 +451,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void unexportSilently(Remote object) {
-    try {
-      unexportObject(object, true);
-    }
-    catch (NoSuchObjectException e) {
-      LOG.error("Exception while unexporting " + object + " on shutdown", e);
+  private static void unexportSilently(Remote... remotes) {
+    for (Remote remote : remotes) {
+      if (remote != null) {
+        try {
+          unexportObject(remote, true);
+        }
+        catch (NoSuchObjectException e) {
+          LOG.error("Exception while unexporting " + remote + " on shutdown", e);
+        }
+      }
     }
   }
 

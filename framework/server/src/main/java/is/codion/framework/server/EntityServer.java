@@ -222,15 +222,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  @Override
-  protected final Collection<RemoteClient> clients(String clientTypeId) {
-    //using the remoteClient from the connection since it contains the correct database user
-    return connections().values().stream()
-            .map(AbstractRemoteEntityConnection::remoteClient)
-            .filter(remoteClient -> remoteClient.clientTypeId().equals(clientTypeId))
-            .collect(toList());
-  }
-
   final Map<DomainType, Collection<DomainEntityDefinition>> domainEntityDefinitions() {
     Map<DomainType, Collection<DomainEntityDefinition>> domainEntities = new HashMap<>();
     for (Domain domain : domainModels.values()) {

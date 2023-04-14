@@ -8802,3 +8802,5 @@
   StringLengthValidator, null check added
   Chinook demo, CreateRandomPlaylistFunction, transaction control moved to call-site, unit test added
   EntityApplicationBuilder.setUncaughtExceptionHandler() added, disabled in unit tests in order to not show an exception dialog
+  EntityServer.clients(clientTypeId) overload removed, reason for overloading no longer applicable
+  AbstracServer.clients(clientTypeId) now final, minor refactoring
