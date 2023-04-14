@@ -86,6 +86,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
   private String lookAndFeelClassName;
+  private boolean setUncaughtExceptionHandler = true;
   private boolean maximizeFrame = false;
   private boolean displayFrame = true;
   private boolean includeMainMenu = true;
@@ -201,6 +202,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   @Override
+  public EntityApplicationBuilder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler) {
+    this.setUncaughtExceptionHandler = setUncaughtExceptionHandler;
+    return this;
+  }
+
+  @Override
   public EntityApplicationBuilder<M, P> displayStartupDialog(boolean displayStartupDialog) {
     this.displayStartupDialog = displayStartupDialog;
     return this;
@@ -249,7 +256,9 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private void startApplication() {
     LOG.debug("{} application starting", applicationName);
-    setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
+    if (setUncaughtExceptionHandler) {
+      setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
+    }
     setVersionProperty();
     findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
     int fontSizePercentage = fontSizePercentage();
@@ -312,7 +321,9 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
             SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
-    setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+    if (setUncaughtExceptionHandler) {
+      setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
+    }
     LOG.info(applicationFrame.getTitle() + ", application started successfully: " + (System.currentTimeMillis() - initializationStarted) + " ms");
     if (displayFrame) {
       applicationFrame.setVisible(true);

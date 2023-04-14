@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui.test;
 
 import is.codion.common.user.User;
-import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 
@@ -36,10 +35,10 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
    * Instantiates the panel and initializes it
    */
   protected final void testInitializePanel() {
-    EntityApplicationModel.SAVE_DEFAULT_USERNAME.set(false);
-    EntityApplicationPanel.SHOW_STARTUP_DIALOG.set(false);
     entityApplicationBuilder(modelClass, panelClass)
             .automaticLoginUser(user)
+            .saveDefaultUsername(false)
+            .setUncaughtExceptionHandler(false)
             .displayStartupDialog(false)
             .displayFrame(false)
             .onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
