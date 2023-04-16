@@ -25,6 +25,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -122,6 +123,30 @@ public final class InputControls {
   void doSecond() {}
   void doSubFirst() {}
   void doSubSecond() {}
+
+  static void basics() {
+    // tag::basics[]
+    //an integer based value, initialized to 42
+    Value<Integer> integerValue = Value.value(42);
+
+    //create a spinner linked to the value
+    JSpinner spinner =
+            Components.integerSpinner(integerValue)
+                    .build();
+
+    //create a NumberField component value, basically doing the same as
+    //the above, with an extra step to expose the underlying ComponentValue
+    ComponentValue<Integer, NumberField<Integer>> numberFieldValue =
+            Components.integerField()
+                    .buildValue();
+
+    //linked to the same value
+    numberFieldValue.link(integerValue);
+
+    //fetch the input field from the component value
+    NumberField<Integer> numberField = numberFieldValue.component();
+    // end::basics[]
+  }
 
   static void checkBox() {
     // tag::checkBox[]

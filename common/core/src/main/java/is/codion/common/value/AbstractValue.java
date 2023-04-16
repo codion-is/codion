@@ -171,7 +171,8 @@ public abstract class AbstractValue<T> implements Value<T> {
    * By default this method returns the internal change event observer, which is
    * triggered internally or by calling {@link #notifyValueChange()}. If this method is overridden
    * and a custom change observer is provided, {@link #notifyValueChange()} is no longer applicable.
-   * @return the change observer to use when adding listeners to this value
+   * May not return null.
+   * @return the change observer to use when adding listeners to this value, never null.
    */
   protected EventObserver<T> changeObserver() {
     return changeEvent.observer();
