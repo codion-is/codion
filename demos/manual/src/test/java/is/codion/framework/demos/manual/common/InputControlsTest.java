@@ -9,6 +9,7 @@ public final class InputControlsTest {
 
   @Test
   void test() {
+    InputControls.basics();
     InputControls.checkBox();
     InputControls.nullableCheckBox();
     InputControls.booleanComboBox();

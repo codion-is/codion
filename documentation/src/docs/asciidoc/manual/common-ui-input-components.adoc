@@ -2,7 +2,12 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-Here are the basics of linking input controls to model values.
+Binding model data to UI components is accomplished by linking a {url-javadoc}{common-db}/is/codion/common/value/Value.html[Value] instance to an instance of its subclass {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/ComponentValue.html[ComponentValue], which represents a value based on an input component.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=basics]
+----
 
 == Text
 
