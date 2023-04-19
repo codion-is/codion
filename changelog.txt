@@ -8805,3 +8805,4 @@
   EntityServer.clients(clientTypeId) overload removed, reason for overloading no longer applicable
   AbstracServer.clients(clientTypeId) now final, minor refactoring
   NumberField.setConvertGroupingToDecimalSeparator() added
+  NumberField.CONVERT_GROUPING_TO_DECIMAL_SEPARATOR configuration value added, default true
