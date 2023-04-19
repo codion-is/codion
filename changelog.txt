@@ -8804,3 +8804,4 @@
   EntityApplicationBuilder.setUncaughtExceptionHandler() added, disabled in unit tests in order to not show an exception dialog
   EntityServer.clients(clientTypeId) overload removed, reason for overloading no longer applicable
   AbstracServer.clients(clientTypeId) now final, minor refactoring
+  NumberField.setConvertGroupingToDecimalSeparator() added

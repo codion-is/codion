@@ -317,6 +317,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
     private final NumberParser<T> parser;
 
     private JTextComponent textComponent;
+    private boolean convertGroupingToDecimalSeparator = true;
 
     NumberParsingDocumentFilter(NumberParser<T> parser) {
       this.parser = requireNonNull(parser, "parser");
@@ -338,6 +339,7 @@ class NumberDocument<T extends Number> extends PlainDocument {
     @Override
     public void replace(FilterBypass filterBypass, int offset, int length, String text,
                         AttributeSet attributeSet) throws BadLocationException {
+      text = convertSingleGroupingToDecimalSeparator(text);
       Document document = filterBypass.getDocument();
       StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
       builder.replace(offset, offset + length, text);
@@ -373,12 +375,36 @@ class NumberDocument<T extends Number> extends PlainDocument {
       return rangeValidator.minimumValue;
     }
 
+    void setConvertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
+      this.convertGroupingToDecimalSeparator = convertGroupingToDecimalSeparator;
+    }
+
+    boolean isConvertGroupingToDecimalSeparator() {
+      return convertGroupingToDecimalSeparator;
+    }
+
     /**
      * Sets the text component, necessary for keeping the correct caret position when editing
      * @param textComponent the text component
      */
     void setTextComponent(JTextComponent textComponent) {
       this.textComponent = textComponent;
+    }
+
+    /**
+     * A number field adds grouping separators internally and does not accept them when typed,
+     * so interpret a single grouping separator as a decimal separator, this solves problems related
+     * to locale, such as accepting the comma button on a numpad as a decimal separator, which
+     * is usually what we want.
+     */
+    private String convertSingleGroupingToDecimalSeparator(String text) {
+      if (convertGroupingToDecimalSeparator && text.length() == 1 && parser.format instanceof DecimalFormat) {
+        DecimalFormatSymbols formatSymbols = ((DecimalFormat) parser.format).getDecimalFormatSymbols();
+
+        return text.replace(formatSymbols.getGroupingSeparator(), formatSymbols.getDecimalSeparator());
+      }
+
+      return text;
     }
 
     private static final class NumberRangeValidator<T extends Number> implements Value.Validator<T> {

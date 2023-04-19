@@ -160,6 +160,24 @@ public final class NumberField<T extends Number> extends HintTextField {
   }
 
   /**
+   * Specifies whether this number field should convert a grouping separator symbol
+   * to a decimal separator symbol when typed. This solves the problem of locale
+   * controlling whether the numpad comma acts as a decimal symbol, which is usually what we want.
+   * True by default.
+   * @param convertGroupingToDecimalSeparator true if grouping separators should be converted to decimal separators when typed
+   */
+  public void setConvertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
+    getTypedDocument().getDocumentFilter().setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
+  }
+
+  /**
+   * @return true if grouping separators should be converted to decimal separators when typed
+   */
+  public boolean isConvertGroupingToDecimalSeparator() {
+    return getTypedDocument().getDocumentFilter().isConvertGroupingToDecimalSeparator();
+  }
+
+  /**
    * @param listener a listener notified when the value changes
    */
   public void addValueListener(EventDataListener<T> listener) {
@@ -273,6 +291,16 @@ public final class NumberField<T extends Number> extends HintTextField {
      * @throws IllegalArgumentException in case the decimal separator is the same as the grouping separator
      */
     Builder<T> decimalSeparator(char decimalSeparator);
+
+    /**
+     * Specifies whether the number field should convert a grouping separator symbol
+     * to a decimal separator symbol when typed. This solves the problem of locale
+     * controlling whether the numpad comma acts as a decimal symbol, which is usually what we want.
+     * True by default.
+     * @param convertGroupingToDecimalSeparator true if grouping separators should be converted to decimal separators when typed
+     * @return this builder instance
+     */
+    Builder<T> convertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator);
   }
 
   private final class GroupingSkipAdapter extends KeyAdapter {
@@ -330,6 +358,7 @@ public final class NumberField<T extends Number> extends HintTextField {
     private Boolean groupingUsed;
     private char decimalSeparator = 0;
     private int maximumFractionDigits = -1;
+    private boolean convertGroupingToDecimalSeparator = true;
 
     protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
       super(type, linkedValue);
@@ -388,10 +417,17 @@ public final class NumberField<T extends Number> extends HintTextField {
     }
 
     @Override
+    public final Builder<T> convertGroupingToDecimalSeparator(boolean convertGroupingToDecimalSeparator) {
+      this.convertGroupingToDecimalSeparator = convertGroupingToDecimalSeparator;
+      return this;
+    }
+
+    @Override
     protected final NumberField<T> createTextField() {
       NumberField<T> numberField = createNumberField(initializeFormat());
       numberField.setMinimumValue(minimumValue);
       numberField.setMaximumValue(maximumValue);
+      numberField.setConvertGroupingToDecimalSeparator(convertGroupingToDecimalSeparator);
       if (groupingUsed != null) {
         numberField.setGroupingUsed(groupingUsed);
       }
