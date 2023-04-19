@@ -186,6 +186,7 @@ public final class ApplicationPanel extends JPanel {
             .maximumFractionDigits(2)
             .decimalSeparator(',')
             .groupingSeparator('.')
+            .convertGroupingToDecimalSeparator(true)
             .transferFocusOnEnter(true)
             .label(label("Double (9)")
                     .displayedMnemonic('9')
