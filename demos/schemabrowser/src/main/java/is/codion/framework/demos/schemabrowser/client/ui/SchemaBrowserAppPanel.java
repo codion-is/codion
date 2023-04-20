@@ -58,9 +58,9 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   public static void main(String[] args) {
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser");
     entityApplicationBuilder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
+            .domainClassName("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser")
             .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

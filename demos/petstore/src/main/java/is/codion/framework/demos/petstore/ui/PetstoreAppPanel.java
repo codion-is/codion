@@ -4,7 +4,6 @@
 package is.codion.framework.demos.petstore.ui;
 
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -85,9 +84,9 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petstore.domain.Petstore");
     entityApplicationBuilder(PetstoreAppModel.class, PetstoreAppPanel.class)
             .applicationName("The Pet Store")
+            .domainClassName("is.codion.framework.demos.petstore.domain.Petstore")
             .frameSize(Windows.screenSizeRatio(0.8))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

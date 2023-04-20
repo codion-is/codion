@@ -27,6 +27,12 @@ import java.util.function.Supplier;
 public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
 
   /**
+   * @param domainClassName the full name of the domain class
+   * @return this Builder instance
+   */
+  EntityApplicationBuilder<M, P> domainClassName(String domainClassName);
+
+  /**
    * @param applicationName the application name
    * @return this Builder instance
    */
@@ -226,13 +232,14 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
     /**
      * Creates a new {@link EntityConnectionProvider} instance.
      * @param user the user, may be null in case login is not required {@link EntityApplicationBuilder#loginRequired(boolean)}.
+     * @param domainClassName the full name of the domain model class
      * @param clientTypeId the client type id
      * @param clientVersion the client version
      * @return a new {@link EntityConnectionProvider} instance.
      */
-    default EntityConnectionProvider create(User user, String clientTypeId, Version clientVersion) {
+    default EntityConnectionProvider create(User user, String domainClassName, String clientTypeId, Version clientVersion) {
       return EntityConnectionProvider.builder()
-              .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+              .domainClassName(domainClassName)
               .clientTypeId(clientTypeId)
               .clientVersion(clientVersion)
               .user(user)

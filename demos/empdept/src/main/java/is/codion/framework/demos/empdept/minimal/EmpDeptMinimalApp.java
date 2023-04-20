@@ -267,7 +267,6 @@ public final class EmpDeptMinimalApp {
     //Let's set the locale, otherwise the application would be in icelandic
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(EmpDept.class.getName());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     Clients.SERVER_HOST_NAME.set("codion.is");
     //we're using Secure Sockets Layer so that we need to specify a truststore
@@ -277,6 +276,7 @@ public final class EmpDeptMinimalApp {
     //we create an instance of our application panel and start it
     entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
             .applicationName("EmpDept Minimal")
+            .domainClassName(EmpDept.class.getName())
             .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
