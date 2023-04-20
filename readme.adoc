@@ -425,7 +425,7 @@ Database database = new H2DatabaseFactory()
 EntityConnectionProvider connectionProvider =
         LocalEntityConnectionProvider.builder()
                 .database(database)
-                .domainClassName(new Store())
+                .domain(new Store())
                 .user(User.parse("scott:tiger"))
                 .build();
 
