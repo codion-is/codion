@@ -148,10 +148,10 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |===
 2+|Table search field
 
-|kbd:[Enter or &#x2191;]|Find next
-|kbd:[Shift + Enter or &#x2191;]|Find and select next
-|kbd:[&#x2193;]|Find previous
-|kbd:[Shift + &#x2193;]|Find and select previous
+|kbd:[Enter or &#x2193;]|Find next
+|kbd:[Shift + Enter or &#x2193;]|Find and select next
+|kbd:[&#x2191;]|Find previous
+|kbd:[Shift + &#x2191;]|Find and select previous
 |kbd:[Esc]|Move focus to table
 |===
 
