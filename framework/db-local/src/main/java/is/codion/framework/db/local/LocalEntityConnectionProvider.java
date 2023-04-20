@@ -58,6 +58,13 @@ public interface LocalEntityConnectionProvider extends EntityConnectionProvider 
     Builder database(Database database);
 
     /**
+     * Overrides {@link #domainClassName(String)}
+     * @param domain the domain model to base this connection on
+     * @return this builder instance
+     */
+    Builder domain(Domain domain);
+
+    /**
      * @param defaultQueryTimeout the default query timeout
      * @return this builder instance
      */

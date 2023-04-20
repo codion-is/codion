@@ -8806,3 +8806,4 @@
   AbstracServer.clients(clientTypeId) now final, minor refactoring
   NumberField.setConvertGroupingToDecimalSeparator() added
   NumberField.CONVERT_GROUPING_TO_DECIMAL_SEPARATOR configuration value added, default true
+  LocalEntityConnectionProvider.Builder.domain(Domain) added

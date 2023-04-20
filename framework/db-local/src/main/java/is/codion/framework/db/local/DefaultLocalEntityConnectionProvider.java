@@ -31,7 +31,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
   DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
     super(builder);
-    this.domain = initializeDomain(domainClassName());
+    this.domain = builder.domain == null ? initializeDomain(domainClassName()) : builder.domain;
     this.database = builder.database == null ? Database.instance() : builder.database;
     this.defaultQueryTimeout = builder.defaultQueryTimeout;
   }
