@@ -163,12 +163,12 @@ public final class ClientTutorial {
   public static void main(String[] args) {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Chinook.class.getName());
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")
+            .domainClassName(Chinook.class.getName())
             .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

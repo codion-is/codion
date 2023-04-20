@@ -43,6 +43,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_CLASS;
 import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -68,6 +69,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   private final String applicationLookAndFeelProperty;
   private final String applicationFontSizeProperty;
 
+  private String domainClassName = CLIENT_DOMAIN_CLASS.get();
   private String applicationName = "";
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
@@ -103,6 +105,12 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     this.applicationFontSizeProperty = EntityApplicationPanel.FONT_SIZE_PROPERTY + "#" + applicationPanelClass.getSimpleName();
     this.defaultLoginUser = User.user(getUserPreference(applicationDefaultUsernameProperty,
             EntityApplicationModel.USERNAME_PREFIX.get() + System.getProperty("user.name")));
+  }
+
+  @Override
+  public EntityApplicationBuilder<M, P> domainClassName(String domainClassName) {
+    this.domainClassName = requireNonNull(domainClassName);
+    return this;
   }
 
   @Override
@@ -349,13 +357,17 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return user;
   }
 
+  private String domainClassName() {
+    return domainClassName == null ? CLIENT_DOMAIN_CLASS.getOrThrow() : domainClassName;
+  }
+
   private EntityConnectionProvider connectionProvider(User user) {
     if (loginProvider instanceof DefaultEntityApplicationBuilder.DefaultDialogLoginProvider &&
             ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
       return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
     }
 
-    return initializeConnectionProvider(user, applicationPanelClass.getName(), applicationVersion);
+    return initializeConnectionProvider(user, domainClassName(), applicationPanelClass.getName(), applicationVersion);
   }
 
   private M applicationModel(EntityConnectionProvider connectionProvider) {
@@ -419,8 +431,9 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return applicationModel.connectionValidObserver().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
   }
 
-  private EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId, Version clientVersion) {
-    return connectionProviderFactory.create(user, clientTypeId, clientVersion);
+  private EntityConnectionProvider initializeConnectionProvider(User user, String domainClassName,
+                                                                String clientTypeId, Version clientVersion) {
+    return connectionProviderFactory.create(user, domainClassName, clientTypeId, clientVersion);
   }
 
   private static void displayExceptionAndExit(Throwable exception) {
@@ -472,7 +485,8 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
     @Override
     public void validate(User user) throws Exception {
-      connectionProvider = initializeConnectionProvider(user, applicationPanelClass.getName(), applicationVersion);
+      connectionProvider = initializeConnectionProvider(user, domainClassName(),
+              applicationPanelClass.getName(), applicationVersion);
       try {
         connectionProvider.connection();//throws exception if the server is not reachable
       }

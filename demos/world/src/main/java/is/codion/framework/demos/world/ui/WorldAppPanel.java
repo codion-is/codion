@@ -4,7 +4,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.Continent;
 import is.codion.framework.demos.world.domain.api.World.Lookup;
 import is.codion.framework.demos.world.model.CountryModel;
@@ -68,11 +67,11 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.world.domain.WorldImpl");
     FrameworkIcons.instance().addIcon(Foundation.MAP);
     FrameworkIcons.instance().addIcon(Foundation.PAGE_EXPORT_CSV);
     entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
+            .domainClassName("is.codion.framework.demos.world.domain.WorldImpl")
             .applicationVersion(WorldAppModel.VERSION)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(new Dimension(1280, 720))

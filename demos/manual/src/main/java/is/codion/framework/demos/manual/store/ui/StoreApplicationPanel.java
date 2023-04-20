@@ -6,7 +6,6 @@ package is.codion.framework.demos.manual.store.ui;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
@@ -68,9 +67,9 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set(Store.class.getName());
     entityApplicationBuilder(StoreApplicationModel.class, StoreApplicationPanel.class)
             .applicationName("Store")
+            .domainClassName(Store.class.getName())
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

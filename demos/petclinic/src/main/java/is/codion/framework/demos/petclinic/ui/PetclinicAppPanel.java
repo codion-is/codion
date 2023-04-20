@@ -7,7 +7,6 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
@@ -94,9 +93,9 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.petclinic.domain.PetClinic");
     entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
+            .domainClassName("is.codion.framework.demos.petclinic.domain.Petclinic")
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))

@@ -5,7 +5,6 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.Text;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
@@ -91,12 +90,12 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
   // tag::main[]
   public static void main(String[] args) {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
     entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
+            .domainClassName("is.codion.framework.demos.empdept.domain.EmpDept")
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
