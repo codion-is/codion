@@ -76,7 +76,7 @@ public class StoreDemo {
     EntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
                     .database(database)
-                    .domainClassName(Store.class.getName())
+                    .domain(new Store())
                     .user(User.parse("scott:tiger"))
                     .build();
 

@@ -3,8 +3,10 @@
  */
 package is.codion.swing.common.ui.component.text;
 
+import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.formats.Formats;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.component.ComponentValue;
@@ -27,6 +29,16 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the Number type
  */
 public final class NumberField<T extends Number> extends HintTextField {
+
+  /**
+   * Specifies whether NumberFields should convert a grouping separator symbol
+   * to a decimal separator symbol when typed. This solves the problem of locale
+   * controlling whether the numpad comma acts as a decimal symbol, which is usually what we want.
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> CONVERT_GROUPING_TO_DECIMAL_SEPARATOR =
+          Configuration.booleanValue("is.codion.swing.common.ui.component.text.NumberField.convertGroupingToDecimalSeparator", true);
 
   private final Value<T> value = Value.value();
 
@@ -358,7 +370,7 @@ public final class NumberField<T extends Number> extends HintTextField {
     private Boolean groupingUsed;
     private char decimalSeparator = 0;
     private int maximumFractionDigits = -1;
-    private boolean convertGroupingToDecimalSeparator = true;
+    private boolean convertGroupingToDecimalSeparator = CONVERT_GROUPING_TO_DECIMAL_SEPARATOR.get();
 
     protected AbstractNumberFieldBuilder(Class<T> type, Value<T> linkedValue) {
       super(type, linkedValue);
