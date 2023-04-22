@@ -15,7 +15,7 @@ import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.swing.common.ui.Utilities.darker;
+import static is.codion.swing.common.ui.Colors.darker;
 
 /**
  * A factory class for adding validators to components.

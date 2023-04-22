@@ -21,7 +21,6 @@ import javax.swing.UIManager;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
-import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Toolkit;
@@ -236,35 +235,6 @@ public final class Utilities {
         }
       }
     }
-  }
-
-  /**
-   * Returns a darker version of the given color, using 0.8 as the mulitiplication factor.
-   * @param color the color to darken
-   * @return a darker version of the given color
-   * @see Color#darker()
-   */
-  public static Color darker(Color color) {
-    return darker(color, 0.8);
-  }
-
-  /**
-   * Returns a darker version of the given color, using the given factor.
-   * @param color the color to darken
-   * @param factor a number between 0 and 1, non-inclusive
-   * @return a darker version of the given color
-   * @see Color#darker()
-   */
-  public static Color darker(Color color, double factor) {
-    requireNonNull(color);
-    if (factor <= 0 || factor >= 1) {
-      throw new IllegalArgumentException("Factor must be between 0 and 1, non-inclusive");
-    }
-
-    return new Color(Math.max((int) (color.getRed() * factor), 0),
-            Math.max((int) (color.getGreen() * factor), 0),
-            Math.max((int) (color.getBlue() * factor), 0),
-            color.getAlpha());
   }
 
   /**
