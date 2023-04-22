@@ -9,8 +9,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -35,7 +34,7 @@ public final class EventStateValue {
 
     event.onEvent("info");//output: 'Event: info'
 
-    // Event extends EventObserver so listeneres can be added
+    // Event implements EventObserver so listeneres can be added
     // directly without referring to the EventObserver
     event.addListener(() -> System.out.println("Event"));
     // end::event[]
@@ -46,7 +45,7 @@ public final class EventStateValue {
     // a boolean state, false by default
     State state = State.state();
 
-    // an observer handles the listeners for a State but can not change it
+    // an observer handles the listeners for a State but can not modify it
     StateObserver stateObserver = state.observer();
     // a reversed observer is always available
     StateObserver reversedObserver = state.reversedObserver();
@@ -71,7 +70,10 @@ public final class EventStateValue {
     State state = State.state();
 
     Action action = new AbstractAction("action") {
-      public void actionPerformed(ActionEvent e) {}
+      @Override
+      public void actionPerformed(ActionEvent e) {
+        System.out.println("Hello Action");
+      }
     };
 
     Utilities.linkToEnabledState(state, action);
@@ -84,25 +86,66 @@ public final class EventStateValue {
     // end::action[]
   }
 
+  private static void control() {
+    // tag::control[]
+    State state = State.state();
+
+    Control control = Control.builder(() ->
+                    System.out.println("Hello Control"))
+            .enabledState(state)
+            .build();
+
+    System.out.println(control.isEnabled());// output: false
+
+    state.set(true);
+
+    System.out.println(control.isEnabled());// output: true
+    // end::control[]
+  }
+
   private static void value() {
     // tag::value[]
     Value<Integer> value = Value.value();
 
-    value.addDataListener(System.out::println);
-
     value.set(2);
 
-    NumberField<Integer> integerField =
-            Components.integerField(value)
-                    .build();
+    Value<Integer> otherValue = Value.value();
 
-    integerField.setNumber(3);//linked value is now 3
+    otherValue.link(value);
+
+    System.out.println(otherValue.get());// output: 2
+
+    otherValue.set(3);
+
+    System.out.println(value.get());// output: 3
+
+    value.addDataListener(System.out::println);
     // end::value[]
+  }
+
+  private static void nullValue() {
+    // tag::nullValue[]
+    Integer initialValue = 42;
+    Integer nullValue = 0;
+
+    Value<Integer> value = Value.value(initialValue, nullValue);
+
+    System.out.println(value.isNullable());//output: false
+
+    System.out.println(value.get());// output: 42
+
+    value.set(null);
+
+    System.out.println(value.get());//output: 0
+    // end::nullValue[]
   }
 
   public static void main(String[] args) {
     event();
     state();
     action();
+    control();
+    value();
+    nullValue();
   }
 }
