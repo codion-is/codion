@@ -21,7 +21,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.util.function.Function;
 
-import static is.codion.swing.common.ui.Utilities.darker;
+import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.*;
 

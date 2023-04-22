@@ -26,4 +26,6 @@ Codion provides a few classes with miscellanous utility functions.
 
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/layout/Layouts.html[Layouts]
 
+{url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/Utilities.html[Utilities]
+
 {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/Windows.html[Windows]
