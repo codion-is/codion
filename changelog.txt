@@ -8812,3 +8812,4 @@
   EntityServer, hostname added to startup output
   Clients.SERVER_HOST_NAME renamed SERVER_HOSTNAME
   HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME renamed HTTP_CLIENT_HOSTNAME
+  LoadTestPanel.run() added

@@ -2,6 +2,7 @@ apply from: '../demos.gradle'
 
 dependencies {
     implementation project(':codion-common-http')
+    implementation project(':codion-swing-common-tools-ui')
     implementation project(':codion-swing-framework-ui')
     implementation project(':codion-swing-framework-tools')
     implementation project(':codion-framework-domain-test')

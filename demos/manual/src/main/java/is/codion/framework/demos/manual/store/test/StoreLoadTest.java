@@ -9,6 +9,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
+import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
@@ -20,8 +21,8 @@ import static java.util.Collections.singletonList;
 // tag::storeLoadTest[]
 public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
 
-  public StoreLoadTest(User user) {
-    super(user, singletonList(new UsageScenario()));
+  public StoreLoadTest() {
+    super(User.parse("scott:tiger"), singletonList(new UsageScenario()));
   }
 
   @Override
@@ -46,6 +47,10 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
       customerModel.tableModel().refresh();
       selectRandomRow(customerModel.tableModel());
     }
+  }
+
+  public static void main(String[] args) {
+    new LoadTestPanel<>(new StoreLoadTest()).run();
   }
 }
 // end::storeLoadTest[]

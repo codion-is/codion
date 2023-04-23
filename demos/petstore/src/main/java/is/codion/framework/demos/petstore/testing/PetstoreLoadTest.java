@@ -13,8 +13,6 @@ import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
-import javax.swing.SwingUtilities;
-
 import static java.util.Collections.singletonList;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel> {
@@ -54,19 +52,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runner());
-  }
-
-  private static final class Runner implements Runnable {
-    @Override
-    public void run() {
-      try {
-        new LoadTestPanel<>(new PetstoreLoadTest()).showFrame();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+  public static void main(String[] args) {
+    new LoadTestPanel<>(new PetstoreLoadTest()).run();
   }
 }
