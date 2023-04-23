@@ -14,6 +14,7 @@ import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
+import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
@@ -346,7 +347,9 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
     registry().rebind(serverInformation().serverName(), this);
-    String connectInfo = serverInformation().serverName() + " bound to registry on port: " + registryPort;
+    String connectInfo = serverInformation().serverName()
+            + " bound to registry on port: " + registryPort
+            + ", host: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get();
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }

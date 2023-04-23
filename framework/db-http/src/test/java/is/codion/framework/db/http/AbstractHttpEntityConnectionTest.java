@@ -273,7 +273,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();
@@ -296,7 +296,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   private static void deconfigure() {
-    Clients.SERVER_HOST_NAME.set(null);
+    Clients.SERVER_HOSTNAME.set(null);
     Clients.TRUSTSTORE.set(null);
     Clients.TRUSTSTORE_PASSWORD.set(null);
     System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);

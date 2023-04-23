@@ -8847,3 +8847,6 @@
   LocalEntityConnectionProvider.Builder.domain(Domain) added
   EntityApplicationBuilder.domainClassName() added
   Colors split from Utilities
+  EntityServer, hostname added to startup output
+  Clients.SERVER_HOST_NAME renamed SERVER_HOSTNAME
+  HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME renamed HTTP_CLIENT_HOSTNAME

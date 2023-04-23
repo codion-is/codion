@@ -88,7 +88,7 @@ public final class HttpEntityConnections {
   private static final class DefaultBuilder implements Builder {
 
     private String domainTypeName;
-    private String serverHostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get();
+    private String serverHostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get();
     private int serverPort = HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get();
     private boolean https = HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get();
     private boolean json = HttpEntityConnectionProvider.HTTP_CLIENT_JSON.get();

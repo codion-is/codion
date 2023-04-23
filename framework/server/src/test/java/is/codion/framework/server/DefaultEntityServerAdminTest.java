@@ -23,7 +23,7 @@ public final class DefaultEntityServerAdminTest {
 
   @Test
   void test() throws Exception {
-    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();

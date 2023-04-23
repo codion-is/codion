@@ -268,7 +268,7 @@ public final class EmpDeptMinimalApp {
     Locale.setDefault(new Locale("en", "EN"));
     //the remote connection settings
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    Clients.SERVER_HOST_NAME.set("codion.is");
+    Clients.SERVER_HOSTNAME.set("codion.is");
     //we're using Secure Sockets Layer so that we need to specify a truststore
     Clients.TRUSTSTORE.set("resources/config/truststore.jks");
     System.setProperty("java.security.policy", "resources/config/codion_demos.policy");

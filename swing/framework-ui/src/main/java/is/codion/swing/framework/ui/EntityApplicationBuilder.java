@@ -27,7 +27,7 @@ import java.util.function.Supplier;
 public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
 
   /**
-   * @param domainClassName the full name of the domain class
+   * @param domainClassName the full name of the domain implementation class
    * @return this Builder instance
    */
   EntityApplicationBuilder<M, P> domainClassName(String domainClassName);
