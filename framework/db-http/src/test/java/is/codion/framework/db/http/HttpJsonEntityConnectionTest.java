@@ -14,7 +14,7 @@ public final class HttpJsonEntityConnectionTest extends AbstractHttpEntityConnec
 
   public HttpJsonEntityConnectionTest() {
     super(new HttpJsonEntityConnection(TestDomain.DOMAIN.name(),
-          HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get(),
+          HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
           HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
           UNIT_TEST_USER, "HttpJsonEntityConnectionTest", UUID.randomUUID(),

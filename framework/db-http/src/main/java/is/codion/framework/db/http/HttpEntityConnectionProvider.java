@@ -10,7 +10,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 /**
  * A class responsible for managing a HttpEntityConnection.
  * @see HttpEntityConnectionProvider#builder()
- * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOST_NAME
+ * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOSTNAME
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
  * @see HttpEntityConnectionProvider#HTTP_CLIENT_JSON
@@ -22,7 +22,7 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
    * Value type: String<br>
    * Default value: localhost
    */
-  PropertyValue<String> HTTP_CLIENT_HOST_NAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
+  PropertyValue<String> HTTP_CLIENT_HOSTNAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
 
   /**
    * The port which the http client should use.<br>

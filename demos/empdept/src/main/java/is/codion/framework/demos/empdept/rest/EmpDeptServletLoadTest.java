@@ -47,7 +47,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   @Override
   protected EntityConnectionProvider createApplication() throws CancelException {
     return HttpEntityConnectionProvider.builder()
-            .serverHostName(HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME.get())
+            .serverHostName(HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get())
             .serverPort(HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get())
             .https(HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get())
             .clientTypeId("EmpDeptServletLoadTest")
