@@ -55,7 +55,7 @@ public final class Clients {
    * Value type: String<br>
    * Default value: localhost
    */
-  public static final PropertyValue<String> SERVER_HOST_NAME = Configuration.stringValue("codion.server.hostname", "localhost");
+  public static final PropertyValue<String> SERVER_HOSTNAME = Configuration.stringValue("codion.server.hostname", "localhost");
 
   private Clients() {}
 

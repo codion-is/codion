@@ -47,11 +47,11 @@ public class RemoteEntityConnectionProviderTest {
     String serverName = configuration.serverName();
     EntityServer.startServer(configuration);
     Server<RemoteEntityConnection, EntityServerAdmin> server = (Server<RemoteEntityConnection, EntityServerAdmin>)
-            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), configuration.registryPort()).lookup(serverName);
+            LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), configuration.registryPort()).lookup(serverName);
     EntityServerAdmin admin = server.serverAdmin(User.parse("scott:tiger"));
 
     RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
-            .serverHostName(Clients.SERVER_HOST_NAME.get())
+            .serverHostName(Clients.SERVER_HOSTNAME.get())
             .serverPort(configuration.serverPort())
             .registryPort(configuration.registryPort())
             .clientTypeId("RemoteEntityConnectionProviderTest")
@@ -90,7 +90,7 @@ public class RemoteEntityConnectionProviderTest {
   }
 
   private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("../server/src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();

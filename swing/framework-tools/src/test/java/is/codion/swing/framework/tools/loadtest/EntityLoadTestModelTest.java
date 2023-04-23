@@ -39,7 +39,7 @@ public class EntityLoadTestModelTest {
   public static synchronized void setUp() throws Exception {
     EntityServerConfiguration configuration = configure();
     EntityServer.startServer(configuration);
-    server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(),
+    server = (Server<?, EntityServerAdmin>) LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(),
             configuration.registryPort()).lookup(configuration.serverName());
     admin = server.serverAdmin(ADMIN_USER);
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
@@ -130,7 +130,7 @@ public class EntityLoadTestModelTest {
   }
 
   private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOSTNAME.set("localhost");
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
     return EntityServerConfiguration.builder(3223, 3221)

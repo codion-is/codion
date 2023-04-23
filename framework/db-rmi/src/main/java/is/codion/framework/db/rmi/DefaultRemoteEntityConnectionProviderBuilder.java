@@ -18,7 +18,7 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
         extends AbstractBuilder<RemoteEntityConnectionProvider, RemoteEntityConnectionProvider.Builder>
         implements RemoteEntityConnectionProvider.Builder {
 
-  String serverHostName = Clients.SERVER_HOST_NAME.get();
+  String serverHostName = Clients.SERVER_HOSTNAME.get();
   int serverPort = ServerConfiguration.SERVER_PORT.get();
   int registryPort = ServerConfiguration.REGISTRY_PORT.get();
 

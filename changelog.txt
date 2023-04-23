@@ -8810,3 +8810,4 @@
   EntityApplicationBuilder.domainClassName() added
   Colors split from Utilities
   EntityServer, hostname added to startup output
+  Clients.SERVER_HOST_NAME renamed SERVER_HOSTNAME

@@ -55,7 +55,7 @@ public class EntityServerTest {
     String serverName = CONFIGURATION.serverName();
     EntityServer.startServer(CONFIGURATION).addLoginProxy(new TestLoginProxy());
     server = (Server<RemoteEntityConnection, EntityServerAdmin>)
-            LocateRegistry.getRegistry(Clients.SERVER_HOST_NAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
+            LocateRegistry.getRegistry(Clients.SERVER_HOSTNAME.get(), CONFIGURATION.registryPort()).lookup(serverName);
     admin = server.serverAdmin(ADMIN_USER);
   }
 
@@ -265,7 +265,7 @@ public class EntityServerTest {
     provider.close();
 
     //not available until a connection has been requested
-    assertEquals(Clients.SERVER_HOST_NAME.get(), provider.serverHostName());
+    assertEquals(Clients.SERVER_HOSTNAME.get(), provider.serverHostName());
 
     EntityConnection db2 = provider.connection();
     assertNotNull(db2);
@@ -295,7 +295,7 @@ public class EntityServerTest {
   }
 
   private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOST_NAME.set("localhost");
+    Clients.SERVER_HOSTNAME.set("localhost");
     Clients.TRUSTSTORE.set("src/main/config/truststore.jks");
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();
