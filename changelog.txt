@@ -8809,3 +8809,4 @@
   LocalEntityConnectionProvider.Builder.domain(Domain) added
   EntityApplicationBuilder.domainClassName() added
   Colors split from Utilities
+  EntityServer, hostname added to startup output
