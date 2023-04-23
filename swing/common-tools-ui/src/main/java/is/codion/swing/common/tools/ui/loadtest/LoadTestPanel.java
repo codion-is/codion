@@ -32,6 +32,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -94,6 +95,13 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public LoadTest<T> model() {
     return loadTestModel;
+  }
+
+  /**
+   * Runs this load test panel and displays it in a frame on the EDT.
+   */
+  public void run() {
+    SwingUtilities.invokeLater(this::showFrame);
   }
 
   /**

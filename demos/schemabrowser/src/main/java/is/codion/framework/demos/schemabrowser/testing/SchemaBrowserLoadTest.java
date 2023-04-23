@@ -19,8 +19,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
-import javax.swing.SwingUtilities;
-
 import static java.util.Collections.singletonList;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
@@ -67,19 +65,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runner());
-  }
-
-  private static final class Runner implements Runnable {
-    @Override
-    public void run() {
-      try {
-        new LoadTestPanel<>(new SchemaBrowserLoadTest()).showFrame();
-      }
-      catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
+  public static void main(String[] args) {
+    new LoadTestPanel<>(new SchemaBrowserLoadTest()).run();
   }
 }

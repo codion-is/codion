@@ -27,8 +27,6 @@ import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
 
-import javax.swing.SwingUtilities;
-
 import static is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 import static java.util.Arrays.asList;
@@ -76,19 +74,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
     return applicationModel;
   }
 
-  public static void main(String[] args) throws Exception {
-    SwingUtilities.invokeLater(new Runner());
-  }
-
-  private static final class Runner implements Runnable {
-    @Override
-    public void run() {
-      try {
-        new LoadTestPanel<>(new ChinookLoadTest()).showFrame();
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    }
+  public static void main(String[] args) {
+    new LoadTestPanel<>(new ChinookLoadTest()).run();
   }
 }

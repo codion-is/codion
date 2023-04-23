@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.DerivedProperty;
+import is.codion.framework.domain.property.DerivedProperty.SourceValues;
 import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
@@ -284,7 +285,7 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public BigDecimal get(DerivedProperty.SourceValues sourceValues) {
+    public BigDecimal get(SourceValues sourceValues) {
       Integer quantity = sourceValues.get(InvoiceLine.QUANTITY);
       BigDecimal unitPrice = sourceValues.get(InvoiceLine.UNITPRICE);
       if (unitPrice == null || quantity == null) {
@@ -301,12 +302,13 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public String get(DerivedProperty.SourceValues sourceValues) {
-      Integer milliseconds = sourceValues.get(Track.MILLISECONDS);
-      if (milliseconds == null || milliseconds <= 0) {
-        return "";
-      }
+    public String get(SourceValues sourceValues) {
+      return sourceValues.getOptional(Track.MILLISECONDS)
+              .map(TrackMinSecProvider::toMinutesSecondsString)
+              .orElse(null);
+    }
 
+    private static String toMinutesSecondsString(Integer milliseconds) {
       return minutes(milliseconds) + " min " +
               seconds(milliseconds) + " sec";
     }
@@ -318,12 +320,13 @@ public interface Chinook {
     private static final long serialVersionUID = 1;
 
     @Override
-    public Image get(DerivedProperty.SourceValues sourceValues) {
-      byte[] bytes = sourceValues.get(Album.COVER);
-      if (bytes == null) {
-        return null;
-      }
+    public Image get(SourceValues sourceValues) {
+      return sourceValues.getOptional(Album.COVER)
+              .map(CoverArtImageProvider::fromBytes)
+              .orElse(null);
+    }
 
+    private static Image fromBytes(byte[] bytes) {
       try {
         return ImageIO.read(new ByteArrayInputStream(bytes));
       }
@@ -340,18 +343,14 @@ public interface Chinook {
 
     @Override
     public String apply(Entity customer) {
-      StringBuilder builder = new StringBuilder();
-      if (customer.isNotNull(Customer.LASTNAME)) {
-        builder.append(customer.get(Customer.LASTNAME));
-      }
-      if (customer.isNotNull(Customer.FIRSTNAME)) {
-        builder.append(", ").append(customer.get(Customer.FIRSTNAME));
-      }
-      if (customer.isNotNull(Customer.EMAIL)) {
-        builder.append(" <").append(customer.get(Customer.EMAIL)).append(">");
-      }
-
-      return builder.toString();
+      return new StringBuilder()
+              .append(customer.get(Customer.LASTNAME))
+              .append(", ")
+              .append(customer.get(Customer.FIRSTNAME))
+              .append(customer.getOptional(Customer.EMAIL)
+                      .map(email -> " <" + email + ">")
+                      .orElse(""))
+              .toString();
     }
   }
 
