@@ -112,6 +112,7 @@ tasks.register('combinedJavadoc') {
         options.destinationDirectory(file(outputDirectory))
         options.docTitle("Codion Framework API ${documentationVersion}")
         options.links("https://docs.oracle.com/en/java/javase/11/docs/api/")
+        options.encoding("UTF-8")
         options.noTimestamp(true)
 
         options.write(optionsFile)
