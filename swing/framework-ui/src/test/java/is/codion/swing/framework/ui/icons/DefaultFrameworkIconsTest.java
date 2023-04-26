@@ -4,11 +4,11 @@
 package is.codion.swing.framework.ui.icons;
 
 import org.junit.jupiter.api.Test;
+import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultFrameworkIconsTest {
 
@@ -36,5 +36,13 @@ public final class DefaultFrameworkIconsTest {
     ImageIcon logo12 = icons.logo(12);
     assertNotNull(logo12);
     assertSame(logo12, icons.logo(12));
+    assertThrows(NullPointerException.class, () -> icons.addIcons((Ikon[]) null));
+    assertThrows(NullPointerException.class, () -> icons.addIcons(null, FrameworkIkons.SETTINGS));
+    assertThrows(IllegalArgumentException.class, () -> icons.addIcons(FrameworkIkons.SETTINGS));
+
+    //can't do exact size checking, depends on font metrics, so just assert that it is bigger
+    int width = icons.delete().getIconWidth();
+    FrameworkIcons.ICON_SIZE.set(FrameworkIcons.ICON_SIZE.get() + 2);
+    assertTrue(icons.delete().getIconWidth() > width);
   }
 }

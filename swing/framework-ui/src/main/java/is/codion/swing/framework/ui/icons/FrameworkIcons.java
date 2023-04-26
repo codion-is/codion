@@ -18,7 +18,7 @@ import java.util.ServiceLoader;
 /**
  * Provides icons for framework ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add custom icons via {@link #addIcon(Ikon)} and retrieve them via {@link #getIcon(Ikon)}.
+ * Add custom icons via {@link #addIcons(Ikon...)} (Ikon)} and retrieve them via {@link #getIcon(Ikon)}.
  */
 public interface FrameworkIcons extends Logos {
 
@@ -145,18 +145,18 @@ public interface FrameworkIcons extends Logos {
   ImageIcon logo(int size);
 
   /**
-   * Adds the given ikon to this FrameworkIcons instance. Retrieve it via {@link #getIcon(Ikon)}.
-   * @param ikon the ikon to add
-   * @throws IllegalArgumentException in case an icon has already been associated with the given ikon
+   * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #getIcon(Ikon)}.
+   * @param ikons the ikons to add
+   * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
    */
-  void addIcon(Ikon ikon);
+  void addIcons(Ikon... ikons);
 
   /**
    * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
    * @param ikon the ikon
    * @return the ImageIcon associated with the given ikon
    * @throws IllegalArgumentException in case no icon has been associated with the given ikon
-   * @see #addIcon(Ikon)
+   * @see #addIcons(Ikon...)
    */
   ImageIcon getIcon(Ikon ikon);
 

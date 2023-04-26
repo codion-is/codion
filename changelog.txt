@@ -8814,3 +8814,4 @@
   HttpEntityConnectionProvider.HTTP_CLIENT_HOST_NAME renamed HTTP_CLIENT_HOSTNAME
   LoadTestPanel.run() added
   EntityApplicationBuilder.start() overloaded with onEventDispatchThread paremeter for unit testing
+  FrameworkIcons.addIcon() replaced with addIcons(), ikonli.core now api dependency

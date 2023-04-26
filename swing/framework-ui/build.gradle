@@ -11,6 +11,7 @@ dependencies {
 
     api project(':codion-swing-framework-model')
 
+    api (libs.ikonli.core)
     implementation (libs.ikonli.swing)
 
     implementation (libs.slf4j.api)
