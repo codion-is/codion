@@ -19,6 +19,15 @@ java {
     }
 }
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.deprecation = true
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
 sonarqube {
     skipProject = true
 }

@@ -51,6 +51,7 @@ configure(project.frameworkModules) {
 
     javadoc {
         options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
+        options.encoding = 'UTF-8'
     }
 
     //https://github.com/java9-modularity/gradle-modules-plugin/issues/165
