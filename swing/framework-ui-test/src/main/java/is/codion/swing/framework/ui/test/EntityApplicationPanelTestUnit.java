@@ -42,6 +42,6 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
             .displayStartupDialog(false)
             .displayFrame(false)
             .onApplicationStarted(applicationPanel -> applicationPanel.applicationModel().connectionProvider().close())
-            .start();
+            .start(false);
   }
 }

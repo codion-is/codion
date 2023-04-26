@@ -32,11 +32,12 @@ import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplic
 import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
-  
+
   private static final String DEFAULT_FLAT_LOOK_AND_FEEL = "com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme";
 
   public WorldAppPanel(WorldAppModel applicationModel) {
     super(applicationModel);
+    FrameworkIcons.instance().addIcons(Foundation.MAP, Foundation.PAGE_EXPORT_CSV);
   }
 
   // tag::initializeEntityPanels[]
@@ -67,8 +68,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     EntityTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    FrameworkIcons.instance().addIcon(Foundation.MAP);
-    FrameworkIcons.instance().addIcon(Foundation.PAGE_EXPORT_CSV);
     entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
             .domainClassName("is.codion.framework.demos.world.domain.WorldImpl")

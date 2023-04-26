@@ -157,11 +157,15 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   }
 
   @Override
-  public void addIcon(Ikon ikon) {
-    if (ICONS.containsKey(requireNonNull(ikon))) {
-      throw new IllegalArgumentException("Icon has already been added: " + ikon);
+  public void addIcons(Ikon... ikons) {
+    for (Ikon ikon : requireNonNull(ikons)) {
+      if (ICONS.containsKey(requireNonNull(ikon))) {
+        throw new IllegalArgumentException("Icon has already been added: " + ikon);
+      }
     }
-    ICONS.put(ikon, FontImageIcon.of(ikon));
+    for (Ikon ikon : ikons) {
+      ICONS.put(ikon, FontImageIcon.of(ikon));
+    }
   }
 
   @Override
