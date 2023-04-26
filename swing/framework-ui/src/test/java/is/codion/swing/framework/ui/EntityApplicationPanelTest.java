@@ -65,7 +65,7 @@ public class EntityApplicationPanelTest {
             .displayFrame(false)
             .includeMainMenu(true)
             .displayStartupDialog(false)
-            .start();
+            .start(false);
   }
 
   private static final class TestApplicationModel extends SwingEntityApplicationModel {

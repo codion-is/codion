@@ -259,7 +259,17 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   @Override
   public void start() {
-    SwingUtilities.invokeLater(this::startApplication);
+    start(true);
+  }
+
+  @Override
+  public void start(boolean onEventDispatchThread) {
+    if (onEventDispatchThread) {
+      SwingUtilities.invokeLater(this::startApplication);
+    }
+    else {
+      startApplication();
+    }
   }
 
   private void startApplication() {

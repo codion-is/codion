@@ -199,6 +199,12 @@ public interface EntityApplicationBuilder<M extends SwingEntityApplicationModel,
   void start();
 
   /**
+   * Starts the application.
+   * @param onEventDispatchThread if true then startup is performed on the EDT
+   */
+  void start(boolean onEventDispatchThread);
+
+  /**
    * @param <M> the application model type
    * @param <P> the application panel type
    * @param applicationModelClass the application model class
