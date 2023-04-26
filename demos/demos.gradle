@@ -4,6 +4,15 @@ apply plugin: 'jacoco'
 sourceCompatibility = JavaVersion.VERSION_1_8
 targetCompatibility = JavaVersion.VERSION_1_8
 
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.deprecation = true
+}
+
+javadoc {
+    options.encoding = 'UTF-8'
+}
+
 sonarqube {
     skipProject = true
 }
