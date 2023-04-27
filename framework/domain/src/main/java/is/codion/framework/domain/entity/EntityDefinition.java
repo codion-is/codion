@@ -275,9 +275,9 @@ public interface EntityDefinition {
   /**
    * Returns the {@link Property}s based on the given attributes
    * @param attributes the attributes which properties to retrieve
-   * @return a list containing the properties based on the given attributes
+   * @return a Collection containing the properties based on the given attributes
    */
-  List<Property<?>> properties(Collection<Attribute<?>> attributes);
+  Collection<Property<?>> properties(Collection<Attribute<?>> attributes);
 
   /**
    * Returns the {@link ColumnProperty}s based on the given attributes

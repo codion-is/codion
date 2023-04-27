@@ -34,6 +34,7 @@ import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * A View for editing entity instances
@@ -114,13 +115,14 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing an input component to receive focus
    */
   public final void selectInputComponent() {
-    List<Property<?>> properties = editModel().entityDefinition().properties(controls.keySet());
-    properties.removeIf(property -> {
-      Control control = controls.get(property.attribute());
+    List<Property<?>> properties = editModel.entityDefinition().properties(controls.keySet()).stream()
+            .filter(property -> {
+              Control control = controls.get(property.attribute());
 
-      return control == null || control.isDisabled() || !control.isVisible();
-    });
-    properties.sort(Property.propertyComparator());
+              return control != null && !control.isDisabled() && control.isVisible();
+            })
+            .sorted(Property.propertyComparator())
+            .collect(Collectors.toList());
     controls.get(FXUiUtil.selectValues(properties).get(0).attribute()).requestFocus();
   }
 

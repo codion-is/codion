@@ -199,12 +199,12 @@ public class DomainTest {
     attributes.add(Department.NAME);
 
     EntityDefinition definition = entities.definition(Department.TYPE);
-    List<Property<?>> properties = definition.properties(attributes);
+    Collection<Property<?>> properties = definition.properties(attributes);
     assertEquals(2, properties.size());
     assertTrue(properties.contains(definition.property(Department.NO)));
     assertTrue(properties.contains(definition.property(Department.NAME)));
 
-    List<Property<?>> noProperties = definition.properties(emptyList());
+    Collection<Property<?>> noProperties = definition.properties(emptyList());
     assertEquals(0, noProperties.size());
   }
 
@@ -328,7 +328,7 @@ public class DomainTest {
     Property<String> location = definition.property(Department.LOCATION);
     Property<String> name = definition.property(Department.NAME);
     Property<Boolean> active = definition.property(Department.ACTIVE);
-    List<Property<?>> properties = definition.properties(asList(Department.LOCATION, Department.NAME));
+    Collection<Property<?>> properties = definition.properties(asList(Department.LOCATION, Department.NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
