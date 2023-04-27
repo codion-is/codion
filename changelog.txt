@@ -8822,3 +8822,4 @@
   EntityEditView.excludeFromSelection() added, selectInputControl() refactored
   EntityEditView.excludeControlFromSelection() now excludeControlsFromSelection() with varargs
   EntityEditComponentPanel.excludeComponentFromSelection() now excludeComponentsFromSelection() with varargs
+  SelectionDialogBuilder.select() and selectSingle() now throw CancelException if the user cancelled, in order to distinguish between the case where the user cancelled and where the user selected nothing

@@ -269,7 +269,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Invoice.CUSTOMER_ID)
                     .nullable(false),
             foreignKeyProperty(Invoice.CUSTOMER_FK)
-                    .selectAttributes(Customer.FIRSTNAME, Customer.LASTNAME),
+                    .selectAttributes(Customer.FIRSTNAME, Customer.LASTNAME, Customer.EMAIL),
             columnProperty(Invoice.DATE)
                     .nullable(false)
                     .defaultValueSupplier(Invoice.DATE_DEFAULT_VALUE)
