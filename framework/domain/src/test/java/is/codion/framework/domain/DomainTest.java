@@ -172,9 +172,10 @@ public class DomainTest {
 
   @Test
   void sortProperties() {
-    List<Property<?>> properties = Property.sort(entities.definition(Employee.TYPE).properties(
+    List<Property<?>> properties = new ArrayList<>(entities.definition(Employee.TYPE).properties(
             asList(Employee.HIREDATE, Employee.COMMISSION,
                     Employee.SALARY, Employee.JOB)));
+    properties.sort(Property.propertyComparator());
     assertEquals(Employee.COMMISSION, properties.get(0).attribute());
     assertEquals(Employee.HIREDATE, properties.get(1).attribute());
     assertEquals(Employee.JOB, properties.get(2).attribute());
@@ -184,7 +185,7 @@ public class DomainTest {
   @Test
   void updatableProperties() {
     EntityDefinition definition = entities.definition(Detail.TYPE);
-    List<Property<?>> properties = definition.updatableProperties();
+    Collection<Property<?>> properties = definition.updatableProperties();
     assertEquals(11, properties.size());
     assertFalse(properties.contains(definition.property(Detail.MASTER_NAME)));
     assertFalse(properties.contains(definition.property(Detail.MASTER_CODE)));

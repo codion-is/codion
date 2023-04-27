@@ -297,9 +297,9 @@ public interface EntityDefinition {
   List<ColumnProperty<?>> writableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
 
   /**
-   * @return a list containing all updatable properties associated with the given entityType
+   * @return a Collection containing all updatable properties associated with the given entityType
    */
-  List<Property<?>> updatableProperties();
+  Collection<Property<?>> updatableProperties();
 
   /**
    * @param foreignKey the foreign key

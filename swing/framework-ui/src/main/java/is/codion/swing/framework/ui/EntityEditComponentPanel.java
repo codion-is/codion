@@ -299,8 +299,8 @@ public class EntityEditComponentPanel extends JPanel {
     Entities entities = editModel().entities();
     List<Property<?>> properties = selectComponentAttributes().stream()
             .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
+            .sorted(Property.propertyComparator())
             .collect(Collectors.toList());
-    Property.sort(properties);
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)

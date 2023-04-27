@@ -653,8 +653,9 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Property.sort(tableModel.entityDefinition().updatableProperties()).stream()
+    tableModel.entityDefinition().updatableProperties().stream()
             .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
+            .sorted(Property.propertyComparator())
             .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
                     .caption(property.caption() == null ? property.attribute().name() : property.caption())
                     .enabledState(enabledState)

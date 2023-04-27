@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 
 import java.io.Serializable;
 import java.math.RoundingMode;
-import java.text.Collator;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
 import java.time.format.DateTimeFormatter;
@@ -25,7 +24,6 @@ import java.util.function.Supplier;
 
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.INSERT;
 import static is.codion.framework.domain.property.AuditProperty.AuditAction.UPDATE;
-import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a Property. Factory for {@link Property} instances.
@@ -249,7 +247,7 @@ public interface Property<T> {
   DateTimeFormatter dateTimeFormatter();
 
   /**
-   * @return the Comparator to use when comparing values for this attribute
+   * @return the Comparator to use when comparing values associated with this property
    */
   Comparator<T> comparator();
 
@@ -812,15 +810,11 @@ public interface Property<T> {
   }
 
   /**
-   * Sorts the given properties by caption, or if that is not available, attribute name, ignoring case
-   * @param properties the properties to sort
-   * @return the sorted list
+   * Returns a new Comparator instance for sorting Property instances by caption,
+   * or if that is not available, attribute name, ignoring case
+   * @return a new Comparator instance
    */
-  static List<Property<?>> sort(List<Property<?>> properties) {
-    requireNonNull(properties, "properties");
-    Collator collator = Collator.getInstance();
-    properties.sort((o1, o2) -> collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase()));
-
-    return properties;
+  static Comparator<Property<?>> propertyComparator() {
+    return new AbstractProperty.PropertyComparator();
   }
 }

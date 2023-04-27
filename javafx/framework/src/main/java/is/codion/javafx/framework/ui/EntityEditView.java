@@ -114,13 +114,13 @@ public abstract class EntityEditView extends BorderPane {
    * Displays a dialog for choosing an input component to receive focus
    */
   public final void selectInputComponent() {
-    List<Property<?>> properties = Property.sort(editModel()
-            .entityDefinition().properties(controls.keySet()));
+    List<Property<?>> properties = editModel().entityDefinition().properties(controls.keySet());
     properties.removeIf(property -> {
       Control control = controls.get(property.attribute());
 
       return control == null || control.isDisabled() || !control.isVisible();
     });
+    properties.sort(Property.propertyComparator());
     controls.get(FXUiUtil.selectValues(properties).get(0).attribute()).requestFocus();
   }
 

@@ -433,7 +433,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Property<?>> updatableProperties() {
+  public Collection<Property<?>> updatableProperties() {
     List<ColumnProperty<?>> writableColumnProperties = writableColumnProperties(!isKeyGenerated(), false);
     writableColumnProperties.removeIf(property -> isForeignKeyAttribute(property.attribute()));
     List<Property<?>> updatable = new ArrayList<>(writableColumnProperties);
