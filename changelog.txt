@@ -8815,3 +8815,4 @@
   LoadTestPanel.run() added
   EntityApplicationBuilder.start() overloaded with onEventDispatchThread paremeter for unit testing
   FrameworkIcons.addIcon() replaced with addIcons(), ikonli.core now api dependency
+  EntityTablePanel.updateSelectedEntities(), parameter type changed from Property to Attribute
