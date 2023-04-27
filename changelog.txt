@@ -8819,3 +8819,4 @@
   EntityDefinition.updatableProperties() now returns Collection instead of List
   Property.sort() removed, Property.propertyComparator() added
   EntityDefinition.properties() now returns Collection instead of List
+  EntityEditView.excludeFromSelection() added, selectInputControl() refactored

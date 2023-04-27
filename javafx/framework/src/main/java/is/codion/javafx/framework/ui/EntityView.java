@@ -375,7 +375,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
         break;
       case I:
         if (editView != null && event.isControlDown()) {
-          editView.selectInputComponent();
+          editView.selectInputControl();
           event.consume();
         }
         break;

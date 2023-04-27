@@ -32,9 +32,13 @@ import javafx.scene.layout.VBox;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A View for editing entity instances
@@ -49,6 +53,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private final FXEntityEditModel editModel;
   private final Map<Attribute<?>, Control> controls = new HashMap<>();
+  private final Set<Attribute<?>> excludeFromSelection = new HashSet<>();
 
   private boolean initialized = false;
   private boolean requestFocusAfterInsert = true;
@@ -112,18 +117,27 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   /**
-   * Displays a dialog for choosing an input component to receive focus
+   * Displays a dialog for choosing an input control to receive focus
+   * @see #excludeControlFromSelection(Attribute)
    */
-  public final void selectInputComponent() {
-    List<Property<?>> properties = editModel.entityDefinition().properties(controls.keySet()).stream()
-            .filter(property -> {
-              Control control = controls.get(property.attribute());
-
-              return control != null && !control.isDisabled() && control.isVisible();
-            })
+  public final void selectInputControl() {
+    List<Property<?>> properties = controls.keySet().stream()
+            .filter(attribute -> !excludeFromSelection.contains(attribute))
+            .filter(attribute -> isControlSelectable(controls.get(attribute)))
+            .map(attribute -> editModel.entityDefinition().property(attribute))
             .sorted(Property.propertyComparator())
             .collect(Collectors.toList());
-    controls.get(FXUiUtil.selectValues(properties).get(0).attribute()).requestFocus();
+
+    controls.get(FXUiUtil.selectValue(properties).attribute()).requestFocus();
+  }
+
+  /**
+   * Specifies that the given attribute should be excluded when presenting a control selection list.
+   * @param attribute the attribute to exclude from selection
+   * @see #selectInputControl()
+   */
+  public final void excludeControlFromSelection(Attribute<?> attribute) {
+    excludeFromSelection.add(requireNonNull(attribute));
   }
 
   /**
@@ -342,7 +356,7 @@ public abstract class EntityEditView extends BorderPane {
     }
     catch (ValidationException e) {
       FXUiUtil.showExceptionDialog(e);
-      requestComponentFocus(e.attribute());
+      requestControlFocus(e.attribute());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -358,7 +372,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        requestComponentFocus(e.attribute());
+        requestControlFocus(e.attribute());
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);
@@ -377,7 +391,7 @@ public abstract class EntityEditView extends BorderPane {
     }
   }
 
-  private void requestComponentFocus(Attribute<?> attribute) {
+  private void requestControlFocus(Attribute<?> attribute) {
     Control control = controls.get(attribute);
     if (control != null) {
       control.requestFocus();
@@ -426,8 +440,12 @@ public abstract class EntityEditView extends BorderPane {
       }
     }
     else if (event.isControlDown() && event.getCode().equals(KeyCode.I)) {
-      selectInputComponent();
+      selectInputControl();
       event.consume();
     }
+  }
+
+  private static boolean isControlSelectable(Control control) {
+    return !control.isDisabled() && control.isVisible();
   }
 }
