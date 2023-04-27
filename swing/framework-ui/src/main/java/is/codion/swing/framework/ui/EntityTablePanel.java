@@ -733,6 +733,7 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
+   * assigning the value to the property
    * @param propertyToUpdate the property to update
    * @param <T> the property type
    * @see #setUpdateSelectedComponentFactory(Attribute, EntityComponentFactory)
@@ -747,8 +748,8 @@ public class EntityTablePanel extends JPanel {
     Collection<T> values = Entity.getDistinct(propertyToUpdate.attribute(), selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
-    State validValueState = State.state(propertyToUpdate.isNullable() ? true : initialValue != null);
-    componentValue.addDataListener(value -> validValueState.set(propertyToUpdate.isNullable() ? true : value != null));
+    State validValueState = State.state(initialValue != null || propertyToUpdate.isNullable());
+    componentValue.addDataListener(value -> validValueState.set(value != null || propertyToUpdate.isNullable()));
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)

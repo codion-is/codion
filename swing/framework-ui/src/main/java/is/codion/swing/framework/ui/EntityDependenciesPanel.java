@@ -19,6 +19,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 
@@ -82,7 +83,7 @@ public final class EntityDependenciesPanel extends JPanel {
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
     Map<EntityType, Collection<Entity>> dependencies = selectDependencies(entities, connectionProvider, dialogParent);
-    if (dependencies != null) {
+    if (!dependencies.isEmpty()) {
       displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
   }
@@ -97,7 +98,7 @@ public final class EntityDependenciesPanel extends JPanel {
     catch (DatabaseException e) {
       Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
 
-      return null;
+      return Collections.emptyMap();
     }
     finally {
       WaitCursor.hide(dialogParent);
