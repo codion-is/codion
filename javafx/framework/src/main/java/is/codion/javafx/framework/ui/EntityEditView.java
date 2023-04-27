@@ -118,7 +118,7 @@ public abstract class EntityEditView extends BorderPane {
 
   /**
    * Displays a dialog for choosing an input control to receive focus
-   * @see #excludeControlFromSelection(Attribute)
+   * @see #excludeControlsFromSelection(Attribute[])
    */
   public final void selectInputControl() {
     List<Property<?>> properties = controls.keySet().stream()
@@ -132,12 +132,14 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   /**
-   * Specifies that the given attribute should be excluded when presenting a control selection list.
-   * @param attribute the attribute to exclude from selection
+   * Specifies that the given attributes should be excluded when presenting a control selection list.
+   * @param attributes the attributes to exclude from selection
    * @see #selectInputControl()
    */
-  public final void excludeControlFromSelection(Attribute<?> attribute) {
-    excludeFromSelection.add(requireNonNull(attribute));
+  public final void excludeControlsFromSelection(Attribute<?>... attributes) {
+    for (Attribute<?> attribute : requireNonNull(attributes)) {
+      excludeFromSelection.add(requireNonNull(attribute));
+    }
   }
 
   /**

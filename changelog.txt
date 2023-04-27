@@ -8820,3 +8820,5 @@
   Property.sort() removed, Property.propertyComparator() added
   EntityDefinition.properties() now returns Collection instead of List
   EntityEditView.excludeFromSelection() added, selectInputControl() refactored
+  EntityEditView.excludeControlFromSelection() now excludeControlsFromSelection() with varargs
+  EntityEditComponentPanel.excludeComponentFromSelection() now excludeComponentsFromSelection() with varargs

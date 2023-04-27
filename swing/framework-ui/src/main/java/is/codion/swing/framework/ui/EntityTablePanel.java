@@ -525,7 +525,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Property)}.
+   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Attribute)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
