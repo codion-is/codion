@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.model.CancelException;
+import is.codion.common.state.State;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.DefaultListModel;
@@ -104,11 +106,16 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
         }
       }
     });
+    State cancelledState = State.state();
+    Runnable onCancel = () -> {
+      list.clearSelection();
+      cancelledState.set(true);
+    };
     JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
             .owner(dialogOwner)
             .title(dialogTitle)
             .okAction(okAction)
-            .onCancel(list::clearSelection)
+            .onCancel(onCancel)
             .build();
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
       dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
@@ -121,6 +128,9 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
       });
     }
     dialog.setVisible(true);
+    if (cancelledState.get()) {
+      throw new CancelException();
+    }
 
     return list.getSelectedValuesList();
   }

@@ -525,7 +525,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Property)}.
+   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Attribute)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
@@ -653,9 +653,10 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.updateSelectedTip())
             .build();
-    Property.sort(tableModel.entityDefinition().updatableProperties()).stream()
+    tableModel.entityDefinition().updatableProperties().stream()
             .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
-            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property))
+            .sorted(Property.propertyComparator())
+            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
                     .caption(property.caption() == null ? property.attribute().name() : property.caption())
                     .enabledState(enabledState)
                     .build()));
@@ -732,32 +733,34 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Retrieves a new property value via input dialog and performs an update on the selected entities
-   * @param propertyToUpdate the property to update
+   * Retrieves a new value via input dialog and performs an update on the selected entities
+   * assigning the value to the attribute
+   * @param attributeToUpdate the attribute to update
    * @param <T> the property type
    * @see #setUpdateSelectedComponentFactory(Attribute, EntityComponentFactory)
    */
-  public final <T> void updateSelectedEntities(Property<T> propertyToUpdate) {
-    requireNonNull(propertyToUpdate);
+  public final <T> void updateSelectedEntities(Attribute<T> attributeToUpdate) {
+    requireNonNull(attributeToUpdate);
     if (tableModel.selectionModel().isSelectionEmpty()) {
       return;
     }
 
+    Property<T> property = tableModel.entityDefinition().property(attributeToUpdate);
     List<Entity> selectedEntities = Entity.deepCopy(tableModel.selectionModel().getSelectedItems());
-    Collection<T> values = Entity.getDistinct(propertyToUpdate.attribute(), selectedEntities);
+    Collection<T> values = Entity.getDistinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(propertyToUpdate.attribute(), initialValue);
-    State validValueState = State.state(propertyToUpdate.isNullable() ? true : initialValue != null);
-    componentValue.addDataListener(value -> validValueState.set(propertyToUpdate.isNullable() ? true : value != null));
+    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
+    State validValueState = State.state(initialValue != null || property.isNullable());
+    componentValue.addDataListener(value -> validValueState.set(value != null || property.isNullable()));
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(MESSAGES.getString("update"))
-              .caption(propertyToUpdate.caption())
+              .caption(property.caption())
               .inputValidState(validValueState)
               .show();
-      Entity.put(propertyToUpdate.attribute(), newValue, selectedEntities);
+      Entity.put(attributeToUpdate, newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
     }
   }

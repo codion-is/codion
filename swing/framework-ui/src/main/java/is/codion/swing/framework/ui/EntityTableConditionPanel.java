@@ -75,7 +75,7 @@ public final class EntityTableConditionPanel extends JPanel {
         conditionPanel(conditionProperties.get(0).attribute()).requestInputFocus();
       }
       else {
-        Property.sort(conditionProperties);
+        conditionProperties.sort(Property.propertyComparator());
         Dialogs.selectionDialog(conditionProperties)
                 .owner(this)
                 .title(FrameworkMessages.selectSearchField())

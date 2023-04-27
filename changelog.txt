@@ -8853,3 +8853,11 @@
   LoadTestPanel.run() added
   EntityApplicationBuilder.start() overloaded with onEventDispatchThread paremeter for unit testing
   FrameworkIcons.addIcon() replaced with addIcons(), ikonli.core now api dependency
+  EntityTablePanel.updateSelectedEntities(), parameter type changed from Property to Attribute
+  EntityDefinition.updatableProperties() now returns Collection instead of List
+  Property.sort() removed, Property.propertyComparator() added
+  EntityDefinition.properties() now returns Collection instead of List
+  EntityEditView.excludeFromSelection() added, selectInputControl() refactored
+  EntityEditView.excludeControlFromSelection() now excludeControlsFromSelection() with varargs
+  EntityEditComponentPanel.excludeComponentFromSelection() now excludeComponentsFromSelection() with varargs
+  SelectionDialogBuilder.select() and selectSingle() now throw CancelException if the user cancelled, in order to distinguish between the case where the user cancelled and where the user selected nothing

@@ -13,6 +13,7 @@ import is.codion.framework.domain.entity.EntityType;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.text.Collator;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.Format;
@@ -400,6 +401,16 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public int compare(Object o1, Object o2) {
       return o1.toString().compareTo(o2.toString());
+    }
+  }
+
+  static final class PropertyComparator implements Comparator<Property<?>> {
+
+    private final Collator collator = Collator.getInstance();
+
+    @Override
+    public int compare(Property<?> property1, Property<?> property2) {
+      return collator.compare(property1.toString().toLowerCase(), property2.toString().toLowerCase());
     }
   }
 

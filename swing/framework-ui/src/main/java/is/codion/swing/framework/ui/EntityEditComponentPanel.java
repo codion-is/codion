@@ -292,15 +292,15 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Displays a dialog allowing the user the select an input component which should receive the keyboard focus,
    * if only one input component is available then that component is selected automatically.
-   * @see #excludeComponentFromSelection(Attribute)
+   * @see #excludeComponentsFromSelection(Attribute[])
    * @see #requestComponentFocus(Attribute)
    */
   public final void selectInputComponent() {
     Entities entities = editModel().entities();
     List<Property<?>> properties = selectComponentAttributes().stream()
             .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
+            .sorted(Property.propertyComparator())
             .collect(Collectors.toList());
-    Property.sort(properties);
     Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
@@ -313,7 +313,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return an unmodifiable view of the attributes to present when selecting an input component in this panel,
    * this returns all (non-excluded) attributes that have an associated component in this panel
    * that is enabled, displayable, visible and focusable.
-   * @see #excludeComponentFromSelection(Attribute)
+   * @see #excludeComponentsFromSelection(Attribute[])
    * @see #setComponent(Attribute, JComponent)
    */
   public final Collection<Attribute<?>> selectComponentAttributes() {
@@ -324,12 +324,14 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Specifies that the given attribute should be excluded when presenting a component selection list.
-   * @param attribute the attribute to exclude from selection
+   * Specifies that the given attributes should be excluded when presenting a component selection list.
+   * @param attributes the attributes to exclude from selection
    * @see #selectInputComponent()
    */
-  public final void excludeComponentFromSelection(Attribute<?> attribute) {
-    excludeFromSelection.add(requireNonNull(attribute));
+  public final void excludeComponentsFromSelection(Attribute<?>... attributes) {
+    for (Attribute<?> attribute : requireNonNull(attributes)) {
+      excludeFromSelection.add(requireNonNull(attribute));
+    }
   }
 
   /**

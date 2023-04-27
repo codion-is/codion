@@ -32,11 +32,13 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
 
   /**
    * @return the selected value, {@link Optional#empty()} if none was selected
+   * @throws is.codion.common.model.CancelException in case the user cancelled
    */
   Optional<T> selectSingle();
 
   /**
    * @return the selected values, an empty Collection if none was selected
+   * @throws is.codion.common.model.CancelException in case the user cancelled
    */
   Collection<T> select();
 }
