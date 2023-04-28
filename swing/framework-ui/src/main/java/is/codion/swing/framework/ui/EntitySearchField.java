@@ -311,14 +311,7 @@ public final class EntitySearchField extends HintTextField {
       else {
         if (!model.searchStringRepresentsSelected()) {
           try {
-            List<Entity> queryResult;
-            WaitCursor.show(this);
-            try {
-              queryResult = model.performQuery();
-            }
-            finally {
-              WaitCursor.hide(this);
-            }
+            List<Entity> queryResult = performQuery();
             if (queryResult.size() == 1) {
               model.setSelectedEntities(queryResult);
             }
@@ -341,6 +334,16 @@ public final class EntitySearchField extends HintTextField {
     }
     finally {
       performingSearch = false;
+    }
+  }
+
+  private List<Entity> performQuery() {
+    WaitCursor.show(this);
+    try {
+      return model.performQuery();
+    }
+    finally {
+      WaitCursor.hide(this);
     }
   }
 
@@ -878,17 +881,17 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     public Optional<Entity> searchSingle() {
-      List<Entity> entities = lookupEntities(true, owner, title);
+      List<Entity> entities = performSearch(true, owner, title);
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }
 
     @Override
     public List<Entity> searchMultiple() {
-      return lookupEntities(false, owner, title);
+      return performSearch(false, owner, title);
     }
 
-    private List<Entity> lookupEntities(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
+    private List<Entity> performSearch(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
       searchField.model.multipleSelectionEnabledState().set(!singleSelection);
 
       return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
