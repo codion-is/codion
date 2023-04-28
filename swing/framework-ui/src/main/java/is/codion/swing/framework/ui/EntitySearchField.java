@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -891,13 +890,11 @@ public final class EntitySearchField extends HintTextField {
 
     private List<Entity> lookupEntities(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
       searchField.model.multipleSelectionEnabledState().set(!singleSelection);
-      State entitiesSelectedState = State.state(!searchField.model.getSelectedEntities().isEmpty());
-      searchField.model.addSelectedEntitiesListener(selectedEntities -> entitiesSelectedState.set(!selectedEntities.isEmpty()));
 
       return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
               .owner(dialogOwner)
               .title(dialogTitle)
-              .inputValidState(entitiesSelectedState)
+              .inputValidState(searchField.model.selectionEmptyObserver().reversedObserver())
               .show();
     }
   }

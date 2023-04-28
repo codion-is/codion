@@ -111,6 +111,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.multipleSelectionEnabledState().set(true);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("joh");
+    assertTrue(searchModel.selectionEmptyObserver().get());
     assertFalse(searchModel.searchStringRepresentsSelected());
     List<Entity> result = searchModel.performQuery();
     assertTrue(result.size() > 0);
@@ -120,6 +121,7 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andrew"));
     assertEquals(searchModel.getSearchString(), "joh");
     searchModel.setSelectedEntities(result);
+    assertFalse(searchModel.selectionEmptyObserver().get());
     assertEquals("John" + searchModel.multipleItemSeparatorValue().get() + "johnson", searchModel.getSearchString());
 
     searchModel.setSearchString("jo");

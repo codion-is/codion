@@ -147,6 +147,11 @@ public interface EntitySearchModel {
   StateObserver searchStringRepresentsSelectedObserver();
 
   /**
+   * @return a StateObserver indicating whether the selection is empty
+   */
+  StateObserver selectionEmptyObserver();
+
+  /**
    * @return the settings associated with the search attributes
    */
   Map<Attribute<String>, SearchSettings> attributeSearchSettings();
