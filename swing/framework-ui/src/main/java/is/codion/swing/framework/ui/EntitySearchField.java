@@ -6,7 +6,6 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
-import is.codion.common.state.State;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -312,14 +311,7 @@ public final class EntitySearchField extends HintTextField {
       else {
         if (!model.searchStringRepresentsSelected()) {
           try {
-            List<Entity> queryResult;
-            WaitCursor.show(this);
-            try {
-              queryResult = model.performQuery();
-            }
-            finally {
-              WaitCursor.hide(this);
-            }
+            List<Entity> queryResult = performQuery();
             if (queryResult.size() == 1) {
               model.setSelectedEntities(queryResult);
             }
@@ -342,6 +334,16 @@ public final class EntitySearchField extends HintTextField {
     }
     finally {
       performingSearch = false;
+    }
+  }
+
+  private List<Entity> performQuery() {
+    WaitCursor.show(this);
+    try {
+      return model.performQuery();
+    }
+    finally {
+      WaitCursor.hide(this);
     }
   }
 
@@ -879,25 +881,23 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     public Optional<Entity> searchSingle() {
-      List<Entity> entities = lookupEntities(true, owner, title);
+      List<Entity> entities = performSearch(true, owner, title);
 
       return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
     }
 
     @Override
     public List<Entity> searchMultiple() {
-      return lookupEntities(false, owner, title);
+      return performSearch(false, owner, title);
     }
 
-    private List<Entity> lookupEntities(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
+    private List<Entity> performSearch(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
       searchField.model.multipleSelectionEnabledState().set(!singleSelection);
-      State entitiesSelectedState = State.state(!searchField.model.getSelectedEntities().isEmpty());
-      searchField.model.addSelectedEntitiesListener(selectedEntities -> entitiesSelectedState.set(!selectedEntities.isEmpty()));
 
       return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
               .owner(dialogOwner)
               .title(dialogTitle)
-              .inputValidState(entitiesSelectedState)
+              .inputValidState(searchField.model.selectionEmptyObserver().reversedObserver())
               .show();
     }
   }

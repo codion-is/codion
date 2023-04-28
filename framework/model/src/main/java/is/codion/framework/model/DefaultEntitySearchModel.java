@@ -75,6 +75,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
   private final State multipleSelectionEnabledState = State.state(true);
   private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
+  private final State selectionEmptyState = State.state(true);
 
   private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
   private Supplier<Condition> additionalConditionSupplier;
@@ -149,6 +150,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       selectedEntities.addAll(entities);
     }
     resetSearchString();
+    selectionEmptyState.set(selectedEntities.isEmpty());
     selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
   }
 
@@ -244,6 +246,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public StateObserver searchStringRepresentsSelectedObserver() {
     return searchStringRepresentsSelectedState.observer();
+  }
+
+  @Override
+  public StateObserver selectionEmptyObserver() {
+    return selectionEmptyState.observer();
   }
 
   /**
