@@ -87,7 +87,7 @@ final class CountryEditPanel extends EntityEditPanel {
             .add(createInputPanel(Country.GNPOLD))
             .build();
 
-    JPanel surfaceAreaIndYear = panel(gridLayout(1, 2))
+    JPanel surfaceAreaIndYearPanel = panel(gridLayout(1, 2))
             .add(createInputPanel(Country.SURFACEAREA))
             .add(createInputPanel(Country.INDEPYEAR))
             .build();
@@ -105,7 +105,7 @@ final class CountryEditPanel extends EntityEditPanel {
     addInputPanel(Country.CAPITAL_FK, capitalPanel);
     addInputPanel(Country.CONTINENT);
     addInputPanel(Country.REGION);
-    add(surfaceAreaIndYear);
+    add(surfaceAreaIndYearPanel);
     add(populationLifeExpectancyPanel);
     add(gnpPanel);
     addInputPanel(Country.GOVERNMENTFORM);
