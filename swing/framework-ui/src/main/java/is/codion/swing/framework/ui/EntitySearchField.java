@@ -249,7 +249,7 @@ public final class EntitySearchField extends HintTextField {
      * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}, for multiple values.
      * @return a new ComponentValue
      */
-    ComponentValue<List<Entity>, EntitySearchField> buildComponentValueMultiple();
+    ComponentValue<List<Entity>, EntitySearchField> buildValueMultiple();
   }
 
   /**
@@ -809,7 +809,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public ComponentValue<List<Entity>, EntitySearchField> buildComponentValueMultiple() {
+    public ComponentValue<List<Entity>, EntitySearchField> buildValueMultiple() {
       return new SearchFieldMultipleValues(build());
     }
 
