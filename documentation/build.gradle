@@ -103,6 +103,9 @@ tasks.register('assembleDocs') {
         ant.copy(todir: docFolder + '/api') {
             fileset(dir: "${buildDir}/javadoc")
         }
+        ant.copy(todir: docFolder + '/utilities') {
+            fileset(dir: project.projectDir.absolutePath + '/src/docs/utilities')
+        }
     }
 }
 

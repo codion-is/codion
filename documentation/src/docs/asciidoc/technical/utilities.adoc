@@ -1,0 +1,42 @@
+= Utilities
+:dir-utilities: ../../utilities
+
+== IntelliJ IDEA
+
+=== Live templates
+
+Here are a few live templates for IntelliJ, reducing the typing required when defining a domain model.
+
+Add this file to the *templates* directory in the IntelliJ IDEA configuration directory.
+
+link:../utilities/idea/templates/codion.xml[Download template file]
+
+.View template file
+[%collapsible]
+====
+[source,xml]
+----
+include::{dir-utilities}/idea/templates/codion.xml[]
+----
+====
+
+==== Available templates
+
+[cols="1,4"]
+|===
+|Name|Template
+|et|EntityType TYPE = DOMAIN.entityType("table_name");
+|fk|ForeignKey FK_KEY = TYPE.foreignKey("fk_key");
+|atsh|Attribute<Short> ATTRIBUTE = TYPE.shortAttribute("attribute");
+|ati|Attribute<Integer> ATTRIBUTE = TYPE.integerAttribute("attribute");
+|atl|Attribute<Long> ATTRIBUTE = TYPE.longAttribute("attribute");
+|atd|Attribute<Double> ATTRIBUTE = TYPE.doubleAttribute("attribute");
+|ats|Attribute<String> ATTRIBUTE = TYPE.stringAttribute("attribute");
+|atld|Attribute<LocalDate> ATTRIBUTE = TYPE.localDateAttribute("attribute");
+|atldt|Attribute<LocalDateTime> ATTRIBUTE = TYPE.localDateTimeAttribute("attribute");
+|atodt|Attribute<OffsetDateTime> ATTRIBUTE = TYPE.offsetDateTimeAttribute("attribute");
+|atb|Attribute<Boolean> ATTRIBUTE = TYPE.booleanAttribute("attribute");
+|atc|Attribute<Character> ATTRIBUTE = TYPE.characterAttribute("attribute");
+|ate|Attribute<Entity> ATTRIBUTE = TYPE.entityAttribute("attribute");
+|atby|Attribute<byte[]> ATTRIBUTE = TYPE.byteArrayAttribute("attribute");
+|===
