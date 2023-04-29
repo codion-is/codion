@@ -97,8 +97,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   E editModel();
 
   /**
-   * Sets {@code foreignKeyValues} as the search condition values for the given foreign key
-   * and refreshes this table model.
+   * Sets {@code foreignKeyValues} as the search condition values for the given foreign key.
    * @param foreignKey the foreign key
    * @param foreignKeyValues the entities to use as condition values
    * @return true if the table search condition changed due to this call and a refresh is in order, false otherwise
@@ -338,7 +337,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void selectByKey(Collection<Key> keys);
+  void selectEntitiesByKey(Collection<Key> keys);
 
   /**
    * @param primaryKey the primary key to search by

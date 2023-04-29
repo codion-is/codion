@@ -378,7 +378,8 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final void selectByKey(Collection<Key> keys) {
+  public final void selectEntitiesByKey(Collection<Key> keys) {
+    requireNonNull(keys, "keys");
     List<Key> keyList = new ArrayList<>(keys);
     List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.primaryKey())).forEach(entity -> {

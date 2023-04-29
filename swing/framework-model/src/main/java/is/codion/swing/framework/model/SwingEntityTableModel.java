@@ -458,7 +458,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void selectByKey(Collection<Key> keys) {
+  public final void selectEntitiesByKey(Collection<Key> keys) {
     requireNonNull(keys, "keys");
     List<Key> keyList = new ArrayList<>(keys);
     List<Integer> indexes = new ArrayList<>();
@@ -774,11 +774,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    */
   private void replaceEntitiesByKey(Map<Key, Entity> entitiesByKey) {
     for (Entity entity : items()) {
-      Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
-      while (mapIterator.hasNext()) {
-        Map.Entry<Key, Entity> entry = mapIterator.next();
+      Iterator<Map.Entry<Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
+      while (iterator.hasNext()) {
+        Map.Entry<Key, Entity> entry = iterator.next();
         if (entity.primaryKey().equals(entry.getKey())) {
-          mapIterator.remove();
+          iterator.remove();
           entity.setAs(entry.getValue());
           int index = indexOf(entity);
           if (index >= 0) {
