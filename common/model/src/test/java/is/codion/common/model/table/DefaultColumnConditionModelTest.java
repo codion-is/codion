@@ -29,9 +29,9 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
-  final EventListener equalToListener = equalToCounter::incrementAndGet;
-  final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
-  final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
+  final EventDataListener<String> equalToListener = value -> equalToCounter.incrementAndGet();
+  final EventDataListener<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
+  final EventDataListener<String> lowerBoundListener = value -> lowerBoundCounter.incrementAndGet();
   final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
   final EventDataListener<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;

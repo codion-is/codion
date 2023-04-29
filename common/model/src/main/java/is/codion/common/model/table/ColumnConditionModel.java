@@ -17,6 +17,7 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -266,32 +267,42 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @param listener a listener to be notified each time the equal value changes
    */
-  void addEqualValueListener(EventListener listener);
+  void addEqualValueListener(EventDataListener<T> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEqualValueListener(EventListener listener);
+  void removeEqualValueListener(EventDataListener<T> listener);
+
+  /**
+   * @param listener a listener to be notified each time the equal values change
+   */
+  void addEqualValuesListener(EventDataListener<Set<T>> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeEqualValuesListener(EventDataListener<Set<T>> listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes
    */
-  void addLowerBoundListener(EventListener listener);
+  void addLowerBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundListener(EventListener listener);
+  void removeLowerBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes
    */
-  void addUpperBoundListener(EventListener listener);
+  void addUpperBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeUpperBoundListener(EventListener listener);
+  void removeUpperBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener a listener to be notified each time the model is cleared

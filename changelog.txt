@@ -8827,3 +8827,4 @@
   EntitySearchField.Builder.buildComponentValueMultiple() renamed buildValueMultiple(), for consistency
   ColumnConditionModel.addEqualsValueListener() renamed addEqualValueListener()
   EntitySearchModelConditionModel, EntityComboBoxModelConditionModel minor refactoring
+  ColumnConditionModel.addEqualValuesListener() added, addEqualValueListener() now based on a single value, bound listeners now EventDataListener, related refactoring

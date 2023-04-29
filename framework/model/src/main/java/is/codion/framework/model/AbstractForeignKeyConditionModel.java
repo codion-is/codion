@@ -18,6 +18,7 @@ import java.text.Format;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 /**
  * An abstract base class for {@link ForeignKey} based {@link ColumnConditionModel}s.
@@ -198,32 +199,42 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void addEqualValueListener(EventListener listener) {
+  public final void addEqualValueListener(EventDataListener<Entity> listener) {
     conditionModel.addEqualValueListener(listener);
   }
 
   @Override
-  public final void removeEqualValueListener(EventListener listener) {
+  public final void removeEqualValueListener(EventDataListener<Entity> listener) {
     conditionModel.removeEqualValueListener(listener);
   }
 
   @Override
-  public final void addUpperBoundListener(EventListener listener) {
+  public void addEqualValuesListener(EventDataListener<Set<Entity>> listener) {
+    conditionModel.addEqualValuesListener(listener);
+  }
+
+  @Override
+  public void removeEqualValuesListener(EventDataListener<Set<Entity>> listener) {
+    conditionModel.removeEqualValuesListener(listener);
+  }
+
+  @Override
+  public final void addUpperBoundListener(EventDataListener<Entity> listener) {
     conditionModel.addUpperBoundListener(listener);
   }
 
   @Override
-  public final void removeUpperBoundListener(EventListener listener) {
+  public final void removeUpperBoundListener(EventDataListener<Entity> listener) {
     conditionModel.removeUpperBoundListener(listener);
   }
 
   @Override
-  public final void addLowerBoundListener(EventListener listener) {
+  public final void addLowerBoundListener(EventDataListener<Entity> listener) {
     conditionModel.addLowerBoundListener(listener);
   }
 
   @Override
-  public final void removeLowerBoundListener(EventListener listener) {
+  public final void removeLowerBoundListener(EventDataListener<Entity> listener) {
     conditionModel.removeLowerBoundListener(listener);
   }
 

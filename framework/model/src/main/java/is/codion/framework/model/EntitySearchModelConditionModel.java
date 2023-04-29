@@ -4,12 +4,12 @@
 package is.codion.framework.model;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -50,7 +50,7 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
 
   private void bindSearchModelEvents() {
     entitySearchModel.addSelectedEntitiesListener(new SelectedEntitiesListener());
-    addEqualValueListener(new EqualValueListener());
+    addEqualValuesListener(new EqualValuesListener());
   }
 
   private final class SelectedEntitiesListener implements EventDataListener<List<Entity>> {
@@ -68,12 +68,12 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     }
   }
 
-  private final class EqualValueListener implements EventListener {
+  private final class EqualValuesListener implements EventDataListener<Set<Entity>> {
 
     @Override
-    public void onEvent() {
+    public void onEvent(Set<Entity> equalValues) {
       if (!updatingModel) {
-        entitySearchModel.setSelectedEntities(new ArrayList<>(getEqualValues()));
+        entitySearchModel.setSelectedEntities(new ArrayList<>(equalValues));
       }
     }
   }

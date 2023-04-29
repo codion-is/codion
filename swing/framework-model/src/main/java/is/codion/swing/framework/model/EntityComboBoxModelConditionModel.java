@@ -4,7 +4,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
@@ -76,12 +75,12 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
     }
   }
 
-  private final class EqualValueListener implements EventListener {
+  private final class EqualValueListener implements EventDataListener<Entity> {
 
     @Override
-    public void onEvent() {
+    public void onEvent(Entity equalValue) {
       if (!updatingModel) {
-        entityComboBoxModel.setSelectedItem(getEqualValue());
+        entityComboBoxModel.setSelectedItem(equalValue);
       }
     }
   }

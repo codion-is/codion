@@ -19,6 +19,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.unmodifiableList;
@@ -28,6 +29,7 @@ import static java.util.stream.Collectors.toList;
 final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C, T> {
 
   private final ValueSet<T> equalValues = ValueSet.valueSet();
+  private final Value<T> equalValue = equalValues.value();
   private final Value<T> upperBoundValue = Value.value();
   private final Value<T> lowerBoundValue = Value.value();
   private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
@@ -104,12 +106,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public void setEqualValue(T value) {
-    equalValues.set(value == null ? Collections.emptySet() : Collections.singleton(value));
+    equalValue.set(value);
   }
 
   @Override
   public T getEqualValue() {
-    return addAutomaticWildcard(equalValues.get().isEmpty() ? null : equalValues.get().iterator().next());
+    return addAutomaticWildcard(equalValue.get());
   }
 
   @Override
@@ -240,33 +242,43 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void addEqualValueListener(EventListener listener) {
-    equalValues.addListener(listener);
+  public void addEqualValueListener(EventDataListener<T> listener) {
+    equalValue.addDataListener(listener);
   }
 
   @Override
-  public void removeEqualValueListener(EventListener listener) {
-    equalValues.removeListener(listener);
+  public void removeEqualValueListener(EventDataListener<T> listener) {
+    equalValue.removeDataListener(listener);
   }
 
   @Override
-  public void addUpperBoundListener(EventListener listener) {
-    upperBoundValue.addListener(listener);
+  public void addEqualValuesListener(EventDataListener<Set<T>> listener) {
+    equalValues.addDataListener(listener);
   }
 
   @Override
-  public void removeUpperBoundListener(EventListener listener) {
-    upperBoundValue.removeListener(listener);
+  public void removeEqualValuesListener(EventDataListener<Set<T>> listener) {
+    equalValues.removeDataListener(listener);
   }
 
   @Override
-  public void addLowerBoundListener(EventListener listener) {
-    lowerBoundValue.addListener(listener);
+  public void addUpperBoundListener(EventDataListener<T> listener) {
+    upperBoundValue.addDataListener(listener);
   }
 
   @Override
-  public void removeLowerBoundListener(EventListener listener) {
-    lowerBoundValue.removeListener(listener);
+  public void removeUpperBoundListener(EventDataListener<T> listener) {
+    upperBoundValue.removeDataListener(listener);
+  }
+
+  @Override
+  public void addLowerBoundListener(EventDataListener<T> listener) {
+    lowerBoundValue.addDataListener(listener);
+  }
+
+  @Override
+  public void removeLowerBoundListener(EventDataListener<T> listener) {
+    lowerBoundValue.removeDataListener(listener);
   }
 
   @Override
