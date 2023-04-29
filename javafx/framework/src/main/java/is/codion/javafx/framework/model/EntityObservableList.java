@@ -154,7 +154,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     if (this.selectionModel != null) {
       throw new IllegalStateException("Selection model has already been set");
     }
-    this.selectionModel = new FXEntityListSelectionModel(requireNonNull(selectionModel));
+    this.selectionModel = new FXEntityListSelectionModel(this, requireNonNull(selectionModel));
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).setSelectionMode(SelectionMode.MULTIPLE);
     }

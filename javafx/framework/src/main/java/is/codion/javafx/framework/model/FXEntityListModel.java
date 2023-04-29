@@ -379,14 +379,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
 
   @Override
   public final void selectEntitiesByKey(Collection<Key> keys) {
-    requireNonNull(keys, "keys");
-    List<Key> keyList = new ArrayList<>(keys);
-    List<Entity> toSelect = new ArrayList<>(keys.size());
-    stream().filter(entity -> keyList.contains(entity.primaryKey())).forEach(entity -> {
-      toSelect.add(entity);
-      keyList.remove(entity.primaryKey());
-    });
-    selectionModel().setSelectedItems(toSelect);
+    selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
   }
 
   @Override
@@ -774,6 +767,29 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
       ColumnPreferences columnTwoPreferences = preferences.get(((AttributeTableColumn<?>) col2).attribute());
 
       return Integer.compare(columnOnePreferences.index(), columnTwoPreferences.index());
+    }
+  }
+
+  private static final class SelectByKeyPredicate implements Predicate<Entity> {
+
+    private final List<Key> keyList;
+
+    private SelectByKeyPredicate(Collection<Key> keys) {
+      this.keyList = new ArrayList<>(keys);
+    }
+
+    @Override
+    public boolean test(Entity entity) {
+      if (keyList.isEmpty()) {
+        return false;
+      }
+      int index = keyList.indexOf(entity.primaryKey());
+      if (index >= 0) {
+        keyList.remove(index);
+        return true;
+      }
+
+      return false;
     }
   }
 }

@@ -11,8 +11,10 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.DefaultListSelectionModel;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
 import static java.util.Collections.emptyList;
@@ -143,6 +145,16 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   @Override
   public void selectAll() {
     setSelectionInterval(0, tableModel.getRowCount() - 1);
+  }
+
+  @Override
+  public void setSelectedItems(Predicate<R> predicate) {
+    setSelectedIndexes(indexesToSelect(requireNonNull(predicate)));
+  }
+
+  @Override
+  public void addSelectedItems(Predicate<R> predicate) {
+    addSelectedIndexes(indexesToSelect(requireNonNull(predicate)));
   }
 
   @Override
@@ -366,6 +378,19 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   private void bindEvents() {
     singleSelectionModeState.addDataListener(singleSelection ->
             setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
+  }
+
+  private List<Integer> indexesToSelect(Predicate<R> predicate) {
+    List<Integer> indexes = new ArrayList<>();
+    List<R> visibleItems = tableModel.visibleItems();
+    for (int i = 0; i < visibleItems.size(); i++) {
+      R item = visibleItems.get(i);
+      if (predicate.test(item)) {
+        indexes.add(i);
+      }
+    }
+
+    return indexes;
   }
 
   private void checkIndexes(Collection<Integer> indexes) {

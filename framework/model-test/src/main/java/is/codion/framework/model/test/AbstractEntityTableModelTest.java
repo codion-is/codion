@@ -60,7 +60,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void setSelectedByKey() {
+  public void selectEntitiesByKey() {
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 

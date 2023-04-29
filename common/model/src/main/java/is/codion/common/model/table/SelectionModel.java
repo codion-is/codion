@@ -10,6 +10,7 @@ import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * A table selection model
@@ -152,6 +153,18 @@ public interface SelectionModel<R> {
    * @see #addSelectionListener(EventListener)
    */
   void selectAll();
+
+  /**
+   * Sets the items passing the predicate test as the selection
+   * @param predicate the predicate
+   */
+  void setSelectedItems(Predicate<R> predicate);
+
+  /**
+   * Adds the items passing the predicate test to the selection
+   * @param predicate the predicate
+   */
+  void addSelectedItems(Predicate<R> predicate);
 
   /**
    * Adds these indexes to the selection
