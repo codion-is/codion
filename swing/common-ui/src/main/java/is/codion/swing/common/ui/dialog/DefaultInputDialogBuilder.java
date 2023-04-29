@@ -6,41 +6,76 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComponent;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Point;
+import java.awt.Window;
 
 import static java.util.Objects.requireNonNull;
 
 final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
+  private final JPanel basePanel = new JPanel(Layouts.borderLayout());
   private final ComponentValue<T, ?> componentValue;
+  private final OkCancelDialogBuilder okCancelDialogBuilder = new DefaultOkCancelDialogBuilder(basePanel);
 
-  private JComponent owner;
-  private String title;
   private String caption;
   private StateObserver inputValidState;
 
   DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
     this.componentValue = requireNonNull(componentValue);
+    this.basePanel.add(componentValue.component(), BorderLayout.CENTER);
+    this.basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
   }
 
   @Override
-  public InputDialogBuilder<T> owner(JComponent owner) {
-    this.owner = owner;
+  public InputDialogBuilder<T> owner(Window owner) {
+    okCancelDialogBuilder.owner(owner);
+    return this;
+  }
+
+  @Override
+  public InputDialogBuilder<T> owner(Component owner) {
+    okCancelDialogBuilder.owner(owner);
+    return this;
+  }
+
+  @Override
+  public InputDialogBuilder<T> locationRelativeTo(Component component) {
+    okCancelDialogBuilder.locationRelativeTo(component);
+    return this;
+  }
+
+  @Override
+  public InputDialogBuilder<T> location(Point location) {
+    okCancelDialogBuilder.location(location);
+    return this;
+  }
+
+  @Override
+  public InputDialogBuilder<T> titleProvider(ValueObserver<String> titleProvider) {
+    okCancelDialogBuilder.titleProvider(titleProvider);
+    return this;
+  }
+
+  @Override
+  public InputDialogBuilder<T> icon(ImageIcon icon) {
+    okCancelDialogBuilder.icon(icon);
     return this;
   }
 
   @Override
   public InputDialogBuilder<T> title(String title) {
-    this.title = title;
+    okCancelDialogBuilder.title(title);
     return this;
   }
 
@@ -59,18 +94,11 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   @Override
   public T show() {
     State okPressed = State.state();
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    basePanel.add(componentValue.component(), BorderLayout.CENTER);
     if (caption != null) {
       basePanel.add(new JLabel(caption), BorderLayout.NORTH);
     }
-    basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 0, 5));
-    new DefaultOkCancelDialogBuilder(basePanel)
-            .owner(owner)
-            .title(title)
-            .okAction(Control.builder(new OkCommand(okPressed))
-                    .enabledState(inputValidState)
-                    .build())
+    okCancelDialogBuilder.okEnabledState(inputValidState)
+            .onOk(new OnOk(okPressed))
             .show();
     if (okPressed.get()) {
       return componentValue.get();
@@ -79,16 +107,16 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     throw new CancelException();
   }
 
-  private final class OkCommand implements Control.Command {
+  private final class OnOk implements Runnable {
 
     private final State okPressed;
 
-    private OkCommand(State okPressed) {
+    private OnOk(State okPressed) {
       this.okPressed = okPressed;
     }
 
     @Override
-    public void perform() throws Exception {
+    public void run() {
       Utilities.getParentDialog(componentValue.component()).dispose();
       okPressed.set(true);
     }

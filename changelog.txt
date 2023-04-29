@@ -8830,3 +8830,4 @@
   ColumnConditionModel.addEqualValuesListener() added, addEqualValueListener() now based on a single value, bound listeners now EventDataListener, related refactoring
   DefaultValueSet now uses LinkedHashSet internally
   EntityPanelBuilder, minor refactoring
+  InputDialogBuilder now extends DialogBuilder
