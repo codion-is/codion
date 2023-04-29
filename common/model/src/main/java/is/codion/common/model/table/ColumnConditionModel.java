@@ -17,6 +17,7 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -264,34 +265,44 @@ public interface ColumnConditionModel<C, T> {
   void removeOperatorListener(EventDataListener<Operator> listener);
 
   /**
-   * @param listener a listener to be notified each time the lower bound changes
+   * @param listener a listener to be notified each time the equal value changes
    */
-  void addEqualsValueListener(EventListener listener);
+  void addEqualValueListener(EventDataListener<T> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEqualsValueListener(EventListener listener);
+  void removeEqualValueListener(EventDataListener<T> listener);
 
   /**
-   * @param listener a listener to be notified each time the lower bound changes
+   * @param listener a listener to be notified each time the equal values change
    */
-  void addLowerBoundListener(EventListener listener);
+  void addEqualValuesListener(EventDataListener<Set<T>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundListener(EventListener listener);
+  void removeEqualValuesListener(EventDataListener<Set<T>> listener);
+
+  /**
+   * @param listener a listener to be notified each time the lower bound changes
+   */
+  void addLowerBoundListener(EventDataListener<T> listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeLowerBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes
    */
-  void addUpperBoundListener(EventListener listener);
+  void addUpperBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeUpperBoundListener(EventListener listener);
+  void removeUpperBoundListener(EventDataListener<T> listener);
 
   /**
    * @param listener a listener to be notified each time the model is cleared

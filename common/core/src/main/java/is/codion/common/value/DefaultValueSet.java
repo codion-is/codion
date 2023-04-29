@@ -3,7 +3,7 @@
  */
 package is.codion.common.value;
 
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Set;
 
 import static java.util.Collections.*;
@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet<T> {
 
-  private final Set<T> values = new HashSet<>();
+  private final Set<T> values = new LinkedHashSet<>();
 
   DefaultValueSet(Set<T> initialValues) {
     super(emptySet(), true);
@@ -20,12 +20,12 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public Set<T> get() {
-    return unmodifiableSet(new HashSet<>(values));
+    return unmodifiableSet(new LinkedHashSet<>(values));
   }
 
   @Override
   public boolean add(T value) {
-    Set<T> newValues = new HashSet<>(values);
+    Set<T> newValues = new LinkedHashSet<>(values);
     boolean added = newValues.add(value);
     set(newValues);
 
@@ -34,7 +34,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public boolean remove(T value) {
-    Set<T> newValues = new HashSet<>(values);
+    Set<T> newValues = new LinkedHashSet<>(values);
     boolean removed = newValues.remove(value);
     set(newValues);
 

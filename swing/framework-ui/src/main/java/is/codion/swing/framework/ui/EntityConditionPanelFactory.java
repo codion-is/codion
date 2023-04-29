@@ -140,7 +140,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
                 .build();
       }
 
-      throw new IllegalArgumentException("Uknown foreign key condition model type: " + model);
+      throw new IllegalArgumentException("Unknown foreign key condition model type: " + model);
     }
   }
 

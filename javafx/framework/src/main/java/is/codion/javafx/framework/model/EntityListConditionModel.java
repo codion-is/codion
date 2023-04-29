@@ -59,12 +59,11 @@ public final class EntityListConditionModel extends AbstractForeignKeyConditionM
         setEqualValue(listModel.selectionModel().getSelectedItem());
       }
     });
-    addEqualsValueListener(() -> {
+    addEqualValuesListener(equalValues -> {
       try {
         updatingModel = true;
-        Collection<Entity> equalsValues = getEqualValues();
-        if (!equalsValues.isEmpty()) {
-          listModel.selectionModel().setSelectedItem(equalsValues.iterator().next());
+        if (!equalValues.isEmpty()) {
+          listModel.selectionModel().setSelectedItem(equalValues.iterator().next());
         }
         else {
           listModel.selectionModel().clearSelection();

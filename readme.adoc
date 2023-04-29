@@ -57,7 +57,7 @@ Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features,
 
 == Dependencies
 
-Codion uses a limited set of third-party libraries, a Swing CRUD client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+Codion uses a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *https://www.json.org[org.json:json]* for persisting application preferences
 * *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
@@ -108,7 +108,7 @@ image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object Relational Mapping] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities*, *attributes* and *properties*, eliminating most of the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-An Entity represents a row in a table (or query), an Attribute identifies a column and its type, allowing for type safe access to the associated value, whereas a Property encapsulates the metadata required for the framework to present and persist the value.
+An *Entity* represents a row in a table (or query), an *Attribute* identifies a column and its type, allowing for type safe access to the associated value, whereas a *Property* encapsulates the metadata required for the framework to present and persist the value.
 
 In the following example we start by extending the *DefaultDomain* class. We define a *DomainType* constant identifying this domain model, use it to create *EntityType* constants for each entity and use those to create typed *Attribute* constants for each column. These constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the entity type and its values. We then use the *entityTypes* and their respective *attributes* to define two entities, with a master/detail relationship, and add them to the domain model.
 
@@ -189,6 +189,8 @@ public class Store extends DefaultDomain {
   }
 }
 ----
+
+NOTE: {url-technical}/technical.html#_live_templates[IntelliJ IDEA live templates] for working with domain models.
 
 === Entity definition expanded
 

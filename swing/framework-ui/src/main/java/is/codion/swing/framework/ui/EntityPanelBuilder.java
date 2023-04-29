@@ -573,19 +573,14 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private UpdateEntityCommand(EntityComboBox comboBox) {
       this.component = requireNonNull(comboBox);
-      this.connectionProvider = requireNonNull(comboBox.getModel().connectionProvider());
-      this.onUpdate = updated -> {
-        EntityComboBoxModel comboBoxModel = comboBox.getModel();
-        Entity item = updated.get(0);
-        comboBoxModel.replaceItem(this.entityToUpdate, item);
-        comboBoxModel.setSelectedItem(item);
-      };
+      this.connectionProvider = comboBox.getModel().connectionProvider();
+      this.onUpdate = new EntityComboBoxOnUpdate();
     }
 
     private UpdateEntityCommand(EntitySearchField searchField) {
       this.component = requireNonNull(searchField);
-      this.connectionProvider = requireNonNull(searchField.model().connectionProvider());
-      this.onUpdate = updated -> searchField.model().setSelectedEntities(updated);
+      this.connectionProvider = searchField.model().connectionProvider();
+      this.onUpdate = new EntitySearchFieldOnUpdate();
     }
 
     @Override
@@ -662,6 +657,25 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
 
       return false;
+    }
+
+    private final class EntityComboBoxOnUpdate implements EventDataListener<List<Entity>> {
+
+      @Override
+      public void onEvent(List<Entity> updated) {
+        EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
+        Entity item = updated.get(0);
+        comboBoxModel.replaceItem(entityToUpdate, item);
+        comboBoxModel.setSelectedItem(item);
+      }
+    }
+
+    private final class EntitySearchFieldOnUpdate implements EventDataListener<List<Entity>> {
+
+      @Override
+      public void onEvent(List<Entity> updated) {
+        ((EntitySearchField) component).model().setSelectedEntities(updated);
+      }
     }
 
     private final class AfterUpdateListener implements EventDataListener<Map<Key, Entity>> {

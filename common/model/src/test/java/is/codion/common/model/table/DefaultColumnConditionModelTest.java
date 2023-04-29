@@ -29,9 +29,9 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger enabledCounter = new AtomicInteger();
   final AtomicInteger clearCounter = new AtomicInteger();
 
-  final EventListener equalToListener = equalToCounter::incrementAndGet;
-  final EventListener upperBoundListener = upperBoundCounter::incrementAndGet;
-  final EventListener lowerBoundListener = lowerBoundCounter::incrementAndGet;
+  final EventDataListener<String> equalToListener = value -> equalToCounter.incrementAndGet();
+  final EventDataListener<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
+  final EventDataListener<String> lowerBoundListener = value -> lowerBoundCounter.incrementAndGet();
   final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
   final EventDataListener<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
@@ -42,7 +42,7 @@ public class DefaultColumnConditionModelTest {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
 
     model.autoEnableState().set(false);
-    model.addEqualsValueListener(equalToListener);
+    model.addEqualValueListener(equalToListener);
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
     model.addConditionChangedListener(conditionChangedListener);
@@ -81,7 +81,7 @@ public class DefaultColumnConditionModelTest {
     model.clearCondition();
     assertEquals(1, clearCounter.get());
 
-    model.removeEqualsValueListener(equalToListener);
+    model.removeEqualValueListener(equalToListener);
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
     model.removeConditionChangedListener(conditionChangedListener);
@@ -109,11 +109,7 @@ public class DefaultColumnConditionModelTest {
     model.setOperator(Operator.LESS_THAN_OR_EQUAL);
     assertEquals(1, operatorCounter.get());
     assertEquals(Operator.LESS_THAN_OR_EQUAL, model.getOperator());
-    try {
-      model.setOperator(null);
-      fail();
-    }
-    catch (NullPointerException ignored) {/*ignored*/}
+    assertThrows(NullPointerException.class, () -> model.setOperator(null));
     model.setOperator(Operator.NOT_BETWEEN);
     assertEquals(2, operatorCounter.get());
     model.removeOperatorListener(operatorListener);
