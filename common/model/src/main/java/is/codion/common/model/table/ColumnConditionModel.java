@@ -264,14 +264,14 @@ public interface ColumnConditionModel<C, T> {
   void removeOperatorListener(EventDataListener<Operator> listener);
 
   /**
-   * @param listener a listener to be notified each time the lower bound changes
+   * @param listener a listener to be notified each time the equal value changes
    */
-  void addEqualsValueListener(EventListener listener);
+  void addEqualValueListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEqualsValueListener(EventListener listener);
+  void removeEqualValueListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

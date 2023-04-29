@@ -151,8 +151,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public void setOperator(Operator operator) {
-    validateOperator(operator);
     operatorValue.set(operator);
+  }
+
+  @Override
+  public Value<Operator> operatorValue() {
+    return operatorValue;
   }
 
   @Override
@@ -236,12 +240,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void addEqualsValueListener(EventListener listener) {
+  public void addEqualValueListener(EventListener listener) {
     equalValues.addListener(listener);
   }
 
   @Override
-  public void removeEqualsValueListener(EventListener listener) {
+  public void removeEqualValueListener(EventListener listener) {
     equalValues.removeListener(listener);
   }
 
@@ -293,11 +297,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public void removeOperatorListener(EventDataListener<Operator> listener) {
     operatorValue.removeDataListener(listener);
-  }
-
-  @Override
-  public Value<Operator> operatorValue() {
-    return operatorValue;
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {

@@ -3,6 +3,9 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 
@@ -54,20 +57,32 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.addSelectionListener(selected -> {
-      if (!updatingModel) {
-        setEqualValue(selected);
-      }
-    });
-    addEqualsValueListener(() -> {
+    entityComboBoxModel.addSelectionListener(new SelectedEntityListener());
+    addEqualValueListener(new EqualValueListener());
+    entityComboBoxModel.addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
+  }
+
+  private final class SelectedEntityListener implements EventDataListener<Entity> {
+
+    @Override
+    public void onEvent(Entity selectedEntity) {
+      updatingModel = true;
       try {
-        updatingModel = true;
-        entityComboBoxModel.setSelectedItem(getEqualValue());
+        setEqualValue(selectedEntity);
       }
       finally {
         updatingModel = false;
       }
-    });
-    entityComboBoxModel.addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
+    }
+  }
+
+  private final class EqualValueListener implements EventListener {
+
+    @Override
+    public void onEvent() {
+      if (!updatingModel) {
+        entityComboBoxModel.setSelectedItem(getEqualValue());
+      }
+    }
   }
 }

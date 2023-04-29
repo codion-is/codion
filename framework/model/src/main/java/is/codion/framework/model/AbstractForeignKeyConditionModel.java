@@ -118,6 +118,11 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
+  public final Value<Operator> operatorValue() {
+    return conditionModel.operatorValue();
+  }
+
+  @Override
   public final List<Operator> operators() {
     return conditionModel.operators();
   }
@@ -193,13 +198,13 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void addEqualsValueListener(EventListener listener) {
-    conditionModel.addEqualsValueListener(listener);
+  public final void addEqualValueListener(EventListener listener) {
+    conditionModel.addEqualValueListener(listener);
   }
 
   @Override
-  public final void removeEqualsValueListener(EventListener listener) {
-    conditionModel.removeEqualsValueListener(listener);
+  public final void removeEqualValueListener(EventListener listener) {
+    conditionModel.removeEqualValueListener(listener);
   }
 
   @Override
@@ -250,10 +255,5 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   @Override
   public final void removeOperatorListener(EventDataListener<Operator> listener) {
     conditionModel.removeOperatorListener(listener);
-  }
-
-  @Override
-  public final Value<Operator> operatorValue() {
-    return conditionModel.operatorValue();
   }
 }

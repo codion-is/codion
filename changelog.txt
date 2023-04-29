@@ -8825,3 +8825,5 @@
   SelectionDialogBuilder.select() and selectSingle() now throw CancelException if the user cancelled, in order to distinguish between the case where the user cancelled and where the user selected nothing
   EntitySearchModel.selectionEmptyObserver() added
   EntitySearchField.Builder.buildComponentValueMultiple() renamed buildValueMultiple(), for consistency
+  ColumnConditionModel.addEqualsValueListener() renamed addEqualValueListener()
+  EntitySearchModelConditionModel, EntityComboBoxModelConditionModel minor refactoring
