@@ -8869,3 +8869,5 @@
   DefaultValueSet now uses LinkedHashSet internally
   EntityPanelBuilder, minor refactoring
   InputDialogBuilder now extends DialogBuilder
+  EntityTableModel.selectByKey() renamed selectEntitiesByKey(), minor fixes
+  SelectionModel.setSelectedItems(predicate) and addSelectedItems(predicate) added

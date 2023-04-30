@@ -84,7 +84,6 @@ public final class ClientServer {
 
     HttpEntityConnectionProvider connectionProvider =
             HttpEntityConnectionProvider.builder()
-                    .serverHostName("localhost")
                     .serverPort(HTTP_PORT)
                     .https(false)
                     .domainClassName(Store.class.getName())

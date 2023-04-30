@@ -55,6 +55,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
@@ -458,22 +459,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   @Override
-  public final void selectByKey(Collection<Key> keys) {
-    requireNonNull(keys, "keys");
-    List<Key> keyList = new ArrayList<>(keys);
-    List<Integer> indexes = new ArrayList<>();
-    for (Entity visibleEntity : visibleItems()) {
-      int index = keyList.indexOf(visibleEntity.primaryKey());
-      if (index >= 0) {
-        indexes.add(indexOf(visibleEntity));
-        keyList.remove(index);
-        if (keyList.isEmpty()) {
-          break;
-        }
-      }
-    }
-
-    selectionModel().setSelectedIndexes(indexes);
+  public final void selectEntitiesByKey(Collection<Key> keys) {
+    selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
   }
 
   @Override
@@ -774,11 +761,11 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    */
   private void replaceEntitiesByKey(Map<Key, Entity> entitiesByKey) {
     for (Entity entity : items()) {
-      Iterator<Map.Entry<Key, Entity>> mapIterator = entitiesByKey.entrySet().iterator();
-      while (mapIterator.hasNext()) {
-        Map.Entry<Key, Entity> entry = mapIterator.next();
+      Iterator<Map.Entry<Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
+      while (iterator.hasNext()) {
+        Map.Entry<Key, Entity> entry = iterator.next();
         if (entity.primaryKey().equals(entry.getKey())) {
-          mapIterator.remove();
+          iterator.remove();
           entity.setAs(entry.getValue());
           int index = indexOf(entity);
           if (index >= 0) {
@@ -981,6 +968,29 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       }
 
       return (Comparable<T>) value;
+    }
+  }
+
+  private static final class SelectByKeyPredicate implements Predicate<Entity> {
+
+    private final List<Key> keyList;
+
+    private SelectByKeyPredicate(Collection<Key> keys) {
+      this.keyList = new ArrayList<>(keys);
+    }
+
+    @Override
+    public boolean test(Entity entity) {
+      if (keyList.isEmpty()) {
+        return false;
+      }
+      int index = keyList.indexOf(entity.primaryKey());
+      if (index >= 0) {
+        keyList.remove(index);
+        return true;
+      }
+
+      return false;
     }
   }
 }

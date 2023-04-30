@@ -6,6 +6,7 @@ package is.codion.javafx.framework.model;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
+import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -20,9 +21,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A JavaFX {@link SelectionModel} implementation
@@ -39,15 +42,18 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   private final State multipleSelectionState = State.state(false);
   private final State singleSelectionState = State.state(false);
 
+  private final FilteredModel<Entity> filteredModel;
   private final javafx.scene.control.SelectionModel<Entity> selectionModel;
 
   private int selectedIndex = -1;
 
   /**
+   * @param filteredModel the filtered model
    * @param selectionModel the {@link javafx.scene.control.SelectionModel} instance to base this selection model on
    */
-  public FXEntityListSelectionModel(javafx.scene.control.SelectionModel<Entity> selectionModel) {
-    this.selectionModel = selectionModel;
+  public FXEntityListSelectionModel(FilteredModel<Entity> filteredModel, javafx.scene.control.SelectionModel<Entity> selectionModel) {
+    this.filteredModel = requireNonNull(filteredModel);
+    this.selectionModel = requireNonNull(selectionModel);
     this.selectionEmptyState.set(selectionModel.isEmpty());
     if (selectionModel instanceof MultipleSelectionModel) {
       this.singleSelectionState.set(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().size() == 1);
@@ -238,6 +244,16 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   }
 
   @Override
+  public void setSelectedItems(Predicate<Entity> predicate) {
+    setSelectedIndexes(indexesToSelect(requireNonNull(predicate)));
+  }
+
+  @Override
+  public void addSelectedItems(Predicate<Entity> predicate) {
+    addSelectedIndexes(indexesToSelect(requireNonNull(predicate)));
+  }
+
+  @Override
   public void addSelectedIndexes(Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().addAll(indexes);
@@ -379,5 +395,18 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
         }
       });
     }
+  }
+
+  private List<Integer> indexesToSelect(Predicate<Entity> predicate) {
+    List<Integer> indexes = new ArrayList<>();
+    List<Entity> visibleItems = filteredModel.visibleItems();
+    for (int i = 0; i < visibleItems.size(); i++) {
+      Entity item = visibleItems.get(i);
+      if (predicate.test(item)) {
+        indexes.add(i);
+      }
+    }
+
+    return indexes;
   }
 }
