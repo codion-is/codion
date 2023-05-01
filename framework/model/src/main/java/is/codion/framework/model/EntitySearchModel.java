@@ -142,6 +142,11 @@ public interface EntitySearchModel {
   void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
 
   /**
+   * @param listener the listener to remove
+   */
+  void removeSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
+
+  /**
    * @return a StateObserver indicating whether the search string represents the selected entities
    */
   StateObserver searchStringRepresentsSelectedObserver();

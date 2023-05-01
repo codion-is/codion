@@ -71,7 +71,6 @@ import java.awt.event.MouseEvent;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 
@@ -95,7 +94,8 @@ import static java.util.Objects.requireNonNull;
  * @see EntitySearchModel
  * @see #builder(EntityType, EntityConnectionProvider)
  * @see #builder(EntitySearchModel)
- * @see #searchDialogBuilder()
+ * @see #singleSelectionValue()
+ * @see #multiSelectionValue()
  * @see #setSelectionProvider(SelectionProvider)
  */
 public final class EntitySearchField extends HintTextField {
@@ -109,6 +109,8 @@ public final class EntitySearchField extends HintTextField {
   private final Action transferFocusAction = TransferFocusOnEnter.forwardAction();
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 
+  private SingleSelectionValue singleSelectionValue;
+  private MultiSelectionValues multiSelectionValue;
   private SelectionProvider selectionProvider;
 
   private Color backgroundColor;
@@ -162,14 +164,6 @@ public final class EntitySearchField extends HintTextField {
   }
 
   /**
-   * Instantiates a new {@link SearchDialogBuilder} instance based on this search field
-   * @return a new {@link SearchDialogBuilder} instance
-   */
-  public SearchDialogBuilder searchDialogBuilder() {
-    return new DefaultSearchDialogBuilder(this);
-  }
-
-  /**
    * @return true if this field triggers a search when it loses focus
    */
   public boolean isSearchOnFocusLost() {
@@ -181,6 +175,28 @@ public final class EntitySearchField extends HintTextField {
    */
   public void setSearchOnFocusLost(boolean searchOnFocusLost) {
     this.searchOnFocusLost = searchOnFocusLost;
+  }
+
+  /**
+   * @return a {@link ComponentValue} for selecting a single entity
+   */
+  public ComponentValue<Entity, EntitySearchField> singleSelectionValue() {
+    if (singleSelectionValue == null) {
+      singleSelectionValue = new SingleSelectionValue(this);
+    }
+
+    return singleSelectionValue;
+  }
+
+  /**
+   * @return a {@link ComponentValue} for selecting multiple entities
+   */
+  public ComponentValue<List<Entity>, EntitySearchField> multiSelectionValue() {
+    if (multiSelectionValue == null) {
+      multiSelectionValue = new MultiSelectionValues(this);
+    }
+
+    return multiSelectionValue;
   }
 
   /**
@@ -244,49 +260,10 @@ public final class EntitySearchField extends HintTextField {
      * @return this builder instance
      */
     Builder selectionProviderFactory(Function<EntitySearchModel, SelectionProvider> selectionProviderFactory);
-
-    /**
-     * Creates a new {@link ComponentValue} based on this {@link EntitySearchField}, for multiple values.
-     * @return a new ComponentValue
-     */
-    ComponentValue<List<Entity>, EntitySearchField> buildValueMultiple();
-  }
-
-  /**
-   * A builder for a dialog presenting a {@link EntitySearchField}.
-   * @see EntityDefinition#searchAttributes()
-   */
-  public interface SearchDialogBuilder {
-
-    /**
-     * @param owner the dialog owner
-     * @return this builder instance
-     */
-    SearchDialogBuilder owner(JComponent owner);
-
-    /**
-     * @param title the title to display on the dialog
-     * @return this builder instance
-     */
-    SearchDialogBuilder title(String title);
-
-    /**
-     * Presents the dialog, returning the selected entity if OK was pressed.
-     * @return the selected entity, an empty Optional in case none was selected
-     * @throws is.codion.common.model.CancelException in case the user cancelled
-     */
-    Optional<Entity> searchSingle();
-
-    /**
-     * Presents the dialog, returning the selected entities if OK was pressed.
-     * @return the selected entities, an empty list in case none were selected
-     * @throws is.codion.common.model.CancelException in case the user cancelled
-     */
-    List<Entity> searchMultiple();
   }
 
   private void linkToModel() {
-    new SearchFieldValue(this).link(model.searchStringValue());
+    new SearchStringValue(this).link(model.searchStringValue());
     model.searchStringValue().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> setCaretPosition(0));
   }
@@ -392,11 +369,11 @@ public final class EntitySearchField extends HintTextField {
             .show();
   }
 
-  private static final class SearchFieldValue extends AbstractValue<String> {
+  private static final class SearchStringValue extends AbstractValue<String> {
 
     private final JTextField searchField;
 
-    private SearchFieldValue(JTextField searchField) {
+    private SearchStringValue(JTextField searchField) {
       this.searchField = searchField;
       this.searchField.getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
     }
@@ -673,9 +650,9 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private static final class SearchFieldSingleValue extends AbstractComponentValue<Entity, EntitySearchField> {
+  private static final class SingleSelectionValue extends AbstractComponentValue<Entity, EntitySearchField> {
 
-    private SearchFieldSingleValue(EntitySearchField searchField) {
+    private SingleSelectionValue(EntitySearchField searchField) {
       super(searchField);
       searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
@@ -691,9 +668,9 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private static final class SearchFieldMultipleValues extends AbstractComponentValue<List<Entity>, EntitySearchField> {
+  private static final class MultiSelectionValues extends AbstractComponentValue<List<Entity>, EntitySearchField> {
 
-    private SearchFieldMultipleValues(EntitySearchField searchField) {
+    private MultiSelectionValues(EntitySearchField searchField) {
       super(searchField);
       searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
@@ -809,11 +786,6 @@ public final class EntitySearchField extends HintTextField {
     }
 
     @Override
-    public ComponentValue<List<Entity>, EntitySearchField> buildValueMultiple() {
-      return new SearchFieldMultipleValues(build());
-    }
-
-    @Override
     protected EntitySearchField createComponent() {
       EntitySearchField searchField = new EntitySearchField(searchModel, searchHintEnabled);
       searchField.setColumns(columns);
@@ -834,7 +806,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected ComponentValue<Entity, EntitySearchField> createComponentValue(EntitySearchField component) {
-      return new SearchFieldSingleValue(component);
+      return component.singleSelectionValue();
     }
 
     @Override
@@ -853,52 +825,6 @@ public final class EntitySearchField extends HintTextField {
               .modifiers(InputEvent.SHIFT_DOWN_MASK)
               .action(component.transferFocusBackwardAction)
               .enable(component);
-    }
-  }
-
-  private static final class DefaultSearchDialogBuilder implements SearchDialogBuilder {
-
-    private final EntitySearchField searchField;
-
-    private JComponent owner;
-    private String title;
-
-    private DefaultSearchDialogBuilder(EntitySearchField searchField) {
-      this.searchField = requireNonNull(searchField);
-    }
-
-    @Override
-    public SearchDialogBuilder owner(JComponent owner) {
-      this.owner = owner;
-      return this;
-    }
-
-    @Override
-    public SearchDialogBuilder title(String title) {
-      this.title = title;
-      return this;
-    }
-
-    @Override
-    public Optional<Entity> searchSingle() {
-      List<Entity> entities = performSearch(true, owner, title);
-
-      return entities.isEmpty() ? Optional.empty() : Optional.of(entities.get(0));
-    }
-
-    @Override
-    public List<Entity> searchMultiple() {
-      return performSearch(false, owner, title);
-    }
-
-    private List<Entity> performSearch(boolean singleSelection, JComponent dialogOwner, String dialogTitle) {
-      searchField.model.multipleSelectionEnabledState().set(!singleSelection);
-
-      return Dialogs.inputDialog(new SearchFieldMultipleValues(searchField))
-              .owner(dialogOwner)
-              .title(dialogTitle)
-              .inputValidState(searchField.model.selectionEmptyObserver().reversedObserver())
-              .show();
     }
   }
 }

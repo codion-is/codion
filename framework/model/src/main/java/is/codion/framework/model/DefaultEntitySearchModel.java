@@ -244,6 +244,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
+  public void removeSelectedEntitiesListener(EventDataListener<List<Entity>> listener) {
+    selectedEntitiesChangedEvent.removeDataListener(listener);
+  }
+
+  @Override
   public StateObserver searchStringRepresentsSelectedObserver() {
     return searchStringRepresentsSelectedState.observer();
   }
