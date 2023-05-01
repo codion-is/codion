@@ -29,7 +29,6 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   private final OkCancelDialogBuilder okCancelDialogBuilder = new DefaultOkCancelDialogBuilder(basePanel);
 
   private String caption;
-  private StateObserver inputValidState;
 
   DefaultInputDialogBuilder(ComponentValue<T, ?> componentValue) {
     this.componentValue = requireNonNull(componentValue);
@@ -87,7 +86,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
   @Override
   public InputDialogBuilder<T> inputValidState(StateObserver inputValidState) {
-    this.inputValidState = inputValidState;
+    okCancelDialogBuilder.okEnabledState(inputValidState);
     return this;
   }
 
@@ -97,8 +96,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     if (caption != null) {
       basePanel.add(new JLabel(caption), BorderLayout.NORTH);
     }
-    okCancelDialogBuilder.okEnabledState(inputValidState)
-            .onOk(new OnOk(okPressed))
+    okCancelDialogBuilder.onOk(new OnOk(okPressed))
             .show();
     if (okPressed.get()) {
       return componentValue.get();

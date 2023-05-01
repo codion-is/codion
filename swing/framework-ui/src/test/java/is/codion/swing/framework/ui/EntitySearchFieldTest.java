@@ -10,12 +10,13 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain.Department;
-import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
+import java.util.Arrays;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * User: Björn Darri
@@ -34,22 +35,35 @@ public class EntitySearchFieldTest {
 
   @Test
   void componentValue() throws Exception {
-    EntitySearchModel model = EntitySearchModel.entitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
-    ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(model)
+    EntitySearchModel searchModel = EntitySearchModel.entitySearchModel(Department.TYPE, CONNECTION_PROVIDER);
+    ComponentValue<Entity, EntitySearchField> value = EntitySearchField.builder(searchModel)
             .buildValue();
 
     assertNull(value.get());
 
-    Entity dept = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
 
-    model.setSelectedEntity(dept);
-    assertEquals(dept, value.get());
-    model.setSelectedEntity(null);
+    searchModel.setSelectedEntity(sales);
+    assertEquals(sales, value.get());
+    searchModel.setSelectedEntity(null);
     assertNull(value.get());
-  }
 
-  @Test
-  void searchDialog() {
-    EntitySearchField.builder(Employee.TYPE, CONNECTION_PROVIDER).build().searchDialogBuilder();
+    ComponentValue<List<Entity>, EntitySearchField> multiSelectionValue = value.component().multiSelectionValue();
+    assertTrue(multiSelectionValue.get().isEmpty());
+
+    ComponentValue<Entity, EntitySearchField> singleSelectionValue = value.component().singleSelectionValue();
+    assertNull(singleSelectionValue.get());
+
+    Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "RESEARCH");
+
+    searchModel.setSelectedEntities(Arrays.asList(sales, research));
+
+    assertTrue(multiSelectionValue.get().containsAll(Arrays.asList(sales, research)));
+    assertEquals(singleSelectionValue.get(), sales);
+
+    singleSelectionValue.set(null);
+
+    assertTrue(searchModel.getSelectedEntities().isEmpty());
+    assertNull(singleSelectionValue.get());
   }
 }

@@ -8834,3 +8834,4 @@
   EntityTableModel.selectByKey() renamed selectEntitiesByKey(), minor fixes
   SelectionModel.setSelectedItems(predicate) and addSelectedItems(predicate) added
   EntitySearchModel.removeSelectedEntitiesListener() added
+  EntitySearchField.SearchDialogBuilder removed, singleSelectionValue() and multiSelectionValue() added
