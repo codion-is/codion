@@ -180,12 +180,12 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
             .with(Department.ID, 1)
             .with(Department.NAME, "dept")
             .build();
-    assertThrows(IllegalArgumentException.class, () -> tableModel.addEntities(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.addAll(singletonList(dept)));
     assertThrows(IllegalArgumentException.class, () -> tableModel.addEntitiesSorted(singletonList(dept)));
-    assertThrows(IllegalArgumentException.class, () -> tableModel.addEntitiesAt(0, singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.addAll(0, singletonList(dept)));
 
-    assertThrows(NullPointerException.class, () -> tableModel.addEntities(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> tableModel.addAll(singletonList(null)));
     assertThrows(NullPointerException.class, () -> tableModel.addEntitiesSorted(singletonList(null)));
-    assertThrows(NullPointerException.class, () -> tableModel.addEntitiesAt(0, singletonList(null)));
+    assertThrows(NullPointerException.class, () -> tableModel.addAll(0, singletonList(null)));
   }
 }

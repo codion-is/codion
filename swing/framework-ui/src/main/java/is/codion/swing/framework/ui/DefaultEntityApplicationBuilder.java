@@ -31,6 +31,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
+import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -157,7 +158,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   @Override
   public EntityApplicationBuilder<M, P> defaultLoginUser(User defaultLoginUser) {
-    this.defaultLoginUser = requireNonNull(defaultLoginUser);
+    this.defaultLoginUser = defaultLoginUser;
     return this;
   }
 
@@ -279,6 +280,36 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
     setVersionProperty();
     findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
+    configureFontsAndIcons();
+    if (beforeApplicationStarted != null) {
+      beforeApplicationStarted.run();
+    }
+    EntityConnectionProvider connectionProvider = initializeConnectionProvider(initializeUser());
+    long initializationStarted = System.currentTimeMillis();
+    if (displayStartupDialog) {
+      Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
+              .title(applicationName)
+              .icon(applicationIcon)
+              .border(initializeStartupDialogBorder())
+              .westPanel(createStartupIconPanel())
+              .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
+              .onException(DefaultEntityApplicationBuilder::displayExceptionAndExit)
+              .execute();
+    }
+    else {
+      startApplication(initializeApplicationModel(connectionProvider), initializationStarted);
+    }
+  }
+
+  private String lookAndFeelClassName() {
+    if (lookAndFeelClassName != null) {
+      return lookAndFeelClassName;
+    }
+
+    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
+  }
+
+  private void configureFontsAndIcons() {
     int fontSizePercentage = fontSizePercentage();
     int logoSize = DEFAULT_LOGO_SIZE;
     if (fontSizePercentage != 100) {
@@ -289,33 +320,6 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     if (applicationIcon == null) {
       applicationIcon = FrameworkIcons.instance().logo(logoSize);
     }
-    if (beforeApplicationStarted != null) {
-      beforeApplicationStarted.run();
-    }
-    EntityConnectionProvider connectionProvider = connectionProvider(user());
-    long initializationStarted = System.currentTimeMillis();
-    if (displayStartupDialog) {
-      int borderSize = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-      Dialogs.progressWorkerDialog(() -> applicationModel(connectionProvider))
-              .title(applicationName)
-              .icon(applicationIcon)
-              .border(BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize))
-              .westPanel(createStartupIconPanel())
-              .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
-              .onException(DefaultEntityApplicationBuilder::displayExceptionAndExit)
-              .execute();
-    }
-    else {
-      startApplication(applicationModel(connectionProvider), initializationStarted);
-    }
-  }
-
-  private String lookAndFeelClassName() {
-    if (lookAndFeelClassName != null) {
-      return lookAndFeelClassName;
-    }
-
-    return getUserPreference(applicationLookAndFeelProperty, defaultLookAndFeelClassName);
   }
 
   private int fontSizePercentage() {
@@ -332,8 +336,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
   }
 
   private void startApplication(M applicationModel, long initializationStarted) {
-    P applicationPanel = applicationPanel(applicationModel);
-    applicationPanel.initializePanel();
+    P applicationPanel = initializeApplicationPanel(applicationModel);
 
     JFrame applicationFrame = applicationFrame(applicationPanel);
     applicationModel.connectionValidObserver().addDataListener(connectionValid ->
@@ -351,7 +354,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     }
   }
 
-  private User user() {
+  private User initializeUser() {
     if (automaticLoginUser != null) {
       return automaticLoginUser;
     }
@@ -371,21 +374,15 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return domainClassName == null ? CLIENT_DOMAIN_CLASS.getOrThrow() : domainClassName;
   }
 
-  private EntityConnectionProvider connectionProvider(User user) {
-    if (loginProvider instanceof DefaultEntityApplicationBuilder.DefaultDialogLoginProvider &&
-            ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
-      return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
-    }
-
-    return initializeConnectionProvider(user, domainClassName(), applicationPanelClass.getName(), applicationVersion);
-  }
-
-  private M applicationModel(EntityConnectionProvider connectionProvider) {
+  private M initializeApplicationModel(EntityConnectionProvider connectionProvider) {
     return applicationModelFactory.apply(connectionProvider);
   }
 
-  private P applicationPanel(M applicationModel) {
-    return applicationPanelFactory.apply(applicationModel);
+  private P initializeApplicationPanel(M applicationModel) {
+    P applicationPanel = applicationPanelFactory.apply(applicationModel);
+    applicationPanel.initializePanel();
+
+    return applicationPanel;
   }
 
   private JFrame applicationFrame(P applicationPanel) {
@@ -441,9 +438,24 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     return applicationModel.connectionValidObserver().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
   }
 
+  private EntityConnectionProvider initializeConnectionProvider(User user) {
+    if (loginProvider instanceof DefaultEntityApplicationBuilder.DefaultDialogLoginProvider &&
+            ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider != null) {
+      return ((DefaultDialogLoginProvider) loginProvider).loginValidator.connectionProvider;
+    }
+
+    return initializeConnectionProvider(user, domainClassName(), applicationPanelClass.getName(), applicationVersion);
+  }
+
   private EntityConnectionProvider initializeConnectionProvider(User user, String domainClassName,
                                                                 String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.create(user, domainClassName, clientTypeId, clientVersion);
+  }
+
+  private static Border initializeStartupDialogBorder() {
+    int borderSize = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+
+    return BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize);
   }
 
   private static void displayExceptionAndExit(Throwable exception) {

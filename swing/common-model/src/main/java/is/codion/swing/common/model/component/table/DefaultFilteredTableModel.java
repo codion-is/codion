@@ -317,6 +317,57 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
+  public final void addItems(Collection<R> items) {
+    addItemsAt(visibleItems.size(), items);
+  }
+
+  @Override
+  public final void addItemsSorted(Collection<R> items) {
+    addItemsAtSorted(visibleItems.size(), items);
+  }
+
+  @Override
+  public final void addItemsAt(int index, Collection<R> items) {
+    if (addItemsAtInternal(index, items)) {
+      fireTableDataChanged();
+    }
+  }
+
+  @Override
+  public final void addItemsAtSorted(int index, Collection<R> items) {
+    if (addItemsAtInternal(index, items)) {
+      if (sortModel.isSortingEnabled()) {
+        sortModel.sort(visibleItems);
+      }
+      fireTableDataChanged();
+    }
+  }
+
+  @Override
+  public final void addItem(R item) {
+    addItemInternal(item);
+  }
+
+  @Override
+  public final void addItemSorted(R item) {
+    if (addItemInternal(item)) {
+      if (sortModel.isSortingEnabled()) {
+        sortModel.sort(visibleItems);
+      }
+      fireTableDataChanged();
+    }
+  }
+
+  @Override
+  public final void setItemAt(int index, R item) {
+    validate(item);
+    if (include(item)) {
+      visibleItems.set(index, item);
+      fireTableRowsUpdated(index, index);
+    }
+  }
+
+  @Override
   public final void removeItem(R item) {
     int visibleItemIndex = visibleItems.indexOf(item);
     if (visibleItemIndex >= 0) {
@@ -500,87 +551,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, this, null));
   }
 
-  /**
-   * Adds the given items to the bottom of this table model.
-   * @param items the items to add
-   */
-  protected final void addItems(Collection<R> items) {
-    addItemsAt(visibleItems.size(), items);
-  }
-
-  /**
-   * Adds the given items to the bottom of this table model.
-   * If sorting is enabled this model is sorted after the items have been added.
-   * @param items the items to add
-   */
-  protected final void addItemsSorted(Collection<R> items) {
-    addItemsAtSorted(visibleItems.size(), items);
-  }
-
-  /**
-   * Adds the given items to this table model, non-filtered items are added at the given index.
-   * @param index the index at which to add the items
-   * @param items the items to add
-   */
-  protected final void addItemsAt(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items)) {
-      fireTableDataChanged();
-    }
-  }
-
-  /**
-   * Adds the given items to this table model, non-filtered items are added at the given index.
-   * If sorting is enabled this model is sorted after the items have been added.
-   * @param index the index at which to add the items
-   * @param items the items to add
-   * @see FilteredTableSortModel#isSortingEnabled()
-   */
-  protected final void addItemsAtSorted(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items)) {
-      if (sortModel.isSortingEnabled()) {
-        sortModel.sort(visibleItems);
-      }
-      fireTableDataChanged();
-    }
-  }
-
-  /**
-   * Adds the given item to the bottom of this table model.
-   * @param item the item to add
-   */
-  protected final void addItem(R item) {
-    addItemInternal(item);
-  }
-
-  /**
-   * Adds the given item to the bottom of this table model.
-   * If sorting is enabled this model is sorted after the item has been added.
-   * @param item the item to add
-   */
-  protected final void addItemSorted(R item) {
-    if (addItemInternal(item)) {
-      if (sortModel.isSortingEnabled()) {
-        sortModel.sort(visibleItems);
-      }
-      fireTableDataChanged();
-    }
-  }
-
-  /**
-   * Sets the item at the given index.
-   * If the item should be filtered calling this method has no effect.
-   * @param index the index
-   * @param item the item
-   * @see #setIncludeCondition(Predicate)
-   */
-  protected final void setItemAt(int index, R item) {
-    requireNonNull(item, "item");
-    if (include(item)) {
-      visibleItems.set(index, item);
-      fireTableRowsUpdated(index, index);
-    }
-  }
-
   private void bindEventsInternal() {
     addTableModelListener(e -> dataChangedEvent.onEvent());
     columnFilterModels.values().forEach(conditionModel ->
@@ -704,7 +674,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private void merge(Collection<R> items) {
-    items.forEach(this::validate);
     Set<R> itemSet = new HashSet<>(items);
     items().forEach(item -> {
       if (!itemSet.contains(item)) {
@@ -789,7 +758,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   /**
    * A default SummaryValueProvider implementation
    */
-  protected static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
+  public static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
 
     private final C columnIdentifier;
     private final FilteredTableModel<?, C> tableModel;

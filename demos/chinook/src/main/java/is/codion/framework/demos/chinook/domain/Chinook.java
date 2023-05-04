@@ -7,9 +7,11 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.DerivedProperty.SourceValues;
 import is.codion.framework.domain.property.Property;
@@ -29,7 +31,9 @@ import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.ResourceBundle;
 import java.util.function.Function;
+import java.util.regex.Pattern;
 
 import static is.codion.common.db.operation.FunctionType.functionType;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -370,6 +374,32 @@ public interface Chinook {
     @Override
     public Object parseObject(String source, ParsePosition pos) {
       throw new UnsupportedOperationException();
+    }
+  }
+
+  final class EmailValidator extends DefaultEntityValidator {
+
+    private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(.+)$");
+    private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Chinook.class.getName());
+
+    private final Attribute<String> emailAttribute;
+
+    public EmailValidator(Attribute<String> emailAttribute) {
+      this.emailAttribute = emailAttribute;
+    }
+
+    @Override
+    public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
+      super.validate(entity, attribute);
+      if (attribute.equals(emailAttribute)) {
+        validateEmail(entity.get(emailAttribute));
+      }
+    }
+
+    private void validateEmail(String email) throws ValidationException {
+      if (!EMAIL_PATTERN.matcher(email).matches()) {
+        throw new ValidationException(emailAttribute, email, BUNDLE.getString("invalid_email"));
+      }
     }
   }
 }

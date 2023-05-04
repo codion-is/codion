@@ -26,10 +26,6 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.StringSelection;
-import java.awt.event.ActionEvent;
-import java.awt.event.HierarchyEvent;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.net.URL;
@@ -169,29 +165,6 @@ public final class Utilities {
     }
     // Expansion or collapse must be done bottom-up
     tree.collapsePath(parent);
-  }
-
-  /**
-   * <a href="http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574">http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574</a>
-   * @param component the component
-   * @param onFocusAction the action to run when the focus has been requested
-   */
-  public static void addInitialFocusHack(JComponent component, Action onFocusAction) {
-    requireNonNull(component, COMPONENT);
-    requireNonNull(onFocusAction, "onFocusAction");
-    component.addHierarchyListener(e -> {
-      if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
-        SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
-          @Override
-          public void windowGainedFocus(WindowEvent windowEvent) {
-            component.requestFocus();
-            if (onFocusAction != null) {
-              onFocusAction.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, "onFocusAction"));
-            }
-          }
-        });
-      }
-    });
   }
 
   /**

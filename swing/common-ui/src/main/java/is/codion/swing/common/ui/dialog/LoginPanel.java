@@ -97,14 +97,16 @@ final class LoginPanel extends JPanel {
     return cancelControl;
   }
 
-  private void initializeUI(JComponent southComponent) {
+  void requestInitialFocus() {
     if (usernameField.getText().isEmpty()) {
-      Utilities.addInitialFocusHack(usernameField, Control.control(() -> usernameField.setCaretPosition(usernameField.getText().length())));
+      usernameField.requestFocusInWindow();
     }
     else {
-      Utilities.addInitialFocusHack(passwordField, Control.control(() -> passwordField.setCaretPosition(passwordField.getPassword().length)));
+      passwordField.requestFocusInWindow();
     }
+  }
 
+  private void initializeUI(JComponent southComponent) {
     setLayout(new GridBagLayout());
     setBorder(BorderFactory.createEmptyBorder(10, 10, 0, 10));
 
@@ -178,6 +180,7 @@ final class LoginPanel extends JPanel {
     userValue.set(null);
     validatingState.set(false);
     DefaultDialogExceptionHandler.displayException(exception, Utilities.getParentWindow(this));
+    requestInitialFocus();
   }
 
   private void closeDialog() {
