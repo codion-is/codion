@@ -8842,3 +8842,4 @@
   LoginPanel bug fixed, username field always received the focus after validation failure dialog was closed
   FilteredTableModel, methods for adding items now public (methods for removing were already public), setItemAt() now validates the item, DefaultSummaryValueProvider now public
   SwingEntityTableModel, inheritance replaced with composition, no longer inherits from DefaultFilteredTableModel
+  EntityTableModel.addEntities() and addEntitiesAt() removed

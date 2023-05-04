@@ -403,18 +403,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addEntities(Collection<Entity> entities) {
-    addEntitiesAt(visibleItemCount(), entities);
-  }
-
-  @Override
   public final void addEntitiesSorted(Collection<Entity> entities) {
     addEntitiesAtSorted(visibleItemCount(), entities);
-  }
-
-  @Override
-  public final void addEntitiesAt(int index, Collection<Entity> entities) {
-    tableModel.addItemsAt(index, entities);
   }
 
   @Override
@@ -1046,13 +1036,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
-          addEntitiesAt(0, entitiesToAdd);
+          tableModel.addItemsAt(0, entitiesToAdd);
+          break;
+        case ADD_BOTTOM:
+          tableModel.addItemsAt(visibleItemCount(), entitiesToAdd);
           break;
         case ADD_TOP_SORTED:
           addEntitiesAtSorted(0, entitiesToAdd);
-          break;
-        case ADD_BOTTOM:
-          addEntities(entitiesToAdd);
           break;
       }
     }

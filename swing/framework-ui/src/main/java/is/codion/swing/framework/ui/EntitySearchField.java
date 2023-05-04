@@ -614,7 +614,7 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     public final void selectEntities(JComponent dialogOwner, List<Entity> entities) {
-      table.getModel().addEntitiesAt(0, requireNonNull(entities));
+      table.getModel().addItemsAt(0, requireNonNull(entities));
       table.scrollRectToVisible(table.getCellRect(0, 0, true));
 
       Dialogs.okCancelDialog(basePanel)
