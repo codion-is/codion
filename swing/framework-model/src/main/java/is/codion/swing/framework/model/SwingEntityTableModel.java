@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -32,7 +33,13 @@ import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
+import is.codion.swing.common.model.component.table.DefaultFilteredTableModel.DefaultSummaryValueProvider;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
+import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
+import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 
 import org.json.JSONObject;
 import org.slf4j.Logger;
@@ -40,7 +47,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
-import javax.swing.table.TableColumn;
+import javax.swing.event.TableModelListener;
 import java.awt.Color;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -54,6 +61,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
@@ -67,8 +75,7 @@ import static java.util.stream.Collectors.*;
 /**
  * A TableModel implementation for displaying and working with entities.
  */
-public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>>
-        implements EntityTableModel<SwingEntityEditModel> {
+public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Attribute<?>> {
 
   private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
@@ -76,6 +83,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   private static final NumberFormat STATUS_MESSAGE_NUMBER_FORMAT = NumberFormat.getIntegerInstance();
 
+  private final EntityFilteredTableModel tableModel;
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel tableConditionModel;
   private final State queryConditionRequiredState = State.state();
@@ -166,9 +174,8 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @param tableConditionModel the table condition model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    super(createColumns(requireNonNull(editModel, "editModel").entities().definition(editModel.entityType())),
-            new EntityColumnValueProvider(editModel.entities()),
-            requireNonNull(tableConditionModel, "tableConditionModel").filterModels().values());
+    this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entities().definition(editModel.entityType())),
+            new EntityColumnValueProvider(editModel.entities()), requireNonNull(tableConditionModel).filterModels().values());
     if (!tableConditionModel.entityType().equals(editModel.entityType())) {
       throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.entityType()
               + ", tableModel: " + editModel.entityType());
@@ -407,12 +414,12 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
 
   @Override
   public final void addEntitiesAt(int index, Collection<Entity> entities) {
-    addItemsAt(index, entities);
+    tableModel.addItemsAt(index, entities);
   }
 
   @Override
   public final void addEntitiesAtSorted(int index, Collection<Entity> entities) {
-    addItemsAtSorted(index, entities);
+    tableModel.addItemsAtSorted(index, entities);
   }
 
   @Override
@@ -454,7 +461,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       }
     }
     if (changed) {
-      fireTableChanged(new TableModelEvent(this, 0, getRowCount() - 1));
+      tableModel.fireTableChanged(new TableModelEvent(this, 0, getRowCount() - 1));
     }
   }
 
@@ -530,8 +537,343 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     return statusMessageValue.observer();
   }
 
+  @Override
+  public final void filterItems() {
+    tableModel.filterItems();
+  }
+
+  @Override
+  public final Predicate<Entity> getIncludeCondition() {
+    return tableModel.getIncludeCondition();
+  }
+
+  @Override
+  public final void setIncludeCondition(Predicate<Entity> includeCondition) {
+    tableModel.setIncludeCondition(includeCondition);
+  }
+
+  @Override
+  public final List<Entity> items() {
+    return tableModel.items();
+  }
+
+  @Override
+  public final List<Entity> visibleItems() {
+    return tableModel.visibleItems();
+  }
+
+  @Override
+  public final List<Entity> filteredItems() {
+    return tableModel.filteredItems();
+  }
+
+  @Override
+  public final int visibleItemCount() {
+    return tableModel.visibleItemCount();
+  }
+
+  @Override
+  public final int filteredItemCount() {
+    return tableModel.filteredItemCount();
+  }
+
+  @Override
+  public final boolean containsItem(Entity item) {
+    return tableModel.containsItem(item);
+  }
+
+  @Override
+  public final boolean isVisible(Entity item) {
+    return tableModel.isVisible(item);
+  }
+
+  @Override
+  public final boolean isFiltered(Entity item) {
+    return tableModel.isFiltered(item);
+  }
+
+  @Override
+  public final boolean isAsyncRefresh() {
+    return tableModel.isAsyncRefresh();
+  }
+
+  @Override
+  public final void setAsyncRefresh(boolean asyncRefresh) {
+    tableModel.setAsyncRefresh(asyncRefresh);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
+    tableModel.refreshThen(afterRefresh);
+  }
+
+  @Override
+  public final void refresh() {
+    tableModel.refresh();
+  }
+
+  @Override
+  public final void clear() {
+    tableModel.clear();
+  }
+
+  @Override
+  public final int getRowCount() {
+    return tableModel.getRowCount();
+  }
+
+  @Override
+  public final boolean allowSelectionChange() {
+    return tableModel.allowSelectionChange();
+  }
+
+  @Override
+  public final int indexOf(Entity item) {
+    return tableModel.indexOf(item);
+  }
+
+  @Override
+  public final Entity itemAt(int rowIndex) {
+    return tableModel.itemAt(rowIndex);
+  }
+
+  @Override
+  public final Object getValueAt(int rowIndex, int columnIndex) {
+    return tableModel.getValueAt(rowIndex, columnIndex);
+  }
+
+  @Override
+  public final String getStringValueAt(int rowIndex, Attribute<?> columnIdentifier) {
+    return tableModel.getStringValueAt(rowIndex, columnIdentifier);
+  }
+
+  @Override
+  public final void addItems(Collection<Entity> items) {
+    tableModel.addItems(items);
+  }
+
+  @Override
+  public final void addItemsSorted(Collection<Entity> items) {
+    tableModel.addItemsSorted(items);
+  }
+
+  @Override
+  public final void addItemsAt(int index, Collection<Entity> items) {
+    tableModel.addItemsAt(index, items);
+  }
+
+  @Override
+  public final void addItemsAtSorted(int index, Collection<Entity> items) {
+    tableModel.addItemsAtSorted(index, items);
+  }
+
+  @Override
+  public final void addItem(Entity item) {
+    tableModel.addItem(item);
+  }
+
+  @Override
+  public final void addItemSorted(Entity item) {
+    tableModel.addItemSorted(item);
+  }
+
+  @Override
+  public final void setItemAt(int index, Entity item) {
+    tableModel.setItemAt(index, item);
+  }
+
+  @Override
+  public final void removeItems(Collection<Entity> items) {
+    tableModel.removeItems(items);
+  }
+
+  @Override
+  public final void removeItem(Entity item) {
+    tableModel.removeItem(item);
+  }
+
+  @Override
+  public final void removeItemAt(int index) {
+    tableModel.removeItemAt(index);
+  }
+
+  @Override
+  public final void removeItems(int fromIndex, int toIndex) {
+    tableModel.removeItems(fromIndex, toIndex);
+  }
+
+  @Override
+  public final FilteredTableColumnModel<Attribute<?>> columnModel() {
+    return tableModel.columnModel();
+  }
+
+  @Override
+  public final Optional<ColumnSummaryModel> columnSummaryModel(Attribute<?> columnIdentifier) {
+    return tableModel.columnSummaryModel(columnIdentifier);
+  }
+
+  @Override
+  public final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> columnFilterModels() {
+    return tableModel.columnFilterModels();
+  }
+
+  @Override
+  public final <T> ColumnConditionModel<Attribute<?>, T> columnFilterModel(Attribute<?> columnIdentifier) {
+    return tableModel.columnFilterModel(columnIdentifier);
+  }
+
+  @Override
+  public final <T> Collection<T> values(Attribute<?> columnIdentifier) {
+    return tableModel.values(columnIdentifier);
+  }
+
+  @Override
+  public final Class<?> getColumnClass(Attribute<?> columnIdentifier) {
+    return tableModel.getColumnClass(columnIdentifier);
+  }
+
+  @Override
+  public final <T> Collection<T> selectedValues(Attribute<?> columnIdentifier) {
+    return tableModel.selectedValues(columnIdentifier);
+  }
+
+  @Override
+  public final String rowsAsDelimitedString(char delimiter) {
+    return tableModel.rowsAsDelimitedString(delimiter);
+  }
+
+  @Override
+  public final boolean isMergeOnRefresh() {
+    return tableModel.isMergeOnRefresh();
+  }
+
+  @Override
+  public final void setMergeOnRefresh(boolean mergeOnRefresh) {
+    tableModel.setMergeOnRefresh(mergeOnRefresh);
+  }
+
+  @Override
+  public final void sortItems() {
+    tableModel.sortItems();
+  }
+
+  @Override
+  public final FilteredTableSelectionModel<Entity> selectionModel() {
+    return tableModel.selectionModel();
+  }
+
+  @Override
+  public final FilteredTableSortModel<Entity, Attribute<?>> sortModel() {
+    return tableModel.sortModel();
+  }
+
+  @Override
+  public final FilteredTableSearchModel searchModel() {
+    return tableModel.searchModel();
+  }
+
+  @Override
+  public final int getColumnCount() {
+    return tableModel.getColumnCount();
+  }
+
+  @Override
+  public final String getColumnName(int columnIndex) {
+    return tableModel.getColumnName(columnIndex);
+  }
+
+  @Override
+  public final Class<?> getColumnClass(int columnIndex) {
+    return tableModel.getColumnClass(columnIndex);
+  }
+
+  @Override
+  public final StateObserver refreshingObserver() {
+    return tableModel.refreshingObserver();
+  }
+
+  @Override
+  public final void addRefreshListener(EventListener listener) {
+    tableModel.addRefreshListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshListener(EventListener listener) {
+    tableModel.removeRefreshListener(listener);
+  }
+
+  @Override
+  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
+    tableModel.addRefreshFailedListener(listener);
+  }
+
+  @Override
+  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
+    tableModel.removeRefreshFailedListener(listener);
+  }
+
+  @Override
+  public final void addFilterListener(EventListener listener) {
+    tableModel.addFilterListener(listener);
+  }
+
+  @Override
+  public final void removeFilterListener(EventListener listener) {
+    tableModel.removeFilterListener(listener);
+  }
+
+  @Override
+  public final void addSortListener(EventListener listener) {
+    tableModel.addSortListener(listener);
+  }
+
+  @Override
+  public final void removeSortListener(EventListener listener) {
+    tableModel.removeSortListener(listener);
+  }
+
+  @Override
+  public final void addDataChangedListener(EventListener listener) {
+    tableModel.addDataChangedListener(listener);
+  }
+
+  @Override
+  public final void removeDataChangedListener(EventListener listener) {
+    tableModel.removeDataChangedListener(listener);
+  }
+
+  @Override
+  public final void addClearListener(EventListener listener) {
+    tableModel.addClearListener(listener);
+  }
+
+  @Override
+  public final void removeClearListener(EventListener listener) {
+    tableModel.removeClearListener(listener);
+  }
+
+  @Override
+  public final void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+    tableModel.addRowsRemovedListener(listener);
+  }
+
+  @Override
+  public final void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+    tableModel.removeRowsRemovedListener(listener);
+  }
+
+  @Override
+  public final void addTableModelListener(TableModelListener listener) {
+    tableModel.addTableModelListener(listener);
+  }
+
+  @Override
+  public final void removeTableModelListener(TableModelListener listener) {
+    tableModel.removeTableModelListener(listener);
+  }
+
   /**
-   * Initializes default {@link TableColumn}s for all visible properties in the given entity type.
+   * Initializes default {@link FilteredTableColumn}s for all visible properties in the given entity type.
    * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
    */
@@ -540,7 +882,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
   }
 
   /**
-   * Initializes default {@link TableColumn}s from the given properties.
+   * Initializes default {@link FilteredTableColumn}s from the given properties.
    * @param properties the properties
    * @return a list of TableColumns based on the given properties
    */
@@ -559,15 +901,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     return columns;
   }
 
-  @Override
-  protected final <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
-    if (attribute.isNumerical()) {
-      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
-    }
-
-    return Optional.empty();
-  }
-
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #orderBy()}
@@ -575,7 +908,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
    * @see #queryConditionRequiredState()
    * @see EntityTableConditionModel#condition()
    */
-  @Override
   protected Collection<Entity> refreshItems() {
     if (queryConditionRequiredState.get() && !tableConditionModel().isConditionEnabled()) {
       return emptyList();
@@ -591,11 +923,6 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  protected boolean validItem(Entity item) {
-    return item.type().equals(editModel.entityType());
   }
 
   /**
@@ -769,7 +1096,7 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
           entity.setAs(entry.getValue());
           int index = indexOf(entity);
           if (index >= 0) {
-            fireTableRowsUpdated(index, index);
+            tableModel.fireTableRowsUpdated(index, index);
           }
         }
       }
@@ -877,6 +1204,14 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
             STATUS_MESSAGE_NUMBER_FORMAT.format(selectionModel().selectionCount()) + " " +
             MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
+  }
+
+  private <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
+    if (attribute.isNumerical()) {
+      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
+    }
+
+    return Optional.empty();
   }
 
   private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(Collection<FilteredTableColumn<Attribute<?>>> tableColumns, JSONObject preferences) {
@@ -991,6 +1326,30 @@ public class SwingEntityTableModel extends DefaultFilteredTableModel<Entity, Att
       }
 
       return false;
+    }
+  }
+
+  private final class EntityFilteredTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>> {
+
+    private EntityFilteredTableModel(List<FilteredTableColumn<Attribute<?>>> filteredTableColumns,
+                                     ColumnValueProvider<Entity, Attribute<?>> columnValueProvider,
+                                     Collection<? extends ColumnConditionModel<? extends Attribute<?>, ?>> columnFilterModels) {
+      super(filteredTableColumns, columnValueProvider, columnFilterModels);
+    }
+
+    @Override
+    protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
+      return SwingEntityTableModel.this.createColumnValueProvider(attribute);
+    }
+
+    @Override
+    protected Collection<Entity> refreshItems() {
+      return SwingEntityTableModel.this.refreshItems();
+    }
+
+    @Override
+    protected boolean validItem(Entity item) {
+      return item.type().equals(editModel.entityType());
     }
   }
 }
