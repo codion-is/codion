@@ -8839,3 +8839,4 @@
   Utilities.addInitialFocusHack() removed, unused
   DefaultEntityApplicationBuilder.defaultLoginUser() now accepts null, in order to be able to disable the default login user based on the operating system user
   DefaultEntityApplicationBuilder, some refactoring
+  LoginPanel bug fixed, username field always received the focus after validation failure dialog was closed

@@ -180,6 +180,7 @@ final class LoginPanel extends JPanel {
     userValue.set(null);
     validatingState.set(false);
     DefaultDialogExceptionHandler.displayException(exception, Utilities.getParentWindow(this));
+    requestInitialFocus();
   }
 
   private void closeDialog() {
