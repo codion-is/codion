@@ -138,9 +138,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(24),
             columnProperty(Employee.EMAIL)
                     .searchProperty(true)
+                    .nullable(false)
                     .maximumLength(60))
             .tableName("chinook.employee")
             .keyGenerator(identity())
+            .validator(new EmailValidator(Employee.EMAIL))
             .orderBy(ascending(Employee.LASTNAME, Employee.FIRSTNAME))
             .stringFactory(StringFactory.builder()
                     .value(Employee.LASTNAME)
@@ -185,6 +187,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .selectAttributes(Employee.FIRSTNAME, Employee.LASTNAME))
             .tableName("chinook.customer")
             .keyGenerator(identity())
+            .validator(new EmailValidator(Customer.EMAIL))
             .orderBy(ascending(Customer.LASTNAME, Customer.FIRSTNAME))
             .stringFactory(new CustomerStringProvider()));
 
