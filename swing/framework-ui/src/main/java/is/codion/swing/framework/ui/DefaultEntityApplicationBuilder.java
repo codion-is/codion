@@ -157,7 +157,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   @Override
   public EntityApplicationBuilder<M, P> defaultLoginUser(User defaultLoginUser) {
-    this.defaultLoginUser = requireNonNull(defaultLoginUser);
+    this.defaultLoginUser = defaultLoginUser;
     return this;
   }
 

@@ -8837,3 +8837,4 @@
   EntitySearchField.SearchDialogBuilder removed, singleSelectionValue() and multiSelectionValue() added
   LoginPanel, initial focus now set via DialogBuilder.onShown()
   Utilities.addInitialFocusHack() removed, unused
+  DefaultEntityApplicationBuilder.defaultLoginUser() now accepts null, in order to be able to disable the default login user based on the operating system user
