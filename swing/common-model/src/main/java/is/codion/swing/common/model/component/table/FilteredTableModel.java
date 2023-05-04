@@ -89,6 +89,57 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   String getStringValueAt(int rowIndex, C columnIdentifier);
 
   /**
+   * Adds the given items to the bottom of this table model.
+   * @param items the items to add
+   */
+  void addItems(Collection<R> items);
+
+  /**
+   * Adds the given items to the bottom of this table model.
+   * If sorting is enabled this model is sorted after the items have been added.
+   * @param items the items to add
+   */
+  void addItemsSorted(Collection<R> items);
+
+  /**
+   * Adds the given items to this table model, non-filtered items are added at the given index.
+   * @param index the index at which to add the items
+   * @param items the items to add
+   */
+  void addItemsAt(int index, Collection<R> items);
+
+  /**
+   * Adds the given items to this table model, non-filtered items are added at the given index.
+   * If sorting is enabled this model is sorted after the items have been added.
+   * @param index the index at which to add the items
+   * @param items the items to add
+   * @see FilteredTableSortModel#isSortingEnabled()
+   */
+  void addItemsAtSorted(int index, Collection<R> items);
+
+  /**
+   * Adds the given item to the bottom of this table model.
+   * @param item the item to add
+   */
+  void addItem(R item);
+
+  /**
+   * Adds the given item to the bottom of this table model.
+   * If sorting is enabled this model is sorted after the item has been added.
+   * @param item the item to add
+   */
+  void addItemSorted(R item);
+
+  /**
+   * Sets the item at the given index.
+   * If the item should be filtered calling this method has no effect.
+   * @param index the index
+   * @param item the item
+   * @see #setIncludeCondition(Predicate)
+   */
+  void setItemAt(int index, R item);
+
+  /**
    * Removes the given items from this table model
    * @param items the items to remove from the model
    */
