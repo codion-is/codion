@@ -8835,3 +8835,5 @@
   SelectionModel.setSelectedItems(predicate) and addSelectedItems(predicate) added
   EntitySearchModel.removeSelectedEntitiesListener() added
   EntitySearchField.SearchDialogBuilder removed, singleSelectionValue() and multiSelectionValue() added
+  LoginPanel, initial focus now set via DialogBuilder.onShown()
+  Utilities.addInitialFocusHack() removed, unused

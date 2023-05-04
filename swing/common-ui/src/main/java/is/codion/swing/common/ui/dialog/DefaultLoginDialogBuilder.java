@@ -65,6 +65,7 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
             .icon(icon)
             .okAction(loginPanel.okControl())
             .cancelAction(loginPanel.cancelControl())
+            .onShown(dialog -> loginPanel.requestInitialFocus())
             .show();
     if (dummyFrame != null) {
       dummyFrame.dispose();
