@@ -45,7 +45,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
@@ -91,7 +90,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
    */
-  private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
+  private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
@@ -1016,11 +1015,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void addEditEventListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+    entityDefinition().foreignKeys().forEach(foreignKey ->
+            EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
   private void removeEditEventListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
+    entityDefinition().foreignKeys().forEach(foreignKey ->
+            EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
   private void rememberCondition() {
@@ -1113,11 +1114,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     sortModel().columnSortOrder().stream()
             .filter(columnSortOrder -> isColumnProperty(columnSortOrder.columnIdentifier()))
             .forEach(columnSortOrder -> {
-              if (columnSortOrder.sortOrder() == SortOrder.ASCENDING) {
-                builder.ascending(columnSortOrder.columnIdentifier());
-              }
-              else {
-                builder.descending(columnSortOrder.columnIdentifier());
+              switch (columnSortOrder.sortOrder()) {
+                case ASCENDING:
+                  builder.ascending(columnSortOrder.columnIdentifier());
+                  break;
+                case DESCENDING:
+                  builder.descending(columnSortOrder.columnIdentifier());
+                  break;
+                default:
               }
             });
 
@@ -1125,9 +1129,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {
-    Property<?> property = entityDefinition().property(attribute);
-
-    return property instanceof ColumnProperty;
+    return entityDefinition().property(attribute) instanceof ColumnProperty;
   }
 
   private JSONObject createPreferences() throws Exception {
