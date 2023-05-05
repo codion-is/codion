@@ -24,6 +24,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -105,6 +106,18 @@ final class SelectColumnsPanel<C> extends JPanel {
             .build();
     selectAllButton.addActionListener(new SelectAll(selectAllButton, selectNoneButton));
     selectNoneButton.addActionListener(new SelectNone(selectAllButton, selectNoneButton));
+
+    List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllButton, selectNoneButton);
+    KeyEvents.builder(KeyEvent.VK_UP)
+            .condition(JComponent.WHEN_FOCUSED)
+            .action(control(new TransferFocusCommand(selectCheckBoxes, false)))
+            .enable(selectAllButton)
+            .enable(selectNoneButton);
+    KeyEvents.builder(KeyEvent.VK_DOWN)
+            .condition(JComponent.WHEN_FOCUSED)
+            .action(control(new TransferFocusCommand(selectCheckBoxes, true)))
+            .enable(selectAllButton)
+            .enable(selectNoneButton);
 
     return Components.panel(gridLayout(2, 1))
             .addAll(selectAllButton, selectNoneButton)
