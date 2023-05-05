@@ -7,6 +7,7 @@ import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.UserPreferences;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -26,6 +27,7 @@ import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences;
 import is.codion.javafx.framework.ui.EntityTableColumn;
 
 import javafx.collections.ObservableList;
@@ -38,20 +40,22 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
+import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
+import static javafx.collections.FXCollections.emptyObservableList;
 
 /**
  * A JavaFX implementation of {@link EntityTableModel}.
@@ -66,9 +70,9 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   private final State conditionChangedState = State.state();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
 
-  private ObservableList<? extends TableColumn<Entity, ?>> columns;
-  private ObservableList<TableColumn<Entity, ?>> columnSortOrder;
-  private List<AttributeTableColumn<?>> initialColumns;
+  private ObservableList<? extends TableColumn<Entity, ?>> columns = emptyObservableList();
+  private ObservableList<TableColumn<Entity, ?>> columnSortOrder = emptyObservableList();
+  private List<AttributeTableColumn<?>> initialColumns = emptyList();
 
   private Condition refreshCondition;
   private InsertAction insertAction = InsertAction.ADD_TOP;
@@ -123,7 +127,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
    * @throws IllegalStateException if the columns have already been set
    */
   public final void setColumns(ObservableList<? extends TableColumn<Entity, ?>> columns) {
-    if (this.columns != null) {
+    if (!this.columns.equals(emptyObservableList())) {
       throw new IllegalStateException("Columns have already been set");
     }
     this.columns = columns;
@@ -136,7 +140,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
    * @param columnSortOrder the column sort order
    */
   public final void setColumnSortOrder(ObservableList<TableColumn<Entity, ?>> columnSortOrder) {
-    if (this.columnSortOrder != null) {
+    if (!this.columnSortOrder.equals(emptyObservableList())) {
       throw new IllegalStateException("Column sort order has already been set");
     }
     this.columnSortOrder = columnSortOrder;
@@ -608,26 +612,18 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   private void applyColumnPreferences(String preferencesString) {
-    JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
-    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(initialColumns, preferences);
-    for (AttributeTableColumn<?> column : initialColumns) {
-      Attribute<?> attribute = column.attribute();
-      if (columns.contains(column)) {
-        ColumnPreferences columnPreferences = preferenceMap.get(attribute);
-        if (columnPreferences != null) {
-          column.setPrefWidth(columnPreferences.width());
-          if (!columnPreferences.isVisible()) {
-            columns.remove(column);
-          }
-        }
-      }
-      columns.sort(new ColumnOrder(preferenceMap));
-    }
+    List<Attribute<?>> columnAttributes = initialColumns.stream()
+            .map(AttributeTableColumn::attribute)
+            .collect(toList());
+    Map<Attribute<?>, ColumnPreferences> columnPreferences =
+            ColumnPreferences.fromJSONObject(columnAttributes, new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS));
+    ColumnPreferences.applyColumnPreferences(this, columnAttributes, columnPreferences, (attribute, columnWidth) ->
+            tableColumn(attribute).setPrefWidth(columnWidth));
   }
 
   private JSONObject createPreferences() throws Exception {
     JSONObject preferencesRoot = new JSONObject();
-    preferencesRoot.put(ColumnPreferences.PREFERENCES_COLUMNS, createColumnPreferences());
+    preferencesRoot.put(ColumnPreferences.COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
@@ -636,9 +632,14 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     JSONObject columnPreferencesRoot = new JSONObject();
     for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> attribute = column.attribute();
-      ColumnPreferences columnPreferences = EntityTableModel.columnPreferences(attribute,
-              columns.indexOf(column), (int) column.getWidth());
-      columnPreferencesRoot.put(attribute.name(), toJSONObject(columnPreferences));
+      int index = columns.indexOf(column);
+      ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
+      ConditionPreferences conditionPreferences = conditionModel != null ?
+              conditionPreferences(conditionModel.autoEnableState().get(),
+                      conditionModel.caseSensitiveState().get(),
+                      conditionModel.automaticWildcardValue().get()) : null;
+      ColumnPreferences columnPreferences = columnPreferences(attribute, index, (int) column.getWidth(), conditionPreferences);
+      columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }
 
     return columnPreferencesRoot;
@@ -671,38 +672,6 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   private void rememberCondition() {
     refreshCondition = tableConditionModel.condition();
     conditionChangedState.set(false);
-  }
-
-  private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(List<AttributeTableColumn<?>> initialColumns, JSONObject preferences) {
-    return initialColumns.stream()
-            .map(tableColumn -> columnPreferences(tableColumn, preferences))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
-  }
-
-  private static Optional<ColumnPreferences> columnPreferences(AttributeTableColumn<?> tableColumn, JSONObject preferences) {
-    try {
-      return Optional.of(fromJSONObject(tableColumn.attribute, preferences.getJSONObject(tableColumn.attribute.name())));
-    }
-    catch (Exception e) {
-      LOG.info("Attribute preferences not found: " + tableColumn.attribute, e);
-      return Optional.empty();
-    }
-  }
-
-  private static JSONObject toJSONObject(ColumnPreferences columnPreferences) {
-    JSONObject columnObject = new JSONObject();
-    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_WIDTH, columnPreferences.width());
-    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_INDEX, columnPreferences.index());
-
-    return columnObject;
-  }
-
-  private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
-    return EntityTableModel.columnPreferences(attribute,
-            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
-            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
@@ -740,23 +709,6 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     @Override
     public final String toString() {
       return attribute.name();
-    }
-  }
-
-  private static final class ColumnOrder implements Comparator<TableColumn<Entity, ?>> {
-
-    private final Map<Attribute<?>, ColumnPreferences> preferences;
-
-    private ColumnOrder(Map<Attribute<?>, ColumnPreferences> preferences) {
-      this.preferences = preferences;
-    }
-
-    @Override
-    public int compare(TableColumn<Entity, ?> col1, TableColumn<Entity, ?> col2) {
-      ColumnPreferences columnOnePreferences = preferences.get(((AttributeTableColumn<?>) col1).attribute());
-      ColumnPreferences columnTwoPreferences = preferences.get(((AttributeTableColumn<?>) col2).attribute());
-
-      return Integer.compare(columnOnePreferences.index(), columnTwoPreferences.index());
     }
   }
 

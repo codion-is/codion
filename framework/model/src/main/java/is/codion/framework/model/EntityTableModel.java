@@ -7,6 +7,8 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.model.table.SelectionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
@@ -23,8 +25,18 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
+import org.json.JSONObject;
+
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.function.BiConsumer;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Specifies a table model containing {@link Entity} instances.
@@ -382,17 +394,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void addSelectionListener(EventListener listener);
 
   /**
-   * Creates a new {@link ColumnPreferences} instance.
-   * @param attribute the attribute
-   * @param index the column index, -1 if not visible
-   * @param width the column width
-   * @return a new {@link ColumnPreferences} instance.
-   */
-  static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width) {
-    return new DefaultColumnPreferences(attribute, index, width);
-  }
-
-  /**
    * Represents preferences for an Attribute based table column.
    */
   interface ColumnPreferences {
@@ -400,17 +401,17 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
     /**
      * The name of the root element identifying column preferences
      */
-    String PREFERENCES_COLUMNS = "columns";
+    String COLUMNS = "columns";
 
     /**
      * The key for the 'width' property
      */
-    String PREFERENCES_COLUMN_WIDTH = "width";
+    String PREFERENCE_COLUMN_WIDTH = "width";
 
     /**
      * The key for the 'index' property
      */
-    String PREFERENCES_COLUMN_INDEX = "index";
+    String PREFERENCE_COLUMN_INDEX = "index";
 
     /**
      * @return the column attribute
@@ -431,5 +432,135 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      * @return the column width in pixels
      */
     int width();
+
+    /**
+     * @return the column condition model preferences, or an empty Optional if no condition model is available for this column
+     */
+    Optional<ConditionPreferences> conditionPreferences();
+
+    /**
+     * @return a JSONObject representation of this column preferences instance
+     */
+    JSONObject toJSONObject();
+
+    /**
+     * Creates a new {@link ColumnPreferences} instance.
+     * @param attribute the attribute
+     * @param index the column index, -1 if not visible
+     * @param width the column width
+     * @param conditionPreferences the column condition preferences, if any
+     * @return a new {@link ColumnPreferences} instance.
+     */
+    static ColumnPreferences columnPreferences(Attribute<?> attribute, int index, int width,
+                                               ConditionPreferences conditionPreferences) {
+      return new DefaultColumnPreferences(attribute, index, width, conditionPreferences);
+    }
+
+    /**
+     * @param attributes the attributes
+     * @param jsonObject the JSONObject
+     * @return a map containing the {@link ColumnPreferences} instances parsed from the given JSONObject
+     */
+    static Map<Attribute<?>, ColumnPreferences> fromJSONObject(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
+      requireNonNull(attributes);
+      requireNonNull(jsonObject);
+
+      return DefaultColumnPreferences.fromJSONObject(attributes, jsonObject);
+    }
+
+    /**
+     * Applies the given column preferences to the given table model
+     * @param tableModel the table model to apply the preferences to
+     * @param columnAttributes the available column attributes
+     * @param columnPreferences the column preferences
+     * @param setColumnWidth sets the column width
+     */
+    static void applyColumnPreferences(EntityTableModel<?> tableModel,
+                                       Collection<Attribute<?>> columnAttributes,
+                                       Map<Attribute<?>, ColumnPreferences> columnPreferences,
+                                       BiConsumer<Attribute<?>, Integer> setColumnWidth) {
+      requireNonNull(tableModel);
+      requireNonNull(columnAttributes);
+      requireNonNull(columnPreferences);
+      requireNonNull(setColumnWidth);
+
+      List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
+      for (Attribute<?> attribute : columnAttributes) {
+        ColumnPreferences preferences = columnPreferences.get(attribute);
+        if (preferences == null) {
+          columnAttributesWithoutPreferences.add(attribute);
+        }
+        else {
+          setColumnWidth.accept(attribute, preferences.width());
+          preferences.conditionPreferences().ifPresent(conditionPreferences -> {
+            ColumnConditionModel<?, ?> conditionModel = tableModel.tableConditionModel().conditionModels().get(attribute);
+            if (conditionModel != null) {
+              conditionModel.autoEnableState().set(conditionPreferences.autoEnable());
+              conditionModel.caseSensitiveState().set(conditionPreferences.caseSensitive());
+              conditionModel.automaticWildcardValue().set(conditionPreferences.automaticWildcard());
+            }
+          });
+        }
+      }
+      List<Attribute<?>> visibleColumnAttributes = columnPreferences.values().stream()
+              .filter(ColumnPreferences::isVisible)
+              .sorted(Comparator.comparingInt(ColumnPreferences::index))
+              .map(ColumnPreferences::attribute)
+              .collect(toList());
+      visibleColumnAttributes.addAll(0, columnAttributesWithoutPreferences);
+      tableModel.setVisibleColumns(visibleColumnAttributes);
+    }
+
+    /**
+     * Represents preferences for a {@link is.codion.common.model.table.ColumnConditionModel}
+     */
+    interface ConditionPreferences {
+
+      /**
+       * The name of the root element identifying condition preferences
+       */
+      String CONDITION = "condition";
+
+      /**
+       * The key for the 'caseSensitive' property
+       */
+      String PREFERENCE_AUTO_ENABLE = "autoEnable";
+
+      /**
+       * The key for the 'caseSensitive' property
+       */
+      String PREFERENCE_CASE_SENSITIVE = "caseSensitive";
+
+      /**
+       * The key for the 'automaticWildcard' property
+       */
+      String PREFERENCE_AUTOMATIC_WILDCARD = "automaticWildcard";
+
+      /**
+       * @return true if this condition auto enables
+       */
+      boolean autoEnable();
+
+      /**
+       * @return true if this condition is case sensitive
+       */
+      boolean caseSensitive();
+
+      /**
+       * @return the {@link AutomaticWildcard} configuration for this condition model
+       */
+      AutomaticWildcard automaticWildcard();
+
+      /**
+       * Creates a new {@link ConditionPreferences} instance.
+       * @param autoEnable true if auto enable is enabled
+       * @param caseSensitive true if case sensitive
+       * @param automaticWildcard the automatic wildcard state
+       * @return a new {@link ConditionPreferences} instance.
+       */
+      static ConditionPreferences conditionPreferences(boolean autoEnable, boolean caseSensitive, AutomaticWildcard automaticWildcard) {
+        return new DefaultConditionPreferences(autoEnable, caseSensitive, automaticWildcard);
+      }
+    }
   }
 }
