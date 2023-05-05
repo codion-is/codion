@@ -8844,3 +8844,4 @@
   SwingEntityTableModel, inheritance replaced with composition, no longer inherits from DefaultFilteredTableModel
   EntityTableModel.addEntities() and addEntitiesAt() removed
   EntityTableModel.ConditionPreferences added, condition model preferences now saved, related refactoring
+  Entity.getStringValueList() renamed getValuesAsString()

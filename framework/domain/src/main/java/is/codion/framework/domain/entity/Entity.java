@@ -604,7 +604,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return the values of the given attributes from the given entities in a two-dimensional list
    */
-  static List<List<String>> getStringValueList(List<Attribute<?>> attributes, List<Entity> entities) {
+  static List<List<String>> getValuesAsString(List<Attribute<?>> attributes, List<Entity> entities) {
     requireNonNull(attributes);
     return requireNonNull(entities).stream()
             .map(entity -> attributes.stream()

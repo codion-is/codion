@@ -270,7 +270,7 @@ public final class EntityTest {
             .columnProperties().stream().map(Property::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
-            Entity.getStringValueList(attributes, asList(dept1, dept2));
+            Entity.getValuesAsString(attributes, asList(dept1, dept2));
     assertEquals("1", strings.get(0).get(0));
     assertEquals("name1", strings.get(0).get(1));
     assertEquals("loc1", strings.get(0).get(2));

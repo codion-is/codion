@@ -431,7 +431,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
       header.add(entityDefinition().property(attribute).caption());
     });
 
-    return Text.delimitedString(header, Entity.getStringValueList(attributes,
+    return Text.delimitedString(header, Entity.getValuesAsString(attributes,
                     selectionModel().isSelectionEmpty() ? visibleItems() : selectionModel().getSelectedItems()),
             String.valueOf(delimiter));
   }
