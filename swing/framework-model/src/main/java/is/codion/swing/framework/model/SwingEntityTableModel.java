@@ -32,6 +32,7 @@ import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
+import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel.DefaultSummaryValueProvider;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
@@ -45,7 +46,6 @@ import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.SortOrder;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
@@ -62,15 +62,17 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
+import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
+import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
 import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.*;
+import static java.util.stream.Collectors.groupingBy;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A TableModel implementation for displaying and working with entities.
@@ -91,7 +93,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
    */
-  private final ConcurrentHashMap<String, Color> colorCache = new ConcurrentHashMap<>();
+  private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
@@ -1016,11 +1018,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void addEditEventListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
+    entityDefinition().foreignKeys().forEach(foreignKey ->
+            EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
   private void removeEditEventListeners() {
-    entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
+    entityDefinition().foreignKeys().forEach(foreignKey ->
+            EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
   private void rememberCondition() {
@@ -1113,11 +1117,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     sortModel().columnSortOrder().stream()
             .filter(columnSortOrder -> isColumnProperty(columnSortOrder.columnIdentifier()))
             .forEach(columnSortOrder -> {
-              if (columnSortOrder.sortOrder() == SortOrder.ASCENDING) {
-                builder.ascending(columnSortOrder.columnIdentifier());
-              }
-              else {
-                builder.descending(columnSortOrder.columnIdentifier());
+              switch (columnSortOrder.sortOrder()) {
+                case ASCENDING:
+                  builder.ascending(columnSortOrder.columnIdentifier());
+                  break;
+                case DESCENDING:
+                  builder.descending(columnSortOrder.columnIdentifier());
+                  break;
+                default:
               }
             });
 
@@ -1125,14 +1132,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private boolean isColumnProperty(Attribute<?> attribute) {
-    Property<?> property = entityDefinition().property(attribute);
-
-    return property instanceof ColumnProperty;
+    return entityDefinition().property(attribute) instanceof ColumnProperty;
   }
 
   private JSONObject createPreferences() throws Exception {
     JSONObject preferencesRoot = new JSONObject();
-    preferencesRoot.put(ColumnPreferences.PREFERENCES_COLUMNS, createColumnPreferences());
+    preferencesRoot.put(ColumnPreferences.COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
@@ -1141,10 +1146,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     JSONObject columnPreferencesRoot = new JSONObject();
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();
-      boolean visible = columnModel().isColumnVisible(attribute);
-      ColumnPreferences columnPreferences = EntityTableModel.columnPreferences(attribute,
-              visible ? columnModel().getColumnIndex(attribute) : -1, column.getWidth());
-      columnPreferencesRoot.put(attribute.name(), toJSONObject(columnPreferences));
+      int index = columnModel().isColumnVisible(attribute) ? columnModel().getColumnIndex(attribute) : -1;
+      ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
+      ConditionPreferences conditionPreferences = conditionModel != null ?
+              conditionPreferences(conditionModel.autoEnableState().get(),
+                      conditionModel.caseSensitiveState().get(),
+                      conditionModel.automaticWildcardValue().get()) : null;
+      ColumnPreferences columnPreferences = columnPreferences(attribute, index, column.getWidth(), conditionPreferences);
+      columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }
 
     return columnPreferencesRoot;
@@ -1165,26 +1174,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void applyColumnPreferences(String preferencesString) {
-    JSONObject preferences = new JSONObject(preferencesString).getJSONObject(ColumnPreferences.PREFERENCES_COLUMNS);
-    Map<Attribute<?>, ColumnPreferences> preferenceMap = createColumnPreferenceMap(columnModel().columns(), preferences);
-    List<Attribute<?>> columnAttributesWithoutPreferences = new ArrayList<>();
-    for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
-      Attribute<?> attribute = column.getIdentifier();
-      ColumnPreferences columnPreferences = preferenceMap.get(attribute);
-      if (columnPreferences == null) {
-        columnAttributesWithoutPreferences.add(attribute);
-      }
-      else {
-        column.setPreferredWidth(columnPreferences.width());
-      }
-    }
-    List<Attribute<?>> columnAttributes = preferenceMap.values().stream()
-            .filter(ColumnPreferences::isVisible)
-            .sorted(Comparator.comparingInt(ColumnPreferences::index))
-            .map(ColumnPreferences::attribute)
+    List<Attribute<?>> columnAttributes = columnModel().columns().stream()
+            .map(FilteredTableColumn::getIdentifier)
             .collect(toList());
-    columnAttributes.addAll(0, columnAttributesWithoutPreferences);
-    setVisibleColumns(columnAttributes);
+    Map<Attribute<?>, ColumnPreferences> columnPreferences =
+            ColumnPreferences.fromJSONObject(columnAttributes, new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS));
+    ColumnPreferences.applyColumnPreferences(this, columnAttributes, columnPreferences, (attribute, columnWidth) ->
+            columnModel().tableColumn(attribute).setPreferredWidth(columnWidth));
   }
 
   private String statusMessage() {
@@ -1202,39 +1198,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
 
     return Optional.empty();
-  }
-
-  private static Map<Attribute<?>, ColumnPreferences> createColumnPreferenceMap(Collection<FilteredTableColumn<Attribute<?>>> tableColumns, JSONObject preferences) {
-    return tableColumns.stream()
-            .map(tableColumn -> columnPreferences(tableColumn, preferences))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
-  }
-
-  private static Optional<ColumnPreferences> columnPreferences(FilteredTableColumn<Attribute<?>> tableColumn, JSONObject preferences) {
-    Attribute<?> attribute = tableColumn.getIdentifier();
-    try {
-      return Optional.of(fromJSONObject(attribute, preferences.getJSONObject(attribute.name())));
-    }
-    catch (Exception e) {
-      LOG.info("Attribute preferences not found: " + attribute, e);
-      return Optional.empty();
-    }
-  }
-
-  private static JSONObject toJSONObject(ColumnPreferences columnPreferences) {
-    JSONObject columnObject = new JSONObject();
-    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_WIDTH, columnPreferences.width());
-    columnObject.put(ColumnPreferences.PREFERENCES_COLUMN_INDEX, columnPreferences.index());
-
-    return columnObject;
-  }
-
-  private static ColumnPreferences fromJSONObject(Attribute<?> attribute, JSONObject jsonObject) {
-    return EntityTableModel.columnPreferences(attribute,
-            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_INDEX),
-            jsonObject.getInt(ColumnPreferences.PREFERENCES_COLUMN_WIDTH));
   }
 
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {

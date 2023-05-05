@@ -6,6 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -219,6 +220,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     column.setWidth(150);//timestamp
     column = tableModel.columnModel().getColumn(5);
     column.setWidth(170);//entity_ref
+    ColumnConditionModel<Attribute<String>, String> conditionModel = tableModel.tableConditionModel().conditionModel(Detail.STRING);
+    conditionModel.autoEnableState().set(false);
+    conditionModel.automaticWildcardValue().set(AutomaticWildcard.PREFIX);
+    conditionModel.caseSensitiveState().set(false);
 
     tableModel.savePreferences();
 
@@ -230,6 +235,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(150, column.getPreferredWidth());
     column = model.columnModel().getColumn(5);
     assertEquals(170, column.getPreferredWidth());
+    conditionModel = tableModel.tableConditionModel().conditionModel(Detail.STRING);
+    assertFalse(conditionModel.autoEnableState().get());
+    assertEquals(conditionModel.automaticWildcardValue().get(), AutomaticWildcard.PREFIX);
+    assertFalse(conditionModel.caseSensitiveState().get());
 
     model.clearPreferences();
     UserPreferences.flushUserPreferences();

@@ -8881,3 +8881,6 @@
   FilteredTableModel, methods for adding items now public (methods for removing were already public), setItemAt() now validates the item, DefaultSummaryValueProvider now public
   SwingEntityTableModel, inheritance replaced with composition, no longer inherits from DefaultFilteredTableModel
   EntityTableModel.addEntities() and addEntitiesAt() removed
+  EntityTableModel.ConditionPreferences added, condition model preferences now saved, related refactoring
+  Entity.getStringValueList() renamed getValuesAsString()
+  SelectColumnsPanel, up/down arrows now work for going between select all and none checkboxes, for consistency

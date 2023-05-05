@@ -24,6 +24,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -91,23 +92,35 @@ final class SelectColumnsPanel<C> extends JPanel {
   }
 
   private JPanel createNorthPanel(Insets insets) {
-    JCheckBox selectAllButton = Components.checkBox()
+    JCheckBox selectAllBox = Components.checkBox()
             .linkedValueObserver(State.and(states.values()))
             .caption(MESSAGES.getString("select_all"))
             .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
             .build();
-    JCheckBox selectNoneButton = Components.checkBox()
+    JCheckBox selectNoneBox = Components.checkBox()
             .linkedValueObserver(State.and(states.values().stream()
                     .map(StateObserver::reversedObserver)
                     .collect(Collectors.toList())))
             .caption(MESSAGES.getString("select_none"))
             .mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))
             .build();
-    selectAllButton.addActionListener(new SelectAll(selectAllButton, selectNoneButton));
-    selectNoneButton.addActionListener(new SelectNone(selectAllButton, selectNoneButton));
+    selectAllBox.addActionListener(new SelectAll(selectAllBox, selectNoneBox));
+    selectNoneBox.addActionListener(new SelectNone(selectAllBox, selectNoneBox));
+
+    List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
+    KeyEvents.builder(KeyEvent.VK_UP)
+            .condition(JComponent.WHEN_FOCUSED)
+            .action(control(new TransferFocusCommand(selectCheckBoxes, false)))
+            .enable(selectAllBox)
+            .enable(selectNoneBox);
+    KeyEvents.builder(KeyEvent.VK_DOWN)
+            .condition(JComponent.WHEN_FOCUSED)
+            .action(control(new TransferFocusCommand(selectCheckBoxes, true)))
+            .enable(selectAllBox)
+            .enable(selectNoneBox);
 
     return Components.panel(gridLayout(2, 1))
-            .addAll(selectAllButton, selectNoneButton)
+            .addAll(selectAllBox, selectNoneBox)
             .border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
             .build();
   }
@@ -151,44 +164,44 @@ final class SelectColumnsPanel<C> extends JPanel {
 
   private final class SelectAll implements ActionListener {
 
-    private final JCheckBox selectAllButton;
-    private final JCheckBox selectNoneButton;
+    private final JCheckBox selectAllBox;
+    private final JCheckBox selectNoneBox;
 
-    private SelectAll(JCheckBox selectAllButton, JCheckBox selectNoneButton) {
-      this.selectAllButton = selectAllButton;
-      this.selectNoneButton = selectNoneButton;
+    private SelectAll(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
+      this.selectAllBox = selectAllBox;
+      this.selectNoneBox = selectNoneBox;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (selectAllButton.isSelected()) {
+      if (selectAllBox.isSelected()) {
         selectAll();
       }
       else {
         selectNone();
-        selectNoneButton.setSelected(true);
+        selectNoneBox.setSelected(true);
       }
     }
   }
 
   private final class SelectNone implements ActionListener {
 
-    private final JCheckBox selectAllButton;
-    private final JCheckBox selectNoneButton;
+    private final JCheckBox selectAllBox;
+    private final JCheckBox selectNoneBox;
 
-    private SelectNone(JCheckBox selectAllButton, JCheckBox selectNoneButton) {
-      this.selectAllButton = selectAllButton;
-      this.selectNoneButton = selectNoneButton;
+    private SelectNone(JCheckBox selectAllBox, JCheckBox selectNoneBox) {
+      this.selectAllBox = selectAllBox;
+      this.selectNoneBox = selectNoneBox;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (selectNoneButton.isSelected()) {
+      if (selectNoneBox.isSelected()) {
         selectNone();
       }
       else {
         selectAll();
-        selectAllButton.setSelected(true);
+        selectAllBox.setSelected(true);
       }
     }
   }
