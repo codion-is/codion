@@ -27,8 +27,9 @@ import static java.util.stream.Collectors.*;
  * @see EntityDefinition#entity()
  * @see Entities#entity(EntityType)
  * @see Entities#builder(EntityType)
- * @see Entity#builder(Key)
- * @see Entity#copyBuilder()
+ * @see #entity(Key)
+ * @see #builder(Key)
+ * @see #copyBuilder()
  */
 public interface Entity extends Comparable<Entity> {
 

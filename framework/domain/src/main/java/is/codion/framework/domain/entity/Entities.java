@@ -11,6 +11,11 @@ import java.util.List;
 /**
  * A repository specifying the {@link EntityDefinition}s for a given domain.
  * Factory for {@link Entity} and {@link Key} instances.
+ * @see #entity(EntityType)
+ * @see #builder(EntityType)
+ * @see #primaryKey(EntityType, Object)
+ * @see #primaryKeys(EntityType, Object[])
+ * @see #keyBuilder(EntityType)
  */
 public interface Entities {
 
@@ -48,7 +53,7 @@ public interface Entities {
   Collection<EntityDefinition> definitions();
 
   /**
-   * Creates a new {@link Entity} instance with the given entityType
+   * Creates a new empty {@link Entity} instance of the given entityType
    * @param entityType the entityType
    * @return a new {@link Entity} instance
    */
@@ -62,9 +67,9 @@ public interface Entities {
   Entity.Builder builder(EntityType entityType);
 
   /**
-   * Creates a new {@link Key} instance with the given entityType, initialised with the given value
+   * Creates a new {@link Key} instance of the given entityType, initialised with the given value
    * @param entityType the entityType
-   * @param value the key value, assumes a single long key
+   * @param value the key value, assumes a single value key
    * @param <T> the key value type
    * @return a new {@link Key} instance
    * @throws IllegalStateException in case the given primary key is a composite key
@@ -74,9 +79,9 @@ public interface Entities {
   <T> Key primaryKey(EntityType entityType, T value);
 
   /**
-   * Creates new {@link Key} instances with the given entityType, initialised with the given values
+   * Creates new {@link Key} instances of the given entityType, initialised with the given values
    * @param entityType the entityType
-   * @param values the key values, assumes a single integer key
+   * @param values the key values, assumes a single value key
    * @param <T> the key value type
    * @return new {@link Key} instances
    * @throws IllegalStateException in case the given primary key is a composite key
