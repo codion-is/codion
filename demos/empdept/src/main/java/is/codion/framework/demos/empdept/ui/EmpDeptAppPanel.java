@@ -13,7 +13,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -92,7 +92,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
-    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
+    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
             .domainClassName("is.codion.framework.demos.empdept.domain.EmpDept")

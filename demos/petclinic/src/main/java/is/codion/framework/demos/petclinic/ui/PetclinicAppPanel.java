@@ -16,7 +16,7 @@ import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -88,7 +88,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     Locale.setDefault(new Locale("en", "EN"));
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
-    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
+    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);

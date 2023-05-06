@@ -34,8 +34,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
@@ -574,7 +574,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#findLookAndFeelProvider(String)
    * @see Dialogs#lookAndFeelSelectionDialog()
-   * @see LookAndFeelSelectionPanel#CHANGE_ON_SELECTION
+   * @see LookAndFeelComboBox#CHANGE_ON_SELECTION
    * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {

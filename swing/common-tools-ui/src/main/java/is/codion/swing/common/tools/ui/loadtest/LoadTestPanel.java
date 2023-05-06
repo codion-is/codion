@@ -13,8 +13,8 @@ import is.codion.swing.common.tools.ui.randomizer.ItemRandomizerPanel;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 import org.jfree.chart.ChartPanel;
@@ -73,7 +73,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
-    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
+    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))

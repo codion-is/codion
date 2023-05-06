@@ -19,8 +19,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 import is.codion.swing.framework.server.monitor.EntityServerMonitor;
 import is.codion.swing.framework.server.monitor.HostMonitor;
 
@@ -264,7 +264,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(String[] arguments) {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
-    LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.set(true);
+    LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
             addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
     SwingUtilities.invokeLater(() -> {

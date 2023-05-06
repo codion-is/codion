@@ -13,7 +13,6 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.stream.Collectors.toList;
 
@@ -48,10 +47,12 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   }
 
   private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
-    FilteredTableColumn<Integer> domainColumn = filteredTableColumn(DefinitionTableModel.DOMAIN);
-    domainColumn.setHeaderValue("Domain");
-    FilteredTableColumn<Integer> entityTypeColumn = filteredTableColumn(DefinitionTableModel.ENTITY);
-    entityTypeColumn.setHeaderValue("Entity");
+    FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionTableModel.DOMAIN)
+            .headerValue("Domain")
+            .build();
+    FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionTableModel.ENTITY)
+            .headerValue("Entity")
+            .build();
 
     return asList(domainColumn, entityTypeColumn);
   }

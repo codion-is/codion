@@ -115,4 +115,20 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
                                                                                                           Value<T> linkedValue) {
     return new DefaultComboBoxBuilder<>(comboBoxModel, requireNonNull(linkedValue));
   }
+
+  /**
+   * Enables mouse wheel selection for the given combo box
+   * @param comboBox the combo box
+   */
+  static void enableMouseWheelSelection(JComboBox<?> comboBox) {
+    requireNonNull(comboBox).addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox.getModel(), false));
+  }
+
+  /**
+   * Enables mouse wheel selection for the given combo box with wrap around
+   * @param comboBox the combo box
+   */
+  static void enableMouseWheelSelectionWithWrapAround(JComboBox<?> comboBox) {
+    comboBox.addMouseWheelListener(new ComboBoxMouseWheelListener(comboBox.getModel(), true));
+  }
 }

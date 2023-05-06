@@ -67,7 +67,6 @@ import java.util.function.Predicate;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -882,12 +881,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     requireNonNull(properties);
     List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(properties.size());
     for (Property<?> property : properties) {
-      FilteredTableColumn<Attribute<?>> column = filteredTableColumn(columns.size(), property.attribute());
-      column.setHeaderValue(property.caption());
+      FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
+              FilteredTableColumn.builder(columns.size(), property.attribute())
+                      .headerValue(property.caption());
       if (property.preferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.preferredColumnWidth());
+        columnBuilder.preferredWidth(property.preferredColumnWidth());
       }
-      columns.add(column);
+      columns.add((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
     }
 
     return columns;
