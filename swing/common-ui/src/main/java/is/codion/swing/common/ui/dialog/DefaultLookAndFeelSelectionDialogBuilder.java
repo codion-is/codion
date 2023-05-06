@@ -6,20 +6,25 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel;
 
+import javax.swing.BorderFactory;
 import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelSelectionPanel.lookAndFeelSelectionPanel;
+import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelectionDialogBuilder {
 
+  private static final int PADDING = 10;
+
   private JComponent owner;
-  private boolean changeOnSelection = LookAndFeelSelectionPanel.CHANGE_ON_SELECTION.get();
+  private boolean changeOnSelection = LookAndFeelComboBox.CHANGE_ON_SELECTION.get();
   private String userPreferencePropertyName;
 
   @Override
@@ -57,19 +62,22 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
 
   @Override
   public Optional<LookAndFeelProvider> selectLookAndFeel() {
-    LookAndFeelSelectionPanel lookAndFeelSelectionPanel = lookAndFeelSelectionPanel(changeOnSelection);
+    LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(changeOnSelection);
+    JPanel basePanel = new JPanel(new BorderLayout());
+    basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
+    basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
     State okPressed = State.state();
-    new DefaultOkCancelDialogBuilder(lookAndFeelSelectionPanel)
+    new DefaultOkCancelDialogBuilder(lookAndFeelComboBox)
             .owner(owner)
             .title(ResourceBundle.getBundle(LookAndFeelProvider.class.getName()).getString("select_look_and_feel"))
             .onOk(() -> okPressed.set(true))
             .show();
     if (okPressed.get()) {
-      lookAndFeelSelectionPanel.enableSelected();
+      lookAndFeelComboBox.enableSelected();
 
-      return Optional.of(lookAndFeelSelectionPanel.selectedLookAndFeel());
+      return Optional.of(lookAndFeelComboBox.selectedLookAndFeel());
     }
-    lookAndFeelSelectionPanel.revert();
+    lookAndFeelComboBox.revert();
 
     return Optional.empty();
   }

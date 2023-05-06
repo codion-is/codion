@@ -8849,3 +8849,4 @@
   LookAndFeelSelectionPanel.addSelectionListener() added
   FilteredTableColumn.Builder added
   ComboBoxBuilder.enableMouseWheelSelection() added
+  LookAndFeelSelectionPanel replaced with LookAndFeelComboBox, related refactoring

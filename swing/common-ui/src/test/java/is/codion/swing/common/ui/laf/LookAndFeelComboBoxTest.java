@@ -5,10 +5,10 @@ package is.codion.swing.common.ui.laf;
 
 import org.junit.jupiter.api.Test;
 
-public final class LookAndFeelSelectionPanelTest {
+public final class LookAndFeelComboBoxTest {
 
   @Test
   void test() {
-    LookAndFeelSelectionPanel.lookAndFeelSelectionPanel(true).selectedLookAndFeel();
+    LookAndFeelComboBox.lookAndFeelComboBox(true).selectedLookAndFeel();
   }
 }
