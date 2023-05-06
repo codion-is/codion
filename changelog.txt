@@ -8848,3 +8848,4 @@
   SelectColumnsPanel, up/down arrows now work for going between select all and none checkboxes, for consistency
   LookAndFeelSelectionPanel.addSelectionListener() added
   FilteredTableColumn.Builder added
+  ComboBoxBuilder.enableMouseWheelSelection() added
