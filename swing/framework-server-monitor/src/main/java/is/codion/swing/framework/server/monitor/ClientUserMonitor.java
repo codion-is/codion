@@ -32,7 +32,6 @@ import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 
 /**
@@ -242,13 +241,10 @@ public final class ClientUserMonitor {
 
   private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
                                                            TableCellRenderer cellRenderer) {
-    FilteredTableColumn<Integer> column = filteredTableColumn(identifier);
-    column.setHeaderValue(headerValue);
-    if (cellRenderer != null) {
-      column.setCellRenderer(cellRenderer);
-    }
-
-    return column;
+    return FilteredTableColumn.builder(identifier)
+            .headerValue(headerValue)
+            .cellRenderer(cellRenderer)
+            .build();
   }
 
   private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {

@@ -12,7 +12,6 @@ import javax.swing.SortOrder;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 
 final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> {
@@ -36,10 +35,12 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
   }
 
   private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
-    FilteredTableColumn<Integer> schemaColumn = filteredTableColumn(SchemaTableModel.SCHEMA);
-    schemaColumn.setHeaderValue("Schema");
-    FilteredTableColumn<Integer> populatedColumn = filteredTableColumn(SchemaTableModel.POPULATED);
-    populatedColumn.setHeaderValue("Populated");
+    FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaTableModel.SCHEMA)
+            .headerValue("Schema")
+            .build();
+    FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaTableModel.POPULATED)
+            .headerValue("Populated")
+            .build();
 
     return asList(schemaColumn, populatedColumn);
   }
