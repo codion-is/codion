@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.laf;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.item.Item;
 import is.codion.common.properties.PropertyValue;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -106,6 +107,13 @@ public final class LookAndFeelSelectionPanel extends JPanel {
     if (!currentLookAndFeelClassName.equals(originalLookAndFeel.className())) {
       LookAndFeelProvider.enableLookAndFeel(originalLookAndFeel);
     }
+  }
+
+  /**
+   * @param selectionListener notified when the selected look and feel changes
+   */
+  public void addSelectionListener(EventDataListener<LookAndFeelProvider> selectionListener) {
+    comboBoxModel.addSelectionListener(selectedLookAndFeel -> selectionListener.onEvent(selectedLookAndFeel.value()));
   }
 
   /**
