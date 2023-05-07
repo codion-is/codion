@@ -29,6 +29,8 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.TableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
@@ -251,7 +253,7 @@ public class EntityTablePanel extends JPanel {
 
   private final SwingEntityTableModel tableModel;
 
-  private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
+  private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
 
   private final JScrollPane tableScrollPane;
 
@@ -377,9 +379,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the filtered table instance
+   * @return the table
    */
-  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
+  public final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table() {
     return table;
   }
 
@@ -1356,8 +1358,9 @@ public class EntityTablePanel extends JPanel {
     return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
-  private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> createTable() {
-    FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable = FilteredTable.filteredTable(tableModel);
+  private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
+    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable =
+            FilteredTable.filteredTable(tableModel, new EntityTableCellRendererFactory());
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -1493,7 +1496,6 @@ public class EntityTablePanel extends JPanel {
 
   private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
     Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
-    column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
@@ -1661,6 +1663,14 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
+  private final class EntityTableCellRendererFactory implements TableCellRendererFactory<Attribute<?>> {
+
+    @Override
+    public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
+      return createTableCellRenderer(tableModel.entityDefinition().property(column.getIdentifier()));
+    }
+  }
+
   private final class HeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer wrappedRenderer;
@@ -1677,8 +1687,8 @@ public class EntityTablePanel extends JPanel {
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
-      boolean displayConditionState = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
+      boolean displayConditionState = renderer instanceof FilteredTableCellRenderer
+              && ((FilteredTableCellRenderer) renderer).isDisplayCondition()
               && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);

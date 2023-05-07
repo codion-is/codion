@@ -69,13 +69,13 @@ import static java.util.Objects.requireNonNull;
  * Note that for the table header to display you must add this table to a JScrollPane.
  * For instances use the {@link #filteredTable(FilteredTableModel)} or
  * {@link #filteredTable(FilteredTableModel, ConditionPanelFactory)} factory methods.
+ * @param <T> the table model type
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @param <T> the table model type
  * @see #filteredTable(FilteredTableModel)
  * @see #filteredTable(FilteredTableModel, ConditionPanelFactory)
  */
-public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> extends JTable {
+public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
@@ -167,10 +167,17 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
   private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+    this(requireNonNull(tableModel), conditionPanelFactory, new DefaultTableCellRendererFactory<>(tableModel));
+  }
+
+  private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory,
+                        TableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
+    requireNonNull(cellRendererFactory);
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = createSearchField();
+    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, cellRendererFactory));
     initializeTableHeader(getTableHeader());
     bindEvents();
   }
@@ -449,26 +456,57 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   /**
    * Instantiates a new {@link FilteredTable} using the given model
    * @param tableModel the table model
+   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
-   * @param <T> the table model type
    * @return a new {@link FilteredTable}
    */
-  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel) {
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel) {
     return filteredTable(tableModel, new DefaultFilterPanelFactory<>(tableModel));
   }
 
   /**
    * Instantiates a new {@link FilteredTable} using the given model
    * @param tableModel the table model
-   * @param conditionPanelFactory the column condition panel factory
+   * @param cellRendererFactory the table cell renderer factory
+   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
-   * @param <T> the table model type
    * @return a new {@link FilteredTable}
    */
-  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
+    return new FilteredTable<>(tableModel, new DefaultFilterPanelFactory<>(tableModel), cellRendererFactory);
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param conditionPanelFactory the column condition panel factory
+   * @param <T> the table model type
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @return a new {@link FilteredTable}
+   */
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                ConditionPanelFactory conditionPanelFactory) {
     return new FilteredTable<>(tableModel, conditionPanelFactory);
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param conditionPanelFactory the column condition panel factory
+   * @param cellRendererFactory the table cell renderer factory
+   * @param <T> the table model type
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @return a new {@link FilteredTable}
+   */
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                ConditionPanelFactory conditionPanelFactory,
+                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
+    return new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
   }
 
   /**
@@ -586,6 +624,10 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return ToggleControl.builder(visibleState)
             .caption(column.getHeaderValue().toString())
             .build();
+  }
+
+  private void configureColumn(FilteredTableColumn<C> column, TableCellRendererFactory<C> rendererFactory) {
+    column.setCellRenderer(rendererFactory.tableCellRenderer(column));
   }
 
   private void initializeTableHeader(JTableHeader header) {
@@ -925,6 +967,20 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     @Override
     public int compare(TableColumn col1, TableColumn col2) {
       return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
+    }
+  }
+
+  private static final class DefaultTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C> implements TableCellRendererFactory<C> {
+
+    private final T tableModel;
+
+    private DefaultTableCellRendererFactory(T tableModel) {
+      this.tableModel = tableModel;
+    }
+
+    @Override
+    public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
+      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.getClass()).build();
     }
   }
 }

@@ -556,7 +556,7 @@ public final class EntitySearchField extends HintTextField {
    */
   public static class TableSelectionProvider implements SelectionProvider {
 
-    private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
+    private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
     private final JScrollPane scrollPane;
     private final JPanel searchPanel = new JPanel(borderLayout());
     private final JPanel basePanel = new JPanel(borderLayout());
@@ -608,7 +608,7 @@ public final class EntitySearchField extends HintTextField {
     /**
      * @return the underlying FilteredTable
      */
-    public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
+    public final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table() {
       return table;
     }
 

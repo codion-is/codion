@@ -8850,3 +8850,4 @@
   FilteredTableColumn.Builder added
   ComboBoxBuilder.enableMouseWheelSelection() added
   LookAndFeelSelectionPanel replaced with LookAndFeelComboBox, related refactoring
+  FilteredTableCellRenderer refactored from EntityTableCellRenderer, major refactoring, DefaultEntityTableCellRenderer removed

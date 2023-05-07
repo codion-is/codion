@@ -45,7 +45,7 @@ public class FilteredTableTest {
                 singletonList("dlabo"));
       }
     };
-    FilteredTable<List<String>, Integer, TestAbstractFilteredTableModel> filteredTable = FilteredTable.filteredTable(tableModel);
+    FilteredTable<TestAbstractFilteredTableModel, List<String>, Integer> filteredTable = FilteredTable.filteredTable(tableModel);
     tableModel.refresh();
 
     new JScrollPane(filteredTable);
