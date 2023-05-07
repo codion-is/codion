@@ -15,7 +15,6 @@ import javax.swing.BorderFactory;
 import javax.swing.FocusManager;
 import javax.swing.InputMap;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -28,8 +27,6 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -50,6 +47,8 @@ import java.util.stream.IntStream;
 
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -466,65 +465,65 @@ public final class CalendarPanel extends JPanel {
 
   private void addKeyEvents() {
     KeyEvents.Builder keyEvent = KeyEvents.builder()
-            .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .onKeyPressed();
-    keyEvent.modifiers(InputEvent.CTRL_DOWN_MASK)
-            .keyEvent(KeyEvent.VK_LEFT)
+    keyEvent.modifiers(CTRL_DOWN_MASK)
+            .keyEvent(VK_LEFT)
             .action(control(this::previousYear))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_DOWN)
+    keyEvent.keyEvent(VK_DOWN)
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(VK_RIGHT)
             .action(control(this::nextYear))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_UP)
+    keyEvent.keyEvent(VK_UP)
             .enable(this);
-    keyEvent.modifiers(InputEvent.SHIFT_DOWN_MASK)
-            .keyEvent(KeyEvent.VK_LEFT)
+    keyEvent.modifiers(SHIFT_DOWN_MASK)
+            .keyEvent(VK_LEFT)
             .action(control(this::previousMonth))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_DOWN)
+    keyEvent.keyEvent(VK_DOWN)
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(VK_RIGHT)
             .action(control(this::nextMonth))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_UP)
+    keyEvent.keyEvent(VK_UP)
             .enable(this);
-    keyEvent.modifiers(InputEvent.ALT_DOWN_MASK)
-            .keyEvent(KeyEvent.VK_UP)
+    keyEvent.modifiers(ALT_DOWN_MASK)
+            .keyEvent(VK_UP)
             .action(control(this::previousWeek))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_DOWN)
+    keyEvent.keyEvent(VK_DOWN)
             .action(control(this::nextWeek))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_LEFT)
+    keyEvent.keyEvent(VK_LEFT)
             .action(control(this::previousDay))
             .enable(this);
-    keyEvent.keyEvent(KeyEvent.VK_RIGHT)
+    keyEvent.keyEvent(VK_RIGHT)
             .action(control(this::nextDay))
             .enable(this);
     if (includeTime) {
-      keyEvent.modifiers(InputEvent.SHIFT_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .keyEvent(KeyEvent.VK_LEFT)
+      keyEvent.modifiers(SHIFT_DOWN_MASK | ALT_DOWN_MASK)
+              .keyEvent(VK_LEFT)
               .action(control(this::previousHour))
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_DOWN)
+      keyEvent.keyEvent(VK_DOWN)
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_RIGHT)
+      keyEvent.keyEvent(VK_RIGHT)
               .action(control(this::nextHour))
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_UP)
+      keyEvent.keyEvent(VK_UP)
               .enable(this);
-      keyEvent.modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
-              .keyEvent(KeyEvent.VK_LEFT)
+      keyEvent.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+              .keyEvent(VK_LEFT)
               .action(control(this::previousMinute))
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_DOWN)
+      keyEvent.keyEvent(VK_DOWN)
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_RIGHT)
+      keyEvent.keyEvent(VK_RIGHT)
               .action(control(this::nextMinute))
               .enable(this);
-      keyEvent.keyEvent(KeyEvent.VK_UP)
+      keyEvent.keyEvent(VK_UP)
               .enable(this);
     }
   }
@@ -588,12 +587,12 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
-    InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(JComponent.WHEN_FOCUSED);
+    InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(WHEN_FOCUSED);
     //so it doesn't interfere with keyboard navigation when it has focus
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.CTRL_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.CTRL_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_LEFT, InputEvent.SHIFT_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(KeyEvent.VK_RIGHT, InputEvent.SHIFT_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, CTRL_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, CTRL_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, SHIFT_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, SHIFT_DOWN_MASK,false), "none");
 
     return spinner;
   }

@@ -43,7 +43,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -61,6 +60,8 @@ import java.util.Set;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
+import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -69,13 +70,13 @@ import static java.util.Objects.requireNonNull;
  * Note that for the table header to display you must add this table to a JScrollPane.
  * For instances use the {@link #filteredTable(FilteredTableModel)} or
  * {@link #filteredTable(FilteredTableModel, ConditionPanelFactory)} factory methods.
+ * @param <T> the table model type
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @param <T> the table model type
  * @see #filteredTable(FilteredTableModel)
  * @see #filteredTable(FilteredTableModel, ConditionPanelFactory)
  */
-public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> extends JTable {
+public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> extends JTable {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
@@ -109,7 +110,7 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
-  private static final List<Integer> RESIZE_KEYS = asList(KeyEvent.VK_PLUS, KeyEvent.VK_ADD, KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT);
+  private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
 
   /**
    * The table model
@@ -167,10 +168,17 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
   private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+    this(requireNonNull(tableModel), conditionPanelFactory, new DefaultTableCellRendererFactory<>(tableModel));
+  }
+
+  private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory,
+                        TableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
+    requireNonNull(cellRendererFactory);
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = createSearchField();
+    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, cellRendererFactory));
     initializeTableHeader(getTableHeader());
     bindEvents();
   }
@@ -449,26 +457,57 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
   /**
    * Instantiates a new {@link FilteredTable} using the given model
    * @param tableModel the table model
+   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
-   * @param <T> the table model type
    * @return a new {@link FilteredTable}
    */
-  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel) {
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel) {
     return filteredTable(tableModel, new DefaultFilterPanelFactory<>(tableModel));
   }
 
   /**
    * Instantiates a new {@link FilteredTable} using the given model
    * @param tableModel the table model
-   * @param conditionPanelFactory the column condition panel factory
+   * @param cellRendererFactory the table cell renderer factory
+   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
-   * @param <T> the table model type
    * @return a new {@link FilteredTable}
    */
-  public static <R, C, T extends FilteredTableModel<R, C>> FilteredTable<R, C, T> filteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
+    return new FilteredTable<>(tableModel, new DefaultFilterPanelFactory<>(tableModel), cellRendererFactory);
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param conditionPanelFactory the column condition panel factory
+   * @param <T> the table model type
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @return a new {@link FilteredTable}
+   */
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                ConditionPanelFactory conditionPanelFactory) {
     return new FilteredTable<>(tableModel, conditionPanelFactory);
+  }
+
+  /**
+   * Instantiates a new {@link FilteredTable} using the given model
+   * @param tableModel the table model
+   * @param conditionPanelFactory the column condition panel factory
+   * @param cellRendererFactory the table cell renderer factory
+   * @param <T> the table model type
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   * @return a new {@link FilteredTable}
+   */
+  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
+                                                                                                ConditionPanelFactory conditionPanelFactory,
+                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
+    return new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
   }
 
   /**
@@ -485,22 +524,22 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     return Components.textField(tableModel.searchModel().searchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+            .keyEvent(KeyEvents.builder(VK_ENTER)
                     .action(nextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .keyEvent(KeyEvents.builder(VK_ENTER)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+            .keyEvent(KeyEvents.builder(VK_DOWN)
                     .action(nextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .keyEvent(KeyEvents.builder(VK_DOWN)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+            .keyEvent(KeyEvents.builder(VK_UP)
                     .action(previousResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+            .keyEvent(KeyEvents.builder(VK_UP)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectPreviousResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+            .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(requestTableFocus))
             .popupMenuControls(searchFieldPopupMenuControls())
             .hintText(Messages.find() + "...")
@@ -588,6 +627,10 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
             .build();
   }
 
+  private void configureColumn(FilteredTableColumn<C> column, TableCellRendererFactory<C> rendererFactory) {
+    column.setCellRenderer(rendererFactory.tableCellRenderer(column));
+  }
+
   private void initializeTableHeader(JTableHeader header) {
     header.addMouseListener(new ColumnFilterPanelMouseHandler());
     header.setReorderingAllowed(true);
@@ -612,9 +655,14 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
-    KeyEvents.builder(KeyEvent.VK_C)
+    KeyEvents.builder(VK_C)
             .action(Control.control(this::copySelectedCell))
-            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+            .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+            .enable(this);
+    KeyEvents.builder(VK_F)
+            .action(Control.control(searchField::requestFocusInWindow))
+            .modifiers(CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
   }
 
@@ -873,12 +921,12 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
 
     @Override
     public void keyPressed(KeyEvent e) {
-      if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
-        moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
+      if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT)) {
+        moveSelectedColumn(e.getKeyCode() == VK_LEFT);
         e.consume();
       }
       else if (e.isControlDown() && (RESIZE_KEYS.contains(e.getKeyCode()))) {
-        resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD);
+        resizeSelectedColumn(e.getKeyCode() == VK_PLUS || e.getKeyCode() == VK_ADD);
         e.consume();
       }
     }
@@ -925,6 +973,20 @@ public final class FilteredTable<R, C, T extends FilteredTableModel<R, C>> exten
     @Override
     public int compare(TableColumn col1, TableColumn col2) {
       return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
+    }
+  }
+
+  private static final class DefaultTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C> implements TableCellRendererFactory<C> {
+
+    private final T tableModel;
+
+    private DefaultTableCellRendererFactory(T tableModel) {
+      this.tableModel = tableModel;
+    }
+
+    @Override
+    public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
+      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.getClass()).build();
     }
   }
 }

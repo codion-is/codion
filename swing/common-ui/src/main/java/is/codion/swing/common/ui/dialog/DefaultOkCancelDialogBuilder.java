@@ -21,13 +21,14 @@ import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
@@ -180,8 +181,8 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new CancelOnWindowClosingListener(cancelAction));
     dialog.getRootPane().setDefaultButton(okButton);
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    KeyEvents.builder(VK_ESCAPE)
+            .condition(WHEN_IN_FOCUSED_WINDOW)
             .action(cancelAction)
             .enable(dialog.getRootPane());
 

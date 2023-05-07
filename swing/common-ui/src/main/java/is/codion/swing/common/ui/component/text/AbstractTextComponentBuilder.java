@@ -11,10 +11,11 @@ import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.function.Consumer;
 
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B extends TextComponentBuilder<T, C, B>>
@@ -150,11 +151,11 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
       new MaximumTextFieldLength(textComponent.getDocument(), maximumLength);
     }
     if (controlDeleteWord) {
-      keyEvent(KeyEvents.builder(KeyEvent.VK_DELETE)
-              .modifiers(InputEvent.CTRL_DOWN_MASK)
+      keyEvent(KeyEvents.builder(VK_DELETE)
+              .modifiers(CTRL_DOWN_MASK)
               .action(new DeleteNextWordAction()));
-      keyEvent(KeyEvents.builder(KeyEvent.VK_BACK_SPACE)
-              .modifiers(InputEvent.CTRL_DOWN_MASK)
+      keyEvent(KeyEvents.builder(VK_BACK_SPACE)
+              .modifiers(CTRL_DOWN_MASK)
               .action(new DeletePreviousWordAction()));
     }
     if (disabledTextColor != null) {

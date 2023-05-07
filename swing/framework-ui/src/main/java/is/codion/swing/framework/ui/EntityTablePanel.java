@@ -29,6 +29,8 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.TableCellRendererFactory;
 import is.codion.swing.common.ui.component.table.TableColumnComponentPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.control.Control;
@@ -69,8 +71,6 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,6 +93,7 @@ import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDepend
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -206,7 +207,6 @@ public class EntityTablePanel extends JPanel {
     MOVE_SELECTION_DOWN,
     COPY_TABLE_DATA,
     REQUEST_TABLE_FOCUS,
-    REQUEST_SEARCH_FIELD_FOCUS,
     SELECT_CONDITION_PANEL,
     CONFIGURE_COLUMNS
   }
@@ -251,7 +251,7 @@ public class EntityTablePanel extends JPanel {
 
   private final SwingEntityTableModel tableModel;
 
-  private final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table;
+  private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
 
   private final JScrollPane tableScrollPane;
 
@@ -377,9 +377,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * @return the filtered table instance
+   * @return the table
    */
-  public final FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> table() {
+  public final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table() {
     return table;
   }
 
@@ -1004,25 +1004,19 @@ public class EntityTablePanel extends JPanel {
    */
   protected void setupKeyboardActions() {
     getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_T)
-                    .modifiers(CTRL_DOWN_MASK)
-                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                    .action(control)
-                    .enable(this));
-    getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_F)
+            KeyEvents.builder(VK_T)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_S)
+            KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_S)
+            KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
@@ -1266,7 +1260,6 @@ public class EntityTablePanel extends JPanel {
       controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
-    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
@@ -1356,8 +1349,9 @@ public class EntityTablePanel extends JPanel {
     return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
-  private FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> createTable() {
-    FilteredTable<Entity, Attribute<?>, SwingEntityTableModel> filteredTable = FilteredTable.filteredTable(tableModel);
+  private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
+    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable =
+            FilteredTable.filteredTable(tableModel, new EntityTableCellRendererFactory());
     filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
     filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
@@ -1384,7 +1378,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private JToolBar createRefreshButtonToolBar() {
-    KeyEvents.builder(KeyEvent.VK_F5)
+    KeyEvents.builder(VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(conditionRefreshControl)
             .enable(this);
@@ -1436,13 +1430,13 @@ public class EntityTablePanel extends JPanel {
 
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
-      KeyEvents.builder(KeyEvent.VK_DELETE)
+      KeyEvents.builder(VK_DELETE)
               .action(createDeleteSelectedControl())
               .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
-      KeyEvents.builder(KeyEvent.VK_V)
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+      KeyEvents.builder(VK_V)
+              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(control(this::showEntityMenu))
               .enable(table);
     }
@@ -1453,8 +1447,8 @@ public class EntityTablePanel extends JPanel {
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(conditionRefreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
@@ -1493,7 +1487,6 @@ public class EntityTablePanel extends JPanel {
 
   private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
     Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
-    column.setCellRenderer(createTableCellRenderer(property));
     column.setCellEditor(createTableCellEditor(property));
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
@@ -1509,8 +1502,8 @@ public class EntityTablePanel extends JPanel {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    KeyEvents.builder(KeyEvent.VK_G)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+    KeyEvents.builder(VK_G)
+            .modifiers(CTRL_DOWN_MASK)
             .action(control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
@@ -1661,6 +1654,14 @@ public class EntityTablePanel extends JPanel {
     return new Point(x, y + table.getRowHeight() / 2);
   }
 
+  private final class EntityTableCellRendererFactory implements TableCellRendererFactory<Attribute<?>> {
+
+    @Override
+    public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
+      return createTableCellRenderer(tableModel.entityDefinition().property(column.getIdentifier()));
+    }
+  }
+
   private final class HeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer wrappedRenderer;
@@ -1677,8 +1678,8 @@ public class EntityTablePanel extends JPanel {
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
-      boolean displayConditionState = renderer instanceof EntityTableCellRenderer
-              && ((EntityTableCellRenderer) renderer).isDisplayConditionState()
+      boolean displayConditionState = renderer instanceof FilteredTableCellRenderer
+              && ((FilteredTableCellRenderer) renderer).isDisplayCondition()
               && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
       component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);

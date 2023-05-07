@@ -48,12 +48,11 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
-    FilteredTable<Schema, Integer, FilteredTableModel<Schema, Integer>> schemaTable =
+    FilteredTable<FilteredTableModel<Schema, Integer>, Schema, Integer> schemaTable =
             FilteredTable.filteredTable(model.schemaModel());
     schemaTable.addDoubleClickListener(this::populateSchema);
 
-    FilteredTable<DefinitionRow, Integer,
-            FilteredTableModel<DefinitionRow, Integer>> domainTable =
+    FilteredTable<FilteredTableModel<DefinitionRow, Integer>, DefinitionRow, Integer> domainTable =
             FilteredTable.filteredTable(model.definitionModel());
 
     JSplitPane schemaTableSplitPane = Components.splitPane()

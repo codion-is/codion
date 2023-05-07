@@ -20,7 +20,6 @@ import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,7 +30,6 @@ import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
@@ -41,6 +39,8 @@ import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -178,12 +178,12 @@ final class ExceptionPanel extends JPanel {
             .caption(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    KeyEvents.builder(VK_ESCAPE)
+            .condition(WHEN_IN_FOCUSED_WINDOW)
             .action(closeControl)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_ENTER)
-            .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+    KeyEvents.builder(VK_ENTER)
+            .condition(WHEN_IN_FOCUSED_WINDOW)
             .action(closeControl)
             .enable(this);
 

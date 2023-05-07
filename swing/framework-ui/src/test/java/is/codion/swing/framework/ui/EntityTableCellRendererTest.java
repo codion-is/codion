@@ -7,6 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Detail;
@@ -16,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class DefauitEntityTableCellRendererTest {
+public class EntityTableCellRendererTest {
 
   private static final Domain DOMAIN = new TestDomain();
 
@@ -32,7 +33,7 @@ public class DefauitEntityTableCellRendererTest {
   void test() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
-    EntityTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
+    FilteredTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
             DOMAIN.entities().definition(Employee.TYPE).property(Employee.NAME))
             .build();
     renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);

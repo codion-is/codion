@@ -33,8 +33,6 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -42,6 +40,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static java.awt.event.InputEvent.ALT_DOWN_MASK;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_V;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -762,8 +763,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void bindEventsInternal() {
     if (INCLUDE_ENTITY_MENU.get()) {
-      KeyEvents.builder(KeyEvent.VK_V)
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+      KeyEvents.builder(VK_V)
+              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(Control.control(this::showEntityMenu))
               .enable(this);

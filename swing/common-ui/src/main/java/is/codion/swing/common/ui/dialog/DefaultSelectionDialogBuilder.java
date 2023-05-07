@@ -8,7 +8,6 @@ import is.codion.common.state.State;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JList;
 import javax.swing.JScrollPane;
@@ -16,7 +15,6 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import java.awt.Dimension;
 import java.awt.Window;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Collection;
@@ -25,9 +23,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
 final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<SelectionDialogBuilder<T>>
         implements SelectionDialogBuilder<T> {
@@ -96,8 +96,8 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
-    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {

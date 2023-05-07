@@ -12,6 +12,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.DecimalFormat;
 
+import static java.awt.event.KeyEvent.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -77,11 +78,11 @@ public final class NumberFieldTest {
     integerField.setNumber(123456);
     assertEquals("123.456", integerField.getText());
     integerField.setCaretPosition(3);
-    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
-            KeyEvent.VK_DELETE, KeyEvent.CHAR_UNDEFINED));
+    keyListener.keyReleased(new KeyEvent(integerField, KEY_RELEASED, System.currentTimeMillis(), 0,
+            VK_DELETE, CHAR_UNDEFINED));
     assertEquals(4, integerField.getCaretPosition());
-    keyListener.keyReleased(new KeyEvent(integerField, KeyEvent.KEY_RELEASED, System.currentTimeMillis(), 0,
-            KeyEvent.VK_BACK_SPACE, KeyEvent.CHAR_UNDEFINED));
+    keyListener.keyReleased(new KeyEvent(integerField, KEY_RELEASED, System.currentTimeMillis(), 0,
+            VK_BACK_SPACE, CHAR_UNDEFINED));
     assertEquals(3, integerField.getCaretPosition());
   }
 

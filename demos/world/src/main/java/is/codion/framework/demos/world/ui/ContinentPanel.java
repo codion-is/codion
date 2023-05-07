@@ -13,13 +13,14 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.KeyEvent;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel;
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
 import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.awt.event.KeyEvent.VK_1;
+import static java.awt.event.KeyEvent.VK_2;
 
 final class ContinentPanel extends EntityPanel {
 
@@ -66,10 +67,10 @@ final class ContinentPanel extends EntityPanel {
 
     JTabbedPane tabbedPane = Components.tabbedPane()
             .tabBuilder("Charts", chartPanel)
-            .mnemonic(KeyEvent.VK_1)
+            .mnemonic(VK_1)
             .add()
             .tabBuilder("Countries", countryPanel)
-            .mnemonic(KeyEvent.VK_2)
+            .mnemonic(VK_2)
             .add()
             .build();
 

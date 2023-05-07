@@ -21,6 +21,8 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 
+import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -319,10 +321,10 @@ public final class NumberField<T extends Number> extends HintTextField {
     @Override
     public void keyReleased(KeyEvent e) {
       switch (e.getKeyCode()) {
-        case KeyEvent.VK_BACK_SPACE:
+        case VK_BACK_SPACE:
           skipGroupingSeparator(false);
           break;
-        case KeyEvent.VK_DELETE:
+        case VK_DELETE:
           skipGroupingSeparator(true);
           break;
         default:

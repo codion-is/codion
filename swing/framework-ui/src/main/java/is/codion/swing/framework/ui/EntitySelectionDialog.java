@@ -26,13 +26,14 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
@@ -75,7 +76,7 @@ public final class EntitySelectionDialog extends JDialog {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.tableModel.editModel().setReadOnly(true);
     this.entityTablePanel = createTablePanel(tableModel, preferredSize, singleSelection);
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(VK_ESCAPE)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(getRootPane());
@@ -139,7 +140,7 @@ public final class EntitySelectionDialog extends JDialog {
     });
     tablePanel.setConditionPanelVisible(true);
     tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+            .put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
     tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);
     if (preferredSize != null) {
       tablePanel.setPreferredSize(preferredSize);

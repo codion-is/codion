@@ -26,7 +26,6 @@ import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
 import java.awt.datatransfer.DataFlavor;
-import java.awt.event.KeyEvent;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -36,6 +35,8 @@ import java.util.function.Predicate;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Arrays.asList;
 
 /*
@@ -106,8 +107,8 @@ public final class ApplicationPanel extends JPanel {
             .transferFocusOnEnter(true)
             .dragEnabled(true)
             .transferHandler(new FilePathTransferHandler())
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_SPACE)
-                    .modifiers(KeyEvent.CTRL_DOWN_MASK)
+            .keyEvent(KeyEvents.builder(VK_SPACE)
+                    .modifiers(CTRL_DOWN_MASK)
                     .action(Control.actionControl(actionEvent ->
                             ((JTextArea) actionEvent.getSource()).append("SPACE"))))
             .label(label("Text (3)")

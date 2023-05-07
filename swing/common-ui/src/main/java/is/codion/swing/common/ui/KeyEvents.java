@@ -9,6 +9,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JComponent.WHEN_FOCUSED;
 
 /**
  * A factory for key event builders.
@@ -113,7 +114,7 @@ public final class KeyEvents {
 
     private int keyEvent;
     private int modifiers;
-    private int condition = JComponent.WHEN_FOCUSED;
+    private int condition = WHEN_FOCUSED;
     private boolean onKeyReleased = false;
     private Action action;
 
