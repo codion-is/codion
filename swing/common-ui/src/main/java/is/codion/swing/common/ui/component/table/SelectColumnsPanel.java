@@ -11,7 +11,6 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JCheckBox;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.table.TableColumn;
@@ -22,7 +21,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedHashMap;
@@ -35,6 +33,8 @@ import java.util.stream.Collectors;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_UP;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
 final class SelectColumnsPanel<C> extends JPanel {
@@ -108,13 +108,13 @@ final class SelectColumnsPanel<C> extends JPanel {
     selectNoneBox.addActionListener(new SelectNone(selectAllBox, selectNoneBox));
 
     List<JCheckBox> selectCheckBoxes = Arrays.asList(selectAllBox, selectNoneBox);
-    KeyEvents.builder(KeyEvent.VK_UP)
-            .condition(JComponent.WHEN_FOCUSED)
+    KeyEvents.builder(VK_UP)
+            .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(selectCheckBoxes, false)))
             .enable(selectAllBox)
             .enable(selectNoneBox);
-    KeyEvents.builder(KeyEvent.VK_DOWN)
-            .condition(JComponent.WHEN_FOCUSED)
+    KeyEvents.builder(VK_DOWN)
+            .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(selectCheckBoxes, true)))
             .enable(selectAllBox)
             .enable(selectNoneBox);
@@ -137,11 +137,11 @@ final class SelectColumnsPanel<C> extends JPanel {
     JPanel northPanel = Components.panel(gridLayout(0, 1))
             .addAll(checkBoxes)
             .build();
-    KeyEvents.Builder upEventBuilder = KeyEvents.builder(KeyEvent.VK_UP)
-            .condition(JComponent.WHEN_FOCUSED)
+    KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)
+            .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(checkBoxes, false)));
-    KeyEvents.Builder downEventBuilder = KeyEvents.builder(KeyEvent.VK_DOWN)
-            .condition(JComponent.WHEN_FOCUSED)
+    KeyEvents.Builder downEventBuilder = KeyEvents.builder(VK_DOWN)
+            .condition(WHEN_FOCUSED)
             .action(control(new TransferFocusCommand(checkBoxes, true)));
     checkBoxes.forEach(checkBox -> {
       upEventBuilder.enable(checkBox);

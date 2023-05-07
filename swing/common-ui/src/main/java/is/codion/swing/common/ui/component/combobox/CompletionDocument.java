@@ -19,6 +19,8 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.text.Normalizer;
 
+import static java.awt.event.KeyEvent.VK_BACK_SPACE;
+import static java.awt.event.KeyEvent.VK_DELETE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -177,12 +179,12 @@ class CompletionDocument extends PlainDocument {
       hitBackspace = false;
       switch (e.getKeyCode()) {
         // determine if the pressed key is backspace (needed by the remove method)
-        case KeyEvent.VK_BACK_SPACE:
+        case VK_BACK_SPACE:
           hitBackspace = true;
           hitBackspaceOnSelection = editorComponent.getSelectionStart() != editorComponent.getSelectionEnd();
           break;
         // ignore delete key
-        case KeyEvent.VK_DELETE:
+        case VK_DELETE:
           e.consume();
           break;
         default:

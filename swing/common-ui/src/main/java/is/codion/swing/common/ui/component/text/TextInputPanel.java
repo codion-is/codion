@@ -25,10 +25,10 @@ import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -222,7 +222,7 @@ public final class TextInputPanel extends JPanel {
         inputFromUser();
       }
     };
-    KeyEvents.builder(KeyEvent.VK_INSERT)
+    KeyEvents.builder(VK_INSERT)
             .action(buttonAction)
             .enable(textField);
     JButton actionButton = new JButton(buttonAction);

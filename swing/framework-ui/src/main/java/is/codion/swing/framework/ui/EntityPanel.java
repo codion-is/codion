@@ -42,7 +42,6 @@ import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -1155,38 +1154,38 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
       tablePanel.getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-              KeyEvents.builder(KeyEvent.VK_T)
+              KeyEvents.builder(VK_T)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-              KeyEvents.builder(KeyEvent.VK_S)
+              KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       tablePanel.getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-              KeyEvents.builder(KeyEvent.VK_S)
+              KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       if (containsEditPanel()) {
         tablePanel.getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-                KeyEvents.builder(KeyEvent.VK_T)
+                KeyEvents.builder(VK_T)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-                KeyEvents.builder(KeyEvent.VK_S)
+                KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
         tablePanel.getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-                KeyEvents.builder(KeyEvent.VK_S)
+                KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
@@ -1196,17 +1195,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (containsEditPanel()) {
       Control selectEditPanelControl = Control.control(this::selectEditPanel);
       Control selectInputComponentControl = Control.control(this::selectInputComponent);
-      KeyEvents.builder(KeyEvent.VK_E)
+      KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectEditPanelControl)
               .enable(this);
-      KeyEvents.builder(KeyEvent.VK_I)
+      KeyEvents.builder(VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponentControl)
               .enable(this);
-      KeyEvents.builder(KeyEvent.VK_I)
+      KeyEvents.builder(VK_I)
               .modifiers(CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponentControl)

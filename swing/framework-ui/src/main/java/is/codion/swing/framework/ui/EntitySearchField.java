@@ -63,7 +63,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -79,6 +78,9 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -345,10 +347,10 @@ public final class EntitySearchField extends HintTextField {
     JButton okButton = Components.button(control(closeEvent::onEvent))
             .caption(Messages.ok())
             .build();
-    KeyEvents.builder(KeyEvent.VK_ENTER)
+    KeyEvents.builder(VK_ENTER)
             .action(control(okButton::doClick))
             .enable(okButton);
-    KeyEvents.builder(KeyEvent.VK_ESCAPE)
+    KeyEvents.builder(VK_ESCAPE)
             .action(control(closeEvent::onEvent))
             .enable(okButton);
     JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.CENTER))
@@ -496,8 +498,8 @@ public final class EntitySearchField extends HintTextField {
               .build();
       list.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-      list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-              KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+      list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+              KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
         @Override
         public void mouseClicked(MouseEvent e) {
@@ -579,15 +581,15 @@ public final class EntitySearchField extends HintTextField {
               .caption(Messages.ok())
               .build();
       table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectControl)
               .enable(table);
-      KeyEvents.builder(KeyEvent.VK_ENTER)
+      KeyEvents.builder(VK_ENTER)
               .action(selectControl)
               .enable(table.searchField());
-      KeyEvents.builder(KeyEvent.VK_F)
-              .modifiers(InputEvent.CTRL_DOWN_MASK)
+      KeyEvents.builder(VK_F)
+              .modifiers(CTRL_DOWN_MASK)
               .action(Control.control(() -> table.searchField().requestFocusInWindow()))
               .enable(table);
       tableModel.columnModel().columns().forEach(this::configureColumn);
@@ -715,11 +717,11 @@ public final class EntitySearchField extends HintTextField {
     @Override
     public void keyPressed(KeyEvent e) {
       if (!model.searchStringRepresentsSelected()) {
-        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+        if (e.getKeyCode() == VK_ENTER) {
           e.consume();
           performSearch(true);
         }
-        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+        else if (e.getKeyCode() == VK_ESCAPE) {
           e.consume();
           model.resetSearchString();
           selectAll();
@@ -816,13 +818,13 @@ public final class EntitySearchField extends HintTextField {
 
     @Override
     protected void enableTransferFocusOnEnter(EntitySearchField component) {
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_FOCUSED)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_FOCUSED)
               .action(component.transferFocusAction)
               .enable(component);
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_FOCUSED)
-              .modifiers(InputEvent.SHIFT_DOWN_MASK)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_FOCUSED)
+              .modifiers(SHIFT_DOWN_MASK)
               .action(component.transferFocusBackwardAction)
               .enable(component);
     }

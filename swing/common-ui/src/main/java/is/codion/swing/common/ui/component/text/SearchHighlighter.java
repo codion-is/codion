@@ -18,7 +18,6 @@ import javax.swing.text.Document;
 import javax.swing.text.Highlighter;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -27,6 +26,7 @@ import java.util.regex.Pattern;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.control.Control.control;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -89,11 +89,11 @@ public final class SearchHighlighter {
    */
   public JTextField createSearchField() {
     return new DefaultTextFieldBuilder<>(String.class, searchStringValue)
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+            .keyEvent(KeyEvents.builder(VK_DOWN)
                     .action(control(this::nextSearchPosition)))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+            .keyEvent(KeyEvents.builder(VK_UP)
                     .action(control(this::previousSearchPosition)))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+            .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(control(() -> searchStringValue.set(null))))
             .popupMenu(Controls.builder()
                     .control(ToggleControl.builder(caseSensitiveState)

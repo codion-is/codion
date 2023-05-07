@@ -23,13 +23,16 @@ import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
+import static java.awt.event.KeyEvent.VK_ENTER;
+import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
+import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
 final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<ComponentDialogBuilder> implements ComponentDialogBuilder {
 
@@ -122,8 +125,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   public JDialog build() {
     JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo, location, modal, resizable, onShown);
     if (enterAction != null) {
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(enterAction)
               .enable(dialog.getRootPane());
     }
@@ -133,8 +136,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     if (closeEvent == null) {
       dialog.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
       if (disposeOnEscape) {
-        KeyEvents.builder(KeyEvent.VK_ESCAPE)
-                .condition(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        KeyEvents.builder(VK_ESCAPE)
+                .condition(WHEN_IN_FOCUSED_WINDOW)
                 .action(new DisposeDialogOnEscapeAction(dialog, confirmCloseListener))
                 .enable(dialog.getRootPane());
       }

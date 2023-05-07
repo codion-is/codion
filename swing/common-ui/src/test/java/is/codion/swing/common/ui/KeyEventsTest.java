@@ -8,8 +8,8 @@ import is.codion.swing.common.ui.control.Control;
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JTextField;
-import java.awt.event.KeyEvent;
 
+import static java.awt.event.KeyEvent.VK_ENTER;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
@@ -21,7 +21,7 @@ public class KeyEventsTest {
     final String actionName = "testing";
     Control control = Control.builder(() -> {}).caption(actionName).build();
     assertNull(textField.getActionMap().get(actionName));
-    KeyEvents.Builder builder = KeyEvents.builder(KeyEvent.VK_ENTER).action(control);
+    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
     builder.enable(textField);
     assertNotNull(textField.getActionMap().get(actionName));
     builder.disable(textField);
@@ -31,9 +31,9 @@ public class KeyEventsTest {
   @Test
   void addKeyEventWithoutName() {
     JTextField textField = new JTextField();
-    String actionName = textField.getClass().getSimpleName() + KeyEvent.VK_ENTER + 0 + "keyPressed";
+    String actionName = textField.getClass().getSimpleName() + VK_ENTER + 0 + "keyPressed";
     assertNull(textField.getActionMap().get(actionName));
-    KeyEvents.Builder builder = KeyEvents.builder(KeyEvent.VK_ENTER).action(Control.control(() -> {}));
+    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(Control.control(() -> {}));
     builder.enable(textField);
     assertNotNull(textField.getActionMap().get(actionName));
     builder.disable(textField);

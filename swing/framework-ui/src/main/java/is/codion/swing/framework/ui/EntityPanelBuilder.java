@@ -30,8 +30,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 import java.awt.Dimension;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,6 +39,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 final class EntityPanelBuilder implements EntityPanel.Builder {
@@ -303,7 +303,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
             .enabledState(enabledState)
             .build();
 
-    KeyEvents.builder(KeyEvent.VK_INSERT)
+    KeyEvents.builder(VK_INSERT)
             .action(control)
             .enable(component);
 
@@ -345,8 +345,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
             .enabledState(enabledState)
             .build();
 
-    KeyEvents.builder(KeyEvent.VK_INSERT)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+    KeyEvents.builder(VK_INSERT)
+            .modifiers(CTRL_DOWN_MASK)
             .action(control)
             .enable(component);
 

@@ -16,12 +16,12 @@ import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
 
+import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -69,7 +69,7 @@ public class NullableCheckBox extends JCheckBox {
     super.setModel(requireNonNull(model, "model"));
     setIcon(new NullableIcon());
     addMouseListener(new NullableMouseListener());
-    KeyEvents.builder(KeyEvent.VK_SPACE)
+    KeyEvents.builder(VK_SPACE)
             .action(new NextStateAction(model))
             .enable(this);
   }

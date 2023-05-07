@@ -19,7 +19,6 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.awt.event.KeyEvent;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -30,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -52,7 +52,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .caption("...")
               .description(MESSAGES.getString("display_calendar"))
               .build();
-      KeyEvents.builder(KeyEvent.VK_INSERT)
+      KeyEvents.builder(VK_INSERT)
               .action(displayCalendarControl)
               .enable(temporalField);
       calendarButton = new JButton(displayCalendarControl);

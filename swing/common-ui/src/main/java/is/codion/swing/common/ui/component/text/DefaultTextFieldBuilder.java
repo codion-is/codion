@@ -14,12 +14,12 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.InputEvent;
-import java.awt.event.KeyEvent;
 import java.text.Format;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.component.text.SizedDocument.sizedDocument;
+import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Objects.requireNonNull;
 
 class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilder<T, C, B>> extends AbstractTextComponentBuilder<T, C, B>
@@ -162,8 +162,8 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   }
 
   private void addSelectionProvider(C textField, SelectionProvider<T> selectionProvider) {
-    KeyEvents.builder(KeyEvent.VK_SPACE)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+    KeyEvents.builder(VK_SPACE)
+            .modifiers(CTRL_DOWN_MASK)
             .action(new SelectionAction<>(textField, selectionProvider))
             .enable(textField);
   }

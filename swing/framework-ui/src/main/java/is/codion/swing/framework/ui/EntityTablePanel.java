@@ -71,7 +71,6 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -94,6 +93,7 @@ import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDepend
 import static is.codion.swing.framework.ui.EntityTableConditionPanel.entityTableConditionPanel;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -1004,19 +1004,19 @@ public class EntityTablePanel extends JPanel {
    */
   protected void setupKeyboardActions() {
     getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_T)
+            KeyEvents.builder(VK_T)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_S)
+            KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
     getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_S)
+            KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
@@ -1378,7 +1378,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private JToolBar createRefreshButtonToolBar() {
-    KeyEvents.builder(KeyEvent.VK_F5)
+    KeyEvents.builder(VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(conditionRefreshControl)
             .enable(this);
@@ -1430,13 +1430,13 @@ public class EntityTablePanel extends JPanel {
 
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
-      KeyEvents.builder(KeyEvent.VK_DELETE)
+      KeyEvents.builder(VK_DELETE)
               .action(createDeleteSelectedControl())
               .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
-      KeyEvents.builder(KeyEvent.VK_V)
-              .modifiers(CTRL_DOWN_MASK + ALT_DOWN_MASK)
+      KeyEvents.builder(VK_V)
+              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(control(this::showEntityMenu))
               .enable(table);
     }
@@ -1447,8 +1447,8 @@ public class EntityTablePanel extends JPanel {
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
-      KeyEvents.builder(KeyEvent.VK_ENTER)
-              .condition(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+      KeyEvents.builder(VK_ENTER)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(conditionRefreshControl)
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
@@ -1502,7 +1502,7 @@ public class EntityTablePanel extends JPanel {
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
-    KeyEvents.builder(KeyEvent.VK_G)
+    KeyEvents.builder(VK_G)
             .modifiers(CTRL_DOWN_MASK)
             .action(control(() -> {
               Point location = popupLocation(table);

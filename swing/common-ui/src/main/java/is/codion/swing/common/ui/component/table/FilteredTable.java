@@ -61,6 +61,7 @@ import java.util.Set;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.InputEvent.*;
+import static java.awt.event.KeyEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -109,7 +110,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
-  private static final List<Integer> RESIZE_KEYS = asList(KeyEvent.VK_PLUS, KeyEvent.VK_ADD, KeyEvent.VK_MINUS, KeyEvent.VK_SUBTRACT);
+  private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
 
   /**
    * The table model
@@ -523,22 +524,22 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return Components.textField(tableModel.searchModel().searchStringValue())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+            .keyEvent(KeyEvents.builder(VK_ENTER)
                     .action(nextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
+            .keyEvent(KeyEvents.builder(VK_ENTER)
                     .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+            .keyEvent(KeyEvents.builder(VK_DOWN)
                     .action(nextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
+            .keyEvent(KeyEvents.builder(VK_DOWN)
                     .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+            .keyEvent(KeyEvents.builder(VK_UP)
                     .action(previousResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
+            .keyEvent(KeyEvents.builder(VK_UP)
                     .modifiers(SHIFT_DOWN_MASK)
                     .action(selectPreviousResult))
-            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+            .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(requestTableFocus))
             .popupMenuControls(searchFieldPopupMenuControls())
             .hintText(Messages.find() + "...")
@@ -654,11 +655,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
-    KeyEvents.builder(KeyEvent.VK_C)
+    KeyEvents.builder(VK_C)
             .action(Control.control(this::copySelectedCell))
-            .modifiers(CTRL_DOWN_MASK + ALT_DOWN_MASK)
+            .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
             .enable(this);
-    KeyEvents.builder(KeyEvent.VK_F)
+    KeyEvents.builder(VK_F)
             .action(Control.control(searchField::requestFocusInWindow))
             .modifiers(CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -920,12 +921,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     @Override
     public void keyPressed(KeyEvent e) {
-      if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == KeyEvent.VK_LEFT || e.getKeyCode() == KeyEvent.VK_RIGHT)) {
-        moveSelectedColumn(e.getKeyCode() == KeyEvent.VK_LEFT);
+      if (e.isControlDown() && e.isShiftDown() && (e.getKeyCode() == VK_LEFT || e.getKeyCode() == VK_RIGHT)) {
+        moveSelectedColumn(e.getKeyCode() == VK_LEFT);
         e.consume();
       }
       else if (e.isControlDown() && (RESIZE_KEYS.contains(e.getKeyCode()))) {
-        resizeSelectedColumn(e.getKeyCode() == KeyEvent.VK_PLUS || e.getKeyCode() == KeyEvent.VK_ADD);
+        resizeSelectedColumn(e.getKeyCode() == VK_PLUS || e.getKeyCode() == VK_ADD);
         e.consume();
       }
     }
