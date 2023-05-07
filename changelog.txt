@@ -8856,3 +8856,4 @@
   LookAndFeelProvider.lookAndFeel() added, used in LookAndFeelPanel
   DefaultFilteredTableCellRenderer refactored
   EntityTableCellRenderer no longer extends FilteredTableCellRenderer
+  KeyBindingPanel utility added to tutorials

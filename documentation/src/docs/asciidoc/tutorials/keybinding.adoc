@@ -1,0 +1,18 @@
+[#_keybinding_tutorial]
+= KeyBindingPanel Tutorial
+:docinfo: shared-head
+:dir-source: ../../../../../demos/manual/src/main/java
+
+== KeyBindingPanel
+
+[source,java,linenums]
+----
+include::{dir-source}/is/codion/framework/demos/manual/keybinding/KeyBindingPanel.java[lines=4..-1]
+----
+
+== KeyBindingTableModel
+
+[source,java,linenums]
+----
+include::{dir-source}/is/codion/framework/demos/manual/keybinding/KeyBindingTableModel.java[lines=4..-1]
+----
