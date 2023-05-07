@@ -93,18 +93,24 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
     /**
      * @param row the row number
      * @param columnIdentifier the column identifier
+     * @param cellValue the cell value
      * @param selected true if the cell is selected
      * @return a background Color for the given cell, null for none
      */
-    Color backgroundColor(int row, C columnIdentifier, boolean selected);
+    default Color backgroundColor(int row, C columnIdentifier, Object cellValue, boolean selected) {
+      return null;
+    }
 
     /**
      * @param row the row number
      * @param columnIdentifier the column identifier
+     * @param cellValue the cell value
      * @param selected true if the cell is selected
      * @return a foreground Color for the given cell, null for none
      */
-    Color foregroundColor(int row, C columnIdentifier, boolean selected);
+    default Color foregroundColor(int row, C columnIdentifier, Object cellValue, boolean selected) {
+      return null;
+    }
   }
 
   /**

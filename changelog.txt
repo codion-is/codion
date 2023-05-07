@@ -8854,3 +8854,5 @@
   FilteredTable, CTRL-F now moves focus to search field, same functionality removed from EntityTablePanel and EntityPanel
   Use static imports for InputEvent, KeyEvent and JComponent constants
   LookAndFeelProvider.lookAndFeel() added, used in LookAndFeelPanel
+  DefaultFilteredTableCellRenderer refactored
+  EntityTableCellRenderer no longer extends FilteredTableCellRenderer
