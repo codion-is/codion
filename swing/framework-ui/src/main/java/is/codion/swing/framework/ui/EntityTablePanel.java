@@ -71,7 +71,6 @@ import java.awt.Insets;
 import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.util.ArrayList;
@@ -208,7 +207,6 @@ public class EntityTablePanel extends JPanel {
     MOVE_SELECTION_DOWN,
     COPY_TABLE_DATA,
     REQUEST_TABLE_FOCUS,
-    REQUEST_SEARCH_FIELD_FOCUS,
     SELECT_CONDITION_PANEL,
     CONFIGURE_COLUMNS
   }
@@ -1011,12 +1009,6 @@ public class EntityTablePanel extends JPanel {
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.REQUEST_SEARCH_FIELD_FOCUS).ifPresent(control ->
-            KeyEvents.builder(KeyEvent.VK_F)
-                    .modifiers(CTRL_DOWN_MASK)
-                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                    .action(control)
-                    .enable(this));
     getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
             KeyEvents.builder(KeyEvent.VK_S)
                     .modifiers(CTRL_DOWN_MASK)
@@ -1268,7 +1260,6 @@ public class EntityTablePanel extends JPanel {
       controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
-    controls.put(ControlCode.REQUEST_SEARCH_FIELD_FOCUS, Control.control(table().searchField()::requestFocus));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
@@ -1445,7 +1436,7 @@ public class EntityTablePanel extends JPanel {
     }
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(KeyEvent.VK_V)
-              .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+              .modifiers(CTRL_DOWN_MASK + ALT_DOWN_MASK)
               .action(control(this::showEntityMenu))
               .enable(table);
     }
@@ -1512,7 +1503,7 @@ public class EntityTablePanel extends JPanel {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
     }
     KeyEvents.builder(KeyEvent.VK_G)
-            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .modifiers(CTRL_DOWN_MASK)
             .action(control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);

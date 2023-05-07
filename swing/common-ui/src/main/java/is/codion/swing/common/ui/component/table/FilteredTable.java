@@ -43,7 +43,6 @@ import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.InputEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -61,6 +60,7 @@ import java.util.Set;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
+import static java.awt.event.InputEvent.*;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
@@ -526,17 +526,17 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
                     .action(nextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ENTER)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
                     .action(nextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_DOWN)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectNextResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
                     .action(previousResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_UP)
-                    .modifiers(InputEvent.SHIFT_DOWN_MASK)
+                    .modifiers(SHIFT_DOWN_MASK)
                     .action(selectPreviousResult))
             .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
                     .action(requestTableFocus))
@@ -656,7 +656,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(KeyEvent.VK_C)
             .action(Control.control(this::copySelectedCell))
-            .modifiers(InputEvent.CTRL_DOWN_MASK + InputEvent.ALT_DOWN_MASK)
+            .modifiers(CTRL_DOWN_MASK + ALT_DOWN_MASK)
+            .enable(this);
+    KeyEvents.builder(KeyEvent.VK_F)
+            .action(Control.control(searchField::requestFocusInWindow))
+            .modifiers(CTRL_DOWN_MASK)
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
   }
 

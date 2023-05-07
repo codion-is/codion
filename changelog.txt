@@ -8851,3 +8851,4 @@
   ComboBoxBuilder.enableMouseWheelSelection() added
   LookAndFeelSelectionPanel replaced with LookAndFeelComboBox, related refactoring
   FilteredTableCellRenderer refactored from EntityTableCellRenderer, major refactoring, DefaultEntityTableCellRenderer removed
+  FilteredTable, CTRL-F now moves focus to search field, same functionality removed from EntityTablePanel and EntityPanel
