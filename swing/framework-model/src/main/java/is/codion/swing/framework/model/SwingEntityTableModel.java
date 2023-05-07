@@ -34,7 +34,6 @@ import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel.DefaultSummaryValueProvider;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -1192,14 +1191,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
-    if (attribute.isNumerical()) {
-      return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
-    }
-
-    return Optional.empty();
-  }
-
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
 
     @Override
@@ -1292,7 +1283,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
-      return SwingEntityTableModel.this.createColumnValueProvider(attribute);
+      if (attribute.isNumerical()) {
+        return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
+      }
+
+      return Optional.empty();
     }
 
     @Override

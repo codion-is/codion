@@ -367,7 +367,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
      * @return the {@link Settings} instance for this renderer
      */
     protected Settings<T, C> settings(int leftPadding, int rightPadding) {
-      return new Settings<T, C>(leftPadding, rightPadding);
+      return new Settings<>(leftPadding, rightPadding);
     }
 
     private int defaultHorizontalAlignment() {
