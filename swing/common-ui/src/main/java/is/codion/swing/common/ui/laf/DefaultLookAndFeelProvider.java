@@ -54,4 +54,23 @@ final class DefaultLookAndFeelProvider implements LookAndFeelProvider {
   public String toString() {
     return name();
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (!(obj instanceof DefaultLookAndFeelProvider)) {
+      return false;
+    }
+
+    DefaultLookAndFeelProvider that = (DefaultLookAndFeelProvider) obj;
+
+    return classname.equals(that.classname);
+  }
+
+  @Override
+  public int hashCode() {
+    return classname.hashCode();
+  }
 }

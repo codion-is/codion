@@ -7,11 +7,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.BooleanRenderer;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.DefaultBuilder;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.Settings;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
@@ -27,30 +24,18 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
   private final Property<?> property;
 
   EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Property<?> property) {
-    super(tableModel, property.attribute(), property.attribute().valueClass());
+    super(tableModel, property.attribute(), property.attribute().valueClass(),
+            property.attribute().isBoolean() && !(property instanceof ItemProperty));
     this.property = requireNonNull(property);
     this.tableModel = requireNonNull(tableModel);
     this.tableModel.entityDefinition().property(property.attribute());
     displayValueProvider(new DefaultDisplayValueProvider(this.property));
-    horizontalAlignment(horizontalAlignment());
     cellColorProvider(new EntityCellColorProvider(tableModel));
   }
 
   @Override
-  public FilteredTableCellRenderer build() {
-    if (property.attribute().isBoolean() && !(property instanceof ItemProperty)) {
-      return new BooleanRenderer<>(this, new EntitySettings(leftPadding(), rightPadding()));
-    }
-
-    return new DefaultFilteredTableCellRenderer<>(this, new EntitySettings(leftPadding(), rightPadding()));
-  }
-
-  private int horizontalAlignment() {
-    if (property.attribute().isBoolean() && !(property instanceof ItemProperty)) {
-      return FilteredTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
-    }
-
-    return super.defaultHorizontalAlignment();
+  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding) {
+    return new EntitySettings(leftPadding, rightPadding);
   }
 
   private static final class EntitySettings extends Settings<SwingEntityTableModel, Attribute<?>> {
@@ -70,13 +55,13 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
     }
 
     @Override
-    protected Color backgroundColor(SwingEntityTableModel tableModel, int row, Attribute<?> attribute,
+    protected Color backgroundColor(SwingEntityTableModel tableModel, int row, Attribute<?> attribute, Object cellValue,
                                     boolean indicateCondition, boolean selected,
                                     CellColorProvider<Attribute<?>> cellColorProvider) {
       boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
       boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
       boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      Color cellBackgroundColor = cellBackgroundColor(cellColorProvider.backgroundColor(row, attribute, selected), row, selected);
+      Color cellBackgroundColor = cellBackgroundColor(cellColorProvider.backgroundColor(row, attribute, cellValue, selected), row, selected);
       if (showCondition) {
         return conditionEnabledColor(row, conditionEnabled && filterEnabled, cellBackgroundColor);
       }
@@ -112,7 +97,7 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
     }
   }
 
-  private static final class EntityCellColorProvider implements FilteredTableCellRenderer.CellColorProvider<Attribute<?>> {
+  private static final class EntityCellColorProvider implements CellColorProvider<Attribute<?>> {
 
     private final SwingEntityTableModel tableModel;
 
@@ -121,12 +106,12 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
     }
 
     @Override
-    public Color backgroundColor(int row, Attribute<?> columnIdentifier, boolean selected) {
+    public Color backgroundColor(int row, Attribute<?> columnIdentifier, Object cellValue, boolean selected) {
       return tableModel.backgroundColor(row, columnIdentifier);
     }
 
     @Override
-    public Color foregroundColor(int row, Attribute<?> columnIdentifier, boolean selected) {
+    public Color foregroundColor(int row, Attribute<?> columnIdentifier, Object cellValue, boolean selected) {
       return tableModel.foregroundColor(row, columnIdentifier);
     }
   }

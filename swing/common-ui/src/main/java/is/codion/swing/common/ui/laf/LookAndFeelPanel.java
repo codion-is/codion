@@ -7,7 +7,6 @@ import is.codion.swing.common.ui.component.Components;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.LookAndFeel;
 import javax.swing.UIDefaults;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,7 +21,7 @@ final class LookAndFeelPanel extends JPanel {
   private static final int COLOR_LABEL_WIDTH = 100;
 
   private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
-  private final Map<String, UIDefaults> lookAndFeelDefaults = new ConcurrentHashMap<>();
+  private final Map<LookAndFeelProvider, UIDefaults> lookAndFeelDefaults = new ConcurrentHashMap<>();
 
   private final JLabel textLabel = new JLabel();
   private final JLabel colorLabel = Components.label()
@@ -39,7 +38,7 @@ final class LookAndFeelPanel extends JPanel {
     textLabel.setOpaque(true);
     colorLabel.setOpaque(true);
     textLabel.setText(lookAndFeel.className());
-    UIDefaults defaults = defaults(lookAndFeel.className());
+    UIDefaults defaults = defaults(lookAndFeel);
     if (defaults == nullDefaults) {
       textLabel.setBackground(selected ? Color.LIGHT_GRAY : Color.WHITE);
       textLabel.setForeground(Color.BLACK);
@@ -55,15 +54,13 @@ final class LookAndFeelPanel extends JPanel {
     }
   }
 
-  private UIDefaults defaults(String className) {
-    return lookAndFeelDefaults.computeIfAbsent(className, this::initializeLookAndFeelDefaults);
+  private UIDefaults defaults(LookAndFeelProvider lookAndFeelProvider) {
+    return lookAndFeelDefaults.computeIfAbsent(lookAndFeelProvider, this::initializeLookAndFeelDefaults);
   }
 
-  private UIDefaults initializeLookAndFeelDefaults(String className) {
+  private UIDefaults initializeLookAndFeelDefaults(LookAndFeelProvider lookAndFeelProvider) {
     try {
-      Class<LookAndFeel> clazz = (Class<LookAndFeel>) Class.forName(className);
-
-      return clazz.getDeclaredConstructor().newInstance().getDefaults();
+      return lookAndFeelProvider.lookAndFeel().getDefaults();
     }
     catch (Exception e) {
       System.err.println(e.getMessage());

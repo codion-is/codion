@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.laf;
 import is.codion.common.model.UserPreferences;
 import is.codion.swing.common.ui.Utilities;
 
+import javax.swing.LookAndFeel;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.Window;
@@ -44,6 +45,14 @@ public interface LookAndFeelProvider {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * @return the LookAndFeel instance represented by this provider
+   * @throws Exception in case an instance could not be created
+   */
+  default LookAndFeel lookAndFeel() throws Exception {
+    return (LookAndFeel) Class.forName(className()).getDeclaredConstructor().newInstance();
   }
 
   /**

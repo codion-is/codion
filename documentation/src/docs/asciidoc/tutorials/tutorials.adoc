@@ -13,3 +13,5 @@
 ** <<{basedir}/tutorials/chinook.adoc#_chinook_tutorial, Chinook Tutorial Full (just code)>>.
 ** <<{basedir}/tutorials/petclinic.adoc#_petclinic_tutorial, Petclinic Tutorial (just code)>>.
 ** <<{basedir}/tutorials/petstore.adoc#_pet_store_tutorial, Petstore Tutorial (just code)>>.
+* Miscellaneous
+** <<{basedir}/tutorials/keybinding.adoc#_keybinding_tutorial, KeyBindingPanel Tutorial (just code)>>.

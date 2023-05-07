@@ -72,10 +72,10 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
 
   @Override
   public final Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                 boolean hasFocus, int row, int column) {
+                                                       boolean hasFocus, int row, int column) {
     super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-    setForeground(settings.foregroundColor(columnIdentifier, row, isSelected, cellColorProvider));
-    setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, isDisplayCondition(), isSelected, cellColorProvider));
+    setForeground(settings.foregroundColor(row, columnIdentifier, value, isSelected, cellColorProvider));
+    setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, value, isDisplayCondition(), isSelected, cellColorProvider));
     setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
     if (toolTipData) {
       setToolTipText(value == null ? "" : value.toString());
@@ -102,19 +102,6 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     @Override
     public Object apply(Object value) {
       return Objects.toString(value);
-    }
-  }
-
-  private static final class DefaultCellColorProvider<C> implements CellColorProvider<C> {
-
-    @Override
-    public Color backgroundColor(int row, C columnIdentifier, boolean selected) {
-      return null;
-    }
-
-    @Override
-    public Color foregroundColor(int row, C columnIdentifier, boolean selected) {
-      return null;
     }
   }
 
@@ -166,8 +153,8 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
       getNullableModel().setState((Boolean) value);
-      setForeground(settings.foregroundColor(columnIdentifier, row, isSelected, cellColorProvider));
-      setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, isDisplayCondition(), isSelected, cellColorProvider));
+      setForeground(settings.foregroundColor(row, columnIdentifier, value, isSelected, cellColorProvider));
+      setBackground(settings.backgroundColor(tableModel, row, columnIdentifier, value, isDisplayCondition(), isSelected, cellColorProvider));
       setBorder(hasFocus || isSearchResult(row, column, tableModel) ? settings.focusedCellBorder : settings.defaultCellBorder);
 
       return this;
@@ -219,13 +206,13 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
       focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
     }
 
-    protected Color backgroundColor(T tableModel, int row, C columnIdentifier,
+    protected Color backgroundColor(T tableModel, int row, C columnIdentifier, Object cellValue,
                                     boolean indicateCondition, boolean selected,
                                     CellColorProvider<C> cellColorProvider) {
       ColumnConditionModel<?, ?> filterModel = tableModel.columnFilterModels().get(columnIdentifier);
       boolean filterEnabled = filterModel != null && filterModel.isEnabled();
       boolean showCondition = indicateCondition && filterEnabled;
-      Color cellBackgroundColor = cellBackgroundColor(cellColorProvider.backgroundColor(row, columnIdentifier, selected), row, selected);
+      Color cellBackgroundColor = cellBackgroundColor(cellColorProvider.backgroundColor(row, columnIdentifier, cellValue, selected), row, selected);
       if (showCondition) {
         return conditionEnabledColor(row, cellBackgroundColor);
       }
@@ -262,8 +249,8 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
       return cellSpecificBackgroundColor;
     }
 
-    private Color foregroundColor(C columnIdentifier, int row, boolean selected, CellColorProvider<C> cellColorProvider) {
-      Color cellColor = cellColorProvider.foregroundColor(row, columnIdentifier, selected);
+    private Color foregroundColor(int row, C columnIdentifier, Object cellValue, boolean selected, CellColorProvider<C> cellColorProvider) {
+      Color cellColor = cellColorProvider.foregroundColor(row, columnIdentifier, cellValue, selected);
 
       return cellColor == null ? foregroundColor : cellColor;
     }
@@ -303,6 +290,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     private final T tableModel;
     private final C columnIdentifier;
     private final Class<?> columnClass;
+    private final boolean isBoolean;
 
     private int horizontalAlignment;
     private boolean toolTipData;
@@ -310,12 +298,17 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     private int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
     private Function<Object, Object> displayValueProvider = new DefaultDisplayValueProvider();
-    private CellColorProvider<C> cellColorProvider = new DefaultCellColorProvider<>();
+    private CellColorProvider<C> cellColorProvider = new CellColorProvider<C>() {};
 
     protected DefaultBuilder(T tableModel, C columnIdentifier, Class<?> columnClass) {
+      this(tableModel, columnIdentifier, columnClass, Boolean.class.equals(requireNonNull(columnClass)));
+    }
+
+    protected DefaultBuilder(T tableModel, C columnIdentifier, Class<?> columnClass, boolean isBoolean) {
       this.tableModel = requireNonNull(tableModel);
       this.columnIdentifier = requireNonNull(columnIdentifier);
       this.columnClass = requireNonNull(columnClass);
+      this.isBoolean = isBoolean;
       this.horizontalAlignment = defaultHorizontalAlignment();
     }
 
@@ -362,16 +355,23 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     }
 
     @Override
-    public FilteredTableCellRenderer build() {
-      if (Boolean.class.equals(columnClass)) {
-        return new BooleanRenderer<>(this, new Settings<T, C>(leftPadding, rightPadding));
-      }
-
-      return new DefaultFilteredTableCellRenderer<>(this, new Settings<T, C>(leftPadding, rightPadding));
+    public final FilteredTableCellRenderer build() {
+      return isBoolean ?
+              new BooleanRenderer<>(this, settings(leftPadding, rightPadding)) :
+              new DefaultFilteredTableCellRenderer<>(this, settings(leftPadding, rightPadding));
     }
 
-    protected final int defaultHorizontalAlignment() {
-      if (Boolean.class.equals(columnClass)) {
+    /**
+     * @param leftPadding the left padding
+     * @param rightPadding the right padding
+     * @return the {@link Settings} instance for this renderer
+     */
+    protected Settings<T, C> settings(int leftPadding, int rightPadding) {
+      return new Settings<T, C>(leftPadding, rightPadding);
+    }
+
+    private int defaultHorizontalAlignment() {
+      if (isBoolean) {
         return FilteredTableCellRenderer.BOOLEAN_HORIZONTAL_ALIGNMENT.get();
       }
       if (Number.class.isAssignableFrom(columnClass)) {
@@ -382,14 +382,6 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
       }
 
       return FilteredTableCellRenderer.HORIZONTAL_ALIGNMENT.get();
-    }
-
-    protected int leftPadding() {
-      return leftPadding;
-    }
-
-    protected int rightPadding() {
-      return rightPadding;
     }
   }
 }
