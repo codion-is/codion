@@ -965,8 +965,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     private DefaultBuilder(T tableModel) {
       this.tableModel = requireNonNull(tableModel);
-      this.conditionPanelFactory = new DefaultFilterPanelFactory<C>(tableModel);
-      this.cellRendererFactory = new DefaultTableCellRendererFactory<T, R, C>(tableModel);
+      this.conditionPanelFactory = new DefaultFilterPanelFactory<>(tableModel);
+      this.cellRendererFactory = new DefaultTableCellRendererFactory<>(tableModel);
     }
 
     @Override

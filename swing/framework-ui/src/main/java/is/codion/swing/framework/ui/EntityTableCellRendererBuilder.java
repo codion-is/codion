@@ -20,15 +20,13 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
 
-  private final SwingEntityTableModel tableModel;
   private final Property<?> property;
 
   EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Property<?> property) {
-    super(tableModel, property.attribute(), property.attribute().valueClass(),
+    super(requireNonNull(tableModel), requireNonNull(property).attribute(), property.attribute().valueClass(),
             property.attribute().isBoolean() && !(property instanceof ItemProperty));
-    this.property = requireNonNull(property);
-    this.tableModel = requireNonNull(tableModel);
-    this.tableModel.entityDefinition().property(property.attribute());
+    this.property = property;
+    tableModel.entityDefinition().property(property.attribute());
     displayValueProvider(new DefaultDisplayValueProvider(this.property));
     cellColorProvider(new EntityCellColorProvider(tableModel));
   }
