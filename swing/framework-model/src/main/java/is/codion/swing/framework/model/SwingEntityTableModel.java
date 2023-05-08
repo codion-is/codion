@@ -613,7 +613,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean allowSelectionChange() {
+  public boolean allowSelectionChange() {
     return tableModel.allowSelectionChange();
   }
 
@@ -663,6 +663,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
+  public final void addItemAt(int index, Entity item) {
+    tableModel.addItemAt(index, item);
+  }
+
+  @Override
   public final void addItemSorted(Entity item) {
     tableModel.addItemSorted(item);
   }
@@ -690,6 +695,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void removeItems(int fromIndex, int toIndex) {
     tableModel.removeItems(fromIndex, toIndex);
+  }
+
+  @Override
+  public final void fireTableDataChanged() {
+    tableModel.fireTableDataChanged();
   }
 
   @Override

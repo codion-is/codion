@@ -124,6 +124,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void addItem(R item);
 
   /**
+   * @param index the index
+   * @param item the item to add
+   */
+  void addItemAt(int index, R item);
+
+  /**
    * Adds the given item to the bottom of this table model.
    * If sorting is enabled this model is sorted after the item has been added.
    * @param item the item to add
@@ -270,6 +276,13 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * Clears all items from this table model
    */
   void clear();
+
+  /**
+   * Notifies all listeners that all cell values in the table's rows may have changed.
+   * The number of rows may also have changed and the JTable should redraw the table from scratch.
+   * The structure of the table (as in the order of the columns) is assumed to be the same.
+   */
+  void fireTableDataChanged();
 
   /**
    * Provides the column value for a row and column
