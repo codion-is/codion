@@ -698,6 +698,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
+  public final void fireTableDataChanged() {
+    tableModel.fireTableDataChanged();
+  }
+
+  @Override
   public final FilteredTableColumnModel<Attribute<?>> columnModel() {
     return tableModel.columnModel();
   }

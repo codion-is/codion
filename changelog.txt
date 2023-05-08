@@ -8864,3 +8864,4 @@
   FilteredTable.Builder added, builder() replaces factory methods, related refactoring
   SwingEntityTableModel.allowSelectionChange() no longer final
   FilteredTableModel.addItemAt() added
+  FilteredTableModel.fireTableDataChanged() added

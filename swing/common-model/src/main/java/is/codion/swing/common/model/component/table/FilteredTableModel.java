@@ -278,6 +278,13 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void clear();
 
   /**
+   * Notifies all listeners that all cell values in the table's rows may have changed.
+   * The number of rows may also have changed and the JTable should redraw the table from scratch.
+   * The structure of the table (as in the order of the columns) is assumed to be the same.
+   */
+  void fireTableDataChanged();
+
+  /**
    * Provides the column value for a row and column
    * @param <R> the row type
    * @param <C> the column identifier type
