@@ -319,12 +319,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * Shows a dialog for selecting which columns to display
    */
   public void selectColumns() {
-    SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.columnModel());
-    Dialogs.okCancelDialog(selectColumnsPanel)
+    ColumnSelectionPanel<C> columnSelectionPanel = new ColumnSelectionPanel<>(tableModel.columnModel());
+    Dialogs.okCancelDialog(columnSelectionPanel)
             .owner(getParent())
             .title(MESSAGES.getString(SELECT_COLUMNS))
-            .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
-            .onOk(selectColumnsPanel::applyChanges)
+            .onShown(dialog -> columnSelectionPanel.requestColumnPanelFocus())
+            .onOk(columnSelectionPanel::applyChanges)
             .show();
   }
 

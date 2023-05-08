@@ -8860,3 +8860,4 @@
   DefaultFilteredTableCellRenderer refactored
   FilteredTableCellRenderer.isAlternateRowColoring() added
   DefaultFilteredTableCellRenderer.DefaultBuilder renamed DefaultFilteredTableCellRendererBuilder and moved up to package level, DefaultFilteredTableCellRenderer no longer public
+  SelectColumnsPanel renamed to ColumnSelectionPanel

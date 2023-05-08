@@ -12,7 +12,7 @@ import org.junit.jupiter.api.Test;
 import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Collections.singletonList;
 
-public final class SelectColumnsPanelTest {
+public final class ColumnSelectionPanelTest {
 
   @Test
   void test() {
@@ -32,6 +32,6 @@ public final class SelectColumnsPanelTest {
               }
             });
 
-    new SelectColumnsPanel<>(tableModel.columnModel());
+    new ColumnSelectionPanel<>(tableModel.columnModel());
   }
 }

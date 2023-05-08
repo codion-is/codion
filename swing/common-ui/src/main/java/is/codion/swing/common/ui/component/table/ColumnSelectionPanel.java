@@ -37,9 +37,9 @@ import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
 import static javax.swing.BorderFactory.createEmptyBorder;
 
-final class SelectColumnsPanel<C> extends JPanel {
+final class ColumnSelectionPanel<C> extends JPanel {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SelectColumnsPanel.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnSelectionPanel.class.getName());
 
   private static final int COLUMNS_SELECTION_PANEL_HEIGHT = 250;
   private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
@@ -48,7 +48,7 @@ final class SelectColumnsPanel<C> extends JPanel {
   private final Map<TableColumn, State> states;
   private final List<JCheckBox> checkBoxes;
 
-  SelectColumnsPanel(FilteredTableColumnModel<C> columnModel) {
+  ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
     super(new BorderLayout());
     this.columnModel = columnModel;
     this.states = createStateMap();
