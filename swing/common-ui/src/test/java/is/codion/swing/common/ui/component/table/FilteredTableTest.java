@@ -26,8 +26,8 @@ public class FilteredTableTest {
           singletonList("a"), singletonList("b"), singletonList("c"), singletonList("d"), singletonList("e"));
 
   @Test
-  void constructorNullTableModel() {
-    assertThrows(Exception.class, () -> FilteredTable.filteredTable(null));
+  void builderNullTableModel() {
+    assertThrows(Exception.class, () -> FilteredTable.builder(null));
   }
 
   @Test
@@ -45,7 +45,7 @@ public class FilteredTableTest {
                 singletonList("dlabo"));
       }
     };
-    FilteredTable<TestAbstractFilteredTableModel, List<String>, Integer> filteredTable = FilteredTable.filteredTable(tableModel);
+    FilteredTable<TestAbstractFilteredTableModel, List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
     tableModel.refresh();
 
     new JScrollPane(filteredTable);

@@ -24,7 +24,6 @@ import java.awt.FlowLayout;
 import java.rmi.RemoteException;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.FilteredTable.filteredTable;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.*;
@@ -146,7 +145,7 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build(), BorderLayout.EAST)
             .build();
 
-    FilteredTable<?, ?, ?> userHistoryTable = filteredTable(model.userHistoryTableModel());
+    FilteredTable<?, ?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel()).build();
 
     return panel(borderLayout())
             .add(new JScrollPane(userHistoryTable), BorderLayout.CENTER)

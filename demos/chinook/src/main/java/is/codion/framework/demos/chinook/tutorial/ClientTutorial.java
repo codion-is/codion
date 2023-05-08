@@ -12,13 +12,13 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JTable;
 import javax.swing.UIManager;
@@ -165,7 +165,7 @@ public final class ClientTutorial {
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    EntityTablePanel.TABLE_AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
+    FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")
             .domainClassName(Chinook.class.getName())
