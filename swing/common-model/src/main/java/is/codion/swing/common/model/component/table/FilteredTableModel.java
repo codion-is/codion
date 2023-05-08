@@ -124,6 +124,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void addItem(R item);
 
   /**
+   * @param index the index
+   * @param item the item to add
+   */
+  void addItemAt(int index, R item);
+
+  /**
    * Adds the given item to the bottom of this table model.
    * If sorting is enabled this model is sorted after the item has been added.
    * @param item the item to add

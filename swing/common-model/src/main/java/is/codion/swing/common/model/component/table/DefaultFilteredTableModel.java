@@ -349,6 +349,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
+  public final void addItemAt(int index, R item) {
+    addItemAtInternal(index, item);
+  }
+
+  @Override
   public final void addItemSorted(R item) {
     if (addItemInternal(item)) {
       if (sortModel.isSortingEnabled()) {
@@ -574,9 +579,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   private boolean addItemInternal(R item) {
+    return addItemAtInternal(getRowCount(), item);
+  }
+
+  private boolean addItemAtInternal(int index, R item) {
     validate(item);
     if (include(item)) {
-      visibleItems.add(item);
+      visibleItems.add(index, item);
 
       return true;
     }
