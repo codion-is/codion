@@ -4,13 +4,20 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+import javax.swing.border.CompoundBorder;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.util.function.Function;
+
+import static is.codion.swing.common.ui.Colors.darker;
+import static javax.swing.BorderFactory.*;
 
 /**
  * Provides TableCellRenderer implementations for FilteredTable via {@link #builder(FilteredTableModel, Object, Class)}.
@@ -94,7 +101,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
    * @return a new {@link FilteredTableCellRenderer.Builder} instance
    */
   static <T extends FilteredTableModel<R, C>, R, C> Builder<T, R, C> builder(T tableModel, C columnIdentifier, Class<?> columnClass) {
-    return new DefaultFilteredTableCellRenderer.DefaultBuilder<>(tableModel, columnIdentifier, columnClass);
+    return new DefaultFilteredTableCellRendererBuilder<>(tableModel, columnIdentifier, columnClass);
   }
 
   /**
@@ -183,5 +190,175 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
      * @return a new {@link FilteredTableCellRenderer} instance based on this builder
      */
     FilteredTableCellRenderer build();
+  }
+
+  /**
+   * Settings for a {@link FilteredTableCellRenderer}
+   * @param <T> the table model type
+   * @param <C> the column identifier type
+   */
+  class Settings<T extends FilteredTableModel<?, C>, C> {
+
+    protected static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
+    protected static final double DARKENING_FACTOR = 0.9;
+    protected static final double DOUBLE_DARKENING_FACTOR = 0.8;
+    protected static final int FOCUSED_CELL_BORDER_THICKNESS = 1;
+
+    private final int leftPadding;
+    private final int rightPadding;
+    private final boolean alternateRowColoring;
+
+    private Color foregroundColor;
+    private Color backgroundColor;
+    private Color backgroundColorShaded;
+    private Color backgroundColorAlternate;
+    private Color backgroundColorAlternateShaded;
+    private Color selectionBackground;
+    private Color selectionBackgroundAlternate;
+    private Border defaultCellBorder;
+    private Border focusedCellBorder;
+
+    /**
+     * @param leftPadding the left padding
+     * @param rightPadding the right padding
+     * @param alternateRowColoring true if alternate row coloring should be enabled
+     */
+    protected Settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+      this.leftPadding = leftPadding;
+      this.rightPadding = rightPadding;
+      this.alternateRowColoring = alternateRowColoring;
+    }
+
+    /**
+     * @param cellForegroundColor the cell specific foreground color
+     * @return the cell foreground color or the default foreground if null
+     */
+    final Color foregroundColor(Color cellForegroundColor) {
+      return cellForegroundColor == null ? foregroundColor : cellForegroundColor;
+    }
+
+    /**
+     * @return the border to use for a focused cell
+     */
+    final Border focusedCellBorder() {
+      return focusedCellBorder;
+    }
+
+    /**
+     * @return the default cell border
+     */
+    final Border defaultCellBorder() {
+      return defaultCellBorder;
+    }
+
+    /**
+     * Updates the colors according the the selected look and feel
+     */
+    protected void updateColors() {
+      foregroundColor = UIManager.getColor("Table.foreground");
+      backgroundColor = UIManager.getColor("Table.background");
+      backgroundColorAlternate = UIManager.getColor("Table.alternateRowColor");
+      if (backgroundColorAlternate == null) {
+        backgroundColorAlternate = darker(backgroundColor, DOUBLE_DARKENING_FACTOR);
+      }
+      selectionBackground = UIManager.getColor("Table.selectionBackground");
+      backgroundColorShaded = darker(backgroundColor, DARKENING_FACTOR);
+      backgroundColorAlternateShaded = darker(backgroundColorAlternate, DARKENING_FACTOR);
+      selectionBackgroundAlternate = darker(selectionBackground, DARKENING_FACTOR);
+      defaultCellBorder = leftPadding > 0 || rightPadding > 0 ? createEmptyBorder(0, leftPadding, 0, rightPadding) : null;
+      focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
+    }
+
+    protected final Color backgroundColor(T tableModel, int row, C columnIdentifier, boolean columnShadingEnabled,
+                                          boolean selected, Color cellBackgroundColor) {
+      cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
+      if (columnShadingEnabled) {
+        cellBackgroundColor = backgroundColorShaded(tableModel, row, columnIdentifier, cellBackgroundColor);
+      }
+      if (cellBackgroundColor != null) {
+        return cellBackgroundColor;
+      }
+
+      return alternateRowColor(row) ? backgroundColor : backgroundColorAlternate;
+    }
+
+    /**
+     * Adds shading to the given cell, if applicable
+     * @param tableModel the table model
+     * @param row the row
+     * @param columnIdentifier the column identifier
+     * @param cellBackgroundColor the cell specific background color, if any
+     * @return a shaded background color
+     */
+    protected Color backgroundColorShaded(T tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
+      ColumnConditionModel<?, ?> filterModel = tableModel.columnFilterModels().get(columnIdentifier);
+      boolean filterEnabled = filterModel != null && filterModel.isEnabled();
+      if (filterEnabled) {
+        return backgroundShaded(row, cellBackgroundColor);
+      }
+
+      return cellBackgroundColor;
+    }
+
+    protected final Color backgroundColor() {
+      return backgroundColor;
+    }
+
+    protected final Color backgroundColorShaded() {
+      return backgroundColorShaded;
+    }
+
+    protected final Color backgroundColorAlternate() {
+      return backgroundColorAlternate;
+    }
+
+    protected final Color backgroundColorAlternateShaded() {
+      return backgroundColorAlternateShaded;
+    }
+
+    private Color backgroundColor(Color cellBackgroundColor, int row, boolean selected) {
+      if (selected) {
+        if (cellBackgroundColor == null) {
+          return selectionBackgroundColor(row);
+        }
+
+        return blendColors(cellBackgroundColor, selectionBackgroundColor(row));
+      }
+
+      return cellBackgroundColor;
+    }
+
+    private Color selectionBackgroundColor(int row) {
+      return alternateRowColor(row) ? selectionBackground : selectionBackgroundAlternate;
+    }
+
+    private Color backgroundShaded(int row, Color cellBackgroundColor) {
+      if (cellBackgroundColor != null) {
+        return darker(cellBackgroundColor, DARKENING_FACTOR);
+      }
+
+      return alternateRowColor(row) ? backgroundColorShaded : backgroundColorAlternateShaded;
+    }
+
+    /**
+     * @param row the row
+     * @return true if the given row should use the alternate row color
+     */
+    protected boolean alternateRowColor(int row) {
+      return alternateRowColoring && row % 2 == 0;
+    }
+
+    private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {
+      return createCompoundBorder(createLineBorder(darker(foregroundColor, DOUBLE_DARKENING_FACTOR),
+              FOCUSED_CELL_BORDER_THICKNESS), defaultCellBorder);
+    }
+
+    private static Color blendColors(Color color1, Color color2) {
+      int r = (int) (color1.getRed() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getRed() * SELECTION_COLOR_BLEND_RATIO);
+      int g = (int) (color1.getGreen() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getGreen() * SELECTION_COLOR_BLEND_RATIO);
+      int b = (int) (color1.getBlue() * SELECTION_COLOR_BLEND_RATIO) + (int) (color2.getBlue() * SELECTION_COLOR_BLEND_RATIO);
+
+      return new Color(r, g, b, color1.getAlpha());
+    }
   }
 }

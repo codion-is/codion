@@ -7,9 +7,9 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.DefaultBuilder;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.Settings;
+import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.awt.Color;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
+final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
 
   private final SwingEntityTableModel tableModel;
   private final Property<?> property;
