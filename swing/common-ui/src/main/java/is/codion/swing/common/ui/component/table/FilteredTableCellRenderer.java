@@ -66,9 +66,22 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
           Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableHorizontalAlignment", SwingConstants.LEADING);
 
   /**
+   * Specifies whether alternate row coloring is enabled by default.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> ALTERNATE_ROW_COLORING =
+          Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.alternateRowColoring", true);
+
+  /**
    * @return true if column shading is enabled
    */
   boolean isColumnShadingEnabled();
+
+  /**
+   * @return true if alternate row coloring is enabled
+   */
+  boolean isAlternateRowColoring();
 
   /**
    * Instantiates a new {@link FilteredTableCellRenderer.Builder}.
@@ -135,6 +148,12 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
      * @return this builder instance
      */
     Builder<T, R, C> columnShadingEnabled(boolean columnShadingEnabled);
+
+    /**
+     * @param alternateRowColoring true if alternate row coloring should be enabled
+     * @return this builder instance
+     */
+    Builder<T, R, C> alternateRowColoring(boolean alternateRowColoring);
 
     /**
      * @param leftPadding the left cell padding

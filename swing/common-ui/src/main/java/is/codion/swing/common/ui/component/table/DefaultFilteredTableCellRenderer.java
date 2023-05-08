@@ -37,6 +37,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
   private final C columnIdentifier;
   private final boolean toolTipData;
   private final boolean columnShadingEnabled;
+  private final boolean alternateRowColoring;
   private final Function<Object, Object> displayValueProvider;
   private final CellColorProvider<C> cellColorProvider;
 
@@ -51,6 +52,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     this.columnIdentifier = builder.columnIdentifier;
     this.toolTipData = builder.toolTipData;
     this.columnShadingEnabled = builder.columnShadingEnabled;
+    this.alternateRowColoring = builder.alternateRowColoring;
     this.displayValueProvider = builder.displayValueProvider;
     this.cellColorProvider = builder.cellColorProvider;
     setHorizontalAlignment(builder.horizontalAlignment);
@@ -67,6 +69,11 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
   @Override
   public final boolean isColumnShadingEnabled() {
     return columnShadingEnabled;
+  }
+
+  @Override
+  public final boolean isAlternateRowColoring() {
+    return alternateRowColoring;
   }
 
   @Override
@@ -116,6 +123,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     private final T tableModel;
     private final C columnIdentifier;
     private final boolean columnShadingEnabled;
+    private final boolean alternateRowColoring;
     private final CellColorProvider<C> cellColorProvider;
 
     /**
@@ -129,6 +137,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
       this.settings.updateColors();
       this.columnIdentifier = requireNonNull(builder.columnIdentifier, "property");
       this.columnShadingEnabled = builder.columnShadingEnabled;
+      this.alternateRowColoring = builder.alternateRowColoring;
       this.cellColorProvider = builder.cellColorProvider;
       setHorizontalAlignment(builder.horizontalAlignment);
       setBorderPainted(true);
@@ -145,6 +154,11 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     @Override
     public boolean isColumnShadingEnabled() {
       return columnShadingEnabled;
+    }
+
+    @Override
+    public boolean isAlternateRowColoring() {
+      return alternateRowColoring;
     }
 
     @Override
@@ -174,6 +188,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
 
     private final int leftPadding;
     private final int rightPadding;
+    private final boolean alternateRowColoring;
 
     private Color foregroundColor;
     private Color backgroundColor;
@@ -185,9 +200,10 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     private Border defaultCellBorder;
     private Border focusedCellBorder;
 
-    protected Settings(int leftPadding, int rightPadding) {
+    protected Settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
       this.leftPadding = leftPadding;
       this.rightPadding = rightPadding;
+      this.alternateRowColoring = alternateRowColoring;
     }
 
     protected void updateColors() {
@@ -215,7 +231,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
         return cellBackgroundColor;
       }
 
-      return isEven(row) ? backgroundColor : backgroundColorAlternate;
+      return alternateRowColor(row) ? backgroundColor : backgroundColorAlternate;
     }
 
     /**
@@ -269,7 +285,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     }
 
     private Color selectionBackgroundColor(int row) {
-      return isEven(row) ? selectionBackground : selectionBackgroundAlternate;
+      return alternateRowColor(row) ? selectionBackground : selectionBackgroundAlternate;
     }
 
     private Color backgroundShaded(int row, Color cellBackgroundColor) {
@@ -277,11 +293,11 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
         return darker(cellBackgroundColor, DARKENING_FACTOR);
       }
 
-      return isEven(row) ? backgroundColorShaded : backgroundColorAlternateShaded;
+      return alternateRowColor(row) ? backgroundColorShaded : backgroundColorAlternateShaded;
     }
 
-    protected static boolean isEven(int row) {
-      return row % 2 == 0;
+    protected boolean alternateRowColor(int row) {
+      return alternateRowColoring && row % 2 == 0;
     }
 
     private static CompoundBorder createFocusedCellBorder(Color foregroundColor, Border defaultCellBorder) {
@@ -308,6 +324,7 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     private int horizontalAlignment;
     private boolean toolTipData;
     private boolean columnShadingEnabled = true;
+    private boolean alternateRowColoring = ALTERNATE_ROW_COLORING.get();
     private int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
     private int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
     private Function<Object, Object> displayValueProvider = new DefaultDisplayValueProvider();
@@ -344,6 +361,12 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     }
 
     @Override
+    public final Builder<T, R, C> alternateRowColoring(boolean alternateRowColoring) {
+      this.alternateRowColoring = alternateRowColoring;
+      return this;
+    }
+
+    @Override
     public final Builder<T, R, C> leftPadding(int leftPadding) {
       this.leftPadding = leftPadding;
       return null;
@@ -370,17 +393,18 @@ public class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>
     @Override
     public final FilteredTableCellRenderer build() {
       return isBoolean ?
-              new BooleanRenderer<>(this, settings(leftPadding, rightPadding)) :
-              new DefaultFilteredTableCellRenderer<>(this, settings(leftPadding, rightPadding));
+              new BooleanRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring)) :
+              new DefaultFilteredTableCellRenderer<>(this, settings(leftPadding, rightPadding, alternateRowColoring));
     }
 
     /**
      * @param leftPadding the left padding
      * @param rightPadding the right padding
+     * @param alternateRowColoring true if alternate row coloring is enabled
      * @return the {@link Settings} instance for this renderer
      */
-    protected Settings<T, C> settings(int leftPadding, int rightPadding) {
-      return new Settings<>(leftPadding, rightPadding);
+    protected Settings<T, C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+      return new Settings<>(leftPadding, rightPadding, alternateRowColoring);
     }
 
     private int defaultHorizontalAlignment() {

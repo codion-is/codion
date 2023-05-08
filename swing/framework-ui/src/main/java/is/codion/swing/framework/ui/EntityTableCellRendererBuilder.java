@@ -34,8 +34,8 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
   }
 
   @Override
-  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding) {
-    return new EntitySettings(leftPadding, rightPadding);
+  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+    return new EntitySettings(leftPadding, rightPadding, alternateRowColoring);
   }
 
   private static final class EntitySettings extends Settings<SwingEntityTableModel, Attribute<?>> {
@@ -43,8 +43,8 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
     private Color backgroundColorDoubleShade;
     private Color backgroundColorAlternateDoubleShade;
 
-    private EntitySettings(int leftPadding, int rightPadding) {
-      super(leftPadding, rightPadding);
+    private EntitySettings(int leftPadding, int rightPadding, boolean alternateRoColoring) {
+      super(leftPadding, rightPadding, alternateRoColoring);
     }
 
     @Override
@@ -71,7 +71,7 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
         return darker(cellBackgroundColor, DARKENING_FACTOR);
       }
 
-      return isEven(row) ?
+      return alternateRowColor(row) ?
               (doubleShading ? backgroundColorDoubleShade : backgroundColorShaded()) :
               (doubleShading ? backgroundColorAlternateDoubleShade : backgroundColorAlternateShaded());
     }

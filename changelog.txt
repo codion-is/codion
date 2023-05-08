@@ -8858,3 +8858,4 @@
   EntityTableCellRenderer no longer extends FilteredTableCellRenderer
   KeyBindingPanel utility added to tutorials
   DefaultFilteredTableCellRenderer refactored
+  FilteredTableCellRenderer.isAlternateRowColoring() added

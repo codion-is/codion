@@ -6,5 +6,6 @@
  * {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer#TEMPORAL_HORIZONTAL_ALIGNMENT}<br>
  * {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer#BOOLEAN_HORIZONTAL_ALIGNMENT}<br>
  * {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer#HORIZONTAL_ALIGNMENT}<br>
+ * {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer#ALTERNATE_ROW_COLORING}<br>
  */
 package is.codion.swing.common.ui.component.table;
