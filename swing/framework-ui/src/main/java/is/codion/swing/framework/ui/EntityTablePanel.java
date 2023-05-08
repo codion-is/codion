@@ -1678,11 +1678,11 @@ public class EntityTablePanel extends JPanel {
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
-      boolean displayConditionState = renderer instanceof FilteredTableCellRenderer
-              && ((FilteredTableCellRenderer) renderer).isDisplayCondition()
+      boolean useBoldFont = renderer instanceof FilteredTableCellRenderer
+              && ((FilteredTableCellRenderer) renderer).isColumnShadingEnabled()
               && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
-      component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
+      component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return component;
     }

@@ -91,5 +91,12 @@ public interface FilteredTableSearchModel {
      * @return the column
      */
     int column();
+
+    /**
+     * @return true if this RowColumn instance represents the given row and column
+     */
+    default boolean equals(int row, int column) {
+      return row() == row && column == column();
+    }
   }
 }

@@ -66,9 +66,9 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
           Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.tableHorizontalAlignment", SwingConstants.LEADING);
 
   /**
-   * @return true if the column condition state should be represented visually
+   * @return true if column shading is enabled
    */
-  boolean isDisplayCondition();
+  boolean isColumnShadingEnabled();
 
   /**
    * Instantiates a new {@link FilteredTableCellRenderer.Builder}.
@@ -131,10 +131,10 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
     Builder<T, R, C> toolTipData(boolean toolTipData);
 
     /**
-     * @param displayCondition true if true then cells/columns involved in a condition have different background color
+     * @param columnShadingEnabled true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
      * @return this builder instance
      */
-    Builder<T, R, C> displayCondition(boolean displayCondition);
+    Builder<T, R, C> columnShadingEnabled(boolean columnShadingEnabled);
 
     /**
      * @param leftPadding the left cell padding
