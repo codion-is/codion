@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
@@ -647,9 +646,8 @@ public final class EntitySearchField extends HintTextField {
       };
     }
 
-    private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-      Property<T> property = table.getModel().entityDefinition().property((Attribute<T>) column.getIdentifier());
-      column.setCellRenderer(EntityTableCellRenderer.builder(table.getModel(), property).build());
+    private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
+      column.setCellRenderer(EntityTableCellRenderer.builder(table.getModel(), column.getIdentifier()).build());
     }
   }
 

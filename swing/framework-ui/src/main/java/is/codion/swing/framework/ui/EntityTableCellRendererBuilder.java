@@ -22,7 +22,11 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 
   private final Property<?> property;
 
-  EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Property<?> property) {
+  EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
+    this(requireNonNull(tableModel), tableModel.entityDefinition().property(attribute));
+  }
+
+  private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Property<?> property) {
     super(requireNonNull(tableModel), requireNonNull(property).attribute(), property.attribute().valueClass(),
             property.attribute().isBoolean() && !(property instanceof ItemProperty));
     this.property = property;

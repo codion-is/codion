@@ -1151,27 +1151,26 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates a TableCellRenderer to use for the given property in this EntityTablePanel
-   * @param <T> the property type
-   * @param property the property
-   * @return the TableCellRenderer for the given property
+   * Creates a TableCellRenderer to use for the given attribute in this EntityTablePanel
+   * @param attribute the attribute
+   * @return the TableCellRenderer for the given attribute
    */
-  protected <T> TableCellRenderer createTableCellRenderer(Property<T> property) {
-    return EntityTableCellRenderer.builder(tableModel, property).build();
+  protected TableCellRenderer createTableCellRenderer(Attribute<?> attribute) {
+    return EntityTableCellRenderer.builder(tableModel, attribute).build();
   }
 
   /**
-   * Creates a TableCellEditor for the given property, returns null if no editor is available
-   * @param <T> the property type
-   * @param property the property
-   * @return a TableCellEditor for the given property
+   * Creates a TableCellEditor for the given attribute, returns null if no editor is available
+   * @param attribute the attribute
+   * @return a TableCellEditor for the given attribute
    */
-  protected <T> TableCellEditor createTableCellEditor(Property<T> property) {
-    if (property instanceof ColumnProperty && !((ColumnProperty<T>) property).isUpdatable()) {
+  protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
+    Property<?> property = tableModel.entityDefinition().property(attribute);
+    if (attribute instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
       return null;
     }
 
-    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(property.attribute(), null));
+    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null));
   }
 
   /**
@@ -1467,9 +1466,8 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private <T> void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-    Property<T> property = tableModel.entityDefinition().property((Attribute<T>) column.getIdentifier());
-    column.setCellEditor(createTableCellEditor(property));
+  private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
+    column.setCellEditor(createTableCellEditor(column.getIdentifier()));
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 
@@ -1640,7 +1638,7 @@ public class EntityTablePanel extends JPanel {
 
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<Attribute<?>> column) {
-      return createTableCellRenderer(tableModel.entityDefinition().property(column.getIdentifier()));
+      return createTableCellRenderer(column.getIdentifier());
     }
   }
 

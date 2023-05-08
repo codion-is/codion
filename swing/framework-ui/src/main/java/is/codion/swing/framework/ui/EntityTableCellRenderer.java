@@ -5,22 +5,21 @@ package is.codion.swing.framework.ui;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 /**
- * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Property)}.
+ * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Attribute)}.
  */
 public interface EntityTableCellRenderer {
 
   /**
-   * Instantiates a new {@link FilteredTableCellRenderer.Builder} with defaults based on the given property.
+   * Instantiates a new {@link Builder} with defaults based on the given attribute.
    * @param tableModel the table model providing the data to render
-   * @param property the property
-   * @return a new {@link FilteredTableCellRenderer.Builder} instance
+   * @param attribute the attribute
+   * @return a new {@link Builder} instance
    */
-  static FilteredTableCellRenderer.Builder<SwingEntityTableModel, Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Property<?> property) {
-    return new EntityTableCellRendererBuilder(tableModel, property);
+  static Builder<SwingEntityTableModel, Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
+    return new EntityTableCellRendererBuilder(tableModel, attribute);
   }
 }

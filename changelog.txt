@@ -8865,3 +8865,4 @@
   SwingEntityTableModel.allowSelectionChange() no longer final
   FilteredTableModel.addItemAt() added
   FilteredTableModel.fireTableDataChanged() added
+  EntityTablePanel.createTableCellEditor(), createTableCellRenderer() and EntityTableCellRenderer.builder() now take Attribute instead of Property as parameter
