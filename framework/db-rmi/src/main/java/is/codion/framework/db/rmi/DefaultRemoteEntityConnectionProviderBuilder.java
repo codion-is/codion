@@ -21,6 +21,7 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
   String serverHostName = Clients.SERVER_HOSTNAME.get();
   int serverPort = ServerConfiguration.SERVER_PORT.get();
   int registryPort = ServerConfiguration.REGISTRY_PORT.get();
+  String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
 
   public DefaultRemoteEntityConnectionProviderBuilder() {
     super(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
@@ -41,6 +42,12 @@ public final class DefaultRemoteEntityConnectionProviderBuilder
   @Override
   public RemoteEntityConnectionProvider.Builder registryPort(int registryPort) {
     this.registryPort = registryPort;
+    return this;
+  }
+
+  @Override
+  public RemoteEntityConnectionProvider.Builder serverNamePrefix(String serverNamePrefix) {
+    this.serverNamePrefix = requireNonNull(serverNamePrefix);
     return this;
   }
 
