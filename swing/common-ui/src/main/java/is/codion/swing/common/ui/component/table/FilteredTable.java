@@ -3,11 +3,13 @@
  */
 package is.codion.swing.common.ui.component.table;
 
+import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
@@ -30,6 +32,7 @@ import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
 import javax.swing.SwingConstants;
 import javax.swing.table.JTableHeader;
@@ -68,15 +71,29 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JTable implementation for {@link FilteredTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
- * For instances use the {@link #filteredTable(FilteredTableModel)} or
- * {@link #filteredTable(FilteredTableModel, ConditionPanelFactory)} factory methods.
+ * For instances use the builder {@link #builder(FilteredTableModel)}
  * @param <T> the table model type
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
- * @see #filteredTable(FilteredTableModel)
- * @see #filteredTable(FilteredTableModel, ConditionPanelFactory)
+ * @see #builder(FilteredTableModel)
  */
 public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> extends JTable {
+
+  /**
+   * Specifies the default table column resize mode for tables in the application<br>
+   * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
+   * Default value: JTable.AUTO_RESIZE_OFF
+   */
+  public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
+          Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTable.autoResizeMode", AUTO_RESIZE_OFF);
+
+  /**
+   * Specifies whether columns can be rearranged in tables<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
+          Configuration.booleanValue("is.codion.swing.common.ui.component.table.FilteredTable.allowColumnReordering", true);
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(FilteredTable.class.getName());
 
@@ -166,10 +183,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * Specifies the scrolling behaviour when scrolling to the selected row/column
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
-
-  private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory) {
-    this(requireNonNull(tableModel), conditionPanelFactory, new DefaultTableCellRendererFactory<>(tableModel));
-  }
 
   private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory,
                         TableCellRendererFactory<C> cellRendererFactory) {
@@ -319,12 +332,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * Shows a dialog for selecting which columns to display
    */
   public void selectColumns() {
-    SelectColumnsPanel<C> selectColumnsPanel = new SelectColumnsPanel<>(tableModel.columnModel());
-    Dialogs.okCancelDialog(selectColumnsPanel)
+    ColumnSelectionPanel<C> columnSelectionPanel = new ColumnSelectionPanel<>(tableModel.columnModel());
+    Dialogs.okCancelDialog(columnSelectionPanel)
             .owner(getParent())
             .title(MESSAGES.getString(SELECT_COLUMNS))
-            .onShown(dialog -> selectColumnsPanel.requestColumnPanelFocus())
-            .onOk(selectColumnsPanel::applyChanges)
+            .onShown(dialog -> columnSelectionPanel.requestColumnPanelFocus())
+            .onOk(columnSelectionPanel::applyChanges)
             .show();
   }
 
@@ -455,59 +468,15 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   /**
-   * Instantiates a new {@link FilteredTable} using the given model
+   * Instantiates a new {@link FilteredTable.Builder} using the given model
    * @param tableModel the table model
    * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
-   * @return a new {@link FilteredTable}
+   * @return a new {@link FilteredTable.Builder} instance
    */
-  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel) {
-    return filteredTable(tableModel, new DefaultFilterPanelFactory<>(tableModel));
-  }
-
-  /**
-   * Instantiates a new {@link FilteredTable} using the given model
-   * @param tableModel the table model
-   * @param cellRendererFactory the table cell renderer factory
-   * @param <T> the table model type
-   * @param <R> the type representing rows
-   * @param <C> the type used to identify columns
-   * @return a new {@link FilteredTable}
-   */
-  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
-                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
-    return new FilteredTable<>(tableModel, new DefaultFilterPanelFactory<>(tableModel), cellRendererFactory);
-  }
-
-  /**
-   * Instantiates a new {@link FilteredTable} using the given model
-   * @param tableModel the table model
-   * @param conditionPanelFactory the column condition panel factory
-   * @param <T> the table model type
-   * @param <R> the type representing rows
-   * @param <C> the type used to identify columns
-   * @return a new {@link FilteredTable}
-   */
-  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
-                                                                                                ConditionPanelFactory conditionPanelFactory) {
-    return new FilteredTable<>(tableModel, conditionPanelFactory);
-  }
-
-  /**
-   * Instantiates a new {@link FilteredTable} using the given model
-   * @param tableModel the table model
-   * @param conditionPanelFactory the column condition panel factory
-   * @param cellRendererFactory the table cell renderer factory
-   * @param <T> the table model type
-   * @param <R> the type representing rows
-   * @param <C> the type used to identify columns
-   * @return a new {@link FilteredTable}
-   */
-  public static <T extends FilteredTableModel<R, C>, R, C> FilteredTable<T, R, C> filteredTable(T tableModel,
-                                                                                                ConditionPanelFactory conditionPanelFactory,
-                                                                                                TableCellRendererFactory<C> cellRendererFactory) {
-    return new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
+  public static <T extends FilteredTableModel<R, C>, R, C> Builder<T, R, C> builder(T tableModel) {
+    return new DefaultBuilder<>(tableModel);
   }
 
   /**
@@ -680,25 +649,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     ColumnConditionModel<C, Object> model = (ColumnConditionModel<C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
-    }
-  }
-
-  private static final class DefaultFilterPanelFactory<C> implements ConditionPanelFactory {
-
-    private final FilteredTableModel<?, C> tableModel;
-
-    private DefaultFilterPanelFactory(FilteredTableModel<?, C> tableModel) {
-      this.tableModel = tableModel;
-    }
-
-    @Override
-    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<C, Object> filterModel = (ColumnConditionModel<C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
-      if (filterModel == null) {
-        return null;
-      }
-
-      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
     }
   }
 
@@ -917,6 +867,191 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
   }
 
+  /**
+   * A builder for a {@link FilteredTable}
+   * @param <T> the table model type
+   * @param <R> the type representing rows
+   * @param <C> the type used to identify columns
+   */
+  public interface Builder<T extends FilteredTableModel<R, C>, R, C> {
+
+    /**
+     * @param conditionPanelFactory the column condition panel factory
+     * @return this builder instance
+     */
+    Builder<T, R, C> conditionPanelFactory(ConditionPanelFactory conditionPanelFactory);
+
+    /**
+     * @param cellRendererFactory the table cell renderer factory
+     * @return this builder instance
+     */
+    Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory);
+
+    /**
+     * @param autoStartsEdit true if editing should start automatically
+     * @return this builder instance
+     */
+    Builder<T, R, C> autoStartsEdit(boolean autoStartsEdit);
+
+    /**
+     * @param centerOnScroll the center on scroll behavious
+     * @return this builder instance
+     */
+    Builder<T, R, C> centerOnScroll(CenterOnScroll centerOnScroll);
+
+    /**
+     * @param doubleClickAction the double click action
+     * @return this builder instance
+     */
+    Builder<T, R, C> doubleClickAction(Action doubleClickAction);
+
+    /**
+     * @param scrollToSelectedItem true if this table should scroll to the selected item
+     * @return this builder instance
+     */
+    Builder<T, R, C> scrollToSelectedItem(boolean scrollToSelectedItem);
+
+    /**
+     * @param sortingEnabled true if sorting via clicking the header should be enbled
+     * @return this builder instance
+     */
+    Builder<T, R, C> sortingEnabled(boolean sortingEnabled);
+
+    /**
+     * @param selectionMode the table selection mode
+     * @return this builder instance
+     */
+    Builder<T, R, C> selectionMode(int selectionMode);
+
+    /**
+     * @param columnReorderingAllowed true if column reordering should be allowed
+     * @return this builder instance
+     */
+    Builder<T, R, C> columnReorderingAllowed(boolean columnReorderingAllowed);
+
+    /**
+     * @param columnResizingAllowed true if column resizing should be allowed
+     * @return this builder instance
+     */
+    Builder<T, R, C> columnResizingAllowed(boolean columnResizingAllowed);
+
+    /**
+     * @param autoResizeMode the table auto column resizing mode
+     * @return this builder instance
+     */
+    Builder<T, R, C> autoResizeMode(int autoResizeMode);
+
+    /**
+     * @return a new {@link FilteredTable} base on this builder
+     */
+    FilteredTable<T, R, C> build();
+  }
+
+  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C> implements Builder<T, R, C> {
+
+    private final T tableModel;
+
+    private ConditionPanelFactory conditionPanelFactory;
+    private TableCellRendererFactory<C> cellRendererFactory;
+    private boolean autoStartsEdit = false;
+    private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
+    private Action doubleClickAction;
+    private boolean scrollToSelectedItem = true;
+    private boolean sortingEnabled = true;
+    private int selectionMode = ListSelectionModel.MULTIPLE_INTERVAL_SELECTION;
+    private boolean columnReorderingAllowed = ALLOW_COLUMN_REORDERING.get();
+    private boolean columnResizingAllowed = true;
+    private int autoResizeMode = AUTO_RESIZE_MODE.get();
+
+    private DefaultBuilder(T tableModel) {
+      this.tableModel = requireNonNull(tableModel);
+      this.conditionPanelFactory = new DefaultFilterPanelFactory<C>(tableModel);
+      this.cellRendererFactory = new DefaultTableCellRendererFactory<T, R, C>(tableModel);
+    }
+
+    @Override
+    public Builder<T, R, C> conditionPanelFactory(ConditionPanelFactory conditionPanelFactory) {
+      this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory) {
+      this.cellRendererFactory = requireNonNull(cellRendererFactory);
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> autoStartsEdit(boolean autoStartsEdit) {
+      this.autoStartsEdit = autoStartsEdit;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> centerOnScroll(CenterOnScroll centerOnScroll) {
+      this.centerOnScroll = requireNonNull(centerOnScroll);
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> doubleClickAction(Action doubleClickAction) {
+      this.doubleClickAction = requireNonNull(doubleClickAction);
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> scrollToSelectedItem(boolean scrollToSelectedItem) {
+      this.scrollToSelectedItem = scrollToSelectedItem;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> sortingEnabled(boolean sortingEnabled) {
+      this.sortingEnabled = sortingEnabled;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> selectionMode(int selectionMode) {
+      this.selectionMode = selectionMode;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> columnReorderingAllowed(boolean columnReorderingAllowed) {
+      this.columnReorderingAllowed = columnReorderingAllowed;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> columnResizingAllowed(boolean columnResizingAllowed) {
+      this.columnResizingAllowed = columnResizingAllowed;
+      return this;
+    }
+
+    @Override
+    public Builder<T, R, C> autoResizeMode(int autoResizeMode) {
+      this.autoResizeMode = autoResizeMode;
+      return this;
+    }
+
+    @Override
+    public FilteredTable<T, R, C> build() {
+      FilteredTable<T, R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
+      filteredTable.setAutoStartsEdit(autoStartsEdit);
+      filteredTable.setCenterOnScroll(centerOnScroll);
+      filteredTable.setDoubleClickAction(doubleClickAction);
+      filteredTable.setScrollToSelectedItem(scrollToSelectedItem);
+      filteredTable.setSortingEnabled(sortingEnabled);
+      filteredTable.setSelectionMode(selectionMode);
+      filteredTable.getTableHeader().setReorderingAllowed(columnReorderingAllowed);
+      filteredTable.getTableHeader().setResizingAllowed(columnResizingAllowed);
+      filteredTable.setAutoResizeMode(autoResizeMode);
+
+      return filteredTable;
+    }
+  }
+
   private final class MoveResizeColumnKeyListener extends KeyAdapter {
 
     @Override
@@ -973,6 +1108,25 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     @Override
     public int compare(TableColumn col1, TableColumn col2) {
       return Text.collateSansSpaces(columnCollator, col1.getHeaderValue().toString(), col2.getHeaderValue().toString());
+    }
+  }
+
+  private static final class DefaultFilterPanelFactory<C> implements ConditionPanelFactory {
+
+    private final FilteredTableModel<?, C> tableModel;
+
+    private DefaultFilterPanelFactory(FilteredTableModel<?, C> tableModel) {
+      this.tableModel = tableModel;
+    }
+
+    @Override
+    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
+      ColumnConditionModel<C, Object> filterModel = (ColumnConditionModel<C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
+      if (filterModel == null) {
+        return null;
+      }
+
+      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
     }
   }
 

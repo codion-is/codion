@@ -7,8 +7,7 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel.Row
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultRowColumnTest {
 
@@ -20,6 +19,8 @@ public final class DefaultRowColumnTest {
     RowColumn rowColumn2 = new DefaultFilteredTableSearchModel.DefaultRowColumn(3, 4);
     assertEquals(3, rowColumn2.row());
     assertEquals(4, rowColumn2.column());
+    assertTrue(rowColumn2.equals(3, 4));
+    assertFalse(rowColumn2.equals(1, 2));
 
     assertEquals(3, rowColumn1.hashCode());
 

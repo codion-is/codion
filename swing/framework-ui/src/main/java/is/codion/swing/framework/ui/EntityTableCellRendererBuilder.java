@@ -7,9 +7,9 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.DefaultBuilder;
-import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRenderer.Settings;
+import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Settings;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.awt.Color;
@@ -18,7 +18,7 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
+final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
 
   private final SwingEntityTableModel tableModel;
   private final Property<?> property;
@@ -34,52 +34,46 @@ final class EntityTableCellRendererBuilder extends DefaultBuilder<SwingEntityTab
   }
 
   @Override
-  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding) {
-    return new EntitySettings(leftPadding, rightPadding);
+  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+    return new EntitySettings(leftPadding, rightPadding, alternateRowColoring);
   }
 
   private static final class EntitySettings extends Settings<SwingEntityTableModel, Attribute<?>> {
 
-    private Color backgroundColorDoubleSearch;
-    private Color alternateBackgroundColorDoubleSearch;
+    private Color backgroundColorDoubleShade;
+    private Color backgroundColorAlternateDoubleShade;
 
-    private EntitySettings(int leftPadding, int rightPadding) {
-      super(leftPadding, rightPadding);
+    private EntitySettings(int leftPadding, int rightPadding, boolean alternateRoColoring) {
+      super(leftPadding, rightPadding, alternateRoColoring);
     }
 
     @Override
     protected void updateColors() {
       super.updateColors();
-      backgroundColorDoubleSearch = darker(backgroundColor(), DOUBLE_DARKENING_FACTOR);
-      alternateBackgroundColorDoubleSearch = darker(alternateBackgroundColor(), DOUBLE_DARKENING_FACTOR);
+      backgroundColorDoubleShade = darker(backgroundColor(), DOUBLE_DARKENING_FACTOR);
+      backgroundColorAlternateDoubleShade = darker(backgroundColorAlternate(), DOUBLE_DARKENING_FACTOR);
     }
 
     @Override
-    protected Color backgroundColor(SwingEntityTableModel tableModel, int row, Attribute<?> attribute, Object cellValue,
-                                    boolean indicateCondition, boolean selected,
-                                    CellColorProvider<Attribute<?>> cellColorProvider) {
-      boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(attribute);
-      boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(attribute);
-      boolean showCondition = indicateCondition && (conditionEnabled || filterEnabled);
-      Color cellBackgroundColor = cellBackgroundColor(cellColorProvider.backgroundColor(row, attribute, cellValue, selected), row, selected);
+    protected Color backgroundColorShaded(SwingEntityTableModel tableModel, int row, Attribute<?> columnIdentifier, Color cellBackgroundColor) {
+      boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(columnIdentifier);
+      boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(columnIdentifier);
+      boolean showCondition = conditionEnabled || filterEnabled;
       if (showCondition) {
-        return conditionEnabledColor(row, conditionEnabled && filterEnabled, cellBackgroundColor);
-      }
-      if (cellBackgroundColor != null) {
-        return cellBackgroundColor;
+        return backgroundColorShaded(row, conditionEnabled && filterEnabled, cellBackgroundColor);
       }
 
-      return isEven(row) ? backgroundColor() : alternateBackgroundColor();
+      return cellBackgroundColor;
     }
 
-    private Color conditionEnabledColor(int row, boolean conditionAndFilterEnabled, Color cellColor) {
-      if (cellColor != null) {
-        return darker(cellColor, DARKENING_FACTOR);
+    private Color backgroundColorShaded(int row, boolean doubleShading, Color cellBackgroundColor) {
+      if (cellBackgroundColor != null) {
+        return darker(cellBackgroundColor, DARKENING_FACTOR);
       }
 
-      return isEven(row) ?
-              (conditionAndFilterEnabled ? backgroundColorDoubleSearch : backgroundColorSearch()) :
-              (conditionAndFilterEnabled ? alternateBackgroundColorDoubleSearch : alternateBackgroundColorSearch());
+      return alternateRowColor(row) ?
+              (doubleShading ? backgroundColorDoubleShade : backgroundColorShaded()) :
+              (doubleShading ? backgroundColorAlternateDoubleShade : backgroundColorAlternateShaded());
     }
   }
 

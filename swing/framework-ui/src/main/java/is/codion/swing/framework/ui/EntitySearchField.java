@@ -576,11 +576,15 @@ public final class EntitySearchField extends HintTextField {
           return emptyList();
         }
       };
-      table = FilteredTable.filteredTable(tableModel);
       selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
               .caption(Messages.ok())
               .build();
-      table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+      table = FilteredTable.builder(tableModel)
+              .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+              .selectionMode(searchModel.multipleSelectionEnabledState().get() ?
+                      ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION)
+              .doubleClickAction(selectControl)
+              .build();
       KeyEvents.builder(VK_ENTER)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectControl)
@@ -596,9 +600,6 @@ public final class EntitySearchField extends HintTextField {
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
       tableModel.columnModel().setVisibleColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
-      table.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
-              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-      table.setDoubleClickAction(selectControl);
       scrollPane = new JScrollPane(table);
       searchPanel.add(table.searchField(), BorderLayout.WEST);
       basePanel.add(scrollPane, BorderLayout.CENTER);

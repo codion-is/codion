@@ -8895,3 +8895,8 @@
   DefaultFilteredTableCellRenderer refactored
   EntityTableCellRenderer no longer extends FilteredTableCellRenderer
   KeyBindingPanel utility added to tutorials
+  DefaultFilteredTableCellRenderer refactored
+  FilteredTableCellRenderer.isAlternateRowColoring() added
+  DefaultFilteredTableCellRenderer.DefaultBuilder renamed DefaultFilteredTableCellRendererBuilder and moved up to package level, DefaultFilteredTableCellRenderer no longer public
+  SelectColumnsPanel renamed to ColumnSelectionPanel
+  FilteredTable.Builder added, builder() replaces factory methods, related refactoring

@@ -130,28 +130,12 @@ public class EntityTablePanel extends JPanel {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
 
   /**
-   * Specifies whether columns can be rearranged in tables<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> ALLOW_COLUMN_REORDERING =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.allowColumnReordering", true);
-
-  /**
    * Specifies whether table condition panels should be visible or not by default<br>
    * Value type: Boolean<br>
    * Default value: false
    */
   public static final PropertyValue<Boolean> CONDITION_PANEL_VISIBLE =
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.conditionPanelVisible", false);
-
-  /**
-   * Specifies the default table column resize mode for tables in the application<br>
-   * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
-   * Default value: JTable.AUTO_RESIZE_OFF
-   */
-  public static final PropertyValue<Integer> TABLE_AUTO_RESIZE_MODE =
-          Configuration.integerValue("is.codion.swing.framework.ui.EntityTablePanel.tableAutoResizeMode", JTable.AUTO_RESIZE_OFF);
 
   /**
    * Specifies whether to include a {@link EntityPopupMenu} on this table, triggered with CTRL-ALT-V.<br>
@@ -1350,12 +1334,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
-    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable =
-            FilteredTable.filteredTable(tableModel, new EntityTableCellRendererFactory());
-    filteredTable.setAutoResizeMode(TABLE_AUTO_RESIZE_MODE.get());
-    filteredTable.getTableHeader().setReorderingAllowed(ALLOW_COLUMN_REORDERING.get());
+    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable = FilteredTable.builder(tableModel)
+            .cellRendererFactory(new EntityTableCellRendererFactory())
+            .build();
     filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-    filteredTable.setAutoStartsEdit(false);
 
     return filteredTable;
   }
@@ -1678,11 +1660,11 @@ public class EntityTablePanel extends JPanel {
               wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
       FilteredTableColumn<Attribute<?>> tableColumn = tableModel.columnModel().getColumn(column);
       TableCellRenderer renderer = tableColumn.getCellRenderer();
-      boolean displayConditionState = renderer instanceof FilteredTableCellRenderer
-              && ((FilteredTableCellRenderer) renderer).isDisplayCondition()
+      boolean useBoldFont = renderer instanceof FilteredTableCellRenderer
+              && ((FilteredTableCellRenderer) renderer).isColumnShadingEnabled()
               && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
-      component.setFont(displayConditionState ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
+      component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return component;
     }

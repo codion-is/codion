@@ -24,9 +24,7 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   private FilteredTableColumn(DefaultBuilder<C> builder) {
     super(builder.modelIndex);
-    if (builder.identifier != null) {
-      super.setIdentifier(builder.identifier);
-    }
+    super.setIdentifier(builder.identifier);
     if (builder.preferredWidth != 0) {
       setPreferredWidth(builder.preferredWidth);
     }
@@ -61,7 +59,7 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   /**
    * @param identifier an identifier for this column
-   * @throws IllegalStateException always
+   * @throws IllegalStateException always, changing the identifier is not supported
    */
   @Override
   public void setIdentifier(Object identifier) {
@@ -181,15 +179,15 @@ public final class FilteredTableColumn<C> extends TableColumn {
     private final int modelIndex;
     private final C identifier;
 
-    public int preferredWidth;
-    public int maxWidth;
-    public int minWidth;
-    public int width;
-    public boolean resizable = true;
-    public Object headerValue;
-    public TableCellRenderer headerRenderer;
-    public TableCellEditor cellEditor;
-    public TableCellRenderer cellRenderer;
+    private int preferredWidth;
+    private int maxWidth;
+    private int minWidth;
+    private int width;
+    private boolean resizable = true;
+    private Object headerValue;
+    private TableCellRenderer headerRenderer;
+    private TableCellEditor cellEditor;
+    private TableCellRenderer cellRenderer;
 
     private DefaultBuilder(int modelIndex, C identifier) {
       if (modelIndex < 0) {

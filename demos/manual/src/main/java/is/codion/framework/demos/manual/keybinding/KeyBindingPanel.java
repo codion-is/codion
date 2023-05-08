@@ -20,7 +20,6 @@ import java.awt.BorderLayout;
 import java.util.Arrays;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.component.table.FilteredTable.filteredTable;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
@@ -39,7 +38,7 @@ public final class KeyBindingPanel extends JPanel {
 
   private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
   private final KeyBindingTableModel tableModel = new KeyBindingTableModel(lookAndFeelComboBox.getModel());
-  private final FilteredTable<KeyBindingTableModel, KeyBinding, Integer> table = filteredTable(tableModel);
+  private final FilteredTable<KeyBindingTableModel, KeyBinding, Integer> table = FilteredTable.builder(tableModel).build();
   private final JComboBox<String> componentComboBox = comboBox(tableModel.componentComboBoxModel())
           .preferredHeight(preferredTextFieldHeight())
           .preferredWidth(200)
