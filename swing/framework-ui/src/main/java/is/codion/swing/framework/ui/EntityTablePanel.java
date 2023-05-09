@@ -590,21 +590,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
-    if (conditionPanel == null) {
-      return;
-    }
-    State advancedState = conditionPanel.advancedViewState();
-    if (isConditionPanelVisible()) {
-      if (advancedState.get()) {
-        setConditionPanelVisible(false);
-      }
-      else {
-        advancedState.set(true);
-      }
-    }
-    else {
-      advancedState.set(false);
-      setConditionPanelVisible(true);
+    if (conditionPanel != null) {
+      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedViewState(), conditionPanelVisibleState);
     }
   }
 
@@ -612,21 +599,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the filter panel through the states hidden, visible and advanced
    */
   public final void toggleFilterPanel() {
-    if (filterPanel == null) {
-      return;
-    }
-    State advancedState = filterPanel.advancedViewState();
-    if (isFilterPanelVisible()) {
-      if (advancedState.get()) {
-        setFilterPanelVisible(false);
-      }
-      else {
-        advancedState.set(true);
-      }
-    }
-    else {
-      advancedState.set(false);
-      setFilterPanelVisible(true);
+    if (filterPanel != null) {
+      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedViewState(), filterPanelVisibleState);
     }
   }
 
@@ -1721,6 +1695,21 @@ public class EntityTablePanel extends JPanel {
     }
     else {
       WaitCursor.hide(EntityTablePanel.this);
+    }
+  }
+
+  private static final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
+    if (scrollPane != null && scrollPane.isVisible()) {
+      if (advancedState.get()) {
+        visibleState.set(false);
+      }
+      else {
+        advancedState.set(true);
+      }
+    }
+    else {
+      advancedState.set(false);
+      visibleState.set(true);
     }
   }
 
