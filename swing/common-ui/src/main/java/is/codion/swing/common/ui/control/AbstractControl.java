@@ -33,17 +33,7 @@ abstract class AbstractControl extends AbstractAction implements Control {
    * @param enabledObserver the state observer controlling the enabled state of this control
    */
   AbstractControl(String name, StateObserver enabledObserver) {
-    this(name, enabledObserver, null);
-  }
-
-  /**
-   * Constructs a new Control.
-   * @param name the control name
-   * @param enabledObserver the state observer controlling the enabled state of this control
-   * @param smallIcon the icon
-   */
-  AbstractControl(String name, StateObserver enabledObserver, Icon smallIcon) {
-    super(name, smallIcon);
+    super(name);
     this.enabledObserver = enabledObserver == null ? State.state(true) : enabledObserver;
     this.enabledObserver.addDataListener(super::setEnabled);
     super.setEnabled(this.enabledObserver.get());
