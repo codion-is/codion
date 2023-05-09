@@ -261,7 +261,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     @Override
     public Optional<JComponent> createUpperBoundField() {
       if (columnConditionModel.columnClass().equals(Boolean.class)) {
-        return Optional.empty();//no lower bound field required for boolean values
+        return Optional.empty();//no upper bound field required for boolean values
       }
 
       return Optional.of(createField(columnConditionModel.upperBoundValue()));
@@ -276,52 +276,57 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       return Optional.of(createField(columnConditionModel.lowerBoundValue()));
     }
 
-    private JComponent createField(Value<?> value) {
+    private JComponent createField(Value<?> linkedValue) {
       Class<?> columnClass = columnConditionModel.columnClass();
       if (columnClass.equals(Boolean.class)) {
-        return checkBox((Value<Boolean>) value)
+        return checkBox((Value<Boolean>) linkedValue)
                 .nullable(true)
                 .horizontalAlignment(CENTER)
                 .build();
       }
+      if (columnClass.equals(Short.class)) {
+        return shortField((Value<Short>) linkedValue)
+                .format(columnConditionModel.format())
+                .build();
+      }
       if (columnClass.equals(Integer.class)) {
-        return integerField((Value<Integer>) value)
+        return integerField((Value<Integer>) linkedValue)
                 .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(Double.class)) {
-        return doubleField((Value<Double>) value)
+        return doubleField((Value<Double>) linkedValue)
                 .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(BigDecimal.class)) {
-        return bigDecimalField((Value<BigDecimal>) value)
+        return bigDecimalField((Value<BigDecimal>) linkedValue)
                 .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(Long.class)) {
-        return longField((Value<Long>) value)
+        return longField((Value<Long>) linkedValue)
                 .format(columnConditionModel.format())
                 .build();
       }
       else if (columnClass.equals(LocalTime.class)) {
-        return localTimeField(columnConditionModel.dateTimePattern(), (Value<LocalTime>) value)
+        return localTimeField(columnConditionModel.dateTimePattern(), (Value<LocalTime>) linkedValue)
                 .build();
       }
       else if (columnClass.equals(LocalDate.class)) {
-        return localDateField(columnConditionModel.dateTimePattern(), (Value<LocalDate>) value)
+        return localDateField(columnConditionModel.dateTimePattern(), (Value<LocalDate>) linkedValue)
                 .build();
       }
       else if (columnClass.equals(LocalDateTime.class)) {
-        return localDateTimeField(columnConditionModel.dateTimePattern(), (Value<LocalDateTime>) value)
+        return localDateTimeField(columnConditionModel.dateTimePattern(), (Value<LocalDateTime>) linkedValue)
                 .build();
       }
       else if (columnClass.equals(OffsetDateTime.class)) {
-        return offsetDateTimeField(columnConditionModel.dateTimePattern(), (Value<OffsetDateTime>) value)
+        return offsetDateTimeField(columnConditionModel.dateTimePattern(), (Value<OffsetDateTime>) linkedValue)
                 .build();
       }
       else if (columnClass.equals(String.class)) {
-        return textField((Value<String>) value)
+        return textField((Value<String>) linkedValue)
                 .build();
       }
 

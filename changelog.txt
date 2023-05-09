@@ -8874,3 +8874,4 @@
   EntityTablePanel, all createControl methods now private
   EntityTablePanel, EntityEditPanel.getControl() renamed control()
   EntityTablePanel.selectFilterPanel() added
+  ColumnConditionPanel bug fixed, now supports Short columns
