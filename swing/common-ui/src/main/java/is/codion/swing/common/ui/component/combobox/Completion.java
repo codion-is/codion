@@ -9,6 +9,9 @@ import is.codion.common.properties.PropertyValue;
 import javax.swing.JComboBox;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -135,6 +138,7 @@ public final class Completion {
       default:
         throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
     }
+    comboBox.addFocusListener(new CompletionFocusListener((JTextComponent) comboBox.getEditor().getEditorComponent()));
 
     return comboBox;
   }
@@ -151,6 +155,33 @@ public final class Completion {
      * The String should not be normalized.
      */
     NO
+  }
+
+  /**
+   * Selects all when the field gains the focus while maintaining the cursor position at 0,
+   * selects none on focus lost.
+   */
+  private static final class CompletionFocusListener implements FocusListener {
+
+    private final JTextComponent editor;
+
+    private CompletionFocusListener(JTextComponent editor) {
+      this.editor = editor;
+    }
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      int length = editor.getText().length();
+      if (length > 0) {
+        editor.setCaretPosition(length);
+        editor.moveCaretPosition(0);
+      }
+    }
+
+    @Override
+    public void focusLost(FocusEvent e) {
+      editor.select(0, 0);
+    }
   }
 
   private static final class MaximumMatchDocument extends CompletionDocument {
