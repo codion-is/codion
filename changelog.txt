@@ -8873,3 +8873,4 @@
   EntityTablePanel.INCLUDE_FILTER_PANEL configuration value added, default false
   EntityTablePanel, all createControl methods now private
   EntityTablePanel, EntityEditPanel.getControl() renamed control()
+  EntityTablePanel.selectFilterPanel() added

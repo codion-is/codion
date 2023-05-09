@@ -135,7 +135,9 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[Ctrl + G]|Show popup menu
 |kbd:[F5]|Refresh, when condition panel is visible and button is enabled
 |kbd:[Ctrl + Alt + S]|Toggle condition panel between hidden, visible and advanced
+|kbd:[Ctrl + S]|Select condition panel
 |kbd:[Ctrl + Alt + F]|Toggle filter panel between hidden, visible and advanced
+|kbd:[Ctrl + Shift + F]|Select filter panel
 |===
 
 [cols="1,3"]
