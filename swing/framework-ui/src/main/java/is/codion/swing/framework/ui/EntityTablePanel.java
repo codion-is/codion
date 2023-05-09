@@ -1414,9 +1414,15 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeUpdateSelectedControls() {
-    return !tableModel.isReadOnly() && tableModel.isUpdateEnabled() &&
-            tableModel.isBatchUpdateEnabled() &&
-            !tableModel.entityDefinition().updatableProperties().isEmpty();
+    long attributeCount = tableModel.entityDefinition().updatableProperties().stream()
+            .map(Property::attribute)
+            .filter(attribute -> !excludeFromUpdateMenu.contains(attribute))
+            .count();
+
+    return attributeCount > 0 &&
+            !tableModel.isReadOnly() &&
+            tableModel.isUpdateEnabled() &&
+            tableModel.isBatchUpdateEnabled();
   }
 
   private boolean includeDeleteSelectedControl() {
