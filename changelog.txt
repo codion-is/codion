@@ -8871,3 +8871,4 @@
   FilteredTableConditionPanel added, related refactoring
   Search icon added
   EntityTablePanel.INCLUDE_FILTER_PANEL configuration value added, default false
+  EntityTablePanel, all createControl methods now private

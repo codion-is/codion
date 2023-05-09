@@ -693,108 +693,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates a {@link Controls} containing controls for updating the value of a single property
-   * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
-   * @return controls containing a control for each updatable property in the
-   * underlying entity, for performing an update on the selected entities
-   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(Attribute)
-   * @see EntityEditModel#updateEnabledObserver()
-   */
-  public final Controls createUpdateSelectedControls() {
-    if (!includeUpdateSelectedControls()) {
-      throw new IllegalStateException("Table model is read only or does not allow updates");
-    }
-    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
-    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
-    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
-    Controls updateControls = Controls.builder()
-            .caption(FrameworkMessages.update())
-            .enabledState(enabledState)
-            .smallIcon(FrameworkIcons.instance().edit())
-            .description(FrameworkMessages.updateSelectedTip())
-            .build();
-    tableModel.entityDefinition().updatableProperties().stream()
-            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
-            .sorted(Property.propertyComparator())
-            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
-                    .caption(property.caption() == null ? property.attribute().name() : property.caption())
-                    .enabledState(enabledState)
-                    .build()));
-
-    return updateControls;
-  }
-
-  /**
-   * @return a control for showing the dependencies dialog
-   */
-  public final Control createViewDependenciesControl() {
-    return Control.builder(this::viewSelectionDependencies)
-            .caption(FrameworkMessages.dependencies())
-            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .description(FrameworkMessages.dependenciesTip())
-            .smallIcon(FrameworkIcons.instance().dependencies())
-            .build();
-  }
-
-  /**
-   * @return a control for deleting the selected entities
-   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
-   */
-  public final Control createDeleteSelectedControl() {
-    if (!includeDeleteSelectedControl()) {
-      throw new IllegalStateException("Table model is read only or does not allow delete");
-    }
-    return Control.builder(this::deleteWithConfirmation)
-            .caption(FrameworkMessages.delete())
-            .enabledState(State.and(
-                    tableModel.editModel().deleteEnabledObserver(),
-                    tableModel.selectionModel().selectionNotEmptyObserver()))
-            .description(FrameworkMessages.deleteSelectedTip())
-            .smallIcon(FrameworkIcons.instance().delete())
-            .build();
-  }
-
-  /**
-   * @return a control for printing the table
-   */
-  public final Control createPrintTableControl() {
-    String printCaption = MESSAGES.getString("print_table");
-    return Control.builder(this::printTable)
-            .caption(printCaption)
-            .description(printCaption)
-            .mnemonic(Messages.printMnemonic())
-            .smallIcon(FrameworkIcons.instance().print())
-            .build();
-  }
-
-  /**
-   * @return a Control for refreshing the underlying table data
-   */
-  public final Control createRefreshControl() {
-    return Control.builder(tableModel::refresh)
-            .caption(FrameworkMessages.refresh())
-            .description(FrameworkMessages.refreshTip())
-            .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(FrameworkIcons.instance().refresh())
-            .enabledState(tableModel.refreshingObserver().reversedObserver())
-            .build();
-  }
-
-  /**
-   * @return a Control for clearing the underlying table model, that is, removing all rows
-   */
-  public final Control createClearControl() {
-    return Control.builder(tableModel::clear)
-            .caption(Messages.clear())
-            .description(Messages.clearTip())
-            .mnemonic(Messages.clearMnemonic())
-            .smallIcon(FrameworkIcons.instance().clear())
-            .build();
-  }
-
-  /**
    * Retrieves a new value via input dialog and performs an update on the selected entities
    * assigning the value to the attribute
    * @param attributeToUpdate the attribute to update
@@ -990,16 +888,12 @@ public class EntityTablePanel extends JPanel {
       }
     };
     Controls popupMenuControls = Controls.controls();
-    if (tablePanel.includeUpdateSelectedControls()) {
-      popupMenuControls.add(tablePanel.createUpdateSelectedControls());
-    }
-    if (tablePanel.includeDeleteSelectedControl()) {
-      popupMenuControls.add(tablePanel.createDeleteSelectedControl());
-    }
+    tablePanel.getControl(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
+    tablePanel.getControl(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
     if (!popupMenuControls.isEmpty()) {
       popupMenuControls.addSeparator();
     }
-    popupMenuControls.add(tablePanel.createViewDependenciesControl());
+    tablePanel.getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
     tablePanel.addPopupMenuControls(popupMenuControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.initializePanel();
@@ -1348,6 +1242,108 @@ public class EntityTablePanel extends JPanel {
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
   }
 
+  /**
+   * Creates a {@link Controls} containing controls for updating the value of a single property
+   * for the selected entities. These controls are enabled as long as the selection is not empty
+   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
+   * @return controls containing a control for each updatable property in the
+   * underlying entity, for performing an update on the selected entities
+   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
+   * @see #excludeFromUpdateMenu(Attribute)
+   * @see EntityEditModel#updateEnabledObserver()
+   */
+  private Controls createUpdateSelectedControls() {
+    if (!includeUpdateSelectedControls()) {
+      throw new IllegalStateException("Table model is read only or does not allow updates");
+    }
+    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
+    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
+    Controls updateControls = Controls.builder()
+            .caption(FrameworkMessages.update())
+            .enabledState(enabledState)
+            .smallIcon(FrameworkIcons.instance().edit())
+            .description(FrameworkMessages.updateSelectedTip())
+            .build();
+    tableModel.entityDefinition().updatableProperties().stream()
+            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
+            .sorted(Property.propertyComparator())
+            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
+                    .caption(property.caption() == null ? property.attribute().name() : property.caption())
+                    .enabledState(enabledState)
+                    .build()));
+
+    return updateControls;
+  }
+
+  /**
+   * @return a control for showing the dependencies dialog
+   */
+  private Control createViewDependenciesControl() {
+    return Control.builder(this::viewSelectionDependencies)
+            .caption(FrameworkMessages.dependencies())
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
+            .description(FrameworkMessages.dependenciesTip())
+            .smallIcon(FrameworkIcons.instance().dependencies())
+            .build();
+  }
+
+  /**
+   * @return a control for deleting the selected entities
+   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
+   */
+  private Control createDeleteSelectedControl() {
+    if (!includeDeleteSelectedControl()) {
+      throw new IllegalStateException("Table model is read only or does not allow delete");
+    }
+    return Control.builder(this::deleteWithConfirmation)
+            .caption(FrameworkMessages.delete())
+            .enabledState(State.and(
+                    tableModel.editModel().deleteEnabledObserver(),
+                    tableModel.selectionModel().selectionNotEmptyObserver()))
+            .description(FrameworkMessages.deleteSelectedTip())
+            .smallIcon(FrameworkIcons.instance().delete())
+            .build();
+  }
+
+  /**
+   * @return a control for printing the table
+   */
+  private Control createPrintTableControl() {
+    String printCaption = MESSAGES.getString("print_table");
+    return Control.builder(this::printTable)
+            .caption(printCaption)
+            .description(printCaption)
+            .mnemonic(Messages.printMnemonic())
+            .smallIcon(FrameworkIcons.instance().print())
+            .build();
+  }
+
+  /**
+   * @return a Control for refreshing the underlying table data
+   */
+  private Control createRefreshControl() {
+    return Control.builder(tableModel::refresh)
+            .caption(FrameworkMessages.refresh())
+            .description(FrameworkMessages.refreshTip())
+            .mnemonic(FrameworkMessages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
+            .enabledState(tableModel.refreshingObserver().reversedObserver())
+            .build();
+  }
+
+  /**
+   * @return a Control for clearing the underlying table model, that is, removing all rows
+   */
+  private Control createClearControl() {
+    return Control.builder(tableModel::clear)
+            .caption(Messages.clear())
+            .description(Messages.clearTip())
+            .mnemonic(Messages.clearMnemonic())
+            .smallIcon(FrameworkIcons.instance().clear())
+            .build();
+  }
+
   private Control createToggleConditionPanelControl() {
     if (conditionPanel == null) {
       return null;
@@ -1540,7 +1536,7 @@ public class EntityTablePanel extends JPanel {
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
       KeyEvents.builder(VK_DELETE)
-              .action(createDeleteSelectedControl())
+              .action(controls.get(ControlCode.DELETE_SELECTED))
               .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
