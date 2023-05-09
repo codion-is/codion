@@ -155,6 +155,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeClearControl", false);
 
   /**
+   * Specifies whether to include a filter panel.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> INCLUDE_FILTER_PANEL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
+
+  /**
    * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
    * Value type: Boolean<br>
    * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
@@ -302,7 +310,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * specifies whether to include the table filter panel
    */
-  private boolean includeFilterPanel = true;
+  private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
 
   /**
    * specifies whether to include a 'Clear' control in the popup menu.
