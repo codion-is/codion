@@ -926,9 +926,6 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Sets up the default keyboard actions.
-   * CTRL-T transfers focus to the table in case one is available,
-   * CTR-S opens a select search condition panel dialog, in case one is available,
-   * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
     control(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
@@ -1103,7 +1100,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Called before delete is performed, if true is returned the delete action is performed otherwise it is canceled
+   * Called before delete is performed, if true is returned the delete action is performed otherwise it is cancelled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {

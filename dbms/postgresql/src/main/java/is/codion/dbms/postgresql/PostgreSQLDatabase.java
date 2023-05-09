@@ -25,7 +25,7 @@ final class PostgreSQLDatabase extends AbstractDatabase {
   private static final String INTEGRITY_CONSTRAINT_VIOLATION = "23000";
   private static final String FOREIGN_KEY_VIOLATION = "23503";
   private static final String UNIQUE_CONSTRAINT_ERROR = "23505";
-  private static final String TIMEOUT_ERROR = "57014";//query_canceled
+  private static final String TIMEOUT_ERROR = "57014";//query_cancelled
   private static final String NULL_VALUE_ERROR = "23502";
   private static final String CHECK_CONSTRAINT_ERROR = "23514";
   private static final String VALUE_TOO_LARGE_ERROR = "22001";
