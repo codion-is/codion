@@ -14,7 +14,6 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
 import is.codion.swing.common.ui.component.table.ConditionPanelFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.framework.model.EntityComboBoxModel;
@@ -92,7 +91,7 @@ public class EntityConditionPanelFactory implements ConditionPanelFactory {
       return null;
     }
     try {
-      return columnConditionPanel(conditionModel, ToggleAdvancedButton.NO, boundFieldFactory);
+      return columnConditionPanel(conditionModel, boundFieldFactory);
     }
     catch (Exception e) {
       LOG.error("Unable to create AttributeConditionPanel for attribute: " + conditionModel.columnIdentifier(), e);

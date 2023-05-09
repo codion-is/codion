@@ -49,40 +49,23 @@ import static javax.swing.SwingConstants.CENTER;
 
 /**
  * A UI implementation for {@link ColumnConditionModel}.
- * For instances use the {@link #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton)} or
- * {@link #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton, BoundFieldFactory)} factory methods.
+ * For instances use the {@link #columnConditionPanel(ColumnConditionModel)} or
+ * {@link #columnConditionPanel(ColumnConditionModel, BoundFieldFactory)} factory methods.
  * @param <C> the type of objects used to identify columns
  * @param <T> the column value type
- * @see #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton)
- * @see #columnConditionPanel(ColumnConditionModel, ToggleAdvancedButton, BoundFieldFactory)
+ * @see #columnConditionPanel(ColumnConditionModel)
+ * @see #columnConditionPanel(ColumnConditionModel, BoundFieldFactory)
  */
 public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
 
-  /**
-   * Specifies whether a condition panel should include
-   * a button for toggling advanced mode.
-   */
-  public enum ToggleAdvancedButton {
-    /**
-     * Include a button for toggling advancded mode.
-     */
-    YES,
-    /**
-     * Don't include a button for toggling advancded mode.
-     */
-    NO
-  }
-
   private final ColumnConditionModel<C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
-  private final JToggleButton toggleAdvancedButton;
   private final JComboBox<Item<Operator>> operatorCombo;
   private final JComponent equalField;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
-  private final JPanel buttonPanel = new JPanel();
   private final JPanel controlPanel = new JPanel(new BorderLayout());
   private final JPanel inputPanel = new JPanel(new BorderLayout());
   private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
@@ -90,8 +73,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedViewState = State.state();
 
-  private ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, ToggleAdvancedButton toggleAdvancedButton,
-                               BoundFieldFactory boundFieldFactory) {
+  private ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
@@ -108,9 +90,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
                             .caption(MESSAGES.getString("auto_enable"))).build()
                     .createPopupMenu())
             .build();
-    this.toggleAdvancedButton = toggleAdvancedButton == ToggleAdvancedButton.YES ? toggleButton(advancedViewState)
-            .caption("...")
-            .build() : null;
     conditionModel.setLocked(modelLocked);
     initializeUI();
     bindEvents();
@@ -119,8 +98,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(toggleEnabledButton, toggleAdvancedButton, operatorCombo, equalField,
-            lowerBoundField, upperBoundField, buttonPanel, controlPanel, inputPanel, rangePanel);
+    Utilities.updateUI(toggleEnabledButton, operatorCombo, equalField,
+            lowerBoundField, upperBoundField, controlPanel, inputPanel, rangePanel);
   }
 
   /**
@@ -222,29 +201,25 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * Instantiates a new {@link ColumnConditionPanel}, with a default bound field factory.
    * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-                                                                       ToggleAdvancedButton toggleAdvancedButton) {
-    return columnConditionPanel(conditionModel, toggleAdvancedButton, new DefaultBoundFieldFactory<>(conditionModel));
+  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
+    return columnConditionPanel(conditionModel, new DefaultBoundFieldFactory<>(conditionModel));
   }
 
   /**
    * Instantiates a new {@link ColumnConditionPanel}.
    * @param conditionModel the condition model to base this panel on
-   * @param toggleAdvancedButton specifies whether this condition panel should include a button for toggling advanced mode
    * @param boundFieldFactory the input field factory
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance
    */
   public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
-                                                                       ToggleAdvancedButton toggleAdvancedButton,
                                                                        BoundFieldFactory boundFieldFactory) {
-    return new ColumnConditionPanel<>(conditionModel, toggleAdvancedButton, boundFieldFactory);
+    return new ColumnConditionPanel<>(conditionModel, boundFieldFactory);
   }
 
   /**
@@ -378,9 +353,6 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     if (lowerBoundField != null) {
       lowerBoundField.addFocusListener(focusGainedListener);
     }
-    if (toggleAdvancedButton != null) {
-      toggleAdvancedButton.addFocusListener(focusGainedListener);
-    }
     toggleEnabledButton.addFocusListener(focusGainedListener);
   }
 
@@ -427,8 +399,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       requestFocusInWindow(true);
     }
     remove(controlPanel);
-    setupButtonPanel();
-    inputPanel.add(buttonPanel, BorderLayout.EAST);
+    inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, inputPanel.getPreferredSize().height));
     revalidate();
@@ -443,25 +414,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     if (isParentOfFocusOwner) {
       requestFocusInWindow(true);
     }
-    setupButtonPanel();
-    controlPanel.add(buttonPanel, BorderLayout.EAST);
+    controlPanel.add(toggleEnabledButton, BorderLayout.EAST);
     add(controlPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
     setPreferredSize(new Dimension(getPreferredSize().width, controlPanel.getPreferredSize().height + inputPanel.getPreferredSize().height));
     revalidate();
     if (isParentOfFocusOwner) {
       focusOwner.requestFocusInWindow();
-    }
-  }
-
-  private void setupButtonPanel() {
-    buttonPanel.setLayout(new GridLayout(1, toggleAdvancedButton == null ? 1 : 2));
-    if (toggleAdvancedButton != null) {
-      buttonPanel.add(toggleAdvancedButton);
-      buttonPanel.add(toggleEnabledButton);
-    }
-    else {
-      buttonPanel.add(toggleEnabledButton);
     }
   }
 
@@ -482,7 +441,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void initializeUI() {
     Utilities.linkToEnabledState(conditionModel.lockedObserver().reversedObserver(),
-            operatorCombo, equalField, upperBoundField, lowerBoundField, toggleAdvancedButton, toggleEnabledButton);
+            operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.getOperator());

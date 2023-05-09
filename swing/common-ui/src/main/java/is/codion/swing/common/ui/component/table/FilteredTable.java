@@ -27,7 +27,6 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
@@ -53,10 +52,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -135,19 +132,9 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private final T tableModel;
 
   /**
-   * Creates the filter condition panels
+   * The filter condition panels
    */
-  private final ConditionPanelFactory conditionPanelFactory;
-
-  /**
-   * The column filter panels
-   */
-  private final Map<FilteredTableColumn<C>, ColumnConditionPanel<C, ?>> columnFilterPanels = new HashMap<>();
-
-  /**
-   * Active filter panel dialogs
-   */
-  private final Map<ColumnConditionPanel<C, ?>, JDialog> columnFilterPanelDialogs = new HashMap<>();
+  private final FilteredTableConditionPanel<T, C> conditionPanel;
 
   /**
    * The text field used for entering the search condition
@@ -189,8 +176,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     requireNonNull(cellRendererFactory);
     this.tableModel = tableModel;
-    this.conditionPanelFactory = requireNonNull(conditionPanelFactory, "conditionPanelFactory");
     this.searchField = createSearchField();
+    this.conditionPanel = new FilteredTableConditionPanel<>(tableModel, requireNonNull(conditionPanelFactory));
     this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, cellRendererFactory));
     initializeTableHeader(getTableHeader());
     bindEvents();
@@ -199,10 +186,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(getTableHeader(), searchField);
-    if (columnFilterPanels != null) {
-      Utilities.updateUI(columnFilterPanels.values());
-    }
+    Utilities.updateUI(getTableHeader(), searchField, conditionPanel);
   }
 
   @Override
@@ -223,6 +207,13 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     if (!selection.isEmpty()) {
       ((FilteredTableModel<R, C>) dataModel).selectionModel().setSelectedItems(selection);
     }
+  }
+
+  /**
+   * @return the condition panel
+   */
+  public FilteredTableConditionPanel<T, C> conditionPanel() {
+    return conditionPanel;
   }
 
   /**
@@ -318,14 +309,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   @Override
   public void setSelectionMode(int selectionMode) {
     tableModel.selectionModel().setSelectionMode(selectionMode);
-  }
-
-  /**
-   * Hides or shows the active filter panel dialogs for this table panel
-   * @param filterPanelsVisible true if the active filter panel dialogs should be shown, false if they should be hidden
-   */
-  public void setFilterPanelsVisible(boolean filterPanelsVisible) {
-    columnFilterPanelDialogs.values().forEach(dialog -> dialog.setVisible(filterPanelsVisible));
   }
 
   /**
@@ -601,7 +584,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   private void initializeTableHeader(JTableHeader header) {
-    header.addMouseListener(new ColumnFilterPanelMouseHandler());
     header.setReorderingAllowed(true);
     header.setAutoscrolls(true);
     header.addMouseMotionListener(new ColumnDragMouseHandler());
@@ -808,55 +790,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         default:
           throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
       }
-    }
-  }
-
-  private final class ColumnFilterPanelMouseHandler extends MouseAdapter {
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-      if (e.isAltDown() && e.isControlDown()) {
-        toggleFilterPanel(e);
-      }
-    }
-
-    private void toggleFilterPanel(MouseEvent event) {
-      FilteredTableColumnModel<C> columnModel = getModel().columnModel();
-      FilteredTableColumn<C> column = columnModel.getColumn(columnModel.getColumnIndexAtX(event.getX()));
-      toggleFilterPanel(columnFilterPanels.computeIfAbsent(column, conditionPanelFactory::createConditionPanel),
-              column.getHeaderValue().toString(), event.getLocationOnScreen());
-    }
-
-    private void toggleFilterPanel(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
-      if (filterPanel != null) {
-        JDialog dialog = filterPanelDialog(filterPanel, title);
-        if (dialog.isShowing()) {
-          columnFilterPanelDialogs.remove(filterPanel).dispose();
-        }
-        else {
-          showDialog(filterPanel, title, location);
-        }
-      }
-    }
-
-    private void showDialog(ColumnConditionPanel<C, ?> filterPanel, String title, Point location) {
-      JDialog dialog = filterPanelDialog(filterPanel, title);
-      //adjust the location to above the column header
-      location.y = location.y - dialog.getHeight() - getTableHeader().getHeight();
-      dialog.setLocation(location);
-      dialog.setVisible(true);
-      filterPanel.addAdvancedViewListener(advanced -> dialog.pack());
-      filterPanel.requestInputFocus();
-    }
-
-    private JDialog filterPanelDialog(ColumnConditionPanel<C, ?> filterPanel, String title) {
-      return columnFilterPanelDialogs.computeIfAbsent(filterPanel, k -> Dialogs.componentDialog(k)
-              .owner(FilteredTable.this)
-              .title(title)
-              .modal(false)
-              .disposeOnEscape(false)
-              .onClosed(event -> columnFilterPanelDialogs.remove(filterPanel).dispose())
-              .build());
     }
   }
 
@@ -1126,7 +1059,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         return null;
       }
 
-      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel, ColumnConditionPanel.ToggleAdvancedButton.YES);
+      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel);
     }
   }
 

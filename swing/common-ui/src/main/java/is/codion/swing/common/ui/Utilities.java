@@ -18,6 +18,8 @@ import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIDefaults;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.plaf.FontUIResource;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -123,10 +125,7 @@ public final class Utilities {
    * @param linked the model to link with main
    */
   public static void linkBoundedRangeModels(BoundedRangeModel main, BoundedRangeModel linked) {
-    requireNonNull(main, "main");
-    requireNonNull(linked, "linked");
-    main.addChangeListener(e -> linked.setRangeProperties(main.getValue(), main.getExtent(),
-            main.getMinimum(), main.getMaximum(), main.getValueIsAdjusting()));
+    main.addChangeListener(new BoundedRangeModelListener(requireNonNull(main, "main"), requireNonNull(linked, "linked")));
   }
 
   /**
@@ -349,6 +348,23 @@ public final class Utilities {
       else {
         SwingUtilities.invokeLater(() -> component.setEnabled(enabled));
       }
+    }
+  }
+
+  private static final class BoundedRangeModelListener implements ChangeListener {
+
+    private final BoundedRangeModel main;
+    private final BoundedRangeModel linked;
+
+    private BoundedRangeModelListener(BoundedRangeModel main, BoundedRangeModel linked) {
+      this.main = main;
+      this.linked = linked;
+    }
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+      linked.setRangeProperties(main.getValue(), main.getExtent(),
+              main.getMinimum(), main.getMaximum(), main.getValueIsAdjusting());
     }
   }
 }

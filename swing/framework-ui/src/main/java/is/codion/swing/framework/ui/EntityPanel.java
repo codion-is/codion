@@ -40,8 +40,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
@@ -443,7 +441,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         initializeAssociatedPanels();
         initializeControlPanels();
         initializeUI();
-        bindEvents();
         initialize();
       }
       finally {
@@ -901,24 +898,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Hides or shows the active filter panel dialogs for this panel and all its child panels
-   * (detail panels and their detail panels etc.)
-   * @param visible true if the active filter panel dialogs should be shown, false if they should be hidden
-   */
-  public final void setFilterPanelsVisible(boolean visible) {
-    if (!panelInitialized) {
-      return;
-    }
-
-    if (containsTablePanel()) {
-      tablePanel.table().setFilterPanelsVisible(visible);
-    }
-    for (EntityPanel detailEntityPanel : detailEntityPanels) {
-      detailEntityPanel.setFilterPanelsVisible(visible);
-    }
-  }
-
-  /**
    * Resizes this panel in the given direction
    * @param direction the resize direction
    * @param pixelAmount the resize amount
@@ -1165,12 +1144,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-              KeyEvents.builder(VK_S)
-                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                      .action(control)
-                      .enable(this));
       if (containsEditPanel()) {
         tablePanel.getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
                 KeyEvents.builder(VK_T)
@@ -1181,12 +1154,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
         tablePanel.getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
                 KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK)
-                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-                        .action(control)
-                        .enable(editControlPanel));
-        tablePanel.getControl(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
-                KeyEvents.builder(VK_S)
-                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
@@ -1576,10 +1543,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private void bindEvents() {
-    addComponentListener(new EntityPanelComponentAdapter());
-  }
-
   private void checkIfInitialized() {
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
@@ -1722,17 +1685,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           editPanelParent.setActive(true);
         }
       }
-    }
-  }
-
-  private final class EntityPanelComponentAdapter extends ComponentAdapter {
-    @Override
-    public void componentHidden(ComponentEvent e) {
-      setFilterPanelsVisible(false);
-    }
-    @Override
-    public void componentShown(ComponentEvent e) {
-      setFilterPanelsVisible(true);
     }
   }
 
