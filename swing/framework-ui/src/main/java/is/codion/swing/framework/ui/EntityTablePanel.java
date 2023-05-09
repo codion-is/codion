@@ -1105,10 +1105,17 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
     getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
-    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control -> {
-      toolbarControls.add(control);
+    Control toggleConditionPanel = getControl(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
+    Control toggleFilterPanel = getControl(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
+    if (toggleConditionPanel != null || toggleFilterPanel != null) {
+      if (toggleConditionPanel != null) {
+        toolbarControls.add(toggleConditionPanel);
+      }
+      if (toggleFilterPanel != null) {
+        toolbarControls.add(toggleFilterPanel);
+      }
       toolbarControls.addSeparator();
-    });
+    }
     getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
     getControl(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
     getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
@@ -1340,7 +1347,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     return Control.builder(this::toggleConditionPanel)
-            .smallIcon(FrameworkIcons.instance().filter())
+            .smallIcon(FrameworkIcons.instance().search())
             .description(MESSAGES.getString("show_condition_panel"))
             .build();
   }
@@ -1637,7 +1644,7 @@ public class EntityTablePanel extends JPanel {
   private void addConditionControls(Controls popupControls) {
     Controls conditionControls = Controls.builder()
             .caption(FrameworkMessages.search())
-            .smallIcon(FrameworkIcons.instance().filter())
+            .smallIcon(FrameworkIcons.instance().search())
             .build();
     getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
     Controls searchPanelControls = conditionPanel.controls();

@@ -16,6 +16,7 @@ public final class DefaultFrameworkIconsTest {
   void test() {
     DefaultFrameworkIcons icons = new DefaultFrameworkIcons();
     assertNotNull(icons.filter());
+    assertNotNull(icons.search());
     assertNotNull(icons.add());
     assertNotNull(icons.delete());
     assertNotNull(icons.update());

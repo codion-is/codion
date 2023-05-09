@@ -32,6 +32,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     });
     ICONS.put(FrameworkIkons.LOGO, FontImageIcon.of(FrameworkIkons.LOGO));
     ICONS.put(FrameworkIkons.FILTER, FontImageIcon.of(FrameworkIkons.FILTER));
+    ICONS.put(FrameworkIkons.SEARCH, FontImageIcon.of(FrameworkIkons.SEARCH));
     ICONS.put(FrameworkIkons.ADD, FontImageIcon.of(FrameworkIkons.ADD));
     ICONS.put(FrameworkIkons.DELETE, FontImageIcon.of(FrameworkIkons.DELETE));
     ICONS.put(FrameworkIkons.UPDATE, FontImageIcon.of(FrameworkIkons.UPDATE));
@@ -59,6 +60,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   @Override
   public ImageIcon filter() {
     return ICONS.get(FrameworkIkons.FILTER).imageIcon;
+  }
+
+  @Override
+  public ImageIcon search() {
+    return ICONS.get(FrameworkIkons.SEARCH).imageIcon;
   }
 
   @Override

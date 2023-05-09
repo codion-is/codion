@@ -8869,3 +8869,4 @@
   RemoteEntityConnectionProvider.Builder.serverNamePrefix() added
   Server.Locator.Builder added, related refactoring
   FilteredTableConditionPanel added, related refactoring
+  Search icon added
