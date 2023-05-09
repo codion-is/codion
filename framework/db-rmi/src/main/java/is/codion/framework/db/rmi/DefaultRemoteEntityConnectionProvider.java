@@ -7,7 +7,6 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
-import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
@@ -48,12 +47,14 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String serverHostName;
   private final int serverPort;
   private final int registryPort;
+  private final String serverNamePrefix;
 
   DefaultRemoteEntityConnectionProvider(DefaultRemoteEntityConnectionProviderBuilder builder) {
     super(builder);
     this.serverHostName = requireNonNull(builder.serverHostName, "serverHostName");
     this.serverPort = builder.serverPort;
     this.registryPort = builder.registryPort;
+    this.serverNamePrefix = builder.serverNamePrefix;
   }
 
   @Override
@@ -144,7 +145,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Server.Locator.locator().findServer(serverHostName, ServerConfiguration.SERVER_NAME_PREFIX.get(), registryPort, serverPort);
+    this.server = Server.Locator.builder()
+            .serverHostName(serverHostName)
+            .serverNamePrefix(serverNamePrefix)
+            .registryPort(registryPort)
+            .serverPort(serverPort)
+            .build()
+            .locateServer();
     this.serverInformation = this.server.serverInformation();
   }
 

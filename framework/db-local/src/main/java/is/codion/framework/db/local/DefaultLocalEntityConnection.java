@@ -352,13 +352,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
-        for (Map.Entry<Attribute<?>, Object> propertyValue : condition.attributeValues().entrySet()) {
-          ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) propertyValue.getKey());
+        for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
+          ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) attributeValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
           }
           statementProperties.add(columnProperty);
-          statementValues.add(columnProperty.attribute().validateType(propertyValue.getValue()));
+          statementValues.add(columnProperty.attribute().validateType(attributeValue.getValue()));
         }
         updateQuery = updateQuery(entityDefinition.tableName(), statementProperties, condition.toString(entityDefinition));
         statement = prepareStatement(updateQuery);
@@ -1188,7 +1188,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       });
 
       return writableAndPrimaryKeyProperties.stream()
-              .map(ColumnProperty::attribute).toArray(Attribute<?>[]::new);
+              .map(ColumnProperty::attribute)
+              .toArray(Attribute<?>[]::new);
     });
   }
 

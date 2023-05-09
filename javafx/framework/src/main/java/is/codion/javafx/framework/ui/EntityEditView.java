@@ -4,6 +4,7 @@
 package is.codion.javafx.framework.ui;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -48,7 +49,7 @@ public abstract class EntityEditView extends BorderPane {
   private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.addMnemonic()));
   private static final KeyCode UPDATE_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.updateMnemonic()));
   private static final KeyCode DELETE_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.deleteMnemonic()));
-  private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.clearMnemonic()));
+  private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(String.valueOf(Messages.clearMnemonic()));
   private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(String.valueOf(FrameworkMessages.refreshMnemonic()));
 
   private final FXEntityEditModel editModel;
@@ -329,8 +330,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private Button createClearButton() {
-    Button button = new Button(FrameworkMessages.clear());
-    button.setTooltip(new Tooltip(FrameworkMessages.clearTip()));
+    Button button = new Button(Messages.clear());
+    button.setTooltip(new Tooltip(Messages.clearTip()));
     button.setOnAction(event -> {
       editModel.setDefaultValues();
       requestInitialFocus();

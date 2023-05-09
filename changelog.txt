@@ -8903,3 +8903,9 @@
   SwingEntityTableModel.allowSelectionChange() no longer final
   FilteredTableModel.addItemAt() added
   FilteredTableModel.fireTableDataChanged() added
+  EntityTablePanel.createTableCellEditor(), createTableCellRenderer() and EntityTableCellRenderer.builder() now take Attribute instead of Property as parameter
+  RemoteEntityConnectionProvider.Builder.serverNamePrefix() added
+  Server.Locator.Builder added, related refactoring
+  FilteredTableConditionPanel added, related refactoring
+  Search icon added
+  EntityTablePanel.INCLUDE_FILTER_PANEL configuration value added, default false

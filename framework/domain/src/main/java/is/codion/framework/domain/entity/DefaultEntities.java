@@ -84,8 +84,10 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   @Override
   public final <T> List<Key> primaryKeys(EntityType entityType, T... values) {
+    EntityDefinition definition = definition(entityType);
+
     return Arrays.stream(requireNonNull(values, "values"))
-            .map(value -> primaryKey(entityType, value))
+            .map(definition::primaryKey)
             .collect(toList());
   }
 
@@ -118,7 +120,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       throw new IllegalArgumentException("Entity has already been defined: " +
               definition.type() + ", for table: " + definition.tableName());
     }
-    validateForeignKeyProperties(definition);
+    validateForeignKeys(definition);
     entityDefinitions.put(definition.type().name(), (DefaultEntityDefinition) definition);
     populateForeignDefinitions();
   }
@@ -132,13 +134,13 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return definition;
   }
 
-  private void validateForeignKeyProperties(EntityDefinition definition) {
+  private void validateForeignKeys(EntityDefinition definition) {
     EntityType entityType = definition.type();
     for (ForeignKey foreignKey : definition.foreignKeys()) {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
-      if (referencedEntity == null && strictForeignKeys) {
+      if (strictForeignKeys && referencedEntity == null) {
         throw new IllegalArgumentException("Entity '" + referencedType
                 + "' referenced by entity '" + entityType + "' via foreign key '"
                 + foreignKey + "' has not been defined");
@@ -146,12 +148,15 @@ public abstract class DefaultEntities implements Entities, Serializable {
       if (referencedEntity != null) {
         foreignKey.references().stream()
                 .map(ForeignKey.Reference::referencedAttribute)
-                .forEach(attribute -> {
-                  if (!referencedEntity.containsAttribute(attribute)) {
-                    throw new IllegalArgumentException("Property referenced by foreign key not found in referenced entity: " + attribute);
-                  }
-                });
+                .forEach(referencedAttribute -> validateReference(foreignKey, referencedAttribute, referencedEntity));
       }
+    }
+  }
+
+  private void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
+    if (!referencedEntity.containsAttribute(referencedAttribute)) {
+      throw new IllegalArgumentException("Attribute " + referencedAttribute + " referenced by foreign key "
+              + foreignKey + " not found in referenced entity");
     }
   }
 

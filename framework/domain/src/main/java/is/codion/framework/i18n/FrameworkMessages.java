@@ -22,9 +22,6 @@ public final class FrameworkMessages {
   private static final String REFRESH_ALL = "refresh_all";
   private static final String SUPPORT_TABLES = "support_tables";
   private static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
-  private static final String CLEAR = "clear";
-  private static final String CLEAR_MNEMONIC = "clear_mnemonic";
-  private static final String CLEAR_TIP = "clear_tip";
   private static final String UPDATE = "update";
   private static final String UPDATE_MNEMONIC = "update_mnemonic";
   private static final String UPDATE_TIP = "update_tip";
@@ -54,9 +51,9 @@ public final class FrameworkMessages {
   private static final String SHOW = "show";
   private static final String NO_RESULTS_FROM_CONDITION = "no_results_from_condition";
   private static final String SEARCH = "search";
+  private static final String FILTER = "filter";
   private static final String SEARCH_MNEMONIC = "search_mnemonic";
 
-  private static final String ADVANCED = "advanced";
   private static final String COPY_CELL = "copy_cell";
   private static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 
@@ -134,27 +131,6 @@ public final class FrameworkMessages {
    */
   public static char supportTablesMnemonic() {
     return get(SUPPORT_TABLES_MNEMONIC).charAt(0);
-  }
-
-  /**
-   * @return clear
-   */
-  public static String clear() {
-    return get(CLEAR);
-  }
-
-  /**
-   * @return clear mnemonic
-   */
-  public static char clearMnemonic() {
-    return get(CLEAR_MNEMONIC).charAt(0);
-  }
-
-  /**
-   * @return clear tip
-   */
-  public static String clearTip() {
-    return get(CLEAR_TIP);
   }
 
   /**
@@ -361,17 +337,17 @@ public final class FrameworkMessages {
   }
 
   /**
+   * @return filter
+   */
+  public static String filter() {
+    return get(FILTER);
+  }
+
+  /**
    * @return search mnemonic
    */
   public static char searchMnemonic() {
     return get(SEARCH_MNEMONIC).charAt(0);
-  }
-
-  /**
-   * @return advanced
-   */
-  public static String advanced() {
-    return get(ADVANCED);
   }
 
   /**

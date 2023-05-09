@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.swing.common.ui.component.table.ColumnConditionPanel.ToggleAdvancedButton;
 
 import org.junit.jupiter.api.Test;
 
@@ -17,7 +16,7 @@ public class ColumnConditionPanelTest {
   void test() {
     final String key = "key";
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder(key, String.class).build();
-    ColumnConditionPanel<String, String> panel = columnConditionPanel(model, ToggleAdvancedButton.YES);
+    ColumnConditionPanel<String, String> panel = columnConditionPanel(model);
     assertEquals(model, panel.model());
     assertNotNull(panel.equalField());
     assertNotNull(panel.upperBoundField());
@@ -29,6 +28,6 @@ public class ColumnConditionPanelTest {
   void lockedModel() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
     model.setLocked(true);
-    columnConditionPanel(model, ToggleAdvancedButton.YES);
+    columnConditionPanel(model);
   }
 }

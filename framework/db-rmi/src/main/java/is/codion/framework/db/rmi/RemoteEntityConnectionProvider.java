@@ -57,5 +57,11 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
      * @return this builder instance
      */
     Builder registryPort(int registryPort);
+
+    /**
+     * @param serverNamePrefix the name prefix to use when looking up the server
+     * @return this builder instance
+     */
+    Builder serverNamePrefix(String serverNamePrefix);
   }
 }

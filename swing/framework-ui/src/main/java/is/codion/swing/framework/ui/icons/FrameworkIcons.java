@@ -49,6 +49,11 @@ public interface FrameworkIcons extends Logos {
   ImageIcon filter();
 
   /**
+   * @return icon for the 'search' action.
+   */
+  ImageIcon search();
+
+  /**
    * @return icon for the 'add' action.
    */
   ImageIcon add();

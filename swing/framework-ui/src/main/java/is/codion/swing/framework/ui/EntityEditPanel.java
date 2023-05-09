@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -712,10 +713,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private Control createClearControl() {
     return Control.builder(this::clearAndRequestFocus)
-            .caption(FrameworkMessages.clear())
+            .caption(Messages.clear())
             .enabledState(activeState)
-            .description(FrameworkMessages.clearTip() + ALT_PREFIX + FrameworkMessages.clearMnemonic() + ")")
-            .mnemonic(FrameworkMessages.clearMnemonic())
+            .description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
+            .mnemonic(Messages.clearMnemonic())
             .smallIcon(FrameworkIcons.instance().clear())
             .build();
   }

@@ -27,6 +27,10 @@ public final class Messages {
   private static final String PASSWORD = "password";
   private static final String SEARCH = "search";
   private static final String FIND = "find";
+  private static final String CLEAR = "clear";
+  private static final String CLEAR_MNEMONIC = "clear_mnemonic";
+  private static final String CLEAR_TIP = "clear_tip";
+  private static final String ADVANCED = "advanced";
 
   private Messages() {}
 
@@ -126,6 +130,34 @@ public final class Messages {
    */
   public static String search() {
     return get(SEARCH);
+  }
+
+  /**
+   * @return clear
+   */
+  public static String clear() {
+    return get(CLEAR);
+  }
+
+  /**
+   * @return clear tip
+   */
+  public static String clearTip() {
+    return get(CLEAR_TIP);
+  }
+
+  /**
+   * @return clear mnemonic
+   */
+  public static char clearMnemonic() {
+    return get(CLEAR_MNEMONIC).charAt(0);
+  }
+
+  /**
+   * @return advanced
+   */
+  public static String advanced() {
+    return get(ADVANCED);
   }
 
   /**

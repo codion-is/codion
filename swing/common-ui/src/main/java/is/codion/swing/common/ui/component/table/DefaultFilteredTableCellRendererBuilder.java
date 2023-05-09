@@ -118,10 +118,10 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
    * @param leftPadding the left padding
    * @param rightPadding the right padding
    * @param alternateRowColoring true if alternate row coloring is enabled
-   * @return the {@link DefaultFilteredTableCellRenderer.Settings} instance for this renderer
+   * @return the {@link FilteredTableCellRenderer.Settings} instance for this renderer
    */
-  protected DefaultFilteredTableCellRenderer.Settings<T, C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
-    return new DefaultFilteredTableCellRenderer.Settings<>(leftPadding, rightPadding, alternateRowColoring);
+  protected FilteredTableCellRenderer.Settings<T, C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+    return new FilteredTableCellRenderer.Settings<>(leftPadding, rightPadding, alternateRowColoring);
   }
 
   private int defaultHorizontalAlignment() {

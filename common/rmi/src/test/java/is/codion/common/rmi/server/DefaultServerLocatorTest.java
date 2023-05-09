@@ -33,14 +33,25 @@ public class DefaultServerLocatorTest {
   @Test
   void findServer() throws RemoteException, NotBoundException {
     //flaky test, inline setup and teardown
-    Server.Locator serverLocator = Server.Locator.locator();
+    Server.Locator serverLocator = Server.Locator.builder()
+            .serverHostName("localhost")
+            .serverNamePrefix(SERVER_NAME)
+            .registryPort(Registry.REGISTRY_PORT)
+            .serverPort(42)
+            .build();
 
-    Registry registry = serverLocator.initializeRegistry(Registry.REGISTRY_PORT);
+    Registry registry = Server.Locator.registry(Registry.REGISTRY_PORT);
     registry.rebind(SERVER_NAME, server);
 
-    assertThrows(NotBoundException.class, () -> serverLocator.findServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42));
+    assertThrows(NotBoundException.class, serverLocator::locateServer);
     try {
-      Server<Remote, ServerAdmin> server = serverLocator.findServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
+      serverLocator = Server.Locator.builder()
+            .serverHostName("localhost")
+            .serverNamePrefix(SERVER_NAME)
+            .registryPort(Registry.REGISTRY_PORT)
+            .serverPort(-1)
+            .build();
+      Server<Remote, ServerAdmin> server = serverLocator.locateServer();
       assertNotNull(server);
     }
     catch (NotBoundException e) {

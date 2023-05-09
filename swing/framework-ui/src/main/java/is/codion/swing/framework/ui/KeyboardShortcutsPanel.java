@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
+import is.codion.common.i18n.Messages;
 import is.codion.framework.i18n.FrameworkMessages;
 
 import javax.swing.JLabel;
@@ -86,7 +87,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("add")), new JLabel(ALT + FrameworkMessages.addMnemonic()))
             .addAll(new JLabel(MESSAGES.getString("update")), new JLabel(ALT + FrameworkMessages.updateMnemonic()))
             .addAll(new JLabel(MESSAGES.getString("delete")), new JLabel(ALT + FrameworkMessages.deleteMnemonic()))
-            .addAll(new JLabel(MESSAGES.getString("clear")), new JLabel(ALT + FrameworkMessages.clearMnemonic()))
+            .addAll(new JLabel(Messages.clear()), new JLabel(ALT + Messages.clearMnemonic()))
             .addAll(new JLabel(MESSAGES.getString("refresh")), new JLabel(ALT + FrameworkMessages.refreshMnemonic()))
             .border(createTitledBorder(MESSAGES.getString("edit_panel")))
             .build();
@@ -102,6 +103,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("show_popup_menu")), new JLabel(CTRL + "G"))
             .addAll(new JLabel(MESSAGES.getString("refresh_button")), new JLabel("F5"))
             .addAll(new JLabel(MESSAGES.getString("toggle_condition_panel")), new JLabel(CTRL + ALT + "S"))
+            .addAll(new JLabel(MESSAGES.getString("toggle_filter_panel")), new JLabel(CTRL + ALT + "F"))
             .border(createTitledBorder(MESSAGES.getString("table_panel")))
             .build();
   }

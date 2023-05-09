@@ -393,10 +393,10 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Returns the keys referenced by the given foreign key
+   * Returns the non-null keys referenced by the given foreign key
    * @param entities the entities
    * @param foreignKey the foreign key
-   * @return the keys referenced by the given foreign key
+   * @return the non-null keys referenced by the given foreign key
    */
   static Set<Key> getReferencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()

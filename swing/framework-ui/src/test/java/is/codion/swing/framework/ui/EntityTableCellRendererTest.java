@@ -6,11 +6,9 @@ package is.codion.swing.framework.ui;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.Domain;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.TestDomain.Department;
-import is.codion.swing.framework.ui.TestDomain.Detail;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
@@ -18,8 +16,6 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class EntityTableCellRendererTest {
-
-  private static final Domain DOMAIN = new TestDomain();
 
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
@@ -33,9 +29,7 @@ public class EntityTableCellRendererTest {
   void test() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
-    FilteredTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().definition(Employee.TYPE).property(Employee.NAME))
-            .build();
+    FilteredTableCellRenderer renderer = EntityTableCellRenderer.builder(tablePanel.tableModel(), Employee.NAME).build();
     renderer.getTableCellRendererComponent(tablePanel.table(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.table(), null, true, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.table(), null, true, true, 0, 0);
@@ -53,7 +47,6 @@ public class EntityTableCellRendererTest {
   void entityMismatch() {
     EntityTablePanel tablePanel = new EntityTablePanel(new SwingEntityTableModel(Employee.TYPE, CONNECTION_PROVIDER));
     tablePanel.tableModel().refresh();
-    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.tableModel(),
-            DOMAIN.entities().definition(Detail.TYPE).property(Department.NAME)));
+    assertThrows(IllegalArgumentException.class, () -> EntityTableCellRenderer.builder(tablePanel.tableModel(), Department.NAME));
   }
 }

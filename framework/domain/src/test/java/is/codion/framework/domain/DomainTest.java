@@ -499,6 +499,22 @@ public class DomainTest {
   }
 
   @Test
+  void foreignKeyReferencingUndefinedAttribute() {
+    EntityType entityType = DOMAIN.entityType("test.entity");
+    Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+    EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
+    Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
+    Attribute<Integer> refIdNotPartOfEntity = referencedEntityType.attribute("id_none", Integer.class);
+    ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refIdNotPartOfEntity);
+    domain.add(definition(primaryKeyProperty(refId)));
+
+    assertThrows(IllegalArgumentException.class, () -> domain.add(definition(
+            primaryKeyProperty(entityType.attribute("id", Integer.class)),
+            columnProperty(fkId),
+            Property.foreignKeyProperty(foreignKey, "caption"))));
+  }
+
+  @Test
   void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
       EntityType entityType = DOMAIN.entityType("test.entity");

@@ -311,12 +311,13 @@ class DefaultKey implements Key, Serializable {
     }
     primaryKey = stream.readBoolean();
     int attributeCount = stream.readInt();
+    attributes = new ArrayList<>(attributeCount);
     values = new HashMap<>(attributeCount);
     for (int i = 0; i < attributeCount; i++) {
       Attribute<Object> attribute = definition.attribute((String) stream.readObject());
+      attributes.add(attribute);
       values.put(attribute, attribute.validateType(stream.readObject()));
     }
-    attributes = new ArrayList<>(values.keySet());
     singleIntegerKey = attributeCount == 1 && attributes.get(0).isInteger();
     hashCodeDirty = true;
   }
