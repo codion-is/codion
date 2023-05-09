@@ -79,7 +79,7 @@ public class DefaultRemoteEntityConnectionTest {
               .user(UNIT_TEST_USER).clientTypeId("DefaultRemoteEntityConnectionTestClient").build());
       adapter = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
 
-      registry = Server.Locator.locator().initializeRegistry(Registry.REGISTRY_PORT);
+      registry = Server.Locator.registry();
 
       registry.rebind(serviceName, adapter);
       Collection<String> boundNames = asList(registry.list());

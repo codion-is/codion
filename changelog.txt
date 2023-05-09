@@ -8867,3 +8867,4 @@
   FilteredTableModel.fireTableDataChanged() added
   EntityTablePanel.createTableCellEditor(), createTableCellRenderer() and EntityTableCellRenderer.builder() now take Attribute instead of Property as parameter
   RemoteEntityConnectionProvider.Builder.serverNamePrefix() added
+  Server.Locator.Builder added, related refactoring

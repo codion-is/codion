@@ -60,7 +60,7 @@ public final class CredentialsServer extends UnicastRemoteObject implements Cred
     this.expiredCleaner = TaskScheduler.builder(this::removeExpired)
             .interval(cleanupInterval, TimeUnit.MILLISECONDS)
             .start();
-    this.registry = Server.Locator.locator().initializeRegistry(registryPort);
+    this.registry = Server.Locator.registry(registryPort);
     this.registry.bind(CredentialsService.class.getSimpleName(), this);
   }
 

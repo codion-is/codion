@@ -145,7 +145,13 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Server.Locator.locator().findServer(serverHostName, serverNamePrefix, registryPort, serverPort);
+    this.server = Server.Locator.builder()
+            .serverHostName(serverHostName)
+            .serverNamePrefix(serverNamePrefix)
+            .registryPort(registryPort)
+            .serverPort(serverPort)
+            .build()
+            .locateServer();
     this.serverInformation = this.server.serverInformation();
   }
 

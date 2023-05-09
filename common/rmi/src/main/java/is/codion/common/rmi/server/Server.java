@@ -80,38 +80,76 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
   interface Locator {
 
     /**
-     * Initializes a Registry if one is not running
-     * @param port the port on which to look for (or create) a registry
-     * @return the Registry
-     * @throws java.rmi.RemoteException in case of an exception
-     */
-    Registry initializeRegistry(int port) throws RemoteException;
-
-    /**
      * Retrieves a Server from a registry running on the given host, using the
      * given server name prefix as a condition. Returns the first server satisfying the condition.
-     * @param serverHostName the name of the host
-     * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
-     * @param registryPort the port on which to lookup the registry
-     * @param requestedServerPort the required server port, -1 for any port
-     * @param <T> the Remote object type served by the server
+     * @param <C> the Remote connection type served by the server
      * @param <A> the server admin type supplied by the server
      * @return the servers having a name with the given prefix
      * @throws RemoteException in case of a remote exception
      * @throws NotBoundException in case no such server is found
      */
-    <T extends Remote, A extends ServerAdmin> Server<T, A> findServer(String serverHostName,
-                                                                      String serverNamePrefix,
-                                                                      int registryPort,
-                                                                      int requestedServerPort)
-            throws RemoteException, NotBoundException;
+    <C extends Remote, A extends ServerAdmin> Server<C, A> locateServer() throws RemoteException, NotBoundException;
 
     /**
-     * Returns a {@link Locator} instance.
-     * @return a {@link Locator} instance.
+     * Returns a {@link Locator.Builder} instance.
+     * @return a {@link Locator.Builder} instance.
      */
-    static Locator locator() {
-      return new DefaultServerLocator();
+    static Locator.Builder builder() {
+      return new DefaultServerLocator.DefaultBuilder();
+    }
+
+    /**
+     * Initializes a Registry if one is not running on the port defined by {@link ServerConfiguration#REGISTRY_PORT}
+     * @return the Registry
+     * @throws java.rmi.RemoteException in case of an exception
+     */
+    static Registry registry() throws RemoteException {
+      return registry(ServerConfiguration.REGISTRY_PORT.getOrThrow());
+    }
+
+    /**
+     * Initializes a Registry if one is not running
+     * @param registryPort the port on which to look for (or create) a registry
+     * @return the Registry
+     * @throws java.rmi.RemoteException in case of an exception
+     */
+    static Registry registry(int registryPort) throws RemoteException {
+      return DefaultServerLocator.initializeRegistry(registryPort);
+    }
+
+    /**
+     * A builder for {@link Locator} instances.
+     */
+    interface Builder {
+
+      /**
+       * @param serverHostName the name of the host
+       * @return this builder instance
+       */
+      Builder serverHostName(String serverHostName);
+
+      /**
+       * @param serverNamePrefix the server name prefix to use when looking up, an empty string results in all servers being returned
+       * @return this builder instance
+       */
+      Builder serverNamePrefix(String serverNamePrefix);
+
+      /**
+       * @param registryPort the port on which to lookup/configure the registry
+       * @return this builder instance
+       */
+      Builder registryPort(int registryPort);
+
+      /**
+       * @param serverPort the required server port, -1 for a server on any port
+       * @return this builder instance
+       */
+      Builder serverPort(int serverPort);
+
+      /**
+       * @return a new {@link Locator} instance based on this builder
+       */
+      Locator build();
     }
   }
 }

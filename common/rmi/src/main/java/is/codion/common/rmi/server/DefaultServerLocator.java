@@ -16,40 +16,49 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultServerLocator implements Server.Locator {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultServerLocator.class);
 
+  private final String serverHostName;
+  private final String serverNamePrefix;
+  private final int registryPort;
+  private final int serverPort;
+
+  private DefaultServerLocator(DefaultBuilder builder) {
+    this.serverHostName = requireNonNull(builder.serverHostName, "serverHostName");
+    this.serverNamePrefix = requireNonNull(builder.serverNamePrefix, "serverNamePrefix");
+    this.registryPort = builder.registryPort;
+    this.serverPort = builder.serverPort;
+  }
+
   @Override
-  public Registry initializeRegistry(int port) throws RemoteException {
-    LOG.info("Initializing registry on port: {}", port);
-    Registry localRegistry = LocateRegistry.getRegistry(port);
+  public <T extends Remote, A extends ServerAdmin> Server<T, A> locateServer()
+          throws RemoteException, NotBoundException {
+    List<Server<T, A>> servers = findServers(serverHostName, registryPort, serverNamePrefix, serverPort);
+    if (!servers.isEmpty()) {
+      return servers.get(0);
+    }
+
+    throw new NotBoundException("'" + serverNamePrefix + "' is not available, see LOG for details. Host: "
+            + serverHostName + (serverPort != -1 ? ", port: " + serverPort : "") + ", registryPort: " + registryPort);
+  }
+
+  static Registry initializeRegistry(int registryPort) throws RemoteException {
+    LOG.info("Initializing registry on port: {}", registryPort);
+    Registry localRegistry = LocateRegistry.getRegistry(registryPort);
     try {
       localRegistry.list();
-      LOG.info("Registry listing available on port: {}", port);
+      LOG.info("Registry listing available on port: {}", registryPort);
 
       return localRegistry;
     }
     catch (Exception e) {
       LOG.info("Trying to locate registry: {}", e.getMessage());
-      LOG.info("Creating registry on port: {}", port);
-      return LocateRegistry.createRegistry(port);
-    }
-  }
-
-  @Override
-  public <T extends Remote, A extends ServerAdmin> Server<T, A> findServer(String serverHostName,
-                                                                           String serverNamePrefix,
-                                                                           int registryPort,
-                                                                           int requestedServerPort)
-          throws RemoteException, NotBoundException {
-    List<Server<T, A>> servers = findServers(serverHostName, registryPort, serverNamePrefix, requestedServerPort);
-    if (!servers.isEmpty()) {
-      return servers.get(0);
-    }
-    else {
-      throw new NotBoundException("'" + serverNamePrefix + "' is not available, see LOG for details. Host: "
-              + serverHostName + (requestedServerPort != -1 ? ", port: " + requestedServerPort : "") + ", registryPort: " + registryPort);
+      LOG.info("Creating registry on port: {}", registryPort);
+      return LocateRegistry.createRegistry(registryPort);
     }
   }
 
@@ -126,6 +135,43 @@ final class DefaultServerLocator implements Server.Locator {
       catch (RemoteException e) {
         return 1;
       }
+    }
+  }
+
+  static final class DefaultBuilder implements Server.Locator.Builder {
+
+    private String serverHostName = ServerConfiguration.RMI_SERVER_HOSTNAME.get();
+    private String serverNamePrefix = ServerConfiguration.SERVER_NAME_PREFIX.get();
+    private int registryPort = ServerConfiguration.REGISTRY_PORT.get();
+    private int serverPort = ServerConfiguration.SERVER_PORT.get();
+
+    @Override
+    public Builder serverHostName(String serverHostName) {
+      this.serverHostName = requireNonNull(serverHostName);
+      return this;
+    }
+
+    @Override
+    public Builder serverNamePrefix(String serverNamePrefix) {
+      this.serverNamePrefix = requireNonNull(serverNamePrefix);
+      return this;
+    }
+
+    @Override
+    public Builder registryPort(int registryPort) {
+      this.registryPort = registryPort;
+      return this;
+    }
+
+    @Override
+    public Builder serverPort(int serverPort) {
+      this.serverPort = serverPort;
+      return this;
+    }
+
+    @Override
+    public Server.Locator build() {
+      return new DefaultServerLocator(this);
     }
   }
 }
