@@ -367,7 +367,6 @@ public class EntityTablePanel extends JPanel {
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.filterPanel = table.conditionPanel();
     this.filterPanelScrollPane = createFilterPanelScrollPane();
-    this.filterPanelScrollPane.setVisible(false);
     this.summaryPanel = createSummaryPanel();
     this.summaryPanelScrollPane = createSummaryPanelScrollPane();
     this.tablePanel = createTablePanel();
