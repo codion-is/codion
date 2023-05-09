@@ -132,9 +132,9 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private final T tableModel;
 
   /**
-   * The filter condition panels
+   * The condition panel factory
    */
-  private final FilteredTableConditionPanel<T, C> conditionPanel;
+  private final ConditionPanelFactory conditionPanelFactory;
 
   /**
    * The text field used for entering the search condition
@@ -150,6 +150,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * Holds column identifiers of columns for which sorting should be disabled
    */
   private final Set<C> columnSortingDisabled = new HashSet<>();
+
+  /**
+   * The filter condition panel
+   */
+  private FilteredTableConditionPanel<T, C> conditionPanel;
 
   /**
    * the action performed when the table is double-clicked
@@ -174,12 +179,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory,
                         TableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
-    requireNonNull(cellRendererFactory);
     this.tableModel = tableModel;
+    this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
+    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, requireNonNull(cellRendererFactory)));
     this.searchField = createSearchField();
-    this.conditionPanel = new FilteredTableConditionPanel<>(tableModel, requireNonNull(conditionPanelFactory));
-    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, cellRendererFactory));
-    initializeTableHeader(getTableHeader());
+    initializeTableHeader();
     bindEvents();
   }
 
@@ -213,6 +217,10 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * @return the condition panel
    */
   public FilteredTableConditionPanel<T, C> conditionPanel() {
+    if (conditionPanel == null) {
+      conditionPanel = new FilteredTableConditionPanel<>(tableModel, conditionPanelFactory);
+    }
+
     return conditionPanel;
   }
 
@@ -580,20 +588,16 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   private void configureColumn(FilteredTableColumn<C> column, TableCellRendererFactory<C> rendererFactory) {
+    column.setHeaderRenderer(new SortableHeaderRenderer(column.getHeaderRenderer()));
     column.setCellRenderer(rendererFactory.tableCellRenderer(column));
   }
 
-  private void initializeTableHeader(JTableHeader header) {
+  private void initializeTableHeader() {
+    JTableHeader header = getTableHeader();
     header.setReorderingAllowed(true);
     header.setAutoscrolls(true);
     header.addMouseMotionListener(new ColumnDragMouseHandler());
     header.addMouseListener(new MouseSortHandler());
-    tableModel.addSortListener(header::repaint);
-    tableModel.columnModel().columns().forEach(this::setColumnHeaderRenderer);
-  }
-
-  private void setColumnHeaderRenderer(FilteredTableColumn<C> tableColumn) {
-    tableColumn.setHeaderRenderer(new SortableHeaderRenderer(tableColumn.getHeaderRenderer()));
   }
 
   private void bindEvents() {
@@ -605,6 +609,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     });
     tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
+    tableModel.addSortListener(getTableHeader()::repaint);
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(VK_C)
             .action(Control.control(this::copySelectedCell))
