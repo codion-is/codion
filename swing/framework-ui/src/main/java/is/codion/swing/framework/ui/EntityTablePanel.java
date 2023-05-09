@@ -122,6 +122,9 @@ import static java.util.stream.Collectors.toList;
  * The condition and summary panels can be hidden
  * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
+ * @see #entityTablePanel(SwingEntityTableModel)
+ * @see #entityTablePanel(Collection, EntityConnectionProvider)
+ * @see #entityTablePanelReadOnly(Collection, EntityConnectionProvider)
  */
 public class EntityTablePanel extends JPanel {
 
@@ -799,8 +802,8 @@ public class EntityTablePanel extends JPanel {
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createReadOnlyEntityTablePanel(Collection<Entity> entities,
-                                                                EntityConnectionProvider connectionProvider) {
+  public static EntityTablePanel entityTablePanelReadOnly(Collection<Entity> entities,
+                                                          EntityConnectionProvider connectionProvider) {
     if (nullOrEmpty(entities)) {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
@@ -815,7 +818,7 @@ public class EntityTablePanel extends JPanel {
     };
     tableModel.refresh();
 
-    return createEntityTablePanel(tableModel);
+    return entityTablePanel(tableModel);
   }
 
   /**
@@ -825,8 +828,8 @@ public class EntityTablePanel extends JPanel {
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
    */
-  public static EntityTablePanel createEntityTablePanel(Collection<Entity> entities,
-                                                        EntityConnectionProvider connectionProvider) {
+  public static EntityTablePanel entityTablePanel(Collection<Entity> entities,
+                                                  EntityConnectionProvider connectionProvider) {
     if (nullOrEmpty(entities)) {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
@@ -840,7 +843,7 @@ public class EntityTablePanel extends JPanel {
     };
     tableModel.refresh();
 
-    return createEntityTablePanel(tableModel);
+    return entityTablePanel(tableModel);
   }
 
   /**
@@ -849,7 +852,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the table model
    * @return an entity table panel based on the given model
    */
-  public static EntityTablePanel createEntityTablePanel(SwingEntityTableModel tableModel) {
+  public static EntityTablePanel entityTablePanel(SwingEntityTableModel tableModel) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
       @Override
       protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
@@ -923,9 +926,6 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Sets up the default keyboard actions.
-   * CTRL-T transfers focus to the table in case one is available,
-   * CTR-S opens a select search condition panel dialog, in case one is available,
-   * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
     control(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
@@ -1100,7 +1100,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Called before delete is performed, if true is returned the delete action is performed otherwise it is canceled
+   * Called before delete is performed, if true is returned the delete action is performed otherwise it is cancelled
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
@@ -1414,9 +1414,15 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeUpdateSelectedControls() {
-    return !tableModel.isReadOnly() && tableModel.isUpdateEnabled() &&
-            tableModel.isBatchUpdateEnabled() &&
-            !tableModel.entityDefinition().updatableProperties().isEmpty();
+    long attributeCount = tableModel.entityDefinition().updatableProperties().stream()
+            .map(Property::attribute)
+            .filter(attribute -> !excludeFromUpdateMenu.contains(attribute))
+            .count();
+
+    return attributeCount > 0 &&
+            !tableModel.isReadOnly() &&
+            tableModel.isUpdateEnabled() &&
+            tableModel.isBatchUpdateEnabled();
   }
 
   private boolean includeDeleteSelectedControl() {

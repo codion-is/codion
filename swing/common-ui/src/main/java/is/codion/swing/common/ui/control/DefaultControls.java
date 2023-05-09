@@ -8,7 +8,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.Icon;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -29,8 +28,8 @@ final class DefaultControls extends AbstractControl implements Controls {
   private final List<Action> actions = new ArrayList<>();
 
   DefaultControls(String name, char mnemonic, StateObserver enabledState,
-                  Icon smallIcon, List<Action> controls) {
-    super(name, enabledState, smallIcon);
+                  List<Action> controls) {
+    super(name, enabledState);
     setMnemonic(mnemonic);
     for (Action control : controls) {
       if (control != null) {

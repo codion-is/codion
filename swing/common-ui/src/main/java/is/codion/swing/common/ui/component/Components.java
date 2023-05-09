@@ -484,6 +484,14 @@ public final class Components {
   }
 
   /**
+   * @param linkedValue the value to link to the component
+   * @return a Short based {@link NumberField} builder
+   */
+  public static NumberField.Builder<Short> shortField(Value<Short> linkedValue) {
+    return NumberField.builder(Short.class, linkedValue);
+  }
+
+  /**
    * @return a Integer based {@link NumberField} builder
    */
   public static NumberField.Builder<Integer> integerField() {

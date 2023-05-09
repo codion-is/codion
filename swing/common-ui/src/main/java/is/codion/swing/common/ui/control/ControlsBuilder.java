@@ -116,7 +116,8 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls build() {
-    return (Controls) new DefaultControls(caption, mnemonic, enabledState, smallIcon, controls)
+    return (Controls) new DefaultControls(caption, mnemonic, enabledState, controls)
+            .setSmallIcon(smallIcon)
             .setLargeIcon(largeIcon)
             .setDescription(description)
             .setKeyStroke(keyStroke);
