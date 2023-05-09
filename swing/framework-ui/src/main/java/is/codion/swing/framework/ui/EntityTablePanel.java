@@ -89,7 +89,6 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
-import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -203,6 +202,7 @@ public class EntityTablePanel extends JPanel {
     COPY_TABLE_DATA,
     REQUEST_TABLE_FOCUS,
     SELECT_CONDITION_PANEL,
+    SELECT_FILTER_PANEL,
     CONFIGURE_COLUMNS
   }
 
@@ -367,7 +367,6 @@ public class EntityTablePanel extends JPanel {
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.filterPanel = table.conditionPanel();
     this.filterPanelScrollPane = createFilterPanelScrollPane();
-    this.filterPanelScrollPane.setVisible(false);
     this.summaryPanel = createSummaryPanel();
     this.summaryPanelScrollPane = createSummaryPanelScrollPane();
     this.tablePanel = createTablePanel();
@@ -592,21 +591,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the condition panel through the states hidden, visible and advanced
    */
   public final void toggleConditionPanel() {
-    if (conditionPanel == null) {
-      return;
-    }
-    State advancedState = conditionPanel.advancedViewState();
-    if (isConditionPanelVisible()) {
-      if (advancedState.get()) {
-        setConditionPanelVisible(false);
-      }
-      else {
-        advancedState.set(true);
-      }
-    }
-    else {
-      advancedState.set(false);
-      setConditionPanelVisible(true);
+    if (conditionPanel != null) {
+      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedViewState(), conditionPanelVisibleState);
     }
   }
 
@@ -614,21 +600,8 @@ public class EntityTablePanel extends JPanel {
    * Toggles the filter panel through the states hidden, visible and advanced
    */
   public final void toggleFilterPanel() {
-    if (filterPanel == null) {
-      return;
-    }
-    State advancedState = filterPanel.advancedViewState();
-    if (isFilterPanelVisible()) {
-      if (advancedState.get()) {
-        setFilterPanelVisible(false);
-      }
-      else {
-        advancedState.set(true);
-      }
-    }
-    else {
-      advancedState.set(false);
-      setFilterPanelVisible(true);
+    if (filterPanel != null) {
+      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedViewState(), filterPanelVisibleState);
     }
   }
 
@@ -636,24 +609,19 @@ public class EntityTablePanel extends JPanel {
    * Allows the user to select on of the available search condition panels
    */
   public final void selectConditionPanel() {
-    if (includeConditionPanel && conditionPanel != null) {
-      if (!isConditionPanelVisible()) {
-        setConditionPanelVisible(true);
-      }
-      List<Property<?>> conditionProperties = conditionPanelProperties();
-      if (!conditionProperties.isEmpty()) {
-        if (conditionProperties.size() == 1) {
-          conditionPanel.conditionPanel(conditionProperties.get(0).attribute()).requestInputFocus();
-        }
-        else {
-          conditionProperties.sort(Property.propertyComparator());
-          Dialogs.selectionDialog(conditionProperties)
-                  .owner(this)
-                  .title(FrameworkMessages.selectSearchField())
-                  .selectSingle()
-                  .ifPresent(property -> conditionPanel.conditionPanel(property.attribute()).requestInputFocus());
-        }
-      }
+    if (includeConditionPanel) {
+      selectConditionPanel(conditionPanel, conditionPanelScrollPane, conditionPanelVisibleState,
+              tableModel, this, FrameworkMessages.selectSearchField());
+    }
+  }
+
+  /**
+   * Allows the user to select on of the available filter condition panels
+   */
+  public final void selectFilterPanel() {
+    if (includeFilterPanel) {
+      selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanelVisibleState,
+              tableModel, this, FrameworkMessages.selectFilterField());
     }
   }
 
@@ -689,110 +657,8 @@ public class EntityTablePanel extends JPanel {
    * @param controlCode the control code
    * @return the control associated with {@code controlCode} or an empty Optional if the control is not available
    */
-  public final Optional<Control> getControl(ControlCode controlCode) {
+  public final Optional<Control> control(ControlCode controlCode) {
     return Optional.ofNullable(controls.get(controlCode));
-  }
-
-  /**
-   * Creates a {@link Controls} containing controls for updating the value of a single property
-   * for the selected entities. These controls are enabled as long as the selection is not empty
-   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
-   * @return controls containing a control for each updatable property in the
-   * underlying entity, for performing an update on the selected entities
-   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(Attribute)
-   * @see EntityEditModel#updateEnabledObserver()
-   */
-  public final Controls createUpdateSelectedControls() {
-    if (!includeUpdateSelectedControls()) {
-      throw new IllegalStateException("Table model is read only or does not allow updates");
-    }
-    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
-    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
-    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
-    Controls updateControls = Controls.builder()
-            .caption(FrameworkMessages.update())
-            .enabledState(enabledState)
-            .smallIcon(FrameworkIcons.instance().edit())
-            .description(FrameworkMessages.updateSelectedTip())
-            .build();
-    tableModel.entityDefinition().updatableProperties().stream()
-            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
-            .sorted(Property.propertyComparator())
-            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
-                    .caption(property.caption() == null ? property.attribute().name() : property.caption())
-                    .enabledState(enabledState)
-                    .build()));
-
-    return updateControls;
-  }
-
-  /**
-   * @return a control for showing the dependencies dialog
-   */
-  public final Control createViewDependenciesControl() {
-    return Control.builder(this::viewSelectionDependencies)
-            .caption(FrameworkMessages.dependencies())
-            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
-            .description(FrameworkMessages.dependenciesTip())
-            .smallIcon(FrameworkIcons.instance().dependencies())
-            .build();
-  }
-
-  /**
-   * @return a control for deleting the selected entities
-   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
-   */
-  public final Control createDeleteSelectedControl() {
-    if (!includeDeleteSelectedControl()) {
-      throw new IllegalStateException("Table model is read only or does not allow delete");
-    }
-    return Control.builder(this::deleteWithConfirmation)
-            .caption(FrameworkMessages.delete())
-            .enabledState(State.and(
-                    tableModel.editModel().deleteEnabledObserver(),
-                    tableModel.selectionModel().selectionNotEmptyObserver()))
-            .description(FrameworkMessages.deleteSelectedTip())
-            .smallIcon(FrameworkIcons.instance().delete())
-            .build();
-  }
-
-  /**
-   * @return a control for printing the table
-   */
-  public final Control createPrintTableControl() {
-    String printCaption = MESSAGES.getString("print_table");
-    return Control.builder(this::printTable)
-            .caption(printCaption)
-            .description(printCaption)
-            .mnemonic(Messages.printMnemonic())
-            .smallIcon(FrameworkIcons.instance().print())
-            .build();
-  }
-
-  /**
-   * @return a Control for refreshing the underlying table data
-   */
-  public final Control createRefreshControl() {
-    return Control.builder(tableModel::refresh)
-            .caption(FrameworkMessages.refresh())
-            .description(FrameworkMessages.refreshTip())
-            .mnemonic(FrameworkMessages.refreshMnemonic())
-            .smallIcon(FrameworkIcons.instance().refresh())
-            .enabledState(tableModel.refreshingObserver().reversedObserver())
-            .build();
-  }
-
-  /**
-   * @return a Control for clearing the underlying table model, that is, removing all rows
-   */
-  public final Control createClearControl() {
-    return Control.builder(tableModel::clear)
-            .caption(Messages.clear())
-            .description(Messages.clearTip())
-            .mnemonic(Messages.clearMnemonic())
-            .smallIcon(FrameworkIcons.instance().clear())
-            .build();
   }
 
   /**
@@ -991,16 +857,12 @@ public class EntityTablePanel extends JPanel {
       }
     };
     Controls popupMenuControls = Controls.controls();
-    if (tablePanel.includeUpdateSelectedControls()) {
-      popupMenuControls.add(tablePanel.createUpdateSelectedControls());
-    }
-    if (tablePanel.includeDeleteSelectedControl()) {
-      popupMenuControls.add(tablePanel.createDeleteSelectedControl());
-    }
+    tablePanel.control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
+    tablePanel.control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
     if (!popupMenuControls.isEmpty()) {
       popupMenuControls.addSeparator();
     }
-    popupMenuControls.add(tablePanel.createViewDependenciesControl());
+    tablePanel.control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
     tablePanel.addPopupMenuControls(popupMenuControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.initializePanel();
@@ -1066,27 +928,33 @@ public class EntityTablePanel extends JPanel {
    * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
-    getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+    control(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
             KeyEvents.builder(VK_T)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+    control(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+    control(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
+    control(ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_F)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
+    control(ControlCode.SELECT_FILTER_PANEL).ifPresent(control ->
+            KeyEvents.builder(VK_F)
+                    .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
@@ -1112,26 +980,26 @@ public class EntityTablePanel extends JPanel {
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
-    getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
-    Control toggleConditionPanel = getControl(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
-    Control toggleFilterPanel = getControl(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
-    if (toggleConditionPanel != null || toggleFilterPanel != null) {
-      if (toggleConditionPanel != null) {
-        toolbarControls.add(toggleConditionPanel);
+    control(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
+    Control toggleConditionPanelControl = control(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
+    Control toggleFilterPanelControl = control(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
+    if (toggleConditionPanelControl != null || toggleFilterPanelControl != null) {
+      if (toggleConditionPanelControl != null) {
+        toolbarControls.add(toggleConditionPanelControl);
       }
-      if (toggleFilterPanel != null) {
-        toolbarControls.add(toggleFilterPanel);
+      if (toggleFilterPanelControl != null) {
+        toolbarControls.add(toggleFilterPanelControl);
       }
       toolbarControls.addSeparator();
     }
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
-    getControl(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
-    getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
+    control(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
+    control(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
+    control(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
       toolbarControls.add(control);
       toolbarControls.addSeparator();
     });
-    getControl(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
-    getControl(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
+    control(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
+    control(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
       additionalControls.actions().forEach(toolbarControls::add);
@@ -1150,18 +1018,18 @@ public class EntityTablePanel extends JPanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
-    getControl(ControlCode.REFRESH).ifPresent(popupControls::add);
-    getControl(ControlCode.CLEAR).ifPresent(popupControls::add);
+    control(ControlCode.REFRESH).ifPresent(popupControls::add);
+    control(ControlCode.CLEAR).ifPresent(popupControls::add);
     if (!popupControls.isEmpty()) {
       popupControls.addSeparator();
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
     State separatorRequired = State.state();
-    getControl(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
+    control(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
+    control(ControlCode.DELETE_SELECTED).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -1169,7 +1037,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.addSeparator();
       separatorRequired.set(false);
     }
-    getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
+    control(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -1190,7 +1058,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.add(columnControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.SELECTION_MODE).ifPresent(control -> {
+    control(ControlCode.SELECTION_MODE).ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1211,7 +1079,7 @@ public class EntityTablePanel extends JPanel {
       addFilterControls(popupControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
+    control(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1226,7 +1094,7 @@ public class EntityTablePanel extends JPanel {
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    getControl(ControlCode.PRINT_TABLE).ifPresent(builder::control);
+    control(ControlCode.PRINT_TABLE).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1336,6 +1204,7 @@ public class EntityTablePanel extends JPanel {
     if (includeFilterPanel && filterPanel != null) {
       controls.putIfAbsent(ControlCode.FILTER_PANEL_VISIBLE, createFilterPanelControl());
       controls.putIfAbsent(ControlCode.TOGGLE_FILTER_PANEL, createToggleFilterPanelControl());
+      controls.put(ControlCode.SELECT_FILTER_PANEL, Control.control(this::selectFilterPanel));
     }
     controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
     controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
@@ -1347,6 +1216,108 @@ public class EntityTablePanel extends JPanel {
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
+  }
+
+  /**
+   * Creates a {@link Controls} containing controls for updating the value of a single property
+   * for the selected entities. These controls are enabled as long as the selection is not empty
+   * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
+   * @return controls containing a control for each updatable property in the
+   * underlying entity, for performing an update on the selected entities
+   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
+   * @see #excludeFromUpdateMenu(Attribute)
+   * @see EntityEditModel#updateEnabledObserver()
+   */
+  private Controls createUpdateSelectedControls() {
+    if (!includeUpdateSelectedControls()) {
+      throw new IllegalStateException("Table model is read only or does not allow updates");
+    }
+    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
+    StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
+    Controls updateControls = Controls.builder()
+            .caption(FrameworkMessages.update())
+            .enabledState(enabledState)
+            .smallIcon(FrameworkIcons.instance().edit())
+            .description(FrameworkMessages.updateSelectedTip())
+            .build();
+    tableModel.entityDefinition().updatableProperties().stream()
+            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
+            .sorted(Property.propertyComparator())
+            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
+                    .caption(property.caption() == null ? property.attribute().name() : property.caption())
+                    .enabledState(enabledState)
+                    .build()));
+
+    return updateControls;
+  }
+
+  /**
+   * @return a control for showing the dependencies dialog
+   */
+  private Control createViewDependenciesControl() {
+    return Control.builder(this::viewSelectionDependencies)
+            .caption(FrameworkMessages.dependencies())
+            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
+            .description(FrameworkMessages.dependenciesTip())
+            .smallIcon(FrameworkIcons.instance().dependencies())
+            .build();
+  }
+
+  /**
+   * @return a control for deleting the selected entities
+   * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
+   */
+  private Control createDeleteSelectedControl() {
+    if (!includeDeleteSelectedControl()) {
+      throw new IllegalStateException("Table model is read only or does not allow delete");
+    }
+    return Control.builder(this::deleteWithConfirmation)
+            .caption(FrameworkMessages.delete())
+            .enabledState(State.and(
+                    tableModel.editModel().deleteEnabledObserver(),
+                    tableModel.selectionModel().selectionNotEmptyObserver()))
+            .description(FrameworkMessages.deleteSelectedTip())
+            .smallIcon(FrameworkIcons.instance().delete())
+            .build();
+  }
+
+  /**
+   * @return a control for printing the table
+   */
+  private Control createPrintTableControl() {
+    String printCaption = MESSAGES.getString("print_table");
+    return Control.builder(this::printTable)
+            .caption(printCaption)
+            .description(printCaption)
+            .mnemonic(Messages.printMnemonic())
+            .smallIcon(FrameworkIcons.instance().print())
+            .build();
+  }
+
+  /**
+   * @return a Control for refreshing the underlying table data
+   */
+  private Control createRefreshControl() {
+    return Control.builder(tableModel::refresh)
+            .caption(FrameworkMessages.refresh())
+            .description(FrameworkMessages.refreshTip())
+            .mnemonic(FrameworkMessages.refreshMnemonic())
+            .smallIcon(FrameworkIcons.instance().refresh())
+            .enabledState(tableModel.refreshingObserver().reversedObserver())
+            .build();
+  }
+
+  /**
+   * @return a Control for clearing the underlying table model, that is, removing all rows
+   */
+  private Control createClearControl() {
+    return Control.builder(tableModel::clear)
+            .caption(Messages.clear())
+            .description(Messages.clearTip())
+            .mnemonic(Messages.clearMnemonic())
+            .smallIcon(FrameworkIcons.instance().clear())
+            .build();
   }
 
   private Control createToggleConditionPanelControl() {
@@ -1403,8 +1374,8 @@ public class EntityTablePanel extends JPanel {
   private Controls createColumnControls() {
     Controls.Builder builder = Controls.builder()
             .caption(MESSAGES.getString("columns"));
-    getControl(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
-    getControl(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
+    control(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
+    control(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1541,13 +1512,13 @@ public class EntityTablePanel extends JPanel {
   private void bindEvents() {
     if (includeDeleteSelectedControl()) {
       KeyEvents.builder(VK_DELETE)
-              .action(createDeleteSelectedControl())
+              .action(controls.get(ControlCode.DELETE_SELECTED))
               .enable(table);
     }
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-              .action(control(this::showEntityMenu))
+              .action(Control.control(this::showEntityMenu))
               .enable(table);
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
@@ -1602,13 +1573,6 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private List<Property<?>> conditionPanelProperties() {
-    return conditionPanel.componentPanel().columnComponents().values().stream()
-            .filter(panel -> tableModel().columnModel().isColumnVisible(panel.model().columnIdentifier()))
-            .map(panel -> tableModel().entityDefinition().property(panel.model().columnIdentifier()))
-            .collect(toList());
-  }
-
   private void initializeTable() {
     tableModel.columnModel().columns().forEach(this::configureColumn);
     JTableHeader header = table.getTableHeader();
@@ -1636,7 +1600,7 @@ public class EntityTablePanel extends JPanel {
     }
     KeyEvents.builder(VK_G)
             .modifiers(CTRL_DOWN_MASK)
-            .action(control(() -> {
+            .action(Control.control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
             }))
@@ -1654,10 +1618,10 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().search())
             .build();
-    getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
-    Controls searchPanelControls = conditionPanel.controls();
-    if (!searchPanelControls.isEmpty()) {
-      conditionControls.addAll(searchPanelControls);
+    control(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
+    Controls conditionPanelControls = conditionPanel.controls();
+    if (!conditionPanelControls.isEmpty()) {
+      conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
     conditionControls.add(ToggleControl.builder(tableModel.queryConditionRequiredState())
@@ -1674,7 +1638,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.filter())
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
-    getControl(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
+    control(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
     Controls filterPanelControls = filterPanel.controls();
     if (!filterPanelControls.isEmpty()) {
       filterControls.addAll(filterPanelControls);
@@ -1727,6 +1691,51 @@ public class EntityTablePanel extends JPanel {
     }
     else {
       WaitCursor.hide(EntityTablePanel.this);
+    }
+  }
+
+  private static final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
+    if (scrollPane != null && scrollPane.isVisible()) {
+      if (advancedState.get()) {
+        visibleState.set(false);
+      }
+      else {
+        advancedState.set(true);
+      }
+    }
+    else {
+      advancedState.set(false);
+      visibleState.set(true);
+    }
+  }
+
+  private static final void selectConditionPanel(FilteredTableConditionPanel<?, Attribute<?>> tableConditionPanel,
+                                                 JScrollPane conditionPanelScrollPane, State conditionPanelVisibleState,
+                                                 SwingEntityTableModel tableModel, JComponent dialogOwner, String dialogTitle) {
+    if (tableConditionPanel != null) {
+      if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
+        conditionPanelVisibleState.set(true);
+      }
+      List<Property<?>> properties = tableConditionPanel.componentPanel()
+              .columnComponents()
+              .values()
+              .stream()
+              .filter(panel -> tableModel.columnModel().isColumnVisible(panel.model().columnIdentifier()))
+              .map(panel -> tableModel.entityDefinition().property(panel.model().columnIdentifier()))
+              .collect(toList());
+      if (!properties.isEmpty()) {
+        if (properties.size() == 1) {
+          tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
+        }
+        else {
+          properties.sort(Property.propertyComparator());
+          Dialogs.selectionDialog(properties)
+                  .owner(dialogOwner)
+                  .title(dialogTitle)
+                  .selectSingle()
+                  .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
+        }
+      }
     }
   }
 

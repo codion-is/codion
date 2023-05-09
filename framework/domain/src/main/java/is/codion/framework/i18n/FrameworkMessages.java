@@ -60,6 +60,7 @@ public final class FrameworkMessages {
   private static final String SETTINGS = "settings";
   private static final String SELECT_INPUT_FIELD = "select_input_field";
   private static final String SELECT_SEARCH_FIELD = "select_search_field";
+  private static final String SELECT_FILTER_FIELD = "select_filter_field";
 
   private FrameworkMessages() {}
 
@@ -383,6 +384,13 @@ public final class FrameworkMessages {
    */
   public static String selectSearchField() {
     return get(SELECT_SEARCH_FIELD);
+  }
+
+  /**
+   * @return select filter field
+   */
+  public static String selectFilterField() {
+    return get(SELECT_FILTER_FIELD);
   }
 
   private static String get(String key) {
