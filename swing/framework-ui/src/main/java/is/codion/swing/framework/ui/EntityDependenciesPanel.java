@@ -44,7 +44,7 @@ public final class EntityDependenciesPanel extends JPanel {
     super(new BorderLayout());
     for (Map.Entry<EntityType, Collection<Entity>> entry : dependencies.entrySet()) {
       tabPane.addTab(connectionProvider.entities().definition(entry.getKey()).caption(),
-              EntityTablePanel.createEntityTablePanel(entry.getValue(), connectionProvider));
+              EntityTablePanel.entityTablePanel(entry.getValue(), connectionProvider));
     }
     add(tabPane, BorderLayout.CENTER);
     KeyEvents.builder(VK_RIGHT)

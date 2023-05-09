@@ -8876,3 +8876,4 @@
   EntityTablePanel.selectFilterPanel() added
   ColumnConditionPanel bug fixed, now supports Short columns
   FilteredTable.conditionPanel lazy initialization, refactoring
+  EntityTablePanel, create prefix removed from factory methods

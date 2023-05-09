@@ -66,7 +66,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
             .fileFilter(new FileNameExtensionFilter("Text files", "txt"))
             .selectFile();
 
-    EntityTablePanel tablePanel = EntityTablePanel.createReadOnlyEntityTablePanel(
+    EntityTablePanel tablePanel = EntityTablePanel.entityTablePanelReadOnly(
             EntityObjectMapper.entityObjectMapper(applicationModel().entities()).deserializeEntities(
                     Text.textFileContents(file.getAbsolutePath(), Charset.defaultCharset())), applicationModel().connectionProvider());
 
