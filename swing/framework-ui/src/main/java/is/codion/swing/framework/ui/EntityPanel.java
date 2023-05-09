@@ -1132,26 +1132,26 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   protected final void setupKeyboardActions() {
     if (containsTablePanel()) {
-      tablePanel.getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+      tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
               KeyEvents.builder(VK_T)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
-      tablePanel.getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+      tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
               KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
       if (containsEditPanel()) {
-        tablePanel.getControl(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+        tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
                 KeyEvents.builder(VK_T)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
-        tablePanel.getControl(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+        tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
                 KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)

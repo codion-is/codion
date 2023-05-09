@@ -272,7 +272,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @throws IllegalArgumentException in case no control is associated with the given control code
    * @see #containsControl(EntityEditPanel.ControlCode)
    */
-  public final Control getControl(ControlCode controlCode) {
+  public final Control control(ControlCode controlCode) {
     if (!containsControl(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
@@ -660,10 +660,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
-   * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #getControl(ControlCode)} method.
+   * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #control(ControlCode)} method.
    * @see is.codion.swing.common.ui.control.Control
    * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
-   * @see #getControl(ControlCode)
+   * @see #control(ControlCode)
    */
   private void setupControls() {
     if (!editModel().isReadOnly()) {

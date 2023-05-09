@@ -89,7 +89,6 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
-import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -688,7 +687,7 @@ public class EntityTablePanel extends JPanel {
    * @param controlCode the control code
    * @return the control associated with {@code controlCode} or an empty Optional if the control is not available
    */
-  public final Optional<Control> getControl(ControlCode controlCode) {
+  public final Optional<Control> control(ControlCode controlCode) {
     return Optional.ofNullable(controls.get(controlCode));
   }
 
@@ -888,12 +887,12 @@ public class EntityTablePanel extends JPanel {
       }
     };
     Controls popupMenuControls = Controls.controls();
-    tablePanel.getControl(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
-    tablePanel.getControl(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
+    tablePanel.control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
+    tablePanel.control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
     if (!popupMenuControls.isEmpty()) {
       popupMenuControls.addSeparator();
     }
-    tablePanel.getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
+    tablePanel.control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
     tablePanel.addPopupMenuControls(popupMenuControls);
     tablePanel.setIncludeConditionPanel(false);
     tablePanel.initializePanel();
@@ -959,25 +958,25 @@ public class EntityTablePanel extends JPanel {
    * CTR-F selects the table search field
    */
   protected void setupKeyboardActions() {
-    getControl(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
+    control(ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
             KeyEvents.builder(VK_T)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
+    control(ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+    control(ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_S)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
-    getControl(ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
+    control(ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
             KeyEvents.builder(VK_F)
                     .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -1005,26 +1004,26 @@ public class EntityTablePanel extends JPanel {
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {
     requireNonNull(additionalToolBarControls);
     Controls toolbarControls = Controls.controls();
-    getControl(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
-    Control toggleConditionPanel = getControl(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
-    Control toggleFilterPanel = getControl(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
-    if (toggleConditionPanel != null || toggleFilterPanel != null) {
-      if (toggleConditionPanel != null) {
-        toolbarControls.add(toggleConditionPanel);
+    control(ControlCode.TOGGLE_SUMMARY_PANEL).ifPresent(toolbarControls::add);
+    Control toggleConditionPanelControl = control(ControlCode.TOGGLE_CONDITION_PANEL).orElse(null);
+    Control toggleFilterPanelControl = control(ControlCode.TOGGLE_FILTER_PANEL).orElse(null);
+    if (toggleConditionPanelControl != null || toggleFilterPanelControl != null) {
+      if (toggleConditionPanelControl != null) {
+        toolbarControls.add(toggleConditionPanelControl);
       }
-      if (toggleFilterPanel != null) {
-        toolbarControls.add(toggleFilterPanel);
+      if (toggleFilterPanelControl != null) {
+        toolbarControls.add(toggleFilterPanelControl);
       }
       toolbarControls.addSeparator();
     }
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
-    getControl(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
-    getControl(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
+    control(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
+    control(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
+    control(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
       toolbarControls.add(control);
       toolbarControls.addSeparator();
     });
-    getControl(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
-    getControl(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
+    control(ControlCode.MOVE_SELECTION_UP).ifPresent(toolbarControls::add);
+    control(ControlCode.MOVE_SELECTION_DOWN).ifPresent(toolbarControls::add);
     additionalToolBarControls.forEach(additionalControls -> {
       toolbarControls.addSeparator();
       additionalControls.actions().forEach(toolbarControls::add);
@@ -1043,18 +1042,18 @@ public class EntityTablePanel extends JPanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     requireNonNull(additionalPopupMenuControls);
     Controls popupControls = Controls.controls();
-    getControl(ControlCode.REFRESH).ifPresent(popupControls::add);
-    getControl(ControlCode.CLEAR).ifPresent(popupControls::add);
+    control(ControlCode.REFRESH).ifPresent(popupControls::add);
+    control(ControlCode.CLEAR).ifPresent(popupControls::add);
     if (!popupControls.isEmpty()) {
       popupControls.addSeparator();
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
     State separatorRequired = State.state();
-    getControl(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
+    control(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
-    getControl(ControlCode.DELETE_SELECTED).ifPresent(control -> {
+    control(ControlCode.DELETE_SELECTED).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -1062,7 +1061,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.addSeparator();
       separatorRequired.set(false);
     }
-    getControl(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
+    control(ControlCode.VIEW_DEPENDENCIES).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -1083,7 +1082,7 @@ public class EntityTablePanel extends JPanel {
       popupControls.add(columnControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.SELECTION_MODE).ifPresent(control -> {
+    control(ControlCode.SELECTION_MODE).ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1104,7 +1103,7 @@ public class EntityTablePanel extends JPanel {
       addFilterControls(popupControls);
       separatorRequired.set(true);
     }
-    getControl(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
+    control(ControlCode.COPY_TABLE_DATA).ifPresent(control -> {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1119,7 +1118,7 @@ public class EntityTablePanel extends JPanel {
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    getControl(ControlCode.PRINT_TABLE).ifPresent(builder::control);
+    control(ControlCode.PRINT_TABLE).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1398,8 +1397,8 @@ public class EntityTablePanel extends JPanel {
   private Controls createColumnControls() {
     Controls.Builder builder = Controls.builder()
             .caption(MESSAGES.getString("columns"));
-    getControl(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
-    getControl(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
+    control(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
+    control(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1542,7 +1541,7 @@ public class EntityTablePanel extends JPanel {
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-              .action(control(this::showEntityMenu))
+              .action(Control.control(this::showEntityMenu))
               .enable(table);
     }
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
@@ -1631,7 +1630,7 @@ public class EntityTablePanel extends JPanel {
     }
     KeyEvents.builder(VK_G)
             .modifiers(CTRL_DOWN_MASK)
-            .action(control(() -> {
+            .action(Control.control(() -> {
               Point location = popupLocation(table);
               popupMenu.show(table, location.x, location.y);
             }))
@@ -1649,10 +1648,10 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.search())
             .smallIcon(FrameworkIcons.instance().search())
             .build();
-    getControl(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
-    Controls searchPanelControls = conditionPanel.controls();
-    if (!searchPanelControls.isEmpty()) {
-      conditionControls.addAll(searchPanelControls);
+    control(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
+    Controls conditionPanelControls = conditionPanel.controls();
+    if (!conditionPanelControls.isEmpty()) {
+      conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
     conditionControls.add(ToggleControl.builder(tableModel.queryConditionRequiredState())
@@ -1669,7 +1668,7 @@ public class EntityTablePanel extends JPanel {
             .caption(FrameworkMessages.filter())
             .smallIcon(FrameworkIcons.instance().filter())
             .build();
-    getControl(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
+    control(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
     Controls filterPanelControls = filterPanel.controls();
     if (!filterPanelControls.isEmpty()) {
       filterControls.addAll(filterPanelControls);

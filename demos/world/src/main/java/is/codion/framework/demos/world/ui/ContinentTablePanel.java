@@ -17,7 +17,7 @@ final class ContinentTablePanel extends EntityTablePanel {
 
   @Override
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-    return getControl(ControlCode.REFRESH)
+    return control(ControlCode.REFRESH)
             .map(Controls::controls)
             .orElse(null);
   }
