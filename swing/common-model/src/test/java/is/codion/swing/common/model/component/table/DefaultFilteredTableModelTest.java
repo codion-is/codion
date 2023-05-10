@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -835,19 +834,9 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void setEqualFilterValue() {
-    tableModel.filterModel().setEqualFilterValue(0, "Hello");
-    ColumnConditionModel<?, String> conditionModel = tableModel.filterModel().conditionModel(0);
-    assertTrue(conditionModel.isEnabled());
-    assertTrue(tableModel.filterModel().isEnabled(0));
-    assertEquals(Operator.EQUAL, conditionModel.getOperator());
-    assertEquals("Hello", conditionModel.getEqualValue());
-  }
-
-  @Test
   void clearFilterModels() {
     assertFalse(tableModel.filterModel().isEnabled(0));
-    tableModel.filterModel().setEqualFilterValue(0, "SCOTT");
+    tableModel.filterModel().conditionModel(0).setEqualValue("SCOTT");
     assertTrue(tableModel.filterModel().isEnabled(0));
     tableModel.filterModel().clear();
     assertFalse(tableModel.filterModel().isEnabled(0));

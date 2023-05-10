@@ -11,6 +11,7 @@ import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
@@ -34,6 +35,7 @@ import java.util.function.Predicate;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -69,7 +71,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableColumnModel<C> columnModel;
   private final FilteredTableSortModel<R, C> sortModel;
   private final FilteredTableSearchModel searchModel;
-  private final FilteredTableFilterModel<C> filterModel;
+  private final TableConditionModel<C> filterModel;
   private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
   private final CombinedIncludeCondition combinedIncludeCondition;
 
@@ -103,7 +105,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnValueProvider = requireNonNull(columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
-    this.filterModel = new DefaultFilteredTableFilterModel<>(columnFilterModels);
+    this.filterModel = tableConditionModel(columnFilterModels);
     this.combinedIncludeCondition = new CombinedIncludeCondition(columnFilterModels);
     bindEventsInternal();
   }
@@ -212,7 +214,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final FilteredTableFilterModel<C> filterModel() {
+  public final TableConditionModel<C> filterModel() {
     return filterModel;
   }
 

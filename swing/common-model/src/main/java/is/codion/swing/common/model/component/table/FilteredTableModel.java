@@ -7,6 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.TableConditionModel;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
@@ -246,7 +247,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @return the filter model used by this table model
    */
-  FilteredTableFilterModel<C> filterModel();
+  TableConditionModel<C> filterModel();
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.

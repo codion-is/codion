@@ -6,7 +6,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.model.EntityTableConditionModel;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityConditionPanelFactory;
@@ -18,15 +18,15 @@ import static is.codion.swing.common.ui.component.table.FilteredTableConditionPa
 public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
-    super(tableModel, filteredTableConditionPanel(tableModel,
-            new PlaylistTrackConditionPanelFactory(tableModel.conditionModel())));
+    super(tableModel, filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(),
+            new PlaylistTrackConditionPanelFactory(tableModel.entityDefinition())));
     setUpdateSelectedComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
   private static final class PlaylistTrackConditionPanelFactory extends EntityConditionPanelFactory {
 
-    private PlaylistTrackConditionPanelFactory(EntityTableConditionModel tableConditionModel) {
-      super(tableConditionModel);
+    private PlaylistTrackConditionPanelFactory(EntityDefinition entityDefinition) {
+      super(entityDefinition);
     }
 
     @Override

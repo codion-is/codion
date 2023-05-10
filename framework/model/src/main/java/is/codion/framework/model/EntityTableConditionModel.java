@@ -4,9 +4,9 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.Operator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
-import java.util.Map;
 import java.util.function.Supplier;
 
 /**
@@ -24,7 +23,7 @@ import java.util.function.Supplier;
  * Factory for {@link EntityTableConditionModel} instances via
  * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
  */
-public interface EntityTableConditionModel {
+public interface EntityTableConditionModel<C extends Attribute<?>> extends TableConditionModel<C> {
 
   /**
    * @return the type of the entity this table condition model is based on
@@ -64,17 +63,6 @@ public interface EntityTableConditionModel {
   void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
 
   /**
-   * @return true if any of the underlying condition models are enabled
-   */
-  boolean isEnabled();
-
-  /**
-   * @param attribute the column attribute
-   * @return true if the {@link ColumnConditionModel} associated with the given attribute is enabled
-   */
-  boolean isEnabled(Attribute<?> attribute);
-
-  /**
    * @return the conjunction to be used when multiple column condition are active,
    * the default is {@code Conjunction.AND}
    * @see Conjunction
@@ -88,25 +76,14 @@ public interface EntityTableConditionModel {
   void setConjunction(Conjunction conjunction);
 
   /**
-   * @return an unmodifiable map containing the {@link ColumnConditionModel}s available in this table condition model, mapped to their respective attributes
-   */
-  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels();
-
-  /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.
-   * @param <C> the attribute type
+   * @param <A> the attribute type
    * @param <T> the column value type
    * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} associated with {@code attribute}
    * @throws IllegalArgumentException in case no condition model exists for the given attribute
    */
-  <C extends Attribute<T>, T> ColumnConditionModel<C, T> conditionModel(C attribute);
-
-  /**
-   * Clears the search state of all the condition models, disables them and
-   * resets the operator to {@link Operator#EQUAL}
-   */
-  void clear();
+  <A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A attribute);
 
   /**
    * @param listener a listener notified each time the search condition changes
@@ -122,11 +99,21 @@ public interface EntityTableConditionModel {
    * Creates a new {@link EntityTableConditionModel}
    * @param entityType the underlying entity type
    * @param connectionProvider a EntityConnectionProvider instance
+   * @return a new {@link EntityTableConditionModel} instance
+   */
+  static EntityTableConditionModel<Attribute<?>> entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return entityTableConditionModel(entityType, connectionProvider, new DefaultConditionModelFactory(connectionProvider));
+  }
+
+  /**
+   * Creates a new {@link EntityTableConditionModel}
+   * @param entityType the underlying entity type
+   * @param connectionProvider a EntityConnectionProvider instance
    * @param conditionModelFactory provides the column condition models for this table condition model
    * @return a new {@link EntityTableConditionModel} instance
    */
-  static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                                             ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
-    return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
+  static EntityTableConditionModel<Attribute<?>> entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                                                                           ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+    return new DefaultEntityTableConditionModel<>(entityType, connectionProvider, conditionModelFactory);
   }
 }

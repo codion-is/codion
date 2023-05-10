@@ -1,11 +1,9 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.table;
 
-import is.codion.common.Operator;
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.ColumnConditionModel;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -14,38 +12,38 @@ import java.util.Map;
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 
-final class DefaultFilteredTableFilterModel<C> implements FilteredTableFilterModel<C> {
+final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
-  private final Map<C, ColumnConditionModel<C, ?>> filterModels;
+  private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
 
-  DefaultFilteredTableFilterModel(Collection<ColumnConditionModel<C, ?>> filterModels) {
-    this.filterModels = initializeColumnFilterModels(filterModels);
+  DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+    this.conditionModels = initializeColumnFilterModels(conditionModels);
   }
 
   @Override
   public void clear() {
-    filterModels.values().forEach(ColumnConditionModel::clearCondition);
+    conditionModels.values().forEach(ColumnConditionModel::clearCondition);
   }
 
   @Override
   public boolean isEnabled() {
-    return filterModels.values().stream()
+    return conditionModels.values().stream()
             .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
   public boolean isEnabled(C columnIdentifier) {
-    return filterModels.containsKey(columnIdentifier) && filterModels.get(columnIdentifier).isEnabled();
+    return conditionModels.containsKey(columnIdentifier) && conditionModels.get(columnIdentifier).isEnabled();
   }
 
   @Override
   public Map<C, ColumnConditionModel<C, ?>> conditionModels() {
-    return filterModels;
+    return conditionModels;
   }
 
   @Override
   public <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier) {
-    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) filterModels.get(columnIdentifier);
+    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) conditionModels.get(columnIdentifier);
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model available for column: " + columnIdentifier);
     }
@@ -54,23 +52,13 @@ final class DefaultFilteredTableFilterModel<C> implements FilteredTableFilterMod
   }
 
   @Override
-  public <T> void setEqualFilterValue(C columnIdentifier, Comparable<T> value) {
-    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) filterModels.get(columnIdentifier);
-    if (filterModel != null) {
-      filterModel.setOperator(Operator.EQUAL);
-      filterModel.setEqualValue((T) value);
-      filterModel.setEnabled(value != null);
-    }
-  }
-
-  @Override
   public void addChangeListener(EventListener listener) {
-    filterModels.values().forEach(filterModel -> filterModel.addChangeListener(listener));
+    conditionModels.values().forEach(filterModel -> filterModel.addChangeListener(listener));
   }
 
   @Override
   public void removeChangeListener(EventListener listener) {
-    filterModels.values().forEach(filterModel -> filterModel.removeChangeListener(listener));
+    conditionModels.values().forEach(filterModel -> filterModel.removeChangeListener(listener));
   }
 
   private Map<C, ColumnConditionModel<C, ?>> initializeColumnFilterModels(Collection<ColumnConditionModel<C, ?>> filterModels) {

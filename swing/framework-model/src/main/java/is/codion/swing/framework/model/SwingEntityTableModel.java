@@ -10,6 +10,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
+import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -36,7 +37,6 @@ import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPre
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.FilteredTableFilterModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
@@ -85,7 +85,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private final EntityFilteredTableModel tableModel;
   private final SwingEntityEditModel editModel;
-  private final EntityTableConditionModel conditionModel;
+  private final EntityTableConditionModel<Attribute<?>> conditionModel;
   private final State queryConditionRequiredState = State.state();
 
   /**
@@ -155,7 +155,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param conditionModel the table condition model
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               EntityTableConditionModel conditionModel) {
+                               EntityTableConditionModel<Attribute<?>> conditionModel) {
     this(new SwingEntityEditModel(entityType, connectionProvider), conditionModel);
   }
 
@@ -173,7 +173,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param editModel the edit model
    * @param conditionModel the table condition model
    */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel conditionModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel<Attribute<?>> conditionModel) {
     this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entityDefinition()),
             new EntityColumnValueProvider(editModel.entities()), createFilterModels(editModel.entityDefinition(),
             new DefaultFilterModelFactory(editModel.entityDefinition())));
@@ -281,7 +281,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final EntityTableConditionModel conditionModel() {
+  public final EntityTableConditionModel<Attribute<?>> conditionModel() {
     return conditionModel;
   }
 
@@ -764,7 +764,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final FilteredTableFilterModel<Attribute<?>> filterModel() {
+  public final TableConditionModel<Attribute<?>> filterModel() {
     return tableModel.filterModel();
   }
 
