@@ -19,7 +19,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -29,7 +28,6 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
@@ -40,18 +38,16 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels;
   private final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> conditionModels;
   private final Event<Condition> conditionChangedEvent = Event.event();
   private Supplier<Condition> additionalConditionSupplier;
   private Conjunction conjunction = Conjunction.AND;
 
   DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                   FilterModelFactory filterModelFactory, ConditionModelFactory conditionModelFactory) {
+                                   ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.conditionModels = createConditionModels(entityType, requireNonNull(conditionModelFactory, "conditionModelFactory"));
-    this.filterModels = createFilterModels(entityType, filterModelFactory);
     bindEvents();
   }
 
@@ -66,27 +62,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public <C extends Attribute<T>, T> ColumnConditionModel<C, T> filterModel(C attribute) {
-    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) filterModels.get(attribute);
-    if (filterModel == null) {
-      throw new IllegalArgumentException("No filter model available for attribute: " + attribute);
-    }
-
-    return filterModel;
-  }
-
-  @Override
-  public void clearFilters() {
-    filterModels.values().forEach(ColumnConditionModel::clearCondition);
-  }
-
-  @Override
-  public Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels() {
-    return filterModels;
-  }
-
-  @Override
-  public void clearConditions() {
+  public void clear() {
     conditionModels.values().forEach(ColumnConditionModel::clearCondition);
   }
 
@@ -106,25 +82,14 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public boolean isConditionEnabled() {
+  public boolean isEnabled() {
     return conditionModels.values().stream()
             .anyMatch(ColumnConditionModel::isEnabled);
   }
 
   @Override
-  public boolean isConditionEnabled(Attribute<?> attribute) {
+  public boolean isEnabled(Attribute<?> attribute) {
     return conditionModels.containsKey(attribute) && conditionModels.get(attribute).isEnabled();
-  }
-
-  @Override
-  public boolean isFilterEnabled() {
-    return filterModels.values().stream()
-            .anyMatch(ColumnConditionModel::isEnabled);
-  }
-
-  @Override
-  public boolean isFilterEnabled(Attribute<?> attribute) {
-    return filterModels.containsKey(attribute) && filterModels.get(attribute).isEnabled();
   }
 
   @Override
@@ -138,16 +103,6 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
       conditionModel.setEnabled(!nullOrEmpty(values));
     }
     return !condition.equals(condition());
-  }
-
-  @Override
-  public <T> void setEqualFilterValue(Attribute<T> attribute, Comparable<T> value) {
-    ColumnConditionModel<Attribute<?>, T> filterModel = (ColumnConditionModel<Attribute<?>, T>) filterModels.get(attribute);
-    if (filterModel != null) {
-      filterModel.setOperator(Operator.EQUAL);
-      filterModel.setEqualValue((T) value);
-      filterModel.setEnabled(value != null);
-    }
   }
 
   @Override
@@ -187,39 +142,22 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
   }
 
   @Override
-  public void addConditionChangedListener(EventDataListener<Condition> listener) {
+  public void addChangeListener(EventDataListener<Condition> listener) {
     conditionChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeConditionChangedListener(EventDataListener<Condition> listener) {
+  public void removeChangeListener(EventDataListener<Condition> listener) {
     conditionChangedEvent.removeDataListener(listener);
   }
 
   private void bindEvents() {
     conditionModels.values().forEach(conditionModel ->
-            conditionModel.addConditionChangedListener(() -> conditionChangedEvent.onEvent(condition())));
+            conditionModel.addChangeListener(() -> conditionChangedEvent.onEvent(condition())));
   }
 
-  private Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> createFilterModels(EntityType entityType, FilterModelFactory filterModelProvider) {
-    if (filterModelProvider == null) {
-      return emptyMap();
-    }
-
-    Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> models = new HashMap<>();
-    for (Property<?> property : connectionProvider.entities().definition(entityType).properties()) {
-      if (!property.isHidden()) {
-        ColumnConditionModel<? extends Attribute<?>, ?> filterModel = filterModelProvider.createFilterModel(property);
-        if (filterModel != null) {
-          models.put(filterModel.columnIdentifier(), filterModel);
-        }
-      }
-    }
-
-    return unmodifiableMap(models);
-  }
-
-  private Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModels(EntityType entityType, ConditionModelFactory conditionModelFactory) {
+  private Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModels(EntityType entityType,
+                                                                                                   ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
     Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> models = new HashMap<>();
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
     for (ColumnProperty<?> columnProperty : definition.columnProperties()) {
@@ -230,7 +168,7 @@ final class DefaultEntityTableConditionModel implements EntityTableConditionMode
     }
     for (ForeignKeyProperty foreignKeyProperty :
             connectionProvider.entities().definition(entityType).foreignKeyProperties()) {
-      ColumnConditionModel<ForeignKey, Entity> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.attribute());
+      ColumnConditionModel<? extends Attribute<?>, ?> conditionModel = conditionModelFactory.createConditionModel(foreignKeyProperty.attribute());
       if (conditionModel != null) {
         models.put(conditionModel.columnIdentifier(), conditionModel);
       }

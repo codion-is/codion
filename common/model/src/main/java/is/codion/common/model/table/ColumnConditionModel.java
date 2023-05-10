@@ -317,12 +317,12 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @param listener a listener to be notified each time the condition state changes
    */
-  void addConditionChangedListener(EventListener listener);
+  void addChangeListener(EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionChangedListener(EventListener listener);
+  void removeChangeListener(EventListener listener);
 
   /**
    * Returns a new {@link Builder} instance.
@@ -334,6 +334,20 @@ public interface ColumnConditionModel<C, T> {
    */
   static <C, T> Builder<C, T> builder(C columnIdentifier, Class<T> columnClass) {
     return new DefaultColumnConditionModel.DefaultBuilder<>(columnIdentifier, columnClass);
+  }
+
+  /**
+   * Responsible for creating {@link ColumnConditionModel} instances.
+   */
+  interface Factory<C> {
+
+    /**
+     * Creates a {@link ColumnConditionModel} for a given column
+     * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
+     * @return a {@link ColumnConditionModel} for the given column, null if filtering should
+     * not be allowed for this column
+     */
+    ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier);
   }
 
   /**

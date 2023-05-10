@@ -45,7 +45,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
   }
 
   private void configureCapitalConditionModel() {
-    ((EntitySearchModelConditionModel) tableConditionModel()
+    ((EntitySearchModelConditionModel) conditionModel()
             .conditionModel(Country.CAPITAL_FK))
             .entitySearchModel()
             .setAdditionalConditionSupplier(new CapitalConditionSupplier());

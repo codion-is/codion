@@ -20,9 +20,9 @@ import static is.codion.framework.model.EntitySearchModelConditionModel.entitySe
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default ConditionModelFactory implementation.
+ * A default ColumnConditionModel.Factory implementation.
  */
-public class DefaultConditionModelFactory implements ConditionModelFactory {
+public class DefaultConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
 
   private final EntityConnectionProvider connectionProvider;
 
@@ -31,14 +31,14 @@ public class DefaultConditionModelFactory implements ConditionModelFactory {
   }
 
   @Override
-  public <T, A extends Attribute<T>> ColumnConditionModel<A, T> createConditionModel(A attribute) {
+  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      return (ColumnConditionModel<A, T>) entitySearchModelConditionModel(foreignKey,
+      return entitySearchModelConditionModel(foreignKey,
               EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider));
     }
 
-    ColumnProperty<T> property = definition(attribute.entityType()).columnProperty(attribute);
+    ColumnProperty<?> property = definition(attribute.entityType()).columnProperty(attribute);
     if (property.isAggregateColumn()) {
       return null;
     }

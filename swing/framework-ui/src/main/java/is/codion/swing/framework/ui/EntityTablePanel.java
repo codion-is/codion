@@ -352,7 +352,7 @@ public class EntityTablePanel extends JPanel {
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
     this(requireNonNull(tableModel), new FilteredTableConditionPanel<>(tableModel,
-            new EntityConditionPanelFactory(tableModel.tableConditionModel())));
+            new EntityConditionPanelFactory(tableModel.conditionModel())));
   }
 
   /**
@@ -1530,7 +1530,7 @@ public class EntityTablePanel extends JPanel {
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     filterPanelVisibleState.addDataListener(this::setFilterPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
-    tableModel.tableConditionModel().addConditionChangedListener(condition -> onConditionChanged());
+    tableModel.conditionModel().addChangeListener(condition -> onConditionChanged());
     tableModel.refreshingObserver().addDataListener(this::onRefreshingChanged);
     tableModel.addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
@@ -1843,7 +1843,7 @@ public class EntityTablePanel extends JPanel {
       TableCellRenderer renderer = tableColumn.getCellRenderer();
       boolean useBoldFont = renderer instanceof FilteredTableCellRenderer
               && ((FilteredTableCellRenderer) renderer).isColumnShadingEnabled()
-              && tableModel.tableConditionModel().isConditionEnabled(tableColumn.getIdentifier());
+              && tableModel.conditionModel().isEnabled(tableColumn.getIdentifier());
       Font defaultFont = component.getFont();
       component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 

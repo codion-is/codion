@@ -81,7 +81,7 @@ public class FilteredTableTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
-                                           List<ColumnConditionModel<Integer, String>> columnFilterModels) {
+                                           List<ColumnConditionModel<Integer, ?>> columnFilterModels) {
       super(columns, new ColumnValueProvider<List<String>, Integer>() {
         @Override
         public Object value(List<String> row, Integer columnIdentifier) {

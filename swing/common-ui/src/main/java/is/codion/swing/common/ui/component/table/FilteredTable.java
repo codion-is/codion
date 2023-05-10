@@ -632,8 +632,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return false;
   }
 
-  private void bindFilterIndicatorEvents(FilteredTableColumn<C> column) {
-    ColumnConditionModel<C, Object> model = (ColumnConditionModel<C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
+  private void bindFilterIndicatorEvents(FilteredTableColumn<?> column) {
+    ColumnConditionModel<?, ?> model = getModel().filterModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
@@ -657,7 +657,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
         FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-        ColumnConditionModel<?, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
+        ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
@@ -1059,7 +1059,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     @Override
     public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<C, Object> filterModel = (ColumnConditionModel<C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
+      ColumnConditionModel<C, Object> filterModel = (ColumnConditionModel<C, Object>) tableModel.filterModel()
+              .columnFilterModels().get(column.getIdentifier());
       if (filterModel == null) {
         return null;
       }

@@ -18,7 +18,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel, new FilteredTableConditionPanel<>(tableModel,
-            new PlaylistTrackConditionPanelFactory(tableModel.tableConditionModel())));
+            new PlaylistTrackConditionPanelFactory(tableModel.conditionModel())));
     setUpdateSelectedComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
