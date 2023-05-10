@@ -17,7 +17,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.TableColumnModelEvent;
 import javax.swing.event.TableColumnModelListener;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
@@ -40,19 +39,19 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TableColumnComponentPanel<C, T extends JComponent> extends JPanel {
 
-  private final TableColumnModel columnModel;
-  private final Collection<? extends FilteredTableColumn<?>> columns;
+  private final FilteredTableColumnModel<C> columnModel;
+  private final Collection<FilteredTableColumn<C>> columns;
   private final Box.Filler scrollBarFiller;
   private final JPanel basePanel;
-  private final Map<TableColumn, T> columnComponents;
-  private final Map<TableColumn, JPanel> nullComponents = new HashMap<>(0);
+  private final Map<C, T> columnComponents;
+  private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-  private TableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<FilteredTableColumn<C>, T> columnComponents) {
+  private TableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.columns();
-    requireNonNull(columnComponents).forEach((column, component) -> {
-      if (!columns.contains(column)) {
-        throw new IllegalArgumentException("Column with model index " + column.getModelIndex() + " is not part of column model");
+    requireNonNull(columnComponents).forEach((columnIdentifier, component) -> {
+      if (!columnModel.containsColumn(columnIdentifier)) {
+        throw new IllegalArgumentException("Column " + columnIdentifier + " is not part of column model");
       }
     });
     this.columnComponents = Collections.unmodifiableMap(columnComponents);
@@ -80,9 +79,9 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
   }
 
   /**
-   * @return the column components mapped their respective columns
+   * @return the column components mapped their respective column identifiers
    */
-  public Map<TableColumn, T> columnComponents() {
+  public Map<C, T> columnComponents() {
     return columnComponents;
   }
 
@@ -95,7 +94,7 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
    * @return a new {@link TableColumnComponentPanel}
    */
   public static <C, T extends JComponent> TableColumnComponentPanel<C, T> tableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
-                                                                                                    Map<FilteredTableColumn<C>, T> columnComponents) {
+                                                                                                    Map<C, T> columnComponents) {
     return new TableColumnComponentPanel<>(columnModel, columnComponents);
   }
 
@@ -107,7 +106,7 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
     basePanel.removeAll();
     Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
     while (columnEnumeration.hasMoreElements()) {
-      basePanel.add(columnComponent(columnEnumeration.nextElement()));
+      basePanel.add(columnComponent((FilteredTableColumn<C>) columnEnumeration.nextElement()));
     }
     basePanel.add(scrollBarFiller);
     syncPanelWidths();
@@ -119,7 +118,7 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
 
   private void bindColumnAndComponentSizes() {
     columnModel.addColumnModelListener(new SyncColumnModelListener());
-    for (TableColumn column : columns) {
+    for (FilteredTableColumn<C> column : columns) {
       JComponent component = columnComponent(column);
       component.setPreferredSize(new Dimension(column.getWidth(), component.getPreferredSize().height));
       column.addPropertyChangeListener(new SyncListener(component, column));
@@ -127,13 +126,14 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
   }
 
   private void syncPanelWidths() {
-    for (TableColumn column : columns) {
+    for (FilteredTableColumn<C> column : columns) {
       syncPanelWidth(columnComponent(column), column);
     }
   }
 
-  private JComponent columnComponent(TableColumn column) {
-    return columnComponents.getOrDefault(column, (T) nullComponents.computeIfAbsent(column, c -> new JPanel()));
+  private JComponent columnComponent(FilteredTableColumn<C> column) {
+    return columnComponents.getOrDefault(column.getIdentifier(),
+            (T) nullComponents.computeIfAbsent(column.getIdentifier(), c -> new JPanel()));
   }
 
   private static void syncPanelWidth(JComponent component, TableColumn column) {

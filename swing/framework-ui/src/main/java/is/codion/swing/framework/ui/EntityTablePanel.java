@@ -1481,7 +1481,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private TableColumnComponentPanel<Attribute<?>, JPanel> createSummaryPanel() {
-    Map<FilteredTableColumn<Attribute<?>>, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
+    Map<Attribute<?>, JPanel> columnSummaryPanels = createColumnSummaryPanels(tableModel);
     if (columnSummaryPanels.isEmpty()) {
       return null;
     }
@@ -1789,12 +1789,12 @@ public class EntityTablePanel extends JPanel {
     });
   }
 
-  private static Map<FilteredTableColumn<Attribute<?>>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
-    Map<FilteredTableColumn<Attribute<?>>, JPanel> components = new HashMap<>();
+  private static Map<Attribute<?>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
+    Map<Attribute<?>, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
             tableModel.columnSummaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
-                            components.put(column, columnSummaryPanel(columnSummaryModel))));
+                            components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel))));
 
     return components;
   }
