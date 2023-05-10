@@ -58,8 +58,8 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 
     @Override
     protected Color backgroundColorShaded(SwingEntityTableModel tableModel, int row, Attribute<?> columnIdentifier, Color cellBackgroundColor) {
-      boolean conditionEnabled = tableModel.tableConditionModel().isConditionEnabled(columnIdentifier);
-      boolean filterEnabled = tableModel.tableConditionModel().isFilterEnabled(columnIdentifier);
+      boolean conditionEnabled = tableModel.conditionModel().isEnabled(columnIdentifier);
+      boolean filterEnabled = tableModel.filterModel().isEnabled(columnIdentifier);
       boolean showCondition = conditionEnabled || filterEnabled;
       if (showCondition) {
         return backgroundColorShaded(row, conditionEnabled && filterEnabled, cellBackgroundColor);

@@ -14,7 +14,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.DefaultConditionModelFactory;
-import is.codion.framework.model.DefaultFilterModelFactory;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -96,7 +95,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void nonMatchingConditionModelEntityType() {
     EntityTableConditionModel conditionModel = entityTableConditionModel(Department.TYPE, connectionProvider(),
-            new DefaultFilterModelFactory(), new DefaultConditionModelFactory(connectionProvider()));
+            new DefaultConditionModelFactory(connectionProvider()));
     assertThrows(IllegalArgumentException.class, () ->
             new SwingEntityTableModel(new SwingEntityEditModel(Employee.TYPE, connectionProvider()), conditionModel));
   }
@@ -109,8 +108,8 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   void testFiltering() {
     testModel.refresh();
-    ColumnConditionModel<Attribute<String>, String> filterModel =
-            testModel.tableConditionModel().filterModel(Detail.STRING);
+    ColumnConditionModel<Attribute<?>, String> filterModel =
+            testModel.filterModel().columnFilterModel(Detail.STRING);
     filterModel.setEqualValue("a");
     testModel.filterItems();
     assertEquals(4, testModel.filteredItems().size());
@@ -187,7 +186,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   void backgroundColor() {
     SwingEntityTableModel employeeTableModel = createEmployeeTableModel();
     ColumnConditionModel<Attribute<String>, String> nameConditionModel =
-            employeeTableModel.tableConditionModel().conditionModel(Employee.NAME);
+            employeeTableModel.conditionModel().conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("BLAKE");
     employeeTableModel.refresh();
     assertEquals(Color.GREEN, employeeTableModel.backgroundColor(0, Employee.JOB));
@@ -220,7 +219,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     column.setWidth(150);//timestamp
     column = tableModel.columnModel().getColumn(5);
     column.setWidth(170);//entity_ref
-    ColumnConditionModel<Attribute<String>, String> conditionModel = tableModel.tableConditionModel().conditionModel(Detail.STRING);
+    ColumnConditionModel<Attribute<String>, String> conditionModel = tableModel.conditionModel().conditionModel(Detail.STRING);
     conditionModel.autoEnableState().set(false);
     conditionModel.automaticWildcardValue().set(AutomaticWildcard.PREFIX);
     conditionModel.caseSensitiveState().set(false);
@@ -235,7 +234,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(150, column.getPreferredWidth());
     column = model.columnModel().getColumn(5);
     assertEquals(170, column.getPreferredWidth());
-    conditionModel = tableModel.tableConditionModel().conditionModel(Detail.STRING);
+    conditionModel = tableModel.conditionModel().conditionModel(Detail.STRING);
     assertFalse(conditionModel.autoEnableState().get());
     assertEquals(conditionModel.automaticWildcardValue().get(), AutomaticWildcard.PREFIX);
     assertFalse(conditionModel.caseSensitiveState().get());
@@ -297,7 +296,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
     SwingEntityTableModel tableModel = createEmployeeTableModel();
     assertTrue(tableModel.isListenToEditEvents());
-    tableModel.tableConditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
+    tableModel.conditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
     tableModel.refresh();
 
     tableModel.items().forEach(emp ->

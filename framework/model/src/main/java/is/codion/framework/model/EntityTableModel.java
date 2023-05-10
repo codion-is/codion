@@ -160,7 +160,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel tableConditionModel();
+  EntityTableConditionModel conditionModel();
 
   /**
    * @return true if this table model is editable
@@ -364,7 +364,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Refreshes the items in this table model, according to the underlying condition
-   * @see #tableConditionModel()
+   * @see #conditionModel()
    */
   void refresh();
 
@@ -493,7 +493,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
         else {
           setColumnWidth.accept(attribute, preferences.width());
           preferences.conditionPreferences().ifPresent(conditionPreferences -> {
-            ColumnConditionModel<?, ?> conditionModel = tableModel.tableConditionModel().conditionModels().get(attribute);
+            ColumnConditionModel<?, ?> conditionModel = tableModel.conditionModel().conditionModels().get(attribute);
             if (conditionModel != null) {
               conditionModel.autoEnableState().set(conditionPreferences.autoEnable());
               conditionModel.caseSensitiveState().set(conditionPreferences.caseSensitive());

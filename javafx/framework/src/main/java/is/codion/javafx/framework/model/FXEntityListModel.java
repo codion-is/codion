@@ -91,7 +91,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
 
   public FXEntityListModel(FXEntityEditModel editModel) {
     this(requireNonNull(editModel), entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-            null, new FXConditionModelFactory(editModel.connectionProvider())));
+            new FXConditionModelFactory(editModel.connectionProvider())));
   }
 
   public FXEntityListModel(FXEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
@@ -174,7 +174,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final EntityTableConditionModel tableConditionModel() {
+  public final EntityTableConditionModel conditionModel() {
     return tableConditionModel;
   }
 
@@ -450,7 +450,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!tableConditionModel.isConditionEnabled() && queryConditionRequiredState.get()) {
+    if (!tableConditionModel.isEnabled() && queryConditionRequiredState.get()) {
       return emptyList();
     }
 
@@ -647,7 +647,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
 
   private void bindEvents() {
     addRefreshListener(this::rememberCondition);
-    tableConditionModel.addConditionChangedListener(condition ->
+    tableConditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);

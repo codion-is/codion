@@ -18,7 +18,7 @@ import static is.codion.swing.common.model.component.table.FilteredTableColumn.f
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TableColumnComponentPanelTest {
+public class FilteredTableColumnComponentPanelTest {
 
   private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
   private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
@@ -39,9 +39,9 @@ public class TableColumnComponentPanelTest {
               }
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    Map<FilteredTableColumn<Integer>, JPanel> columnComponents = createColumnComponents(columnModel);
-    columnComponents.put(filteredTableColumn(3), new JPanel());
-    assertThrows(IllegalArgumentException.class, () -> TableColumnComponentPanel.tableColumnComponentPanel(columnModel, columnComponents));
+    Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
+    columnComponents.put(3, new JPanel());
+    assertThrows(IllegalArgumentException.class, () -> FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, columnComponents));
   }
 
   @Test
@@ -61,16 +61,16 @@ public class TableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
-    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
-    assertTrue(panel.columnComponents().containsKey(column1));
+    FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    assertTrue(panel.columnComponents().containsKey(1));
 
-    assertNull(panel.columnComponents().get(column1).getParent());
+    assertNull(panel.columnComponents().get(1).getParent());
     columnModel.setColumnVisible(1, true);
-    assertNotNull(panel.columnComponents().get(column1).getParent());
+    assertNotNull(panel.columnComponents().get(1).getParent());
     columnModel.setColumnVisible(2, false);
-    assertNull(panel.columnComponents().get(column2).getParent());
+    assertNull(panel.columnComponents().get(2).getParent());
     columnModel.setColumnVisible(2, true);
-    assertNotNull(panel.columnComponents().get(column2).getParent());
+    assertNotNull(panel.columnComponents().get(2).getParent());
   }
 
   @Test
@@ -88,18 +88,18 @@ public class TableColumnComponentPanelTest {
               }
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
-    assertEquals(100, panel.columnComponents().get(column0).getPreferredSize().width);
+    assertEquals(100, panel.columnComponents().get(0).getPreferredSize().width);
     column1.setWidth(90);
-    assertEquals(90, panel.columnComponents().get(column1).getPreferredSize().width);
+    assertEquals(90, panel.columnComponents().get(1).getPreferredSize().width);
     column2.setWidth(80);
-    assertEquals(80, panel.columnComponents().get(column2).getPreferredSize().width);
+    assertEquals(80, panel.columnComponents().get(2).getPreferredSize().width);
   }
 
-  private static Map<FilteredTableColumn<Integer>, JPanel> createColumnComponents(FilteredTableColumnModel<Integer> columnModel) {
-    Map<FilteredTableColumn<Integer>, JPanel> columnComponents = new HashMap<>();
-    columnModel.columns().forEach(column -> columnComponents.put(column, new JPanel()));
+  private static Map<Integer, JPanel> createColumnComponents(FilteredTableColumnModel<Integer> columnModel) {
+    Map<Integer, JPanel> columnComponents = new HashMap<>();
+    columnModel.columns().forEach(column -> columnComponents.put(column.getIdentifier(), new JPanel()));
 
     return columnComponents;
   }

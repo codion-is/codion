@@ -377,6 +377,22 @@ public class DefaultEntityTest {
     Entity test2Copy = test2.copy();
     assertTrue(test2Copy.isModified());
 
+    //cyclical deep copy
+    Entity manager1 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 10)
+            .build();
+    Entity manager2 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 11)
+            .with(Employee.MANAGER_FK, manager1)
+            .build();
+    Entity manager3 = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 12)
+            .with(Employee.MANAGER_FK, manager2)
+            .build();
+    manager1.put(Employee.MANAGER_FK, manager3);
+
+    manager1.deepCopy();//stack overflow if not careful
+
     //test propagate entity reference/denormalized values
     testEntity.put(Detail.MASTER_FK, null);
     assertTrue(testEntity.isNull(Detail.MASTER_ID));

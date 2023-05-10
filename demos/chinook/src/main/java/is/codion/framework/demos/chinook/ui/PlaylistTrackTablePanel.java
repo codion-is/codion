@@ -18,7 +18,7 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
 
   public PlaylistTrackTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel, new FilteredTableConditionPanel<>(tableModel,
-            new PlaylistTrackConditionPanelFactory(tableModel.tableConditionModel())));
+            new PlaylistTrackConditionPanelFactory(tableModel.conditionModel())));
     setUpdateSelectedComponentFactory(PlaylistTrack.TRACK_FK, new TrackComponentFactory());
   }
 
@@ -29,8 +29,8 @@ public final class PlaylistTrackTablePanel extends EntityTablePanel {
     }
 
     @Override
-    protected <C extends Attribute<T>, T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<C, T> conditionModel) {
-      ColumnConditionPanel<C, T> conditionPanel = super.createConditionPanel(conditionModel);
+    public <T> ColumnConditionPanel<Attribute<?>, T> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
+      ColumnConditionPanel<Attribute<?>, T> conditionPanel = super.createConditionPanel(conditionModel);
       if (PlaylistTrack.TRACK_FK.equals(conditionModel.columnIdentifier())) {
         EntitySearchField equalField = (EntitySearchField) conditionPanel.equalField();
         equalField.setSelectionProvider(new TrackSelectionProvider(equalField.model()));

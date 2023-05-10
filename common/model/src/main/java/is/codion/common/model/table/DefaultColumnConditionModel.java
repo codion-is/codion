@@ -292,12 +292,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void addConditionChangedListener(EventListener listener) {
+  public void addChangeListener(EventListener listener) {
     conditionChangedEvent.addListener(listener);
   }
 
   @Override
-  public void removeConditionChangedListener(EventListener listener) {
+  public void removeChangeListener(EventListener listener) {
     conditionChangedEvent.removeListener(listener);
   }
 

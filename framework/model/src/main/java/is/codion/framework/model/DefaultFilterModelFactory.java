@@ -6,28 +6,38 @@ package is.codion.framework.model;
 import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
- * A default FilterModelFactory implementation.
+ * A default ColumnConditionModel.Factory implementation.
  */
-public class DefaultFilterModelFactory implements FilterModelFactory {
+public class DefaultFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+
+  private final EntityDefinition entityDefinition;
+
+  public DefaultFilterModelFactory(EntityDefinition entityDefinition) {
+    this.entityDefinition = requireNonNull(entityDefinition);
+  }
 
   @Override
-  public <T> ColumnConditionModel<Attribute<T>, T> createFilterModel(Property<T> property) {
-    if (property.attribute().isEntity()) {
+  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+    if (requireNonNull(attribute).isEntity()) {
       return null;
     }
-    if (!Comparable.class.isAssignableFrom(property.attribute().valueClass())) {
+    if (!Comparable.class.isAssignableFrom(attribute.valueClass())) {
       return null;
     }
 
-    return ColumnConditionModel.builder(property.attribute(), property.attribute().valueClass())
-            .operators(operators(property.attribute().valueClass()))
+    Property<?> property = entityDefinition.property(attribute);
+    return ColumnConditionModel.builder(attribute, attribute.valueClass())
+            .operators(operators(attribute.valueClass()))
             .format(property.format())
             .dateTimePattern(property.dateTimePattern())
             .build();

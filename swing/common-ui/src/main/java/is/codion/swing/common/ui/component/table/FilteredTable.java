@@ -134,7 +134,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * The condition panel factory
    */
-  private final ConditionPanelFactory conditionPanelFactory;
+  private final ColumnConditionPanel.Factory<C> conditionPanelFactory;
 
   /**
    * The text field used for entering the search condition
@@ -176,8 +176,9 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
-  private FilteredTable(T tableModel, ConditionPanelFactory conditionPanelFactory,
-                        TableCellRendererFactory<C> cellRendererFactory) {
+  private FilteredTable(T tableModel,
+                        ColumnConditionPanel.Factory<C> conditionPanelFactory,
+                        FilteredTableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
@@ -587,7 +588,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             .build();
   }
 
-  private void configureColumn(FilteredTableColumn<C> column, TableCellRendererFactory<C> rendererFactory) {
+  private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
     column.setHeaderRenderer(new SortableHeaderRenderer(column.getHeaderRenderer()));
     column.setCellRenderer(rendererFactory.tableCellRenderer(column));
   }
@@ -632,8 +633,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return false;
   }
 
-  private void bindFilterIndicatorEvents(FilteredTableColumn<C> column) {
-    ColumnConditionModel<C, Object> model = (ColumnConditionModel<C, Object>) getModel().columnFilterModels().get(column.getIdentifier());
+  private void bindFilterIndicatorEvents(FilteredTableColumn<?> column) {
+    ColumnConditionModel<?, ?> model = getModel().filterModel().columnFilterModels().get(column.getIdentifier());
     if (model != null) {
       model.addEnabledListener(() -> getTableHeader().repaint());
     }
@@ -657,7 +658,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       if (component instanceof JLabel) {
         JLabel label = (JLabel) component;
         FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-        ColumnConditionModel<?, ?> filterModel = tableModel.columnFilterModels().get(tableColumn.getIdentifier());
+        ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().columnFilterModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
         label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
@@ -817,13 +818,13 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
      * @param conditionPanelFactory the column condition panel factory
      * @return this builder instance
      */
-    Builder<T, R, C> conditionPanelFactory(ConditionPanelFactory conditionPanelFactory);
+    Builder<T, R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory);
 
     /**
      * @param cellRendererFactory the table cell renderer factory
      * @return this builder instance
      */
-    Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory);
+    Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory);
 
     /**
      * @param autoStartsEdit true if editing should start automatically
@@ -889,8 +890,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     private final T tableModel;
 
-    private ConditionPanelFactory conditionPanelFactory;
-    private TableCellRendererFactory<C> cellRendererFactory;
+    private ColumnConditionPanel.Factory<C> conditionPanelFactory;
+    private FilteredTableCellRendererFactory<C> cellRendererFactory;
     private boolean autoStartsEdit = false;
     private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
     private Action doubleClickAction;
@@ -903,18 +904,18 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     private DefaultBuilder(T tableModel) {
       this.tableModel = requireNonNull(tableModel);
-      this.conditionPanelFactory = new DefaultFilterPanelFactory<>(tableModel);
-      this.cellRendererFactory = new DefaultTableCellRendererFactory<>(tableModel);
+      this.conditionPanelFactory = new DefaultFilterPanelFactory<>();
+      this.cellRendererFactory = new DefaultFilteredTableCellRendererFactory<>(tableModel);
     }
 
     @Override
-    public Builder<T, R, C> conditionPanelFactory(ConditionPanelFactory conditionPanelFactory) {
+    public Builder<T, R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory) {
       this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
       return this;
     }
 
     @Override
-    public Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory) {
+    public Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory) {
       this.cellRendererFactory = requireNonNull(cellRendererFactory);
       return this;
     }
@@ -1049,30 +1050,20 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
   }
 
-  private static final class DefaultFilterPanelFactory<C> implements ConditionPanelFactory {
-
-    private final FilteredTableModel<?, C> tableModel;
-
-    private DefaultFilterPanelFactory(FilteredTableModel<?, C> tableModel) {
-      this.tableModel = tableModel;
-    }
+  private static final class DefaultFilterPanelFactory<C> implements ColumnConditionPanel.Factory<C> {
 
     @Override
-    public <C, T> ColumnConditionPanel<C, T> createConditionPanel(FilteredTableColumn<C> column) {
-      ColumnConditionModel<C, Object> filterModel = (ColumnConditionModel<C, Object>) tableModel.columnFilterModels().get(column.getIdentifier());
-      if (filterModel == null) {
-        return null;
-      }
-
-      return columnConditionPanel((ColumnConditionModel<C, T>) filterModel);
+    public <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> filterModel) {
+      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel);
     }
   }
 
-  private static final class DefaultTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C> implements TableCellRendererFactory<C> {
+  private static final class DefaultFilteredTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C>
+          implements FilteredTableCellRendererFactory<C> {
 
     private final T tableModel;
 
-    private DefaultTableCellRendererFactory(T tableModel) {
+    private DefaultFilteredTableCellRendererFactory(T tableModel) {
       this.tableModel = tableModel;
     }
 

@@ -60,7 +60,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ColumnConditionPanel.class.getName());
 
-  private final ColumnConditionModel<C, T> conditionModel;
+  private final ColumnConditionModel<? extends C, T> conditionModel;
   private final JToggleButton toggleEnabledButton;
   private final JComboBox<Item<Operator>> operatorCombo;
   private final JComponent equalField;
@@ -73,7 +73,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final Event<C> focusGainedEvent = Event.event();
   private final State advancedViewState = State.state();
 
-  private ColumnConditionPanel(ColumnConditionModel<C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
+  private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
@@ -106,7 +106,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @return the condition model this panel uses
    */
   public ColumnConditionModel<C, T> model() {
-    return this.conditionModel;
+    return (ColumnConditionModel<C, T>) conditionModel;
   }
 
   /**
@@ -217,9 +217,24 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
+  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
                                                                        BoundFieldFactory boundFieldFactory) {
     return new ColumnConditionPanel<>(conditionModel, boundFieldFactory);
+  }
+
+  /**
+   * Responsible for creating {@link ColumnConditionPanel}s
+   * @param <C> the column identifier type
+   */
+  public interface Factory<C> {
+
+    /**
+     * Creates a ColumnConditionPanel for the given column, returns null if none is available
+     * @param <T> the column value type
+     * @param conditionModel the column condition model
+     * @return a ColumnConditionPanel or null if none is available for the given column
+     */
+     <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
   }
 
   /**

@@ -249,13 +249,13 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void addConditionChangedListener(EventListener listener) {
-    conditionModel.addConditionChangedListener(listener);
+  public final void addChangeListener(EventListener listener) {
+    conditionModel.addChangeListener(listener);
   }
 
   @Override
-  public final void removeConditionChangedListener(EventListener listener) {
-    conditionModel.removeConditionChangedListener(listener);
+  public final void removeChangeListener(EventListener listener) {
+    conditionModel.removeChangeListener(listener);
   }
 
   @Override

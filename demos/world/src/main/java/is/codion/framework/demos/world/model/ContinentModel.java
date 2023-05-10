@@ -67,7 +67,7 @@ public final class ContinentModel extends SwingEntityModel {
       super(Country.TYPE, connectionProvider);
       editModel().setReadOnly(true);
       ColumnConditionModel<?, ?> continentConditionModel =
-              tableModel().tableConditionModel().conditionModel(Country.CONTINENT);
+              tableModel().conditionModel().conditionModel(Country.CONTINENT);
       continentConditionModel.automaticWildcardValue().set(AutomaticWildcard.NONE);
       continentConditionModel.caseSensitiveState().set(true);
     }
@@ -82,7 +82,7 @@ public final class ContinentModel extends SwingEntityModel {
     @Override
     public void onSelection(List<Entity> selectedEntities) {
       Collection<String> continentNames = Entity.get(Continent.NAME, selectedEntities);
-      if (detailModel().tableModel().tableConditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
+      if (detailModel().tableModel().conditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
         detailModel().tableModel().refresh();
       }
     }

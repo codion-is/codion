@@ -36,6 +36,7 @@ import is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPre
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableFilterModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableSelectionModel;
@@ -66,8 +67,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.groupingBy;
 import static java.util.stream.Collectors.toList;
@@ -85,7 +85,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private final EntityFilteredTableModel tableModel;
   private final SwingEntityEditModel editModel;
-  private final EntityTableConditionModel tableConditionModel;
+  private final EntityTableConditionModel conditionModel;
   private final State queryConditionRequiredState = State.state();
 
   /**
@@ -152,11 +152,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
    * @param connectionProvider the connection provider
-   * @param tableConditionModel the table condition model
+   * @param conditionModel the table condition model
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               EntityTableConditionModel tableConditionModel) {
-    this(new SwingEntityEditModel(entityType, connectionProvider), tableConditionModel);
+                               EntityTableConditionModel conditionModel) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), conditionModel);
   }
 
   /**
@@ -165,23 +165,24 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
     this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-            new DefaultFilterModelFactory(), new SwingConditionModelFactory(editModel.connectionProvider())));
+            new SwingConditionModelFactory(editModel.connectionProvider())));
   }
 
   /**
    * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
-   * @param tableConditionModel the table condition model
+   * @param conditionModel the table condition model
    */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel tableConditionModel) {
-    this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entities().definition(editModel.entityType())),
-            new EntityColumnValueProvider(editModel.entities()), requireNonNull(tableConditionModel).filterModels().values());
-    if (!tableConditionModel.entityType().equals(editModel.entityType())) {
-      throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + tableConditionModel.entityType()
+  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel conditionModel) {
+    this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entityDefinition()),
+            new EntityColumnValueProvider(editModel.entities()), createFilterModels(editModel.entityDefinition(),
+            new DefaultFilterModelFactory(editModel.entityDefinition())));
+    if (!conditionModel.entityType().equals(editModel.entityType())) {
+      throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + conditionModel.entityType()
               + ", tableModel: " + editModel.entityType());
     }
-    this.tableConditionModel = tableConditionModel;
-    this.refreshCondition = tableConditionModel.condition();
+    this.conditionModel = conditionModel;
+    this.refreshCondition = conditionModel.condition();
     this.editModel = editModel;
     addEditEventListeners();
     bindEventsInternal();
@@ -280,8 +281,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final EntityTableConditionModel tableConditionModel() {
-    return tableConditionModel;
+  public final EntityTableConditionModel conditionModel() {
+    return conditionModel;
   }
 
   @Override
@@ -433,7 +434,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     requireNonNull(foreignKeyValues, "foreignKeyValues");
     entityDefinition().foreignKeyProperty(foreignKey);
 
-    return tableConditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
+    return conditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
   }
 
   @Override
@@ -713,16 +714,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> columnFilterModels() {
-    return tableModel.columnFilterModels();
-  }
-
-  @Override
-  public final <T> ColumnConditionModel<Attribute<?>, T> columnFilterModel(Attribute<?> columnIdentifier) {
-    return tableModel.columnFilterModel(columnIdentifier);
-  }
-
-  @Override
   public final <T> Collection<T> values(Attribute<?> columnIdentifier) {
     return tableModel.values(columnIdentifier);
   }
@@ -770,6 +761,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final FilteredTableSearchModel searchModel() {
     return tableModel.searchModel();
+  }
+
+  @Override
+  public final FilteredTableFilterModel<Attribute<?>> filterModel() {
+    return tableModel.filterModel();
   }
 
   @Override
@@ -910,11 +906,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
-    if (queryConditionRequiredState.get() && !tableConditionModel().isConditionEnabled()) {
+    if (queryConditionRequiredState.get() && !conditionModel.isEnabled()) {
       return emptyList();
     }
     try {
-      return editModel.connectionProvider().connection().select(tableConditionModel().condition()
+      return editModel.connectionProvider().connection().select(conditionModel.condition()
               .selectBuilder()
               .selectAttributes(selectAttributes())
               .limit(limit)
@@ -1010,7 +1006,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private void bindEventsInternal() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
     addRefreshListener(this::rememberCondition);
-    tableConditionModel.addConditionChangedListener(condition ->
+    conditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
@@ -1037,7 +1033,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void rememberCondition() {
-    refreshCondition = tableConditionModel.condition();
+    refreshCondition = conditionModel.condition();
     conditionChangedState.set(false);
   }
 
@@ -1111,11 +1107,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
-    ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
-    if (conditionModel != null && !conditionModel.isLocked()) {
-      conditionModel.setEnabled(false);
+    ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
+    if (columnConditionModel != null && !columnConditionModel.isLocked()) {
+      columnConditionModel.setEnabled(false);
     }
-    ColumnConditionModel<?, ?> filterModel = tableConditionModel.filterModels().get(attribute);
+    ColumnConditionModel<?, ?> filterModel = filterModel().columnFilterModels().get(attribute);
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }
@@ -1156,7 +1152,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();
       int index = columnModel().isColumnVisible(attribute) ? columnModel().getColumnIndex(attribute) : -1;
-      ColumnConditionModel<?, ?> conditionModel = tableConditionModel.conditionModels().get(attribute);
+      ColumnConditionModel<?, ?> conditionModel = this.conditionModel.conditionModels().get(attribute);
       ConditionPreferences conditionPreferences = conditionModel != null ?
               conditionPreferences(conditionModel.autoEnableState().get(),
                       conditionModel.caseSensitiveState().get(),
@@ -1283,11 +1279,30 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
+  private Collection<ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityDefinition entityDefinition,
+                                                                               ColumnConditionModel.Factory<Attribute<?>> filterModelFactory) {
+    if (filterModelFactory == null) {
+      return emptyList();
+    }
+
+    Collection<ColumnConditionModel<Attribute<?>, ?>> columnConditionModels = new ArrayList<>();
+    for (Property<?> property : entityDefinition.properties()) {
+      if (!property.isHidden()) {
+        ColumnConditionModel<Attribute<?>, ?> filterModel = (ColumnConditionModel<Attribute<?>, ?>) filterModelFactory.createConditionModel(property.attribute());
+        if (filterModel != null) {
+          columnConditionModels.add(filterModel);
+        }
+      }
+    }
+
+    return unmodifiableCollection(columnConditionModels);
+  }
+
   private final class EntityFilteredTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>> {
 
     private EntityFilteredTableModel(List<FilteredTableColumn<Attribute<?>>> filteredTableColumns,
                                      ColumnValueProvider<Entity, Attribute<?>> columnValueProvider,
-                                     Collection<? extends ColumnConditionModel<? extends Attribute<?>, ?>> columnFilterModels) {
+                                     Collection<ColumnConditionModel<Attribute<?>, ?>> columnFilterModels) {
       super(filteredTableColumns, columnValueProvider, columnFilterModels);
     }
 

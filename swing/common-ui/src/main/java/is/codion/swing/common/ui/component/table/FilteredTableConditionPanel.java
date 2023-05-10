@@ -17,10 +17,12 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
-import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
+import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -30,16 +32,16 @@ import static java.util.Objects.requireNonNull;
 public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
 
   private final T tableModel;
-  private final TableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
+  private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
   private final State advancedViewState = State.state();
 
   /**
    * @param tableModel the table model
    * @param conditionPanelFactory the condition panel factory
    */
-  public FilteredTableConditionPanel(T tableModel, ConditionPanelFactory conditionPanelFactory) {
+  public FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel);
-    this.componentPanel = tableColumnComponentPanel(tableModel.columnModel(),
+    this.componentPanel = filteredTableColumnComponentPanel(tableModel.columnModel(),
             createConditionPanels(tableModel.columnModel(), requireNonNull(conditionPanelFactory)));
     setLayout(new BorderLayout());
     add(componentPanel, BorderLayout.CENTER);
@@ -62,7 +64,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   /**
    * @return the underlying component panel
    */
-  public TableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel() {
+  public FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel() {
     return componentPanel;
   }
 
@@ -133,16 +135,12 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
     componentPanel.columnComponents().forEach((column, panel) -> panel.setAdvancedView(advanced));
   }
 
-  private Map<FilteredTableColumn<C>, ColumnConditionPanel<C, ?>> createConditionPanels(
-          FilteredTableColumnModel<C> columnModel, ConditionPanelFactory conditionPanelFactory) {
-    Map<FilteredTableColumn<C>, ColumnConditionPanel<C, ?>> conditionPanels = new HashMap<>();
-    columnModel.columns().forEach(column -> {
-      ColumnConditionPanel<C, Object> conditionPanel = conditionPanelFactory.createConditionPanel(column);
-      if (conditionPanel != null) {
-        conditionPanels.put(column, conditionPanel);
-      }
-    });
-
-    return conditionPanels;
+  private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
+          FilteredTableColumnModel<C> columnModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    return columnModel.columns().stream()
+            .map(column -> tableModel.filterModel().columnFilterModels().get(column.getIdentifier()))
+            .filter(Objects::nonNull)
+            .map(conditionPanelFactory::createConditionPanel)
+            .collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
   }
 }

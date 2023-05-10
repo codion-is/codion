@@ -8917,3 +8917,9 @@
   EntityTablePanel, create prefix removed from factory methods
   EntityTablePanel.includeUpdateSelectedControls() now takes excluded attributes into account
   Completion, text selection on focus gained/lost improved
+  DefaultEntity.deepCopy() bug fixed, no longer blows up on cyclical foreign keys
+  FilteredTableFilterModel extracted from FilteredTableModel, related refactoring and renaming
+  ColumnConditionPanel.Factory replacing ConditionPanelFactory
+  TableColumnComponentPanel refactored
+  TableColumnComponentPanel renamed to FilteredTableColumnComponentPanel
+  TableCellRendererFactory renamed to FilteredTableCellRendererFactory

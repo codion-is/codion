@@ -22,7 +22,7 @@ import java.util.function.Supplier;
  * in a table model and searching functionality, which refers to configuring the underlying query,
  * which then needs to be re-run.<br>
  * Factory for {@link EntityTableConditionModel} instances via
- * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, FilterModelFactory, ConditionModelFactory)}
+ * {@link EntityTableConditionModel#entityTableConditionModel(EntityType, EntityConnectionProvider, ColumnConditionModel.Factory)}
  */
 public interface EntityTableConditionModel {
 
@@ -47,15 +47,6 @@ public interface EntityTableConditionModel {
   <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * Sets the condition value of the filter model associated with {@code attribute}.
-   * Enables the condition model in case {@code values} is non-empty or disables it if {@code values is empty}.
-   * @param attribute the attribute
-   * @param value the condition value
-   * @param <T> the value type
-   */
-  <T> void setEqualFilterValue(Attribute<T> attribute, Comparable<T> value);
-
-  /**
    * @return the current condition based on the state of the underlying condition models
    */
   Condition condition();
@@ -75,13 +66,13 @@ public interface EntityTableConditionModel {
   /**
    * @return true if any of the underlying condition models are enabled
    */
-  boolean isConditionEnabled();
+  boolean isEnabled();
 
   /**
    * @param attribute the column attribute
    * @return true if the {@link ColumnConditionModel} associated with the given attribute is enabled
    */
-  boolean isConditionEnabled(Attribute<?> attribute);
+  boolean isEnabled(Attribute<?> attribute);
 
   /**
    * @return the conjunction to be used when multiple column condition are active,
@@ -115,60 +106,27 @@ public interface EntityTableConditionModel {
    * Clears the search state of all the condition models, disables them and
    * resets the operator to {@link Operator#EQUAL}
    */
-  void clearConditions();
-
-  /**
-   * @return an unmodifiable map containing the filter models available in this table condition model, mapped to their respective attributes
-   */
-  Map<Attribute<?>, ColumnConditionModel<? extends Attribute<?>, ?>> filterModels();
-
-  /**
-   * The filter model associated with {@code attribute}
-   * @param <C> the attribute type
-   * @param <T> the column value type
-   * @param attribute the attribute for which to retrieve the {@link ColumnConditionModel}
-   * @return the {@link ColumnConditionModel} for the {@code attribute}
-   * @throws IllegalArgumentException in case no filter model exists for the given attribute
-   */
-  <C extends Attribute<T>, T> ColumnConditionModel<C, T> filterModel(C attribute);
-
-  /**
-   * Clears the search state of all the filter models, disables them and
-   * resets the operator to {@link Operator#EQUAL}
-   */
-  void clearFilters();
-
-  /**
-   * @return true if any of the underlying filter models are enabled
-   */
-  boolean isFilterEnabled();
-
-  /**
-   * @param attribute column attribute
-   * @return true if the filter model behind column with index {@code columnIndex} is enabled
-   */
-  boolean isFilterEnabled(Attribute<?> attribute);
+  void clear();
 
   /**
    * @param listener a listener notified each time the search condition changes
    */
-  void addConditionChangedListener(EventDataListener<Condition> listener);
+  void addChangeListener(EventDataListener<Condition> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeConditionChangedListener(EventDataListener<Condition> listener);
+  void removeChangeListener(EventDataListener<Condition> listener);
 
   /**
    * Creates a new {@link EntityTableConditionModel}
    * @param entityType the underlying entity type
    * @param connectionProvider a EntityConnectionProvider instance
-   * @param filterModelFactory provides the column filter models for this table condition model, null if not required
    * @param conditionModelFactory provides the column condition models for this table condition model
    * @return a new {@link EntityTableConditionModel} instance
    */
   static EntityTableConditionModel entityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                                             FilterModelFactory filterModelFactory, ConditionModelFactory conditionModelFactory) {
-    return new DefaultEntityTableConditionModel(entityType, connectionProvider, filterModelFactory, conditionModelFactory);
+                                                             ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+    return new DefaultEntityTableConditionModel(entityType, connectionProvider, conditionModelFactory);
   }
 }

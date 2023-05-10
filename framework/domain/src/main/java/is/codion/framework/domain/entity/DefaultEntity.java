@@ -295,15 +295,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Entity deepCopy() {
-    Entity copy = copy();
-    for (ForeignKey foreignKey : definition.foreignKeys()) {
-      Entity foreignKeyValue = copy.get(foreignKey);
-      if (foreignKeyValue != null) {
-        copy.put(foreignKey, foreignKeyValue.deepCopy());
-      }
-    }
-
-    return copy;
+    return deepCopy(new HashMap<Key, Entity>());
   }
 
   @Override
@@ -767,6 +759,25 @@ final class DefaultEntity implements Entity, Serializable {
 
   private boolean isModifiedInternal(Attribute<?> attribute) {
     return originalValues != null && originalValues.containsKey(attribute);
+  }
+
+  /**
+   * Watching out for cyclical foreign key values
+   * @param copiedEntities entities that have already been copied
+   * @return a deep copy of this entity
+   */
+  private Entity deepCopy(Map<Key, Entity> copiedEntities) {
+    Entity copy = copy();
+    copiedEntities.put(copy.primaryKey(), copy);
+    for (ForeignKey foreignKey : definition.foreignKeys()) {
+      Entity foreignKeyValue = copy.get(foreignKey);
+      if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
+        copy.put(foreignKey, copiedEntities.computeIfAbsent(foreignKeyValue.primaryKey(),
+                k -> ((DefaultEntity) foreignKeyValue).deepCopy(copiedEntities)));
+      }
+    }
+
+    return copy;
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {

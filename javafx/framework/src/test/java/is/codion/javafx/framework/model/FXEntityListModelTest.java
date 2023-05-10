@@ -148,7 +148,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
     FXEntityListModel tableModel = createEmployeeTableModel();
     assertTrue(tableModel.isListenToEditEvents());
-    tableModel.tableConditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
+    tableModel.conditionModel().conditionModel(Employee.DEPARTMENT_FK).setEqualValue(researchDept);
     tableModel.refresh();
 
     tableModel.items().forEach(emp ->
