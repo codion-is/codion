@@ -148,6 +148,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
             .map(column -> tableModel.filterModel().columnFilterModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
             .map(conditionPanelFactory::createConditionPanel)
+            .filter(Objects::nonNull)
             .collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
   }
 }
