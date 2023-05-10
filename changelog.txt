@@ -8887,3 +8887,4 @@
   TableCellRendererFactory renamed to FilteredTableCellRendererFactory
   FrameworkIcons refactored
   FilteredTableConditionPanel constructor now private, factory method added
+  DefaultEntity.deepCopy() bug fixed, can't use computeIfAbsent()
