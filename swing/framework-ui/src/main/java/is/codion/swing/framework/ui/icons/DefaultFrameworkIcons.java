@@ -22,7 +22,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
   private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
-  private static FrameworkIcons INSTANCE;
+  private static FrameworkIcons instance;
 
   private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
   private final Map<Integer, FontImageIcon> logos = new HashMap<>();
@@ -175,11 +175,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   }
 
   static FrameworkIcons instance() {
-    if (INSTANCE == null) {
-      INSTANCE = createInstance();
+    if (instance == null) {
+      instance = createInstance();
     }
 
-    return INSTANCE;
+    return instance;
   }
 
   private static FrameworkIcons createInstance() {

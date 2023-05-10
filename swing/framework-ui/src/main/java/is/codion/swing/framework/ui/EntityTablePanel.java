@@ -255,11 +255,11 @@ public class EntityTablePanel extends JPanel {
 
   private final JScrollPane tableScrollPane;
 
-  private final FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> conditionPanel;
+  private final FilteredTableConditionPanel<Attribute<?>> conditionPanel;
 
   private final JScrollPane conditionPanelScrollPane;
 
-  private final FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> filterPanel;
+  private final FilteredTableConditionPanel<Attribute<?>> filterPanel;
 
   private final JScrollPane filterPanelScrollPane;
 
@@ -362,7 +362,7 @@ public class EntityTablePanel extends JPanel {
    * @param conditionPanel the condition panel, if any
    */
   public EntityTablePanel(SwingEntityTableModel tableModel,
-                          FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> conditionPanel) {
+                          FilteredTableConditionPanel<Attribute<?>> conditionPanel) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
     this.conditionRefreshControl = createConditionRefreshControl();
@@ -1716,7 +1716,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final void selectConditionPanel(FilteredTableConditionPanel<?, Attribute<?>> tableConditionPanel,
+  private static final void selectConditionPanel(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
                                                  JScrollPane conditionPanelScrollPane, State conditionPanelVisibleState,
                                                  SwingEntityTableModel tableModel, JComponent dialogOwner, String dialogTitle) {
     if (tableConditionPanel != null) {
@@ -1756,7 +1756,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static void addRefreshOnEnterControl(Collection<FilteredTableColumn<Attribute<?>>> columns,
-                                               FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> tableConditionPanel,
+                                               FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
                                                Control refreshControl) {
     columns.forEach(column -> {
       ColumnConditionPanel<?, ?> columnConditionPanel =

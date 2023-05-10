@@ -633,11 +633,11 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> attribute = column.attribute();
       int index = columns.indexOf(column);
-      ColumnConditionModel<?, ?> conditionModel = this.conditionModel.conditionModels().get(attribute);
-      ConditionPreferences conditionPreferences = conditionModel != null ?
-              conditionPreferences(conditionModel.autoEnableState().get(),
-                      conditionModel.caseSensitiveState().get(),
-                      conditionModel.automaticWildcardValue().get()) : null;
+      ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
+      ConditionPreferences conditionPreferences = columnConditionModel != null ?
+              conditionPreferences(columnConditionModel.autoEnableState().get(),
+                      columnConditionModel.caseSensitiveState().get(),
+                      columnConditionModel.automaticWildcardValue().get()) : null;
       ColumnPreferences columnPreferences = columnPreferences(attribute, index, (int) column.getWidth(), conditionPreferences);
       columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }

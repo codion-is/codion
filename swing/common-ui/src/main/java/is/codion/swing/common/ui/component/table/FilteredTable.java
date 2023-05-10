@@ -155,7 +155,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * The filter condition panel
    */
-  private FilteredTableConditionPanel<T, C> conditionPanel;
+  private FilteredTableConditionPanel<C> conditionPanel;
 
   /**
    * the action performed when the table is double-clicked
@@ -218,7 +218,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * @return the condition panel
    */
-  public FilteredTableConditionPanel<T, C> conditionPanel() {
+  public FilteredTableConditionPanel<C> conditionPanel() {
     if (conditionPanel == null) {
       conditionPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
     }
