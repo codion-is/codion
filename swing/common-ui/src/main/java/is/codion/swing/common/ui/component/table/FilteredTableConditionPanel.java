@@ -22,7 +22,7 @@ import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
-import static is.codion.swing.common.ui.component.table.TableColumnComponentPanel.tableColumnComponentPanel;
+import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
 public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
 
   private final T tableModel;
-  private final TableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
+  private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
   private final State advancedViewState = State.state();
 
   /**
@@ -41,7 +41,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
    */
   public FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel);
-    this.componentPanel = tableColumnComponentPanel(tableModel.columnModel(),
+    this.componentPanel = filteredTableColumnComponentPanel(tableModel.columnModel(),
             createConditionPanels(tableModel.columnModel(), requireNonNull(conditionPanelFactory)));
     setLayout(new BorderLayout());
     add(componentPanel, BorderLayout.CENTER);
@@ -64,7 +64,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   /**
    * @return the underlying component panel
    */
-  public TableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel() {
+  public FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel() {
     return componentPanel;
   }
 

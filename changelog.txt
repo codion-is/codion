@@ -8883,3 +8883,5 @@
   FilteredTableFilterModel extracted from FilteredTableModel, related refactoring and renaming
   ColumnConditionPanel.Factory replacing ConditionPanelFactory
   TableColumnComponentPanel refactored
+  TableColumnComponentPanel renamed to FilteredTableColumnComponentPanel
+  TableCellRendererFactory renamed to FilteredTableCellRendererFactory

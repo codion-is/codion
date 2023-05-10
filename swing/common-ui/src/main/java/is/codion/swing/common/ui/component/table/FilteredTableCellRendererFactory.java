@@ -10,7 +10,7 @@ import javax.swing.table.TableCellRenderer;
 /**
  * A factory for {@link TableCellRenderer} instances.
  */
-public interface TableCellRendererFactory<C> {
+public interface FilteredTableCellRendererFactory<C> {
 
   /**
    * @param column the column

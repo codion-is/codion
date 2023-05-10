@@ -178,7 +178,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
   private FilteredTable(T tableModel,
                         ColumnConditionPanel.Factory<C> conditionPanelFactory,
-                        TableCellRendererFactory<C> cellRendererFactory) {
+                        FilteredTableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
@@ -588,7 +588,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             .build();
   }
 
-  private void configureColumn(FilteredTableColumn<C> column, TableCellRendererFactory<C> rendererFactory) {
+  private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
     column.setHeaderRenderer(new SortableHeaderRenderer(column.getHeaderRenderer()));
     column.setCellRenderer(rendererFactory.tableCellRenderer(column));
   }
@@ -824,7 +824,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
      * @param cellRendererFactory the table cell renderer factory
      * @return this builder instance
      */
-    Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory);
+    Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory);
 
     /**
      * @param autoStartsEdit true if editing should start automatically
@@ -891,7 +891,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     private final T tableModel;
 
     private ColumnConditionPanel.Factory<C> conditionPanelFactory;
-    private TableCellRendererFactory<C> cellRendererFactory;
+    private FilteredTableCellRendererFactory<C> cellRendererFactory;
     private boolean autoStartsEdit = false;
     private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
     private Action doubleClickAction;
@@ -905,7 +905,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     private DefaultBuilder(T tableModel) {
       this.tableModel = requireNonNull(tableModel);
       this.conditionPanelFactory = new DefaultFilterPanelFactory<>();
-      this.cellRendererFactory = new DefaultTableCellRendererFactory<>(tableModel);
+      this.cellRendererFactory = new DefaultFilteredTableCellRendererFactory<>(tableModel);
     }
 
     @Override
@@ -915,7 +915,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     @Override
-    public Builder<T, R, C> cellRendererFactory(TableCellRendererFactory<C> cellRendererFactory) {
+    public Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory) {
       this.cellRendererFactory = requireNonNull(cellRendererFactory);
       return this;
     }
@@ -1058,11 +1058,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
   }
 
-  private static final class DefaultTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C> implements TableCellRendererFactory<C> {
+  private static final class DefaultFilteredTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C>
+          implements FilteredTableCellRendererFactory<C> {
 
     private final T tableModel;
 
-    private DefaultTableCellRendererFactory(T tableModel) {
+    private DefaultFilteredTableCellRendererFactory(T tableModel) {
       this.tableModel = tableModel;
     }
 

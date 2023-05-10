@@ -18,7 +18,7 @@ import static is.codion.swing.common.model.component.table.FilteredTableColumn.f
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class TableColumnComponentPanelTest {
+public class FilteredTableColumnComponentPanelTest {
 
   private final FilteredTableColumn<Integer> column0 = filteredTableColumn(0);
   private final FilteredTableColumn<Integer> column1 = filteredTableColumn(1);
@@ -41,7 +41,7 @@ public class TableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(3, new JPanel());
-    assertThrows(IllegalArgumentException.class, () -> TableColumnComponentPanel.tableColumnComponentPanel(columnModel, columnComponents));
+    assertThrows(IllegalArgumentException.class, () -> FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, columnComponents));
   }
 
   @Test
@@ -61,7 +61,7 @@ public class TableColumnComponentPanelTest {
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
-    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     assertTrue(panel.columnComponents().containsKey(1));
 
     assertNull(panel.columnComponents().get(1).getParent());
@@ -88,7 +88,7 @@ public class TableColumnComponentPanelTest {
               }
             });
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
-    TableColumnComponentPanel<Integer, JPanel> panel = TableColumnComponentPanel.tableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
+    FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
     assertEquals(100, panel.columnComponents().get(0).getPreferredSize().width);
     column1.setWidth(90);

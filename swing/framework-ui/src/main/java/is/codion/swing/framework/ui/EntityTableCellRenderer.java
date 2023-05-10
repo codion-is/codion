@@ -9,7 +9,8 @@ import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Build
 import is.codion.swing.framework.model.SwingEntityTableModel;
 
 /**
- * Provides TableCellRenderer implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Attribute)}.
+ * Provides {@link is.codion.swing.common.ui.component.table.FilteredTableCellRenderer}
+ * implementations for EntityTablePanels via {@link #builder(SwingEntityTableModel, Attribute)}.
  */
 public interface EntityTableCellRenderer {
 

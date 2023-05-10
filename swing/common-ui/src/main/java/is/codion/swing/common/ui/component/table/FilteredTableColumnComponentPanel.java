@@ -33,11 +33,11 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A panel that synchronizes child component sizes and positions to table columns.
- * For instances use the {@link #tableColumnComponentPanel(FilteredTableColumnModel, Map)} factory method.
+ * For instances use the {@link #filteredTableColumnComponentPanel(FilteredTableColumnModel, Map)} factory method.
  * @param <T> the component type
- * @see #tableColumnComponentPanel(FilteredTableColumnModel, Map)
+ * @see #filteredTableColumnComponentPanel(FilteredTableColumnModel, Map)
  */
-public final class TableColumnComponentPanel<C, T extends JComponent> extends JPanel {
+public final class FilteredTableColumnComponentPanel<C, T extends JComponent> extends JPanel {
 
   private final FilteredTableColumnModel<C> columnModel;
   private final Collection<FilteredTableColumn<C>> columns;
@@ -46,7 +46,7 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
   private final Map<C, T> columnComponents;
   private final Map<C, JPanel> nullComponents = new HashMap<>(0);
 
-  private TableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> columnComponents) {
+  private FilteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel, Map<C, T> columnComponents) {
     this.columnModel = requireNonNull(columnModel);
     this.columns = columnModel.columns();
     requireNonNull(columnComponents).forEach((columnIdentifier, component) -> {
@@ -86,21 +86,21 @@ public final class TableColumnComponentPanel<C, T extends JComponent> extends JP
   }
 
   /**
-   * Instantiates a new {@link TableColumnComponentPanel}.
+   * Instantiates a new {@link FilteredTableColumnComponentPanel}.
    * @param columnModel the column model
    * @param columnComponents the column components mapped to their respective column
    * @param <C> the column identifier type
    * @param <T> the component type
-   * @return a new {@link TableColumnComponentPanel}
+   * @return a new {@link FilteredTableColumnComponentPanel}
    */
-  public static <C, T extends JComponent> TableColumnComponentPanel<C, T> tableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
-                                                                                                    Map<C, T> columnComponents) {
-    return new TableColumnComponentPanel<>(columnModel, columnComponents);
+  public static <C, T extends JComponent> FilteredTableColumnComponentPanel<C, T> filteredTableColumnComponentPanel(FilteredTableColumnModel<C> columnModel,
+                                                                                                                    Map<C, T> columnComponents) {
+    return new FilteredTableColumnComponentPanel<>(columnModel, columnComponents);
   }
 
   private void resetPanel() {
     Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    if (Utilities.getParentOfType(TableColumnComponentPanel.class, focusOwner) != null) {
+    if (Utilities.getParentOfType(FilteredTableColumnComponentPanel.class, focusOwner) != null) {
       basePanel.requestFocusInWindow();
     }
     basePanel.removeAll();
