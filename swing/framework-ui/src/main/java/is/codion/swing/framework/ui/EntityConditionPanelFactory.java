@@ -6,10 +6,10 @@ package is.codion.swing.framework.ui;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntitySearchModelConditionModel;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
@@ -42,10 +42,10 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
 
   /**
    * Instantiates a new {@link EntityConditionPanelFactory}
-   * @param tableConditionModel the table condition model
+   * @param entityDefinition the entity definition
    */
-  public EntityConditionPanelFactory(EntityTableConditionModel tableConditionModel) {
-    this.entityComponents = new EntityComponents(tableConditionModel.entityDefinition());
+  public EntityConditionPanelFactory(EntityDefinition entityDefinition) {
+    this.entityComponents = new EntityComponents(entityDefinition);
   }
 
   @Override

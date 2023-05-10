@@ -12,6 +12,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -32,7 +33,7 @@ public class DefaultEntityTableConditionModelTest {
           .user(UNIT_TEST_USER)
           .build();
 
-  private final EntityTableConditionModel conditionModel = new DefaultEntityTableConditionModel(Employee.TYPE,
+  private final EntityTableConditionModel<Attribute<?>> conditionModel = new DefaultEntityTableConditionModel<>(Employee.TYPE,
           CONNECTION_PROVIDER, new DefaultConditionModelFactory(CONNECTION_PROVIDER));
 
   @Test
@@ -51,11 +52,11 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void noSearchPropertiesDefined() {
-    DefaultEntityTableConditionModel model = new DefaultEntityTableConditionModel(Detail.TYPE,
+    DefaultEntityTableConditionModel<Attribute<?>> model = new DefaultEntityTableConditionModel<>(Detail.TYPE,
             CONNECTION_PROVIDER, new DefaultConditionModelFactory(CONNECTION_PROVIDER));
     //no search properties defined for master entity
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
-            model.conditionModel(Detail.MASTER_FK);
+            model.attributeModel(Detail.MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
             ((EntitySearchModelConditionModel) masterModel).entitySearchModel().performQuery());
   }
@@ -78,8 +79,8 @@ public class DefaultEntityTableConditionModelTest {
     boolean searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
     assertTrue(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
-    ColumnConditionModel<? extends Attribute<Entity>, Entity> deptModel =
-            conditionModel.conditionModel(Employee.DEPARTMENT_FK);
+    ColumnConditionModel<ForeignKey, Entity> deptModel =
+            conditionModel.attributeModel(Employee.DEPARTMENT_FK);
     assertTrue(deptModel.getEqualValues().contains(sales));
     assertTrue(deptModel.getEqualValues().contains(accounting));
     searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, null);
@@ -104,7 +105,7 @@ public class DefaultEntityTableConditionModelTest {
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
-    ColumnConditionModel<?, String> nameConditionModel = conditionModel.conditionModel(Employee.NAME);
+    ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
     conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
     assertNotNull(conditionModel.getAdditionalConditionSupplier());

@@ -1,17 +1,18 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.model.component.table;
+package is.codion.common.model.table;
 
 import is.codion.common.event.EventListener;
-import is.codion.common.model.table.ColumnConditionModel;
 
+import java.util.Collection;
 import java.util.Map;
 
 /**
  * @param <C> the column identifier type
+ * @see #tableConditionModel(Collection)
  */
-public interface FilteredTableFilterModel<C> {
+public interface TableConditionModel<C> {
 
   /**
    * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective column identifiers
@@ -25,16 +26,7 @@ public interface FilteredTableFilterModel<C> {
    * @return the {@link ColumnConditionModel} for the {@code columnIdentifier}
    * @throws IllegalArgumentException in case no condition model exists for the given columnIdentifier
    */
-  <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier);
-
-  /**
-   * Sets the condition value of the filter model associated with {@code columnIdentifier}.
-   * Enables the condition model in case {@code values} is non-empty or disables it if {@code values is empty}.
-   * @param columnIdentifier the column identifier
-   * @param value the condition value
-   * @param <T> the value type
-   */
-  <T> void setEqualFilterValue(C columnIdentifier, Comparable<T> value);
+  <T> ColumnConditionModel<? extends C, T> conditionModel(C columnIdentifier);
 
   /**
    * Clears the search state of all the filter models, disables them and
@@ -62,4 +54,14 @@ public interface FilteredTableFilterModel<C> {
    * @param listener the listener to remove
    */
   void removeChangeListener(EventListener listener);
+
+  /**
+   * Instantiates a new {@link TableConditionModel}
+   * @param conditionModel the condition model
+   * @return a new {@link TableConditionModel}
+   * @param <C> the column identifier type
+   */
+  static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModel) {
+    return new DefaultTableConditionModel<>(conditionModel);
+  }
 }

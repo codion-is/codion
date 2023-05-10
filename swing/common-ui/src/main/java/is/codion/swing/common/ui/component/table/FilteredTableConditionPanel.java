@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -27,18 +28,19 @@ import static java.util.Objects.requireNonNull;
 /**
  * Contains the filter panels.
  * @param <C> the column identifier type
- * @see #filteredTableConditionPanel(FilteredTableModel, ColumnConditionPanel.Factory)
+ * @see #filteredTableConditionPanel(TableConditionModel, FilteredTableColumnModel, ColumnConditionPanel.Factory)
  */
 public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
 
-  private final T tableModel;
+  private final TableConditionModel<C> conditionModel;
   private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
   private final State advancedViewState = State.state();
 
-  private FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-    this.tableModel = requireNonNull(tableModel);
-    this.componentPanel = filteredTableColumnComponentPanel(tableModel.columnModel(),
-            createConditionPanels(tableModel.columnModel(), requireNonNull(conditionPanelFactory)));
+  private FilteredTableConditionPanel(TableConditionModel<C> conditionModel, FilteredTableColumnModel<C> columnModel,
+                                      ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    this.conditionModel = requireNonNull(conditionModel);
+    this.componentPanel = filteredTableColumnComponentPanel(requireNonNull(columnModel),
+            createConditionPanels(columnModel, requireNonNull(conditionPanelFactory)));
     setLayout(new BorderLayout());
     add(componentPanel, BorderLayout.CENTER);
     advancedViewState.addDataListener(this::setAdvancedView);
@@ -48,13 +50,6 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(componentPanel);
-  }
-
-  /**
-   * @return the table model
-   */
-  public T tableModel() {
-    return tableModel;
   }
 
   /**
@@ -122,13 +117,15 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   /**
    * @param <T> the table model type
    * @param <C> the column identifier type
-   * @param tableModel the table model
+   * @param conditionModel the condition model
+   * @param columnModel the column model
    * @param conditionPanelFactory the condition panel factory
    * @return a new {@link FilteredTableConditionPanel}
    */
-  public static <T extends FilteredTableModel<?, C>, C> FilteredTableConditionPanel<T, C> filteredTableConditionPanel(
-          T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-    return new FilteredTableConditionPanel<>(tableModel, conditionPanelFactory);
+  public static <T extends FilteredTableModel<?, C>, C> FilteredTableConditionPanel<T, C> filteredTableConditionPanel(TableConditionModel<C> conditionModel,
+                                                                                                                      FilteredTableColumnModel<C> columnModel,
+                                                                                                                      ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    return new FilteredTableConditionPanel<>(conditionModel, columnModel, conditionPanelFactory);
   }
 
   private void clearConditions() {
@@ -144,7 +141,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
           FilteredTableColumnModel<C> columnModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     return columnModel.columns().stream()
-            .map(column -> tableModel.filterModel().conditionModels().get(column.getIdentifier()))
+            .map(column -> conditionModel.conditionModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
             .map(conditionPanelFactory::createConditionPanel)
             .filter(Objects::nonNull)

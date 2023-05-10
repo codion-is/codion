@@ -160,7 +160,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
    */
-  EntityTableConditionModel conditionModel();
+  EntityTableConditionModel<Attribute<?>> conditionModel();
 
   /**
    * @return true if this table model is editable

@@ -352,8 +352,8 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(requireNonNull(tableModel), filteredTableConditionPanel(tableModel,
-            new EntityConditionPanelFactory(tableModel.conditionModel())));
+    this(requireNonNull(tableModel), filteredTableConditionPanel(tableModel.conditionModel(),
+            tableModel.columnModel(), new EntityConditionPanelFactory(tableModel.entityDefinition())));
   }
 
   /**
