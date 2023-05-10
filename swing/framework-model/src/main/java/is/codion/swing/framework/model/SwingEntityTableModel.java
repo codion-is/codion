@@ -1111,7 +1111,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     if (columnConditionModel != null && !columnConditionModel.isLocked()) {
       columnConditionModel.setEnabled(false);
     }
-    ColumnConditionModel<?, ?> filterModel = filterModel().columnFilterModels().get(attribute);
+    ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
     if (filterModel != null && !filterModel.isLocked()) {
       filterModel.setEnabled(false);
     }

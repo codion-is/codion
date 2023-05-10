@@ -16,7 +16,7 @@ public interface FilteredTableFilterModel<C> {
   /**
    * @return an unmodifiable map containing the condition models available in this table condition model, mapped to their respective column identifiers
    */
-  Map<C, ColumnConditionModel<C, ?>> columnFilterModels();
+  Map<C, ColumnConditionModel<C, ?>> conditionModels();
 
   /**
    * The filter model associated with {@code columnIdentifier}
@@ -25,7 +25,7 @@ public interface FilteredTableFilterModel<C> {
    * @return the {@link ColumnConditionModel} for the {@code columnIdentifier}
    * @throws IllegalArgumentException in case no condition model exists for the given columnIdentifier
    */
-  <T> ColumnConditionModel<C, T> columnFilterModel(C columnIdentifier);
+  <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier);
 
   /**
    * Sets the condition value of the filter model associated with {@code columnIdentifier}.

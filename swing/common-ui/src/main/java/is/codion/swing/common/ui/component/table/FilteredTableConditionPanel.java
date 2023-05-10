@@ -120,6 +120,8 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   }
 
   /**
+   * @param <T> the table model type
+   * @param <C> the column identifier type
    * @param tableModel the table model
    * @param conditionPanelFactory the condition panel factory
    * @return a new {@link FilteredTableConditionPanel}
@@ -142,7 +144,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
           FilteredTableColumnModel<C> columnModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     return columnModel.columns().stream()
-            .map(column -> tableModel.filterModel().columnFilterModels().get(column.getIdentifier()))
+            .map(column -> tableModel.filterModel().conditionModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
             .map(conditionPanelFactory::createConditionPanel)
             .filter(Objects::nonNull)

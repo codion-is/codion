@@ -291,7 +291,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
      * @return a shaded background color
      */
     protected Color backgroundColorShaded(T tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
-      ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().columnFilterModels().get(columnIdentifier);
+      ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(columnIdentifier);
       boolean filterEnabled = filterModel != null && filterModel.isEnabled();
       if (filterEnabled) {
         return backgroundShaded(row, cellBackgroundColor);

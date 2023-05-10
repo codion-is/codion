@@ -8892,3 +8892,4 @@
   EntityTablePanel.addRefreshOnEnterControl() bug fixed
   ColumnConditionPanel.BoundFieldFactory.supportsType() added
   ColumnConditionPanel.columnConditionPanel() now returns null in case the type is not supported
+  FilteredTableFilterModel.columnFilterModel() renamed conditionModel()
