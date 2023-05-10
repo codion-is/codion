@@ -8885,3 +8885,4 @@
   TableColumnComponentPanel refactored
   TableColumnComponentPanel renamed to FilteredTableColumnComponentPanel
   TableCellRendererFactory renamed to FilteredTableCellRendererFactory
+  FrameworkIcons refactored

@@ -12,13 +12,12 @@ import org.kordamp.ikonli.Ikon;
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import java.awt.Color;
-import java.util.Objects;
-import java.util.ServiceLoader;
 
 /**
  * Provides icons for framework ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add custom icons via {@link #addIcons(Ikon...)} (Ikon)} and retrieve them via {@link #getIcon(Ikon)}.
+ * Add custom icons via {@link #add(Ikon...)} (Ikon)} and retrieve them via {@link #icon(Ikon)}.
+ * @see #instance()
  */
 public interface FrameworkIcons extends Logos {
 
@@ -150,20 +149,20 @@ public interface FrameworkIcons extends Logos {
   ImageIcon logo(int size);
 
   /**
-   * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #getIcon(Ikon)}.
+   * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.
    * @param ikons the ikons to add
    * @throws IllegalArgumentException in case an icon has already been associated with any of the given ikons
    */
-  void addIcons(Ikon... ikons);
+  void add(Ikon... ikons);
 
   /**
    * Retrieves the ImageIcon associated with the given ikon from this FrameworkIcons instance.
    * @param ikon the ikon
    * @return the ImageIcon associated with the given ikon
    * @throws IllegalArgumentException in case no icon has been associated with the given ikon
-   * @see #addIcons(Ikon...)
+   * @see #add(Ikon...)
    */
-  ImageIcon getIcon(Ikon ikon);
+  ImageIcon icon(Ikon ikon);
 
   /**
    * @return a {@link FrameworkIcons} implementation of the type specified by
@@ -171,14 +170,6 @@ public interface FrameworkIcons extends Logos {
    * @throws IllegalArgumentException in case no such implementation is found
    */
   static FrameworkIcons instance() {
-    String iconsClassName = FRAMEWORK_ICONS_CLASSNAME.get();
-    ServiceLoader<FrameworkIcons> loader = ServiceLoader.load(FrameworkIcons.class);
-    for (FrameworkIcons icons : loader) {
-      if (Objects.equals(icons.getClass().getName(), iconsClassName)) {
-        return icons;
-      }
-    }
-
-    throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
+    return DefaultFrameworkIcons.instance();
   }
 }
