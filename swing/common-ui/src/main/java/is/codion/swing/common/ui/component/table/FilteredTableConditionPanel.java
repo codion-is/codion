@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Utilities;
@@ -79,13 +78,12 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
    * @throws IllegalArgumentException in case no condition panel exists for the given column
    */
   public <T> ColumnConditionPanel<C, T> conditionPanel(C columnIdentifier) {
-    for (FilteredTableColumn<C> column : tableModel.columnModel().columns()) {
-      if (column.getIdentifier().equals(columnIdentifier)) {
-        return (ColumnConditionPanel<C, T>) componentPanel.columnComponents().get(column);
-      }
+    ColumnConditionPanel<C, ?> conditionPanel = componentPanel.columnComponents().get(requireNonNull(columnIdentifier));
+    if (conditionPanel == null) {
+      throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
     }
 
-    throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
+    return (ColumnConditionPanel<C, T>) conditionPanel;
   }
 
   /**
@@ -132,8 +130,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   }
 
   private void clearConditions() {
-    componentPanel.columnComponents().values().
-            stream()
+    componentPanel.columnComponents().values().stream()
             .map(ColumnConditionPanel::model)
             .forEach(ColumnConditionModel::clearCondition);
   }

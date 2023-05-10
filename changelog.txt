@@ -8889,3 +8889,6 @@
   FilteredTableConditionPanel constructor now private, factory method added
   DefaultEntity.deepCopy() bug fixed, can't use computeIfAbsent()
   FilteredTableConditionPanel.createConditionPanels() bug fixed, did not respect null panels
+  EntityTablePanel.addRefreshOnEnterControl() bug fixed
+  ColumnConditionPanel.BoundFieldFactory.supportsType() added
+  ColumnConditionPanel.columnConditionPanel() now returns null in case the type is not supported

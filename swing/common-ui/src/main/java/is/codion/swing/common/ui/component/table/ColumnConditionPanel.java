@@ -215,11 +215,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param boundFieldFactory the input field factory
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
-   * @return a new {@link ColumnConditionPanel} instance
+   * @return a new {@link ColumnConditionPanel} instance or null if the column type is not supported
    */
   public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
                                                                        BoundFieldFactory boundFieldFactory) {
-    return new ColumnConditionPanel<>(conditionModel, boundFieldFactory);
+    if (boundFieldFactory.supportsType(conditionModel.columnClass())) {
+      return new ColumnConditionPanel<>(conditionModel, boundFieldFactory);
+    }
+
+    return null;
   }
 
   /**
@@ -234,13 +238,26 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
      * @param conditionModel the column condition model
      * @return a ColumnConditionPanel or null if none is available for the given column
      */
-     <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
+    <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
   }
 
   /**
    * Provides equal, upper and lower bound input fields for a ColumnConditionPanel
    */
   public interface BoundFieldFactory {
+
+    /**
+     * @param columnClass the column class
+     * @return true if the type is supported
+     */
+    default boolean supportsType(Class<?> columnClass) {
+      requireNonNull(columnClass);
+
+      return Arrays.asList(String.class, Boolean.class, Short.class, Integer.class, Double.class,
+                      BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
+                      LocalDateTime.class, OffsetDateTime.class)
+              .contains(columnClass);
+    }
 
     /**
      * @return the equal value field

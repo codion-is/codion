@@ -1759,7 +1759,8 @@ public class EntityTablePanel extends JPanel {
                                                FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> tableConditionPanel,
                                                Control refreshControl) {
     columns.forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel =
+              tableConditionPanel.componentPanel().columnComponents().get(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);
