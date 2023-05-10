@@ -80,6 +80,11 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
     }
 
     @Override
+    public boolean supportsType(Class<?> columnClass) {
+      return Entity.class.isAssignableFrom(requireNonNull(columnClass));
+    }
+
+    @Override
     public JComponent createEqualField() {
       return Sizes.setPreferredHeight(createForeignKeyField(), TextComponents.preferredTextFieldHeight());
     }

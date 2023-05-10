@@ -7,7 +7,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Utilities;
@@ -28,6 +27,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Contains the filter panels.
  * @param <C> the column identifier type
+ * @see #filteredTableConditionPanel(FilteredTableModel, ColumnConditionPanel.Factory)
  */
 public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
 
@@ -35,11 +35,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
   private final State advancedViewState = State.state();
 
-  /**
-   * @param tableModel the table model
-   * @param conditionPanelFactory the condition panel factory
-   */
-  public FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+  private FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel);
     this.componentPanel = filteredTableColumnComponentPanel(tableModel.columnModel(),
             createConditionPanels(tableModel.columnModel(), requireNonNull(conditionPanelFactory)));
@@ -82,13 +78,12 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
    * @throws IllegalArgumentException in case no condition panel exists for the given column
    */
   public <T> ColumnConditionPanel<C, T> conditionPanel(C columnIdentifier) {
-    for (FilteredTableColumn<C> column : tableModel.columnModel().columns()) {
-      if (column.getIdentifier().equals(columnIdentifier)) {
-        return (ColumnConditionPanel<C, T>) componentPanel.columnComponents().get(column);
-      }
+    ColumnConditionPanel<C, ?> conditionPanel = componentPanel.columnComponents().get(requireNonNull(columnIdentifier));
+    if (conditionPanel == null) {
+      throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
     }
 
-    throw new IllegalArgumentException("No condition panel available for column: " + columnIdentifier);
+    return (ColumnConditionPanel<C, T>) conditionPanel;
   }
 
   /**
@@ -124,9 +119,18 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
     advancedViewState.removeDataListener(listener);
   }
 
+  /**
+   * @param tableModel the table model
+   * @param conditionPanelFactory the condition panel factory
+   * @return a new {@link FilteredTableConditionPanel}
+   */
+  public static <T extends FilteredTableModel<?, C>, C> FilteredTableConditionPanel<T, C> filteredTableConditionPanel(
+          T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    return new FilteredTableConditionPanel<>(tableModel, conditionPanelFactory);
+  }
+
   private void clearConditions() {
-    componentPanel.columnComponents().values().
-            stream()
+    componentPanel.columnComponents().values().stream()
             .map(ColumnConditionPanel::model)
             .forEach(ColumnConditionModel::clearCondition);
   }
@@ -141,6 +145,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
             .map(column -> tableModel.filterModel().columnFilterModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
             .map(conditionPanelFactory::createConditionPanel)
+            .filter(Objects::nonNull)
             .collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
   }
 }

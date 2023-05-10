@@ -31,7 +31,7 @@ final class CityTablePanel extends ChartTablePanel {
     return Control.builder(this::fetchLocation)
             .caption("Fetch location")
             .enabledState(((CityTableModel) tableModel()).citiesWithoutLocationSelectedObserver())
-            .smallIcon(FrameworkIcons.instance().getIcon(Foundation.MAP))
+            .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
             .build();
   }
 

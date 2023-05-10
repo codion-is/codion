@@ -772,8 +772,12 @@ final class DefaultEntity implements Entity, Serializable {
     for (ForeignKey foreignKey : definition.foreignKeys()) {
       Entity foreignKeyValue = copy.get(foreignKey);
       if (foreignKeyValue instanceof DefaultEntity) {//instead of null check, since we cast
-        copy.put(foreignKey, copiedEntities.computeIfAbsent(foreignKeyValue.primaryKey(),
-                k -> ((DefaultEntity) foreignKeyValue).deepCopy(copiedEntities)));
+        Entity copiedForeignKeyValue = copiedEntities.get(foreignKeyValue.primaryKey());
+        if (copiedForeignKeyValue == null) {
+          copiedForeignKeyValue = ((DefaultEntity) foreignKeyValue).deepCopy(copiedEntities);
+          copiedEntities.put(copiedForeignKeyValue.primaryKey(), copiedForeignKeyValue);
+        }
+        copy.put(foreignKey, copiedForeignKeyValue);
       }
     }
 

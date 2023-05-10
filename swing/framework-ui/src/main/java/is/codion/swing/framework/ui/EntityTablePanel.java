@@ -89,6 +89,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
+import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -351,7 +352,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(requireNonNull(tableModel), new FilteredTableConditionPanel<>(tableModel,
+    this(requireNonNull(tableModel), filteredTableConditionPanel(tableModel,
             new EntityConditionPanelFactory(tableModel.conditionModel())));
   }
 
@@ -1758,7 +1759,8 @@ public class EntityTablePanel extends JPanel {
                                                FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> tableConditionPanel,
                                                Control refreshControl) {
     columns.forEach(column -> {
-      ColumnConditionPanel<?, ?> columnConditionPanel = tableConditionPanel.conditionPanel(column.getIdentifier());
+      ColumnConditionPanel<?, ?> columnConditionPanel =
+              tableConditionPanel.componentPanel().columnComponents().get(column.getIdentifier());
       if (columnConditionPanel != null) {
         enableRefreshOnEnterControl(columnConditionPanel.operatorComboBox(), refreshControl);
         enableRefreshOnEnterControl(columnConditionPanel.equalField(), refreshControl);

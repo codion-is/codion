@@ -37,7 +37,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   public WorldAppPanel(WorldAppModel applicationModel) {
     super(applicationModel);
-    FrameworkIcons.instance().addIcons(Foundation.MAP, Foundation.PAGE_EXPORT_CSV);
+    FrameworkIcons.instance().add(Foundation.MAP, Foundation.PAGE_EXPORT_CSV);
   }
 
   // tag::initializeEntityPanels[]
