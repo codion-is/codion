@@ -8886,3 +8886,4 @@
   TableColumnComponentPanel renamed to FilteredTableColumnComponentPanel
   TableCellRendererFactory renamed to FilteredTableCellRendererFactory
   FrameworkIcons refactored
+  FilteredTableConditionPanel constructor now private, factory method added

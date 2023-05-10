@@ -59,6 +59,7 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
+import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
@@ -219,7 +220,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    */
   public FilteredTableConditionPanel<T, C> conditionPanel() {
     if (conditionPanel == null) {
-      conditionPanel = new FilteredTableConditionPanel<>(tableModel, conditionPanelFactory);
+      conditionPanel = filteredTableConditionPanel(tableModel, conditionPanelFactory);
     }
 
     return conditionPanel;

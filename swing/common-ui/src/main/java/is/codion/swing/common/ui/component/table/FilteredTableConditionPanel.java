@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Contains the filter panels.
  * @param <C> the column identifier type
+ * @see #filteredTableConditionPanel(FilteredTableModel, ColumnConditionPanel.Factory)
  */
 public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
 
@@ -35,11 +36,7 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
   private final State advancedViewState = State.state();
 
-  /**
-   * @param tableModel the table model
-   * @param conditionPanelFactory the condition panel factory
-   */
-  public FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+  private FilteredTableConditionPanel(T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel);
     this.componentPanel = filteredTableColumnComponentPanel(tableModel.columnModel(),
             createConditionPanels(tableModel.columnModel(), requireNonNull(conditionPanelFactory)));
@@ -122,6 +119,16 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
    */
   public void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
     advancedViewState.removeDataListener(listener);
+  }
+
+  /**
+   * @param tableModel the table model
+   * @param conditionPanelFactory the condition panel factory
+   * @return a new {@link FilteredTableConditionPanel}
+   */
+  public static <T extends FilteredTableModel<?, C>, C> FilteredTableConditionPanel<T, C> filteredTableConditionPanel(
+          T tableModel, ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    return new FilteredTableConditionPanel<>(tableModel, conditionPanelFactory);
   }
 
   private void clearConditions() {
