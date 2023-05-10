@@ -57,11 +57,6 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public EntityDefinition entityDefinition() {
-    return connectionProvider.entities().definition(entityType);
-  }
-
-  @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
     Condition condition = condition();
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);

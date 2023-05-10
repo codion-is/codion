@@ -126,25 +126,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
 
   /**
-   * Adds the given entities to the bottom of this table model and then, if sorting is enabled, sorts this table model.
-   * It is recommended to only manually add entities directly to this table model after they have
-   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
-   * @param entities the entities to add
-   * @throws IllegalArgumentException in case the entities fail validation
-   */
-  void addEntitiesSorted(Collection<Entity> entities);
-
-  /**
-   * Adds the given entities to the top of this table model and then, if sorting is enabled, sorts this table model.
-   * It is recommended to only manually add entities directly to this table model after they have
-   * been inserted into the underlying table since otherwise they will disappear during the next table model refresh.
-   * @param index the index at which to add
-   * @param entities the entities to add
-   * @throws IllegalArgumentException in case the entities fail validation
-   */
-  void addEntitiesAtSorted(int index, Collection<Entity> entities);
-
-  /**
    * Replaces the given entities in this table model
    * @param entities the entities to replace
    * @throws IllegalArgumentException in case the replacement entities fail validation

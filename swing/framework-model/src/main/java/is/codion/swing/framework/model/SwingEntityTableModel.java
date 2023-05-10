@@ -185,7 +185,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.refreshCondition = conditionModel.condition();
     this.editModel = editModel;
     addEditEventListeners();
-    bindEventsInternal();
+    bindEvents();
     applyPreferences();
   }
 
@@ -401,16 +401,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final int indexOf(Key primaryKey) {
     return indexOf(entityByKey(primaryKey));
-  }
-
-  @Override
-  public final void addEntitiesSorted(Collection<Entity> entities) {
-    addEntitiesAtSorted(visibleItemCount(), entities);
-  }
-
-  @Override
-  public final void addEntitiesAtSorted(int index, Collection<Entity> entities) {
-    tableModel.addItemsAtSorted(index, entities);
   }
 
   @Override
@@ -1003,7 +993,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     UserPreferences.removeUserPreference(userPreferencesKey());
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
     addRefreshListener(this::rememberCondition);
     conditionModel.addChangeListener(condition ->
@@ -1051,7 +1041,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
           tableModel.addItemsAt(visibleItemCount(), entitiesToAdd);
           break;
         case ADD_TOP_SORTED:
-          addEntitiesAtSorted(0, entitiesToAdd);
+          tableModel.addItemsAtSorted(0, entitiesToAdd);
           break;
       }
     }

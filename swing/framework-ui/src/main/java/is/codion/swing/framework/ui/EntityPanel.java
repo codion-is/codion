@@ -290,7 +290,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -299,7 +299,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
