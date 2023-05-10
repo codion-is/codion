@@ -39,12 +39,12 @@ final class DefaultFilteredTableFilterModel<C> implements FilteredTableFilterMod
   }
 
   @Override
-  public Map<C, ColumnConditionModel<C, ?>> columnFilterModels() {
+  public Map<C, ColumnConditionModel<C, ?>> conditionModels() {
     return filterModels;
   }
 
   @Override
-  public <T> ColumnConditionModel<C, T> columnFilterModel(C columnIdentifier) {
+  public <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier) {
     ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) filterModels.get(columnIdentifier);
     if (filterModel == null) {
       throw new IllegalArgumentException("No filter model available for column: " + columnIdentifier);
