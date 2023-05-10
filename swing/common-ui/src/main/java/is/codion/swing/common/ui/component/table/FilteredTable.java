@@ -609,7 +609,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
     });
-    tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
+    tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     tableModel.addSortListener(getTableHeader()::repaint);
     addKeyListener(new MoveResizeColumnKeyListener());
@@ -634,13 +634,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return false;
   }
 
-  private void bindFilterIndicatorEvents(FilteredTableColumn<?> column) {
-    ColumnConditionModel<?, ?> model = getModel().filterModel().conditionModels().get(column.getIdentifier());
-    if (model != null) {
-      model.addEnabledListener(() -> getTableHeader().repaint());
-    }
-  }
-
   private final class SortableHeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer wrappedRenderer;
@@ -662,13 +655,13 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
-        label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+        label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 
       return component;
     }
 
-    private Icon headerRendererIcon(C columnIdentifier, int iconSizePixels) {
+    private Icon sortArrowIcon(C columnIdentifier, int iconSizePixels) {
       SortOrder sortOrder = tableModel.sortModel().sortOrder(columnIdentifier);
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
@@ -765,8 +758,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         return;
       }
 
-      JTableHeader tableHeader = (JTableHeader) e.getSource();
-      FilteredTableColumnModel<C> columnModel = (FilteredTableColumnModel<C>) tableHeader.getColumnModel();
+      FilteredTableColumnModel<C> columnModel = tableModel.columnModel();
       int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         if (!getSelectionModel().isSelectionEmpty()) {
@@ -774,7 +766,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         }
         C columnIdentifier = columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
-          FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
+          FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
           SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier), e.isShiftDown());
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, nextSortOrder);
