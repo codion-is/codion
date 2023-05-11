@@ -175,7 +175,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
     this.editModel = requireNonNull(editModel);
-    this.tableModel = new EntityFilteredTableModel();
+    this.tableModel = new EntityFilteredTableModel(this);
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     addEditEventListeners();
@@ -1181,25 +1181,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private static Collection<ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityFilterModelFactory filterModelFactory) {
-    if (filterModelFactory == null) {
-      return emptyList();
-    }
-
-    Collection<ColumnConditionModel<Attribute<?>, ?>> columnConditionModels = new ArrayList<>();
-    for (Property<?> property : filterModelFactory.entityDefinition().properties()) {
-      if (!property.isHidden()) {
-        ColumnConditionModel<Attribute<?>, ?> filterModel =
-                (ColumnConditionModel<Attribute<?>, ?>) filterModelFactory.createConditionModel(property.attribute());
-        if (filterModel != null) {
-          columnConditionModels.add(filterModel);
-        }
-      }
-    }
-
-    return unmodifiableCollection(columnConditionModels);
-  }
-
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
 
     @Override
@@ -1209,53 +1190,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .forEach((entityType, entities) ->
                       entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
                               replaceForeignKeyValues(foreignKey, entities)));
-    }
-  }
-
-  private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
-
-    private final Entities entities;
-
-    private EntityColumnValueProvider(Entities entities) {
-      this.entities = entities;
-    }
-
-    @Override
-    public Class<?> columnClass(Attribute<?> attribute) {
-      return attribute.valueClass();
-    }
-
-    @Override
-    public Comparator<?> comparator(Attribute<?> attribute) {
-      if (attribute instanceof ForeignKey) {
-        return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
-      }
-
-      return entities.definition(attribute.entityType()).property(attribute).comparator();
-    }
-
-    @Override
-    public Object value(Entity entity, Attribute<?> attribute) {
-      return entity.get(attribute);
-    }
-
-    @Override
-    public String string(Entity entity, Attribute<?> attribute) {
-      return entity.toString(attribute);
-    }
-
-    @Override
-    public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
-      if (entity.isNull(attribute)) {
-        return null;
-      }
-
-      Object value = entity.get(attribute);
-      if (value instanceof Entity) {
-        return (Comparable<T>) value.toString();
-      }
-
-      return (Comparable<T>) value;
     }
   }
 
@@ -1282,18 +1216,22 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EntityFilteredTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>> {
+  private static final class EntityFilteredTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>> {
 
-    private EntityFilteredTableModel() {
-      super(createColumns(requireNonNull(editModel).entityDefinition()),
-              new EntityColumnValueProvider(editModel.entities()),
-              createFilterModels(new EntityFilterModelFactory(editModel.entityDefinition())));
+    private final SwingEntityTableModel tableModel;
+
+    private EntityFilteredTableModel(SwingEntityTableModel tableModel) {
+      super(createColumns(requireNonNull(tableModel).entityDefinition()),
+              new EntityColumnValueProvider(tableModel.entities()),
+              createFilterModels(new EntityFilterModelFactory(tableModel.entityDefinition())));
+      this.tableModel = tableModel;
     }
 
     @Override
     protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        return Optional.of(new DefaultSummaryValueProvider<>(attribute, this, entityDefinition().property(attribute).format()));
+        return Optional.of(new DefaultSummaryValueProvider<>(attribute, this,
+                tableModel.entityDefinition().property(attribute).format()));
       }
 
       return Optional.empty();
@@ -1301,12 +1239,78 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     protected Collection<Entity> refreshItems() {
-      return SwingEntityTableModel.this.refreshItems();
+      return tableModel.refreshItems();
     }
 
     @Override
     protected boolean validItem(Entity item) {
-      return item.type().equals(editModel.entityType());
+      return item.type().equals(tableModel.entityType());
+    }
+
+    private static Collection<ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityFilterModelFactory filterModelFactory) {
+      if (filterModelFactory == null) {
+        return emptyList();
+      }
+
+      Collection<ColumnConditionModel<Attribute<?>, ?>> columnConditionModels = new ArrayList<>();
+      for (Property<?> property : filterModelFactory.entityDefinition().properties()) {
+        if (!property.isHidden()) {
+          ColumnConditionModel<Attribute<?>, ?> filterModel =
+                  (ColumnConditionModel<Attribute<?>, ?>) filterModelFactory.createConditionModel(property.attribute());
+          if (filterModel != null) {
+            columnConditionModels.add(filterModel);
+          }
+        }
+      }
+
+      return unmodifiableCollection(columnConditionModels);
+    }
+
+    private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
+
+      private final Entities entities;
+
+      private EntityColumnValueProvider(Entities entities) {
+        this.entities = entities;
+      }
+
+      @Override
+      public Class<?> columnClass(Attribute<?> attribute) {
+        return attribute.valueClass();
+      }
+
+      @Override
+      public Comparator<?> comparator(Attribute<?> attribute) {
+        if (attribute instanceof ForeignKey) {
+          return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
+        }
+
+        return entities.definition(attribute.entityType()).property(attribute).comparator();
+      }
+
+      @Override
+      public Object value(Entity entity, Attribute<?> attribute) {
+        return entity.get(attribute);
+      }
+
+      @Override
+      public String string(Entity entity, Attribute<?> attribute) {
+        return entity.toString(attribute);
+      }
+
+      @Override
+      public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
+        if (entity.isNull(attribute)) {
+          return null;
+        }
+
+        Object value = entity.get(attribute);
+        if (value instanceof Entity) {
+          return (Comparable<T>) value.toString();
+        }
+
+        return (Comparable<T>) value;
+      }
     }
   }
 }

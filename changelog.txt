@@ -8910,3 +8910,4 @@
   SwingConditionModelFactory renamed to SwingEntityConditionModelFactory
   FXConditionModelFactory renamed to FXEntityConditionModelFactory
   SwingEntityTableModel, minor refactoring
+  SwingEntityTableModel, further refactoring
