@@ -19,6 +19,9 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel.Row
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -805,7 +808,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
    */
-  public interface Builder<T extends FilteredTableModel<R, C>, R, C> {
+  public interface Builder<T extends FilteredTableModel<R, C>, R, C>
+          extends ComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>> {
 
     /**
      * @param conditionPanelFactory the column condition panel factory
@@ -872,14 +876,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
      * @return this builder instance
      */
     Builder<T, R, C> autoResizeMode(int autoResizeMode);
-
-    /**
-     * @return a new {@link FilteredTable} base on this builder
-     */
-    FilteredTable<T, R, C> build();
   }
 
-  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C> implements Builder<T, R, C> {
+  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C>
+          extends AbstractComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>>
+          implements Builder<T, R, C> {
 
     private final T tableModel;
 
@@ -968,7 +969,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     @Override
-    public FilteredTable<T, R, C> build() {
+    protected FilteredTable<T, R, C> createComponent() {
       FilteredTable<T, R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
       filteredTable.setAutoStartsEdit(autoStartsEdit);
       filteredTable.setCenterOnScroll(centerOnScroll);
@@ -982,6 +983,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
       return filteredTable;
     }
+
+    @Override
+    protected ComponentValue<Void, FilteredTable<T, R, C>> createComponentValue(FilteredTable<T, R, C> component) {
+      throw new UnsupportedOperationException("A ComponentValue can not be based on a FilteredTable");
+    }
+
+    @Override
+    protected void setInitialValue(FilteredTable<T, R, C> component, Void initialValue) {}
   }
 
   private final class MoveResizeColumnKeyListener extends KeyAdapter {

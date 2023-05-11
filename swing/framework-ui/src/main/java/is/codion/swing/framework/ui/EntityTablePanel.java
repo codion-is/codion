@@ -1421,12 +1421,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
-    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable = FilteredTable.builder(tableModel)
+    return FilteredTable.builder(tableModel)
             .cellRendererFactory(new EntityTableCellRendererFactory())
+            .onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT))
             .build();
-    filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-
-    return filteredTable;
   }
 
   private Control createConditionRefreshControl() {
