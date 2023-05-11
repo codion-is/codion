@@ -6,13 +6,12 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.table.TableSummaryModel;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.Optional;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -177,13 +176,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   FilteredTableColumnModel<C> columnModel();
 
   /**
-   * Returns the {@link ColumnSummaryModel} associated with {@code columnIdentifier}
-   * @param columnIdentifier the column identifier
-   * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
-   */
-  Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier);
-
-  /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param <T> the value type
    * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
@@ -248,6 +240,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @return the filter model used by this table model
    */
   TableConditionModel<C> filterModel();
+
+  /**
+   * @return the summary model
+   */
+  TableSummaryModel<C> summaryModel();
 
   /**
    * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.

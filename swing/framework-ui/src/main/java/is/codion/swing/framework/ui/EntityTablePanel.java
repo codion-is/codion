@@ -1784,7 +1784,7 @@ public class EntityTablePanel extends JPanel {
   private static Map<Attribute<?>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
     Map<Attribute<?>, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
-            tableModel.columnSummaryModel(column.getIdentifier())
+            tableModel.summaryModel().columnSummaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
                             components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel))));
 

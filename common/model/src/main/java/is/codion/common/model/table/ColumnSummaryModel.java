@@ -77,6 +77,18 @@ public interface ColumnSummaryModel {
   }
 
   /**
+   * @param <C> the column identifier type
+   */
+  interface Factory<C> {
+
+    /**
+     * @param columnIdentifier the column identifier
+     * @return a summary model, or null if none is available
+     */
+    ColumnSummaryModel createSummaryModel(C columnIdentifier);
+  }
+
+  /**
    * Provides the values on which to base the summary .
    * @param <T> the value type
    */

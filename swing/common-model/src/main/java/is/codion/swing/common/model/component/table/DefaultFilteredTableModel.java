@@ -12,6 +12,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.swing.common.model.worker.ProgressWorker;
@@ -23,11 +24,9 @@ import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -36,6 +35,7 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
+import static is.codion.common.model.table.TableSummaryModel.tableSummaryModel;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -54,8 +54,6 @@ import static java.util.stream.Collectors.toList;
  */
 public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
-  private static final String COLUMN_IDENTIFIER = "columnIdentifier";
-
   private final Event<?> filterEvent = Event.event();
   private final Event<?> sortEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
@@ -72,7 +70,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final FilteredTableSortModel<R, C> sortModel;
   private final FilteredTableSearchModel searchModel;
   private final TableConditionModel<C> filterModel;
-  private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
+  private final TableSummaryModel<C> summaryModel;
   private final CombinedIncludeCondition combinedIncludeCondition;
 
   private ProgressWorker<Collection<R>, ?> refreshWorker;
@@ -106,6 +104,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     this.filterModel = tableConditionModel(columnFilterModels);
+    this.summaryModel = tableSummaryModel(new DefaultColumnSummaryModelFactory());
     this.combinedIncludeCondition = new CombinedIncludeCondition(columnFilterModels);
     bindEventsInternal();
   }
@@ -219,11 +218,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier) {
-    return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER), identifier ->
-            createColumnValueProvider(columnIdentifier)
-                    .map(ColumnSummaryModel::columnSummaryModel)
-                    .orElse(null)));
+  public final TableSummaryModel <C> summaryModel() {
+    return summaryModel;
   }
 
   @Override
@@ -696,6 +692,16 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     clear();
     addItemsSorted(items);
     selectionModel.setSelectedItems(selectedItems);
+  }
+
+  private final class DefaultColumnSummaryModelFactory implements ColumnSummaryModel.Factory<C> {
+
+    @Override
+    public ColumnSummaryModel createSummaryModel(C columnIdentifier) {
+      return createColumnValueProvider(columnIdentifier)
+                .map(ColumnSummaryModel::columnSummaryModel)
+                .orElse(null);
+    }
   }
 
   private final class CombinedIncludeCondition implements Predicate<R> {

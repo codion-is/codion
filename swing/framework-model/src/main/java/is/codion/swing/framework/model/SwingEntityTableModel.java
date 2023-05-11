@@ -8,9 +8,9 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -693,11 +693,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Optional<ColumnSummaryModel> columnSummaryModel(Attribute<?> columnIdentifier) {
-    return tableModel.columnSummaryModel(columnIdentifier);
-  }
-
-  @Override
   public final <T> Collection<T> values(Attribute<?> columnIdentifier) {
     return tableModel.values(columnIdentifier);
   }
@@ -750,6 +745,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final TableConditionModel<Attribute<?>> filterModel() {
     return tableModel.filterModel();
+  }
+
+  @Override
+  public final TableSummaryModel<Attribute<?>> summaryModel() {
+    return tableModel.summaryModel();
   }
 
   @Override
