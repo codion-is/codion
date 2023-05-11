@@ -88,7 +88,14 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 An *Entity* represents a row in a table (or query), an *Attribute* identifies a column and its type, allowing for type safe access to the associated value, whereas a *Property* encapsulates the metadata required for the framework to present and persist the value.
 
-In the following example we start by extending the *DefaultDomain* class. We define a *DomainType* constant identifying this domain model, use it to create *EntityType* constants for each entity and use those to create typed *Attribute* constants for each column. These constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the entity type and its values. We then use the *entityTypes* and their respective *attributes* to define two entities, with a master/detail relationship, and add them to the domain model.
+In the below example, we define a domain model with two entities, a customer and an address, with a master/detail retionship, using the following steps:
+
+. Extend the *DefaultDomain* class and create a *DomainType* constant identifying the domain model.
+. Create a namespace interface for each *Entity* and use the *DomainType* to create *EntityType* constants.
+. Use the *EntityType* to create *Attribute* constants for each column and the *ForeignKey*.
+. Create two *Entity* definitions using properties based on the *Attribute* constants, and add them to the domain model.
+
+NOTE: The *EntityType* and *Attribute* constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the *Entity* and its values
 
 [source,java]
 ----
@@ -215,7 +222,7 @@ add(address);
 
 === Using entities
 
-An Entity instance maps Attributes to their respective values and keeps track of modifications, that is, values that have been modified since they were first set.
+An *Entity* instance maps Attributes to their respective values and keeps track of modifications, that is, values that have been modified since they were first set.
 
 For persistance see <<Database access, Database access>> below.
 
