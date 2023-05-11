@@ -1234,9 +1234,6 @@ public class EntityTablePanel extends JPanel {
    * @see EntityEditModel#updateEnabledObserver()
    */
   private Controls createUpdateSelectedControls() {
-    if (!includeUpdateSelectedControls()) {
-      throw new IllegalStateException("Table model is read only or does not allow updates");
-    }
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
     StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
@@ -1274,9 +1271,6 @@ public class EntityTablePanel extends JPanel {
    * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
   private Control createDeleteSelectedControl() {
-    if (!includeDeleteSelectedControl()) {
-      throw new IllegalStateException("Table model is read only or does not allow delete");
-    }
     return Control.builder(this::deleteWithConfirmation)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(
@@ -1326,10 +1320,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createToggleConditionPanelControl() {
-    if (conditionPanel == null) {
-      return null;
-    }
-
     return Control.builder(this::toggleConditionPanel)
             .smallIcon(FrameworkIcons.instance().search())
             .description(MESSAGES.getString("show_condition_panel"))
@@ -1337,10 +1327,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createToggleFilterPanelControl() {
-    if (filterPanel == null) {
-      return null;
-    }
-
     return Control.builder(this::toggleFilterPanel)
             .smallIcon(FrameworkIcons.instance().filter())
             .description(MESSAGES.getString("show_filter_panel"))
