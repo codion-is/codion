@@ -8911,3 +8911,4 @@
   FXConditionModelFactory renamed to FXEntityConditionModelFactory
   SwingEntityTableModel, minor refactoring
   SwingEntityTableModel, further refactoring
+  EntityTablePanel constructor parameter conditionPanelFactory now of type EntityConditionPanelFactory

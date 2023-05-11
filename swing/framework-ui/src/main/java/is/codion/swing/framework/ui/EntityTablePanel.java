@@ -364,8 +364,7 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the SwingEntityTableModel instance
    * @param conditionPanelFactory the condition panel factory, if any
    */
-  public EntityTablePanel(SwingEntityTableModel tableModel,
-                          ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
+  public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
     this.conditionRefreshControl = createConditionRefreshControl();
