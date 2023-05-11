@@ -1502,7 +1502,6 @@ public class EntityTablePanel extends JPanel {
     if (refreshButtonToolBar == null) {
       refreshButtonToolBar = createRefreshButtonToolBar();
     }
-    refreshButtonToolBar = createRefreshButtonToolBar();
   }
 
   private void setupControls() {
