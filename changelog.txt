@@ -8955,3 +8955,4 @@
   FilteredTable.SortableHeaderRenderer renamed to FilteredTableHeaderRenderer and moved up to package level
   EntityTablePanel, no longer initializes the table filter panel if not required
   EntityTablePanel, set header unfocusable moved to FilteredTable
+  EntityTablePanel bug fixed, null check added

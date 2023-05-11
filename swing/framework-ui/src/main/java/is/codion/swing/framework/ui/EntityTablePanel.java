@@ -1401,50 +1401,20 @@ public class EntityTablePanel extends JPanel {
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
-  private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
-    tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
-
-    return tableConditionPanel;
-  }
-
-  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
-    configureHorizontalAlignment(columnConditionPanel,
-            tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
-  }
-
-  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
-                                            TableCellRenderer cellRenderer) {
-    if (cellRenderer instanceof DefaultTableCellRenderer) {
-      int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
-      JComponent component = columnConditionPanel.equalField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
-      component = columnConditionPanel.lowerBoundField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
-      component = columnConditionPanel.upperBoundField();
-      if (component instanceof JTextField) {
-        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
-      }
-    }
-  }
-
   private JPanel createTablePanel() {
     JPanel panel = new JPanel(new BorderLayout());
     panel.add(tableScrollPane, BorderLayout.CENTER);
     if (conditionPanelScrollPane != null) {
       panel.add(conditionPanelScrollPane, BorderLayout.NORTH);
     }
-    JPanel southPanel = new JPanel(new BorderLayout());
+    JPanel tableSouthPanel = new JPanel(new BorderLayout());
     if (summaryPanelScrollPane != null) {
-      southPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
+      tableSouthPanel.add(summaryPanelScrollPane, BorderLayout.NORTH);
     }
     if (filterPanelScrollPane != null) {
-      southPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
+      tableSouthPanel.add(filterPanelScrollPane, BorderLayout.CENTER);
     }
-    panel.add(southPanel, BorderLayout.SOUTH);
+    panel.add(tableSouthPanel, BorderLayout.SOUTH);
 
     return panel;
   }
@@ -1691,6 +1661,38 @@ public class EntityTablePanel extends JPanel {
     }
     else {
       WaitCursor.hide(EntityTablePanel.this);
+    }
+  }
+
+  private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
+    if (tableConditionPanel != null) {
+      tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+    }
+
+    return tableConditionPanel;
+  }
+
+  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
+    configureHorizontalAlignment(columnConditionPanel,
+            tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
+  }
+
+  private static void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
+                                            TableCellRenderer cellRenderer) {
+    if (cellRenderer instanceof DefaultTableCellRenderer) {
+      int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+      JComponent component = columnConditionPanel.equalField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
+      component = columnConditionPanel.lowerBoundField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
+      component = columnConditionPanel.upperBoundField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
     }
   }
 

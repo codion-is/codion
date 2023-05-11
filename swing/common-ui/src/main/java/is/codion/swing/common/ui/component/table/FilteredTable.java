@@ -619,16 +619,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             .enable(this);
   }
 
-  private boolean noRowVisible(List<Integer> rows) {
-    JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
-    if (viewport != null) {
-      return rows.stream()
-              .noneMatch(row -> isRowVisible(viewport, row));
-    }
-
-    return false;
-  }
-
   /**
    * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
    * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(EventDataListener)} event.
@@ -654,6 +644,15 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
+    }
+
+    private boolean noRowVisible(List<Integer> rows) {
+      JViewport viewport = Utilities.getParentOfType(JViewport.class, FilteredTable.this);
+      if (viewport != null) {
+        return rows.stream().noneMatch(row -> isRowVisible(viewport, row));
+      }
+
+      return false;
     }
   }
 
