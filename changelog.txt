@@ -8915,3 +8915,4 @@
   EntityTablePanel, lazy initialization of components
   FilteredTable, lazy initialization of searchField
   FilteredTable.SortableHeaderRenderer renamed to FilteredTableHeaderRenderer and moved up to package level
+  EntityTablePanel, no longer initializes the table filter panel if not required

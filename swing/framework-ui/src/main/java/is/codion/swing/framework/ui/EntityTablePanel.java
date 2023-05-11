@@ -841,7 +841,6 @@ public class EntityTablePanel extends JPanel {
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
-        configureConditionFieldHorizontalAlignment();
         bindEvents();
         setupKeyboardActions();
       }
@@ -1403,18 +1402,19 @@ public class EntityTablePanel extends JPanel {
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
-  private void configureConditionFieldHorizontalAlignment() {
-    conditionPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
-    filterPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
+  private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
+    tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+
+    return tableConditionPanel;
   }
 
-  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
-    configureConditionFieldHorizontalAlignment(columnConditionPanel,
+  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
+    configureHorizontalAlignment(columnConditionPanel,
             tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
   }
 
-  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
-                                                          TableCellRenderer cellRenderer) {
+  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
+                                            TableCellRenderer cellRenderer) {
     if (cellRenderer instanceof DefaultTableCellRenderer) {
       int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
       JComponent component = columnConditionPanel.equalField();
@@ -1519,12 +1519,14 @@ public class EntityTablePanel extends JPanel {
       conditionRefreshControl = createConditionRefreshControl();
     }
     if (conditionPanel == null) {
-      conditionPanel = createConditionPanel(conditionPanelFactory);
+      conditionPanel = configureHorizontalAlignment(createConditionPanel(conditionPanelFactory));
     }
     tableScrollPane = new JScrollPane(table);
     conditionPanelScrollPane = createConditionPanelScrollPane();
-    filterPanel = table.filterPanel();
-    filterPanelScrollPane = createFilterPanelScrollPane();
+    if (includeFilterPanel) {
+      filterPanel = configureHorizontalAlignment(table.filterPanel());
+      filterPanelScrollPane = createFilterPanelScrollPane();
+    }
     summaryPanel = createSummaryPanel();
     summaryPanelScrollPane = createSummaryPanelScrollPane();
     tablePanel = createTablePanel();
