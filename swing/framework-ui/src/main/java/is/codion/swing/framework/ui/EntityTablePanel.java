@@ -372,7 +372,7 @@ public class EntityTablePanel extends JPanel {
     this.conditionPanel = createConditionPanel(conditionPanelFactory);
     this.tableScrollPane = new JScrollPane(table);
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
-    this.filterPanel = table.conditionPanel();
+    this.filterPanel = table.filterPanel();
     this.filterPanelScrollPane = createFilterPanelScrollPane();
     this.summaryPanel = createSummaryPanel();
     this.summaryPanelScrollPane = createSummaryPanelScrollPane();
@@ -405,6 +405,17 @@ public class EntityTablePanel extends JPanel {
    */
   public final SwingEntityTableModel tableModel() {
     return tableModel;
+  }
+
+  /**
+   * @return the condition panel
+   * @throws IllegalStateException in case no condition panel is available
+   */
+  public final FilteredTableConditionPanel<Attribute<?>> conditionPanel() {
+    if (conditionPanel == null) {
+      throw new IllegalStateException("No condition panel is available");
+    }
+    return conditionPanel;
   }
 
   /**

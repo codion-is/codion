@@ -221,7 +221,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * @return the condition panel
    */
-  public FilteredTableConditionPanel<C> conditionPanel() {
+  public FilteredTableConditionPanel<C> filterPanel() {
     if (conditionPanel == null) {
       conditionPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
     }
