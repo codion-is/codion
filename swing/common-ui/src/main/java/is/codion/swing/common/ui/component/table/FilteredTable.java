@@ -29,22 +29,15 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.Action;
-import javax.swing.Icon;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.ListSelectionModel;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Font;
-import java.awt.Graphics;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
@@ -126,7 +119,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
   private static final int SEARCH_FIELD_COLUMNS = 8;
-  private static final int SORT_ICON_SIZE = 5;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
   private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
 
@@ -601,7 +593,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
-    column.setHeaderRenderer(new SortableHeaderRenderer(column.getHeaderRenderer()));
+    column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column.getHeaderRenderer()));
     column.setCellRenderer(rendererFactory.tableCellRenderer(column));
   }
 
@@ -636,44 +628,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return false;
   }
 
-  private final class SortableHeaderRenderer implements TableCellRenderer {
-
-    private final TableCellRenderer wrappedRenderer;
-
-    private SortableHeaderRenderer(TableCellRenderer wrappedRenderer) {
-      this.wrappedRenderer = wrappedRenderer;
-    }
-
-    @Override
-    public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
-                                                   boolean hasFocus, int row, int column) {
-      Component component = wrappedRenderer == null ?
-              table.getTableHeader().getDefaultRenderer().getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
-              wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      Font defaultFont = component.getFont();
-      if (component instanceof JLabel) {
-        JLabel label = (JLabel) component;
-        FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-        ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(tableColumn.getIdentifier());
-        label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
-        label.setHorizontalTextPosition(SwingConstants.LEFT);
-        label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
-      }
-
-      return component;
-    }
-
-    private Icon sortArrowIcon(C columnIdentifier, int iconSizePixels) {
-      SortOrder sortOrder = tableModel.sortModel().sortOrder(columnIdentifier);
-      if (sortOrder == SortOrder.UNSORTED) {
-        return null;
-      }
-
-      return new Arrow(sortOrder == SortOrder.DESCENDING, iconSizePixels,
-              tableModel.sortModel().sortPriority(columnIdentifier));
-    }
-  }
-
   /**
    * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
    * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(EventDataListener)} event.
@@ -699,67 +653,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
-    }
-  }
-
-  private static final class Arrow implements Icon {
-
-    private static final double PRIORITY_SIZE_RATIO = 0.8;
-    private static final double PRIORITY_SIZE_CONST = 2.0;
-    private static final int ALIGNMENT_CONSTANT = 6;
-
-    private final boolean descending;
-    private final int size;
-    private final int priority;
-
-    private Arrow(boolean descending, int size, int priority) {
-      this.descending = descending;
-      this.size = size;
-      this.priority = priority;
-    }
-
-    @Override
-    public void paintIcon(Component c, Graphics g, int x, int y) {
-      Color color = c == null ? Color.GRAY : c.getBackground();
-      // In a compound sort, make each successive triangle 20% smaller than the previous one.
-      int dx = (int) (size / PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
-      int dy = descending ? dx : -dx;
-      // Align icon (roughly) with font baseline.
-      int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
-      int shift = descending ? 1 : -1;
-      g.translate(x, theY);
-
-      // Right diagonal.
-      g.setColor(color.darker());
-      g.drawLine(dx / 2, dy, 0, 0);
-      g.drawLine(dx / 2, dy + shift, 0, shift);
-
-      // Left diagonal.
-      g.setColor(color.brighter());
-      g.drawLine(dx / 2, dy, dx, 0);
-      g.drawLine(dx / 2, dy + shift, dx, shift);
-
-      // Horizontal line.
-      if (descending) {
-        g.setColor(color.darker().darker());
-      }
-      else {
-        g.setColor(color.brighter().brighter());
-      }
-      g.drawLine(dx, 0, 0, 0);
-
-      g.setColor(color);
-      g.translate(-x, -theY);
-    }
-
-    @Override
-    public int getIconWidth() {
-      return size;
-    }
-
-    @Override
-    public int getIconHeight() {
-      return size;
     }
   }
 
