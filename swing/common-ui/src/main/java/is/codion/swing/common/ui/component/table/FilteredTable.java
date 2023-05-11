@@ -615,11 +615,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
   private void bindEvents() {
     addMouseListener(new FilteredTableMouseListener());
-    tableModel.selectionModel().addSelectedIndexesListener(selectedRowIndexes -> {
-      if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
-        scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
-      }
-    });
+    tableModel.selectionModel().addSelectedIndexesListener(new ScrollToSelectedListener());
     tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     tableModel.addSortListener(getTableHeader()::repaint);
@@ -692,6 +688,16 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
           doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
         }
         doubleClickedEvent.onEvent(e);
+      }
+    }
+  }
+
+  private final class ScrollToSelectedListener implements EventDataListener<List<Integer>> {
+
+    @Override
+    public void onEvent(List<Integer> selectedRowIndexes) {
+      if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
+        scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
     }
   }
