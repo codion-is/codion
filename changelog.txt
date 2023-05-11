@@ -8919,3 +8919,4 @@
   EntityTablePanel, set header unfocusable moved to FilteredTable
   EntityTablePanel bug fixed, null check added
   TableSummaryModel added
+  TamporalField, up/down arrows now increment/decrement the value by one unit according to the caret position in the underlying date pattern
