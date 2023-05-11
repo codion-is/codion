@@ -6,18 +6,19 @@ package is.codion.common.model.table;
 import is.codion.common.event.EventListener;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static java.util.Collections.emptyMap;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.function.Function.identity;
 
 final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
   private final Map<C, ColumnConditionModel<C, ?>> conditionModels;
 
   DefaultTableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModels) {
-    this.conditionModels = initializeColumnFilterModels(conditionModels);
+    this.conditionModels = initializeColumnConditionModels(conditionModels);
   }
 
   @Override
@@ -61,16 +62,12 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
     conditionModels.values().forEach(filterModel -> filterModel.removeChangeListener(listener));
   }
 
-  private Map<C, ColumnConditionModel<C, ?>> initializeColumnFilterModels(Collection<ColumnConditionModel<C, ?>> filterModels) {
-    if (filterModels == null) {
+  private Map<C, ColumnConditionModel<C, ?>> initializeColumnConditionModels(Collection<ColumnConditionModel<C, ?>> conditionModels) {
+    if (conditionModels == null) {
       return emptyMap();
     }
 
-    Map<C, ColumnConditionModel<C, ?>> filterMap = new HashMap<>();
-    for (ColumnConditionModel<C, ?> columnFilterModel : filterModels) {
-      filterMap.put(columnFilterModel.columnIdentifier(), columnFilterModel);
-    }
-
-    return unmodifiableMap(filterMap);
+    return unmodifiableMap(conditionModels.stream()
+            .collect(Collectors.toMap(ColumnConditionModel::columnIdentifier, identity())));
   }
 }

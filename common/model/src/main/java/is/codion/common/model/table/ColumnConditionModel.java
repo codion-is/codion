@@ -33,19 +33,19 @@ public interface ColumnConditionModel<C, T> {
   /**
    * Specifies whether wildcards are automatically added to string conditions by default<br>
    * Value type: {@link AutomaticWildcard}<br>
-   * Default value: {@link AutomaticWildcard#NONE}
+   * Default value: {@link AutomaticWildcard#POSTFIX}
    */
   PropertyValue<AutomaticWildcard> AUTOMATIC_WILDCARD =
           Configuration.enumValue("is.codion.common.model.table.ColumnConditionModel.automaticWildard",
-                  AutomaticWildcard.class, AutomaticWildcard.NONE);
+                  AutomaticWildcard.class, AutomaticWildcard.POSTFIX);
 
   /**
    * Specifies whether string based conditions are case-sensitive or not by default<br>
    * Value type: Boolean<br>
-   * Default value: true
+   * Default value: false
    */
   PropertyValue<Boolean> CASE_SENSITIVE =
-          Configuration.booleanValue("is.codion.common.model.table.ColumnConditionModel.caseSensitive", true);
+          Configuration.booleanValue("is.codion.common.model.table.ColumnConditionModel.caseSensitive", false);
 
   /**
    * The possible automatic wildcard types

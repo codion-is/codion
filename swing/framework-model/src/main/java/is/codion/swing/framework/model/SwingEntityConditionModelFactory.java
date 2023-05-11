@@ -7,7 +7,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.DefaultConditionModelFactory;
+import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import static is.codion.swing.framework.model.EntityComboBoxModelConditionModel.entityComboBoxModelConditionModel;
@@ -15,9 +15,13 @@ import static is.codion.swing.framework.model.EntityComboBoxModelConditionModel.
 /**
  * A Swing {@link ColumnConditionModel.Factory} implementation using {@link EntityComboBoxModel} for foreign keys based on small datasets
  */
-public class SwingConditionModelFactory extends DefaultConditionModelFactory {
+public class SwingEntityConditionModelFactory extends EntityConditionModelFactory {
 
-  public SwingConditionModelFactory(EntityConnectionProvider connectionProvider) {
+  /**
+   * Instantiates a new {@link SwingEntityConditionModelFactory}.
+   * @param connectionProvider the connection provider
+   */
+  public SwingEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 

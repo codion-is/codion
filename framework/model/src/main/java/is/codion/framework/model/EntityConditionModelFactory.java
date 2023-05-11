@@ -20,13 +20,17 @@ import static is.codion.framework.model.EntitySearchModelConditionModel.entitySe
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default ColumnConditionModel.Factory implementation.
+ * A default {@link ColumnConditionModel.Factory} implementation for creating condition models.
  */
-public class DefaultConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+public class EntityConditionModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
 
   private final EntityConnectionProvider connectionProvider;
 
-  public DefaultConditionModelFactory(EntityConnectionProvider connectionProvider) {
+  /**
+   * Instantiates a new {@link EntityConditionModelFactory}.
+   * @param connectionProvider the connection provider
+   */
+  public EntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
     this.connectionProvider = requireNonNull(connectionProvider);
   }
 

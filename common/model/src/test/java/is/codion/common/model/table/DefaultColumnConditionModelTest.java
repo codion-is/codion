@@ -40,6 +40,8 @@ public class DefaultColumnConditionModelTest {
   @Test
   void testSetBounds() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
+    model.caseSensitiveState().set(false);
+    model.automaticWildcardValue().set(AutomaticWildcard.NONE);
 
     model.autoEnableState().set(false);
     model.addEqualValueListener(equalToListener);
@@ -193,6 +195,8 @@ public class DefaultColumnConditionModelTest {
   @Test
   void multiConditionString() {
     ColumnConditionModel<String, String> conditionModel = ColumnConditionModel.builder("test", String.class).build();
+    conditionModel.caseSensitiveState().set(false);
+    conditionModel.automaticWildcardValue().set(AutomaticWildcard.NONE);
 
     Collection<String> strings = asList("abc", "def");
     conditionModel.setEqualValues(strings);
