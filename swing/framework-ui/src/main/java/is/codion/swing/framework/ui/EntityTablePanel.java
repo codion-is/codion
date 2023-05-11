@@ -1402,7 +1402,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
-    tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+    if (tableConditionPanel != null) {
+      tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+    }
 
     return tableConditionPanel;
   }
