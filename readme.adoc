@@ -33,28 +33,6 @@ I figured a CRUD application framework should:
 * Have a clear separation between model and UI for easy unit testing.
 * Limit accidental complexity and be enjoyable to use.
 
-== License
-
-Codion is released under the Open Source https://en.wikipedia.org/wiki/GNU_General_Public_License[GPLv3] license.
-
-*Keep in mind that you can freely use the GPL licensed version to create closed-source applications for personal or internal company use, since the license only kicks in when the application is distributed*.
-
-See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
-
-== Open-source, not open-contribution
-
-=== Pull requests
-
-*For copyright and managament overhead reasons, pull requests and code contributions will not be accepted at this time*.
-
-=== Bug reports
-
-Bug reports are truly appreciated, please report bugs via https://github.com/bjorndarri/codion/issues[issues].
-
-=== Discussions
-
-Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features, design, API and anything Codion related.
-
 == Dependencies
 
 Codion uses a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
@@ -70,7 +48,7 @@ A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combin
 
 == Demo application projects
 
-The following applications can be found in the /demos folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
+The following applications can be found in the *demos* folder of the Codion project, but are also available in separate Git repositories as fully configured stand-alone Gradle projects.
 
 All these projects contain jlink/jpackage configurations for packaging the application, server, server monitor and load-test, if applicable.
 
@@ -479,4 +457,26 @@ connection.delete(asList(addressKey, customerKey));
 connection.close();
 ----
 
-Continue exploring on the link:https://codion.is[Codion Website].
+== License
+
+Codion is released under the Open Source https://en.wikipedia.org/wiki/GNU_General_Public_License[GPLv3] license.
+
+*Keep in mind that you can freely use the GPL licensed version to create closed-source applications for personal or internal company use, since the license only kicks in when the application is distributed*.
+
+See http://www.gnu.org/licenses/gpl-faq.html#GPLRequireSourcePostedPublic[GPL FAQ]
+
+== Open-source, not open-contribution
+
+=== Pull requests
+
+*For copyright and managament overhead reasons, pull requests and code contributions will not be accepted at this time*.
+
+=== Bug reports
+
+Bug reports are truly appreciated, please report bugs via https://github.com/bjorndarri/codion/issues[issues].
+
+=== Discussions
+
+Feel free to https://github.com/bjorndarri/codion/discussions[discuss] features, design, API and anything Codion related.
+
+For more information: link:https://codion.is[Codion Website].
