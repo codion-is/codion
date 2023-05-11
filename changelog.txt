@@ -8949,3 +8949,9 @@
   FXConditionModelFactory renamed to FXEntityConditionModelFactory
   SwingEntityTableModel, minor refactoring
   SwingEntityTableModel, further refactoring
+  EntityTablePanel constructor parameter conditionPanelFactory now of type EntityConditionPanelFactory
+  EntityTablePanel, lazy initialization of components
+  FilteredTable, lazy initialization of searchField
+  FilteredTable.SortableHeaderRenderer renamed to FilteredTableHeaderRenderer and moved up to package level
+  EntityTablePanel, no longer initializes the table filter panel if not required
+  EntityTablePanel, set header unfocusable moved to FilteredTable

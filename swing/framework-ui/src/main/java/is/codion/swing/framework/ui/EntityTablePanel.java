@@ -60,7 +60,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
@@ -253,96 +252,37 @@ public class EntityTablePanel extends JPanel {
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> updateSelectedComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> tableCellEditorComponentFactories = new HashMap<>();
 
-  private final SwingEntityTableModel tableModel;
-
-  private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
-
-  private final JScrollPane tableScrollPane;
-
-  private final FilteredTableConditionPanel<Attribute<?>> conditionPanel;
-
-  private final JScrollPane conditionPanelScrollPane;
-
-  private final FilteredTableConditionPanel<Attribute<?>> filterPanel;
-
-  private final JScrollPane filterPanelScrollPane;
-
-  private final FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
-
-  private final JScrollPane summaryPanelScrollPane;
-
-  private final JPanel southPanel = new JPanel(new BorderLayout());
-
-  /**
-   * Base panel for the table, condition and summary panels
-   */
-  private final JPanel tablePanel;
-
-  /**
-   * the toolbar containing the refresh button
-   */
-  private final JToolBar refreshButtonToolBar;
-
-  /**
-   * displays a status message or a refresh progress bar when refreshing
-   */
-  private final StatusPanel statusPanel;
-
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
   private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
 
-  private final Control conditionRefreshControl;
+  private final SwingEntityTableModel tableModel;
+  private final EntityConditionPanelFactory conditionPanelFactory;
+  private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
+  private final StatusPanel statusPanel;
+  private final JPanel southPanel = new JPanel(new BorderLayout());
 
+  private JScrollPane tableScrollPane;
+  private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
+  private JScrollPane conditionPanelScrollPane;
+  private FilteredTableConditionPanel<Attribute<?>> filterPanel;
+  private JScrollPane filterPanelScrollPane;
+  private FilteredTableColumnComponentPanel<Attribute<?>, JPanel> summaryPanel;
+  private JScrollPane summaryPanelScrollPane;
+  private JPanel tablePanel;
+  private JToolBar refreshButtonToolBar;
+  private Control conditionRefreshControl;
   private JPanel searchFieldPanel;
-
   private JSplitPane southPanelSplitPane;
-
   private JToolBar southToolBar;
-
-  /**
-   * specifies when the refresh button toolbar should be visible
-   */
   private RefreshButtonVisible refreshButtonVisible = REFRESH_BUTTON_VISIBLE.get();
-
-  /**
-   * specifies whether to include the south panel
-   */
   private boolean includeSouthPanel = true;
-
-  /**
-   * specifies whether to include the condition panel
-   */
   private boolean includeConditionPanel = true;
-
-  /**
-   * specifies whether to include the table filter panel
-   */
   private boolean includeFilterPanel = INCLUDE_FILTER_PANEL.get();
-
-  /**
-   * specifies whether to include a 'Clear' control in the popup menu.
-   */
   private boolean includeClearControl = INCLUDE_CLEAR_CONTROL.get();
-
-  /**
-   * specifies whether to include the selection mode control in the popup menu
-   */
   private boolean includeSelectionModeControl = false;
-
-  /**
-   * Specifies how column selection is presented.
-   */
   private ColumnSelection columnSelection = COLUMN_SELECTION.get();
-
-  /**
-   * specifies whether to include a popup menu
-   */
   private boolean includePopupMenu = true;
-
-  /**
-   * True after {@code initializePanel()} has been called
-   */
   private boolean panelInitialized = false;
 
   /**
@@ -364,20 +304,10 @@ public class EntityTablePanel extends JPanel {
    * @param tableModel the SwingEntityTableModel instance
    * @param conditionPanelFactory the condition panel factory, if any
    */
-  public EntityTablePanel(SwingEntityTableModel tableModel,
-                          ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
+  public EntityTablePanel(SwingEntityTableModel tableModel, EntityConditionPanelFactory conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
+    this.conditionPanelFactory = conditionPanelFactory;
     this.table = createTable();
-    this.conditionRefreshControl = createConditionRefreshControl();
-    this.conditionPanel = createConditionPanel(conditionPanelFactory);
-    this.tableScrollPane = new JScrollPane(table);
-    this.conditionPanelScrollPane = createConditionPanelScrollPane();
-    this.filterPanel = table.filterPanel();
-    this.filterPanelScrollPane = createFilterPanelScrollPane();
-    this.summaryPanel = createSummaryPanel();
-    this.summaryPanelScrollPane = createSummaryPanelScrollPane();
-    this.tablePanel = createTablePanel();
-    this.refreshButtonToolBar = createRefreshButtonToolBar();
     this.statusPanel = new StatusPanel(tableModel);
   }
 
@@ -413,8 +343,12 @@ public class EntityTablePanel extends JPanel {
    */
   public final FilteredTableConditionPanel<Attribute<?>> conditionPanel() {
     if (conditionPanel == null) {
-      throw new IllegalStateException("No condition panel is available");
+      conditionPanel = createConditionPanel(conditionPanelFactory);
+      if (conditionPanel == null) {
+        throw new IllegalStateException("No condition panel is available");
+      }
     }
+
     return conditionPanel;
   }
 
@@ -530,7 +464,10 @@ public class EntityTablePanel extends JPanel {
    */
   public final void setRefreshButtonVisible(RefreshButtonVisible refreshButtonVisible) {
     this.refreshButtonVisible = requireNonNull(refreshButtonVisible);
-    this.refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
+    if (refreshButtonToolBar == null) {
+      refreshButtonToolBar = createRefreshButtonToolBar();
+    }
+    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
   }
 
   /**
@@ -897,12 +834,12 @@ public class EntityTablePanel extends JPanel {
     if (!panelInitialized) {
       WaitCursor.show(this);
       try {
+        setupComponents();
         setupControls();
-        initializeTable();
+        setupTable();
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
-        configureConditionFieldHorizontalAlignment();
         bindEvents();
         setupKeyboardActions();
       }
@@ -1194,46 +1131,6 @@ public class EntityTablePanel extends JPanel {
     return null;
   }
 
-  private void setupControls() {
-    if (includeDeleteSelectedControl()) {
-      controls.putIfAbsent(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
-    }
-    if (includeUpdateSelectedControls()) {
-      controls.putIfAbsent(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
-    }
-    if (includeClearControl) {
-      controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
-    }
-    controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
-    controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
-            table.createSelectColumnsControl() : table.createToggleColumnsControls());
-    controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
-    controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
-    if (summaryPanelScrollPane != null) {
-      controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
-    }
-    if (includeConditionPanel && conditionPanel != null) {
-      controls.putIfAbsent(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
-      controls.putIfAbsent(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
-      controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
-    }
-    if (includeFilterPanel && filterPanel != null) {
-      controls.putIfAbsent(ControlCode.FILTER_PANEL_VISIBLE, createFilterPanelControl());
-      controls.putIfAbsent(ControlCode.TOGGLE_FILTER_PANEL, createToggleFilterPanelControl());
-      controls.put(ControlCode.SELECT_FILTER_PANEL, Control.control(this::selectFilterPanel));
-    }
-    controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
-    controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
-    controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
-    controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
-    controls.putIfAbsent(ControlCode.COPY_TABLE_DATA, createCopyControls());
-    if (includeSelectionModeControl) {
-      controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
-    }
-    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
-    controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
-  }
-
   /**
    * Creates a {@link Controls} containing controls for updating the value of a single property
    * for the selected entities. These controls are enabled as long as the selection is not empty
@@ -1456,6 +1353,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private JToolBar createRefreshButtonToolBar() {
+    if (conditionRefreshControl == null) {
+      conditionRefreshControl = createConditionRefreshControl();
+    }
     KeyEvents.builder(VK_F5)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(conditionRefreshControl)
@@ -1501,18 +1401,19 @@ public class EntityTablePanel extends JPanel {
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
   }
 
-  private void configureConditionFieldHorizontalAlignment() {
-    conditionPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
-    filterPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
+  private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
+    tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
+
+    return tableConditionPanel;
   }
 
-  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
-    configureConditionFieldHorizontalAlignment(columnConditionPanel,
+  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
+    configureHorizontalAlignment(columnConditionPanel,
             tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
   }
 
-  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
-                                                          TableCellRenderer cellRenderer) {
+  private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
+                                            TableCellRenderer cellRenderer) {
     if (cellRenderer instanceof DefaultTableCellRenderer) {
       int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
       JComponent component = columnConditionPanel.equalField();
@@ -1612,10 +1513,70 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private void initializeTable() {
+  private void setupComponents() {
+    if (conditionRefreshControl == null) {
+      conditionRefreshControl = createConditionRefreshControl();
+    }
+    if (conditionPanel == null) {
+      conditionPanel = configureHorizontalAlignment(createConditionPanel(conditionPanelFactory));
+    }
+    tableScrollPane = new JScrollPane(table);
+    conditionPanelScrollPane = createConditionPanelScrollPane();
+    if (includeFilterPanel) {
+      filterPanel = configureHorizontalAlignment(table.filterPanel());
+      filterPanelScrollPane = createFilterPanelScrollPane();
+    }
+    summaryPanel = createSummaryPanel();
+    summaryPanelScrollPane = createSummaryPanelScrollPane();
+    tablePanel = createTablePanel();
+    if (refreshButtonToolBar == null) {
+      refreshButtonToolBar = createRefreshButtonToolBar();
+    }
+    refreshButtonToolBar = createRefreshButtonToolBar();
+  }
+
+  private void setupControls() {
+    if (includeDeleteSelectedControl()) {
+      controls.putIfAbsent(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
+    }
+    if (includeUpdateSelectedControls()) {
+      controls.putIfAbsent(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
+    }
+    if (includeClearControl) {
+      controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
+    }
+    controls.putIfAbsent(ControlCode.REFRESH, createRefreshControl());
+    controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
+            table.createSelectColumnsControl() : table.createToggleColumnsControls());
+    controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
+    controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
+    if (summaryPanelScrollPane != null) {
+      controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
+    }
+    if (includeConditionPanel && conditionPanel != null) {
+      controls.putIfAbsent(ControlCode.CONDITION_PANEL_VISIBLE, createConditionPanelControl());
+      controls.putIfAbsent(ControlCode.TOGGLE_CONDITION_PANEL, createToggleConditionPanelControl());
+      controls.put(ControlCode.SELECT_CONDITION_PANEL, Control.control(this::selectConditionPanel));
+    }
+    if (includeFilterPanel && filterPanel != null) {
+      controls.putIfAbsent(ControlCode.FILTER_PANEL_VISIBLE, createFilterPanelControl());
+      controls.putIfAbsent(ControlCode.TOGGLE_FILTER_PANEL, createToggleFilterPanelControl());
+      controls.put(ControlCode.SELECT_FILTER_PANEL, Control.control(this::selectFilterPanel));
+    }
+    controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
+    controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
+    controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
+    controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());
+    controls.putIfAbsent(ControlCode.COPY_TABLE_DATA, createCopyControls());
+    if (includeSelectionModeControl) {
+      controls.putIfAbsent(ControlCode.SELECTION_MODE, table.createSingleSelectionModeControl());
+    }
+    controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
+    controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
+  }
+
+  private void setupTable() {
     tableModel.columnModel().columns().forEach(this::configureColumn);
-    JTableHeader header = table.getTableHeader();
-    header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
     }
