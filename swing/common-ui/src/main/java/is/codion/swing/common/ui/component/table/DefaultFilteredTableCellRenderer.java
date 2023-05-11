@@ -21,7 +21,8 @@ import static java.util.Objects.requireNonNull;
  * @param <R> the row type
  * @param <C> the column identifier type
  */
-final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>, R, C> extends DefaultTableCellRenderer implements FilteredTableCellRenderer {
+final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>, R, C>
+        extends DefaultTableCellRenderer implements FilteredTableCellRenderer {
 
   private final Settings<T, C> settings;
   private final T tableModel;

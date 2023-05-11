@@ -8898,3 +8898,4 @@
   ComponentBuilder.visible() added
   EntityPanel, detail window size and location improved, EntityTablePanel some refactoring
   EntityTablePanel constructor parameter conditionPanel replaced with conditionPanelFactory
+  EntityTablePanel now configures the horizontal alignment of condition panel fields to reflect the alignment of the associated cell renderer
