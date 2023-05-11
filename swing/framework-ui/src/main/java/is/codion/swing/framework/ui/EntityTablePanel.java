@@ -57,7 +57,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToolBar;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
@@ -87,6 +86,7 @@ import java.util.Set;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
@@ -96,6 +96,8 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -1723,25 +1725,20 @@ public class EntityTablePanel extends JPanel {
       if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
         conditionPanelVisibleState.set(true);
       }
-      List<Property<?>> properties = tableConditionPanel.componentPanel()
-              .columnComponents()
-              .values()
-              .stream()
+      List<Property<?>> properties = tableConditionPanel.componentPanel().columnComponents().values().stream()
               .filter(panel -> tableModel.columnModel().isColumnVisible(panel.model().columnIdentifier()))
               .map(panel -> tableModel.entityDefinition().property(panel.model().columnIdentifier()))
+              .sorted(Property.propertyComparator())
               .collect(toList());
-      if (!properties.isEmpty()) {
-        if (properties.size() == 1) {
-          tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
-        }
-        else {
-          properties.sort(Property.propertyComparator());
-          Dialogs.selectionDialog(properties)
-                  .owner(dialogOwner)
-                  .title(dialogTitle)
-                  .selectSingle()
-                  .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
-        }
+      if (properties.size() == 1) {
+        tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
+      }
+      else if (!properties.isEmpty()) {
+        Dialogs.selectionDialog(properties)
+                .owner(dialogOwner)
+                .title(dialogTitle)
+                .selectSingle()
+                .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
       }
     }
   }
@@ -1801,12 +1798,15 @@ public class EntityTablePanel extends JPanel {
     return components;
   }
 
-  private static JScrollPane createHiddenLinkedScrollPane(JScrollPane masterScrollPane, JPanel panel) {
-    JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    Utilities.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
-    scrollPane.setVisible(false);
-
-    return scrollPane;
+  private static JScrollPane createHiddenLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
+    return Components.scrollPane(panelToScroll)
+            .horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
+            .verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
+            .visible(false)
+            .onBuild(scrollPane -> linkBoundedRangeModels(
+                    parentScrollPane.getHorizontalScrollBar().getModel(),
+                    scrollPane.getHorizontalScrollBar().getModel()))
+            .build();
   }
 
   private static Point popupLocation(JTable table) {

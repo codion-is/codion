@@ -8895,3 +8895,5 @@
   FilteredTableFilterModel.columnFilterModel() renamed conditionModel()
   FilteredTableConditionModel renamed TableConditionModel and moved to common.model
   EntityTableConditionModel now extends TableConditionModel, related refactoring
+  ComponentBuilder.visible() added
+  EntityPanel, detail window size and location improved, EntityTablePanel some refactoring

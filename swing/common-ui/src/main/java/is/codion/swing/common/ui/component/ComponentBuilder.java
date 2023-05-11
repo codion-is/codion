@@ -205,6 +205,12 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   B opaque(boolean opaque);
 
   /**
+   * @param visible the initial component visibility, default true
+   * @return this builder instance
+   */
+  B visible(boolean visible);
+
+  /**
    * @param orientation the component orientation
    * @return this builder instance
    * @see JComponent#setComponentOrientation(ComponentOrientation)
