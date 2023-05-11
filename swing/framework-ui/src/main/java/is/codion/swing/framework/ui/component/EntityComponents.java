@@ -28,6 +28,7 @@ import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
+import is.codion.swing.framework.ui.icons.FrameworkIcons;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -301,7 +302,8 @@ public class EntityComponents {
    */
   public final <T extends Temporal> TemporalInputPanel.Builder<T> temporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return Components.temporalInputPanel(attribute.valueClass(), dateTimePattern)
-            .toolTipText(entityDefinition.property(attribute).description());
+            .toolTipText(entityDefinition.property(attribute).description())
+            .buttonIcon(FrameworkIcons.instance().calendar());
   }
 
   /**

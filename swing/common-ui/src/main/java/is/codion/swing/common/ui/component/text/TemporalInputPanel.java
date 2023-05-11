@@ -13,6 +13,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
@@ -42,20 +43,27 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   private final TemporalField<T> inputField;
   private final JButton calendarButton;
+  private final ImageIcon buttonIcon;
 
   TemporalInputPanel(TemporalField<T> temporalField) {
+    this(temporalField, null);
+  }
+
+  TemporalInputPanel(TemporalField<T> temporalField, ImageIcon buttonIcon) {
     super(new BorderLayout());
     this.inputField = requireNonNull(temporalField, "temporalField");
+    this.buttonIcon = buttonIcon;
     add(temporalField, BorderLayout.CENTER);
     if (supportsCalendar(temporalField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
-              .caption("...")
+              .caption(buttonIcon == null ? "..." : null)
+              .smallIcon(buttonIcon)
               .description(MESSAGES.getString("display_calendar"))
               .build();
       KeyEvents.builder(VK_INSERT)
               .action(displayCalendarControl)
               .enable(temporalField);
-      calendarButton = new JButton(displayCalendarControl);
+      calendarButton = displayCalendarControl.createButton();
       calendarButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
       add(calendarButton, BorderLayout.EAST);
     }
@@ -161,6 +169,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     if (LocalDate.class.equals(inputField.temporalClass())) {
       Dialogs.calendarDialog()
               .owner(inputField)
+              .icon(buttonIcon)
               .initialValue((LocalDate) getTemporal())
               .selectDate()
               .ifPresent(inputField::setTemporal);
@@ -168,6 +177,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     else if (LocalDateTime.class.equals(inputField.temporalClass())) {
       Dialogs.calendarDialog()
               .owner(inputField)
+              .icon(buttonIcon)
               .initialValue((LocalDateTime) getTemporal())
               .selectDateTime()
               .ifPresent(inputField::setTemporal);
@@ -210,6 +220,12 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
      * @return this builder instance
      */
     Builder<T> buttonFocusable(boolean buttonFocusable);
+
+    /**
+     * @param buttonIcon the button icon
+     * @return this builder instance
+     */
+    Builder<T> buttonIcon(ImageIcon buttonIcon);
   }
 
   private static final class InputFocusAdapter extends FocusAdapter {
@@ -239,6 +255,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     private UpdateOn updateOn = UpdateOn.KEYSTROKE;
     private boolean selectAllOnFocusGained;
     private boolean buttonFocusable;
+    private ImageIcon buttonIcon;
 
     private DefaultBuilder(Class<T> valueClass, String dateTimePattern, Value<T> linkedValue) {
       super(linkedValue);
@@ -274,8 +291,14 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     }
 
     @Override
+    public Builder<T> buttonIcon(ImageIcon buttonIcon) {
+      this.buttonIcon = buttonIcon;
+      return this;
+    }
+
+    @Override
     protected TemporalInputPanel<T> createComponent() {
-      TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField());
+      TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField(), buttonIcon);
       inputPanel.calendarButton().ifPresent(button ->
               button.setFocusable(buttonFocusable));
 
