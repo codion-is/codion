@@ -351,24 +351,23 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
+   * @param tableModel the SwingEntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(requireNonNull(tableModel), filteredTableConditionPanel(tableModel.conditionModel(),
-            tableModel.columnModel(), new EntityConditionPanelFactory(tableModel.entityDefinition())));
+    this(requireNonNull(tableModel), new EntityConditionPanelFactory(tableModel.entityDefinition()));
   }
 
   /**
    * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param conditionPanel the condition panel, if any
+   * @param tableModel the SwingEntityTableModel instance
+   * @param conditionPanelFactory the condition panel factory, if any
    */
   public EntityTablePanel(SwingEntityTableModel tableModel,
-                          FilteredTableConditionPanel<Attribute<?>> conditionPanel) {
+                          ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
     this.conditionRefreshControl = createConditionRefreshControl();
-    this.conditionPanel = conditionPanel;
+    this.conditionPanel = createConditionPanel(conditionPanelFactory);
     this.tableScrollPane = new JScrollPane(table);
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.filterPanel = table.conditionPanel();
@@ -1473,6 +1472,10 @@ public class EntityTablePanel extends JPanel {
     toolBar.setVisible(false);
 
     return toolBar;
+  }
+
+  private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
+    return conditionPanelFactory == null ? null : filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
   }
 
   private JScrollPane createConditionPanelScrollPane() {
