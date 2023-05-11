@@ -131,6 +131,8 @@ final class KeyboardShortcutsPanel extends JPanel {
   private static JPanel dateTimeField() {
     return panel(gridLayout(0, 2))
             .addAll(new JLabel(MESSAGES.getString("display_calendar")), new JLabel(INSERT))
+            .addAll(new JLabel(MESSAGES.getString("increment")), new JLabel(UP))
+            .addAll(new JLabel(MESSAGES.getString("decrement")), new JLabel(DOWN))
             .border(createTitledBorder(MESSAGES.getString("date_time_field")))
             .build();
   }

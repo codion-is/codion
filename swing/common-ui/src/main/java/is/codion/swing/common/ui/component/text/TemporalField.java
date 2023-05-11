@@ -5,9 +5,12 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.DateTimeParser;
 import is.codion.common.event.EventDataListener;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
@@ -20,9 +23,12 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
 
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_UP;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -33,10 +39,19 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 
+  private static final char DAY = 'd';
+  private static final char MONTH = 'M';
+  private static final char YEAR = 'y';
+  private static final char HOUR = 'H';
+  private static final char MINUTE = 'm';
+  private static final char SECOND = 's';
+
   private final Class<T> temporalClass;
   private final DateTimeFormatter formatter;
   private final DateTimeParser<T> dateTimeParser;
   private final Value<T> value = Value.value();
+  private final State valueNotNullState = State.state(false);
+  private final String dateTimePattern;
 
   private TemporalField(DefaultTemporalFieldBuilder<T> builder) {
     super(createFormatter(builder.mask));
@@ -44,8 +59,20 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
     this.temporalClass = builder.temporalClass;
     this.formatter = builder.dateTimeFormatter;
     this.dateTimeParser = builder.dateTimeParser;
+    this.dateTimePattern = builder.dateTimePattern;
+    this.value.addDataListener(temporal -> valueNotNullState.set(temporal != null));
     setFocusLostBehavior(builder.focusLostBehaviour);
     getDocument().addDocumentListener((DocumentAdapter) e -> value.set(getTemporal()));
+    KeyEvents.builder(VK_UP)
+            .action(Control.builder(this::increment)
+                    .enabledState(valueNotNullState)
+                    .build())
+            .enable(this);
+    KeyEvents.builder(VK_DOWN)
+            .action(Control.builder(this::decrement)
+                    .enabledState(valueNotNullState)
+                    .build())
+            .enable(this);
   }
 
   /**
@@ -115,6 +142,49 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   public static <T extends Temporal> Builder<T> builder(Class<T> temporalClass, String dateTimePattern,
                                                         Value<T> linkedValue) {
     return new DefaultTemporalFieldBuilder<>(temporalClass, dateTimePattern, requireNonNull(linkedValue));
+  }
+
+  private void increment() {
+    increment(1);
+  }
+
+  private void decrement() {
+    increment(-1);
+  }
+
+  private void increment(int amount) {
+    int caretPosition = getCaretPosition();
+    if (caretPosition <= dateTimePattern.length()) {
+      if (value.isNotNull()) {
+        char patternCharacter = caretPosition == dateTimePattern.length() ?
+                dateTimePattern.charAt(dateTimePattern.length() - 1) :
+                dateTimePattern.charAt(caretPosition);
+        ChronoUnit chronoUnit = chronoUnit(patternCharacter);
+        if (chronoUnit != null) {
+          setTemporal(getTemporal().plus(amount, chronoUnit));
+          setCaretPosition(caretPosition);
+        }
+      }
+    }
+  }
+
+  private ChronoUnit chronoUnit(char patternCharacter) {
+    switch (patternCharacter) {
+      case DAY:
+        return ChronoUnit.DAYS;
+      case MONTH:
+        return ChronoUnit.MONTHS;
+      case YEAR:
+        return ChronoUnit.YEARS;
+      case HOUR:
+        return ChronoUnit.HOURS;
+      case MINUTE:
+        return ChronoUnit.MINUTES;
+      case SECOND:
+        return ChronoUnit.SECONDS;
+      default:
+        return null;
+    }
   }
 
   /**
