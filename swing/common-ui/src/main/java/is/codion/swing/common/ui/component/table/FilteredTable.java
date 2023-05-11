@@ -141,11 +141,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   private final ColumnConditionPanel.Factory<C> conditionPanelFactory;
 
   /**
-   * The text field used for entering the search condition
-   */
-  private final JTextField searchField;
-
-  /**
    * Fired each time the table is double-clicked
    */
   private final Event<MouseEvent> doubleClickedEvent = Event.event();
@@ -158,7 +153,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * The filter condition panel
    */
-  private FilteredTableConditionPanel<C> conditionPanel;
+  private FilteredTableConditionPanel<C> filterPanel;
+
+  /**
+   * The text field used for entering the search condition
+   */
+  private JTextField searchField;
 
   /**
    * the action performed when the table is double-clicked
@@ -187,7 +187,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     this.tableModel = tableModel;
     this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
     this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, requireNonNull(cellRendererFactory)));
-    this.searchField = createSearchField();
     initializeTableHeader();
     bindEvents();
   }
@@ -195,7 +194,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(getTableHeader(), searchField, conditionPanel);
+    Utilities.updateUI(getTableHeader(), searchField, filterPanel);
   }
 
   @Override
@@ -219,20 +218,24 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   /**
-   * @return the condition panel
+   * @return the filter panel
    */
   public FilteredTableConditionPanel<C> filterPanel() {
-    if (conditionPanel == null) {
-      conditionPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
+    if (filterPanel == null) {
+      filterPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
     }
 
-    return conditionPanel;
+    return filterPanel;
   }
 
   /**
    * @return the search field
    */
   public JTextField searchField() {
+    if (searchField == null) {
+      searchField = createSearchField();
+    }
+
     return searchField;
   }
 
@@ -513,6 +516,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
                 tableModel.searchModel().nextResult();
               }
             })
+            .onBuild(field -> KeyEvents.builder(VK_F)
+                    .action(Control.control(field::requestFocusInWindow))
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .enable(this))
             .build();
   }
 
@@ -619,11 +627,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     KeyEvents.builder(VK_C)
             .action(Control.control(this::copySelectedCell))
             .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-            .enable(this);
-    KeyEvents.builder(VK_F)
-            .action(Control.control(searchField::requestFocusInWindow))
-            .modifiers(CTRL_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .enable(this);
   }
 

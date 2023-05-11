@@ -8913,3 +8913,4 @@
   SwingEntityTableModel, further refactoring
   EntityTablePanel constructor parameter conditionPanelFactory now of type EntityConditionPanelFactory
   EntityTablePanel, lazy initialization of components
+  FilteredTable, lazy initialization of searchField
