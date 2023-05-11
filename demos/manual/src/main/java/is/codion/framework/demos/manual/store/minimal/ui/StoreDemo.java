@@ -22,7 +22,6 @@ import javax.swing.UIManager;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static javax.swing.JTable.AUTO_RESIZE_ALL_COLUMNS;
 
 public class StoreDemo {
 
@@ -80,24 +79,21 @@ public class StoreDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    SwingEntityModel customerModel =
-            new SwingEntityModel(Customer.TYPE, connectionProvider);
     SwingEntityModel addressModel =
             new SwingEntityModel(Address.TYPE, connectionProvider);
-    customerModel.addDetailModel(addressModel);
-
-    EntityPanel customerPanel =
-            new EntityPanel(customerModel,
-                    new CustomerEditPanel(customerModel.editModel()));
     EntityPanel addressPanel =
             new EntityPanel(addressModel,
                     new AddressEditPanel(addressModel.editModel()));
+
+    SwingEntityModel customerModel =
+            new SwingEntityModel(Customer.TYPE, connectionProvider);
+    EntityPanel customerPanel =
+            new EntityPanel(customerModel,
+                    new CustomerEditPanel(customerModel.editModel()));
+
+    customerModel.addDetailModel(addressModel);
     customerPanel.addDetailPanel(addressPanel);
 
-    customerPanel.tablePanel().table()
-            .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
-    addressPanel.tablePanel().table()
-            .setAutoResizeMode(AUTO_RESIZE_ALL_COLUMNS);
     addressPanel.tablePanel()
             .setConditionPanelVisible(true);
 
