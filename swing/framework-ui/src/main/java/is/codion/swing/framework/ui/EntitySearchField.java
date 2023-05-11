@@ -593,7 +593,7 @@ public final class EntitySearchField extends HintTextField {
               .enable(table.searchField());
       KeyEvents.builder(VK_F)
               .modifiers(CTRL_DOWN_MASK)
-              .action(Control.control(() -> table.searchField().requestFocusInWindow()))
+              .action(Control.control(table.searchField()::requestFocusInWindow))
               .enable(table);
       tableModel.columnModel().columns().forEach(this::configureColumn);
       Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();

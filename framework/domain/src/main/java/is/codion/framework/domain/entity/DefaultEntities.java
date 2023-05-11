@@ -153,13 +153,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
     }
   }
 
-  private void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
-    if (!referencedEntity.containsAttribute(referencedAttribute)) {
-      throw new IllegalArgumentException("Attribute " + referencedAttribute + " referenced by foreign key "
-              + foreignKey + " not found in referenced entity");
-    }
-  }
-
   private void populateForeignDefinitions() {
     for (DefaultEntityDefinition definition : entityDefinitions.values()) {
       for (ForeignKey foreignKey : definition.foreignKeys()) {
@@ -174,5 +167,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     REGISTERED_ENTITIES.put(domainType, this);
+  }
+
+  private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
+    if (!referencedEntity.containsAttribute(referencedAttribute)) {
+      throw new IllegalArgumentException("Attribute " + referencedAttribute + " referenced by foreign key "
+              + foreignKey + " not found in referenced entity");
+    }
   }
 }

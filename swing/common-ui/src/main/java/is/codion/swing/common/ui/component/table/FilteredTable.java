@@ -19,6 +19,9 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel.Row
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -155,7 +158,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * The filter condition panel
    */
-  private FilteredTableConditionPanel<T, C> conditionPanel;
+  private FilteredTableConditionPanel<C> conditionPanel;
 
   /**
    * the action performed when the table is double-clicked
@@ -218,7 +221,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * @return the condition panel
    */
-  public FilteredTableConditionPanel<T, C> conditionPanel() {
+  public FilteredTableConditionPanel<C> conditionPanel() {
     if (conditionPanel == null) {
       conditionPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
     }
@@ -609,7 +612,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }
     });
-    tableModel.columnModel().columns().forEach(this::bindFilterIndicatorEvents);
+    tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     tableModel.addSortListener(getTableHeader()::repaint);
     addKeyListener(new MoveResizeColumnKeyListener());
@@ -634,13 +637,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return false;
   }
 
-  private void bindFilterIndicatorEvents(FilteredTableColumn<?> column) {
-    ColumnConditionModel<?, ?> model = getModel().filterModel().conditionModels().get(column.getIdentifier());
-    if (model != null) {
-      model.addEnabledListener(() -> getTableHeader().repaint());
-    }
-  }
-
   private final class SortableHeaderRenderer implements TableCellRenderer {
 
     private final TableCellRenderer wrappedRenderer;
@@ -662,13 +658,13 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(tableColumn.getIdentifier());
         label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
         label.setHorizontalTextPosition(SwingConstants.LEFT);
-        label.setIcon(headerRendererIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+        label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 
       return component;
     }
 
-    private Icon headerRendererIcon(C columnIdentifier, int iconSizePixels) {
+    private Icon sortArrowIcon(C columnIdentifier, int iconSizePixels) {
       SortOrder sortOrder = tableModel.sortModel().sortOrder(columnIdentifier);
       if (sortOrder == SortOrder.UNSORTED) {
         return null;
@@ -765,8 +761,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         return;
       }
 
-      JTableHeader tableHeader = (JTableHeader) e.getSource();
-      FilteredTableColumnModel<C> columnModel = (FilteredTableColumnModel<C>) tableHeader.getColumnModel();
+      FilteredTableColumnModel<C> columnModel = tableModel.columnModel();
       int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         if (!getSelectionModel().isSelectionEmpty()) {
@@ -774,7 +769,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         }
         C columnIdentifier = columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
-          FilteredTableSortModel<R, C> sortModel = getModel().sortModel();
+          FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
           SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier), e.isShiftDown());
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, nextSortOrder);
@@ -813,7 +808,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
    */
-  public interface Builder<T extends FilteredTableModel<R, C>, R, C> {
+  public interface Builder<T extends FilteredTableModel<R, C>, R, C>
+          extends ComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>> {
 
     /**
      * @param conditionPanelFactory the column condition panel factory
@@ -880,14 +876,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
      * @return this builder instance
      */
     Builder<T, R, C> autoResizeMode(int autoResizeMode);
-
-    /**
-     * @return a new {@link FilteredTable} base on this builder
-     */
-    FilteredTable<T, R, C> build();
   }
 
-  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C> implements Builder<T, R, C> {
+  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C>
+          extends AbstractComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>>
+          implements Builder<T, R, C> {
 
     private final T tableModel;
 
@@ -976,7 +969,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     @Override
-    public FilteredTable<T, R, C> build() {
+    protected FilteredTable<T, R, C> createComponent() {
       FilteredTable<T, R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
       filteredTable.setAutoStartsEdit(autoStartsEdit);
       filteredTable.setCenterOnScroll(centerOnScroll);
@@ -990,6 +983,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
       return filteredTable;
     }
+
+    @Override
+    protected ComponentValue<Void, FilteredTable<T, R, C>> createComponentValue(FilteredTable<T, R, C> component) {
+      throw new UnsupportedOperationException("A ComponentValue can not be based on a FilteredTable");
+    }
+
+    @Override
+    protected void setInitialValue(FilteredTable<T, R, C> component, Void initialValue) {}
   }
 
   private final class MoveResizeColumnKeyListener extends KeyAdapter {

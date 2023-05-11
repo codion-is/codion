@@ -30,7 +30,6 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
-import java.awt.event.MouseEvent;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
@@ -49,8 +48,9 @@ public final class DatabaseExplorerPanel extends JPanel {
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
     FilteredTable<FilteredTableModel<Schema, Integer>, Schema, Integer> schemaTable =
-            FilteredTable.builder(model.schemaModel()).build();
-    schemaTable.addDoubleClickListener(this::populateSchema);
+            FilteredTable.builder(model.schemaModel())
+                    .doubleClickAction(Control.control(this::populateSchema))
+                    .build();
 
     FilteredTable<FilteredTableModel<DefinitionRow, Integer>, DefinitionRow, Integer> domainTable =
             FilteredTable.builder(model.definitionModel()).build();
@@ -102,7 +102,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .show();
   }
 
-  private void populateSchema(MouseEvent event) {
+  private void populateSchema() {
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
     JPanel northPanel = Components.panel(borderLayout())
             .add(schemaLabel, BorderLayout.CENTER)

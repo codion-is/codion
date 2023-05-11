@@ -295,7 +295,7 @@ final class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Entity deepCopy() {
-    return deepCopy(new HashMap<Key, Entity>());
+    return deepCopy(new HashMap<>());
   }
 
   @Override

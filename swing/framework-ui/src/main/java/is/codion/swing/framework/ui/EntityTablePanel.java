@@ -56,9 +56,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.JToolBar;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -87,6 +88,7 @@ import java.util.Set;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
@@ -96,6 +98,8 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
+import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
 /**
  * The EntityTablePanel is a UI class based on the EntityTableModel class.
@@ -255,11 +259,11 @@ public class EntityTablePanel extends JPanel {
 
   private final JScrollPane tableScrollPane;
 
-  private final FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> conditionPanel;
+  private final FilteredTableConditionPanel<Attribute<?>> conditionPanel;
 
   private final JScrollPane conditionPanelScrollPane;
 
-  private final FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> filterPanel;
+  private final FilteredTableConditionPanel<Attribute<?>> filterPanel;
 
   private final JScrollPane filterPanelScrollPane;
 
@@ -349,24 +353,23 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
+   * @param tableModel the SwingEntityTableModel instance
    */
   public EntityTablePanel(SwingEntityTableModel tableModel) {
-    this(requireNonNull(tableModel), filteredTableConditionPanel(tableModel.conditionModel(),
-            tableModel.columnModel(), new EntityConditionPanelFactory(tableModel.entityDefinition())));
+    this(requireNonNull(tableModel), new EntityConditionPanelFactory(tableModel.entityDefinition()));
   }
 
   /**
    * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param conditionPanel the condition panel, if any
+   * @param tableModel the SwingEntityTableModel instance
+   * @param conditionPanelFactory the condition panel factory, if any
    */
   public EntityTablePanel(SwingEntityTableModel tableModel,
-                          FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> conditionPanel) {
+                          ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
     this.tableModel = requireNonNull(tableModel, "tableModel");
     this.table = createTable();
     this.conditionRefreshControl = createConditionRefreshControl();
-    this.conditionPanel = conditionPanel;
+    this.conditionPanel = createConditionPanel(conditionPanelFactory);
     this.tableScrollPane = new JScrollPane(table);
     this.conditionPanelScrollPane = createConditionPanelScrollPane();
     this.filterPanel = table.conditionPanel();
@@ -888,6 +891,7 @@ public class EntityTablePanel extends JPanel {
         layoutPanel(tablePanel, includeSouthPanel ? initializeSouthPanel() : null);
         setConditionPanelVisibleInternal(conditionPanelVisibleState.get());
         setSummaryPanelVisibleInternal(summaryPanelVisibleState.get());
+        configureConditionFieldHorizontalAlignment();
         bindEvents();
         setupKeyboardActions();
       }
@@ -1230,9 +1234,6 @@ public class EntityTablePanel extends JPanel {
    * @see EntityEditModel#updateEnabledObserver()
    */
   private Controls createUpdateSelectedControls() {
-    if (!includeUpdateSelectedControls()) {
-      throw new IllegalStateException("Table model is read only or does not allow updates");
-    }
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
     StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
@@ -1270,9 +1271,6 @@ public class EntityTablePanel extends JPanel {
    * @throws IllegalStateException in case the underlying model is read only or if deleting is not enabled
    */
   private Control createDeleteSelectedControl() {
-    if (!includeDeleteSelectedControl()) {
-      throw new IllegalStateException("Table model is read only or does not allow delete");
-    }
     return Control.builder(this::deleteWithConfirmation)
             .caption(FrameworkMessages.delete())
             .enabledState(State.and(
@@ -1322,10 +1320,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createToggleConditionPanelControl() {
-    if (conditionPanel == null) {
-      return null;
-    }
-
     return Control.builder(this::toggleConditionPanel)
             .smallIcon(FrameworkIcons.instance().search())
             .description(MESSAGES.getString("show_condition_panel"))
@@ -1333,10 +1327,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private Control createToggleFilterPanelControl() {
-    if (filterPanel == null) {
-      return null;
-    }
-
     return Control.builder(this::toggleFilterPanel)
             .smallIcon(FrameworkIcons.instance().filter())
             .description(MESSAGES.getString("show_filter_panel"))
@@ -1431,12 +1421,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
-    FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> filteredTable = FilteredTable.builder(tableModel)
+    return FilteredTable.builder(tableModel)
             .cellRendererFactory(new EntityTableCellRendererFactory())
+            .onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT))
             .build();
-    filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT);
-
-    return filteredTable;
   }
 
   private Control createConditionRefreshControl() {
@@ -1473,6 +1461,10 @@ public class EntityTablePanel extends JPanel {
     return toolBar;
   }
 
+  private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
+    return conditionPanelFactory == null ? null : filteredTableConditionPanel(tableModel.conditionModel(), tableModel.columnModel(), conditionPanelFactory);
+  }
+
   private JScrollPane createConditionPanelScrollPane() {
     return conditionPanel == null ? null : createHiddenLinkedScrollPane(tableScrollPane, conditionPanel);
   }
@@ -1496,6 +1488,35 @@ public class EntityTablePanel extends JPanel {
     }
 
     return createHiddenLinkedScrollPane(tableScrollPane, summaryPanel);
+  }
+
+  private void configureConditionFieldHorizontalAlignment() {
+    conditionPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
+    filterPanel.componentPanel().columnComponents().values().forEach(this::configureConditionFieldHorizontalAlignment);
+  }
+
+  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
+    configureConditionFieldHorizontalAlignment(columnConditionPanel,
+            tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
+  }
+
+  private void configureConditionFieldHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
+                                                          TableCellRenderer cellRenderer) {
+    if (cellRenderer instanceof DefaultTableCellRenderer) {
+      int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
+      JComponent component = columnConditionPanel.equalField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
+      component = columnConditionPanel.lowerBoundField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
+      component = columnConditionPanel.upperBoundField();
+      if (component instanceof JTextField) {
+        ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
+      }
+    }
   }
 
   private JPanel createTablePanel() {
@@ -1716,32 +1737,27 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final void selectConditionPanel(FilteredTableConditionPanel<?, Attribute<?>> tableConditionPanel,
+  private static final void selectConditionPanel(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
                                                  JScrollPane conditionPanelScrollPane, State conditionPanelVisibleState,
                                                  SwingEntityTableModel tableModel, JComponent dialogOwner, String dialogTitle) {
     if (tableConditionPanel != null) {
       if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
         conditionPanelVisibleState.set(true);
       }
-      List<Property<?>> properties = tableConditionPanel.componentPanel()
-              .columnComponents()
-              .values()
-              .stream()
+      List<Property<?>> properties = tableConditionPanel.componentPanel().columnComponents().values().stream()
               .filter(panel -> tableModel.columnModel().isColumnVisible(panel.model().columnIdentifier()))
               .map(panel -> tableModel.entityDefinition().property(panel.model().columnIdentifier()))
+              .sorted(Property.propertyComparator())
               .collect(toList());
-      if (!properties.isEmpty()) {
-        if (properties.size() == 1) {
-          tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
-        }
-        else {
-          properties.sort(Property.propertyComparator());
-          Dialogs.selectionDialog(properties)
-                  .owner(dialogOwner)
-                  .title(dialogTitle)
-                  .selectSingle()
-                  .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
-        }
+      if (properties.size() == 1) {
+        tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
+      }
+      else if (!properties.isEmpty()) {
+        Dialogs.selectionDialog(properties)
+                .owner(dialogOwner)
+                .title(dialogTitle)
+                .selectSingle()
+                .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
       }
     }
   }
@@ -1756,7 +1772,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static void addRefreshOnEnterControl(Collection<FilteredTableColumn<Attribute<?>>> columns,
-                                               FilteredTableConditionPanel<SwingEntityTableModel, Attribute<?>> tableConditionPanel,
+                                               FilteredTableConditionPanel<Attribute<?>> tableConditionPanel,
                                                Control refreshControl) {
     columns.forEach(column -> {
       ColumnConditionPanel<?, ?> columnConditionPanel =
@@ -1801,12 +1817,15 @@ public class EntityTablePanel extends JPanel {
     return components;
   }
 
-  private static JScrollPane createHiddenLinkedScrollPane(JScrollPane masterScrollPane, JPanel panel) {
-    JScrollPane scrollPane = new JScrollPane(panel, ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER, ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
-    Utilities.linkBoundedRangeModels(masterScrollPane.getHorizontalScrollBar().getModel(), scrollPane.getHorizontalScrollBar().getModel());
-    scrollPane.setVisible(false);
-
-    return scrollPane;
+  private static JScrollPane createHiddenLinkedScrollPane(JScrollPane parentScrollPane, JPanel panelToScroll) {
+    return Components.scrollPane(panelToScroll)
+            .horizontalScrollBarPolicy(HORIZONTAL_SCROLLBAR_NEVER)
+            .verticalScrollBarPolicy(VERTICAL_SCROLLBAR_NEVER)
+            .visible(false)
+            .onBuild(scrollPane -> linkBoundedRangeModels(
+                    parentScrollPane.getHorizontalScrollBar().getModel(),
+                    scrollPane.getHorizontalScrollBar().getModel()))
+            .build();
   }
 
   private static Point popupLocation(JTable table) {

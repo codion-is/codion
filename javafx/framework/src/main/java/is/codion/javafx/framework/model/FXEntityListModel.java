@@ -225,17 +225,6 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final void addEntitiesSorted(Collection<Entity> entities) {
-    addEntitiesAtSorted(getSize(), entities);
-  }
-
-  @Override
-  public final void addEntitiesAtSorted(int index, Collection<Entity> entities) {
-    addAll(index, entities);
-    sort(sortedList().getComparator());
-  }
-
-  @Override
   public final void replaceEntities(Collection<Entity> entities) {
     replaceEntitiesByKey(Entity.mapToPrimaryKey(entities));
   }
@@ -539,7 +528,8 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
           addAll(entitiesToAdd);
           break;
         case ADD_TOP_SORTED:
-          addEntitiesAtSorted(0, entitiesToAdd);
+          addAll(0, entitiesToAdd);
+          sort(sortedList().getComparator());
           break;
       }
     }
@@ -633,11 +623,11 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> attribute = column.attribute();
       int index = columns.indexOf(column);
-      ColumnConditionModel<?, ?> conditionModel = this.conditionModel.conditionModels().get(attribute);
-      ConditionPreferences conditionPreferences = conditionModel != null ?
-              conditionPreferences(conditionModel.autoEnableState().get(),
-                      conditionModel.caseSensitiveState().get(),
-                      conditionModel.automaticWildcardValue().get()) : null;
+      ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
+      ConditionPreferences conditionPreferences = columnConditionModel != null ?
+              conditionPreferences(columnConditionModel.autoEnableState().get(),
+                      columnConditionModel.caseSensitiveState().get(),
+                      columnConditionModel.automaticWildcardValue().get()) : null;
       ColumnPreferences columnPreferences = columnPreferences(attribute, index, (int) column.getWidth(), conditionPreferences);
       columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }

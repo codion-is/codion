@@ -22,8 +22,9 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
 
   final T tableModel;
   final C columnIdentifier;
-  final Class<?> columnClass;
-  final boolean useBooleanRenderer;
+
+  private final Class<?> columnClass;
+  private final boolean useBooleanRenderer;
 
   int horizontalAlignment;
   boolean toolTipData;

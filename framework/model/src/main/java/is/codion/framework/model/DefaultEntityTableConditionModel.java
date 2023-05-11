@@ -57,11 +57,6 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public EntityDefinition entityDefinition() {
-    return connectionProvider.entities().definition(entityType);
-  }
-
-  @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
     Condition condition = condition();
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
@@ -161,8 +156,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   private void bindEvents() {
-    conditionModel.conditionModels().values().forEach(conditionModel ->
-            conditionModel.addChangeListener(() -> conditionChangedEvent.onEvent(condition())));
+    conditionModel.conditionModels().values().forEach(columnConditionModel ->
+            columnConditionModel.addChangeListener(() -> conditionChangedEvent.onEvent(condition())));
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,
@@ -170,16 +165,16 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     Collection<ColumnConditionModel<? extends C, ?>> models = new ArrayList<>();
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
     for (ColumnProperty<?> columnProperty : definition.columnProperties()) {
-      ColumnConditionModel<? extends C, ?> conditionModel = conditionModelFactory.createConditionModel((C) columnProperty.attribute());
-      if (conditionModel != null) {
-        models.add(conditionModel);
+      ColumnConditionModel<? extends C, ?> columnConditionModel = conditionModelFactory.createConditionModel((C) columnProperty.attribute());
+      if (columnConditionModel != null) {
+        models.add(columnConditionModel);
       }
     }
     for (ForeignKeyProperty foreignKeyProperty :
             connectionProvider.entities().definition(entityType).foreignKeyProperties()) {
-      ColumnConditionModel<? extends C, ?> conditionModel = conditionModelFactory.createConditionModel((C) foreignKeyProperty.attribute());
-      if (conditionModel != null) {
-        models.add(conditionModel);
+      ColumnConditionModel<? extends C, ?> columnConditionModel = conditionModelFactory.createConditionModel((C) foreignKeyProperty.attribute());
+      if (columnConditionModel != null) {
+        models.add(columnConditionModel);
       }
     }
 

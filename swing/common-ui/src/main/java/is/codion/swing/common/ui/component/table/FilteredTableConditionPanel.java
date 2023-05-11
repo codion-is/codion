@@ -9,7 +9,6 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -30,7 +29,7 @@ import static java.util.Objects.requireNonNull;
  * @param <C> the column identifier type
  * @see #filteredTableConditionPanel(TableConditionModel, FilteredTableColumnModel, ColumnConditionPanel.Factory)
  */
-public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C>, C> extends JPanel {
+public final class FilteredTableConditionPanel<C> extends JPanel {
 
   private final TableConditionModel<C> conditionModel;
   private final FilteredTableColumnComponentPanel<C, ColumnConditionPanel<C, ?>> componentPanel;
@@ -115,16 +114,15 @@ public final class FilteredTableConditionPanel<T extends FilteredTableModel<?, C
   }
 
   /**
-   * @param <T> the table model type
    * @param <C> the column identifier type
    * @param conditionModel the condition model
    * @param columnModel the column model
    * @param conditionPanelFactory the condition panel factory
    * @return a new {@link FilteredTableConditionPanel}
    */
-  public static <T extends FilteredTableModel<?, C>, C> FilteredTableConditionPanel<T, C> filteredTableConditionPanel(TableConditionModel<C> conditionModel,
-                                                                                                                      FilteredTableColumnModel<C> columnModel,
-                                                                                                                      ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+  public static <C> FilteredTableConditionPanel<C> filteredTableConditionPanel(TableConditionModel<C> conditionModel,
+                                                                               FilteredTableColumnModel<C> columnModel,
+                                                                               ColumnConditionPanel.Factory<C> conditionPanelFactory) {
     return new FilteredTableConditionPanel<>(conditionModel, columnModel, conditionPanelFactory);
   }
 

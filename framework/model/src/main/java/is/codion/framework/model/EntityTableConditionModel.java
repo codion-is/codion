@@ -10,7 +10,6 @@ import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
@@ -29,11 +28,6 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
    * @return the type of the entity this table condition model is based on
    */
   EntityType entityType();
-
-  /**
-   * @return the underlying entity definition
-   */
-  EntityDefinition entityDefinition();
 
   /**
    * Sets the search condition values of the condition model associated with {@code attribute}.

@@ -80,8 +80,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final String DETAIL_TABLES = "detail_tables";
-
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
   /**
@@ -154,11 +152,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     UP, DOWN, RIGHT, LEFT
   }
 
+  private static final String DETAIL_TABLES = "detail_tables";
   private static final int RESIZE_AMOUNT = 30;
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
-  private static final int DETAIL_WINDOW_OFFSET = 29;
-  private static final double DETAIL_WINDOW_SIZE_RATIO = 1.5;
-  private static final int DETAIL_WINDOW_HEIGHT_OFFSET = 54;
+  private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
+  private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
 
   /**
    * The EntityModel instance used by this EntityPanel
@@ -290,7 +288,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(entityModel, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -299,7 +297,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(entityModel, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
   }
 
   /**
@@ -1449,11 +1447,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       Dimension parentSize = parent.getSize();
       Dimension size = detailWindowSize(parentSize);
       Point parentLocation = parent.getLocation();
-      Point location = new Point(parentLocation.x + (parentSize.width - size.width),
-              parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET);
+      int detailWindowX = parentLocation.x + (parentSize.width - size.width);
+      int detailWindowY = parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET;
       detailPanelWindow = createDetailPanelWindow();
       detailPanelWindow.setSize(size);
-      detailPanelWindow.setLocation(location);
+      detailPanelWindow.setLocation(new Point(detailWindowX, detailWindowY));
       detailPanelWindow.setVisible(true);
     }
   }
@@ -1463,8 +1461,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the size to use when showing the detail window
    */
   private Dimension detailWindowSize(Dimension parentSize) {
-    return new Dimension((int) (parentSize.width / DETAIL_WINDOW_SIZE_RATIO), containsEditPanel() ?
-            (int) (parentSize.height / DETAIL_WINDOW_SIZE_RATIO) : parentSize.height - DETAIL_WINDOW_HEIGHT_OFFSET);
+    int detailWindowWidth = (int) (parentSize.width * DETAIL_WINDOW_SIZE_RATIO);
+    int detailWindowHeight = containsEditPanel() ? (int) (parentSize.height * DETAIL_WINDOW_SIZE_RATIO) : parentSize.height;
+
+    return new Dimension(detailWindowWidth, detailWindowHeight);
   }
 
   /**
