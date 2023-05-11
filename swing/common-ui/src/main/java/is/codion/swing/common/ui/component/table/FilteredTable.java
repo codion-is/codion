@@ -599,6 +599,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
   private void initializeTableHeader() {
     JTableHeader header = getTableHeader();
+    header.setFocusable(false);
     header.setReorderingAllowed(true);
     header.setAutoscrolls(true);
     header.addMouseMotionListener(new ColumnDragMouseHandler());

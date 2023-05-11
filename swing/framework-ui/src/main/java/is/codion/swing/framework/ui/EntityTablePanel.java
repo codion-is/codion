@@ -60,7 +60,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
-import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.BorderLayout;
@@ -1578,8 +1577,6 @@ public class EntityTablePanel extends JPanel {
 
   private void setupTable() {
     tableModel.columnModel().columns().forEach(this::configureColumn);
-    JTableHeader header = table.getTableHeader();
-    header.setFocusable(false);
     if (includePopupMenu) {
       addTablePopupMenu();
     }
