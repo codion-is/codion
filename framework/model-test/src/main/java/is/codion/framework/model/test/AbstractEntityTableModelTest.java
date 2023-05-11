@@ -292,11 +292,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void noVisibleColumns() {
-    assertThrows(IllegalArgumentException.class, this::createMasterTableModel);
-  }
-
-  @Test
   public void setColumns() {
     TableModel empModel = createEmployeeTableModel();
     empModel.setVisibleColumns(Employee.COMMISSION, Employee.DEPARTMENT_FK, Employee.HIREDATE);

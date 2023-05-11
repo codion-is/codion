@@ -7,14 +7,14 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.model.DefaultConditionModelFactory;
+import is.codion.framework.model.EntityConditionModelFactory;
 
 /**
  * A {@link ColumnConditionModel.Factory} implementation using {@link EntityObservableList} for foreign keys based on small datasets
  */
-public class FXConditionModelFactory extends DefaultConditionModelFactory {
+public class FXEntityConditionModelFactory extends EntityConditionModelFactory {
 
-  public FXConditionModelFactory(EntityConnectionProvider connectionProvider) {
+  public FXEntityConditionModelFactory(EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
   }
 

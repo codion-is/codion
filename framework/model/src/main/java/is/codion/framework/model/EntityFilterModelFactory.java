@@ -16,14 +16,25 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default ColumnConditionModel.Factory implementation.
+ * A default {@link ColumnConditionModel.Factory} implementation for creating filter models.
  */
-public class DefaultFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+public class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
 
   private final EntityDefinition entityDefinition;
 
-  public DefaultFilterModelFactory(EntityDefinition entityDefinition) {
+  /**
+   * Instantiates a new {@link EntityFilterModelFactory}.
+   * @param entityDefinition the entity definition
+   */
+  public EntityFilterModelFactory(EntityDefinition entityDefinition) {
     this.entityDefinition = requireNonNull(entityDefinition);
+  }
+
+  /**
+   * @return the underlying entity definition
+   */
+  public final EntityDefinition entityDefinition() {
+    return entityDefinition;
   }
 
   @Override

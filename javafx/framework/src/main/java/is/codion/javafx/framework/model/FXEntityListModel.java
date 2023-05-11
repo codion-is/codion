@@ -23,6 +23,7 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
@@ -88,24 +89,14 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     this(new FXEntityEditModel(entityType, connectionProvider));
   }
 
-
   public FXEntityListModel(FXEntityEditModel editModel) {
-    this(requireNonNull(editModel), entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-            new FXConditionModelFactory(editModel.connectionProvider())));
+    this(requireNonNull(editModel), new FXEntityConditionModelFactory(editModel.connectionProvider()));
   }
 
-  public FXEntityListModel(FXEntityEditModel editModel, EntityTableConditionModel<Attribute<?>> conditionModel) {
+  public FXEntityListModel(FXEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
     super(requireNonNull(editModel).entityType(), editModel.connectionProvider());
-    requireNonNull(conditionModel);
-    if (!conditionModel.entityType().equals(entityType())) {
-      throw new IllegalArgumentException("Entity ID mismatch, conditionModel: " + conditionModel.entityType()
-              + ", tableModel: " + entityType());
-    }
-    if (entityDefinition().visibleProperties().isEmpty()) {
-      throw new IllegalArgumentException("No visible properties defined for entity: " + entityType());
-    }
     this.editModel = editModel;
-    this.conditionModel = conditionModel;
+    this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     addEditEventListeners();
     bindEvents();

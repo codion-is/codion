@@ -8903,3 +8903,10 @@
   DefaultAttribute.isNumerical() bug fixed, did not check for BigDecimal
   SwingEntityTableModel constructor parameter conditionModel replaced with conditionModelFactory
   EntityTablePanel.conditionPanel() added
+  FXEntityListModel constructor parameter conditionModel replaced with conditionModelFactory
+  ColumnConditionModel.CASE_SENSITIVE now false and AUTOMATIC_WILDCARD now POSTFIX by default
+  DefaultFilterModelFactory renamed to EntityFilterModelFactory, entityDefinition() added
+  DefaultConditionModelFactory renamed to EntityConditionModelFactory
+  SwingConditionModelFactory renamed to SwingEntityConditionModelFactory
+  FXConditionModelFactory renamed to FXEntityConditionModelFactory
+  SwingEntityTableModel, minor refactoring

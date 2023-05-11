@@ -28,8 +28,9 @@ import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.framework.model.DefaultFilterModelFactory;
+import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
+import is.codion.framework.model.EntityFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -155,7 +156,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+                               EntityConditionModelFactory conditionModelFactory) {
     this(new SwingEntityEditModel(entityType, connectionProvider), conditionModelFactory);
   }
 
@@ -164,7 +165,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(editModel, new SwingConditionModelFactory(editModel.connectionProvider()));
+    this(editModel, new SwingEntityConditionModelFactory(editModel.connectionProvider()));
   }
 
   /**
@@ -172,14 +173,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param editModel the edit model
    * @param conditionModelFactory the table condition model factory
    */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
-    this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entityDefinition()),
-            new EntityColumnValueProvider(editModel.entities()), createFilterModels(editModel.entityDefinition(),
-            new DefaultFilterModelFactory(editModel.entityDefinition())));
-    this.conditionModel = entityTableConditionModel(editModel.entityType(),
-            editModel.connectionProvider(), requireNonNull(conditionModelFactory));
+  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
+    this.editModel = requireNonNull(editModel);
+    this.tableModel = new EntityFilteredTableModel();
+    this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
-    this.editModel = editModel;
     addEditEventListeners();
     bindEvents();
     applyPreferences();
@@ -1183,16 +1181,16 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private static Collection<ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityDefinition entityDefinition,
-                                                                                      ColumnConditionModel.Factory<Attribute<?>> filterModelFactory) {
+  private static Collection<ColumnConditionModel<Attribute<?>, ?>> createFilterModels(EntityFilterModelFactory filterModelFactory) {
     if (filterModelFactory == null) {
       return emptyList();
     }
 
     Collection<ColumnConditionModel<Attribute<?>, ?>> columnConditionModels = new ArrayList<>();
-    for (Property<?> property : entityDefinition.properties()) {
+    for (Property<?> property : filterModelFactory.entityDefinition().properties()) {
       if (!property.isHidden()) {
-        ColumnConditionModel<Attribute<?>, ?> filterModel = (ColumnConditionModel<Attribute<?>, ?>) filterModelFactory.createConditionModel(property.attribute());
+        ColumnConditionModel<Attribute<?>, ?> filterModel =
+                (ColumnConditionModel<Attribute<?>, ?>) filterModelFactory.createConditionModel(property.attribute());
         if (filterModel != null) {
           columnConditionModels.add(filterModel);
         }
@@ -1286,10 +1284,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private final class EntityFilteredTableModel extends DefaultFilteredTableModel<Entity, Attribute<?>> {
 
-    private EntityFilteredTableModel(List<FilteredTableColumn<Attribute<?>>> filteredTableColumns,
-                                     ColumnValueProvider<Entity, Attribute<?>> columnValueProvider,
-                                     Collection<ColumnConditionModel<Attribute<?>, ?>> columnFilterModels) {
-      super(filteredTableColumns, columnValueProvider, columnFilterModels);
+    private EntityFilteredTableModel() {
+      super(createColumns(requireNonNull(editModel).entityDefinition()),
+              new EntityColumnValueProvider(editModel.entities()),
+              createFilterModels(new EntityFilterModelFactory(editModel.entityDefinition())));
     }
 
     @Override

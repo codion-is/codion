@@ -29,6 +29,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -47,7 +48,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
                                    ColumnConditionModel.Factory<C> conditionModelFactory) {
     this.entityType = requireNonNull(entityType, "entityType");
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    this.conditionModel = TableConditionModel.tableConditionModel(createConditionModels(entityType, conditionModelFactory));
+    this.conditionModel = tableConditionModel(createConditionModels(entityType, conditionModelFactory));
     bindEvents();
   }
 
