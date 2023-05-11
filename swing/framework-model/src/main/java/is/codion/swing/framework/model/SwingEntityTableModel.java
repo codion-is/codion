@@ -97,7 +97,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
 
   /**
-   * the condition active during the last refresh
+   * the condition used during the last refresh
    */
   private Condition refreshCondition;
 
@@ -152,11 +152,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
    * @param connectionProvider the connection provider
-   * @param conditionModel the table condition model
+   * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                               EntityTableConditionModel<Attribute<?>> conditionModel) {
-    this(new SwingEntityEditModel(entityType, connectionProvider), conditionModel);
+                               ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), conditionModelFactory);
   }
 
   /**
@@ -164,24 +164,20 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(editModel, entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(),
-            new SwingConditionModelFactory(editModel.connectionProvider())));
+    this(editModel, new SwingConditionModelFactory(editModel.connectionProvider()));
   }
 
   /**
    * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
-   * @param conditionModel the table condition model
+   * @param conditionModelFactory the table condition model factory
    */
-  public SwingEntityTableModel(SwingEntityEditModel editModel, EntityTableConditionModel<Attribute<?>> conditionModel) {
+  public SwingEntityTableModel(SwingEntityEditModel editModel, ColumnConditionModel.Factory<Attribute<?>> conditionModelFactory) {
     this.tableModel = new EntityFilteredTableModel(createColumns(requireNonNull(editModel).entityDefinition()),
             new EntityColumnValueProvider(editModel.entities()), createFilterModels(editModel.entityDefinition(),
             new DefaultFilterModelFactory(editModel.entityDefinition())));
-    if (!conditionModel.entityType().equals(editModel.entityType())) {
-      throw new IllegalArgumentException("Entity type mismatch, conditionModel: " + conditionModel.entityType()
-              + ", tableModel: " + editModel.entityType());
-    }
-    this.conditionModel = conditionModel;
+    this.conditionModel = entityTableConditionModel(editModel.entityType(),
+            editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     this.editModel = editModel;
     addEditEventListeners();

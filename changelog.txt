@@ -8938,3 +8938,6 @@
   EntityTablePanel constructor parameter conditionPanel replaced with conditionPanelFactory
   EntityTablePanel now configures the horizontal alignment of condition panel fields to reflect the alignment of the associated cell renderer
   FilteredTable.Builder now extends ComponentBuilder
+  DefaultAttribute.isNumerical() bug fixed, did not check for BigDecimal
+  SwingEntityTableModel constructor parameter conditionModel replaced with conditionModelFactory
+  EntityTablePanel.conditionPanel() added

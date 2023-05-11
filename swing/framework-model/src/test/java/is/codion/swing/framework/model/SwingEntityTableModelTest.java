@@ -13,8 +13,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.model.DefaultConditionModelFactory;
-import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -31,7 +29,6 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
-import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -90,14 +87,6 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     employeeTableModel.setForeignKeyConditionValues(Employee.DEPARTMENT_FK, singletonList(accounting));
     employeeTableModel.refresh();
     assertEquals(7, employeeTableModel.getRowCount());
-  }
-
-  @Test
-  void nonMatchingConditionModelEntityType() {
-    EntityTableConditionModel<Attribute<?>> conditionModel = entityTableConditionModel(Department.TYPE, connectionProvider(),
-            new DefaultConditionModelFactory(connectionProvider()));
-    assertThrows(IllegalArgumentException.class, () ->
-            new SwingEntityTableModel(new SwingEntityEditModel(Employee.TYPE, connectionProvider()), conditionModel));
   }
 
   @Test

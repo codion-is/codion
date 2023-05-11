@@ -657,10 +657,8 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private static Format defaultFormat(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
         NumberFormat numberFormat = defaultNumberFormat(attribute);
-        if (attribute.isBigDecimal()) {
-          ((DecimalFormat) numberFormat).setParseBigDecimal(true);
-        }
         if (attribute.isDecimal()) {
+          ((DecimalFormat) numberFormat).setParseBigDecimal(attribute.isBigDecimal());
           numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
         }
 
