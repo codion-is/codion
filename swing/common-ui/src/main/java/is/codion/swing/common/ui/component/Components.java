@@ -820,7 +820,7 @@ public final class Components {
   /**
    * @return a {@link FileInputPanel} builder
    */
-  public static FileInputPanelBuilder fileInputPanel() {
+  public static FileInputPanel.Builder fileInputPanel() {
     return fileInputPanel(textField()
             .editable(false)
             .focusable(false)
@@ -831,8 +831,8 @@ public final class Components {
    * @param filePathField the file path field
    * @return a {@link FileInputPanel} builder
    */
-  public static FileInputPanelBuilder fileInputPanel(JTextField filePathField) {
-    return new DefaultFileInputPanelBuilder(filePathField);
+  public static FileInputPanel.Builder fileInputPanel(JTextField filePathField) {
+    return FileInputPanel.builder(filePathField);
   }
 
   /**

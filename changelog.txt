@@ -8929,3 +8929,4 @@
   FilteredTable, TemporalField, minor refactoring
   FrameworkIcons.EDIT_TEXT added, used for TextInputPanel button icon
   EntityTableCellEditor now final
+  FileInputPanelBuilder moved to FileInputPanel.Builder, related refactoring
