@@ -3,4 +3,7 @@ dependencies {
     api project(':codion-common-model')
 
     api project(':codion-swing-common-model')
+
+    api (libs.ikonli.core)
+    implementation (libs.ikonli.swing)
 }
