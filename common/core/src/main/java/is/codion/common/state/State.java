@@ -72,6 +72,14 @@ public interface State extends StateObserver, Value<Boolean> {
      * @param state the {@link State} instance to add
      */
     void addState(State state);
+
+    /**
+     * Adds the given states to this {@link State.Group} via a WeakReference,
+     * so it does not prevent it from being garbage collected.
+     * Adding an active state deactivates all other states in the group.
+     * @param states the {@link State} instances to add
+     */
+    void addStates(Collection<State> states);
   }
 
   /**
@@ -166,6 +174,17 @@ public interface State extends StateObserver, Value<Boolean> {
    * @see Group
    */
   static Group group(State... states) {
+    return new DefaultStateGroup(states);
+  }
+
+  /**
+   * Creates a new {@link State.Group} instance, which guarantees that only a single
+   * state within the group is active at a time
+   * @param states the states to add to the group initially
+   * @return a new {@link State.Group} instance
+   * @see Group
+   */
+  static Group group(Collection<State> states) {
     return new DefaultStateGroup(states);
   }
 }

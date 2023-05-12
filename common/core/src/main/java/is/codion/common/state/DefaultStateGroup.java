@@ -5,6 +5,7 @@ package is.codion.common.state;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.ListIterator;
 
@@ -15,6 +16,12 @@ final class DefaultStateGroup implements State.Group {
   private final List<WeakReference<State>> members = new ArrayList<>();
 
   DefaultStateGroup(State... states) {
+    for (State state : requireNonNull(states, "states")) {
+      addState(state);
+    }
+  }
+
+  DefaultStateGroup(Collection<State> states) {
     for (State state : requireNonNull(states, "states")) {
       addState(state);
     }
@@ -44,6 +51,11 @@ final class DefaultStateGroup implements State.Group {
         }
       }
     });
+  }
+
+  @Override
+  public void addStates(Collection<State> states) {
+    requireNonNull(states, "states").forEach(this::addState);
   }
 
   private void disableOthers(State state) {
