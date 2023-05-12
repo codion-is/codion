@@ -171,7 +171,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .owner(inputField)
               .icon(buttonIcon)
               .initialValue((LocalDate) getTemporal())
-              .selectDate()
+              .selectLocalDate()
               .ifPresent(inputField::setTemporal);
     }
     else if (LocalDateTime.class.equals(inputField.temporalClass())) {
@@ -179,7 +179,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .owner(inputField)
               .icon(buttonIcon)
               .initialValue((LocalDateTime) getTemporal())
-              .selectDateTime()
+              .selectLocalDateTime()
               .ifPresent(inputField::setTemporal);
     }
     else {

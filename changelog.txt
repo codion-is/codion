@@ -8966,3 +8966,7 @@
   FilteredTable header horizontal alignment now follows cell renderer
   FilteredTable, TemporalField, minor refactoring
   FrameworkIcons.EDIT_TEXT added, used for TextInputPanel button icon
+  EntityTableCellEditor now final
+  FileInputPanelBuilder moved to FileInputPanel.Builder, related refactoring
+  State.Group.addStates() added, State.group() overloaded with a Collection parameter
+  CalendarPanel refactored, some renaming

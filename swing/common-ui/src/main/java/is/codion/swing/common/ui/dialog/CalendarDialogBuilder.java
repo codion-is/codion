@@ -28,11 +28,11 @@ public interface CalendarDialogBuilder extends DialogBuilder<CalendarDialogBuild
    * Retrieves a LocalDate from the user.
    * @return a LocalDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  Optional<LocalDate> selectDate();
+  Optional<LocalDate> selectLocalDate();
 
   /**
    * Retrieves a LocalTimeDate from the user.
    * @return a LocalTimeDate from the user, {@link Optional#empty()} in case the user cancels
    */
-  Optional<LocalDateTime> selectDateTime();
+  Optional<LocalDateTime> selectLocalDateTime();
 }

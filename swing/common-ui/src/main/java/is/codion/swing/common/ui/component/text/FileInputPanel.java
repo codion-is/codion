@@ -4,6 +4,11 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.model.CancelException;
+import is.codion.swing.common.model.component.text.DocumentAdapter;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -14,6 +19,8 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 
 import static java.util.Objects.requireNonNull;
 
@@ -51,6 +58,14 @@ public final class FileInputPanel extends JPanel {
     return new FileInputPanel(filePathField);
   }
 
+  /**
+   * @param filePathField the file path input field
+   * @return a new {@link FileInputPanel.Builder} instance.
+   */
+  public static FileInputPanel.Builder builder(JTextField filePathField) {
+    return new FileInputPanel.DefaultFileInputPanelBuilder(filePathField);
+  }
+
   private void browseFile() {
     try {
       File file = Dialogs.fileSelectionDialog()
@@ -62,6 +77,60 @@ public final class FileInputPanel extends JPanel {
     catch (CancelException e) {
       filePathField.setText("");
       throw e;
+    }
+  }
+
+  /**
+   * Builds a {@link FileInputPanel}
+   */
+  public interface Builder extends ComponentBuilder<byte[], FileInputPanel, Builder> {}
+
+  private static final class DefaultFileInputPanelBuilder extends AbstractComponentBuilder<byte[], FileInputPanel, Builder> implements Builder {
+
+    private final JTextField filePathField;
+
+    private DefaultFileInputPanelBuilder(JTextField filePathField) {
+      this.filePathField = requireNonNull(filePathField);
+    }
+
+    @Override
+    protected FileInputPanel createComponent() {
+      return fileInputPanel(filePathField);
+    }
+
+    @Override
+    protected ComponentValue<byte[], FileInputPanel> createComponentValue(FileInputPanel component) {
+      return new FileInputPanelValue(component);
+    }
+
+    @Override
+    protected void setInitialValue(FileInputPanel component, byte[] initialValue) {}
+  }
+
+  private static final class FileInputPanelValue extends AbstractComponentValue<byte[], FileInputPanel> {
+
+    private FileInputPanelValue(FileInputPanel fileInputPanel) {
+      super(fileInputPanel);
+      fileInputPanel.filePathField().getDocument().addDocumentListener((DocumentAdapter) e -> notifyValueChange());
+    }
+
+    @Override
+    protected byte[] getComponentValue() {
+      String filePath = component().filePathField().getText();
+      if (filePath.isEmpty()) {
+        return null;
+      }
+      try {
+        return Files.readAllBytes(new File(filePath).toPath());
+      }
+      catch (IOException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    protected void setComponentValue(byte[] value) {
+      throw new UnsupportedOperationException();
     }
   }
 }

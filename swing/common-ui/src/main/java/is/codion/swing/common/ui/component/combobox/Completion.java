@@ -43,14 +43,15 @@ public final class Completion {
   }
 
   /**
-   * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link Completion.Mode#MAXIMUM_MATCH} for maximum match
-   * and {@link Completion.Mode#AUTOCOMPLETE} for auto-completion.<br>
+   * Specifies the default completion model used for comboboxes,
+   * {@link Completion.Mode#MAXIMUM_MATCH} for maximum match,
+   * {@link Completion.Mode#AUTOCOMPLETE} for auto-completion or
+   * {@link Completion.Mode#NONE} for no completion.<br>
    * Value type:String<br>
    * Default value: {@link Completion.Mode#MAXIMUM_MATCH}
    */
   public static final PropertyValue<Mode> COMBO_BOX_COMPLETION_MODE =
-          Configuration.enumValue("codion.swing.comboBoxCompletionMode", Mode.class, Mode.MAXIMUM_MATCH);
+          Configuration.enumValue("is.codion.swing.common.ui.component.combobox.Completion.completionMode", Mode.class, Mode.MAXIMUM_MATCH);
 
   /**
    * Enables maximum match on the given combobox

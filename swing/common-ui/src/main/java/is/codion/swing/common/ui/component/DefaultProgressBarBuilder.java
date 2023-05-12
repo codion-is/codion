@@ -72,4 +72,22 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
   protected void setInitialValue(JProgressBar component, Integer initialValue) {
     component.setValue(initialValue);
   }
+
+  private static final class IntegerProgressBarValue extends AbstractComponentValue<Integer, JProgressBar> {
+
+    private IntegerProgressBarValue(JProgressBar progressBar) {
+      super(progressBar, 0);
+      progressBar.getModel().addChangeListener(e -> notifyValueChange());
+    }
+
+    @Override
+    protected Integer getComponentValue() {
+      return component().getValue();
+    }
+
+    @Override
+    protected void setComponentValue(Integer value) {
+      component().setValue(value == null ? 0 : value);
+    }
+  }
 }
