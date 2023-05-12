@@ -47,7 +47,8 @@ import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialog;
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -74,8 +75,8 @@ public final class LoadTestPanel<T> extends JPanel {
 
   static {
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
-    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     findLookAndFeelProvider(defaultLookAndFeelName(LoadTestPanel.class.getName()))
             .ifPresent(LookAndFeelProvider::enable);
   }

@@ -18,7 +18,7 @@ import static javax.swing.BorderFactory.createLineBorder;
 final class LookAndFeelPanel extends JPanel {
 
   private static final int BORDER_THICKNESS = 5;
-  private static final int COLOR_LABEL_WIDTH = 100;
+  private static final int COLOR_LABEL_WIDTH = 42;
 
   private final UIDefaults nullDefaults = new UIDefaults(0, 0.1f);
   private final Map<LookAndFeelProvider, UIDefaults> lookAndFeelDefaults = new ConcurrentHashMap<>();
@@ -37,7 +37,7 @@ final class LookAndFeelPanel extends JPanel {
   void setLookAndFeel(LookAndFeelProvider lookAndFeel, boolean selected) {
     textLabel.setOpaque(true);
     colorLabel.setOpaque(true);
-    textLabel.setText(lookAndFeel.className());
+    textLabel.setText(lookAndFeel.lookAndFeelInfo().getName());
     UIDefaults defaults = defaults(lookAndFeel);
     if (defaults == nullDefaults) {
       textLabel.setBackground(selected ? Color.LIGHT_GRAY : Color.WHITE);

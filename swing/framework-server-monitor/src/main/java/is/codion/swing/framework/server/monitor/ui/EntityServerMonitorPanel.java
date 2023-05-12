@@ -45,7 +45,8 @@ import java.util.Arrays;
 import static is.codion.common.model.UserPreferences.setUserPreference;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.*;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
@@ -265,8 +266,8 @@ public final class EntityServerMonitorPanel extends JPanel {
     UiManagerDefaults.initialize();
     Clients.resolveTrustStore();
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
-    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     SwingUtilities.invokeLater(() -> {
       try {
         findLookAndFeelProvider(defaultLookAndFeelName(EntityServerMonitorPanel.class.getName()))

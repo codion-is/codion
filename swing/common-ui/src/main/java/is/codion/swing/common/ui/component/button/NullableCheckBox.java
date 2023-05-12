@@ -148,12 +148,12 @@ public class NullableCheckBox extends JCheckBox {
         return;
       }
 
-      double width = getIconWidth() / 2d;
-      double height = getIconHeight() / 2d;
+      double width = getIconWidth() / 3d;
+      double height = getIconHeight() / 3d;
 
       //todo remove x/y adjustment hack for FlatLaf
-      double xCorner = (x + width / 2d) + (flatLaf ? 0.5 : 0);
-      double yCorner = (y + height / 2d) - (flatLaf ? 0.25 : 0);
+      double xCorner = (x + width) + (flatLaf ? 0.5 : 0);
+      double yCorner = (y + height) - (flatLaf ? 0.25 : 0);
 
       Rectangle2D rectangle = new Rectangle2D.Double(xCorner, yCorner, width, height);
 

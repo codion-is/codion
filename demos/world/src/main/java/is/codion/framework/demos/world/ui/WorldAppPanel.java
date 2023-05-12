@@ -10,6 +10,7 @@ import is.codion.framework.demos.world.model.CountryModel;
 import is.codion.framework.demos.world.model.WorldAppModel;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -26,8 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
@@ -59,8 +58,8 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
 
   public static void main(String[] args) throws CancelException {
     Locale.setDefault(new Locale("en", "EN"));
-    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     ColumnConditionModel.CASE_SENSITIVE.set(false);

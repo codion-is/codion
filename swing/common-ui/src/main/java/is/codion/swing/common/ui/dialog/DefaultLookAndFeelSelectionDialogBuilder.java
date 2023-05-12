@@ -53,7 +53,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
     return Control.builder(() -> selectLookAndFeel()
                     .ifPresent(provider -> {
                       if (userPreferencePropertyName != null) {
-                        UserPreferences.setUserPreference(userPreferencePropertyName, provider.name());
+                        UserPreferences.setUserPreference(userPreferencePropertyName, provider.lookAndFeelInfo().getClassName());
                       }
                     }))
             .caption(caption)
@@ -67,7 +67,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
     basePanel.setBorder(BorderFactory.createEmptyBorder(PADDING, PADDING, 0, PADDING));
     basePanel.add(lookAndFeelComboBox, BorderLayout.CENTER);
     State okPressed = State.state();
-    new DefaultOkCancelDialogBuilder(lookAndFeelComboBox)
+    new DefaultOkCancelDialogBuilder(basePanel)
             .owner(owner)
             .title(ResourceBundle.getBundle(LookAndFeelProvider.class.getName()).getString("select_look_and_feel"))
             .onOk(() -> okPressed.set(true))

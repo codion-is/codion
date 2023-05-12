@@ -7,6 +7,7 @@ import is.codion.framework.demos.manual.keybinding.KeyBindingTableModel.KeyBindi
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -22,8 +23,6 @@ import java.util.Arrays;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -65,8 +64,8 @@ public final class KeyBindingPanel extends JPanel {
 
   public static void main(String[] args) {
     System.setProperty("sun.awt.disablegrab", "true");
-    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     SwingUtilities.invokeLater(() -> Windows.frame(new KeyBindingPanel())
             .title("Key Bindings")
             .defaultCloseOperation(JFrame.EXIT_ON_CLOSE)
