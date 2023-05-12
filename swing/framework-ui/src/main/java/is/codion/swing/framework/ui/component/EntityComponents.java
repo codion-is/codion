@@ -317,7 +317,8 @@ public class EntityComponents {
     return Components.textInputPanel()
             .toolTipText(property.description())
             .maximumLength(property.maximumLength())
-            .dialogTitle(property.caption());
+            .dialogTitle(property.caption())
+            .buttonIcon(FrameworkIcons.instance().editText());
   }
 
   /**

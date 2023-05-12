@@ -33,7 +33,7 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
             FrameworkIkons.DELETE, FrameworkIkons.UPDATE, FrameworkIkons.COPY, FrameworkIkons.REFRESH,
             FrameworkIkons.CLEAR, FrameworkIkons.UP, FrameworkIkons.DOWN, FrameworkIkons.DETAIL,
             FrameworkIkons.PRINT, FrameworkIkons.EDIT, FrameworkIkons.SUMMARY, FrameworkIkons.EDIT_PANEL,
-            FrameworkIkons.DEPENDENCIES, FrameworkIkons.SETTINGS, FrameworkIkons.CALENDAR);
+            FrameworkIkons.DEPENDENCIES, FrameworkIkons.SETTINGS, FrameworkIkons.CALENDAR, FrameworkIkons.EDIT_TEXT);
     ICON_COLOR.addDataListener(color -> {
       if (color != null) {
         icons.values().forEach(icon -> icon.setColor(color));
@@ -146,6 +146,11 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
   @Override
   public ImageIcon calendar() {
     return icons.get(FrameworkIkons.CALENDAR).imageIcon;
+  }
+
+  @Override
+  public ImageIcon editText() {
+    return icons.get(FrameworkIkons.EDIT_TEXT).imageIcon;
   }
 
   @Override

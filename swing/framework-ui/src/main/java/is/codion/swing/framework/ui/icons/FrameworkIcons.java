@@ -143,6 +143,11 @@ public interface FrameworkIcons extends Logos {
   ImageIcon calendar();
 
   /**
+   * @return icon for a 'editText' action
+   */
+  ImageIcon editText();
+
+  /**
    * @return the logo icon.
    */
   ImageIcon logo();
