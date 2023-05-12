@@ -21,7 +21,6 @@ import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JProgressBar;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -137,13 +136,13 @@ final class LoginPanel extends JPanel {
   }
 
   private JPanel createPasswordProgressPanel() {
-    JProgressBar progressBar = new JProgressBar();
-    progressBar.setPreferredSize(passwordField.getPreferredSize());
-    progressBar.setIndeterminate(true);
     CardLayout passwordProgressLayout = new CardLayout();
     JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
             .add(passwordField, PASSWORD_CARD)
-            .add(progressBar, PROGRESS_CARD)
+            .add(Components.progressBar()
+                    .preferredSize(passwordField.getPreferredSize())
+                    .indeterminate(true)
+                    .build(), PROGRESS_CARD)
             .build();
     validatingState.addDataListener(validating ->
             passwordProgressLayout.show(passwordProgressPanel, validating ? PROGRESS_CARD : PASSWORD_CARD));

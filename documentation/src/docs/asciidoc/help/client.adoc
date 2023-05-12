@@ -163,8 +163,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 2+|Date/time field
 
 |kbd:[Insert]|Display calendar
-|kbd:[&#x2191;]|Increment according to cursor position
-|kbd:[&#x2193;]|Decrement according to cursor position
+|kbd:[&#x2191;/&#x2193;]|Increment/decrement based to cursor position
 
 |===
 

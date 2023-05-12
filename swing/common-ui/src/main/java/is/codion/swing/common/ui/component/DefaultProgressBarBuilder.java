@@ -6,17 +6,31 @@ package is.codion.swing.common.ui.component;
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 
-import static java.util.Objects.requireNonNull;
-
 final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> implements ProgressBarBuilder {
 
   private final BoundedRangeModel boundedRangeModel;
 
+  private boolean borderPainted;
   private boolean stringPainted;
   private int orientation;
+  private boolean indeterminate;
+  private String string;
 
   DefaultProgressBarBuilder(BoundedRangeModel boundedRangeModel) {
-    this.boundedRangeModel = requireNonNull(boundedRangeModel);
+    this.boundedRangeModel = boundedRangeModel;
+    this.indeterminate = boundedRangeModel == null;
+  }
+
+  @Override
+  public ProgressBarBuilder string(String string) {
+    this.string = string;
+    return this;
+  }
+
+  @Override
+  public ProgressBarBuilder borderPainted(boolean borderPainted) {
+    this.borderPainted = borderPainted;
+    return this;
   }
 
   @Override
@@ -32,10 +46,19 @@ final class DefaultProgressBarBuilder extends AbstractComponentBuilder<Integer, 
   }
 
   @Override
+  public ProgressBarBuilder indeterminate(boolean indeterminate) {
+    this.indeterminate = indeterminate;
+    return this;
+  }
+
+  @Override
   protected JProgressBar createComponent() {
     JProgressBar progressBar = new JProgressBar(boundedRangeModel);
+    progressBar.setBorderPainted(borderPainted);
+    progressBar.setString(string);
     progressBar.setStringPainted(stringPainted);
     progressBar.setOrientation(orientation);
+    progressBar.setIndeterminate(indeterminate);
 
     return progressBar;
   }
