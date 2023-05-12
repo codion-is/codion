@@ -19,10 +19,12 @@ import java.awt.event.MouseEvent;
 import java.util.EventObject;
 import java.util.function.Supplier;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A {@link TableCellEditor} implementation for {@link EntityTablePanel}.
  */
-class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
+final class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEditor {
 
   private final Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier;
   private final Value<T> cellValue = Value.value();
@@ -30,12 +32,11 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   private JComponent component;
 
   EntityTableCellEditor(Supplier<ComponentValue<T, ? extends JComponent>> inputComponentSupplier) {
-    this.inputComponentSupplier = inputComponentSupplier;
+    this.inputComponentSupplier = requireNonNull(inputComponentSupplier);
   }
 
   @Override
-  public final Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected,
-                                                     int row, int column) {
+  public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
     if (component == null) {
       component = createEditorComponent();
     }
@@ -45,12 +46,12 @@ class EntityTableCellEditor<T> extends AbstractCellEditor implements TableCellEd
   }
 
   @Override
-  public final Object getCellEditorValue() {
+  public Object getCellEditorValue() {
     return cellValue.get();
   }
 
   @Override
-  public final boolean isCellEditable(EventObject event) {
+  public boolean isCellEditable(EventObject event) {
     if (event instanceof MouseEvent) {
       return ((MouseEvent) event).getClickCount() >= 2;
     }

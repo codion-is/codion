@@ -8928,3 +8928,4 @@
   FilteredTable header horizontal alignment now follows cell renderer
   FilteredTable, TemporalField, minor refactoring
   FrameworkIcons.EDIT_TEXT added, used for TextInputPanel button icon
+  EntityTableCellEditor now final
