@@ -3,30 +3,30 @@
  */
 package is.codion.swing.framework.ui.icons;
 
+import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.icons.DefaultFontImageIcon;
+import is.codion.swing.common.ui.icons.FontImageIcon;
+import is.codion.swing.common.ui.icons.Icons;
+
 import org.kordamp.ikonli.Ikon;
-import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.ImageIcon;
-import javax.swing.UIManager;
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
-import static java.util.Objects.requireNonNull;
-
-public final class DefaultFrameworkIcons implements FrameworkIcons {
-
-  private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
-  private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
+/**
+ * A default FrameworkIcons implementation.
+ */
+public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 
   private static FrameworkIcons instance;
 
-  private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
+  private final Icons icons = Icons.icons();
   private final Map<Integer, FontImageIcon> logos = new HashMap<>();
-  private final ImageIcon refreshRequired = FontImageIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()).imageIcon;
+  private final ImageIcon refreshRequired = FontImageIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()).imageIcon();
 
   public DefaultFrameworkIcons() {
     add(FrameworkIkons.LOGO, FrameworkIkons.FILTER, FrameworkIkons.SEARCH, FrameworkIkons.ADD,
@@ -34,53 +34,51 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
             FrameworkIkons.CLEAR, FrameworkIkons.UP, FrameworkIkons.DOWN, FrameworkIkons.DETAIL,
             FrameworkIkons.PRINT, FrameworkIkons.EDIT, FrameworkIkons.SUMMARY, FrameworkIkons.EDIT_PANEL,
             FrameworkIkons.DEPENDENCIES, FrameworkIkons.SETTINGS, FrameworkIkons.CALENDAR, FrameworkIkons.EDIT_TEXT);
-    ICON_COLOR.addDataListener(color -> {
-      if (color != null) {
-        icons.values().forEach(icon -> icon.setColor(color));
-        logos.values().forEach(logo -> logo.setColor(color));
-      }
-    });
-    ICON_SIZE.addListener(() -> icons.keySet().forEach(ikon -> icons.put(ikon, FontImageIcon.of(ikon))));
-    UIManager.addPropertyChangeListener(propertyChangeEvent -> {
-      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY)) {
-        ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
-      }
-    });
+  }
+
+  @Override
+  public void add(Ikon... ikons) {
+    icons.add(ikons);
+  }
+
+  @Override
+  public ImageIcon icon(Ikon ikon) {
+    return icons.icon(ikon);
   }
 
   @Override
   public ImageIcon filter() {
-    return icons.get(FrameworkIkons.FILTER).imageIcon;
+    return icon(FrameworkIkons.FILTER);
   }
 
   @Override
   public ImageIcon search() {
-    return icons.get(FrameworkIkons.SEARCH).imageIcon;
+    return icon(FrameworkIkons.SEARCH);
   }
 
   @Override
   public ImageIcon add() {
-    return icons.get(FrameworkIkons.ADD).imageIcon;
+    return icon(FrameworkIkons.ADD);
   }
 
   @Override
   public ImageIcon delete() {
-    return icons.get(FrameworkIkons.DELETE).imageIcon;
+    return icon(FrameworkIkons.DELETE);
   }
 
   @Override
   public ImageIcon update() {
-    return icons.get(FrameworkIkons.UPDATE).imageIcon;
+    return icon(FrameworkIkons.UPDATE);
   }
 
   @Override
   public ImageIcon copy() {
-    return icons.get(FrameworkIkons.COPY).imageIcon;
+    return icon(FrameworkIkons.COPY);
   }
 
   @Override
   public ImageIcon refresh() {
-    return icons.get(FrameworkIkons.REFRESH).imageIcon;
+    return icon(FrameworkIkons.REFRESH);
   }
 
   @Override
@@ -90,98 +88,77 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
 
   @Override
   public ImageIcon clear() {
-    return icons.get(FrameworkIkons.CLEAR).imageIcon;
+    return icon(FrameworkIkons.CLEAR);
   }
 
   @Override
   public ImageIcon up() {
-    return icons.get(FrameworkIkons.UP).imageIcon;
+    return icon(FrameworkIkons.UP);
   }
 
   @Override
   public ImageIcon down() {
-    return icons.get(FrameworkIkons.DOWN).imageIcon;
+    return icon(FrameworkIkons.DOWN);
   }
 
   @Override
   public ImageIcon detail() {
-    return icons.get(FrameworkIkons.DETAIL).imageIcon;
+    return icon(FrameworkIkons.DETAIL);
   }
 
   @Override
   public ImageIcon print() {
-    return icons.get(FrameworkIkons.PRINT).imageIcon;
+    return icon(FrameworkIkons.PRINT);
   }
 
   @Override
   public ImageIcon clearSelection() {
-    return icons.get(FrameworkIkons.CLEAR).imageIcon;
+    return icon(FrameworkIkons.CLEAR);
   }
 
   @Override
   public ImageIcon edit() {
-    return icons.get(FrameworkIkons.EDIT).imageIcon;
+    return icon(FrameworkIkons.EDIT);
   }
 
   @Override
   public ImageIcon summary() {
-    return icons.get(FrameworkIkons.SUMMARY).imageIcon;
+    return icon(FrameworkIkons.SUMMARY);
   }
 
   @Override
   public ImageIcon editPanel() {
-    return icons.get(FrameworkIkons.EDIT_PANEL).imageIcon;
+    return icon(FrameworkIkons.EDIT_PANEL);
   }
 
   @Override
   public ImageIcon dependencies() {
-    return icons.get(FrameworkIkons.DEPENDENCIES).imageIcon;
+    return icon(FrameworkIkons.DEPENDENCIES);
   }
 
   @Override
   public ImageIcon settings() {
-    return icons.get(FrameworkIkons.SETTINGS).imageIcon;
+    return icon(FrameworkIkons.SETTINGS);
   }
 
   @Override
   public ImageIcon calendar() {
-    return icons.get(FrameworkIkons.CALENDAR).imageIcon;
+    return icon(FrameworkIkons.CALENDAR);
   }
 
   @Override
   public ImageIcon editText() {
-    return icons.get(FrameworkIkons.EDIT_TEXT).imageIcon;
+    return icon(FrameworkIkons.EDIT_TEXT);
   }
 
   @Override
   public ImageIcon logo() {
-    return icons.get(FrameworkIkons.LOGO).imageIcon;
+    return icon(FrameworkIkons.LOGO);
   }
 
   @Override
   public ImageIcon logo(int size) {
-    return logos.computeIfAbsent(size, k -> new LogoImageIcon(size)).imageIcon;
-  }
-
-  @Override
-  public void add(Ikon... ikons) {
-    for (Ikon ikon : requireNonNull(ikons)) {
-      if (icons.containsKey(requireNonNull(ikon))) {
-        throw new IllegalArgumentException("Icon has already been added: " + ikon);
-      }
-    }
-    for (Ikon ikon : ikons) {
-      icons.put(ikon, FontImageIcon.of(ikon));
-    }
-  }
-
-  @Override
-  public ImageIcon icon(Ikon ikon) {
-    if (!icons.containsKey(requireNonNull(ikon))) {
-      throw new IllegalArgumentException("No icon has been added for key: " + ikon);
-    }
-
-    return icons.get(ikon).imageIcon;
+    return logos.computeIfAbsent(size, k -> new LogoImageIcon(size)).imageIcon();
   }
 
   static FrameworkIcons instance() {
@@ -204,56 +181,18 @@ public final class DefaultFrameworkIcons implements FrameworkIcons {
     throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
   }
 
-  private static class FontImageIcon {
-
-    protected final FontIcon fontIcon;
-    protected final ImageIcon imageIcon;
-
-    private FontImageIcon(Ikon ikon, int size, Color color) {
-      fontIcon = FontIcon.of(ikon, size, color);
-      imageIcon = createImageIcon();
-      paintIcon();
-    }
-
-    protected ImageIcon createImageIcon() {
-      return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
-    }
-
-    protected void paintIcon() {
-      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
-    }
-
-    private void setColor(Color color) {
-      fontIcon.setIconColor(color);
-      paintIcon();
-    }
-
-    private static FontImageIcon of(Ikon ikon) {
-      return of(ikon, ICON_SIZE.get(), ICON_COLOR.get());
-    }
-
-    private static FontImageIcon of(Ikon ikon, int size, Color color) {
-      return new FontImageIcon(ikon, size, color);
-    }
-  }
-
-  private static final class LogoImageIcon extends FontImageIcon {
+  private static final class LogoImageIcon extends DefaultFontImageIcon {
 
     private LogoImageIcon(int size) {
-      super(FrameworkIkons.LOGO, size, ICON_COLOR.get());
-    }
-
-    @Override
-    protected ImageIcon createImageIcon() {
-      return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconWidth(), BufferedImage.TYPE_INT_ARGB));
+      super(FrameworkIkons.LOGO, size);
     }
 
     @Override
     protected void paintIcon() {
       //center on y-axis
-      int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+      int yOffset = (fontIcon().getIconHeight() - fontIcon().getIconWidth()) / 2;
 
-      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
+      fontIcon().paintIcon(null, imageIcon().getImage().getGraphics(), 0, -yOffset);
     }
   }
 }

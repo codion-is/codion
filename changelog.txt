@@ -8972,3 +8972,4 @@
   CalendarPanel refactored, some renaming
   LookAndFeelProvider now based on LookAndFeelInfo, related refactoring
   NullableCheckBox, null indicator dot made smaller
+  Icons refactored from FrameworkIcons, moved to common.ui
