@@ -8933,3 +8933,4 @@
   State.Group.addStates() added, State.group() overloaded with a Collection parameter
   CalendarPanel refactored, some renaming
   LookAndFeelProvider now based on LookAndFeelInfo, related refactoring
+  NullableCheckBox, null indicator dot made smaller
