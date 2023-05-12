@@ -8923,3 +8923,4 @@
   FrameworkIcons.CALENDAR added
   TemporalInputPanel.Builder.buttonIcon() added
   ProgressBarBuilder, added a few properties, Components.progressBar() added without a model, indeterminate by default
+  TableSummaryModel.columnSummaryModel() renamed summaryModel()

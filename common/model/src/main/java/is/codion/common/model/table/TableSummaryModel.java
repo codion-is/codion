@@ -15,7 +15,7 @@ public interface TableSummaryModel<C> {
    * @param columnIdentifier the column identifier
    * @return the ColumnSummaryModel for the column identified by the given identifier, an empty Optional if none is available
    */
-  Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier);
+  Optional<ColumnSummaryModel> summaryModel(C columnIdentifier);
 
   /**
    * @param summaryModelFactory the summary model factory
