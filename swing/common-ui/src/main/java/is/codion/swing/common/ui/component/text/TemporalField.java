@@ -154,21 +154,20 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
 
   private void increment(int amount) {
     int caretPosition = getCaretPosition();
-    if (caretPosition <= dateTimePattern.length()) {
-      if (value.isNotNull()) {
-        char patternCharacter = caretPosition == dateTimePattern.length() ?
-                dateTimePattern.charAt(dateTimePattern.length() - 1) :
-                dateTimePattern.charAt(caretPosition);
-        ChronoUnit chronoUnit = chronoUnit(patternCharacter);
-        if (chronoUnit != null) {
-          setTemporal(getTemporal().plus(amount, chronoUnit));
-          setCaretPosition(caretPosition);
-        }
+    T temporal = getTemporal();
+    if (temporal != null && caretPosition <= dateTimePattern.length()) {
+      char patternCharacter = caretPosition == dateTimePattern.length() ?
+              dateTimePattern.charAt(dateTimePattern.length() - 1) :
+              dateTimePattern.charAt(caretPosition);
+      ChronoUnit chronoUnit = chronoUnit(patternCharacter);
+      if (chronoUnit != null) {
+        setTemporal(temporal.plus(amount, chronoUnit));
+        setCaretPosition(caretPosition);
       }
     }
   }
 
-  private ChronoUnit chronoUnit(char patternCharacter) {
+  private static ChronoUnit chronoUnit(char patternCharacter) {
     switch (patternCharacter) {
       case DAY:
         return ChronoUnit.DAYS;
