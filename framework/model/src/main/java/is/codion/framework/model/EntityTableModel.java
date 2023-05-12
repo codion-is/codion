@@ -9,7 +9,7 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import is.codion.common.model.table.SelectionModel;
+import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -360,9 +360,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   int getRowCount();
 
   /**
-   * @return the {@link SelectionModel}
+   * @return the {@link TableSelectionModel}
    */
-  SelectionModel<Entity> selectionModel();
+  TableSelectionModel<Entity> selectionModel();
 
   /**
    * @return a StateObserver indicating if the search condition has changed since last refresh

@@ -16,7 +16,7 @@ import java.util.function.Predicate;
  * A table selection model
  * @param <R> the type of rows in the table model
  */
-public interface SelectionModel<R> {
+public interface TableSelectionModel<R> {
 
   /**
    * @return a StateObserver indicating whether the selection is empty

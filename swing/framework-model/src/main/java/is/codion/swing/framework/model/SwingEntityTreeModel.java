@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.model.table.SelectionModel;
+import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -244,12 +244,12 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
 
   private static final class EntityTreeSelectionListener implements TreeSelectionListener {
 
-    private final SelectionModel<Entity> tableSelectionModel;
+    private final TableSelectionModel<Entity> tableSelectionModel;
     private final TreeSelectionModel treeSelectionModel;
     private final State treeSelectionChangingState = State.state();
     private final State tableSelectionChangingState = State.state();
 
-    private EntityTreeSelectionListener(TreeSelectionModel treeSelectionModel, SelectionModel<Entity> tableSelectionModel,
+    private EntityTreeSelectionListener(TreeSelectionModel treeSelectionModel, TableSelectionModel<Entity> tableSelectionModel,
                                         EntityTreeNode rootNode) {
       this.treeSelectionModel = treeSelectionModel;
       this.tableSelectionModel = tableSelectionModel;
