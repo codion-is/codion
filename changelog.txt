@@ -8936,3 +8936,4 @@
   NullableCheckBox, null indicator dot made smaller
   Icons refactored from FrameworkIcons, moved to common.ui
   Icons moved to existing icon package
+  swing.framework.ui.icons renamed icon for consistency

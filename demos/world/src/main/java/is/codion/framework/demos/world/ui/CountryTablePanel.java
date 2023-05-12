@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;

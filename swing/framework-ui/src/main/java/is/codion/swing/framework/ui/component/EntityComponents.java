@@ -28,7 +28,7 @@ import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;

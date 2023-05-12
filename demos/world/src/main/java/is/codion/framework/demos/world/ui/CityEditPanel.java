@@ -14,7 +14,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;

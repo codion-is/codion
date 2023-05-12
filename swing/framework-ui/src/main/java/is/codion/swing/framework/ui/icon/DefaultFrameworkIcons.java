@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.icons;
+package is.codion.swing.framework.ui.icon;
 
 import is.codion.swing.common.ui.icon.DefaultFontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon;

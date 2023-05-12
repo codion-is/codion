@@ -22,7 +22,7 @@ import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;

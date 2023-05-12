@@ -19,7 +19,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.EntityComboBoxModel;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComboBox;
 import javax.swing.JTextField;

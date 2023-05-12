@@ -37,7 +37,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

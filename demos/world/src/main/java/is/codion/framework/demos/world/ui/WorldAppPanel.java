@@ -15,7 +15,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import is.codion.swing.framework.ui.icons.FrameworkIcons;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import com.formdev.flatlaf.FlatDarkLaf;
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;

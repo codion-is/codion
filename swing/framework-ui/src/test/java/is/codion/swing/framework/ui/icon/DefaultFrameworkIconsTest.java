@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.icons;
+package is.codion.swing.framework.ui.icon;
 
 import org.junit.jupiter.api.Test;
 import org.kordamp.ikonli.Ikon;
