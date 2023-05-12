@@ -1360,15 +1360,14 @@ public class EntityTablePanel extends JPanel {
             .action(conditionRefreshControl)
             .enable(this);
 
-    JToolBar toolBar = Controls.controls(conditionRefreshControl).createHorizontalToolBar();
-    toolBar.setFocusable(false);
-    toolBar.getComponentAtIndex(0).setFocusable(false);
-    toolBar.setFloatable(false);
-    toolBar.setRollover(true);
-    //made visible when condition panel is visible
-    toolBar.setVisible(false);
-
-    return toolBar;
+    return Components.toolBar()
+            .action(conditionRefreshControl)
+            .focusable(false)
+            .floatable(false)
+            .rollover(false)
+            .visible(false)//made visible when condition panel is visible
+            .onBuild(toolBar -> toolBar.getComponentAtIndex(0).setFocusable(false))
+            .build();
   }
 
   private FilteredTableConditionPanel<Attribute<?>> createConditionPanel(ColumnConditionPanel.Factory<Attribute<?>> conditionPanelFactory) {
@@ -1782,7 +1781,7 @@ public class EntityTablePanel extends JPanel {
   private static Map<Attribute<?>, JPanel> createColumnSummaryPanels(FilteredTableModel<?, Attribute<?>> tableModel) {
     Map<Attribute<?>, JPanel> components = new HashMap<>();
     tableModel.columnModel().columns().forEach(column ->
-            tableModel.summaryModel().columnSummaryModel(column.getIdentifier())
+            tableModel.summaryModel().summaryModel(column.getIdentifier())
                     .ifPresent(columnSummaryModel ->
                             components.put(column.getIdentifier(), columnSummaryPanel(columnSummaryModel))));
 

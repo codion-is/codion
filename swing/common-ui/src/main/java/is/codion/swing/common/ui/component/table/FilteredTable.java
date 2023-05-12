@@ -593,8 +593,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
-    column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column.getHeaderRenderer()));
     column.setCellRenderer(rendererFactory.tableCellRenderer(column));
+    column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column));
   }
 
   private void initializeTableHeader() {

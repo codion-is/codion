@@ -19,7 +19,7 @@ final class DefaultTableSummaryModel<C> implements TableSummaryModel<C> {
   }
 
   @Override
-  public Optional<ColumnSummaryModel> columnSummaryModel(C columnIdentifier) {
+  public Optional<ColumnSummaryModel> summaryModel(C columnIdentifier) {
     return Optional.ofNullable(columnSummaryModels.computeIfAbsent(requireNonNull(columnIdentifier),
             identifier -> summaryModelFactory.createSummaryModel(columnIdentifier)));
   }

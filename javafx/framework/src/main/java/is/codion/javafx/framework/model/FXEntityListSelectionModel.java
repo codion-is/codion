@@ -7,7 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.model.table.SelectionModel;
+import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
@@ -28,9 +28,9 @@ import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A JavaFX {@link SelectionModel} implementation
+ * A JavaFX {@link TableSelectionModel} implementation
  */
-public final class FXEntityListSelectionModel implements SelectionModel<Entity> {
+public final class FXEntityListSelectionModel implements TableSelectionModel<Entity> {
 
   private final Event<?> selectionEvent = Event.event();
   private final Event<Integer> selectedIndexEvent = Event.event();

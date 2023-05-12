@@ -12,7 +12,7 @@ import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
-import javax.swing.SwingConstants;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
@@ -25,10 +25,12 @@ final class FilteredTableHeaderRenderer<T extends FilteredTableModel<R, C>, R, C
 
   private final FilteredTable<T, R, C> filteredTable;
   private final TableCellRenderer wrappedRenderer;
+  private final TableCellRenderer columnCellRenderer;
 
-  FilteredTableHeaderRenderer(FilteredTable<T, R, C> filteredTable, TableCellRenderer wrappedRenderer) {
+  FilteredTableHeaderRenderer(FilteredTable<T, R, C> filteredTable, FilteredTableColumn<C> column) {
     this.filteredTable = filteredTable;
-    this.wrappedRenderer = wrappedRenderer;
+    this.wrappedRenderer = column.getHeaderRenderer();
+    this.columnCellRenderer = column.getCellRenderer();
   }
 
   @Override
@@ -42,10 +44,11 @@ final class FilteredTableHeaderRenderer<T extends FilteredTableModel<R, C>, R, C
     if (component instanceof JLabel) {
       JLabel label = (JLabel) component;
       FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
-      ColumnConditionModel<?, ?> filterModel = filteredTable.getModel().filterModel().conditionModels()
-              .get(tableColumn.getIdentifier());
+      ColumnConditionModel<?, ?> filterModel = filteredTable.getModel().filterModel().conditionModels().get(tableColumn.getIdentifier());
       label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
-      label.setHorizontalTextPosition(SwingConstants.LEFT);
+      if (columnCellRenderer instanceof DefaultTableCellRenderer) {
+        label.setHorizontalAlignment(((DefaultTableCellRenderer) columnCellRenderer).getHorizontalAlignment());
+      }
       label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
     }
 
