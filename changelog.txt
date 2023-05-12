@@ -8925,3 +8925,4 @@
   ProgressBarBuilder, added a few properties, Components.progressBar() added without a model, indeterminate by default
   TableSummaryModel.columnSummaryModel() renamed summaryModel()
   SelectionModel renamed TableSelectionModel
+  FilteredTable header horizontal alignment now follows cell renderer
