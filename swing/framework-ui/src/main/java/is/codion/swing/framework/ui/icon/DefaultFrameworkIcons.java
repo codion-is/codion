@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.icons;
+package is.codion.swing.framework.ui.icon;
 
+import is.codion.swing.common.ui.icon.DefaultFontImageIcon;
+import is.codion.swing.common.ui.icon.FontImageIcon;
+import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.Logos;
-import is.codion.swing.common.ui.icons.DefaultFontImageIcon;
-import is.codion.swing.common.ui.icons.FontImageIcon;
-import is.codion.swing.common.ui.icons.Icons;
 
 import org.kordamp.ikonli.Ikon;
 

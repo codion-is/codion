@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2022 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui.icons;
+package is.codion.swing.framework.ui.icon;
 
 import org.kordamp.ikonli.AbstractIkonHandler;
 import org.kordamp.ikonli.Ikon;
@@ -11,7 +11,7 @@ import java.net.URL;
 
 public final class FrameworkIkonHandler extends AbstractIkonHandler {
 
-  private static final String FONT_RESOURCE = "is/codion/swing/framework/ui/icons/framework-icons.ttf";
+  private static final String FONT_RESOURCE = "is/codion/swing/framework/ui/icon/framework-icons.ttf";
   private static final String FONT_FAMILY = "codion-framework-icons";
   private static final String DESCRIPTION_PREFIX = "fr-";
 
