@@ -10,14 +10,14 @@ module is.codion.swing.framework.ui {
 
   exports is.codion.swing.framework.ui;
   exports is.codion.swing.framework.ui.component;
-  exports is.codion.swing.framework.ui.icons;
+  exports is.codion.swing.framework.ui.icon;
 
-  opens is.codion.swing.framework.ui.icons;
+  opens is.codion.swing.framework.ui.icon;
 
-  uses is.codion.swing.framework.ui.icons.FrameworkIcons;
+  uses is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-  provides is.codion.swing.framework.ui.icons.FrameworkIcons
-          with is.codion.swing.framework.ui.icons.DefaultFrameworkIcons;
+  provides is.codion.swing.framework.ui.icon.FrameworkIcons
+          with is.codion.swing.framework.ui.icon.DefaultFrameworkIcons;
   provides org.kordamp.ikonli.IkonHandler
-          with is.codion.swing.framework.ui.icons.FrameworkIkonHandler;
+          with is.codion.swing.framework.ui.icon.FrameworkIkonHandler;
 }
