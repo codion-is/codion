@@ -25,6 +25,7 @@ enum FrameworkIkons implements Ikon {
   DEPENDENCIES("fr-dependencies", '\uf1ad'),
   SETTINGS("fr-settings", '\uf214'),
   CALENDAR("fr-calendar", '\uf124'),
+  EDIT_TEXT("fr-edit-text", '\uf129'),
   LOGO("fr-logo", '\uf208');
 
   private final String description;

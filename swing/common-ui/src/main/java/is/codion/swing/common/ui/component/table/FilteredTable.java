@@ -551,13 +551,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     return new Rectangle(viewport.getExtentSize()).contains(cellRect);
   }
 
-  private boolean isRowVisible(JViewport viewport, int row) {
-    int topRow = rowAtPoint(viewport.getViewPosition());
-    int visibleRows = viewport.getExtentSize().height / getRowHeight();
-
-    return row >= topRow && row <= topRow + visibleRows;
-  }
-
   private void scrollToRowColumn(JViewport viewport, int row, int column, CenterOnScroll centerOnScroll) {
     Rectangle cellRectangle = getCellRect(row, column, true);
     Rectangle viewRectangle = viewport.getViewRect();
@@ -653,6 +646,13 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       }
 
       return false;
+    }
+
+    private boolean isRowVisible(JViewport viewport, int row) {
+      int topRow = rowAtPoint(viewport.getViewPosition());
+      int visibleRows = viewport.getExtentSize().height / getRowHeight();
+
+      return row >= topRow && row <= topRow + visibleRows;
     }
   }
 

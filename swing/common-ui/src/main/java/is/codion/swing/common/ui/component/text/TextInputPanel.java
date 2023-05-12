@@ -15,6 +15,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -51,7 +52,7 @@ public final class TextInputPanel extends JPanel {
     this.dialogTitle = builder.dialogTitle;
     this.textField = textField;
     this.textAreaSize = builder.textAreaSize;
-    this.button = createButton(builder.buttonFocusable, TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
+    this.button = createButton(builder.buttonFocusable, builder.buttonIcon);
     this.caption = builder.caption;
     this.maximumLength = builder.maximumLength;
     initializeUI();
@@ -194,6 +195,12 @@ public final class TextInputPanel extends JPanel {
     Builder buttonFocusable(boolean buttonFocusable);
 
     /**
+     * @param buttonIcon the button icon
+     * @return this builder instance
+     */
+    Builder buttonIcon(ImageIcon buttonIcon);
+
+    /**
      * @param maximumLength the maximum text length
      * @return this builder instance
      */
@@ -215,8 +222,8 @@ public final class TextInputPanel extends JPanel {
     });
   }
 
-  private JButton createButton(boolean buttonFocusable, Dimension buttonSize) {
-    AbstractAction buttonAction = new AbstractAction("...") {
+  private JButton createButton(boolean buttonFocusable, ImageIcon buttonIcon) {
+    AbstractAction buttonAction = new AbstractAction(buttonIcon == null ? "..." : "", buttonIcon) {
       @Override
       public void actionPerformed(ActionEvent e) {
         inputFromUser();
@@ -228,9 +235,7 @@ public final class TextInputPanel extends JPanel {
     JButton actionButton = new JButton(buttonAction);
     actionButton.setFocusable(buttonFocusable);
     actionButton.setToolTipText(MESSAGES.getString("show_input_dialog"));
-    if (buttonSize != null) {
-      actionButton.setPreferredSize(buttonSize);
-    }
+    actionButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
 
     return actionButton;
   }
@@ -261,6 +266,7 @@ public final class TextInputPanel extends JPanel {
     private final TextFieldBuilder<String, JTextField, ?> textFieldBuilder = new DefaultTextFieldBuilder<>(String.class, null);
 
     private boolean buttonFocusable;
+    private ImageIcon buttonIcon;
     private Dimension textAreaSize = DEFAULT_TEXT_AREA_SIZE;
     private int maximumLength;
     private String caption;
@@ -303,6 +309,12 @@ public final class TextInputPanel extends JPanel {
     @Override
     public TextInputPanel.Builder buttonFocusable(boolean buttonFocusable) {
       this.buttonFocusable = buttonFocusable;
+      return this;
+    }
+
+    @Override
+    public Builder buttonIcon(ImageIcon buttonIcon) {
+      this.buttonIcon = buttonIcon;
       return this;
     }
 

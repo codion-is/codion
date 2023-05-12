@@ -36,6 +36,7 @@ public final class DefaultFrameworkIconsTest {
     assertNotNull(icons.settings());
     assertNotNull(icons.search());
     assertNotNull(icons.calendar());
+    assertNotNull(icons.editText());
     assertNotNull(icons.logo());
     ImageIcon logo12 = icons.logo(12);
     assertNotNull(logo12);
