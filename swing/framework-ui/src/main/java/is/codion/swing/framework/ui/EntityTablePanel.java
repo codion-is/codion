@@ -52,7 +52,6 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTable;
@@ -1677,7 +1676,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,
-                                            TableCellRenderer cellRenderer) {
+                                                   TableCellRenderer cellRenderer) {
     if (cellRenderer instanceof DefaultTableCellRenderer) {
       int horizontalAlignment = ((DefaultTableCellRenderer) cellRenderer).getHorizontalAlignment();
       JComponent component = columnConditionPanel.equalField();
@@ -1886,13 +1885,12 @@ public class EntityTablePanel extends JPanel {
     }
 
     private static JPanel createRefreshingProgressPanel() {
-      JProgressBar progressBar = new JProgressBar();
-      progressBar.setIndeterminate(true);
-      progressBar.setString(MESSAGES.getString(REFRESHING));
-      progressBar.setStringPainted(true);
-
       return Components.panel(new GridBagLayout())
-              .add(progressBar, createHorizontalFillConstraints())
+              .add(Components.progressBar()
+                      .indeterminate(true)
+                      .string(MESSAGES.getString(REFRESHING))
+                      .stringPainted(true)
+                      .build(), createHorizontalFillConstraints())
               .build();
     }
   }

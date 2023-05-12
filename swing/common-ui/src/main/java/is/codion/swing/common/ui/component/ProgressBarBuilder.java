@@ -11,6 +11,18 @@ import javax.swing.JProgressBar;
 public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressBar, ProgressBarBuilder> {
 
   /**
+   * @param string a string to paint
+   * @return this builder
+   */
+  ProgressBarBuilder string(String string);
+
+  /**
+   * @param borderPainted true if a border should be painted
+   * @return this builder
+   */
+  ProgressBarBuilder borderPainted(boolean borderPainted);
+
+  /**
    * @param stringPainted true if a progress string should be painted
    * @return this builder
    */
@@ -21,6 +33,12 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
    * @return this builder
    */
   ProgressBarBuilder orientation(int orientation);
+
+  /**
+   * @param indeterminate true if the progress bar should be inditerminate
+   * @return this builder
+   */
+  ProgressBarBuilder indeterminate(boolean indeterminate);
 
   /**
    * @return a new JProgressBar
