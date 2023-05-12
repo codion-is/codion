@@ -3,10 +3,10 @@
  */
 package is.codion.swing.framework.ui.icons;
 
+import is.codion.swing.common.ui.icon.DefaultFontImageIcon;
+import is.codion.swing.common.ui.icon.FontImageIcon;
+import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.Logos;
-import is.codion.swing.common.ui.icons.DefaultFontImageIcon;
-import is.codion.swing.common.ui.icons.FontImageIcon;
-import is.codion.swing.common.ui.icons.Icons;
 
 import org.kordamp.ikonli.Ikon;
 
