@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -28,8 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.addLookAndFeelProvider;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 // tag::createEntityPanels[]
@@ -90,8 +89,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
   // tag::main[]
   public static void main(String[] args) {
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    Arrays.stream(FlatAllIJThemes.INFOS).forEach(themeInfo ->
-            addLookAndFeelProvider(lookAndFeelProvider(themeInfo.getClassName())));
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")

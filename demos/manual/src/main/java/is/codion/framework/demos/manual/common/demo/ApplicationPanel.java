@@ -14,7 +14,10 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
+import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
+
+import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
 import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
@@ -33,11 +36,14 @@ import java.util.Random;
 import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Arrays.asList;
+import static javax.swing.BorderFactory.createTitledBorder;
 
 /*
 // tag::demoPanelImport[]
@@ -294,14 +300,17 @@ public final class ApplicationPanel extends JPanel {
     add(settingsPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
 
-    textField()
-            .columns(20)
-            .editable(false)
-            .focusable(false)
-            .border(BorderFactory.createTitledBorder("Message"))
-            .enabledState(inputEnabledState)
-            .linkedValueObserver(model.messageObserver())
-            .build(component -> add(component, BorderLayout.SOUTH));
+    panel(flexibleGridLayout(2, 1))
+            .add(textField()
+                    .columns(20)
+                    .editable(false)
+                    .focusable(false)
+                    .border(createTitledBorder("Message"))
+                    .enabledState(inputEnabledState)
+                    .linkedValueObserver(model.messageObserver())
+                    .build(component -> add(component, BorderLayout.SOUTH)))
+            .add(lookAndFeelComboBox(true))
+            .build(southPanel -> add(southPanel, BorderLayout.SOUTH));
 
     Sizes.setPreferredWidth(this, 400);
   }
@@ -367,7 +376,11 @@ public final class ApplicationPanel extends JPanel {
   }
 
   public static void main(String[] args) {
-    lookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme").enable();
+    Arrays.stream(FlatAllIJThemes.INFOS)
+            .forEach(LookAndFeelProvider::addLookAndFeelProvider);
+
+    findLookAndFeelProvider("com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMonokaiProContrastIJTheme")
+            .ifPresent(LookAndFeelProvider::enable);
 
     ApplicationModel applicationModel = new ApplicationModel();
 

@@ -8932,3 +8932,4 @@
   FileInputPanelBuilder moved to FileInputPanel.Builder, related refactoring
   State.Group.addStates() added, State.group() overloaded with a Collection parameter
   CalendarPanel refactored, some renaming
+  LookAndFeelProvider now based on LookAndFeelInfo, related refactoring
