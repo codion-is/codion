@@ -194,6 +194,12 @@ public interface TableSelectionModel<R> {
   R getSelectedItem();
 
   /**
+   * @param item the item
+   * @return true if the item is selected
+   */
+  boolean isSelectedItem(R item);
+
+  /**
    * Sets the selected item
    * @param item the item to select
    */

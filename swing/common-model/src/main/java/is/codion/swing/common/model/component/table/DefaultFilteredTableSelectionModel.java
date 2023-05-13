@@ -168,6 +168,13 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
+  public boolean isSelectedItem(R item) {
+    requireNonNull(item);
+
+    return isSelectedIndex(tableModel.indexOf(item));
+  }
+
+  @Override
   public List<R> getSelectedItems() {
     return getSelectedIndexes().stream()
             .mapToInt(Integer::intValue)

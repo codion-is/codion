@@ -311,6 +311,16 @@ public final class FXEntityListSelectionModel implements TableSelectionModel<Ent
   }
 
   @Override
+  public boolean isSelectedItem(Entity item) {
+    requireNonNull(item);
+    if (selectionModel instanceof MultipleSelectionModel) {
+      return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().contains(item);
+    }
+
+    return selectionModel.getSelectedItem().equals(item);
+  }
+
+  @Override
   public void setSelectedItem(Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
       selectionModel.clearSelection();
