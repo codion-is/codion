@@ -39,7 +39,7 @@ public interface EventObserver<T> {
 
   /**
    * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
-   * Note that this method does not prevent a listener from being added multiple times, act accordingly.
+   * Adding the same listener a second time has no effect.
    * @param listener the listener
    */
   void addWeakListener(EventListener listener);
@@ -52,7 +52,7 @@ public interface EventObserver<T> {
 
   /**
    * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
-   * Note that this method does not prevent a listener from being added multiple times, act accordingly.
+   * Adding the same listener a second time has no effect.
    * @param listener the listener
    */
   void addWeakDataListener(EventDataListener<T> listener);
