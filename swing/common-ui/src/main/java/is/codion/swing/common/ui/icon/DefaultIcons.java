@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.icon;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 
 import org.kordamp.ikonli.Ikon;
 
@@ -26,7 +25,6 @@ final class DefaultIcons implements Icons {
   private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
   private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
-  private final OnIconSizeChangedListener iconSizeChangedListener = new OnIconSizeChangedListener();
 
   static {
     UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
@@ -34,7 +32,6 @@ final class DefaultIcons implements Icons {
 
   DefaultIcons() {
     ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
-    ICON_SIZE.addWeakListener(iconSizeChangedListener);
   }
 
   @Override
@@ -66,14 +63,6 @@ final class DefaultIcons implements Icons {
         icons.values().forEach(icon -> icon.setColor(color));
         logos.values().forEach(logo -> logo.setColor(color));
       }
-    }
-  }
-
-  private final class OnIconSizeChangedListener implements EventListener {
-
-    @Override
-    public void onEvent() {
-      icons.keySet().forEach(ikon -> icons.put(ikon, FontImageIcon.of(ikon)));
     }
   }
 
