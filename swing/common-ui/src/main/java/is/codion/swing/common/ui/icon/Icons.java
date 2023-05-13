@@ -58,5 +58,4 @@ public interface Icons {
   static Icons icons() {
     return new DefaultIcons();
   }
-
 }

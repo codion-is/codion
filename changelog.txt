@@ -8937,3 +8937,4 @@
   Icons refactored from FrameworkIcons, moved to common.ui
   Icons moved to existing icon package
   swing.framework.ui.icons renamed icon for consistency
+  DefaultLocalEntityConnection bug fixed, now allows insert of single generated column entities
