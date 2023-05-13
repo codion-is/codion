@@ -18,7 +18,7 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.spinner.SpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -558,12 +558,11 @@ public class EntityComponents {
    * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link javax.swing.JSpinner} builder
-   * @param <B> the builder type
    */
-  public final <B extends SpinnerBuilder<Integer, B>> SpinnerBuilder<Integer, B> integerSpinner(Attribute<Integer> attribute) {
+  public final NumberSpinnerBuilder<Integer> integerSpinner(Attribute<Integer> attribute) {
     Property<Integer> property = entityDefinition.property(attribute);
 
-    return (SpinnerBuilder<Integer, B>) Components.integerSpinner()
+    return Components.integerSpinner()
             .minimum(property.minimumValue().intValue())
             .maximum(property.maximumValue().intValue())
             .toolTipText(property.description());
@@ -573,12 +572,11 @@ public class EntityComponents {
    * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link javax.swing.JSpinner} builder
-   * @param <B> the builder type
    */
-  public final <B extends SpinnerBuilder<Double, B>> SpinnerBuilder<Double, B> doubleSpinner(Attribute<Double> attribute) {
+  public final NumberSpinnerBuilder<Double> doubleSpinner(Attribute<Double> attribute) {
     Property<Double> property = entityDefinition.property(attribute);
 
-    return (SpinnerBuilder<Double, B>) Components.doubleSpinner()
+    return Components.doubleSpinner()
             .minimum(property.minimumValue().doubleValue())
             .maximum(property.maximumValue().doubleValue())
             .toolTipText(property.description());

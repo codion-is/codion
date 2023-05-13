@@ -8941,3 +8941,4 @@
   AbstractProperty now sets the default min/max values according to the min/max values of the type
   EntityComponents.integerSpinner() and doubleSpinner() added
   EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner() added
+  EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner(), return type fixed

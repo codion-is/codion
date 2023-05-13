@@ -21,7 +21,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
-import is.codion.swing.common.ui.component.spinner.SpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -705,9 +705,8 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a builder for a spinner
    * @param attribute the attribute
    * @return a spinner builder
-   * @param <B> the builder type
    */
-  protected final <B extends SpinnerBuilder<Integer, B>> SpinnerBuilder<Integer, B> createIntegerSpinner(Attribute<Integer> attribute) {
+  protected final NumberSpinnerBuilder<Integer> createIntegerSpinner(Attribute<Integer> attribute) {
     return setComponentBuilder(attribute, entityComponents.integerSpinner(attribute));
   }
 
@@ -715,9 +714,8 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a builder for a spinner
    * @param attribute the attribute
    * @return a spinner builder
-   * @param <B> the builder type
    */
-  protected final <B extends SpinnerBuilder<Double, B>> SpinnerBuilder<Double, B> createDoubleSpinner(Attribute<Double> attribute) {
+  protected final NumberSpinnerBuilder<Double> createDoubleSpinner(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleSpinner(attribute));
   }
 
