@@ -53,6 +53,14 @@ public class DefaultFilteredTableSelectionModelTest {
   }
 
   @Test
+  void test() {
+    testModel.setSelectedIndex(0);
+    assertTrue(testModel.isSelectedItem("A"));
+    testModel.clearSelection();
+    assertFalse(testModel.isSelectedItem("A"));
+  }
+
+  @Test
   void vetoSelectionChange() {
     testModel.setSelectedIndex(0);
     assertEquals("A", testModel.getSelectedItem());

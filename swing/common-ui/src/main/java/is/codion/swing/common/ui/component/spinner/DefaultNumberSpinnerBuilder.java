@@ -21,6 +21,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   private T stepSize;
   private boolean groupingUsed = true;
   private String decimalFormatPattern;
+  boolean commitOnValidEdit = true;
 
   DefaultNumberSpinnerBuilder(SpinnerNumberModel spinnerNumberModel, Class<T> valueClass,
                               Value<T> linkedValue) {
@@ -62,9 +63,15 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   }
 
   @Override
+  public NumberSpinnerBuilder<T> commitOnValidEdit(boolean commitOnValidEdit) {
+    this.commitOnValidEdit = commitOnValidEdit;
+    return this;
+  }
+
+  @Override
   protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
     if (valueClass.equals(Integer.class) || valueClass.equals(Double.class)) {
-      return new SpinnerNumberValue<>(component);
+      return new SpinnerNumberValue<>(component, commitOnValidEdit);
     }
 
     throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
