@@ -21,6 +21,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.spinner.SpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -38,6 +39,7 @@ import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSpinner;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -285,7 +287,7 @@ public class EntityEditComponentPanel extends JPanel {
   public final void requestComponentFocus(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
     if (component != null) {
-      component.requestFocus();
+      focusableComponent(component).requestFocus();
     }
   }
 
@@ -700,6 +702,26 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * Creates a builder for a spinner
+   * @param attribute the attribute
+   * @return a spinner builder
+   * @param <B> the builder type
+   */
+  protected final <B extends SpinnerBuilder<Integer, B>> SpinnerBuilder<Integer, B> createIntegerSpinner(Attribute<Integer> attribute) {
+    return setComponentBuilder(attribute, entityComponents.integerSpinner(attribute));
+  }
+
+  /**
+   * Creates a builder for a spinner
+   * @param attribute the attribute
+   * @return a spinner builder
+   * @param <B> the builder type
+   */
+  protected final <B extends SpinnerBuilder<Double, B>> SpinnerBuilder<Double, B> createDoubleSpinner(Attribute<Double> attribute) {
+    return setComponentBuilder(attribute, entityComponents.doubleSpinner(attribute));
+  }
+
+  /**
    * Creates a builder for integer fields.
    * @param attribute the attribute for which to build a text field
    * @return a integer field builder
@@ -909,6 +931,8 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
+    requireNonNull(attribute);
+    requireNonNull(componentBuilder);
     if (componentBuilders.containsKey(attribute)) {
       throw new IllegalStateException("ComponentBuilder has already been set for attribute: " + attribute);
     }
@@ -953,8 +977,24 @@ public class EntityEditComponentPanel extends JPanel {
     return component != null &&
             component.isDisplayable() &&
             component.isVisible() &&
-            component.isFocusable() &&
+            isFocusable(component) &&
             component.isEnabled();
+  }
+
+  private static boolean isFocusable(JComponent component) {
+    if (component instanceof JSpinner) {
+      return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField().isFocusable();
+    }
+
+    return component.isFocusable();
+  }
+
+  private static JComponent focusableComponent(JComponent component) {
+    if (component instanceof JSpinner) {
+      return ((JSpinner.DefaultEditor) ((JSpinner) component).getEditor()).getTextField();
+    }
+
+    return component;
   }
 
   private static JLabel setLabelForComponent(JLabel label, JComponent component) {
