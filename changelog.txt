@@ -8942,3 +8942,4 @@
   EntityComponents.integerSpinner() and doubleSpinner() added
   EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner() added
   EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner(), return type fixed
+  NumberSpinnerBuilder.commitOnValidEdit() added
