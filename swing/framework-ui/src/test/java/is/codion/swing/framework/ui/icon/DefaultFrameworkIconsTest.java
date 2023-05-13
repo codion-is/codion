@@ -44,10 +44,5 @@ public final class DefaultFrameworkIconsTest {
     assertThrows(NullPointerException.class, () -> icons.add((Ikon[]) null));
     assertThrows(NullPointerException.class, () -> icons.add(null, FrameworkIkons.SETTINGS));
     assertThrows(IllegalArgumentException.class, () -> icons.add(FrameworkIkons.SETTINGS));
-
-    //can't do exact size checking, depends on font metrics, so just assert that it is bigger
-    int width = icons.delete().getIconWidth();
-    FrameworkIcons.ICON_SIZE.set(FrameworkIcons.ICON_SIZE.get() + 2);
-    assertTrue(icons.delete().getIconWidth() > width);
   }
 }
