@@ -8945,3 +8945,4 @@
   NumberSpinnerBuilder.commitOnValidEdit() added
   TableSelectionModel.isSelectedItem() added
   NumberParsingDocumentFilter bug fixed, did not handle null text in replace
+  EventObserver, added weak listener, used in DefaultIcons

@@ -3,10 +3,16 @@
  */
 package is.codion.swing.common.ui.icon;
 
+import is.codion.common.event.EventDataListener;
+import is.codion.common.event.EventListener;
+
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
 import javax.swing.UIManager;
+import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -14,25 +20,21 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultIcons implements Icons {
 
-  private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
   private static final String BUTTON_FOREGROUND_PROPERTY = "Button.foreground";
 
   private final Map<Ikon, FontImageIcon> icons = new HashMap<>();
   private final Map<Integer, FontImageIcon> logos = new HashMap<>();
 
+  private final OnIconColorChangedListener onIconColorChangedListener = new OnIconColorChangedListener();
+  private final OnIconSizeChangedListener iconSizeChangedListener = new OnIconSizeChangedListener();
+
+  static {
+    UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
+  }
+
   DefaultIcons() {
-    ICON_COLOR.addDataListener(color -> {
-      if (color != null) {
-        icons.values().forEach(icon -> icon.setColor(color));
-        logos.values().forEach(logo -> logo.setColor(color));
-      }
-    });
-    ICON_SIZE.addListener(() -> icons.keySet().forEach(ikon -> icons.put(ikon, FontImageIcon.of(ikon))));
-    UIManager.addPropertyChangeListener(propertyChangeEvent -> {
-      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY)) {
-        ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
-      }
-    });
+    ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
+    ICON_SIZE.addWeakListener(iconSizeChangedListener);
   }
 
   @Override
@@ -54,5 +56,38 @@ final class DefaultIcons implements Icons {
     }
 
     return icons.get(ikon).imageIcon();
+  }
+
+  private final class OnIconColorChangedListener implements EventDataListener<Color> {
+
+    @Override
+    public void onEvent(Color color) {
+      if (color != null) {
+        icons.values().forEach(icon -> icon.setColor(color));
+        logos.values().forEach(logo -> logo.setColor(color));
+      }
+    }
+  }
+
+  private final class OnIconSizeChangedListener implements EventListener {
+
+    @Override
+    public void onEvent() {
+      icons.keySet().forEach(ikon -> icons.put(ikon, FontImageIcon.of(ikon)));
+    }
+  }
+
+  private static final class OnLookAndFeelChangedListener implements PropertyChangeListener {
+
+    private static final String LOOK_AND_FEEL_PROPERTY = "lookAndFeel";
+
+    @Override
+    public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
+      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY)) {
+        if (ICON_COLOR != null) {
+          ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
+        }
+      }
+    }
   }
 }

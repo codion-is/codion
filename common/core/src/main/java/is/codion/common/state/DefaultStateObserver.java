@@ -82,6 +82,26 @@ final class DefaultStateObserver implements StateObserver {
     eventObserver().removeDataListener(listener);
   }
 
+  @Override
+  public void addWeakListener(EventListener listener) {
+    eventObserver().addWeakListener(listener);
+  }
+
+  @Override
+  public void removeWeakListener(EventListener listener) {
+    eventObserver().removeWeakListener(listener);
+  }
+
+  @Override
+  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+    eventObserver().addWeakDataListener(listener);
+  }
+
+  @Override
+  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+    eventObserver().removeWeakDataListener(listener);
+  }
+
   void notifyObservers(boolean newValue, boolean previousValue) {
     synchronized (lock) {
       if (previousValue != newValue) {

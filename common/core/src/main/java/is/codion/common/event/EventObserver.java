@@ -10,8 +10,8 @@ package is.codion.common.event;
 public interface EventObserver<T> {
 
   /**
-   * Adds {@code listener} to this {@link EventObserver}, adding the same listener
-   * a second time has no effect.
+   * Adds {@code listener} to this {@link EventObserver}.
+   * Adding the same listener a second time has no effect.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
    */
@@ -24,8 +24,8 @@ public interface EventObserver<T> {
   void removeListener(EventListener listener);
 
   /**
-   * Adds {@code listener} to this {@link EventObserver}, adding the same listener
-   * a second time has no effect.
+   * Adds {@code listener} to this {@link EventObserver}.
+   * Adding the same listener a second time has no effect.
    * @param listener the listener to add
    * @throws NullPointerException in case listener is null
    */
@@ -36,4 +36,30 @@ public interface EventObserver<T> {
    * @param listener the listener to remove
    */
   void removeDataListener(EventDataListener<T> listener);
+
+  /**
+   * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
+   * Note that this method does not prevent a listener from being added multiple times, act accordingly.
+   * @param listener the listener
+   */
+  void addWeakListener(EventListener listener);
+
+  /**
+   * Removes {@code listener} from this {@link EventObserver}
+   * @param listener the listener to remove
+   */
+  void removeWeakListener(EventListener listener);
+
+  /**
+   * Uses a {@link java.lang.ref.WeakReference}, adding {@code listener} does not prevent it from being garbage collected.
+   * Note that this method does not prevent a listener from being added multiple times, act accordingly.
+   * @param listener the listener
+   */
+  void addWeakDataListener(EventDataListener<T> listener);
+
+  /**
+   * Removes {@code listener} from this {@link EventObserver}
+   * @param listener the listener to remove
+   */
+  void removeWeakDataListener(EventDataListener<T> listener);
 }
