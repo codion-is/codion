@@ -339,18 +339,20 @@ class NumberDocument<T extends Number> extends PlainDocument {
     @Override
     public void replace(FilterBypass filterBypass, int offset, int length, String text,
                         AttributeSet attributeSet) throws BadLocationException {
-      text = convertSingleGroupingToDecimalSeparator(text);
-      Document document = filterBypass.getDocument();
-      StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
-      builder.replace(offset, offset + length, text);
-      NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
-      if (parseResult.successful()) {
-        if (parseResult.value() != null) {
-          validate(parseResult.value());
-        }
-        super.replace(filterBypass, 0, document.getLength(), parseResult.text(), attributeSet);
-        if (textComponent != null) {
-          textComponent.getCaret().setDot(offset + text.length() + parseResult.charetOffset());
+      if (text != null) {
+        text = convertSingleGroupingToDecimalSeparator(text);
+        Document document = filterBypass.getDocument();
+        StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
+        builder.replace(offset, offset + length, text);
+        NumberParser.NumberParseResult<T> parseResult = parser.parse(builder.toString());
+        if (parseResult.successful()) {
+          if (parseResult.value() != null) {
+            validate(parseResult.value());
+          }
+          super.replace(filterBypass, 0, document.getLength(), parseResult.text(), attributeSet);
+          if (textComponent != null) {
+            textComponent.getCaret().setDot(offset + text.length() + parseResult.charetOffset());
+          }
         }
       }
     }

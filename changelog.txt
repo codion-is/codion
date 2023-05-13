@@ -8982,3 +8982,7 @@
   EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner(), return type fixed
   NumberSpinnerBuilder.commitOnValidEdit() added
   TableSelectionModel.isSelectedItem() added
+  NumberParsingDocumentFilter bug fixed, did not handle null text in replace
+  EventObserver, added weak listener, used in DefaultIcons
+  DefaultIcons, no longer listens to changes in ICON_SIZE, had no effect
+  DefaultEventObserver, adding weak listeners now prevents the same listener from being added multiple times

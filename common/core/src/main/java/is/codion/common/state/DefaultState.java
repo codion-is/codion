@@ -144,6 +144,26 @@ final class DefaultState implements State {
     observer().removeDataListener(listener);
   }
 
+  @Override
+  public void addWeakListener(EventListener listener) {
+    observer().addWeakListener(listener);
+  }
+
+  @Override
+  public void removeWeakListener(EventListener listener) {
+    observer().removeWeakListener(listener);
+  }
+
+  @Override
+  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+    observer().addWeakDataListener(listener);
+  }
+
+  @Override
+  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+    observer().removeWeakDataListener(listener);
+  }
+
   private final class Notifier implements EventDataListener<Boolean> {
 
     @Override

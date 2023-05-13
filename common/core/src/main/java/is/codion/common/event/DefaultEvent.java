@@ -50,4 +50,24 @@ final class DefaultEvent<T> implements Event<T> {
   public void removeDataListener(EventDataListener<T> listener) {
     observer().removeDataListener(listener);
   }
+
+  @Override
+  public void addWeakListener(EventListener listener) {
+    observer().addWeakListener(listener);
+  }
+
+  @Override
+  public void removeWeakListener(EventListener listener) {
+    observer().removeWeakListener(listener);
+  }
+
+  @Override
+  public void addWeakDataListener(EventDataListener<T> listener) {
+    observer().addWeakDataListener(listener);
+  }
+
+  @Override
+  public void removeWeakDataListener(EventDataListener<T> listener) {
+    observer().removeWeakDataListener(listener);
+  }
 }

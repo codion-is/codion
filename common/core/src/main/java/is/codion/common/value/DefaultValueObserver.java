@@ -45,4 +45,24 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   public void removeDataListener(EventDataListener<T> listener) {
     value.removeDataListener(listener);
   }
+
+  @Override
+  public void addWeakListener(EventListener listener) {
+    value.addWeakListener(listener);
+  }
+
+  @Override
+  public void removeWeakListener(EventListener listener) {
+    value.removeWeakListener(listener);
+  }
+
+  @Override
+  public void addWeakDataListener(EventDataListener<T> listener) {
+    value.addWeakDataListener(listener);
+  }
+
+  @Override
+  public void removeWeakDataListener(EventDataListener<T> listener) {
+    value.removeWeakDataListener(listener);
+  }
 }

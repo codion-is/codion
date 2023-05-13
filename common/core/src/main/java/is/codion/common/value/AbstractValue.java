@@ -114,6 +114,26 @@ public abstract class AbstractValue<T> implements Value<T> {
   }
 
   @Override
+  public final void addWeakListener(EventListener listener) {
+    changeObserver().addWeakListener(listener);
+  }
+
+  @Override
+  public final void removeWeakListener(EventListener listener) {
+    changeObserver().removeWeakListener(listener);
+  }
+
+  @Override
+  public final void addWeakDataListener(EventDataListener<T> listener) {
+    changeObserver().addWeakDataListener(listener);
+  }
+
+  @Override
+  public final void removeWeakDataListener(EventDataListener<T> listener) {
+    changeObserver().removeWeakDataListener(listener);
+  }
+
+  @Override
   public final void link(Value<T> originalValue) {
     if (linkedValues.containsKey(requireNonNull(originalValue, "originalValue"))) {
       throw new IllegalStateException("Values are already linked");

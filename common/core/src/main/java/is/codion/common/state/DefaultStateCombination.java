@@ -124,6 +124,26 @@ final class DefaultStateCombination implements State.Combination {
     observer.removeDataListener(listener);
   }
 
+  @Override
+  public void addWeakListener(EventListener listener) {
+    observer.addWeakListener(listener);
+  }
+
+  @Override
+  public void removeWeakListener(EventListener listener) {
+    observer.removeWeakListener(listener);
+  }
+
+  @Override
+  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+    observer.addWeakDataListener(listener);
+  }
+
+  @Override
+  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+    observer.removeWeakDataListener(listener);
+  }
+
   private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
     for (StateCombinationListener listener : stateListeners) {
       StateObserver state = listener.getState();
