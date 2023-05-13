@@ -8944,3 +8944,4 @@
   EntityEditComponentPanel.createIntegerSpinner() and createDoubleSpinner(), return type fixed
   NumberSpinnerBuilder.commitOnValidEdit() added
   TableSelectionModel.isSelectedItem() added
+  NumberParsingDocumentFilter bug fixed, did not handle null text in replace
