@@ -8938,3 +8938,4 @@
   Icons moved to existing icon package
   swing.framework.ui.icons renamed icon for consistency
   DefaultLocalEntityConnection bug fixed, now allows insert of single generated column entities
+  AbstractProperty now sets the default min/max values according to the min/max values of the type

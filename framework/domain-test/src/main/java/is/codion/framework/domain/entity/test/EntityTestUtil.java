@@ -194,22 +194,22 @@ public final class EntityTestUtil {
   }
 
   private static int randomInteger(Property<?> property) {
-    int min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().intValue();
-    int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().intValue();
+    int min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : Math.max(property.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
+    int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : Math.min(property.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
 
     return RANDOM.nextInt((max - min) + 1) + min;
   }
 
   private static short randomShort(Property<?> property) {
-    short min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().shortValue();
-    short max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().shortValue();
+    short min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : (short) Math.max(property.minimumValue().intValue(), MININUM_RANDOM_NUMBER);
+    short max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : (short) Math.min(property.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
 
     return (short) (RANDOM.nextInt((max - min) + 1) + min);
   }
 
   private static double randomDouble(Property<?> property) {
-    double min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : property.minimumValue().doubleValue();
-    double max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : property.maximumValue().doubleValue();
+    double min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : Math.max(property.minimumValue().doubleValue(), MININUM_RANDOM_NUMBER);
+    double max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : Math.min(property.maximumValue().doubleValue(), MAXIMUM_RANDOM_NUMBER);
 
     return RANDOM.nextDouble() * (max - min) + min;
   }

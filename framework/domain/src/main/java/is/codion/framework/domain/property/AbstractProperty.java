@@ -449,6 +449,8 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       maximumLength = -1;
       defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
       decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
+      minimumValue = defaultMinimumValue();
+      maximumValue = defaultMaximumValue();
     }
 
     @Override
@@ -701,6 +703,44 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       }
 
       return (Comparator<T>) TO_STRING_COMPARATOR;
+    }
+
+    private Number defaultMinimumValue() {
+      if (attribute.isNumerical()) {
+        if (attribute.isShort()) {
+          return Short.MIN_VALUE;
+        }
+        if (attribute.isInteger()) {
+          return Integer.MIN_VALUE;
+        }
+        if (attribute.isLong()) {
+          return Long.MIN_VALUE;
+        }
+        if (attribute.isDouble()) {
+          return Double.MIN_VALUE;
+        }
+      }
+
+      return null;
+    }
+
+    private Number defaultMaximumValue() {
+      if (attribute.isNumerical()) {
+        if (attribute.isShort()) {
+          return Short.MAX_VALUE;
+        }
+        if (attribute.isInteger()) {
+          return Integer.MAX_VALUE;
+        }
+        if (attribute.isLong()) {
+          return Long.MAX_VALUE;
+        }
+        if (attribute.isDouble()) {
+          return Double.MAX_VALUE;
+        }
+      }
+
+      return null;
     }
   }
 }
