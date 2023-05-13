@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.spinner.SpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TemporalField;
@@ -550,6 +551,36 @@ public class EntityComponents {
             .minimumValue(property.minimumValue())
             .maximumValue(property.maximumValue())
             .maximumFractionDigits(property.maximumFractionDigits())
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
+   * @param attribute the attribute
+   * @return a {@link javax.swing.JSpinner} builder
+   * @param <B> the builder type
+   */
+  public final <B extends SpinnerBuilder<Integer, B>> SpinnerBuilder<Integer, B> integerSpinner(Attribute<Integer> attribute) {
+    Property<Integer> property = entityDefinition.property(attribute);
+
+    return (SpinnerBuilder<Integer, B>) Components.integerSpinner()
+            .minimum(property.minimumValue().intValue())
+            .maximum(property.maximumValue().intValue())
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
+   * @param attribute the attribute
+   * @return a {@link javax.swing.JSpinner} builder
+   * @param <B> the builder type
+   */
+  public final <B extends SpinnerBuilder<Double, B>> SpinnerBuilder<Double, B> doubleSpinner(Attribute<Double> attribute) {
+    Property<Double> property = entityDefinition.property(attribute);
+
+    return (SpinnerBuilder<Double, B>) Components.doubleSpinner()
+            .minimum(property.minimumValue().doubleValue())
+            .maximum(property.maximumValue().doubleValue())
             .toolTipText(property.description());
   }
 

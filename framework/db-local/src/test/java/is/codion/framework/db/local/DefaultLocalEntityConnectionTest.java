@@ -1115,6 +1115,11 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
   }
 
+  @Test
+  void singleGeneratedColumnInsert() throws DatabaseException {
+    connection.delete(connection.insert(ENTITIES.builder(Master.TYPE).build()));
+  }
+
   private static LocalEntityConnection createConnection() throws DatabaseException {
     return createConnection(false);
   }
