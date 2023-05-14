@@ -8954,3 +8954,4 @@
   FontImageIcon.ImageIconFactory and Builder.imageIconFactory() added
   ColumnConditionPanel, CTRL-ENTER now toggles the condition enabled state
   EntityTablePanel, table now receives focus when the condition panel is hidden while being the focus owner
+  EntityTablePanel.entityTablePanel() factory method bug fixed, popup menu was empty due to lazy initialization of controls

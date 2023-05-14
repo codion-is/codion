@@ -12,7 +12,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ItemProperty;
@@ -759,14 +758,8 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    SwingEntityEditModel editModel = new SwingEntityEditModel(entities.iterator().next().type(), connectionProvider);
-    editModel.setReadOnly(true);
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(editModel) {
-      @Override
-      protected Collection<Entity> refreshItems() {
-        return entities;
-      }
-    };
+    SwingEntityTableModel tableModel = new StaticSwingEntityTableModel(entities, connectionProvider);
+    tableModel.editModel().setReadOnly(true);
     tableModel.refresh();
 
     return entityTablePanel(tableModel);
@@ -785,13 +778,7 @@ public class EntityTablePanel extends JPanel {
       throw new IllegalArgumentException("Cannot create a EntityTablePanel without the entities");
     }
 
-    EntityType entityType = entities.iterator().next().type();
-    SwingEntityTableModel tableModel = new SwingEntityTableModel(entityType, connectionProvider) {
-      @Override
-      protected Collection<Entity> refreshItems() {
-        return entities;
-      }
-    };
+    SwingEntityTableModel tableModel = new StaticSwingEntityTableModel(entities, connectionProvider);
     tableModel.refresh();
 
     return entityTablePanel(tableModel);
@@ -804,24 +791,7 @@ public class EntityTablePanel extends JPanel {
    * @return an entity table panel based on the given model
    */
   public static EntityTablePanel entityTablePanel(SwingEntityTableModel tableModel) {
-    EntityTablePanel tablePanel = new EntityTablePanel(tableModel) {
-      @Override
-      protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
-        return additionalPopupMenuControls.get(0);
-      }
-    };
-    Controls popupMenuControls = Controls.controls();
-    tablePanel.control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
-    tablePanel.control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-    if (!popupMenuControls.isEmpty()) {
-      popupMenuControls.addSeparator();
-    }
-    tablePanel.control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
-    tablePanel.addPopupMenuControls(popupMenuControls);
-    tablePanel.setIncludeConditionPanel(false);
-    tablePanel.initializePanel();
-
-    return tablePanel;
+    return new StaticEntityTablePanel(tableModel).initializePanel();
   }
 
   /**
@@ -1845,6 +1815,42 @@ public class EntityTablePanel extends JPanel {
       component.setFont(useBoldFont ? defaultFont.deriveFont(defaultFont.getStyle() | Font.BOLD) : defaultFont);
 
       return component;
+    }
+  }
+
+  private static final class StaticSwingEntityTableModel extends SwingEntityTableModel {
+
+    private final Collection<Entity> entities;
+
+    private StaticSwingEntityTableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
+      super(entities.iterator().next().type(), connectionProvider);
+      this.entities = entities;
+    }
+
+    @Override
+    protected Collection<Entity> refreshItems() {
+      return entities;
+    }
+  }
+
+  private static final class StaticEntityTablePanel extends EntityTablePanel {
+
+    private StaticEntityTablePanel(SwingEntityTableModel tableModel) {
+      super(tableModel);
+      setIncludeConditionPanel(false);
+    }
+
+    @Override
+    protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
+      Controls popupMenuControls = Controls.controls();
+      control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
+      control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
+      if (!popupMenuControls.isEmpty()) {
+        popupMenuControls.addSeparator();
+      }
+      control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);
+
+      return popupMenuControls;
     }
   }
 
