@@ -45,6 +45,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.Utilities.getParentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.util.Objects.requireNonNull;
@@ -435,7 +436,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setSimpleView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
+    boolean isParentOfFocusOwner = getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (isParentOfFocusOwner) {
       requestFocusInWindow(true);
     }
@@ -451,7 +452,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void setAdvancedView() {
     Component focusOwner = getCurrentKeyboardFocusManager().getFocusOwner();
-    boolean isParentOfFocusOwner = Utilities.getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
+    boolean isParentOfFocusOwner = getParentOfType(ColumnConditionPanel.class, focusOwner) == this;
     if (isParentOfFocusOwner) {
       requestFocusInWindow(true);
     }

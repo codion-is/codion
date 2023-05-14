@@ -85,12 +85,12 @@ import java.util.ResourceBundle;
 import java.util.Set;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
-import static is.codion.swing.common.ui.Utilities.linkBoundedRangeModels;
+import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
+import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -1661,6 +1661,26 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  private final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
+    if (scrollPane != null && scrollPane.isVisible()) {
+      if (advancedState.get()) {
+        boolean isParentOfFocusOwner = getParentOfType(JScrollPane.class,
+                getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
+        visibleState.set(false);
+        if (isParentOfFocusOwner) {
+          table.requestFocusInWindow();
+        }
+      }
+      else {
+        advancedState.set(true);
+      }
+    }
+    else {
+      advancedState.set(false);
+      visibleState.set(true);
+    }
+  }
+
   private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {
     if (tableConditionPanel != null) {
       tableConditionPanel.componentPanel().columnComponents().values().forEach(this::configureHorizontalAlignment);
@@ -1690,21 +1710,6 @@ public class EntityTablePanel extends JPanel {
       if (component instanceof JTextField) {
         ((JTextField) component).setHorizontalAlignment(horizontalAlignment);
       }
-    }
-  }
-
-  private static final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
-    if (scrollPane != null && scrollPane.isVisible()) {
-      if (advancedState.get()) {
-        visibleState.set(false);
-      }
-      else {
-        advancedState.set(true);
-      }
-    }
-    else {
-      advancedState.set(false);
-      visibleState.set(true);
     }
   }
 
