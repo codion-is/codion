@@ -42,7 +42,7 @@ final class DefaultIcons implements Icons {
       }
     }
     for (Ikon ikon : ikons) {
-      icons.put(ikon, FontImageIcon.of(ikon));
+      icons.put(ikon, FontImageIcon.builder(ikon).build());
     }
   }
 
@@ -72,10 +72,8 @@ final class DefaultIcons implements Icons {
 
     @Override
     public void propertyChange(PropertyChangeEvent propertyChangeEvent) {
-      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY)) {
-        if (ICON_COLOR != null) {
-          ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
-        }
+      if (propertyChangeEvent.getPropertyName().equals(LOOK_AND_FEEL_PROPERTY) && ICON_COLOR != null) {
+        ICON_COLOR.set(UIManager.getColor(BUTTON_FOREGROUND_PROPERTY));
       }
     }
   }

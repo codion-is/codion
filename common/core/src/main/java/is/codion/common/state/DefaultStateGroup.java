@@ -16,20 +16,20 @@ final class DefaultStateGroup implements State.Group {
   private final List<WeakReference<State>> members = new ArrayList<>();
 
   DefaultStateGroup(State... states) {
-    for (State state : requireNonNull(states, "states")) {
+    for (State state : requireNonNull(states)) {
       addState(state);
     }
   }
 
   DefaultStateGroup(Collection<State> states) {
-    for (State state : requireNonNull(states, "states")) {
+    for (State state : requireNonNull(states)) {
       addState(state);
     }
   }
 
   @Override
   public void addState(State state) {
-    requireNonNull(state, "state");
+    requireNonNull(state);
     synchronized (members) {
       for (WeakReference<State> reference : members) {
         if (reference.get() == state) {
@@ -55,7 +55,7 @@ final class DefaultStateGroup implements State.Group {
 
   @Override
   public void addStates(Collection<State> states) {
-    requireNonNull(states, "states").forEach(this::addState);
+    requireNonNull(states).forEach(this::addState);
   }
 
   private void disableOthers(State state) {
