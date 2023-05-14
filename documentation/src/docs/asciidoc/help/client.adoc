@@ -144,6 +144,7 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |===
 2+|Table condition panel
 
+|kbd:[Ctrol + Enter]|Enable/disable column condition
 |kbd:[Enter]|Refresh table data
 |===
 

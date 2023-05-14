@@ -112,6 +112,7 @@ final class KeyboardShortcutsPanel extends JPanel {
 
   private static JPanel conditionPanel() {
     return panel(gridLayout(0, 2))
+            .addAll(new JLabel(MESSAGES.getString("enable_disable_condition")), new JLabel(CTRL + ENTER))
             .addAll(new JLabel(MESSAGES.getString("refresh_table_data")), new JLabel(ENTER))
             .border(createTitledBorder(MESSAGES.getString("condition_panel")))
             .build();

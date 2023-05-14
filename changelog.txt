@@ -8990,3 +8990,5 @@
   AbstractProperty bug fixed, Double.MIN_VALUE is the smalles positive double value, can't be used for the allowed value range, use -Double.MAX_VALUE
   DefaultNumberSpinnerBuilder now handles commitOnValidEdit, instead of SpinnerNumberValue
   FontImageIcon.ImageIconFactory and Builder.imageIconFactory() added
+  ColumnConditionPanel, CTRL-ENTER now toggles the condition enabled state
+  EntityTablePanel, table now receives focus when the condition panel is hidden while being the focus owner

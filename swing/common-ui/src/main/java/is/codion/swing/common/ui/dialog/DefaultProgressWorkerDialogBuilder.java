@@ -132,22 +132,26 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
             .onProgress(progressDialog::setProgress)
             .onPublish(chunks -> progressDialog.setMessage(message(chunks)))
             .onDone(() -> closeDialog(progressDialog))
-            .onResult(result -> {
-              closeDialog(progressDialog);
-              if (onResult != null) {
-                onResult.accept(result);
-              }
-            })
+            .onResult(result -> onResult(result, progressDialog))
             .onInterrupted(() -> closeDialog(progressDialog))
-            .onException(exception -> {
-              closeDialog(progressDialog);
-              handleException(exception);
-            })
+            .onException(exception -> onException(exception, progressDialog))
             .onCancelled(() -> closeDialog(progressDialog))
             .build();
   }
 
-  private void handleException(Throwable exception) {
+  private String message(List<V> chunks) {
+    return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
+  }
+
+  private void onResult(T result, ProgressDialog progressDialog) {
+    closeDialog(progressDialog);
+    if (onResult != null) {
+      onResult.accept(result);
+    }
+  }
+
+  private void onException(Throwable exception, ProgressDialog progressDialog) {
+    closeDialog(progressDialog);
     if (!(exception instanceof CancelException)) {
       if (onException != null) {
         onException.accept(exception);
@@ -161,12 +165,8 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
     }
   }
 
-  private String message(List<V> chunks) {
-    return chunks.isEmpty() ? null : Objects.toString(chunks.get(chunks.size() - 1));
-  }
-
-  private static void closeDialog(ProgressDialog dialog) {
-    dialog.setVisible(false);
-    dialog.dispose();
+  private static void closeDialog(ProgressDialog progressDialog) {
+    progressDialog.setVisible(false);
+    progressDialog.dispose();
   }
 }
