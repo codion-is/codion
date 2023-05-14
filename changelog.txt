@@ -8948,3 +8948,4 @@
   EventObserver, added weak listener, used in DefaultIcons
   DefaultIcons, no longer listens to changes in ICON_SIZE, had no effect
   DefaultEventObserver, adding weak listeners now prevents the same listener from being added multiple times
+  FontImageIcon.Builder added, relevant refactoring, custom painting for logo removed, seems unnecessary

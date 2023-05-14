@@ -14,6 +14,7 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
+import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -314,7 +315,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
     int logoSize = DEFAULT_LOGO_SIZE;
     if (fontSizePercentage != 100) {
       setFontSizePercentage(fontSizePercentage);
-      FrameworkIcons.ICON_SIZE.set(Math.round(FrameworkIcons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
+      Icons.ICON_SIZE.set(Math.round(Icons.ICON_SIZE.get() * (fontSizePercentage / 100f)));
       logoSize = Math.round(logoSize * (fontSizePercentage / 100f));
     }
     if (applicationIcon == null) {

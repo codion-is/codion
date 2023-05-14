@@ -10,30 +10,24 @@ import javax.swing.ImageIcon;
 import java.awt.Color;
 import java.awt.image.BufferedImage;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A default FontImageIcon implementation.
  */
-public class DefaultFontImageIcon implements FontImageIcon {
+final class DefaultFontImageIcon implements FontImageIcon {
 
   private final FontIcon fontIcon;
   private final ImageIcon imageIcon;
 
-  protected DefaultFontImageIcon(Ikon ikon) {
-    this(ikon, Icons.ICON_SIZE.get());
-  }
-
-  protected DefaultFontImageIcon(Ikon ikon, int size) {
-    this(ikon, size, Icons.ICON_COLOR.get());
-  }
-
-  protected DefaultFontImageIcon(Ikon ikon, int size, Color color) {
-    fontIcon = FontIcon.of(ikon, size, color);
-    imageIcon = createImageIcon();
+  private DefaultFontImageIcon(DefaultBuilder builder) {
+    this.fontIcon = FontIcon.of(builder.ikon, builder.size, builder.color);
+    this.imageIcon = createImageIcon();
     paintIcon();
   }
 
   @Override
-  public final ImageIcon imageIcon() {
+  public ImageIcon imageIcon() {
     return imageIcon;
   }
 
@@ -43,15 +37,40 @@ public class DefaultFontImageIcon implements FontImageIcon {
     paintIcon();
   }
 
-  protected final FontIcon fontIcon() {
-    return fontIcon;
-  }
-
-  protected void paintIcon() {
+  private void paintIcon() {
     fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
   }
 
   private ImageIcon createImageIcon() {
     return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final Ikon ikon;
+
+    private int size = Icons.ICON_SIZE.get();
+    private Color color = Icons.ICON_COLOR.get();
+
+    DefaultBuilder(Ikon ikon) {
+      this.ikon = requireNonNull(ikon);
+    }
+
+    @Override
+    public Builder size(int size) {
+      this.size = size;
+      return this;
+    }
+
+    @Override
+    public Builder color(Color color) {
+      this.color = requireNonNull(color);
+      return this;
+    }
+
+    @Override
+    public FontImageIcon build() {
+      return new DefaultFontImageIcon(this);
+    }
   }
 }

@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui.icon;
 
-import is.codion.swing.common.ui.icon.DefaultFontImageIcon;
 import is.codion.swing.common.ui.icon.FontImageIcon;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.Logos;
@@ -17,6 +16,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
+import static is.codion.swing.framework.ui.icon.FrameworkIkons.*;
+
 /**
  * A default FrameworkIcons implementation.
  */
@@ -26,14 +27,13 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 
   private final Icons icons = Icons.icons();
   private final Map<Integer, FontImageIcon> logos = new HashMap<>();
-  private final ImageIcon refreshRequired = FontImageIcon.of(FrameworkIkons.REFRESH, ICON_SIZE.get(), Color.RED.darker()).imageIcon();
+  private final ImageIcon refreshRequired = FontImageIcon.builder(REFRESH)
+          .color(Color.RED.darker())
+          .build().imageIcon();
 
   public DefaultFrameworkIcons() {
-    add(FrameworkIkons.LOGO, FrameworkIkons.FILTER, FrameworkIkons.SEARCH, FrameworkIkons.ADD,
-            FrameworkIkons.DELETE, FrameworkIkons.UPDATE, FrameworkIkons.COPY, FrameworkIkons.REFRESH,
-            FrameworkIkons.CLEAR, FrameworkIkons.UP, FrameworkIkons.DOWN, FrameworkIkons.DETAIL,
-            FrameworkIkons.PRINT, FrameworkIkons.EDIT, FrameworkIkons.SUMMARY, FrameworkIkons.EDIT_PANEL,
-            FrameworkIkons.DEPENDENCIES, FrameworkIkons.SETTINGS, FrameworkIkons.CALENDAR, FrameworkIkons.EDIT_TEXT);
+    add(LOGO, FILTER, SEARCH, ADD, DELETE, UPDATE, COPY, REFRESH, CLEAR, UP, DOWN, DETAIL,
+            PRINT, EDIT, SUMMARY, EDIT_PANEL, DEPENDENCIES, SETTINGS, CALENDAR, EDIT_TEXT);
   }
 
   @Override
@@ -48,37 +48,37 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 
   @Override
   public ImageIcon filter() {
-    return icon(FrameworkIkons.FILTER);
+    return icon(FILTER);
   }
 
   @Override
   public ImageIcon search() {
-    return icon(FrameworkIkons.SEARCH);
+    return icon(SEARCH);
   }
 
   @Override
   public ImageIcon add() {
-    return icon(FrameworkIkons.ADD);
+    return icon(ADD);
   }
 
   @Override
   public ImageIcon delete() {
-    return icon(FrameworkIkons.DELETE);
+    return icon(DELETE);
   }
 
   @Override
   public ImageIcon update() {
-    return icon(FrameworkIkons.UPDATE);
+    return icon(UPDATE);
   }
 
   @Override
   public ImageIcon copy() {
-    return icon(FrameworkIkons.COPY);
+    return icon(COPY);
   }
 
   @Override
   public ImageIcon refresh() {
-    return icon(FrameworkIkons.REFRESH);
+    return icon(REFRESH);
   }
 
   @Override
@@ -88,77 +88,79 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
 
   @Override
   public ImageIcon clear() {
-    return icon(FrameworkIkons.CLEAR);
+    return icon(CLEAR);
   }
 
   @Override
   public ImageIcon up() {
-    return icon(FrameworkIkons.UP);
+    return icon(UP);
   }
 
   @Override
   public ImageIcon down() {
-    return icon(FrameworkIkons.DOWN);
+    return icon(DOWN);
   }
 
   @Override
   public ImageIcon detail() {
-    return icon(FrameworkIkons.DETAIL);
+    return icon(DETAIL);
   }
 
   @Override
   public ImageIcon print() {
-    return icon(FrameworkIkons.PRINT);
+    return icon(PRINT);
   }
 
   @Override
   public ImageIcon clearSelection() {
-    return icon(FrameworkIkons.CLEAR);
+    return icon(CLEAR);
   }
 
   @Override
   public ImageIcon edit() {
-    return icon(FrameworkIkons.EDIT);
+    return icon(EDIT);
   }
 
   @Override
   public ImageIcon summary() {
-    return icon(FrameworkIkons.SUMMARY);
+    return icon(SUMMARY);
   }
 
   @Override
   public ImageIcon editPanel() {
-    return icon(FrameworkIkons.EDIT_PANEL);
+    return icon(EDIT_PANEL);
   }
 
   @Override
   public ImageIcon dependencies() {
-    return icon(FrameworkIkons.DEPENDENCIES);
+    return icon(DEPENDENCIES);
   }
 
   @Override
   public ImageIcon settings() {
-    return icon(FrameworkIkons.SETTINGS);
+    return icon(SETTINGS);
   }
 
   @Override
   public ImageIcon calendar() {
-    return icon(FrameworkIkons.CALENDAR);
+    return icon(CALENDAR);
   }
 
   @Override
   public ImageIcon editText() {
-    return icon(FrameworkIkons.EDIT_TEXT);
+    return icon(EDIT_TEXT);
   }
 
   @Override
   public ImageIcon logo() {
-    return icon(FrameworkIkons.LOGO);
+    return icon(LOGO);
   }
 
   @Override
   public ImageIcon logo(int size) {
-    return logos.computeIfAbsent(size, k -> new LogoImageIcon(size)).imageIcon();
+    return logos.computeIfAbsent(size, k -> FontImageIcon.builder(LOGO)
+            .size(size)
+            .build()).imageIcon();
   }
 
   static FrameworkIcons instance() {
@@ -179,20 +181,5 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
     }
 
     throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
-  }
-
-  private static final class LogoImageIcon extends DefaultFontImageIcon {
-
-    private LogoImageIcon(int size) {
-      super(FrameworkIkons.LOGO, size);
-    }
-
-    @Override
-    protected void paintIcon() {
-      //center on y-axis
-      int yOffset = (fontIcon().getIconHeight() - fontIcon().getIconWidth()) / 2;
-
-      fontIcon().paintIcon(null, imageIcon().getImage().getGraphics(), 0, -yOffset);
-    }
   }
 }

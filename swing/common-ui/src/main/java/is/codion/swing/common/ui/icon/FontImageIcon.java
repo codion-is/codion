@@ -25,20 +25,33 @@ public interface FontImageIcon {
   void setColor(Color color);
 
   /**
-   * @param ikon the ikon
-   * @return a new FontImageIcon
+   * A builder for a {@link FontImageIcon}.
    */
-  static FontImageIcon of(Ikon ikon) {
-    return new DefaultFontImageIcon(ikon);
+  interface Builder {
+
+    /**
+     * @param size the font size
+     * @return this builder
+     */
+    Builder size(int size);
+
+    /**
+     * @param color the font color
+     * @return this builder
+     */
+    Builder color(Color color);
+
+    /**
+     * @return a new font imge icon
+     */
+     FontImageIcon build();
   }
 
   /**
    * @param ikon the ikon
-   * @param size the size
-   * @param color the color
-   * @return a new FontImageIcon
+   * @return a new {@link FontImageIcon.Builder}
    */
-  static FontImageIcon of(Ikon ikon, int size, Color color) {
-    return new DefaultFontImageIcon(ikon, size, color);
+  static Builder builder(Ikon ikon) {
+    return new DefaultFontImageIcon.DefaultBuilder(ikon);
   }
 }
