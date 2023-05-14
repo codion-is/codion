@@ -8,6 +8,7 @@ import is.codion.swing.common.ui.component.ComponentValue;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
+import javax.swing.text.DefaultFormatter;
 
 import static java.util.Objects.requireNonNull;
 
@@ -71,7 +72,7 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
   @Override
   protected ComponentValue<T, JSpinner> createComponentValue(JSpinner component) {
     if (valueClass.equals(Integer.class) || valueClass.equals(Double.class)) {
-      return new SpinnerNumberValue<>(component, commitOnValidEdit);
+      return new SpinnerNumberValue<>(component);
     }
 
     throw new IllegalStateException("NumberSpinnerBuilder not implemented for type: " + valueClass);
@@ -93,6 +94,9 @@ final class DefaultNumberSpinnerBuilder<T extends Number> extends AbstractSpinne
     JSpinner.NumberEditor numberEditor = decimalFormatPattern == null ?
             new JSpinner.NumberEditor(spinner) : new JSpinner.NumberEditor(spinner, decimalFormatPattern);
     numberEditor.getFormat().setGroupingUsed(groupingUsed);
+    if (commitOnValidEdit) {
+      ((DefaultFormatter) numberEditor.getTextField().getFormatter()).setCommitsOnValidEdit(true);
+    }
     spinner.setEditor(numberEditor);
 
     return spinner;
