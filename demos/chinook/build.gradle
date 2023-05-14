@@ -2,7 +2,7 @@ import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
 import org.javamodularity.moduleplugin.tasks.ModularJavaExec
 
 plugins {
-    id 'org.openjfx.javafxplugin' version '0.0.13'
+    id 'org.openjfx.javafxplugin' version '0.0.14'
 }
 
 apply from: '../demos.gradle'
