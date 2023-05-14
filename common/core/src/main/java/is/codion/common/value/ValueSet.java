@@ -45,8 +45,8 @@ public interface ValueSet<T> extends Value<Set<T>> {
   /**
    * Creates a new {@link Value} instance based on this {@link ValueSet}.
    * Setting the value to null clears the value set.
-   * This value returns a random value from the underlying {@link ValueSet} in
-   * case it contains multiple items.
+   * This value consistently returns the first value from the
+   * underlying {@link ValueSet} in case it contains multiple items.
    * @return a single item value based on this value set
    */
   Value<T> value();
