@@ -4,9 +4,13 @@
 package is.codion.swing.common.ui.icon;
 
 import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
+import java.awt.image.BufferedImage;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A FontImageIcon
@@ -25,7 +29,37 @@ public interface FontImageIcon {
   void setColor(Color color);
 
   /**
-   * A builder for a {@link FontImageIcon}.
+   * Paints a FontIcon onto an Image Icon
+   */
+  interface IconPainter {
+
+    /**
+     * Paints the given font icon onto the given image icon
+     * @param fontIcon the font icon
+     * @param imageIcon the image icon
+     */
+    default void paintIcon(FontIcon fontIcon, ImageIcon imageIcon) {
+      requireNonNull(fontIcon).paintIcon(null, requireNonNull(imageIcon).getImage().getGraphics(), 0, 0);
+    };
+  }
+
+  /**
+   * Creates a ImageIcon on which to paint the FontIcon
+   */
+  interface ImageIconFactory {
+
+    /**
+     * Creates an ImageIcon for the given FontIcon
+     * @param fontIcon the font icon
+     * @return a new ImageIcon
+     */
+    default ImageIcon createImageIcon(FontIcon fontIcon) {
+      return new ImageIcon(new BufferedImage(requireNonNull(fontIcon).getIconWidth(), fontIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
+    }
+  }
+
+  /**
+   * A builder for a FontImageIcon.
    */
   interface Builder {
 
@@ -40,6 +74,18 @@ public interface FontImageIcon {
      * @return this builder
      */
     Builder color(Color color);
+
+    /**
+     * @param iconPainter the font painter
+     * @return this builder
+     */
+    Builder iconPainter(IconPainter iconPainter);
+
+    /**
+     * @param imageIconFactory the icon factory
+     * @return this builder
+     */
+    Builder imageIconFactory(ImageIconFactory imageIconFactory);
 
     /**
      * @return a new font imge icon

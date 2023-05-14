@@ -8951,3 +8951,4 @@
   FontImageIcon.Builder added, relevant refactoring, custom painting for logo removed, seems unnecessary
   AbstractProperty bug fixed, Double.MIN_VALUE is the smalles positive double value, can't be used for the allowed value range, use -Double.MAX_VALUE
   DefaultNumberSpinnerBuilder now handles commitOnValidEdit, instead of SpinnerNumberValue
+  FontImageIcon.ImageIconFactory and Builder.imageIconFactory() added

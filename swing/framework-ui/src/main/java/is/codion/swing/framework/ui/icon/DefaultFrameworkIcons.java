@@ -3,14 +3,23 @@
  */
 package is.codion.swing.framework.ui.icon;
 
+import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.FontImageIcon;
+import is.codion.swing.common.ui.icon.FontImageIcon.IconPainter;
+import is.codion.swing.common.ui.icon.FontImageIcon.ImageIconFactory;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.icon.Logos;
 
 import org.kordamp.ikonli.Ikon;
+import org.kordamp.ikonli.swing.FontIcon;
 
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
 import java.awt.Color;
+import java.awt.FlowLayout;
+import java.awt.image.BufferedImage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -160,6 +169,8 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
   public ImageIcon logo(int size) {
     return logos.computeIfAbsent(size, k -> FontImageIcon.builder(LOGO)
             .size(size)
+            .iconPainter(LOGO_ICON_PAINTER)
+            .imageIconFactory(LOGO_ICON_FACTORY)
             .build()).imageIcon();
   }
 
@@ -181,5 +192,35 @@ public final class DefaultFrameworkIcons implements FrameworkIcons, Logos {
     }
 
     throw new IllegalArgumentException("FrameworkIcons implementation " + iconsClassName + " not found");
+  }
+
+  private static final IconPainter LOGO_ICON_PAINTER = new IconPainter() {
+
+    @Override
+    public void paintIcon(FontIcon fontIcon, ImageIcon imageIcon) {
+      //center on y-axis
+      int yOffset = (fontIcon.getIconHeight() - fontIcon.getIconWidth()) / 2;
+
+      fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, -yOffset);
+    }
+  };
+
+  private static final ImageIconFactory LOGO_ICON_FACTORY = new ImageIconFactory() {
+    @Override
+    public ImageIcon createImageIcon(FontIcon fontIcon) {
+      int yCorrection = (fontIcon.getIconHeight() - fontIcon.getIconWidth());
+
+      return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight() - yCorrection, BufferedImage.TYPE_INT_ARGB));
+    }
+  };
+
+  public static void main(String[] args) {
+    JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    ImageIcon logo = FrameworkIcons.instance().logo(64);
+    JLabel label = new JLabel(logo);
+    label.setBorder(BorderFactory.createLineBorder(Color.black));
+    panel.add(label);
+    Dialogs.componentDialog(panel)
+            .show();
   }
 }
