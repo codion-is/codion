@@ -40,7 +40,7 @@ public interface FontImageIcon {
      */
     default void paintIcon(FontIcon fontIcon, ImageIcon imageIcon) {
       requireNonNull(fontIcon).paintIcon(null, requireNonNull(imageIcon).getImage().getGraphics(), 0, 0);
-    };
+    }
   }
 
   /**
