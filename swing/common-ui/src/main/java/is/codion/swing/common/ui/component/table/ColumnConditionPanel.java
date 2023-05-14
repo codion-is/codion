@@ -12,8 +12,10 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.combobox.Completion;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
@@ -31,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -372,25 +375,26 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private void bindEvents() {
     advancedViewState.addDataListener(this::onAdvancedViewChange);
     conditionModel.operatorValue().addDataListener(this::onOperatorChanged);
-    FocusAdapter focusGainedListener = new FocusAdapter() {
-      @Override
-      public void focusGained(FocusEvent e) {
-        if (!e.isTemporary()) {
-          focusGainedEvent.onEvent(conditionModel.columnIdentifier());
-        }
-      }
-    };
+    FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
+    KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
+            .modifiers(KeyEvent.CTRL_DOWN_MASK)
+            .action(Control.control(() -> conditionModel.setEnabled(!conditionModel.isEnabled())));
+    enableOnEnterKeyEvent.enable(operatorCombo);
     if (equalField != null) {
       equalField.addFocusListener(focusGainedListener);
+      enableOnEnterKeyEvent.enable(equalField);
     }
     if (upperBoundField != null) {
       upperBoundField.addFocusListener(focusGainedListener);
+      enableOnEnterKeyEvent.enable(upperBoundField);
     }
     if (lowerBoundField != null) {
       lowerBoundField.addFocusListener(focusGainedListener);
+      enableOnEnterKeyEvent.enable(lowerBoundField);
     }
     toggleEnabledButton.addFocusListener(focusGainedListener);
+    enableOnEnterKeyEvent.enable(toggleEnabledButton);
   }
 
   private void onOperatorChanged(Operator operator) {
@@ -582,6 +586,16 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
                     .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
             .build();
+  }
+
+  private final class FocusGainedListener extends FocusAdapter {
+
+    @Override
+    public void focusGained(FocusEvent e) {
+      if (!e.isTemporary()) {
+        focusGainedEvent.onEvent(conditionModel.columnIdentifier());
+      }
+    }
   }
 
   private static final class OperatorComboBoxRenderer implements ListCellRenderer<Item<Operator>> {
