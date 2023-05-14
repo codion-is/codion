@@ -6,17 +6,12 @@ package is.codion.swing.common.ui.component.spinner;
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JSpinner;
-import javax.swing.text.DefaultFormatter;
 
 final class SpinnerNumberValue<T extends Number> extends AbstractComponentValue<T, JSpinner> {
 
-  SpinnerNumberValue(JSpinner spinner, boolean commitOnValidEdit) {
+  SpinnerNumberValue(JSpinner spinner) {
     super(spinner);
     spinner.getModel().addChangeListener(e -> notifyValueChange());
-    if (commitOnValidEdit) {
-      ((DefaultFormatter) ((JSpinner.NumberEditor) spinner.getEditor())
-              .getTextField().getFormatter()).setCommitsOnValidEdit(true);
-    }
   }
 
   @Override

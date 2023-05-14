@@ -717,7 +717,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
           return Long.MIN_VALUE;
         }
         if (attribute.isDouble()) {
-          return Double.MIN_VALUE;
+          return -Double.MAX_VALUE;
         }
       }
 

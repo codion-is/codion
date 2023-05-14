@@ -8,7 +8,6 @@ import org.kordamp.ikonli.swing.FontIcon;
 
 import javax.swing.ImageIcon;
 import java.awt.Color;
-import java.awt.image.BufferedImage;
 
 import static java.util.Objects.requireNonNull;
 
@@ -19,11 +18,13 @@ final class DefaultFontImageIcon implements FontImageIcon {
 
   private final FontIcon fontIcon;
   private final ImageIcon imageIcon;
+  private final IconPainter iconPainter;
 
   private DefaultFontImageIcon(DefaultBuilder builder) {
     this.fontIcon = FontIcon.of(builder.ikon, builder.size, builder.color);
-    this.imageIcon = createImageIcon();
-    paintIcon();
+    this.imageIcon = builder.imageIconFactory.createImageIcon(fontIcon);
+    this.iconPainter = builder.iconPainter;
+    this.iconPainter.paintIcon(fontIcon, imageIcon);
   }
 
   @Override
@@ -34,23 +35,20 @@ final class DefaultFontImageIcon implements FontImageIcon {
   @Override
   public void setColor(Color color) {
     fontIcon.setIconColor(color);
-    paintIcon();
-  }
-
-  private void paintIcon() {
-    fontIcon.paintIcon(null, imageIcon.getImage().getGraphics(), 0, 0);
-  }
-
-  private ImageIcon createImageIcon() {
-    return new ImageIcon(new BufferedImage(fontIcon.getIconWidth(), fontIcon.getIconHeight(), BufferedImage.TYPE_INT_ARGB));
+    iconPainter.paintIcon(fontIcon, imageIcon);
   }
 
   static final class DefaultBuilder implements Builder {
+
+    private static final IconPainter DEFAULT_ICON_PAINTER = new IconPainter() {};
+    private static final ImageIconFactory DEFAULT_ICON_FACTORY = new ImageIconFactory() {};
 
     private final Ikon ikon;
 
     private int size = Icons.ICON_SIZE.get();
     private Color color = Icons.ICON_COLOR.get();
+    private IconPainter iconPainter = DEFAULT_ICON_PAINTER;
+    private ImageIconFactory imageIconFactory = DEFAULT_ICON_FACTORY;
 
     DefaultBuilder(Ikon ikon) {
       this.ikon = requireNonNull(ikon);
@@ -65,6 +63,18 @@ final class DefaultFontImageIcon implements FontImageIcon {
     @Override
     public Builder color(Color color) {
       this.color = requireNonNull(color);
+      return this;
+    }
+
+    @Override
+    public Builder iconPainter(IconPainter iconPainter) {
+      this.iconPainter = requireNonNull(iconPainter);
+      return this;
+    }
+
+    @Override
+    public Builder imageIconFactory(ImageIconFactory imageIconFactory) {
+      this.imageIconFactory = requireNonNull(imageIconFactory);
       return this;
     }
 
