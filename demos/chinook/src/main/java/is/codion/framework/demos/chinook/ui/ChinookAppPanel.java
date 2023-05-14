@@ -5,8 +5,6 @@ package is.codion.framework.demos.chinook.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.common.user.User;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
@@ -152,8 +150,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     FilteredTableCellRenderer.TEMPORAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    ColumnConditionModel.AUTOMATIC_WILDCARD.set(AutomaticWildcard.POSTFIX);
-    ColumnConditionModel.CASE_SENSITIVE.set(false);
     entityApplicationBuilder(ChinookAppModel.class, ChinookAppPanel.class)
             .applicationName("Chinook")
             .applicationVersion(ChinookAppModel.VERSION)
