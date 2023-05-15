@@ -28,6 +28,7 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JToolBar;
@@ -41,12 +42,14 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_V;
 import static java.util.Collections.emptySet;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
+import static javax.swing.JOptionPane.showConfirmDialog;
 
 /**
  * A UI component based on a {@link EntityEditModel}.
@@ -56,6 +59,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
   private static final ResourceBundle TABLE_PANEL_MESSAGES = ResourceBundle.getBundle(EntityTablePanel.class.getName());
+
+  private static final Confirmer DEFAULT_INSERT_CONFIRMER = new InsertConfirmer();
+  private static final Confirmer DEFAULT_UPDATE_CONFIRMER = new UpdateConfirmer();
+  private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
   /**
    * Specifies whether edit panels should be activated when the panel (or its parent EntityPanel) receives focus<br>
@@ -88,13 +95,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     INSERT, UPDATE, DELETE, REFRESH, CLEAR
   }
 
-  /**
-   * The actions meriting user confirmation
-   */
-  protected enum ConfirmType {
-    INSERT, UPDATE, DELETE
-  }
-
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -121,6 +121,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Fired when this edit panel has been initialized
    */
   private final Event<EntityEditPanel> initializedEvent = Event.event();
+
+  /**
+   * The insert, update and delete confirmers
+   */
+  private final EnumMap<Confirmer.Action, Confirmer> confirmers = new EnumMap<>(Confirmer.Action.class);
 
   /**
    * Indicates whether the UI should be cleared after insert has been performed
@@ -259,6 +264,15 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
+   * Sets the confirmer to use for the given action.
+   * @param action the confirmation action
+   * @param confirmer the confirmer to use for the given action, null for the default one
+   */
+  public final void setConfirmer(Confirmer.Action action, Confirmer confirmer) {
+    confirmers.put(requireNonNull(action), confirmer);
+  }
+
+  /**
    * @param controlCode the control code
    * @return true if this edit panel contains the given control
    */
@@ -281,17 +295,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
+   * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception, Entity entity) {
+  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      EntityDependenciesPanel.displayDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
+      displayDependenciesDialog(singletonList(editModel().entityCopy()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -405,7 +418,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs insert on the active entity after asking for confirmation via {@link #confirmInsert()}.
    * Note that {@link #confirmInsert()} returns true by default, so it needs to be overridden to ask for confirmation.
    * @return true in case of successful insert, false otherwise
-   * @see #confirmInsert()
+   * @see #beforeInsert()
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean insertWithConfirmation() {
     if (confirmInsert()) {
@@ -418,10 +432,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
+   * @see #beforeInsert()
    */
   public final boolean insert() {
     try {
-      validateData();
+      beforeInsert();
       WaitCursor.show(this);
       try {
         editModel().insert();
@@ -453,7 +468,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity after asking for confirmation via {@link #confirmDelete()}.
    * @return true if the delete operation was successful
-   * @see #confirmDelete()
+   * @see #beforeDelete()
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean deleteWithConfirmation() {
     if (confirmDelete()) {
@@ -466,9 +482,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
+   * @see #beforeDelete()
    */
   public final boolean delete() {
     try {
+      beforeDelete();
       WaitCursor.show(this);
       try {
         editModel().delete();
@@ -482,7 +500,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, editModel().entityCopy());
+      onReferentialIntegrityException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);
@@ -495,7 +513,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity after asking for confirmation via {@link #confirmUpdate()}.
    * @return true if the update operation was successful
-   * @see #confirmUpdate()
+   * @see #beforeUpdate()
+   * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean updateWithConfirmation() {
     if (confirmUpdate()) {
@@ -508,10 +527,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity without asking for confirmation.
    * @return true if the update operation was successful or if no update was required
+   * @see #beforeUpdate()
    */
   public final boolean update() {
     try {
-      validateData();
+      beforeUpdate();
       WaitCursor.show(this);
       try {
         editModel().update();
@@ -536,63 +556,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Override to add UI level validation, called before insert/update
+   * Called before insert is performed.
+   * To cancel the insert throw a {@link is.codion.common.model.CancelException}.
    * @throws ValidationException in case of a validation failure
    */
-  protected void validateData() throws ValidationException {}
+  protected void beforeInsert() throws ValidationException {}
 
   /**
-   * Called before insert is performed, the default implementation simply returns true
-   * @return true if insert should be performed, false if it should be vetoed
+   * Called before update is performed.
+   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
+   * @throws ValidationException in case of a validation failure
    */
-  protected boolean confirmInsert() {
-    return true;
-  }
+  protected void beforeUpdate() throws ValidationException {}
 
   /**
-   * Called before delete is performed, if true is returned the delete action is performed otherwise it is cancelled
-   * @return true if the delete action should be performed
+   * Called before delete is performed.
+   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
    */
-  protected boolean confirmDelete() {
-    return confirm(confirmationMessage(ConfirmType.DELETE));
-  }
-
-  /**
-   * Called before an update is performed, if true is returned the update action is performed otherwise it is cancelled
-   * @return true if the update action should be performed
-   */
-  protected boolean confirmUpdate() {
-    return confirm(confirmationMessage(ConfirmType.UPDATE));
-  }
-
-  /**
-   * Presents an OK/Cancel confirm dialog with the message and title from the given {@link ConfirmationMessage} instance.
-   * Returns true if OK was selected.
-   * @param message the confirmation message to present to the user
-   * @return true if OK was selected
-   */
-  protected boolean confirm(ConfirmationMessage message) {
-    requireNonNull(message);
-    return JOptionPane.showConfirmDialog(this, message.message(), message.title(),
-            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
-  }
-
-  /**
-   * @param type the confirmation message type
-   * @return a {@link ConfirmationMessage} instance
-   */
-  protected ConfirmationMessage confirmationMessage(ConfirmType type) {
-    switch (type) {
-      case DELETE:
-        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmDelete(), FrameworkMessages.delete());
-      case INSERT:
-        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmInsert(), FrameworkMessages.add());
-      case UPDATE:
-        return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmUpdate(), FrameworkMessages.update());
-      default:
-        throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
-    }
-  }
+  protected void beforeDelete() {}
 
   /**
    * Associates {@code control} with {@code controlCode}
@@ -772,11 +753,23 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     editModel().refreshingObserver().addDataListener(this::onRefreshingChanged);
     editModel().addConfirmSetEntityObserver(confirmationState -> {
-      int result = JOptionPane.showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this),
+      int result = showConfirmDialog(Utilities.getParentWindow(EntityEditPanel.this),
               FrameworkMessages.unsavedDataWarning(), FrameworkMessages.unsavedDataWarningTitle(),
               JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
       confirmationState.set(result == JOptionPane.YES_OPTION);
     });
+  }
+
+  private boolean confirmInsert() {
+    return confirmers.getOrDefault(Confirmer.Action.INSERT, DEFAULT_INSERT_CONFIRMER).confirm(this);
+  }
+
+  private boolean confirmDelete() {
+    return confirmers.getOrDefault(Confirmer.Action.DELETE, DEFAULT_DELETE_CONFIRMER).confirm(this);
+  }
+
+  private boolean confirmUpdate() {
+    return confirmers.getOrDefault(Confirmer.Action.UPDATE, DEFAULT_UPDATE_CONFIRMER).confirm(this);
   }
 
   private void onRefreshingChanged(boolean refreshing) {
@@ -790,5 +783,51 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void showEntityMenu() {
     new EntityPopupMenu(editModel().entityCopy(), editModel().connectionProvider().connection()).show(this, 0, 0);
+  }
+
+  /**
+   * Handles displaying confirmation messages for common actions to the user.
+   */
+  public interface Confirmer {
+
+    /**
+     * The actions meriting user confirmation
+     */
+    enum Action {
+      INSERT, UPDATE, DELETE
+    }
+
+    /**
+     * Returns true if the action is confirmed, presents an OK/Cancel confirm dialog to the user if required.
+     * @param dialogOwner the owner for the dialog
+     * @return true if the action is confirmed
+     */
+    boolean confirm(JComponent dialogOwner);
+  }
+
+  private static final class InsertConfirmer implements Confirmer {
+
+    @Override
+    public boolean confirm(JComponent dialogOwner) {
+      return true;
+    }
+  }
+
+  private static final class UpdateConfirmer implements Confirmer {
+
+    @Override
+    public boolean confirm(JComponent dialogOwner) {
+      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmUpdate(),
+              FrameworkMessages.update(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+    }
+  }
+
+  private static final class DeleteConfirmer implements Confirmer {
+
+    @Override
+    public boolean confirm(JComponent dialogOwner) {
+      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmDelete(),
+              FrameworkMessages.delete(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+    }
   }
 }

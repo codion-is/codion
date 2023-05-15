@@ -40,6 +40,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -95,6 +96,7 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -240,6 +242,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
+  private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
 
   private final State conditionPanelVisibleState = State.state();
   private final State filterPanelVisibleState = State.state();
@@ -260,6 +263,7 @@ public class EntityTablePanel extends JPanel {
   private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
+  private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
   private JScrollPane conditionPanelScrollPane;
@@ -601,6 +605,13 @@ public class EntityTablePanel extends JPanel {
     this.referentialIntegrityErrorHandling = requireNonNull(referentialIntegrityErrorHandling);
   }
 
+  /**
+   * @param deleteConfirmer the delete confirmer, null for the default one
+   */
+  public final void setDeleteConfirmer(Confirmer deleteConfirmer) {
+    this.deleteConfirmer = deleteConfirmer == null ? DEFAULT_DELETE_CONFIRMER : deleteConfirmer;
+  }
+
   @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + tableModel.entityType();
@@ -659,11 +670,12 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model
-   * @see #confirmDelete()
+   * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
    */
   public final void deleteWithConfirmation() {
     try {
-      if (confirmDelete()) {
+      if (deleteConfirmer.confirm(this)) {
+        beforeDelete();
         WaitCursor.show(this);
         try {
           tableModel.deleteSelected();
@@ -675,7 +687,7 @@ public class EntityTablePanel extends JPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, tableModel.selectionModel().getSelectedItems());
+      onReferentialIntegrityException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -693,17 +705,16 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
+   * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception, List<Entity> entities) {
+  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    requireNonNull(entities);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      displayDependenciesDialog(entities, tableModel.connectionProvider(),
+      displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -1022,24 +1033,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Called before delete is performed, if true is returned the delete action is performed otherwise it is cancelled
-   * @return true if the delete action should be performed
-   */
-  protected boolean confirmDelete() {
-    ConfirmationMessage messages = confirmDeleteMessages();
-    int res = JOptionPane.showConfirmDialog(this, messages.message(), messages.title(), JOptionPane.OK_CANCEL_OPTION);
-
-    return res == JOptionPane.OK_OPTION;
-  }
-
-  /**
-   * @return Message and title to display in the confirm delete dialog
-   */
-  protected ConfirmationMessage confirmDeleteMessages() {
-    return ConfirmationMessage.confirmationMessage(FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete());
-  }
-
-  /**
    * Creates a TableCellRenderer to use for the given attribute in this EntityTablePanel
    * @param attribute the attribute
    * @return the TableCellRenderer for the given attribute
@@ -1099,6 +1092,20 @@ public class EntityTablePanel extends JPanel {
 
     return null;
   }
+
+  /**
+   * Called before update is performed.
+   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
+   * @param entities the entities being updated, including the values being modified
+   * @throws ValidationException in case of a validation failure
+   */
+  protected void beforeUpdate(List<Entity> entities) throws ValidationException {}
+
+  /**
+   * Called before delete is performed on the selected entities.
+   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
+   */
+  protected void beforeDelete() {}
 
   /**
    * Creates a {@link Controls} containing controls for updating the value of a single property
@@ -1600,6 +1607,7 @@ public class EntityTablePanel extends JPanel {
 
   private boolean update(List<Entity> entities) {
     try {
+      beforeUpdate(entities);
       WaitCursor.show(this);
       try {
         tableModel.update(entities);
@@ -1870,6 +1878,15 @@ public class EntityTablePanel extends JPanel {
       }
 
       return super.createComponentValue(attribute, editModel, initialValue);
+    }
+  }
+
+  private static final class DeleteConfirmer implements Confirmer {
+
+    @Override
+    public boolean confirm(JComponent dialogOwner) {
+      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmDeleteSelected(),
+                  FrameworkMessages.delete(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
     }
   }
 

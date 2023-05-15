@@ -8993,3 +8993,7 @@
   ColumnConditionPanel, CTRL-ENTER now toggles the condition enabled state
   EntityTablePanel, table now receives focus when the condition panel is hidden while being the focus owner
   EntityTablePanel.entityTablePanel() factory method bug fixed, popup menu was empty due to lazy initialization of controls
+  EntityEditPanel, EntityTablePanel.onReferentialIntegrityException(), entity/entities parameter removed
+  EntityEditPanel, EntityTablePanel, overridable confirm methods and ConfirmationMessage replaced with EntityEditPanel.Confirmer
+  EntityEditPanel.validateData() replaced with beforeInsert(), beforeUpdate() and beforeDelete() methods
+  EntityTablePanel.beforeUpdate() and beforeDelete() added
