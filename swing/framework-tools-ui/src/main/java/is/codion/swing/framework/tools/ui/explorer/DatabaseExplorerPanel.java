@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
@@ -23,6 +24,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -30,9 +32,11 @@ import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
+import java.awt.event.InputEvent;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 
 public final class DatabaseExplorerPanel extends JPanel {
@@ -47,13 +51,20 @@ public final class DatabaseExplorerPanel extends JPanel {
    */
   DatabaseExplorerPanel(DatabaseExplorerModel model) {
     this.model = requireNonNull(model);
+    Control populateSchemaControl = Control.control(this::populateSchema);
     FilteredTable<FilteredTableModel<Schema, Integer>, Schema, Integer> schemaTable =
             FilteredTable.builder(model.schemaModel())
-                    .doubleClickAction(Control.control(this::populateSchema))
+                    .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+                    .doubleClickAction(populateSchemaControl)
+                    .keyEvent(KeyEvents.builder(VK_ENTER)
+                            .modifiers(InputEvent.CTRL_DOWN_MASK)
+                            .action(populateSchemaControl))
                     .build();
 
     FilteredTable<FilteredTableModel<DefinitionRow, Integer>, DefinitionRow, Integer> domainTable =
-            FilteredTable.builder(model.definitionModel()).build();
+            FilteredTable.builder(model.definitionModel())
+                    .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+                    .build();
 
     JSplitPane schemaTableSplitPane = Components.splitPane()
             .orientation(JSplitPane.VERTICAL_SPLIT)
