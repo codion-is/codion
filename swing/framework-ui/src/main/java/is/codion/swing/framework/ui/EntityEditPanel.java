@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
-import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.properties.PropertyValue;
@@ -116,11 +115,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Indicates whether the panel is active and ready to receive input
    */
   private final State activeState = State.state(!USE_FOCUS_ACTIVATION.get());
-
-  /**
-   * Fired when this edit panel has been initialized
-   */
-  private final Event<EntityEditPanel> initializedEvent = Event.event();
 
   /**
    * The insert, update and delete confirmers
@@ -372,8 +366,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * This method marks this panel as initialized which prevents it from running again,
    * whether an exception occurs or not.
    * @return this EntityEditPanel instance
-   * @see #isPanelInitialized()
-   * @see #addPanelInitializedListener(EventDataListener)
    */
   public final EntityEditPanel initializePanel() {
     if (!panelInitialized) {
@@ -382,7 +374,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         setupControls();
         bindEventsInternal();
         initializeUI();
-        initializedEvent.onEvent();
       }
       finally {
         panelInitialized = true;
@@ -391,27 +382,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
 
     return this;
-  }
-
-  /**
-   * @return true if the method {@link #initializePanel()} has been called on this EntityEditPanel instance
-   * @see #initializePanel()
-   */
-  public final boolean isPanelInitialized() {
-    return panelInitialized;
-  }
-
-  /**
-   * @param listener a listener notified when this panel has been successfully initialized
-   * @throws IllegalStateException in case this panel has already been initialized
-   * @see #initializePanel()
-   * @see #isPanelInitialized()
-   */
-  public final void addPanelInitializedListener(EventDataListener<EntityEditPanel> listener) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Method must be called before the panel is initialized");
-    }
-    initializedEvent.addDataListener(listener);
   }
 
   /**
@@ -803,6 +773,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
      * @return true if the action is confirmed
      */
     boolean confirm(JComponent dialogOwner);
+
+    /**
+     * Shows a confirmation dialog
+     * @param dialogOwner the dialog owner
+     * @param message the dialog message
+     * @param title the dialog title
+     * @return true if OK was pressed
+     */
+    default boolean confirm(JComponent dialogOwner, String message, String title) {
+      return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+    }
   }
 
   private static final class InsertConfirmer implements Confirmer {
@@ -817,8 +798,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmUpdate(),
-              FrameworkMessages.update(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      return confirm(dialogOwner, FrameworkMessages.confirmUpdate(), FrameworkMessages.update());
     }
   }
 
@@ -826,8 +806,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmDelete(),
-              FrameworkMessages.delete(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      return confirm(dialogOwner, FrameworkMessages.confirmDelete(), FrameworkMessages.delete());
     }
   }
 }
