@@ -96,7 +96,6 @@ import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
-import static javax.swing.JOptionPane.showConfirmDialog;
 import static javax.swing.ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER;
 import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
 
@@ -1885,8 +1884,7 @@ public class EntityTablePanel extends JPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmDeleteSelected(),
-                  FrameworkMessages.delete(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete());
     }
   }
 

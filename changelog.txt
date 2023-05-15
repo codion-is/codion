@@ -8959,3 +8959,4 @@
   EntityEditPanel, EntityTablePanel, overridable confirm methods and ConfirmationMessage replaced with EntityEditPanel.Confirmer
   EntityEditPanel.validateData() replaced with beforeInsert(), beforeUpdate() and beforeDelete() methods
   EntityTablePanel.beforeUpdate() and beforeDelete() added
+  EntityEditPanel.Confirmer.confirm(dialogOwner, message, title) default convenience implementation added

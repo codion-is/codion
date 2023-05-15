@@ -803,6 +803,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
      * @return true if the action is confirmed
      */
     boolean confirm(JComponent dialogOwner);
+
+    /**
+     * Shows a confirmation dialog
+     * @param dialogOwner the dialog owner
+     * @param message the dialog message
+     * @param title the dialog title
+     * @return true if OK was pressed
+     */
+    default boolean confirm(JComponent dialogOwner, String message, String title) {
+      return showConfirmDialog(dialogOwner, message, title, JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+    }
   }
 
   private static final class InsertConfirmer implements Confirmer {
@@ -817,8 +828,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmUpdate(),
-              FrameworkMessages.update(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      return confirm(dialogOwner, FrameworkMessages.confirmUpdate(), FrameworkMessages.update());
     }
   }
 
@@ -826,8 +836,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
     @Override
     public boolean confirm(JComponent dialogOwner) {
-      return showConfirmDialog(dialogOwner, FrameworkMessages.confirmDelete(),
-              FrameworkMessages.delete(), JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION;
+      return confirm(dialogOwner, FrameworkMessages.confirmDelete(), FrameworkMessages.delete());
     }
   }
 }
