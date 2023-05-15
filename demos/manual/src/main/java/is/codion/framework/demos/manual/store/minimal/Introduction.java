@@ -42,6 +42,7 @@ class Introduction {
       ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
     }
   }
+
   // end::storeApi[]
   // tag::storeImpl[]
   public static class StoreImpl extends DefaultDomain {

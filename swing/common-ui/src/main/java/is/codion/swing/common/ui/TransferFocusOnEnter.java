@@ -26,8 +26,8 @@ public final class TransferFocusOnEnter {
    * Note that for JTextArea CTRL is added to move focus forward.
    * @param component the component
    * @param <T> the component type
-   * @see #disable(JComponent)
    * @return the component
+   * @see #disable(JComponent)
    */
   public static <T extends JComponent> T enable(T component) {
     forwardBuilder(component).enable(component);

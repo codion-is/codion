@@ -27,7 +27,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     createTextField(Customer.EMAIL);
     createCheckBox(Customer.IS_ACTIVE);
 
-    setLayout(new GridLayout(4,1));
+    setLayout(new GridLayout(4, 1));
     //the addInputPanel method creates and adds a panel containing the
     //component associated with the property as well as a JLabel with the
     //property caption as defined in the domain model

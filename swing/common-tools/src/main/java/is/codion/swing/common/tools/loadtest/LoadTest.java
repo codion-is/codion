@@ -141,8 +141,8 @@ public interface LoadTest<T> {
   void clearChartData();
 
   /**
-   * @return a dataset plotting the average scenario duration
    * @param name the scenario name
+   * @return a dataset plotting the average scenario duration
    */
   IntervalXYDataset scenarioDurationDataset(String name);
 

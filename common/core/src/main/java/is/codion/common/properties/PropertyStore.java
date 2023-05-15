@@ -238,15 +238,15 @@ public interface PropertyStore {
 
   /**
    * Returns the values associated with the properties with the given prefix
-   * @return all values associated with the properties with the given prefix
    * @param prefix the property prefix
+   * @return all values associated with the properties with the given prefix
    */
   List<String> properties(String prefix);
 
   /**
    * Returns all property names with the given prefix
-   * @return all property names with the given prefix
    * @param prefix the property name prefix
+   * @return all property names with the given prefix
    */
   List<String> propertyNames(String prefix);
 

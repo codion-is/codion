@@ -201,8 +201,8 @@ public interface EntitySearchModel {
    * Instantiates a new {@link EntitySearchModel}, using the search properties for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @see EntityDefinition#searchAttributes()
    * @return a new {@link EntitySearchModel} instance
+   * @see EntityDefinition#searchAttributes()
    */
   static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
     return entitySearchModel(entityType, connectionProvider,

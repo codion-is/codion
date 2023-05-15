@@ -227,8 +227,8 @@ public final class EntityServerMonitorPanel extends JPanel {
             .build();
 
     okCancelDialog(panel(new FlowLayout(FlowLayout.CENTER))
-                    .add(field)
-                    .build())
+            .add(field)
+            .build())
             .owner(this)
             .title("Update interval (s)")
             .onOk(() -> model().setUpdateInterval(field.getNumber()))

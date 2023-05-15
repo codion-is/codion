@@ -19,8 +19,8 @@ public interface TableSummaryModel<C> {
 
   /**
    * @param summaryModelFactory the summary model factory
-   * @return a new {@link TableSummaryModel} instance
    * @param <C> the column identifier type
+   * @return a new {@link TableSummaryModel} instance
    */
   static <C> TableSummaryModel<C> tableSummaryModel(ColumnSummaryModel.Factory<C> summaryModelFactory) {
     return new DefaultTableSummaryModel<>(summaryModelFactory);

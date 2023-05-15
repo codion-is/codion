@@ -366,8 +366,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param additionalPopupMenuControls a set of controls to add to the table popup menu
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
     checkIfInitialized();
@@ -376,8 +376,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param additionalToolBarControls a set of controls to add to the table toolbar menu
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void addToolBarControls(Controls additionalToolBarControls) {
     checkIfInitialized();
@@ -386,9 +386,9 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includeSouthPanel true if the south panel should be included
+   * @throws IllegalStateException in case the panel has already been initialized
    * @see #initializeSouthPanel()
    * @see #initializePanel()
-   * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setIncludeSouthPanel(boolean includeSouthPanel) {
     checkIfInitialized();
@@ -397,8 +397,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includeConditionPanel true if the condition panel should be included
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void setIncludeConditionPanel(boolean includeConditionPanel) {
     checkIfInitialized();
@@ -407,8 +407,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includeFilterPanel true if the filter panel should be included
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void setIncludeFilterPanel(boolean includeFilterPanel) {
     checkIfInitialized();
@@ -417,8 +417,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includePopupMenu true if a popup menu should be included
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void setIncludePopupMenu(boolean includePopupMenu) {
     checkIfInitialized();
@@ -427,8 +427,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includeClearControl true if a 'Clear' control should be included in the popup menu
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void setIncludeClearControl(boolean includeClearControl) {
     checkIfInitialized();
@@ -437,8 +437,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
-   * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
+   * @see #initializePanel()
    */
   public final void setIncludeSelectionModeControl(boolean includeSelectionModeControl) {
     checkIfInitialized();
@@ -696,8 +696,8 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Prints the table
-   * @see JTable#print()
    * @throws java.awt.print.PrinterException in case of a print exception
+   * @see JTable#print()
    */
   public final void printTable() throws PrinterException {
     table.print();

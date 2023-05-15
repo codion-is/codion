@@ -189,6 +189,7 @@ public interface EntityType {
                                   Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
                                   Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
                                   Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
+
   /**
    * Creates a new {@link ForeignKey} based on the given references.
    * @param name the attribute name

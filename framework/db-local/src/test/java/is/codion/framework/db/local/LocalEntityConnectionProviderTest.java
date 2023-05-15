@@ -45,7 +45,7 @@ public class LocalEntityConnectionProviderTest {
             .domainClassName(TestDomain.class.getName())
             .user(User.parse("scott:tiger"))
             .build();
-    assertTrue(connectionProvider instanceof  LocalEntityConnectionProvider);
+    assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);
     assertEquals(EntityConnectionProvider.CONNECTION_TYPE_LOCAL, connectionProvider.connectionType());
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
   }

@@ -123,8 +123,8 @@ public interface ProxyBuilder<T> {
   /**
    * Returns a new {@link ProxyBuilder} instance.
    * @param interfaceToProxy the interface to proxy
-   * @return a new {@link ProxyBuilder} instance.
    * @param <T> the proxy type
+   * @return a new {@link ProxyBuilder} instance.
    * @throws IllegalArgumentException in case {@code interfaceToProxy} is not an interface
    */
   static <T> ProxyBuilder<T> builder(Class<T> interfaceToProxy) {

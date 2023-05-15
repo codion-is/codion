@@ -321,8 +321,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   /**
    * Maintains the given connections, that is, disconnects inactive or invalid connections, if required.
-   * @throws RemoteException in case of an exception
    * @param connections all current connections
+   * @throws RemoteException in case of an exception
    */
   protected abstract void maintainConnections(Collection<ClientConnection<T>> connections) throws RemoteException;
 

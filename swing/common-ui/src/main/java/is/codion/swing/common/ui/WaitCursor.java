@@ -26,13 +26,13 @@ public final class WaitCursor {
    * the wait cursor is activated once a request is made, but only deactivated once all such
    * requests have been retracted. Best used with a try/finally block.
    * <pre>
-   WaitCursor.show(component);
-   try {
-     doSomething();
-   }
-   finally {
-     WaitCursor.hide(component);
-   }
+   * WaitCursor.show(component);
+   * try {
+   *   doSomething();
+   * }
+   * finally {
+   *   WaitCursor.hide(component);
+   * }
    * </pre>
    * @param component the component
    * @see #hide(JComponent)
@@ -46,13 +46,13 @@ public final class WaitCursor {
    * the wait cursor is activated once a request is made, but only deactivated once all such
    * requests have been retracted. Best used with a try/finally block.
    * <pre>
-   WaitCursor.show(component);
-   try {
-     doSomething();
-   }
-   finally {
-     WaitCursor.hide(component);
-   }
+   * WaitCursor.show(component);
+   * try {
+   *   doSomething();
+   * }
+   * finally {
+   *   WaitCursor.hide(component);
+   * }
    * </pre>
    * @param component the component
    * @see #show(JComponent)

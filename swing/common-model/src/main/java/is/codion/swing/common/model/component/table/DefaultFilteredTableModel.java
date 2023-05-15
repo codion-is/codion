@@ -218,7 +218,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final TableSummaryModel <C> summaryModel() {
+  public final TableSummaryModel<C> summaryModel() {
     return summaryModel;
   }
 
@@ -280,7 +280,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
-    for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext();) {
+    for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext(); ) {
       R item = visibleItemsIterator.next();
       if (!include(item)) {
         visibleItemsIterator.remove();
@@ -699,8 +699,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     @Override
     public ColumnSummaryModel createSummaryModel(C columnIdentifier) {
       return createColumnValueProvider(columnIdentifier)
-                .map(ColumnSummaryModel::columnSummaryModel)
-                .orElse(null);
+              .map(ColumnSummaryModel::columnSummaryModel)
+              .orElse(null);
     }
   }
 

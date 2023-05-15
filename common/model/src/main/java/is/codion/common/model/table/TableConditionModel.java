@@ -58,8 +58,8 @@ public interface TableConditionModel<C> {
   /**
    * Instantiates a new {@link TableConditionModel}
    * @param conditionModel the condition model
-   * @return a new {@link TableConditionModel}
    * @param <C> the column identifier type
+   * @return a new {@link TableConditionModel}
    */
   static <C> TableConditionModel<C> tableConditionModel(Collection<ColumnConditionModel<C, ?>> conditionModel) {
     return new DefaultTableConditionModel<>(conditionModel);

@@ -19,7 +19,7 @@ public final class CredentialsProviderTest {
     assertFalse(CredentialsProvider.authenticationToken(null).isPresent());
     assertFalse(CredentialsProvider.authenticationToken(new String[0]).isPresent());
     assertFalse(CredentialsProvider.authenticationToken(new String[] {"hello", "hello2"}).isPresent());
-    Optional<UUID> optionalUUID = CredentialsProvider.authenticationToken(new String[]{"hello", "authenticationToken:" + uuid, "hello2"});
+    Optional<UUID> optionalUUID = CredentialsProvider.authenticationToken(new String[] {"hello", "authenticationToken:" + uuid, "hello2"});
     assertTrue(optionalUUID.isPresent());
     assertEquals(uuid, optionalUUID.get());
   }

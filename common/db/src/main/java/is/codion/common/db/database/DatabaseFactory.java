@@ -24,8 +24,8 @@ public interface DatabaseFactory {
   boolean isDriverCompatible(String driverClassName);
 
   /**
-   * @return a new {@link Database} implementation based on the given jdbc url.
    * @param url the jdbc url
+   * @return a new {@link Database} implementation based on the given jdbc url.
    */
   Database createDatabase(String url);
 

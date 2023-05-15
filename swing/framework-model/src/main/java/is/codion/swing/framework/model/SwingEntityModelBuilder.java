@@ -251,7 +251,7 @@ final class SwingEntityModelBuilder implements SwingEntityModel.Builder {
   }
 
   private Class<? extends SwingEntityEditModel> editModelClass() {
-    return editModelClass ==  null ? SwingEntityEditModel.class : editModelClass;
+    return editModelClass == null ? SwingEntityEditModel.class : editModelClass;
   }
 
   private Class<? extends SwingEntityTableModel> tableModelClass() {

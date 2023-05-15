@@ -461,8 +461,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * @param itemFinder responsible for finding the item to select
-   * @return a value linked to the selected item via the given finder instance
    * @param <V> the value type
+   * @return a value linked to the selected item via the given finder instance
    */
   public final <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
     return new SelectorValue<>(itemFinder);

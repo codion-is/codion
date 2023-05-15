@@ -38,7 +38,7 @@ public interface Entities {
    * @return the entity definition
    * @throws IllegalArgumentException in case the definition is not found
    */
-   EntityDefinition definition(String entityTypeName);
+  EntityDefinition definition(String entityTypeName);
 
   /**
    * @param entityType the entityType

@@ -145,8 +145,8 @@ public final class Dialogs {
 
   /**
    * @param componentValue the value which component to display
-   * @return a builder for a input dialog
    * @param <T> the value type
+   * @return a builder for a input dialog
    */
   public static <T> InputDialogBuilder<T> inputDialog(ComponentValue<T, ?> componentValue) {
     return new DefaultInputDialogBuilder<>(componentValue);

@@ -328,9 +328,9 @@ public interface ColumnConditionModel<C, T> {
    * Returns a new {@link Builder} instance.
    * @param columnIdentifier the column identifier
    * @param columnClass the column class
-   * @return a new {@link Builder} instance
    * @param <C> the column identifier type
    * @param <T> the column value type
+   * @return a new {@link Builder} instance
    */
   static <C, T> Builder<C, T> builder(C columnIdentifier, Class<T> columnClass) {
     return new DefaultColumnConditionModel.DefaultBuilder<>(columnIdentifier, columnClass);

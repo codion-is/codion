@@ -266,9 +266,9 @@ public interface Database extends ConnectionFactory {
    * Returns a {@link Database} instance based on the currently configured JDBC URL ({@link Database#DATABASE_URL}).
    * Subsequent calls to this method return the same instance, until the JDBC URL changes, then a new instance is created.
    * @return a Database instance based on the current jdbc url
-   * @see Database#DATABASE_URL
    * @throws IllegalArgumentException in case an unsupported database type is specified
    * @throws RuntimeException in case of an exception occurring while instantiating the database implementation
+   * @see Database#DATABASE_URL
    */
   static Database instance() {
     return AbstractDatabase.instance();

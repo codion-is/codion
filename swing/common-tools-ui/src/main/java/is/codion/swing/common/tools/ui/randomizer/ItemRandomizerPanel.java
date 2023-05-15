@@ -73,8 +73,8 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * Instantiates a new {@link ItemRandomizerPanel}.
    * @param itemRandomizer the item randomizer
-   * @return a new {@link ItemRandomizerPanel}
    * @param <T> the item type
+   * @return a new {@link ItemRandomizerPanel}
    */
   public static <T> ItemRandomizerPanel<T> itemRandomizerPanel(ItemRandomizer<T> itemRandomizer) {
     return new ItemRandomizerPanel<>(itemRandomizer);

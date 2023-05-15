@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class HSQLDatabaseTest {
-  
+
   private static final String URL = "jdbc:hsqldb:hsql//host:1234/sid";
 
   @Test

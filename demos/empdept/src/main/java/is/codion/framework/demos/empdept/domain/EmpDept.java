@@ -34,34 +34,40 @@ import static java.util.Arrays.asList;
  */
 public final class EmpDept extends DefaultDomain {
 
-  /** The domain type identifying this domain model*/
+  /** The domain type identifying this domain model */
   static final DomainType DOMAIN = domainType(EmpDept.class);
 
-  /** Entity type for the table scott.dept*/
+  /** Entity type for the table scott.dept */
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
-    /** Attributes for the columns in the scott.dept table*/
+    /** Attributes for the columns in the scott.dept table */
     Attribute<Integer> ID = TYPE.integerAttribute("deptno");
     Attribute<String> NAME = TYPE.stringAttribute("dname");
     Attribute<String> LOCATION = TYPE.stringAttribute("loc");
 
     /** Bean getters and setters */
     Integer getId();
+
     void setId(Integer id);
+
     String getName();
+
     void setName(String name);
+
     String getLocation();
+
     void setLocation(String location);
   }
   // end::departmentConstants[]
 
   // tag::employeeConstants[]
-  /** Entity type for the table scott.emp*/
+
+  /** Entity type for the table scott.emp */
   public interface Employee extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
 
-    /** Attributes for the columns in the scott.emp table*/
+    /** Attributes for the columns in the scott.emp table */
     Attribute<Integer> ID = TYPE.integerAttribute("empno");
     Attribute<String> NAME = TYPE.stringAttribute("ename");
     Attribute<String> JOB = TYPE.stringAttribute("job");
@@ -71,11 +77,11 @@ public final class EmpDept extends DefaultDomain {
     Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
     Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
 
-    /**Foreign key attribute for the DEPTNO column in the table scott.emp*/
+    /** Foreign key attribute for the DEPTNO column in the table scott.emp */
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
-    /**Foreign key attribute for the MGR column in the table scott.emp*/
+    /** Foreign key attribute for the MGR column in the table scott.emp */
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
-    /**Attribute for the denormalized department location property*/
+    /** Attribute for the denormalized department location property */
     Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
     JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
@@ -87,20 +93,35 @@ public final class EmpDept extends DefaultDomain {
 
     /** Bean getters and setters */
     Integer getId();
+
     void setId(Integer id);
+
     String getName();
+
     void setName(String name);
+
     String getJob();
+
     void setJob(String job);
+
     Employee getManager();
+
     void setManager(Employee manager);
+
     LocalDate getHiredate();
+
     void setHiredate(LocalDate hiredate);
+
     BigDecimal getSalary();
+
     void setSalary(BigDecimal salary);
+
     Double getCommission();
+
     void setCommission(Double commission);
+
     Department getDepartment();
+
     void setDepartment(Department department);
   }
   // end::employeeConstants[]

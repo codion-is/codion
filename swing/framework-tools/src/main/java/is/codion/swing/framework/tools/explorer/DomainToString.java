@@ -111,7 +111,7 @@ final class DomainToString {
                                        boolean isForeignKey, boolean compositePrimaryKey) {
     StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
             .append(propertyType(property.attribute(),
-            property.isPrimaryKeyColumn() && !compositePrimaryKey))
+                    property.isPrimaryKeyColumn() && !compositePrimaryKey))
             .append(interfaceName).append(".").append(property.columnName().toUpperCase());
     if (!isForeignKey && !property.isPrimaryKeyColumn()) {
       builder.append(", ").append("\"").append(property.caption()).append("\")");

@@ -44,7 +44,7 @@ abstract class AbstractSpinnerBuilder<T, B extends SpinnerBuilder<T, B>> extends
 
   @Override
   public final B mouseWheelScrolling(boolean mouseWheelScrolling) {
-    this.mouseWheelScrolling  = mouseWheelScrolling;
+    this.mouseWheelScrolling = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingReversed = false;
     }

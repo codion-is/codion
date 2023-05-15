@@ -74,7 +74,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     super(FXCollections.observableArrayList());
     this.entityType = requireNonNull(entityType);
     this.connectionProvider = requireNonNull(connectionProvider);
-    this.entityDefinition =  connectionProvider.entities().definition(entityType);
+    this.entityDefinition = connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
   }

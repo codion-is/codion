@@ -25,9 +25,9 @@ public class EntityComboBoxModelConditionModelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
-            .user(UNIT_TEST_USER)
-            .build();
+          .domainClassName(TestDomain.class.getName())
+          .user(UNIT_TEST_USER)
+          .build();
 
   @Test
   void searchEntitiesComboBoxModel() throws DatabaseException {

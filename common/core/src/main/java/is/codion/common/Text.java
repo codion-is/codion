@@ -85,8 +85,8 @@ public final class Text {
 
   /**
    * Sorts the string representations of the list contents, using the space aware collator
-   * @see Text#spaceAwareCollator()
    * @param values the list to sort (collate)
+   * @see Text#spaceAwareCollator()
    */
   public static void collate(List<?> values) {
     requireNonNull(values).sort(spaceAwareCollator());

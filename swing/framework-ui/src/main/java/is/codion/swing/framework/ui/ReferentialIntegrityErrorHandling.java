@@ -26,5 +26,5 @@ public enum ReferentialIntegrityErrorHandling {
    */
   public static final PropertyValue<ReferentialIntegrityErrorHandling> REFERENTIAL_INTEGRITY_ERROR_HANDLING =
           Configuration.enumValue("is.codion.swing.framework.ui.referentialIntegrityErrorHandling",
-                          ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
+                  ReferentialIntegrityErrorHandling.class, ReferentialIntegrityErrorHandling.DISPLAY_ERROR);
 }

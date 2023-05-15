@@ -264,7 +264,7 @@ abstract class AbstractHttpEntityConnectionTest {
       SSLContext sslContext = SSLContext.getDefault();
 
       return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
-              new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
               .build());
     }
     catch (NoSuchAlgorithmException e) {

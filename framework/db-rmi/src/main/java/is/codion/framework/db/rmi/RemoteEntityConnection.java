@@ -56,8 +56,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   void close() throws RemoteException;
 
   /**
-   * @throws RemoteException in case of exception
    * @return true if a transaction is open, false otherwise
+   * @throws RemoteException in case of exception
    */
   boolean isTransactionOpen() throws RemoteException;
 
@@ -92,8 +92,8 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
 
   /**
    * @return true if the query cache is enabled
-   * @see #setQueryCacheEnabled(boolean)
    * @throws RemoteException in case of a remote exception
+   * @see #setQueryCacheEnabled(boolean)
    */
   boolean isQueryCacheEnabled() throws RemoteException;
 

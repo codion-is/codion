@@ -303,10 +303,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Exits this application
+   * @throws CancelException if the exit is cancelled
    * @see #addOnExitListener(EventListener)
    * @see EntityApplicationPanel#CONFIRM_EXIT
    * @see EntityApplicationModel#isWarnAboutUnsavedData()
-   * @throws CancelException if the exit is cancelled
    */
   public final void exit() {
     if (cancelExit()) {
@@ -571,11 +571,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Allows the user the select between the available Look and Feels, saves the selection as a user preference.
+   * @return a Control for selecting the application look and feel
    * @see LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)
    * @see LookAndFeelProvider#findLookAndFeelProvider(String)
    * @see Dialogs#lookAndFeelSelectionDialog()
    * @see LookAndFeelComboBox#CHANGE_ON_SELECTION
-   * @return a Control for selecting the application look and feel
    */
   protected final Control createSelectLookAndFeelControl() {
     return Dialogs.lookAndFeelSelectionDialog()

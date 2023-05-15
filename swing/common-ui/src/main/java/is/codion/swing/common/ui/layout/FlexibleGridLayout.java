@@ -134,7 +134,6 @@ public final class FlexibleGridLayout extends GridLayout {
     Builder rows(int rows);
 
     /**
-     *
      * @param columns the number of columns
      * @return this builder instance
      */
