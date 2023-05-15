@@ -250,24 +250,24 @@ public interface EntityDefinition {
 
   /**
    * @param attribute the attribute
-   * @return the column property associated with the attribute
    * @param <T> the attribute type
+   * @return the column property associated with the attribute
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    */
   <T> ColumnProperty<T> columnProperty(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
-   * @return the property associated with {@code attribute}.
    * @param <T> the attribute type
+   * @return the property associated with {@code attribute}.
    * @throws IllegalArgumentException in case no such property exists
    */
   <T> Property<T> property(Attribute<T> attribute);
 
   /**
    * @param attribute the attribute
-   * @return the primary key property associated with {@code attribute}.
    * @param <T> the attribute type
+   * @return the primary key property associated with {@code attribute}.
    * @throws IllegalArgumentException in case no such property exists
    */
   <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute);

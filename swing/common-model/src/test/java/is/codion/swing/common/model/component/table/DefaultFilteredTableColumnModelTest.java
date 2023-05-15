@@ -28,7 +28,7 @@ public class DefaultFilteredTableColumnModelTest {
     testModel.addColumnShownListener(showListener);
 
     assertEquals(1, testModel.getColumnCount());
-    assertNotNull(testModel.tableColumn(0));
+    assertNotNull(testModel.column(0));
 
     testModel.setColumnVisible(0, false);
     assertFalse(testModel.isColumnVisible(0));
@@ -48,7 +48,7 @@ public class DefaultFilteredTableColumnModelTest {
   @Test
   void tableColumnNotFound() {
     FilteredTableColumnModel<Integer> testModel = createTestModel();
-    assertThrows(IllegalArgumentException.class, () -> testModel.tableColumn(42));
+    assertThrows(IllegalArgumentException.class, () -> testModel.column(42));
   }
 
   @Test

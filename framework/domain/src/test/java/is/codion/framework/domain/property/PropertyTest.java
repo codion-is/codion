@@ -204,10 +204,10 @@ public final class PropertyTest {
     assertEquals("Prufa", property.caption());
 
     assertThrows(IllegalStateException.class, () -> columnProperty(ENTITY_TYPE2.integerAttribute("i18n"))
-                    .captionResourceKey("key"));
+            .captionResourceKey("key"));
 
     assertThrows(IllegalArgumentException.class, () -> columnProperty(ENTITY_TYPE.integerAttribute("i18n"))
-                    .captionResourceKey("invalid_key"));
+            .captionResourceKey("invalid_key"));
   }
 
   @Test

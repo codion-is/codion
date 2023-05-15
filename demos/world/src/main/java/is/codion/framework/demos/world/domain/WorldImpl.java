@@ -23,9 +23,9 @@ public final class WorldImpl extends DefaultDomain implements World {
 
   // tag::items[]
   private static final List<Item<String>> CONTINENT_ITEMS = asList(
-            item("Africa"), item("Antarctica"), item("Asia"),
-            item("Europe"), item("North America"), item("Oceania"),
-            item("South America"));
+          item("Africa"), item("Antarctica"), item("Asia"),
+          item("Europe"), item("North America"), item("Oceania"),
+          item("South America"));
   // end::items[]
 
   public WorldImpl() {

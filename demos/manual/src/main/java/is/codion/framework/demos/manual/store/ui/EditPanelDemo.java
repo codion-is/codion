@@ -54,15 +54,15 @@ final class EditPanelDemo extends EntityEditPanel {
     //wrap the text field in a ComponentValue
     ComponentValue<String, JTextField> firstNameFieldValue =
             new AbstractTextComponentValue<String, JTextField>(firstNameField) {
-      @Override
-      protected String getComponentValue() {
-        return component().getText();
-      }
-      @Override
-      protected void setComponentValue(String text) {
-        component().setText(text);
-      }
-    };
+              @Override
+              protected String getComponentValue() {
+                return component().getText();
+              }
+              @Override
+              protected void setComponentValue(String text) {
+                component().setText(text);
+              }
+            };
 
     //link the component value to the attribute value in the edit model
     firstNameFieldValue.link(editModel().value(Customer.FIRST_NAME));

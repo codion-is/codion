@@ -226,23 +226,24 @@ public final class ClientUserMonitor {
 
   private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
     return asList(
-            createColumn(USERNAME_COLUMN, "Username"),
-            createColumn(CLIENT_TYPE_COLUMN, "Client type"),
-            createColumn(CLIENT_VERSION_COLUMN, "Client version"),
-            createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version"),
-            createColumn(CLIENT_HOST_COLUMN, "Host"),
-            createColumn(LAST_SEEN_COLUMN, "Last seen", new LastSeenRenderer()),
-            createColumn(CONNECTION_COUNT_COLUMN, "Connections"));
+            createColumn(USERNAME_COLUMN, "Username", String.class),
+            createColumn(CLIENT_TYPE_COLUMN, "Client type", String.class),
+            createColumn(CLIENT_VERSION_COLUMN, "Client version", Version.class),
+            createColumn(FRAMEWORK_VERSION_COLUMN, "Framework version", Version.class),
+            createColumn(CLIENT_HOST_COLUMN, "Host", String.class),
+            createColumn(LAST_SEEN_COLUMN, "Last seen", LocalDateTime.class, new LastSeenRenderer()),
+            createColumn(CONNECTION_COUNT_COLUMN, "Connections", Integer.class));
   }
 
-  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue) {
-    return createColumn(identifier, headerValue, null);
+  private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue, Class<?> columnClass) {
+    return createColumn(identifier, headerValue, columnClass, null);
   }
 
   private static FilteredTableColumn<Integer> createColumn(Integer identifier, String headerValue,
-                                                           TableCellRenderer cellRenderer) {
+                                                           Class<?> columnClass, TableCellRenderer cellRenderer) {
     return FilteredTableColumn.builder(identifier)
             .headerValue(headerValue)
+            .columnClass(columnClass)
             .cellRenderer(cellRenderer)
             .build();
   }
@@ -285,20 +286,6 @@ public final class ClientUserMonitor {
   }
 
   private static final class UserHistoryColumnValueProvider implements ColumnValueProvider<UserInfo, Integer> {
-
-    @Override
-    public Class<?> columnClass(Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case USERNAME_COLUMN: return String.class;
-        case CLIENT_TYPE_COLUMN: return String.class;
-        case CLIENT_VERSION_COLUMN: return Version.class;
-        case FRAMEWORK_VERSION_COLUMN: return Version.class;
-        case CLIENT_HOST_COLUMN: return String.class;
-        case LAST_SEEN_COLUMN: return LocalDateTime.class;
-        case CONNECTION_COUNT_COLUMN: return Integer.class;
-        default: throw new IllegalArgumentException(columnIdentifier.toString());
-      }
-    }
 
     @Override
     public Object value(UserInfo row, Integer columnIdentifier) {

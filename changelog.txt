@@ -9000,3 +9000,7 @@
   EntityEditPanel.Confirmer.confirm(dialogOwner, message, title) default convenience implementation added
   EntityEditPanel.isPanelInitialized() and addPanelInitializedListener() removed
   EntityPanel.isPanelInitialized(), initialize(), initializeControlPanels() and initializeAssociatedPanels() removed
+  DomainToString, DatabaseDomain, identity() key generator added in case of an auto generated primary key column, now uses TAB instead of multiple spaces
+  ColumnValueProvider.columnClass() and comparator() removed, FilteredTableColumn.columnClass and comparator as replacement, related refactoring
+  FilteredTableColumnModel.tableColumn() renamed column()
+  DatabaseExplorerPanel improvements, CTRL-ENTER populates schema

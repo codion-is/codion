@@ -68,8 +68,8 @@ public final class NullableToggleButtonModel extends DefaultButtonModel {
    */
   public void setState(Boolean state) {
     buttonState.set(state);
-    fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED,this,
-            state == null ? NULL : (state ?  ItemEvent.SELECTED : ItemEvent.DESELECTED)));
+    fireItemStateChanged(new ItemEvent(this, ItemEvent.ITEM_STATE_CHANGED, this,
+            state == null ? NULL : (state ? ItemEvent.SELECTED : ItemEvent.DESELECTED)));
     fireStateChanged();
   }
 

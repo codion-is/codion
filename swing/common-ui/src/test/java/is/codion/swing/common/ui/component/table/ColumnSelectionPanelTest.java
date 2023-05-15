@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -20,17 +19,7 @@ public final class ColumnSelectionPanelTest {
     column.setHeaderValue("Testing");
 
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(singletonList(column),
-            new ColumnValueProvider<Object, Integer>() {
-              @Override
-              public Object value(Object row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                return null;
-              }
-            });
+            (row, columnIdentifier) -> null);
 
     new ColumnSelectionPanel<>(tableModel.columnModel());
   }

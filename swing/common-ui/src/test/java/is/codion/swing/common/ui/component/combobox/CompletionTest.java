@@ -14,6 +14,6 @@ public final class CompletionTest {
   @Test
   void setTwice() {
     JComboBox<?> comboBox = Completion.maximumMatch(new JComboBox<>());
-    assertThrows(IllegalStateException.class,() -> Completion.maximumMatch(comboBox));
+    assertThrows(IllegalStateException.class, () -> Completion.maximumMatch(comboBox));
   }
 }

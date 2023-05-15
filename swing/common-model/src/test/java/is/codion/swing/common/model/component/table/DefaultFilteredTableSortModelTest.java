@@ -3,13 +3,12 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
-
 import org.junit.jupiter.api.Test;
 
 import javax.swing.SortOrder;
-import javax.swing.table.TableColumn;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -19,30 +18,26 @@ public class DefaultFilteredTableSortModelTest {
 
   @Test
   void test() {
-    TableColumn firstColumn = new TableColumn(0);
-    firstColumn.setIdentifier(0);
-    TableColumn secondColumn = new TableColumn(1);
-    secondColumn.setIdentifier(1);
-    TableColumn thirdColumn = new TableColumn(2);
-    thirdColumn.setIdentifier(2);
-    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(new ColumnValueProvider<Row, Integer>() {
-      @Override
-      public Object value(Row row, Integer columnIdentifier) {
-        switch (columnIdentifier) {
-          case 0:
-            return row.firstValue;
-          case 1:
-            return row.secondValue.toString();
-          case 2:
-            return row.thirdValue;
-          default:
-            return null;
-        }
-      }
-
-      @Override
-      public Class<?> columnClass(Integer columnIdentifier) {
-        return String.class;
+    FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0)
+            .columnClass(String.class)
+            .build();
+    FilteredTableColumn<Integer> secondColumn = FilteredTableColumn.builder(1)
+            .columnClass(String.class)
+            .build();
+    FilteredTableColumn<Integer> thirdColumn = FilteredTableColumn.builder(2)
+            .columnClass(String.class)
+            .build();
+    FilteredTableColumnModel<Integer> columnModel = new DefaultFilteredTableColumnModel<>(Arrays.asList(firstColumn, secondColumn, thirdColumn));
+    DefaultFilteredTableSortModel<Row, Integer> model = new DefaultFilteredTableSortModel<>(columnModel, (row, columnIdentifier) -> {
+      switch (columnIdentifier) {
+        case 0:
+          return row.firstValue;
+        case 1:
+          return row.secondValue.toString();
+        case 2:
+          return row.thirdValue;
+        default:
+          return null;
       }
     });
 
@@ -96,20 +91,11 @@ public class DefaultFilteredTableSortModelTest {
 
   @Test
   void nonComparableColumnClass() {
-    TableColumn firstColumn = new TableColumn(0);
-    firstColumn.setIdentifier(0);
-    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(
-            new ColumnValueProvider<ArrayList, Integer>() {
-              @Override
-              public Object value(ArrayList row, Integer columnIdentifier) {
-                return row.toString();
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                return ArrayList.class;
-              }
-            });
+    FilteredTableColumn<Integer> firstColumn = FilteredTableColumn.builder(0)
+            .columnClass(ArrayList.class)
+            .build();
+    FilteredTableColumnModel<Integer> columnModel = new DefaultFilteredTableColumnModel<>(Collections.singletonList(firstColumn));
+    DefaultFilteredTableSortModel<ArrayList, Integer> model = new DefaultFilteredTableSortModel<>(columnModel, (row, columnIdentifier) -> row.toString());
     List<ArrayList> collections = asList(new ArrayList(), new ArrayList());
     model.setSortOrder(0, SortOrder.DESCENDING);
     model.sort(collections);

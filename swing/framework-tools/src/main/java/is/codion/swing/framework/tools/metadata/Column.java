@@ -20,10 +20,12 @@ public final class Column {
   private final String comment;
   private final int primaryKeyIndex;
   private final boolean foreignKeyColumn;
+  private final boolean autoIncrement;
+  private final boolean generated;
 
   Column(String columnName, Class<?> columnClass, int position, int columnSize,
          int decimalDigits, int nullable, String defaultValue, String comment,
-         int primaryKeyIndex, boolean foreignKeyColumn) {
+         int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
     this.columnName = requireNonNull(columnName);
     this.columnClass = requireNonNull(columnClass);
     this.position = position;
@@ -34,6 +36,8 @@ public final class Column {
     this.comment = comment;
     this.primaryKeyIndex = primaryKeyIndex;
     this.foreignKeyColumn = foreignKeyColumn;
+    this.autoIncrement = autoIncrement;
+    this.generated = generated;
   }
 
   public String columnName() {
@@ -78,6 +82,14 @@ public final class Column {
 
   public String comment() {
     return comment;
+  }
+
+  public boolean autoIncrement() {
+    return autoIncrement;
+  }
+
+  public boolean generated() {
+    return generated;
   }
 
   @Override

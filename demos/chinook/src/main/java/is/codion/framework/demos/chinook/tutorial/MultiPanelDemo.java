@@ -20,7 +20,6 @@ import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 /**
  * Just a little demo showcasing how a single {@link SwingEntityModel} behaves
  * when used by multiple {@link EntityPanel}s.
- *
  * When running this make sure the chinook demo module directory is the
  * working directory, due to a relative path to a db init script
  */

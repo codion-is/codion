@@ -83,7 +83,7 @@ final class DefaultSliderBuilder extends AbstractComponentBuilder<Integer, JSlid
 
   @Override
   public SliderBuilder mouseWheelScrolling(boolean mouseWheelScrolling) {
-    this.mouseWheelScrolling  = mouseWheelScrolling;
+    this.mouseWheelScrolling = mouseWheelScrolling;
     if (mouseWheelScrolling) {
       this.mouseWheelScrollingReversed = false;
     }

@@ -195,14 +195,14 @@ public final class CalendarPanel extends JPanel {
   }
 
   /**
-   * @return  a new {@link CalendarPanel} without time fields.
+   * @return a new {@link CalendarPanel} without time fields.
    */
   public static CalendarPanel dateCalendarPanel() {
     return new CalendarPanel(false);
   }
 
   /**
-   * @return  a new {@link CalendarPanel} with time fields.
+   * @return a new {@link CalendarPanel} with time fields.
    */
   public static CalendarPanel dateTimeCalendarPanel() {
     return new CalendarPanel(true);
@@ -576,10 +576,10 @@ public final class CalendarPanel extends JPanel {
   private static JSpinner removeCtrlLeftRightArrowKeyEvents(JSpinner spinner) {
     InputMap inputMap = ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().getInputMap(WHEN_FOCUSED);
     //so it doesn't interfere with keyboard navigation when it has focus
-    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, CTRL_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, CTRL_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, SHIFT_DOWN_MASK,false), "none");
-    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, SHIFT_DOWN_MASK,false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, CTRL_DOWN_MASK, false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, CTRL_DOWN_MASK, false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_LEFT, SHIFT_DOWN_MASK, false), "none");
+    inputMap.put(KeyStroke.getKeyStroke(VK_RIGHT, SHIFT_DOWN_MASK, false), "none");
 
     return spinner;
   }

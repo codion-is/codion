@@ -44,7 +44,7 @@ public final class CredentialsServerTest {
       token = UUID.randomUUID();
       server.addAuthenticationToken(token, scott);
       Optional<UUID> optionalUUID = CredentialsProvider.authenticationToken(
-              new String[]{"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"});
+              new String[] {"bla", CredentialsProvider.AUTHENTICATION_TOKEN_PREFIX + ":" + token, "bla"});
       assertTrue(optionalUUID.isPresent());
       optionalUser = provider.credentials(optionalUUID.get());
       assertTrue(optionalUser.isPresent());

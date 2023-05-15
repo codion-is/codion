@@ -15,7 +15,7 @@ public class Db2DatabaseTest {
   void name() {
     Db2Database database = new Db2Database(URL);
     assertEquals("database", database.name());
-    database = new Db2Database( URL + ";options");
+    database = new Db2Database(URL + ";options");
     assertEquals("database", database.name());
   }
 

@@ -595,12 +595,12 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * <pre>
    *   protected void initializeUI() {
    *      setInitialFocusAttribute(DomainModel.USER_NAME);
-
+   *
    *      createTextField(DomainModel.USER_NAME);
    *      createTextField(DomainModel.USER_ADDRESS);
-
+   *
    *      setLayout(new GridLayout(2, 1, 5, 5);
-
+   *
    *      addInputPanel(DomainModel.USER_NAME);
    *      addInputPanel(DomainModel.USER_ADDRESS);
    *  }

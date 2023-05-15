@@ -11,7 +11,6 @@ import is.codion.common.model.table.TableSummaryModel;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
-import java.util.Comparator;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -279,37 +278,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   interface ColumnValueProvider<R, C> {
 
     /**
-     * A Comparator for comparing {@link Comparable} instances.
-     */
-    Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
-
-    /**
-     * A Comparator for comparing Objects according to their toString() value.
-     */
-    Comparator<?> TO_STRING_COMPARATOR = Comparator.comparing(Object::toString);
-
-    /**
-     * Returns the class of the column with the given identifier
-     * @param columnIdentifier the column identifier
-     * @return the Class representing the given column
-     */
-    Class<?> columnClass(C columnIdentifier);
-
-    /**
-     * Returns the comparator to use when sorting by the give column,
-     * the comparator receives the column values, but never null.
-     * @param columnIdentifier the column identifier
-     * @return the comparator to use when sorting by the given column
-     */
-    default Comparator<?> comparator(C columnIdentifier) {
-      if (Comparable.class.isAssignableFrom(columnClass(columnIdentifier))) {
-        return COMPARABLE_COMPARATOR;
-      }
-
-      return TO_STRING_COMPARATOR;
-    }
-
-    /**
      * Returns a value for the given row and columnIdentifier
      * @param row the object representing a given row
      * @param columnIdentifier the column identifier
@@ -331,14 +299,23 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
     /**
      * Returns a Comparable instance for the given row and columnIdentifier.
-     * The default implementation simply assumes the value is a {@link Comparable} instance and performs a cast.
+     * The default implementation returns the value as is in case it's a {@link Comparable} instance,
+     * otherwise its String representation is returned.
      * @param <T> the column value type
      * @param row the object representing a given row
      * @param columnIdentifier the column identifier
      * @return a Comparable for the given row and column
      */
     default <T> Comparable<T> comparable(R row, C columnIdentifier) {
-      return (Comparable<T>) value(row, columnIdentifier);
+      Object value = value(row, columnIdentifier);
+      if (value instanceof Comparable) {
+        return (Comparable<T>) value;
+      }
+      if (value != null) {
+        return (Comparable<T>) value.toString();
+      }
+
+      return null;
     }
   }
 

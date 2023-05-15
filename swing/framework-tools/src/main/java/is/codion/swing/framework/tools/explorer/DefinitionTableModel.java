@@ -49,26 +49,17 @@ final class DefinitionTableModel extends DefaultFilteredTableModel<DefinitionRow
   private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
     FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionTableModel.DOMAIN)
             .headerValue("Domain")
+            .columnClass(String.class)
             .build();
     FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionTableModel.ENTITY)
             .headerValue("Entity")
+            .columnClass(String.class)
             .build();
 
     return asList(domainColumn, entityTypeColumn);
   }
 
   private static final class DefinitionColumnValueProvider implements ColumnValueProvider<DefinitionRow, Integer> {
-
-    @Override
-    public Class<?> columnClass(Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case DefinitionTableModel.DOMAIN:
-        case DefinitionTableModel.ENTITY:
-          return String.class;
-        default:
-          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
-      }
-    }
 
     @Override
     public Object value(DefinitionRow row, Integer columnIdentifier) {

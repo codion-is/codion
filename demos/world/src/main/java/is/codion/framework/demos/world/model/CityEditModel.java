@@ -46,7 +46,7 @@ public final class CityEditModel extends SwingEntityEditModel {
     }
   }
 
-  private Optional<Location> lookupLocation(City city)  throws IOException {
+  private Optional<Location> lookupLocation(City city) throws IOException {
     JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
             URLEncoder.encode(city.name(), UTF_8.name()) + "," +
             URLEncoder.encode(city.country().name(), UTF_8.name()) + "?format=json"));

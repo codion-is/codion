@@ -101,7 +101,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     this.filterModel = tableConditionModel(columnFilterModels);
     this.summaryModel = tableSummaryModel(new DefaultColumnSummaryModelFactory());
@@ -218,20 +218,20 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final TableSummaryModel <C> summaryModel() {
+  public final TableSummaryModel<C> summaryModel() {
     return summaryModel;
   }
 
   @Override
   public final <T> Collection<T> values(C columnIdentifier) {
     return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
-            columnModel.tableColumn(columnIdentifier).getModelIndex());
+            columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
   public final <T> Collection<T> selectedValues(C columnIdentifier) {
     return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
-            columnModel.tableColumn(columnIdentifier).getModelIndex());
+            columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
@@ -280,7 +280,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
-    for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext();) {
+    for (ListIterator<R> visibleItemsIterator = visibleItems.listIterator(); visibleItemsIterator.hasNext(); ) {
       R item = visibleItemsIterator.next();
       if (!include(item)) {
         visibleItemsIterator.remove();
@@ -420,7 +420,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
-    return columnValueProvider.columnClass(columnIdentifier);
+    return columnModel.column(columnIdentifier).getColumnClass();
   }
 
   @Override
@@ -699,8 +699,8 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     @Override
     public ColumnSummaryModel createSummaryModel(C columnIdentifier) {
       return createColumnValueProvider(columnIdentifier)
-                .map(ColumnSummaryModel::columnSummaryModel)
-                .orElse(null);
+              .map(ColumnSummaryModel::columnSummaryModel)
+              .orElse(null);
     }
   }
 

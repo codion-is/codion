@@ -20,7 +20,8 @@ import java.text.NumberFormat;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class NumericalValuesTest {  private Long longValue;
+public class NumericalValuesTest {
+  private Long longValue;
 
   private final Event<Long> longValueChangedEvent = Event.event();
   private long longPrimitiveValue;

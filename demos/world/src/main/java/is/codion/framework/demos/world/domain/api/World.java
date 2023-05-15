@@ -39,8 +39,11 @@ public interface World {
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country", COUNTRY_CODE, Country.CODE);
 
     String name();
+
     int population();
+
     Country country();
+
     void location(Location location);
 
     default boolean isInCountry(Entity country) {
@@ -81,9 +84,13 @@ public interface World {
     // end::foreignKeyCapital[]
 
     String name();
+
     String continent();
+
     String region();
+
     double surfacearea();
+
     int population();
   }
 
@@ -99,6 +106,7 @@ public interface World {
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
 
     String language();
+
     int noOfSpeakers();
   }
 
@@ -115,10 +123,15 @@ public interface World {
     Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
 
     String name();
+
     int surfaceArea();
+
     long population();
+
     double minLifeExpectancy();
+
     double maxLifeExpectancy();
+
     double gnp();
   }
 

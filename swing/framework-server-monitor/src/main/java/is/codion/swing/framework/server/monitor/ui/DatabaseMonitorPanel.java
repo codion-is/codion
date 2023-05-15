@@ -51,7 +51,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     add(tabbedPane()
             .tab("Connection Pools", new PoolMonitorPanel(model.connectionPoolMonitor()))
             .tab("Performance", chartPanel())
-                    .build(), BorderLayout.CENTER);
+            .build(), BorderLayout.CENTER);
   }
 
   private JPanel chartPanel() {

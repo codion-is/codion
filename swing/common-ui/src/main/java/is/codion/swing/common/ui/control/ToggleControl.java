@@ -37,7 +37,7 @@ public interface ToggleControl extends Control {
    */
   JRadioButtonMenuItem createRadioButtonMenuItem();
 
-    /**
+  /**
    * Creates a ButtonModel based on this {@link ToggleControl}.
    * If the underlying value is nullable then a NullableButtonModel is returned.
    * @return a button model

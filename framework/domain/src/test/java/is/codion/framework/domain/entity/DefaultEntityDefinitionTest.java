@@ -469,45 +469,45 @@ public class DefaultEntityDefinitionTest {
   @Test
   void serializationCompatibility() {
     EntityDefinition definition = EntityDefinition.definition(
-            primaryKeyProperty(Person.ID),
-            columnProperty(Person.NAME),
-            columnProperty(Person.SALARY),
-            derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                    sourceValues.get(Person.SALARY).toString(), Person.SALARY),
-            columnProperty(Person.ENABLED))
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
+                    columnProperty(Person.ENABLED))
             .build();
 
     EntityDefinition missingProperty = EntityDefinition.definition(
-            primaryKeyProperty(Person.ID),
-            columnProperty(Person.NAME),
-            columnProperty(Person.SALARY),
-            derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                    sourceValues.get(Person.SALARY).toString(), Person.SALARY))
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY))
             .build();
 
     EntityDefinition missingDerivedProperty = EntityDefinition.definition(
-            primaryKeyProperty(Person.ID),
-            columnProperty(Person.NAME),
-            columnProperty(Person.SALARY),
-            columnProperty(Person.ENABLED))
+                    primaryKeyProperty(Person.ID),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY),
+                    columnProperty(Person.ENABLED))
             .build();
 
     EntityDefinition differentOrder = EntityDefinition.definition(
-            primaryKeyProperty(Person.ID),
-            derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                    sourceValues.get(Person.SALARY).toString(), Person.SALARY),
-            columnProperty(Person.ENABLED),
-            columnProperty(Person.NAME),
-            columnProperty(Person.SALARY))
+                    primaryKeyProperty(Person.ID),
+                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
+                    columnProperty(Person.ENABLED),
+                    columnProperty(Person.NAME),
+                    columnProperty(Person.SALARY))
             .build();
 
     EntityDefinition differentType = EntityDefinition.definition(
-            primaryKeyProperty(PersonDifferentType.ID),
-            columnProperty(PersonDifferentType.NAME),
-            columnProperty(PersonDifferentType.SALARY),
-            derivedProperty(PersonDifferentType.SALARY_FORMATTED, sourceValues ->
-                    sourceValues.get(PersonDifferentType.SALARY).toString(), PersonDifferentType.SALARY),
-            columnProperty(PersonDifferentType.ENABLED))
+                    primaryKeyProperty(PersonDifferentType.ID),
+                    columnProperty(PersonDifferentType.NAME),
+                    columnProperty(PersonDifferentType.SALARY),
+                    derivedProperty(PersonDifferentType.SALARY_FORMATTED, sourceValues ->
+                            sourceValues.get(PersonDifferentType.SALARY).toString(), PersonDifferentType.SALARY),
+                    columnProperty(PersonDifferentType.ENABLED))
             .build();
 
     assertNotEquals(definition.serializationVersion(), missingProperty.serializationVersion());

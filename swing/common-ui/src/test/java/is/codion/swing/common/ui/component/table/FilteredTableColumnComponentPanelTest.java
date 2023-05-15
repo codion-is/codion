@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.junit.jupiter.api.Test;
 
@@ -27,17 +26,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void wrongColumn() {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            new ColumnValueProvider<Object, Integer>() {
-              @Override
-              public Object value(Object row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                return null;
-              }
-            });
+            (row, columnIdentifier) -> null);
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(3, new JPanel());
@@ -47,17 +36,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void setColumnVisible() {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            new ColumnValueProvider<Object, Integer>() {
-              @Override
-              public Object value(Object row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                return null;
-              }
-            });
+            (row, columnIdentifier) -> null);
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
@@ -76,17 +55,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void width() {
     DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            new ColumnValueProvider<Object, Integer>() {
-              @Override
-              public Object value(Object row, Integer columnIdentifier) {
-                return null;
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                return null;
-              }
-            });
+            (row, columnIdentifier) -> null);
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);

@@ -14,10 +14,10 @@ public final class HttpEntityConnectionTest extends AbstractHttpEntityConnection
 
   public HttpEntityConnectionTest() {
     super(new HttpEntityConnection(TestDomain.DOMAIN.name(),
-          HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get(),
-          HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
-          HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
-          UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
-          createConnectionManager()));
+            HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get(),
+            HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
+            HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get(),
+            UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
+            createConnectionManager()));
   }
 }

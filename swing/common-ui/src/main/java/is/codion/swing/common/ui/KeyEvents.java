@@ -15,7 +15,7 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
  * A factory for key event builders.
  * <pre>
  * JTextField textField = new JTextField();
-
+ *
  * KeyEvents.builder(VK_UP)
  *          .onKeyPressed()
  *          .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)

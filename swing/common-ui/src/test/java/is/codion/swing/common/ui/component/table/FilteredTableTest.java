@@ -15,7 +15,6 @@ import java.awt.AWTException;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +31,9 @@ public class FilteredTableTest {
 
   @Test
   void searchField() throws AWTException {
-    FilteredTableColumn<Integer> column = filteredTableColumn(0);
+    FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
+            .columnClass(String.class)
+            .build();
     ColumnConditionModel<Integer, String> filterModel = ColumnConditionModel.builder(0, String.class).build();
 
     TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
@@ -82,17 +83,7 @@ public class FilteredTableTest {
 
     private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
                                            List<ColumnConditionModel<Integer, ?>> columnFilterModels) {
-      super(columns, new ColumnValueProvider<List<String>, Integer>() {
-        @Override
-        public Object value(List<String> row, Integer columnIdentifier) {
-          return row.get(columnIdentifier);
-        }
-
-        @Override
-        public Class<?> columnClass(Integer columnIdentifier) {
-          return String.class;
-        }
-      }, columnFilterModels);
+      super(columns, List::get, columnFilterModels);
     }
 
     @Override

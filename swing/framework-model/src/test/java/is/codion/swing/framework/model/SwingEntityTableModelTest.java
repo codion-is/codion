@@ -155,7 +155,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   void columnModel() {
-    FilteredTableColumn<Attribute<?>> column = testModel.columnModel().tableColumn(Detail.STRING);
+    FilteredTableColumn<Attribute<?>> column = testModel.columnModel().column(Detail.STRING);
     assertEquals(Detail.STRING, column.getIdentifier());
   }
 

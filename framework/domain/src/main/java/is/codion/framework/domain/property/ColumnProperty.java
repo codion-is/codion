@@ -255,8 +255,8 @@ public interface ColumnProperty<T> extends Property<T> {
      * Specifies whether this property should be included when searching for an entity by a string value.
      * Only applicable to properties of type {@link java.sql.Types#VARCHAR}.
      * @param searchProperty true if this property is a search property
-     * @throws IllegalStateException in case this property type is not String
      * @return this instance
+     * @throws IllegalStateException in case this property type is not String
      */
     B searchProperty(boolean searchProperty);
   }

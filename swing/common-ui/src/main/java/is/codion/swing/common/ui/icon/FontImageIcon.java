@@ -90,7 +90,7 @@ public interface FontImageIcon {
     /**
      * @return a new font imge icon
      */
-     FontImageIcon build();
+    FontImageIcon build();
   }
 
   /**

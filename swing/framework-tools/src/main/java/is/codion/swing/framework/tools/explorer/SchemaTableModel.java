@@ -37,27 +37,17 @@ final class SchemaTableModel extends DefaultFilteredTableModel<Schema, Integer> 
   private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
     FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaTableModel.SCHEMA)
             .headerValue("Schema")
+            .columnClass(String.class)
             .build();
     FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaTableModel.POPULATED)
             .headerValue("Populated")
+            .columnClass(Boolean.class)
             .build();
 
     return asList(schemaColumn, populatedColumn);
   }
 
   private static final class SchemaColumnValueProvider implements ColumnValueProvider<Schema, Integer> {
-
-    @Override
-    public Class<?> columnClass(Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case SchemaTableModel.SCHEMA:
-          return String.class;
-        case SchemaTableModel.POPULATED:
-          return Boolean.class;
-        default:
-          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
-      }
-    }
 
     @Override
     public Object value(Schema row, Integer columnIdentifier) {

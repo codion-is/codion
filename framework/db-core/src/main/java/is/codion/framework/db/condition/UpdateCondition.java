@@ -36,13 +36,13 @@ public interface UpdateCondition extends Condition {
    */
   interface Builder {
 
-  /**
-   * Adds a attribute value to update
-   * @param attribute the attribute
-   * @param value the new value
-   * @param <T> the value type
-   * @return this builder
-   */
+    /**
+     * Adds a attribute value to update
+     * @param attribute the attribute
+     * @param value the new value
+     * @param <T> the value type
+     * @return this builder
+     */
     <T> Builder set(Attribute<?> attribute, T value);
 
     /**

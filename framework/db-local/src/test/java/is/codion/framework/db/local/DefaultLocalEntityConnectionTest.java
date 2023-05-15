@@ -258,7 +258,7 @@ public class DefaultLocalEntityConnectionTest {
             .build();
     List<Entity> result = connection.select(condition);
     assertEquals(2, result.size());
-    condition  = condition.selectBuilder()
+    condition = condition.selectBuilder()
             .limit(3)
             .offset(3)
             .build();

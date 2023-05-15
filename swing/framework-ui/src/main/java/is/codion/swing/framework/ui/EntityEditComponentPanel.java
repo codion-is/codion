@@ -303,7 +303,7 @@ public class EntityEditComponentPanel extends JPanel {
             .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
             .sorted(Property.propertyComparator())
             .collect(Collectors.toList());
-    Optional<Property<?>> optionalProperty = properties.size() == 1 ?  Optional.of(properties.iterator().next()) :
+    Optional<Property<?>> optionalProperty = properties.size() == 1 ? Optional.of(properties.iterator().next()) :
             Dialogs.selectionDialog(properties)
                     .owner(this)
                     .title(FrameworkMessages.selectInputField())

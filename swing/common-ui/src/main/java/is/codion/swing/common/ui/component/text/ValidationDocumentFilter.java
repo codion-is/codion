@@ -40,8 +40,8 @@ public class ValidationDocumentFilter<T> extends DocumentFilter {
   /**
    * Validates the given value using all the underlying validators (if any).
    * @param value the value to validate
-   * @see #addValidator(Value.Validator)
    * @throws IllegalArgumentException in case of an invalid value
+   * @see #addValidator(Value.Validator)
    */
   protected final void validate(T value) {
     validators.forEach(validator -> validator.validate(value));

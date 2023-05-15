@@ -172,8 +172,8 @@ public interface ItemRandomizer<T> {
      * Instantiates a new {@link RandomItem} instance.
      * @param item the item
      * @param weight the random selection weight to assign to this item
-     * @return a new {@link RandomItem} instance.
      * @param <T> the item type
+     * @return a new {@link RandomItem} instance.
      */
     static <T> RandomItem<T> randomItem(T item, int weight) {
       return new DefaultRandomItem<>(item, weight);

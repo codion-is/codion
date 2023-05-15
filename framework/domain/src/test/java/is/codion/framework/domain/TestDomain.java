@@ -86,6 +86,7 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Integer> READ_ONLY = TYPE.integerAttribute("read_only");
 
     Long getId();
+
     String getName();
   }
 
@@ -134,11 +135,17 @@ public final class TestDomain extends DefaultDomain {
     Attribute<byte[]> BYTES = TYPE.byteArrayAttribute("bytes");
 
     Optional<Long> getId();
+
     void setId(Long value);
+
     Optional<Double> getDouble();
+
     void setDouble(Double value);
+
     Master master();
+
     Optional<Master> getMaster();
+
     void setMaster(Master master);
 
     default void setAll(Long id, Double value, Master master) {
@@ -210,10 +217,15 @@ public final class TestDomain extends DefaultDomain {
     Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
     int deptNo();
+
     String name();
+
     String location();
+
     Boolean active();
+
     void active(Boolean active);
+
     void setDeptNo(int deptNo);
   }
 
@@ -257,14 +269,23 @@ public final class TestDomain extends DefaultDomain {
     Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
 
     Integer getId();
+
     Double getCommission();
+
     Integer getDeptno();
+
     Department getDepartment();
+
     LocalDateTime getHiredate();
+
     String getJob();
+
     Integer getMgr();
+
     Employee getManager();
+
     String getName();
+
     Double getSalary();
   }
 

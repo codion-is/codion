@@ -93,8 +93,11 @@ public final class TestDomain extends DefaultDomain {
     ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = TYPE.conditionType("conditionInvalidColumnId");
 
     void setName(String name);
+
     String getName();
+
     void setId(Integer id);
+
     void setLocation(String location);
   }
 

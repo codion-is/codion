@@ -34,8 +34,8 @@ import static java.util.Objects.requireNonNull;
 /**
  * A JFormattedTextField for Temporal types.<br>
  * Use {@link #getTemporal()} and {@link #setTemporal(Temporal)} for accessing and setting the value.
- * @see #builder(Class, String, Value)
  * @param <T> the temporal type
+ * @see #builder(Class, String, Value)
  */
 public final class TemporalField<T extends Temporal> extends JFormattedTextField {
 

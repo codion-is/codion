@@ -153,10 +153,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @param port the port to use when exporting this remote connection
    * @param clientSocketFactory the client socket factory, null for default
    * @param serverSocketFactory the server socket factory, null for default
+   * @return a remote connection
    * @throws RemoteException in case of an exception
    * @throws DatabaseException in case a database connection can not be established, for example
    * if a wrong username or password is provided
-   * @return a remote connection
    */
   protected AbstractRemoteEntityConnection createRemoteConnection(Database database,
                                                                   RemoteClient remoteClient, int port,
@@ -342,8 +342,8 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   /**
    * Binds this server instance to the registry
-   * @throws RemoteException in case of an exception
    * @param registryPort the registry port
+   * @throws RemoteException in case of an exception
    */
   private void bindToRegistry(int registryPort) throws RemoteException {
     registry().rebind(serverInformation().serverName(), this);

@@ -20,9 +20,9 @@ public final class EntityPopupMenuTest {
   @Test
   void test() throws DatabaseException {
     try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
-          .domainClassName(TestDomain.class.getName())
-          .user(UNIT_TEST_USER)
-          .build()) {
+            .domainClassName(TestDomain.class.getName())
+            .user(UNIT_TEST_USER)
+            .build()) {
       Entity blake = connectionProvider.connection().selectSingle(Employee.NAME, "BLAKE");
       blake.put(Employee.NAME, "a really long name aaaaaaaaaaaaaaaaaaaaaaaaaa");
       blake.put(Employee.SALARY, 100d);

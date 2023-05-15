@@ -46,11 +46,11 @@ public class DefaultServerLocatorTest {
     assertThrows(NotBoundException.class, serverLocator::locateServer);
     try {
       serverLocator = Server.Locator.builder()
-            .serverHostName("localhost")
-            .serverNamePrefix(SERVER_NAME)
-            .registryPort(Registry.REGISTRY_PORT)
-            .serverPort(-1)
-            .build();
+              .serverHostName("localhost")
+              .serverNamePrefix(SERVER_NAME)
+              .registryPort(Registry.REGISTRY_PORT)
+              .serverPort(-1)
+              .build();
       Server<Remote, ServerAdmin> server = serverLocator.locateServer();
       assertNotNull(server);
     }

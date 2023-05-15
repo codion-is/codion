@@ -1,39 +1,39 @@
 public interface Address {
-  EntityType TYPE = DOMAIN.entityType("petstore.address");
+	EntityType TYPE = DOMAIN.entityType("petstore.address");
 
-  Attribute<Integer> ADDRESSID = TYPE.integerAttribute("addressid");
-  Attribute<String> STREET1 = TYPE.stringAttribute("street1");
-  Attribute<String> STREET2 = TYPE.stringAttribute("street2");
-  Attribute<String> CITY = TYPE.stringAttribute("city");
-  Attribute<String> STATE = TYPE.stringAttribute("state");
-  Attribute<Integer> ZIP = TYPE.integerAttribute("zip");
-  Attribute<Double> LATITUDE = TYPE.doubleAttribute("latitude");
-  Attribute<Double> LONGITUDE = TYPE.doubleAttribute("longitude");
-  Attribute<byte[]> IMAGE = TYPE.byteArrayAttribute("image");
+	Attribute<Integer> ADDRESSID = TYPE.integerAttribute("addressid");
+	Attribute<String> STREET1 = TYPE.stringAttribute("street1");
+	Attribute<String> STREET2 = TYPE.stringAttribute("street2");
+	Attribute<String> CITY = TYPE.stringAttribute("city");
+	Attribute<String> STATE = TYPE.stringAttribute("state");
+	Attribute<Integer> ZIP = TYPE.integerAttribute("zip");
+	Attribute<Double> LATITUDE = TYPE.doubleAttribute("latitude");
+	Attribute<Double> LONGITUDE = TYPE.doubleAttribute("longitude");
+	Attribute<byte[]> IMAGE = TYPE.byteArrayAttribute("image");
 }
 
 void address() {
-  add(definition(
-          primaryKeyProperty(Address.ADDRESSID),
-          columnProperty(Address.STREET1, "Street1")
-                .nullable(false)
-                .maximumLength(55),
-          columnProperty(Address.STREET2, "Street2")
-                .maximumLength(55),
-          columnProperty(Address.CITY, "City")
-                .nullable(false)
-                .maximumLength(55),
-          columnProperty(Address.STATE, "State")
-                .nullable(false)
-                .maximumLength(25),
-          columnProperty(Address.ZIP, "Zip")
-                .nullable(false),
-          columnProperty(Address.LATITUDE, "Latitude")
-                .nullable(false)
-                .maximumFractionDigits(2),
-          columnProperty(Address.LONGITUDE, "Longitude")
-                .nullable(false)
-                .maximumFractionDigits(2),
-          blobProperty(Address.IMAGE, "Image")
-  ));
+	add(definition(
+		primaryKeyProperty(Address.ADDRESSID),
+		columnProperty(Address.STREET1, "Street1")
+			.nullable(false)
+			.maximumLength(55),
+		columnProperty(Address.STREET2, "Street2")
+			.maximumLength(55),
+		columnProperty(Address.CITY, "City")
+			.nullable(false)
+			.maximumLength(55),
+		columnProperty(Address.STATE, "State")
+			.nullable(false)
+			.maximumLength(25),
+		columnProperty(Address.ZIP, "Zip")
+			.nullable(false),
+		columnProperty(Address.LATITUDE, "Latitude")
+			.nullable(false)
+			.maximumFractionDigits(2),
+		columnProperty(Address.LONGITUDE, "Longitude")
+			.nullable(false)
+			.maximumFractionDigits(2),
+		blobProperty(Address.IMAGE, "Image"))
+		.keyGenerator(KeyGenerator.identity()));
 }

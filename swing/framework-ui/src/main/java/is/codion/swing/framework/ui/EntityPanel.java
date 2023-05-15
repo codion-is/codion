@@ -366,7 +366,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Sets the layout constraints to use for the control panel
-   *<pre>
+   * <pre>
    * The default layout is as follows (BorderLayout.WEST):
    * __________________________________
    * |   edit panel           |control|
@@ -382,7 +382,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * |________________________|
    *
    * etc.
-   *</pre>
+   * </pre>
    * @param controlPanelConstraints the control panel layout constraints (BorderLayout constraints)
    * @throws IllegalStateException if the panel has been initialized
    * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
@@ -986,7 +986,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Initializes this EntityPanels UI.
-   *<pre>
+   * <pre>
    * The default layout is as follows:
    * __________________________________
    * |  edit    |control|             |

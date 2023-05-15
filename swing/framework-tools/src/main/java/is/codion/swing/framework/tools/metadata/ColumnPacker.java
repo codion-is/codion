@@ -16,6 +16,8 @@ import java.util.List;
 
 final class ColumnPacker implements ResultPacker<Column> {
 
+  private static final String YES = "YES";
+
   private final Collection<PrimaryKeyColumn> primaryKeyColumns;
   private final List<ForeignKeyColumn> foreignKeyColumns;
 
@@ -42,7 +44,9 @@ final class ColumnPacker implements ResultPacker<Column> {
                 resultSet.getString("COLUMN_DEF"),
                 resultSet.getString("REMARKS"),
                 primaryKeyColumnIndex(columnName),
-                isForeignKeyColumn(columnName));
+                isForeignKeyColumn(columnName),
+                YES.equals(resultSet.getString("IS_AUTOINCREMENT")),
+                YES.equals(resultSet.getString("IS_GENERATEDCOLUMN")));
       }
       catch (SQLException e) {
         System.err.println("Exception fetching column: " + columnName + ", " + e.getMessage());

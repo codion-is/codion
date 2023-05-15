@@ -180,7 +180,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
      * @return this builder instance
      */
     Builder clientTypeIdleConnectionTimeouts(Map<String, Integer> clientTypeIdleConnectionTimeouts);
-    
+
     /**
      * @return a new EntityServerConfiguration instance based on this builder
      */
@@ -201,7 +201,7 @@ public interface EntityServerConfiguration extends ServerConfiguration {
    * @return an entity server configuration builder initialized with values from system properties.
    */
   static EntityServerConfiguration.Builder builderFromSystemProperties() {
-    Builder builder =  builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
+    Builder builder = builder(SERVER_PORT.getOrThrow(), REGISTRY_PORT.getOrThrow())
             .auxiliaryServerFactoryClassNames(Text.parseCommaSeparatedValues(AUXILIARY_SERVER_FACTORY_CLASS_NAMES.get()))
             .sslEnabled(SERVER_CONNECTION_SSL_ENABLED.get())
             .serializationFilterWhitelist(SERIALIZATION_FILTER_WHITELIST.get())

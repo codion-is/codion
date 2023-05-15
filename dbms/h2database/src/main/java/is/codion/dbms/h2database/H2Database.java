@@ -69,7 +69,7 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String name() {
-    String name= removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+    String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
             JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
 
     return name.isEmpty() ? "private" : name;

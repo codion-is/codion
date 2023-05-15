@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 /**
  * A builder for JDialog containing a single component.
  */
-public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBuilder>{
+public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBuilder> {
 
   /**
    * @param modal true if the dialog should be modal
