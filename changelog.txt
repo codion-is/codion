@@ -8968,3 +8968,4 @@
   DatabaseExplorerPanel improvements, CTRL-ENTER populates schema
   EntityTableSortModel.isSortingEnabled() renamed isSorted()
   FilteredTable, SortOrder.UNSORTED now included in sorting states when toggling through
+  FilteredTable.setSortingEnabled() moved to FilteredTableSortModel

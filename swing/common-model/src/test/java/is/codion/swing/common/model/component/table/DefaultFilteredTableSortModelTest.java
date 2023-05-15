@@ -12,7 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultFilteredTableSortModelTest {
 
@@ -87,6 +87,17 @@ public class DefaultFilteredTableSortModelTest {
     assertEquals(0, items.indexOf(firstRow));
     assertEquals(1, items.indexOf(secondRow));
     assertEquals(2, items.indexOf(thirdRow));
+
+    model.clear();
+    model.setSortOrder(2, SortOrder.ASCENDING);
+    model.setSortingEnabled(2, false);
+    assertFalse(model.isSortingEnabled(2));
+    assertSame(SortOrder.UNSORTED, model.sortOrder(2));
+    assertThrows(IllegalStateException.class, () -> model.setSortOrder(2, SortOrder.DESCENDING));
+    model.setSortingEnabled(2, true);
+    assertTrue(model.isSortingEnabled(2));
+    model.setSortOrder(2, SortOrder.DESCENDING);
+    assertSame(model.sortOrder(2), SortOrder.DESCENDING);
   }
 
   @Test
