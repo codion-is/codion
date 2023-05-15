@@ -944,7 +944,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {
-    if (orderQueryBySortOrder && sortModel().isSortingEnabled()) {
+    if (orderQueryBySortOrder && sortModel().isSorted()) {
       OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;
@@ -1292,10 +1292,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
       @Override
       public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
-        if (entity.isNull(attribute)) {
-          return null;
-        }
-
         Object value = entity.get(attribute);
         if (value instanceof Entity) {
           return (Comparable<T>) value.toString();

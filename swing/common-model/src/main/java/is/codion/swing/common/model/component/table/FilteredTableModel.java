@@ -110,7 +110,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * If sorting is enabled this model is sorted after the items have been added.
    * @param index the index at which to add the items
    * @param items the items to add
-   * @see FilteredTableSortModel#isSortingEnabled()
+   * @see FilteredTableSortModel#isSorted()
    */
   void addItemsAtSorted(int index, Collection<R> items);
 
@@ -216,7 +216,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * Calling this method with the sort model disabled has no effect.
    * @see #sortModel()
    * @see #addSortListener(EventListener)
-   * @see FilteredTableSortModel#isSortingEnabled
+   * @see FilteredTableSortModel#isSorted
    */
   void sortItems();
 

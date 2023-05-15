@@ -12,8 +12,10 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -24,6 +26,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
   private final Event<C> sortingChangedEvent = Event.event();
   private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
+  private final Set<C> columnSortingDisabled = new HashSet<>();
 
   DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValueProvider<R, C> columnValueProvider) {
     this.columnModel = requireNonNull(columnModel);
@@ -69,7 +72,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public boolean isSortingEnabled() {
+  public boolean isSorted() {
     return !columnSortOrders.isEmpty();
   }
 
@@ -88,6 +91,25 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
+  public void setSortingEnabled(C columnIdentifier, boolean sortingEnabled) {
+    requireNonNull(columnIdentifier);
+    if (sortingEnabled) {
+      columnSortingDisabled.remove(columnIdentifier);
+    }
+    else {
+      columnSortingDisabled.add(columnIdentifier);
+      if (removeSortOrder(columnIdentifier)) {
+        sortingChangedEvent.onEvent(columnIdentifier);
+      }
+    }
+  }
+
+  @Override
+  public boolean isSortingEnabled(C columnIdentifier) {
+    return !columnSortingDisabled.contains(requireNonNull(columnIdentifier));
+  }
+
+  @Override
   public void addSortingChangedListener(EventDataListener<C> listener) {
     sortingChangedEvent.addDataListener(listener);
   }
@@ -95,16 +117,23 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
     requireNonNull(columnIdentifier);
     requireNonNull(sortOrder);
+    if (!isSortingEnabled(columnIdentifier)) {
+      throw new IllegalStateException("Sorting is disabled for column: " + columnIdentifier);
+    }
     if (!addColumnToSort) {
       columnSortOrders.clear();
     }
     else {
-      columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
+      removeSortOrder(columnIdentifier);
     }
     if (sortOrder != SortOrder.UNSORTED) {
       columnSortOrders.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
     }
     sortingChangedEvent.onEvent(columnIdentifier);
+  }
+
+  private boolean removeSortOrder(C columnIdentifier) {
+    return columnSortOrders.removeIf(columnSortOrder -> columnSortOrder.columnIdentifier().equals(columnIdentifier));
   }
 
   private final class RowComparator implements Comparator<R> {

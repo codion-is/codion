@@ -48,11 +48,9 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.text.Collator;
 import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
@@ -135,12 +133,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * Fired each time the table is double-clicked
    */
-  private final Event<MouseEvent> doubleClickedEvent = Event.event();
-
-  /**
-   * Holds column identifiers of columns for which sorting should be disabled
-   */
-  private final Set<C> columnSortingDisabled = new HashSet<>();
+  private final Event<MouseEvent> doubleClickEvent = Event.event();
 
   /**
    * The filter condition panel
@@ -258,28 +251,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    */
   public void setSortingEnabled(boolean sortingEnabled) {
     this.sortingEnabled = sortingEnabled;
-  }
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @param sortingEnabled true if sorting via the table header should be enabled for the given column
-   */
-  public void setSortingEnabled(C columnIdentifier, boolean sortingEnabled) {
-    requireNonNull(columnIdentifier);
-    if (sortingEnabled) {
-      columnSortingDisabled.remove(columnIdentifier);
-    }
-    else {
-      columnSortingDisabled.add(columnIdentifier);
-    }
-  }
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @return true if sorting via the table header is enabled for the given column
-   */
-  public boolean isSortingEnabled(C columnIdentifier) {
-    return !columnSortingDisabled.contains(requireNonNull(columnIdentifier)) && sortingEnabled;
   }
 
   /**
@@ -448,14 +419,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * @param listener a listener notified each time the table is double-clicked
    */
   public void addDoubleClickListener(EventDataListener<MouseEvent> listener) {
-    doubleClickedEvent.addDataListener(listener);
+    doubleClickEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeDoubleClickListener(EventDataListener<MouseEvent> listener) {
-    doubleClickedEvent.removeDataListener(listener);
+    doubleClickEvent.removeDataListener(listener);
   }
 
   /**
@@ -625,7 +596,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         if (doubleClickAction != null) {
           doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
         }
-        doubleClickedEvent.onEvent(e);
+        doubleClickEvent.onEvent(e);
       }
     }
   }
@@ -670,9 +641,9 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
           setColumnSelectionInterval(index, index);//otherwise, the focus jumps to the selected column after sorting
         }
         C columnIdentifier = columnModel.getColumn(index).getIdentifier();
-        if (isSortingEnabled(columnIdentifier)) {
+        if (tableModel.sortModel().isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
-          SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier), e.isShiftDown());
+          SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier));
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, nextSortOrder);
           }
@@ -683,14 +654,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       }
     }
 
-    private SortOrder nextSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
+    private SortOrder nextSortOrder(SortOrder currentSortOrder) {
       switch (currentSortOrder) {
         case UNSORTED:
-          return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+          return SortOrder.ASCENDING;
         case ASCENDING:
           return SortOrder.DESCENDING;
         case DESCENDING:
-          return SortOrder.ASCENDING;
+          return SortOrder.UNSORTED;
         default:
           throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
       }
