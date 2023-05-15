@@ -52,6 +52,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.Utilities.getParentOfType;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
@@ -59,6 +60,7 @@ import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
+import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
@@ -429,17 +431,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * {@code initialize()} method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether an exception occurs or not.
    * @return this EntityPanel instance
-   * @see #initialize()
-   * @see #isPanelInitialized()
    */
   public final EntityPanel initializePanel() {
     if (!panelInitialized) {
       WaitCursor.show(this);
       try {
-        initializeAssociatedPanels();
-        initializeControlPanels();
         initializeUI();
-        initialize();
       }
       finally {
         panelInitialized = true;
@@ -448,14 +445,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     return this;
-  }
-
-  /**
-   * @return true if the method initializePanel() has been called on this EntityPanel instance
-   * @see #initializePanel()
-   */
-  public final boolean isPanelInitialized() {
-    return panelInitialized;
   }
 
   /**
@@ -526,7 +515,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the detail panels
    */
   public final Collection<EntityPanel> detailPanels() {
-    return Collections.unmodifiableCollection(detailEntityPanels);
+    return unmodifiableCollection(detailEntityPanels);
   }
 
   /**
@@ -592,7 +581,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public final Optional<HierarchyPanel> parentPanel() {
     if (parentPanel == null) {
-      return Optional.ofNullable(Utilities.getParentOfType(HierarchyPanel.class, this));
+      return Optional.ofNullable(getParentOfType(HierarchyPanel.class, this));
     }
 
     return Optional.of(parentPanel);
@@ -1041,25 +1030,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     setupResizing();
   }
-
-  /**
-   * Called during initialization, before controls have been initialized
-   * @see #initializePanel()
-   */
-  protected void initializeAssociatedPanels() {/*Provided for subclasses*/}
-
-  /**
-   * Called during initialization, after controls have been initialized,
-   * use this method to initialize any application panels that rely on controls having been initialized
-   * @see #initializePanel()
-   */
-  protected void initializeControlPanels() {/*Provided for subclasses*/}
-
-  /**
-   * Override to add code that should be called during the initialization routine after the panel has been initialized
-   * @see #initializePanel()
-   */
-  protected void initialize() {/*Provided for subclasses*/}
 
   /**
    * Creates a base panel for the edit panel.
@@ -1679,14 +1649,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       Component focusedComponent = (Component) changeEvent.getNewValue();
-      EntityPanel entityPanelParent = Utilities.getParentOfType(EntityPanel.class, focusedComponent);
+      EntityPanel entityPanelParent = getParentOfType(EntityPanel.class, focusedComponent);
       if (entityPanelParent != null) {
         if (entityPanelParent.editPanel() != null) {
           entityPanelParent.editPanel().setActive(true);
         }
       }
       else {
-        EntityEditPanel editPanelParent = Utilities.getParentOfType(EntityEditPanel.class, focusedComponent);
+        EntityEditPanel editPanelParent = getParentOfType(EntityEditPanel.class, focusedComponent);
         if (editPanelParent != null) {
           editPanelParent.setActive(true);
         }

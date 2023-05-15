@@ -35,9 +35,7 @@ public final class EntityEditPanelTest {
     editPanel.createHorizontalControlPanel();
     editPanel.createVerticalControlPanel();
     editPanel.createControlToolBar(HORIZONTAL);
-    assertFalse(editPanel.isPanelInitialized());
     editPanel.initializePanel();
-    assertTrue(editPanel.isPanelInitialized());
 
     assertEquals(editModel, editPanel.editModel());
     assertFalse(editPanel.isActive());

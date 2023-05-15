@@ -8961,3 +8961,4 @@
   EntityTablePanel.beforeUpdate() and beforeDelete() added
   EntityEditPanel.Confirmer.confirm(dialogOwner, message, title) default convenience implementation added
   EntityEditPanel.isPanelInitialized() and addPanelInitializedListener() removed
+  EntityPanel.isPanelInitialized(), initialize(), initializeControlPanels() and initializeAssociatedPanels() removed
