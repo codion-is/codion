@@ -1292,10 +1292,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
       @Override
       public <T> Comparable<T> comparable(Entity entity, Attribute<?> attribute) {
-        if (entity.isNull(attribute)) {
-          return null;
-        }
-
         Object value = entity.get(attribute);
         if (value instanceof Entity) {
           return (Comparable<T>) value.toString();
