@@ -8966,3 +8966,4 @@
   ColumnValueProvider.columnClass() and comparator() removed, FilteredTableColumn.columnClass and comparator as replacement, related refactoring
   FilteredTableColumnModel.tableColumn() renamed column()
   DatabaseExplorerPanel improvements, CTRL-ENTER populates schema
+  EntityTableSortModel.isSortingEnabled() renamed isSorted()

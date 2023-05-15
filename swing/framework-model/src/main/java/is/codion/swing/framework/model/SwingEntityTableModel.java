@@ -944,7 +944,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see EntityDefinition#orderBy()
    */
   protected OrderBy orderBy() {
-    if (orderQueryBySortOrder && sortModel().isSortingEnabled()) {
+    if (orderQueryBySortOrder && sortModel().isSorted()) {
       OrderBy orderBy = orderByFromSortModel();
       if (!orderBy.orderByAttributes().isEmpty()) {
         return orderBy;

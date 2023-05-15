@@ -266,7 +266,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final void sortItems() {
-    if (sortModel.isSortingEnabled()) {
+    if (sortModel.isSorted()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
       fireTableRowsUpdated(0, visibleItems.size());
@@ -324,7 +324,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void addItemsAtSorted(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items)) {
-      if (sortModel.isSortingEnabled()) {
+      if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
       }
       fireTableDataChanged();
@@ -344,7 +344,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void addItemSorted(R item) {
     if (addItemInternal(item)) {
-      if (sortModel.isSortingEnabled()) {
+      if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
       }
       fireTableDataChanged();
