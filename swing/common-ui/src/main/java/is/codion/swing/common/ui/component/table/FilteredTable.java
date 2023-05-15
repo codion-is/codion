@@ -973,7 +973,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
-      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.getClass()).build();
+      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.getColumnClass()).build();
     }
   }
 }

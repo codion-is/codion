@@ -19,12 +19,14 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortModel<R, C> {
 
+  private final FilteredTableColumnModel<C> columnModel;
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final Map<C, Comparator<?>> columnComparators = new HashMap<>();
   private final Event<C> sortingChangedEvent = Event.event();
   private final List<ColumnSortOrder<C>> columnSortOrders = new ArrayList<>(0);
 
-  DefaultFilteredTableSortModel(ColumnValueProvider<R, C> columnValueProvider) {
+  DefaultFilteredTableSortModel(FilteredTableColumnModel<C> columnModel, ColumnValueProvider<R, C> columnValueProvider) {
+    this.columnModel = requireNonNull(columnModel);
     this.columnValueProvider = requireNonNull(columnValueProvider);
   }
 
@@ -135,7 +137,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> columnValueProvider.comparator(columnIdentifier))).compare(valueOne, valueTwo);
+                k -> columnModel.column(columnIdentifier).getComparator())).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

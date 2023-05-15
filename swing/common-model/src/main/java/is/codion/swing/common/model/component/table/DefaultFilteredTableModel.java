@@ -101,7 +101,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(columnValueProvider);
-    this.sortModel = new DefaultFilteredTableSortModel<>(columnValueProvider);
+    this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
     this.filterModel = tableConditionModel(columnFilterModels);
     this.summaryModel = tableSummaryModel(new DefaultColumnSummaryModelFactory());
@@ -225,13 +225,13 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final <T> Collection<T> values(C columnIdentifier) {
     return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
-            columnModel.tableColumn(columnIdentifier).getModelIndex());
+            columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
   public final <T> Collection<T> selectedValues(C columnIdentifier) {
     return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
-            columnModel.tableColumn(columnIdentifier).getModelIndex());
+            columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
@@ -420,7 +420,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   @Override
   public final Class<?> getColumnClass(C columnIdentifier) {
-    return columnValueProvider.columnClass(columnIdentifier);
+    return columnModel.column(columnIdentifier).getColumnClass();
   }
 
   @Override

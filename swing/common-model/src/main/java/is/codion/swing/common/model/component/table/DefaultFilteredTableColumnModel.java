@@ -122,7 +122,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public FilteredTableColumn<C> tableColumn(C columnIdentifier) {
+  public FilteredTableColumn<C> column(C columnIdentifier) {
     FilteredTableColumn<C> column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
     if (column != null) {
       return column;
@@ -288,7 +288,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private boolean hideColumn(C columnIdentifier) {
     checkIfLocked();
     if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
-      HiddenColumn hiddenColumn = new HiddenColumn(tableColumn(columnIdentifier));
+      HiddenColumn hiddenColumn = new HiddenColumn(column(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);

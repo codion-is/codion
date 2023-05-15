@@ -74,7 +74,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  FilteredTableColumn<C> tableColumn(C identifier);
+  FilteredTableColumn<C> column(C identifier);
 
   @Override
   FilteredTableColumn<C> getColumn(int columnIndex);

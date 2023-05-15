@@ -1668,7 +1668,7 @@ public class EntityTablePanel extends JPanel {
 
   private void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel) {
     configureHorizontalAlignment(columnConditionPanel,
-            tableModel.columnModel().tableColumn(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
+            tableModel.columnModel().column(columnConditionPanel.model().columnIdentifier()).getCellRenderer());
   }
 
   private static void configureHorizontalAlignment(ColumnConditionPanel<Attribute<?>, ?> columnConditionPanel,

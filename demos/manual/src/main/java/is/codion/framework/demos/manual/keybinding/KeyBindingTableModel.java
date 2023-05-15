@@ -91,15 +91,19 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
   private static List<FilteredTableColumn<Integer>> createColumns() {
     FilteredTableColumn<Integer> action = FilteredTableColumn.builder(ACTION_COLUMN_INDEX)
             .headerValue("Action")
+            .columnClass(String.class)
             .build();
     FilteredTableColumn<Integer> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN_INDEX)
             .headerValue("When Focused")
+            .columnClass(String.class)
             .build();
     FilteredTableColumn<Integer> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX)
             .headerValue("When in Focused Window")
+            .columnClass(String.class)
             .build();
     FilteredTableColumn<Integer> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN_INDEX)
             .headerValue("When Ancestor")
+            .columnClass(String.class)
             .build();
 
     return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
@@ -152,11 +156,6 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
   }
 
   private static final class KeyBindingValueProvider implements ColumnValueProvider<KeyBinding, Integer> {
-
-    @Override
-    public Class<?> columnClass(Integer columnIdentifier) {
-      return String.class;
-    }
 
     @Override
     public Object value(KeyBinding keyBinding, Integer columnIdentifier) {

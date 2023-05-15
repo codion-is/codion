@@ -6,6 +6,7 @@ package is.codion.swing.common.model.component.table;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
+import java.util.Comparator;
 
 import static java.util.Objects.requireNonNull;
 
@@ -22,9 +23,24 @@ import static java.util.Objects.requireNonNull;
  */
 public final class FilteredTableColumn<C> extends TableColumn {
 
+  /**
+   * A Comparator for comparing {@link Comparable} instances.
+   */
+  private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = Comparable::compareTo;
+
+  /**
+   * A Comparator for comparing Objects according to their toString() value.
+   */
+  private static final Comparator<?> STRING_COMPARATOR = Comparator.comparing(Object::toString);
+
+  private final Class<?> columnClass;
+  private final Comparator<?> comparator;
+
   private FilteredTableColumn(DefaultBuilder<C> builder) {
     super(builder.modelIndex);
     super.setIdentifier(builder.identifier);
+    this.columnClass = builder.columnClass;
+    this.comparator = builder.comparator == null ? defaultComparator(this.columnClass) : builder.comparator;
     if (builder.preferredWidth != 0) {
       setPreferredWidth(builder.preferredWidth);
     }
@@ -64,6 +80,20 @@ public final class FilteredTableColumn<C> extends TableColumn {
   @Override
   public void setIdentifier(Object identifier) {
     throw new IllegalStateException("Can't change the identifier of a FilteredTableColumn");
+  }
+
+  /**
+   * @return the column class
+   */
+  public Class<?> getColumnClass() {
+    return columnClass;
+  }
+
+  /**
+   * @return the column comparator
+   */
+  public Comparator<?> getComparator() {
+    return comparator;
   }
 
   /**
@@ -108,11 +138,31 @@ public final class FilteredTableColumn<C> extends TableColumn {
     return new DefaultBuilder<>(modelIndex, identifier);
   }
 
+  private static Comparator<?> defaultComparator(Class<?> columnClass) {
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return STRING_COMPARATOR;
+  }
+
   /**
    * A builder for {@link FilteredTableColumn} instances.
    * @param <C> the column identifier type
    */
   public interface Builder<C> {
+
+    /**
+     * @param columnClass the column class
+     * @return this builder instance
+     */
+    Builder<C> columnClass(Class<?> columnClass);
+
+    /**
+     * @param comparator the column comparator
+     * @return this builder instance
+     */
+    Builder<C> comparator(Comparator<?> comparator);
 
     /**
      * @param preferredWidth the preferred column width
@@ -179,6 +229,8 @@ public final class FilteredTableColumn<C> extends TableColumn {
     private final int modelIndex;
     private final C identifier;
 
+    private Class<?> columnClass = Object.class;
+    private Comparator<?> comparator;
     private int preferredWidth;
     private int maxWidth;
     private int minWidth;
@@ -196,6 +248,18 @@ public final class FilteredTableColumn<C> extends TableColumn {
       this.modelIndex = modelIndex;
       this.identifier = requireNonNull(identifier);
       this.headerValue = identifier;
+    }
+
+    @Override
+    public Builder<C> columnClass(Class<?> columnClass) {
+      this.columnClass = requireNonNull(columnClass);
+      return this;
+    }
+
+    @Override
+    public Builder<C> comparator(Comparator<?> comparator) {
+      this.comparator = requireNonNull(comparator);
+      return this;
     }
 
     @Override

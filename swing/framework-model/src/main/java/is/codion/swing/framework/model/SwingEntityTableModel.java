@@ -854,25 +854,30 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Initializes default {@link FilteredTableColumn}s for all visible properties in the given entity type.
+   * @param entities the domain entities
    * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
    */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition definition) {
-    return createColumns(requireNonNull(definition).visibleProperties());
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(Entities entities, EntityDefinition definition) {
+    return createColumns(requireNonNull(entities), requireNonNull(definition).visibleProperties());
   }
 
   /**
    * Initializes default {@link FilteredTableColumn}s from the given properties.
+   * @param entities the domain entities
    * @param properties the properties
    * @return a list of TableColumns based on the given properties
    */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(List<Property<?>> properties) {
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(Entities entities, List<Property<?>> properties) {
+    requireNonNull(entities);
     requireNonNull(properties);
     List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(properties.size());
     for (Property<?> property : properties) {
       FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
               FilteredTableColumn.builder(columns.size(), property.attribute())
-                      .headerValue(property.caption());
+                      .headerValue(property.caption())
+                      .columnClass(property.attribute().valueClass())
+                      .comparator(attributeComparator(entities, property.attribute()));
       if (property.preferredColumnWidth() > 0) {
         columnBuilder.preferredWidth(property.preferredColumnWidth());
       }
@@ -1169,7 +1174,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     Map<Attribute<?>, ColumnPreferences> columnPreferences =
             ColumnPreferences.fromJSONObject(columnAttributes, new JSONObject(preferencesString).getJSONObject(ColumnPreferences.COLUMNS));
     ColumnPreferences.applyColumnPreferences(this, columnAttributes, columnPreferences, (attribute, columnWidth) ->
-            columnModel().tableColumn(attribute).setPreferredWidth(columnWidth));
+            columnModel().column(attribute).setPreferredWidth(columnWidth));
   }
 
   private String statusMessage() {
@@ -1179,6 +1184,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(selectionModel().selectionCount()) + " " +
             MESSAGES.getString("selected") + (filteredItemCount > 0 ? " - " +
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
+  }
+
+  private static Comparator<?> attributeComparator(Entities entities, Attribute<?> attribute) {
+    if (attribute instanceof ForeignKey) {
+      return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
+    }
+
+    return entities.definition(attribute.entityType()).property(attribute).comparator();
   }
 
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
@@ -1221,9 +1234,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     private final SwingEntityTableModel tableModel;
 
     private EntityFilteredTableModel(SwingEntityTableModel tableModel) {
-      super(createColumns(requireNonNull(tableModel).entityDefinition()),
-              new EntityColumnValueProvider(tableModel.entities()),
-              createFilterModels(new EntityFilterModelFactory(tableModel.entityDefinition())));
+      super(createColumns(requireNonNull(tableModel).entities(), tableModel.entityDefinition()),
+              new EntityColumnValueProvider(), createFilterModels(new EntityFilterModelFactory(tableModel.entityDefinition())));
       this.tableModel = tableModel;
     }
 
@@ -1267,26 +1279,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
 
     private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {
-
-      private final Entities entities;
-
-      private EntityColumnValueProvider(Entities entities) {
-        this.entities = entities;
-      }
-
-      @Override
-      public Class<?> columnClass(Attribute<?> attribute) {
-        return attribute.valueClass();
-      }
-
-      @Override
-      public Comparator<?> comparator(Attribute<?> attribute) {
-        if (attribute instanceof ForeignKey) {
-          return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
-        }
-
-        return entities.definition(attribute.entityType()).property(attribute).comparator();
-      }
 
       @Override
       public Object value(Entity entity, Attribute<?> attribute) {

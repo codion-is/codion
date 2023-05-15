@@ -9,7 +9,6 @@ import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
-import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -52,25 +51,11 @@ public final class DefaultFilteredTableModelTest {
   private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
 
     private TestAbstractFilteredTableModel(Comparator<String> customComparator) {
-      super(createColumns(),
+      super(createColumns(customComparator),
               new ColumnValueProvider<List<String>, Integer>() {
                 @Override
                 public Object value(List<String> row, Integer columnIdentifier) {
                   return row.get(columnIdentifier);
-                }
-
-                @Override
-                public Class<?> columnClass(Integer columnIdentifier) {
-                  return String.class;
-                }
-
-                @Override
-                public Comparator<?> comparator(Integer columnIdentifier) {
-                  if (customComparator != null) {
-                    return customComparator;
-                  }
-
-                  return (Comparator<String>) String::compareTo;
                 }
 
                 @Override
@@ -90,8 +75,16 @@ public final class DefaultFilteredTableModelTest {
     }
   }
 
-  private static List<FilteredTableColumn<Integer>> createColumns() {
-    return singletonList(filteredTableColumn(0));
+  private static List<FilteredTableColumn<Integer>> createColumns(Comparator<String> customComparator) {
+    Comparator<?> comparator = customComparator;
+    if (comparator == null) {
+      comparator = Comparator.comparing(Object::toString);
+    }
+
+    return singletonList(FilteredTableColumn.builder(0)
+            .comparator(comparator)
+            .columnClass(String.class)
+            .build());
   }
 
   private static List<ColumnConditionModel<Integer, ?>> createFilterModels() {
@@ -143,17 +136,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultFilteredTableModel<String, Integer>(
-            emptyList(), new ColumnValueProvider<String, Integer>() {
-      @Override
-      public Object value(String row, Integer columnIdentifier) {
-        return null;
-      }
-
-      @Override
-      public Class<?> columnClass(Integer columnIdentifier) {
-        return null;
-      }
-    }));
+            emptyList(), (row, columnIdentifier) -> null));
   }
 
   @Test
@@ -311,8 +294,12 @@ public final class DefaultFilteredTableModelTest {
       }
     }
 
-    FilteredTableColumn<Integer> columnId = filteredTableColumn(0);
-    FilteredTableColumn<Integer> columnValue = filteredTableColumn(1);
+    FilteredTableColumn<Integer> columnId = FilteredTableColumn.builder(0)
+            .columnClass(Integer.class)
+            .build();
+    FilteredTableColumn<Integer> columnValue = FilteredTableColumn.builder(1)
+            .columnClass(String.class)
+            .build();
 
     List<Row> items = asList(
             new Row(0, "a"),
@@ -323,26 +310,13 @@ public final class DefaultFilteredTableModelTest {
     );
 
     FilteredTableModel<Row, Integer> testModel = new DefaultFilteredTableModel<Row, Integer>(
-            asList(columnId, columnValue),
-            new ColumnValueProvider<Row, Integer>() {
-              @Override
-              public Object value(Row row, Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return row.id;
-                }
+            asList(columnId, columnValue), (row, columnIdentifier) -> {
+      if (columnIdentifier == 0) {
+        return row.id;
+      }
 
-                return row.value;
-              }
-
-              @Override
-              public Class<?> columnClass(Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return Integer.class;
-                }
-
-                return String.class;
-              }
-            }) {
+      return row.value;
+    }) {
       @Override
       protected Collection<Row> refreshItems() {
         return items;
@@ -863,7 +837,7 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void columnModel() {
-    FilteredTableColumn<Integer> column = tableModel.columnModel().tableColumn(0);
+    FilteredTableColumn<Integer> column = tableModel.columnModel().getColumn(0);
     assertEquals(0, column.getIdentifier());
   }
 
