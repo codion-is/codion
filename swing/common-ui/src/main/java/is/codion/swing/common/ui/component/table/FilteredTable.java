@@ -672,7 +672,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         C columnIdentifier = columnModel.getColumn(index).getIdentifier();
         if (isSortingEnabled(columnIdentifier)) {
           FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
-          SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier), e.isShiftDown());
+          SortOrder nextSortOrder = nextSortOrder(sortModel.sortOrder(columnIdentifier));
           if (e.isControlDown()) {
             sortModel.addSortOrder(columnIdentifier, nextSortOrder);
           }
@@ -683,14 +683,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
       }
     }
 
-    private SortOrder nextSortOrder(SortOrder currentSortOrder, boolean isShiftDown) {
+    private SortOrder nextSortOrder(SortOrder currentSortOrder) {
       switch (currentSortOrder) {
         case UNSORTED:
-          return isShiftDown ? SortOrder.DESCENDING : SortOrder.ASCENDING;
+          return SortOrder.ASCENDING;
         case ASCENDING:
           return SortOrder.DESCENDING;
         case DESCENDING:
-          return SortOrder.ASCENDING;
+          return SortOrder.UNSORTED;
         default:
           throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
       }
