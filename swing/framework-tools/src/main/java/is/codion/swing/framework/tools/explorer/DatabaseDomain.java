@@ -6,8 +6,10 @@ package is.codion.swing.framework.tools.explorer;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.framework.tools.metadata.Column;
@@ -45,13 +47,18 @@ final class DatabaseDomain extends DefaultDomain {
               .map(ForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())));
+      define(propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())),
+              tableHasAutoIncrementPrimaryKeyColumn(table));
     }
   }
 
-  private void define(List<Property.Builder<?, ?>> propertyBuilders) {
+  private void define(List<Property.Builder<?, ?>> propertyBuilders, boolean autoIncrementedPrimarKeyColumn) {
     if (!propertyBuilders.isEmpty()) {
-      add(definition(propertyBuilders.toArray(new Property.Builder[0])));
+      EntityDefinition.Builder definitionBuilder = definition(propertyBuilders.toArray(new Builder[0]));
+      if (autoIncrementedPrimarKeyColumn) {
+        definitionBuilder.keyGenerator(KeyGenerator.identity());
+      }
+      add(definitionBuilder);
     }
   }
 
@@ -141,5 +148,11 @@ final class DatabaseDomain extends DefaultDomain {
             .map(Column::columnName)
             .map(String::toUpperCase)
             .collect(joining("_"));
+  }
+
+  private static boolean tableHasAutoIncrementPrimaryKeyColumn(Table table) {
+    return table.columns().stream()
+            .filter(Column::isPrimaryKeyColumn)
+            .anyMatch(Column::autoIncrement);
   }
 }

@@ -1,28 +1,28 @@
 public interface Product {
-  EntityType TYPE = DOMAIN.entityType("petstore.product");
+	EntityType TYPE = DOMAIN.entityType("petstore.product");
 
-  Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
-  Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");
-  Attribute<String> NAME = TYPE.stringAttribute("name");
-  Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
-  Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
+	Attribute<Integer> PRODUCTID = TYPE.integerAttribute("productid");
+	Attribute<Integer> CATEGORYID = TYPE.integerAttribute("categoryid");
+	Attribute<String> NAME = TYPE.stringAttribute("name");
+	Attribute<String> DESCRIPTION = TYPE.stringAttribute("description");
+	Attribute<String> IMAGEURL = TYPE.stringAttribute("imageurl");
 
-  ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORYID);
+	ForeignKey CATEGORYID_FK = TYPE.foreignKey("categoryid_fk", CATEGORYID, Category.CATEGORYID);
 }
 
 void product() {
-  add(definition(
-          primaryKeyProperty(Product.PRODUCTID),
-          columnProperty(Product.CATEGORYID)
-                .nullable(false),
-          foreignKeyProperty(Product.CATEGORYID_FK, "Category"),
-          columnProperty(Product.NAME, "Name")
-                .nullable(false)
-                .maximumLength(25),
-          columnProperty(Product.DESCRIPTION, "Description")
-                .nullable(false)
-                .maximumLength(255),
-          columnProperty(Product.IMAGEURL, "Imageurl")
-                .maximumLength(55)
-  ));
+	add(definition(
+		primaryKeyProperty(Product.PRODUCTID),
+		columnProperty(Product.CATEGORYID)
+			.nullable(false),
+		foreignKeyProperty(Product.CATEGORYID_FK, "Category"),
+		columnProperty(Product.NAME, "Name")
+			.nullable(false)
+			.maximumLength(25),
+		columnProperty(Product.DESCRIPTION, "Description")
+			.nullable(false)
+			.maximumLength(255),
+		columnProperty(Product.IMAGEURL, "Imageurl")
+			.maximumLength(55))
+		.keyGenerator(KeyGenerator.identity()));
 }
