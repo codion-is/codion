@@ -8957,3 +8957,5 @@
   EntityTablePanel.entityTablePanel() factory method bug fixed, popup menu was empty due to lazy initialization of controls
   EntityEditPanel, EntityTablePanel.onReferentialIntegrityException(), entity/entities parameter removed
   EntityEditPanel, EntityTablePanel, overridable confirm methods and ConfirmationMessage replaced with EntityEditPanel.Confirmer
+  EntityEditPanel.validateData() replaced with beforeInsert(), beforeUpdate() and beforeDelete() methods
+  EntityTablePanel.beforeUpdate() and beforeDelete() added

@@ -418,6 +418,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Performs insert on the active entity after asking for confirmation via {@link #confirmInsert()}.
    * Note that {@link #confirmInsert()} returns true by default, so it needs to be overridden to ask for confirmation.
    * @return true in case of successful insert, false otherwise
+   * @see #beforeInsert()
    * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean insertWithConfirmation() {
@@ -431,10 +432,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs insert on the active entity without asking for confirmation
    * @return true in case of successful insert, false otherwise
+   * @see #beforeInsert()
    */
   public final boolean insert() {
     try {
-      validateData();
+      beforeInsert();
       WaitCursor.show(this);
       try {
         editModel().insert();
@@ -466,6 +468,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity after asking for confirmation via {@link #confirmDelete()}.
    * @return true if the delete operation was successful
+   * @see #beforeDelete()
    * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean deleteWithConfirmation() {
@@ -479,9 +482,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs delete on the active entity without asking for confirmation
    * @return true if the delete operation was successful
+   * @see #beforeDelete()
    */
   public final boolean delete() {
     try {
+      beforeDelete();
       WaitCursor.show(this);
       try {
         editModel().delete();
@@ -508,6 +513,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity after asking for confirmation via {@link #confirmUpdate()}.
    * @return true if the update operation was successful
+   * @see #beforeUpdate()
    * @see #setConfirmer(Confirmer.Action, Confirmer)
    */
   public final boolean updateWithConfirmation() {
@@ -521,10 +527,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * Performs update on the active entity without asking for confirmation.
    * @return true if the update operation was successful or if no update was required
+   * @see #beforeUpdate()
    */
   public final boolean update() {
     try {
-      validateData();
+      beforeUpdate();
       WaitCursor.show(this);
       try {
         editModel().update();
@@ -549,10 +556,24 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Override to add UI level validation, called before insert/update
+   * Called before insert is performed.
+   * To cancel the insert throw a {@link is.codion.common.model.CancelException}.
    * @throws ValidationException in case of a validation failure
    */
-  protected void validateData() throws ValidationException {}
+  protected void beforeInsert() throws ValidationException {}
+
+  /**
+   * Called before update is performed.
+   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
+   * @throws ValidationException in case of a validation failure
+   */
+  protected void beforeUpdate() throws ValidationException {}
+
+  /**
+   * Called before delete is performed.
+   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
+   */
+  protected void beforeDelete() {}
 
   /**
    * Associates {@code control} with {@code controlCode}

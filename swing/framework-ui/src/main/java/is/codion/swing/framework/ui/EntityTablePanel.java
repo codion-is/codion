@@ -670,11 +670,12 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Deletes the entities selected in the underlying table model
-   * @see #setDeleteConfirmer(Confirmer)
+   * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
    */
   public final void deleteWithConfirmation() {
     try {
       if (deleteConfirmer.confirm(this)) {
+        beforeDelete();
         WaitCursor.show(this);
         try {
           tableModel.deleteSelected();
@@ -1091,6 +1092,20 @@ public class EntityTablePanel extends JPanel {
 
     return null;
   }
+
+  /**
+   * Called before update is performed.
+   * To cancel the update throw a {@link is.codion.common.model.CancelException}.
+   * @param entities the entities being updated, including the values being modified
+   * @throws ValidationException in case of a validation failure
+   */
+  protected void beforeUpdate(List<Entity> entities) throws ValidationException {}
+
+  /**
+   * Called before delete is performed on the selected entities.
+   * To cancel the delete throw a {@link is.codion.common.model.CancelException}.
+   */
+  protected void beforeDelete() {}
 
   /**
    * Creates a {@link Controls} containing controls for updating the value of a single property
@@ -1592,6 +1607,7 @@ public class EntityTablePanel extends JPanel {
 
   private boolean update(List<Entity> entities) {
     try {
+      beforeUpdate(entities);
       WaitCursor.show(this);
       try {
         tableModel.update(entities);
