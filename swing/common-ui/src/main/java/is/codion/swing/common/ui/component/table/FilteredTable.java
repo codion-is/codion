@@ -133,7 +133,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * Fired each time the table is double-clicked
    */
-  private final Event<MouseEvent> doubleClickedEvent = Event.event();
+  private final Event<MouseEvent> doubleClickEvent = Event.event();
 
   /**
    * The filter condition panel
@@ -419,14 +419,14 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    * @param listener a listener notified each time the table is double-clicked
    */
   public void addDoubleClickListener(EventDataListener<MouseEvent> listener) {
-    doubleClickedEvent.addDataListener(listener);
+    doubleClickEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeDoubleClickListener(EventDataListener<MouseEvent> listener) {
-    doubleClickedEvent.removeDataListener(listener);
+    doubleClickEvent.removeDataListener(listener);
   }
 
   /**
@@ -596,7 +596,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
         if (doubleClickAction != null) {
           doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
         }
-        doubleClickedEvent.onEvent(e);
+        doubleClickEvent.onEvent(e);
       }
     }
   }

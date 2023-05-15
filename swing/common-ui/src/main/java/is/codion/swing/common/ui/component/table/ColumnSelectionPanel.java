@@ -45,14 +45,14 @@ final class ColumnSelectionPanel<C> extends JPanel {
   private static final int COLUMN_SCROLL_BAR_UNIT_INCREMENT = 16;
 
   private final FilteredTableColumnModel<C> columnModel;
-  private final Map<TableColumn, State> states;
+  private final Map<TableColumn, State> columnVisibleStates;
   private final List<JCheckBox> checkBoxes;
 
   ColumnSelectionPanel(FilteredTableColumnModel<C> columnModel) {
     super(new BorderLayout());
     this.columnModel = columnModel;
-    this.states = createStateMap();
-    this.checkBoxes = states.entrySet().stream()
+    this.columnVisibleStates = createColumnVisibleStates();
+    this.checkBoxes = columnVisibleStates.entrySet().stream()
             .map(entry -> Components.checkBox(entry.getValue())
                     .caption(Objects.toString(entry.getKey().getHeaderValue()))
                     .build())
@@ -70,18 +70,18 @@ final class ColumnSelectionPanel<C> extends JPanel {
 
   void applyChanges() {
     columnModel.visibleColumns().forEach(tableColumn -> {
-      if (!states.get(tableColumn).get()) {
+      if (!columnVisibleStates.get(tableColumn).get()) {
         columnModel.setColumnVisible(tableColumn.getIdentifier(), false);
       }
     });
     new ArrayList<>(columnModel.hiddenColumns()).forEach(tableColumn -> {
-      if (states.get(tableColumn).get()) {
+      if (columnVisibleStates.get(tableColumn).get()) {
         columnModel.setColumnVisible(tableColumn.getIdentifier(), true);
       }
     });
   }
 
-  private Map<TableColumn, State> createStateMap() {
+  private Map<TableColumn, State> createColumnVisibleStates() {
     Map<TableColumn, State> stateMap = new LinkedHashMap<>();
     columnModel.columns().stream()
             .sorted(new FilteredTable.ColumnComparator())
@@ -93,12 +93,12 @@ final class ColumnSelectionPanel<C> extends JPanel {
 
   private JPanel createNorthPanel(Insets insets) {
     JCheckBox selectAllBox = Components.checkBox()
-            .linkedValueObserver(State.and(states.values()))
+            .linkedValueObserver(State.and(columnVisibleStates.values()))
             .caption(MESSAGES.getString("select_all"))
             .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
             .build();
     JCheckBox selectNoneBox = Components.checkBox()
-            .linkedValueObserver(State.and(states.values().stream()
+            .linkedValueObserver(State.and(columnVisibleStates.values().stream()
                     .map(StateObserver::reversedObserver)
                     .collect(Collectors.toList())))
             .caption(MESSAGES.getString("select_none"))
@@ -126,11 +126,11 @@ final class ColumnSelectionPanel<C> extends JPanel {
   }
 
   private void selectAll() {
-    states.values().forEach(state -> state.set(true));
+    columnVisibleStates.values().forEach(state -> state.set(true));
   }
 
   private void selectNone() {
-    states.values().forEach(state -> state.set(false));
+    columnVisibleStates.values().forEach(state -> state.set(false));
   }
 
   private JScrollPane createCheckBoxPanel() {
