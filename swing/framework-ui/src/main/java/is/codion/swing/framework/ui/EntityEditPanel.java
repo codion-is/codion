@@ -41,6 +41,7 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_V;
@@ -281,17 +282,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Handles the given exception. If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the active entity.
+   * If the referential integrity error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entity involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @param entity the entity causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception, Entity entity) {
+  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    requireNonNull(entity);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      EntityDependenciesPanel.displayDependenciesDialog(singletonList(entity), editModel().connectionProvider(),
+      displayDependenciesDialog(singletonList(editModel().entityCopy()), editModel().connectionProvider(),
               this, TABLE_PANEL_MESSAGES.getString("unknown_dependent_records"));
     }
     else {
@@ -482,7 +482,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, editModel().entityCopy());
+      onReferentialIntegrityException(e);
     }
     catch (Exception ex) {
       LOG.error(ex.getMessage(), ex);

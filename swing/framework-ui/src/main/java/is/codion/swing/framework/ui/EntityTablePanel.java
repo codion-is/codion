@@ -675,7 +675,7 @@ public class EntityTablePanel extends JPanel {
     }
     catch (ReferentialIntegrityException e) {
       LOG.debug(e.getMessage(), e);
-      onReferentialIntegrityException(e, tableModel.selectionModel().getSelectedItems());
+      onReferentialIntegrityException(e);
     }
     catch (Exception e) {
       LOG.error(e.getMessage(), e);
@@ -693,17 +693,16 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Handles the given exception. If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
-   * the dependencies of the given entity are displayed to the user, otherwise {@link #onException(Throwable)} is called.
+   * Called when a {@link ReferentialIntegrityException} occurs during a delete operation on the selected entities.
+   * If the referential error handling is {@link ReferentialIntegrityErrorHandling#DISPLAY_DEPENDENCIES},
+   * the dependencies of the entities involved are displayed to the user, otherwise {@link #onException(Throwable)} is called.
    * @param exception the exception
-   * @param entities the entities causing the exception
    * @see #setReferentialIntegrityErrorHandling(ReferentialIntegrityErrorHandling)
    */
-  public void onReferentialIntegrityException(ReferentialIntegrityException exception, List<Entity> entities) {
+  public void onReferentialIntegrityException(ReferentialIntegrityException exception) {
     requireNonNull(exception);
-    requireNonNull(entities);
     if (referentialIntegrityErrorHandling == ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES) {
-      displayDependenciesDialog(entities, tableModel.connectionProvider(),
+      displayDependenciesDialog(tableModel.selectionModel().getSelectedItems(), tableModel.connectionProvider(),
               this, MESSAGES.getString("unknown_dependent_records"));
     }
     else {
