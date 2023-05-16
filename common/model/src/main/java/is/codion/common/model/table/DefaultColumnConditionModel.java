@@ -6,7 +6,6 @@ package is.codion.common.model.table;
 import is.codion.common.Operator;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -19,7 +18,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 import java.util.regex.Pattern;
 
 import static java.util.Collections.unmodifiableList;
@@ -34,7 +32,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private final Value<T> lowerBoundValue = Value.value();
   private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Event.event();
-  private final Event<?> conditionModelClearedEvent = Event.event();
 
   private final State caseSensitiveState;
   private final Value<AutomaticWildcard> automaticWildcardValue;
@@ -198,7 +195,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     setUpperBound(null);
     setLowerBound(null);
     setOperator(Operator.EQUAL);
-    conditionModelClearedEvent.onEvent();
   }
 
   @Override
@@ -232,66 +228,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void addEnabledListener(EventListener listener) {
-    enabledState.addListener(listener);
-  }
-
-  @Override
-  public void removeEnabledListener(EventListener listener) {
-    enabledState.removeListener(listener);
-  }
-
-  @Override
-  public void addEqualValueListener(EventDataListener<T> listener) {
-    equalValue.addDataListener(listener);
-  }
-
-  @Override
-  public void removeEqualValueListener(EventDataListener<T> listener) {
-    equalValue.removeDataListener(listener);
-  }
-
-  @Override
-  public void addEqualValuesListener(EventDataListener<Set<T>> listener) {
-    equalValues.addDataListener(listener);
-  }
-
-  @Override
-  public void removeEqualValuesListener(EventDataListener<Set<T>> listener) {
-    equalValues.removeDataListener(listener);
-  }
-
-  @Override
-  public void addUpperBoundListener(EventDataListener<T> listener) {
-    upperBoundValue.addDataListener(listener);
-  }
-
-  @Override
-  public void removeUpperBoundListener(EventDataListener<T> listener) {
-    upperBoundValue.removeDataListener(listener);
-  }
-
-  @Override
-  public void addLowerBoundListener(EventDataListener<T> listener) {
-    lowerBoundValue.addDataListener(listener);
-  }
-
-  @Override
-  public void removeLowerBoundListener(EventDataListener<T> listener) {
-    lowerBoundValue.removeDataListener(listener);
-  }
-
-  @Override
-  public void addClearedListener(EventListener listener) {
-    conditionModelClearedEvent.addListener(listener);
-  }
-
-  @Override
-  public void removeClearedListener(EventListener listener) {
-    conditionModelClearedEvent.removeListener(listener);
-  }
-
-  @Override
   public void addChangeListener(EventListener listener) {
     conditionChangedEvent.addListener(listener);
   }
@@ -299,16 +235,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public void removeChangeListener(EventListener listener) {
     conditionChangedEvent.removeListener(listener);
-  }
-
-  @Override
-  public void addOperatorListener(EventDataListener<Operator> listener) {
-    operatorValue.addDataListener(listener);
-  }
-
-  @Override
-  public void removeOperatorListener(EventDataListener<Operator> listener) {
-    operatorValue.removeDataListener(listener);
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {

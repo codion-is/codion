@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Operator;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
@@ -17,7 +16,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 import static java.util.Arrays.asList;
 
@@ -190,66 +188,6 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void addEnabledListener(EventListener listener) {
-    conditionModel.addEnabledListener(listener);
-  }
-
-  @Override
-  public final void removeEnabledListener(EventListener listener) {
-    conditionModel.removeEnabledListener(listener);
-  }
-
-  @Override
-  public final void addEqualValueListener(EventDataListener<Entity> listener) {
-    conditionModel.addEqualValueListener(listener);
-  }
-
-  @Override
-  public final void removeEqualValueListener(EventDataListener<Entity> listener) {
-    conditionModel.removeEqualValueListener(listener);
-  }
-
-  @Override
-  public void addEqualValuesListener(EventDataListener<Set<Entity>> listener) {
-    conditionModel.addEqualValuesListener(listener);
-  }
-
-  @Override
-  public void removeEqualValuesListener(EventDataListener<Set<Entity>> listener) {
-    conditionModel.removeEqualValuesListener(listener);
-  }
-
-  @Override
-  public final void addUpperBoundListener(EventDataListener<Entity> listener) {
-    conditionModel.addUpperBoundListener(listener);
-  }
-
-  @Override
-  public final void removeUpperBoundListener(EventDataListener<Entity> listener) {
-    conditionModel.removeUpperBoundListener(listener);
-  }
-
-  @Override
-  public final void addLowerBoundListener(EventDataListener<Entity> listener) {
-    conditionModel.addLowerBoundListener(listener);
-  }
-
-  @Override
-  public final void removeLowerBoundListener(EventDataListener<Entity> listener) {
-    conditionModel.removeLowerBoundListener(listener);
-  }
-
-  @Override
-  public final void addClearedListener(EventListener listener) {
-    conditionModel.addClearedListener(listener);
-  }
-
-  @Override
-  public final void removeClearedListener(EventListener listener) {
-    conditionModel.removeClearedListener(listener);
-  }
-
-  @Override
   public final void addChangeListener(EventListener listener) {
     conditionModel.addChangeListener(listener);
   }
@@ -257,15 +195,5 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   @Override
   public final void removeChangeListener(EventListener listener) {
     conditionModel.removeChangeListener(listener);
-  }
-
-  @Override
-  public final void addOperatorListener(EventDataListener<Operator> listener) {
-    conditionModel.addOperatorListener(listener);
-  }
-
-  @Override
-  public final void removeOperatorListener(EventDataListener<Operator> listener) {
-    conditionModel.removeOperatorListener(listener);
   }
 }

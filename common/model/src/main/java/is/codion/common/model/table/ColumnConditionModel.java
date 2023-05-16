@@ -5,7 +5,6 @@ package is.codion.common.model.table;
 
 import is.codion.common.Configuration;
 import is.codion.common.Operator;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
@@ -17,7 +16,6 @@ import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.ResourceBundle;
-import java.util.Set;
 
 import static java.util.Objects.requireNonNull;
 
@@ -243,76 +241,6 @@ public interface ColumnConditionModel<C, T> {
    * @return true if this model is enabled and the given value is accepted by this models condition
    */
   boolean accepts(Comparable<T> columnValue);
-
-  /**
-   * @param listener a listener to be notified each time the enabled state changes
-   */
-  void addEnabledListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeEnabledListener(EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time the operator changes
-   */
-  void addOperatorListener(EventDataListener<Operator> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeOperatorListener(EventDataListener<Operator> listener);
-
-  /**
-   * @param listener a listener to be notified each time the equal value changes
-   */
-  void addEqualValueListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeEqualValueListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener a listener to be notified each time the equal values change
-   */
-  void addEqualValuesListener(EventDataListener<Set<T>> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeEqualValuesListener(EventDataListener<Set<T>> listener);
-
-  /**
-   * @param listener a listener to be notified each time the lower bound changes
-   */
-  void addLowerBoundListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeLowerBoundListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener a listener to be notified each time the upper bound changes
-   */
-  void addUpperBoundListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeUpperBoundListener(EventDataListener<T> listener);
-
-  /**
-   * @param listener a listener to be notified each time the model is cleared
-   */
-  void addClearedListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeClearedListener(EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the condition state changes
