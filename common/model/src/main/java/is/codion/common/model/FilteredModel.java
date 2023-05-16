@@ -34,7 +34,6 @@ public interface FilteredModel<T> {
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getIncludeCondition()
    * @see #setIncludeCondition(Predicate)
-   * @see #addFilterListener(EventListener)
    */
   void filterItems();
 
@@ -162,14 +161,4 @@ public interface FilteredModel<T> {
    * @param listener the listener to remove
    */
   void removeRefreshFailedListener(EventDataListener<Throwable> listener);
-
-  /**
-   * @param listener a listener notified each time this model is filtered
-   */
-  void addFilterListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeFilterListener(EventListener listener);
 }

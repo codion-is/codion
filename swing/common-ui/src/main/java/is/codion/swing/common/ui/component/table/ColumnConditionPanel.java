@@ -33,6 +33,7 @@ import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
+import java.awt.event.InputEvent;
 import java.awt.event.KeyEvent;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -379,7 +380,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
     KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
-            .modifiers(KeyEvent.CTRL_DOWN_MASK)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(Control.control(() -> conditionModel.setEnabled(!conditionModel.isEnabled())));
     enableOnEnterKeyEvent.enable(operatorCombo);
     if (equalField != null) {

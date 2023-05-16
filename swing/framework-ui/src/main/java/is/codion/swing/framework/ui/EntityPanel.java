@@ -1106,9 +1106,21 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
+      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+              KeyEvents.builder(VK_S)
+                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                      .action(control)
+                      .enable(this));
       tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
               KeyEvents.builder(VK_S)
                       .modifiers(CTRL_DOWN_MASK)
+                      .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                      .action(control)
+                      .enable(this));
+      tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
+              KeyEvents.builder(VK_F)
+                      .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
@@ -1125,9 +1137,27 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));
+        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_CONDITION_PANEL).ifPresent(control ->
+                KeyEvents.builder(VK_S)
+                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                        .action(control)
+                        .enable(editControlPanel));
         tablePanel.control(EntityTablePanel.ControlCode.SELECT_CONDITION_PANEL).ifPresent(control ->
                 KeyEvents.builder(VK_S)
                         .modifiers(CTRL_DOWN_MASK)
+                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                        .action(control)
+                        .enable(editControlPanel));
+        tablePanel.control(EntityTablePanel.ControlCode.TOGGLE_FILTER_PANEL).ifPresent(control ->
+                KeyEvents.builder(VK_F)
+                        .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+                        .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                        .action(control)
+                        .enable(editControlPanel));
+        tablePanel.control(EntityTablePanel.ControlCode.SELECT_FILTER_PANEL).ifPresent(control ->
+                KeyEvents.builder(VK_F)
+                        .modifiers(CTRL_DOWN_MASK | SHIFT_DOWN_MASK)
                         .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                         .action(control)
                         .enable(editControlPanel));

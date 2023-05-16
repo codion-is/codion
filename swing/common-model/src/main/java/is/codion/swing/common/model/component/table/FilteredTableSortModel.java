@@ -8,6 +8,8 @@ import is.codion.common.event.EventDataListener;
 import javax.swing.SortOrder;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Handles the column sorting states for a {@link FilteredTableModel}.
  * @param <R> the type representing a row in the table model
@@ -94,6 +96,11 @@ public interface FilteredTableSortModel<R, C> {
   void addSortingChangedListener(EventDataListener<C> listener);
 
   /**
+   * @param listener the listener to remove
+   */
+  void removeSortingChangedListener(EventDataListener<C> listener);
+
+  /**
    * Specifies a sorting state for a column.
    */
   interface ColumnSortOrder<C> {
@@ -107,5 +114,24 @@ public interface FilteredTableSortModel<R, C> {
      * @return the sorting order currently associated with the column
      */
     SortOrder sortOrder();
+  }
+
+  /**
+   * {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED} to {@link SortOrder#ASCENDING}.
+   * @param currentSortOrder the current sort order
+   * @return the next sort order
+   */
+  static SortOrder nextSortOrder(SortOrder currentSortOrder) {
+    requireNonNull(currentSortOrder);
+    switch (currentSortOrder) {
+      case UNSORTED:
+        return SortOrder.ASCENDING;
+      case ASCENDING:
+        return SortOrder.DESCENDING;
+      case DESCENDING:
+        return SortOrder.UNSORTED;
+      default:
+        throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
+    }
   }
 }

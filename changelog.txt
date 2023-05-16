@@ -9007,3 +9007,13 @@
   EntityTableSortModel.isSortingEnabled() renamed isSorted()
   FilteredTable, SortOrder.UNSORTED now included in sorting states when toggling through
   FilteredTable.setSortingEnabled() moved to FilteredTableSortModel
+  EntityPanel, keys for toggling and selecting filter/condition panel re-enabled on the entity panel, not only table panel
+  AbstractComponentBuilder.componentOrientation default value now locale based
+  FilteredTableSortModel.removeSortingChangedListener() added
+  FilteredTableModel.addSortListener() removed
+  FilteredTable.nextSortOrder() moved to FilteredTableSortModel
+  FilteredTable, sorting keys added ALT-DOWN sort by selected column, ALT-UP add sorting by selected column
+  KeyboardShortcutPanel, added UP/DOWN arrow keyboard scrolling
+  FilteredTableSearchModel.removeCurrentResultListener() added
+  DefaultFilteredTableModel.sortEvent() removed
+  FilteredModel.add/removeFilterListener() removed

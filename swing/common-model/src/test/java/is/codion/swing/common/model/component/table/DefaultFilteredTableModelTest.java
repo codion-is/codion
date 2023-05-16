@@ -443,8 +443,8 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void sorting() {
     AtomicInteger actionsPerformed = new AtomicInteger();
-    EventListener listener = actionsPerformed::incrementAndGet;
-    tableModel.addSortListener(listener);
+    EventDataListener<Integer> listener = columnIdentifier -> actionsPerformed.incrementAndGet();
+    tableModel.sortModel().addSortingChangedListener(listener);
 
     tableModel.refresh();
     FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.sortModel();
@@ -480,7 +480,7 @@ public final class DefaultFilteredTableModelTest {
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
     sortModel.setSortOrder(0, SortOrder.UNSORTED);
-    tableModel.removeSortListener(listener);
+    tableModel.sortModel().removeSortingChangedListener(listener);
   }
 
   @Test
@@ -748,10 +748,6 @@ public final class DefaultFilteredTableModelTest {
 
   @Test
   void filtering() throws Exception {
-    AtomicInteger filterEventCount = new AtomicInteger();
-    EventListener listener = filterEventCount::incrementAndGet;
-    tableModel.addFilterListener(listener);
-
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
     assertNull(tableModel.getIncludeCondition());
@@ -760,7 +756,6 @@ public final class DefaultFilteredTableModelTest {
     assertNotNull(tableModel.filterModel().conditionModel(0));
     assertTrue(tableModel.isVisible(B));
     tableModel.filterModel().conditionModel(0).setEqualValue("a");
-    assertEquals(2, filterEventCount.get());
     assertTrue(tableModel.isVisible(A));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
@@ -783,7 +778,6 @@ public final class DefaultFilteredTableModelTest {
     assertTrue(tableModel.items().size() > 0);
 
     tableModel.filterModel().conditionModel(0).setEnabled(false);
-    assertEquals(5, filterEventCount.get());
     assertFalse(tableModel.filterModel().conditionModel(0).isEnabled());
 
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
@@ -803,8 +797,6 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(rowCount, tableModel.getRowCount());
 
     assertThrows(IllegalArgumentException.class, () -> tableModel.filterModel().conditionModel(1));
-
-    tableModel.removeFilterListener(listener);
   }
 
   @Test

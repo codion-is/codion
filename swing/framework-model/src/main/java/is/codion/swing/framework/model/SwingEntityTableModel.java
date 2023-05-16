@@ -793,26 +793,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addFilterListener(EventListener listener) {
-    tableModel.addFilterListener(listener);
-  }
-
-  @Override
-  public final void removeFilterListener(EventListener listener) {
-    tableModel.removeFilterListener(listener);
-  }
-
-  @Override
-  public final void addSortListener(EventListener listener) {
-    tableModel.addSortListener(listener);
-  }
-
-  @Override
-  public final void removeSortListener(EventListener listener) {
-    tableModel.removeSortListener(listener);
-  }
-
-  @Override
   public final void addDataChangedListener(EventListener listener) {
     tableModel.addDataChangedListener(listener);
   }
@@ -1007,7 +987,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     addTableModelListener(this::onTableModelEvent);
     EventListener statusListener = () -> statusMessageValue.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
-    addFilterListener(statusListener);
     addDataChangedListener(statusListener);
   }
 
@@ -1242,7 +1221,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        return Optional.of(new DefaultSummaryValueProvider<>(attribute, this,
+        return Optional.of(new DefaultSummaryValueProvider<>(attribute, tableModel,
                 tableModel.entityDefinition().property(attribute).format()));
       }
 

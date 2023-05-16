@@ -49,7 +49,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
   private final Event<T> selectionChangedEvent = Event.event();
-  private final Event<?> filterEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final State refreshingState = State.state();
@@ -182,7 +181,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     else {
       fireContentsChanged();
     }
-    filterEvent.onEvent();
   }
 
   @Override
@@ -466,16 +464,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final <V> Value<V> createSelectorValue(ItemFinder<T, V> itemFinder) {
     return new SelectorValue<>(itemFinder);
-  }
-
-  @Override
-  public final void addFilterListener(EventListener listener) {
-    filterEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeFilterListener(EventListener listener) {
-    filterEvent.removeListener(listener);
   }
 
   @Override

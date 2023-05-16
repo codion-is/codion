@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -474,14 +475,10 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
                     .action(requestTableFocus))
             .popupMenuControls(searchFieldPopupMenuControls())
             .hintText(Messages.find() + "...")
-            .onTextChanged(searchText -> {
-              if (!searchText.isEmpty()) {
-                tableModel.searchModel().nextResult();
-              }
-            })
+            .onTextChanged(this::onSearchTextChanged)
             .onBuild(field -> KeyEvents.builder(VK_F)
-                    .action(Control.control(field::requestFocusInWindow))
                     .modifiers(CTRL_DOWN_MASK)
+                    .action(control(field::requestFocusInWindow))
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .enable(this))
             .build();
@@ -503,6 +500,27 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
+  }
+
+  private void onSearchTextChanged(String searchText) {
+    if (!searchText.isEmpty()) {
+      tableModel.searchModel().nextResult();
+    }
+  }
+
+  private void toggleColumnSorting(int selectedColumn, boolean add) {
+    if (selectedColumn != -1) {
+      C columnIdentifier = tableModel.columnModel().getColumn(selectedColumn).getIdentifier();
+      FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
+      if (sortModel.isSortingEnabled(columnIdentifier)) {
+        if (add) {
+          sortModel.addSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+        }
+        else {
+          sortModel.setSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+        }
+      }
+    }
   }
 
   private Controls searchFieldPopupMenuControls() {
@@ -575,11 +593,19 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     tableModel.selectionModel().addSelectedIndexesListener(new ScrollToSelectedListener());
     tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
-    tableModel.addSortListener(getTableHeader()::repaint);
+    tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(VK_C)
-            .action(Control.control(this::copySelectedCell))
             .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+            .action(control(this::copySelectedCell))
+            .enable(this);
+    KeyEvents.builder(VK_UP)
+            .modifiers(ALT_DOWN_MASK)
+            .action(control(() -> toggleColumnSorting(getSelectedColumn(), true)))
+            .enable(this);
+    KeyEvents.builder(VK_DOWN)
+            .modifiers(ALT_DOWN_MASK)
+            .action(control(() -> toggleColumnSorting(getSelectedColumn(), false)))
             .enable(this);
   }
 
@@ -651,19 +677,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             sortModel.setSortOrder(columnIdentifier, nextSortOrder);
           }
         }
-      }
-    }
-
-    private SortOrder nextSortOrder(SortOrder currentSortOrder) {
-      switch (currentSortOrder) {
-        case UNSORTED:
-          return SortOrder.ASCENDING;
-        case ASCENDING:
-          return SortOrder.DESCENDING;
-        case DESCENDING:
-          return SortOrder.UNSORTED;
-        default:
-          throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
       }
     }
   }

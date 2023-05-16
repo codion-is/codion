@@ -5,13 +5,19 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.i18n.Messages;
 import is.codion.framework.i18n.FrameworkMessages;
+import is.codion.swing.common.ui.KeyEvents;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollBar;
+import javax.swing.JScrollPane;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
+import static java.awt.event.KeyEvent.VK_DOWN;
+import static java.awt.event.KeyEvent.VK_UP;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 final class KeyboardShortcutsPanel extends JPanel {
@@ -49,6 +55,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .add(dependencies())
             .scrollPane()
             .verticalUnitIncrement(VERTICAL_UNIT_INCREMENT)
+            .onBuild(this::addScrollKeyEvents)
             .build(this::add);
   }
 
@@ -106,6 +113,8 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("select_condition_panel")), new JLabel(CTRL + "S"))
             .addAll(new JLabel(MESSAGES.getString("toggle_filter_panel")), new JLabel(CTRL + ALT + "F"))
             .addAll(new JLabel(MESSAGES.getString("select_filter_panel")), new JLabel(CTRL + SHIFT + "F"))
+            .addAll(new JLabel(MESSAGES.getString("toggle_column_sort")), new JLabel(ALT + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("toggle_column_sort_add")), new JLabel(ALT + UP))
             .border(createTitledBorder(MESSAGES.getString("table_panel")))
             .build();
   }
@@ -169,5 +178,15 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("navigate_left_right")), new JLabel(CTRL + ALT + LEFT_RIGHT))
             .border(createTitledBorder(FrameworkMessages.dependencies()))
             .build();
+  }
+
+  private void addScrollKeyEvents(JScrollPane scrollPane) {
+    JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
+    KeyEvents.builder(VK_UP)
+            .action(control(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() - VERTICAL_UNIT_INCREMENT)))
+            .enable(scrollPane);
+    KeyEvents.builder(VK_DOWN)
+            .action(control(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() + VERTICAL_UNIT_INCREMENT)))
+            .enable(scrollPane);
   }
 }
