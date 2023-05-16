@@ -15,10 +15,11 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.text.Format;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+
+import static java.util.Arrays.asList;
 
 /**
  * An abstract base class for {@link ForeignKey} based {@link ColumnConditionModel}s.
@@ -29,7 +30,7 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
 
   protected AbstractForeignKeyConditionModel(ForeignKey foreignKey) {
     conditionModel = ColumnConditionModel.builder(foreignKey, Entity.class)
-            .operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL))
+            .operators(asList(Operator.EQUAL, Operator.NOT_EQUAL))
             .build();
   }
 
@@ -154,8 +155,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void clearCondition() {
-    conditionModel.clearCondition();
+  public final void clear() {
+    conditionModel.clear();
   }
 
   @Override

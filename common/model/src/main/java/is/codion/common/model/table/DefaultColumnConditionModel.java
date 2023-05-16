@@ -192,7 +192,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void clearCondition() {
+  public void clear() {
     setEnabled(false);
     setEqualValues(null);
     setUpperBound(null);

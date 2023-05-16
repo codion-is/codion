@@ -80,7 +80,7 @@ public class DefaultColumnConditionModelTest {
     assertEquals("test", model.getEqualValues().iterator().next());
     assertEquals("test", model.getEqualValue());
 
-    model.clearCondition();
+    model.clear();
     assertEquals(1, clearCounter.get());
 
     model.removeEqualValueListener(equalToListener);

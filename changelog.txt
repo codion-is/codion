@@ -8981,3 +8981,5 @@
   FilteredModel.add/removeFilterListener() removed
   KeyEvents refactoring, javadoc improvements
   IconsTest and FontImageIconTest added
+  ColumnConditionModel.clearCondition() renamed clear()
+  DefaultFilteredTableModelTest improved a bit

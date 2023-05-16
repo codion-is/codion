@@ -205,7 +205,7 @@ public interface ColumnConditionModel<C, T> {
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
    * and the operator to the default value {@link Operator#EQUAL}
    */
-  void clearCondition();
+  void clear();
 
   /**
    * @return a ValueSet based on the equals values of this condition model
