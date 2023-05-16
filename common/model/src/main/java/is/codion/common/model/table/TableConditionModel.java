@@ -20,7 +20,7 @@ public interface TableConditionModel<C> {
   Map<C, ColumnConditionModel<C, ?>> conditionModels();
 
   /**
-   * The filter model associated with {@code columnIdentifier}
+   * The condition model associated with {@code columnIdentifier}
    * @param <T> the column value type
    * @param columnIdentifier the column identifier for which to retrieve the {@link ColumnConditionModel}
    * @return the {@link ColumnConditionModel} for the {@code columnIdentifier}
@@ -29,24 +29,24 @@ public interface TableConditionModel<C> {
   <T> ColumnConditionModel<? extends C, T> conditionModel(C columnIdentifier);
 
   /**
-   * Clears the search state of all the filter models, disables them and
+   * Clears the search state of all the condition models, disables them and
    * resets the operator to {@link is.codion.common.Operator#EQUAL}
    */
   void clear();
 
   /**
-   * @return true if any of the underlying filter models are enabled
+   * @return true if any of the underlying condition models are enabled
    */
   boolean isEnabled();
 
   /**
    * @param columnIdentifier the column identifier
-   * @return true if the filter model behind column with {@code columnIdentifier} is enabled
+   * @return true if the condition model behind column with {@code columnIdentifier} is enabled
    */
   boolean isEnabled(C columnIdentifier);
 
   /**
-   * @param listener a listener notified each time the filter changes
+   * @param listener a listener notified each time the condition changes
    */
   void addChangeListener(EventListener listener);
 
