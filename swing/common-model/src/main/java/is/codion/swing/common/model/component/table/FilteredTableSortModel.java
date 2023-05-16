@@ -117,7 +117,7 @@ public interface FilteredTableSortModel<R, C> {
   }
 
   /**
-   * {@link SortOrder#ASCENDING} -> {@link SortOrder#DESCENDING} -> {@link SortOrder#UNSORTED} -> {@link SortOrder#ASCENDING}.
+   * {@link SortOrder#ASCENDING} to {@link SortOrder#DESCENDING} to {@link SortOrder#UNSORTED} to {@link SortOrder#ASCENDING}.
    * @param currentSortOrder the current sort order
    * @return the next sort order
    */

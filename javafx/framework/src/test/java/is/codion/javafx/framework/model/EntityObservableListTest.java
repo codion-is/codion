@@ -4,7 +4,6 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -20,7 +19,6 @@ import org.junit.jupiter.api.Test;
 import org.testfx.api.FxToolkit;
 
 import java.util.Objects;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -53,16 +51,12 @@ public final class EntityObservableListTest {
 
   @Test
   void includeCondition() throws DatabaseException {
-    AtomicInteger counter = new AtomicInteger();
     EntityObservableList list = new EntityObservableList(Department.TYPE, CONNECTION_PROVIDER);
-    EventListener listener = counter::incrementAndGet;
-    list.addFilterListener(listener);
     list.refresh();
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     Entity operations = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "OPERATIONS");
 
     list.setIncludeCondition(item -> Objects.equals(item.get(Department.NAME), "SALES"));
-    assertEquals(1, counter.get());
     assertNotNull(list.getIncludeCondition());
     assertEquals(3, list.filteredItemCount());
     assertEquals(1, list.visibleItemCount());
@@ -73,14 +67,12 @@ public final class EntityObservableListTest {
     assertTrue(list.containsItem(operations));
 
     list.setIncludeCondition(null);
-    assertEquals(2, counter.get());
     assertNull(list.getIncludeCondition());
     assertEquals(0, list.filteredItemCount());
     assertEquals(4, list.visibleItemCount());
     assertEquals(0, list.filteredItems().size());
     assertFalse(list.isFiltered(sales));
     assertTrue(list.isVisible(sales));
-    list.removeFilterListener(listener);
   }
 
   @Test

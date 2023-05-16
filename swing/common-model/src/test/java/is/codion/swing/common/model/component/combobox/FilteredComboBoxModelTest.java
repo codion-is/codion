@@ -4,7 +4,6 @@
 package is.codion.swing.common.model.component.combobox;
 
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 
@@ -160,16 +159,11 @@ public class FilteredComboBoxModelTest {
 
   @Test
   void setIncludeCondition() {
-    AtomicInteger filteringEndedCounter = new AtomicInteger();
-    EventListener filteringEndedListener = filteringEndedCounter::incrementAndGet;
     testModel.addListDataListener(listDataListener);
-    testModel.addFilterListener(filteringEndedListener);
 
     testModel.setIncludeCondition(item -> false);
-    assertEquals(1, filteringEndedCounter.get());
     assertEquals(1, testModel.getSize());
     testModel.setIncludeCondition(item -> true);
-    assertEquals(2, filteringEndedCounter.get());
     assertEquals(6, testModel.getSize());
     testModel.setIncludeCondition(item -> !item.equals(ANNA));
     assertEquals(5, testModel.getSize());
@@ -192,7 +186,6 @@ public class FilteredComboBoxModelTest {
     assertTrue(testModel.containsItem(BJORN));
 
     testModel.removeListDataListener(listDataListener);
-    testModel.removeFilterListener(filteringEndedListener);
   }
 
   @Test

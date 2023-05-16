@@ -793,16 +793,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addFilterListener(EventListener listener) {
-    tableModel.addFilterListener(listener);
-  }
-
-  @Override
-  public final void removeFilterListener(EventListener listener) {
-    tableModel.removeFilterListener(listener);
-  }
-
-  @Override
   public final void addDataChangedListener(EventListener listener) {
     tableModel.addDataChangedListener(listener);
   }
@@ -997,7 +987,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     addTableModelListener(this::onTableModelEvent);
     EventListener statusListener = () -> statusMessageValue.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
-    addFilterListener(statusListener);
     addDataChangedListener(statusListener);
   }
 

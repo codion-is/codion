@@ -341,16 +341,6 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     return super.setAll(elements);
   }
 
-  @Override
-  public final void addFilterListener(EventListener listener) {
-    filterEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeFilterListener(EventListener listener) {
-    filterEvent.removeListener(listener);
-  }
-
   /**
    * @param listener a listener to be notified each time a refresh has failed
    * @see #refresh()

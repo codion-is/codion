@@ -8978,3 +8978,4 @@
   KeyboardShortcutPanel, added UP/DOWN arrow keyboard scrolling
   FilteredTableSearchModel.removeCurrentResultListener() added
   DefaultFilteredTableModel.sortEvent() removed
+  FilteredModel.add/removeFilterListener() removed
