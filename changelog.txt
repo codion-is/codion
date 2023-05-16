@@ -8969,3 +8969,4 @@
   EntityTableSortModel.isSortingEnabled() renamed isSorted()
   FilteredTable, SortOrder.UNSORTED now included in sorting states when toggling through
   FilteredTable.setSortingEnabled() moved to FilteredTableSortModel
+  EntityPanel, keys for toggling and selecting filter/condition panel re-enabled on the entity panel, not only table panel
