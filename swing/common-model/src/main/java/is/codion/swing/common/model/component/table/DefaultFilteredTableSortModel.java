@@ -114,6 +114,11 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     sortingChangedEvent.addDataListener(listener);
   }
 
+  @Override
+  public void removeSortingChangedListener(EventDataListener<C> listener) {
+    sortingChangedEvent.removeDataListener(listener);
+  }
+
   private void setSortOrder(C columnIdentifier, SortOrder sortOrder, boolean addColumnToSort) {
     requireNonNull(columnIdentifier);
     requireNonNull(sortOrder);

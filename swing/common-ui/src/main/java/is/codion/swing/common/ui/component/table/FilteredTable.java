@@ -52,6 +52,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -575,7 +576,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     tableModel.selectionModel().addSelectedIndexesListener(new ScrollToSelectedListener());
     tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
-    tableModel.addSortListener(getTableHeader()::repaint);
+    tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(VK_C)
             .action(Control.control(this::copySelectedCell))
@@ -651,19 +652,6 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
             sortModel.setSortOrder(columnIdentifier, nextSortOrder);
           }
         }
-      }
-    }
-
-    private SortOrder nextSortOrder(SortOrder currentSortOrder) {
-      switch (currentSortOrder) {
-        case UNSORTED:
-          return SortOrder.ASCENDING;
-        case ASCENDING:
-          return SortOrder.DESCENDING;
-        case DESCENDING:
-          return SortOrder.UNSORTED;
-        default:
-          throw new IllegalStateException("Unknown sort order: " + currentSortOrder);
       }
     }
   }

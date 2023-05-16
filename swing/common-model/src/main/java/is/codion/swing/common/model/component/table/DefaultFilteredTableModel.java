@@ -486,16 +486,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addSortListener(EventListener listener) {
-    sortEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeSortListener(EventListener listener) {
-    sortEvent.removeListener(listener);
-  }
-
-  @Override
   public final void addDataChangedListener(EventListener listener) {
     dataChangedEvent.addListener(listener);
   }

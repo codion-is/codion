@@ -803,16 +803,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addSortListener(EventListener listener) {
-    tableModel.addSortListener(listener);
-  }
-
-  @Override
-  public final void removeSortListener(EventListener listener) {
-    tableModel.removeSortListener(listener);
-  }
-
-  @Override
   public final void addDataChangedListener(EventListener listener) {
     tableModel.addDataChangedListener(listener);
   }

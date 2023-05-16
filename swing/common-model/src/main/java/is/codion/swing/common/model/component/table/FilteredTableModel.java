@@ -20,16 +20,6 @@ import java.util.Collection;
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
-   * @param listener a listener to be notified each time the model has been sorted
-   */
-  void addSortListener(EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSortListener(EventListener listener);
-
-  /**
    * @param listener a listener to be notified each time the table data changes
    */
   void addDataChangedListener(EventListener listener);
@@ -215,7 +205,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * Sorts the visible items according to the {@link FilteredTableSortModel}, keeping the selected items.
    * Calling this method with the sort model disabled has no effect.
    * @see #sortModel()
-   * @see #addSortListener(EventListener)
    * @see FilteredTableSortModel#isSorted
    */
   void sortItems();

@@ -8971,3 +8971,6 @@
   FilteredTable.setSortingEnabled() moved to FilteredTableSortModel
   EntityPanel, keys for toggling and selecting filter/condition panel re-enabled on the entity panel, not only table panel
   AbstractComponentBuilder.componentOrientation default value now locale based
+  FilteredTableSortModel.removeSortingChangedListener() added
+  FilteredTableModel.addSortListener() removed
+  FilteredTable.nextSortOrder() moved to FilteredTableSortModel

@@ -443,8 +443,8 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void sorting() {
     AtomicInteger actionsPerformed = new AtomicInteger();
-    EventListener listener = actionsPerformed::incrementAndGet;
-    tableModel.addSortListener(listener);
+    EventDataListener<Integer> listener = columnIdentifier -> actionsPerformed.incrementAndGet();
+    tableModel.sortModel().addSortingChangedListener(listener);
 
     tableModel.refresh();
     FilteredTableSortModel<List<String>, Integer> sortModel = tableModel.sortModel();
@@ -480,7 +480,7 @@ public final class DefaultFilteredTableModelTest {
     sortModel.setSortOrder(0, SortOrder.DESCENDING);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(NULL));
     sortModel.setSortOrder(0, SortOrder.UNSORTED);
-    tableModel.removeSortListener(listener);
+    tableModel.sortModel().removeSortingChangedListener(listener);
   }
 
   @Test
