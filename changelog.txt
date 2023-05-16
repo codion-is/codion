@@ -8980,3 +8980,4 @@
   DefaultFilteredTableModel.sortEvent() removed
   FilteredModel.add/removeFilterListener() removed
   KeyEvents refactoring, javadoc improvements
+  IconsTest and FontImageIconTest added
