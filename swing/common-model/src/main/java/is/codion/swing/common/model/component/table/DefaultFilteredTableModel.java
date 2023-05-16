@@ -198,6 +198,11 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
+  public final FilteredTableColumnModel<C> columnModel() {
+    return columnModel;
+  }
+
+  @Override
   public final FilteredTableSelectionModel<R> selectionModel() {
     return selectionModel;
   }
@@ -411,11 +416,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   @Override
   public final void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.removeDataListener(listener);
-  }
-
-  @Override
-  public final FilteredTableColumnModel<C> columnModel() {
-    return columnModel;
   }
 
   @Override

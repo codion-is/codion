@@ -160,11 +160,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void removeItems(int fromIndex, int toIndex);
 
   /**
-   * @return the FilteredTableColumnModel used by this TableModel
-   */
-  FilteredTableColumnModel<C> columnModel();
-
-  /**
    * @param columnIdentifier the identifier of the column for which to retrieve the values
    * @param <T> the value type
    * @return the values (including nulls) of the column identified by the given identifier from the visible rows in the table model
@@ -208,6 +203,11 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @see FilteredTableSortModel#isSorted
    */
   void sortItems();
+
+  /**
+   * @return the FilteredTableColumnModel used by this TableModel
+   */
+  FilteredTableColumnModel<C> columnModel();
 
   /**
    * @return the selection model used by this table model
