@@ -95,6 +95,11 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     searchResultValue.addDataListener(listener);
   }
 
+  @Override
+  public void removeCurrentResultListener(EventDataListener<RowColumn> listener) {
+    searchResultValue.removeDataListener(listener);
+  }
+
   private Optional<RowColumn> nextResult(boolean addToSelection) {
     if (searchResults.isEmpty()) {
       return emptyResult(addToSelection);

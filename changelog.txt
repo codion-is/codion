@@ -8976,3 +8976,4 @@
   FilteredTable.nextSortOrder() moved to FilteredTableSortModel
   FilteredTable, sorting keys added ALT-DOWN sort by selected column, ALT-UP add sorting by selected column
   KeyboardShortcutPanel, added UP/DOWN arrow keyboard scrolling
+  FilteredTableSearchModel.removeCurrentResultListener() added

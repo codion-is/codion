@@ -78,6 +78,11 @@ public interface FilteredTableSearchModel {
   void addCurrentResultListener(EventDataListener<RowColumn> listener);
 
   /**
+   * @param listener the listener to remove
+   */
+  void removeCurrentResultListener(EventDataListener<RowColumn> listener);
+
+  /**
    * Holds a row/column coordinate
    */
   interface RowColumn {
