@@ -217,6 +217,7 @@ dependencyResolutionManagement {
             library('flatlaf-intellij-themes', 'com.formdev', 'flatlaf-intellij-themes').versionRef('flatlaf')
             library('ikonli-core', 'org.kordamp.ikonli', 'ikonli-core').versionRef('ikonli')
             library('ikonli-swing', 'org.kordamp.ikonli', 'ikonli-swing').versionRef('ikonli')
+            library('ikonli-foundation-pack', 'org.kordamp.ikonli', 'ikonli-foundation-pack').versionRef('ikonli')
 
             //plugins
             library('hikari', 'com.zaxxer', 'HikariCP').versionRef('hikari')
