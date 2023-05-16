@@ -106,6 +106,8 @@ final class KeyboardShortcutsPanel extends JPanel {
             .addAll(new JLabel(MESSAGES.getString("select_condition_panel")), new JLabel(CTRL + "S"))
             .addAll(new JLabel(MESSAGES.getString("toggle_filter_panel")), new JLabel(CTRL + ALT + "F"))
             .addAll(new JLabel(MESSAGES.getString("select_filter_panel")), new JLabel(CTRL + SHIFT + "F"))
+            .addAll(new JLabel(MESSAGES.getString("toggle_column_sort")), new JLabel(ALT + DOWN))
+            .addAll(new JLabel(MESSAGES.getString("toggle_column_sort_add")), new JLabel(ALT + UP))
             .border(createTitledBorder(MESSAGES.getString("table_panel")))
             .build();
   }

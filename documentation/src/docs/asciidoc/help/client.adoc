@@ -138,6 +138,8 @@ NOTE: To clear all column conditions use the *Search* -> *Clear* action in the t
 |kbd:[Ctrl + S]|Select condition panel
 |kbd:[Ctrl + Alt + F]|Toggle filter panel between hidden, visible and advanced
 |kbd:[Ctrl + Shift + F]|Select filter panel
+|kbd:[Alt + &#x2193;]|Toggle sorting by selected column
+|kbd:[Alt + &#x2191;]|Toggle and add sorting by selected column
 |===
 
 [cols="1,3"]

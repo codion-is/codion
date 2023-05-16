@@ -481,7 +481,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
               }
             })
             .onBuild(field -> KeyEvents.builder(VK_F)
-                    .action(Control.control(field::requestFocusInWindow))
+                    .action(control(field::requestFocusInWindow))
                     .modifiers(CTRL_DOWN_MASK)
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .enable(this))
@@ -504,6 +504,21 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
+  }
+
+  private void toggleColumnSorting(int selectedColumn, boolean add) {
+    if (selectedColumn != -1) {
+      C columnIdentifier = tableModel.columnModel().getColumn(selectedColumn).getIdentifier();
+      FilteredTableSortModel<R, C> sortModel = tableModel.sortModel();
+      if (sortModel.isSortingEnabled(columnIdentifier)) {
+        if (add) {
+          sortModel.addSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+        }
+        else {
+          sortModel.setSortOrder(columnIdentifier, nextSortOrder(sortModel.sortOrder(columnIdentifier)));
+        }
+      }
+    }
   }
 
   private Controls searchFieldPopupMenuControls() {
@@ -579,8 +594,16 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(VK_C)
-            .action(Control.control(this::copySelectedCell))
             .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+            .action(control(this::copySelectedCell))
+            .enable(this);
+    KeyEvents.builder(VK_UP)
+            .modifiers(ALT_DOWN_MASK)
+            .action(control(() -> toggleColumnSorting(getSelectedColumn(), true)))
+            .enable(this);
+    KeyEvents.builder(VK_DOWN)
+            .modifiers(ALT_DOWN_MASK)
+            .action(control(() -> toggleColumnSorting(getSelectedColumn(), false)))
             .enable(this);
   }
 

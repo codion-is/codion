@@ -8974,3 +8974,4 @@
   FilteredTableSortModel.removeSortingChangedListener() added
   FilteredTableModel.addSortListener() removed
   FilteredTable.nextSortOrder() moved to FilteredTableSortModel
+  FilteredTable, sorting keys added ALT-DOWN sort by selected column, ALT-UP add sorting by selected column
