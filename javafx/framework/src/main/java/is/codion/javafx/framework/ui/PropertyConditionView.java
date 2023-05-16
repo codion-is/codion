@@ -184,7 +184,7 @@ public final class PropertyConditionView<T> extends BorderPane {
   }
 
   private void bindEvents() {
-    model.addOperatorListener(operator -> initializeUI());
+    model.operatorValue().addDataListener(operator -> initializeUI());
   }
 
   private void initializeUI() {

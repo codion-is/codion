@@ -50,7 +50,7 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
 
   private void bindSearchModelEvents() {
     entitySearchModel.addSelectedEntitiesListener(new SelectedEntitiesListener());
-    addEqualValuesListener(new EqualValuesListener());
+    equalValueSet().addDataListener(new EqualValuesListener());
   }
 
   private final class SelectedEntitiesListener implements EventDataListener<List<Entity>> {

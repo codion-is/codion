@@ -129,7 +129,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   private void clearConditions() {
     componentPanel.columnComponents().values().stream()
             .map(ColumnConditionPanel::model)
-            .forEach(ColumnConditionModel::clearCondition);
+            .forEach(ColumnConditionModel::clear);
   }
 
   private void setAdvancedView(boolean advanced) {

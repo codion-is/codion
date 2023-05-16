@@ -27,7 +27,6 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger conditionChangedCounter = new AtomicInteger();
   final AtomicInteger operatorCounter = new AtomicInteger();
   final AtomicInteger enabledCounter = new AtomicInteger();
-  final AtomicInteger clearCounter = new AtomicInteger();
 
   final EventDataListener<String> equalToListener = value -> equalToCounter.incrementAndGet();
   final EventDataListener<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
@@ -35,7 +34,6 @@ public class DefaultColumnConditionModelTest {
   final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
   final EventDataListener<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
   final EventListener enabledListener = enabledCounter::incrementAndGet;
-  final EventListener clearListener = clearCounter::incrementAndGet;
 
   @Test
   void testSetBounds() {
@@ -44,11 +42,10 @@ public class DefaultColumnConditionModelTest {
     model.automaticWildcardValue().set(AutomaticWildcard.NONE);
 
     model.autoEnableState().set(false);
-    model.addEqualValueListener(equalToListener);
-    model.addUpperBoundListener(upperBoundListener);
-    model.addLowerBoundListener(lowerBoundListener);
+    model.equalValueSet().value().addDataListener(equalToListener);
+    model.upperBoundValue().addDataListener(upperBoundListener);
+    model.lowerBoundValue().addDataListener(lowerBoundListener);
     model.addChangeListener(conditionChangedListener);
-    model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
     assertEquals(1, conditionChangedCounter.get());
@@ -80,14 +77,12 @@ public class DefaultColumnConditionModelTest {
     assertEquals("test", model.getEqualValues().iterator().next());
     assertEquals("test", model.getEqualValue());
 
-    model.clearCondition();
-    assertEquals(1, clearCounter.get());
+    model.clear();
 
-    model.removeEqualValueListener(equalToListener);
-    model.removeUpperBoundListener(upperBoundListener);
-    model.removeLowerBoundListener(lowerBoundListener);
+    model.equalValueSet().value().removeDataListener(equalToListener);
+    model.upperBoundValue().removeDataListener(upperBoundListener);
+    model.lowerBoundValue().removeDataListener(lowerBoundListener);
     model.removeChangeListener(conditionChangedListener);
-    model.removeClearedListener(clearListener);
   }
 
   @Test
@@ -106,7 +101,7 @@ public class DefaultColumnConditionModelTest {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class)
             .operators(Arrays.asList(Operator.EQUAL, Operator.NOT_EQUAL, Operator.LESS_THAN_OR_EQUAL, Operator.NOT_BETWEEN))
             .build();
-    model.addOperatorListener(operatorListener);
+    model.operatorValue().addDataListener(operatorListener);
     assertEquals(Operator.EQUAL, model.getOperator());
     model.setOperator(Operator.LESS_THAN_OR_EQUAL);
     assertEquals(1, operatorCounter.get());
@@ -114,7 +109,7 @@ public class DefaultColumnConditionModelTest {
     assertThrows(NullPointerException.class, () -> model.setOperator(null));
     model.setOperator(Operator.NOT_BETWEEN);
     assertEquals(2, operatorCounter.get());
-    model.removeOperatorListener(operatorListener);
+    model.operatorValue().removeDataListener(operatorListener);
 
     assertThrows(IllegalArgumentException.class, () -> model.setOperator(Operator.BETWEEN));
 
@@ -136,13 +131,13 @@ public class DefaultColumnConditionModelTest {
     model.automaticWildcardValue().set(AutomaticWildcard.PREFIX_AND_POSTFIX);
     assertEquals(AutomaticWildcard.PREFIX_AND_POSTFIX, model.automaticWildcardValue().get());
 
-    model.addEnabledListener(enabledListener);
+    model.enabledState().addListener(enabledListener);
     model.setEnabled(false);
     assertEquals(1, enabledCounter.get());
     model.setEnabled(true);
     assertEquals(2, enabledCounter.get());
 
-    model.removeEnabledListener(enabledListener);
+    model.enabledState().removeListener(enabledListener);
 
     model.setLocked(true);
     assertTrue(model.isLocked());

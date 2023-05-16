@@ -23,7 +23,7 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
   @Override
   public void clear() {
-    conditionModels.values().forEach(ColumnConditionModel::clearCondition);
+    conditionModels.values().forEach(ColumnConditionModel::clear);
   }
 
   @Override

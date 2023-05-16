@@ -12,10 +12,11 @@ import static java.util.Objects.requireNonNull;
 final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet<T> {
 
   private final Set<T> values = new LinkedHashSet<>();
+  private final Value<T> value = new SingleValueSet();
 
   DefaultValueSet(Set<T> initialValues) {
     super(emptySet(), true);
-    values.addAll(requireNonNull(initialValues, "initialValues"));
+    set(requireNonNull(initialValues, "initialValues"));
   }
 
   @Override
@@ -58,7 +59,7 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
 
   @Override
   public Value<T> value() {
-    return new SingleValueSet<>(this);
+    return value;
   }
 
   @Override
@@ -72,26 +73,23 @@ final class DefaultValueSet<T> extends AbstractValue<Set<T>> implements ValueSet
     this.values.addAll(values);
   }
 
-  private static class SingleValueSet<T> extends AbstractValue<T> {
+  private class SingleValueSet extends AbstractValue<T> {
 
-    private final ValueSet<T> valueSet;
-
-    private SingleValueSet(ValueSet<T> valueSet) {
+    private SingleValueSet() {
       super(null, false);
-      this.valueSet = valueSet;
-      valueSet.addListener(this::notifyValueChange);
+      DefaultValueSet.this.addListener(this::notifyValueChange);
     }
 
     @Override
     public T get() {
-      Set<T> set = valueSet.get();
+      Set<T> set = DefaultValueSet.this.get();
 
       return set.isEmpty() ? null : set.iterator().next();
     }
 
     @Override
     protected void setValue(T value) {
-      valueSet.set(value == null ? emptySet() : singleton(value));
+      DefaultValueSet.this.set(value == null ? emptySet() : singleton(value));
     }
   }
 }
