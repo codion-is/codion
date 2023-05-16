@@ -9,3 +9,22 @@ dependencies {
 
     testImplementation (libs.ikonli.foundation.pack)
 }
+
+ext {
+    testAddModules = ['org.kordamp.ikonli.foundation']
+    testAddReads = ['is.codion.swing.common.ui': 'org.kordamp.ikonli.foundation']
+}
+
+compileTestJava {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
+
+test {
+    moduleOptions {
+        addModules = testAddModules
+        addReads = testAddReads
+    }
+}
