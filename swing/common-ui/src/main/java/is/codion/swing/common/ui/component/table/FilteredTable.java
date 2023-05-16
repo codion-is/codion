@@ -475,14 +475,10 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
                     .action(requestTableFocus))
             .popupMenuControls(searchFieldPopupMenuControls())
             .hintText(Messages.find() + "...")
-            .onTextChanged(searchText -> {
-              if (!searchText.isEmpty()) {
-                tableModel.searchModel().nextResult();
-              }
-            })
+            .onTextChanged(this::onSearchTextChanged)
             .onBuild(field -> KeyEvents.builder(VK_F)
-                    .action(control(field::requestFocusInWindow))
                     .modifiers(CTRL_DOWN_MASK)
+                    .action(control(field::requestFocusInWindow))
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .enable(this))
             .build();
@@ -504,6 +500,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     return addToSelection ? searchModel.selectPreviousResult() : searchModel.previousResult();
+  }
+
+  private void onSearchTextChanged(String searchText) {
+    if (!searchText.isEmpty()) {
+      tableModel.searchModel().nextResult();
+    }
   }
 
   private void toggleColumnSorting(int selectedColumn, boolean add) {
