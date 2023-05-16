@@ -1232,7 +1232,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(Attribute<?> attribute) {
       if (attribute.isNumerical()) {
-        return Optional.of(new DefaultSummaryValueProvider<>(attribute, this,
+        return Optional.of(new DefaultSummaryValueProvider<>(attribute, tableModel,
                 tableModel.entityDefinition().property(attribute).format()));
       }
 

@@ -55,7 +55,6 @@ import static java.util.stream.Collectors.toList;
 public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
   private final Event<?> filterEvent = Event.event();
-  private final Event<?> sortEvent = Event.event();
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
   private final Event<?> dataChangedEvent = Event.event();
@@ -276,7 +275,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
       sortModel.sort(visibleItems);
       fireTableRowsUpdated(0, visibleItems.size());
       selectionModel.setSelectedItems(selectedItems);
-      sortEvent.onEvent();
     }
   }
 
