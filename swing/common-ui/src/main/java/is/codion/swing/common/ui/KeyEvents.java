@@ -10,6 +10,7 @@ import javax.swing.KeyStroke;
 
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_FOCUSED;
+import static javax.swing.KeyStroke.getKeyStroke;
 
 /**
  * A factory for key event builders.
@@ -19,7 +20,7 @@ import static javax.swing.JComponent.WHEN_FOCUSED;
  * KeyEvents.builder(VK_UP)
  *          .onKeyPressed()
  *          .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
- *          .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+ *          .condition(WHEN_FOCUSED)
  *          .action(new NavigateUpAction())
  *          .enable(textField);
  * </pre>
@@ -31,6 +32,7 @@ public final class KeyEvents {
 
   /**
    * Instantiates a new {@link KeyEvents.Builder} instance.
+   * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
    * @return a {@link Builder} instance.
    */
   public static Builder builder() {
@@ -39,6 +41,7 @@ public final class KeyEvents {
 
   /**
    * Instantiates a new {@link KeyEvents.Builder} instance.
+   * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
    * @param keyEvent the key event
    * @return a {@link Builder} instance.
    */
@@ -99,6 +102,7 @@ public final class KeyEvents {
      * Builds the key event and enables it on the given component
      * @param component the component
      * @return this builder instance
+     * @throws IllegalStateException in case no action has been set
      */
     Builder enable(JComponent component);
 
@@ -106,6 +110,7 @@ public final class KeyEvents {
      * Disables this key event on the given component
      * @param component the component
      * @return this builder instance
+     * @throws IllegalStateException in case no action has been set
      */
     Builder disable(JComponent component);
   }
@@ -156,61 +161,58 @@ public final class KeyEvents {
 
     @Override
     public KeyStroke keyStroke() {
-      return KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyReleased);
+      return getKeyStroke(keyEvent, modifiers, onKeyReleased);
     }
 
     @Override
     public Builder enable(JComponent component) {
-      requireNonNull(component, "component");
-      if (action == null) {
-        throw new IllegalStateException("Can not enable a key event without an action");
-      }
-      Object actionName = action.getValue(Action.NAME);
-      if (actionName == null) {
-        actionName = createDefaultActionName(component);
-      }
-      KeyStroke keyStroke = keyStroke();
-      enable(component, action, condition, keyStroke, actionName);
-      if (component instanceof JComboBox<?>) {
-        JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
-        enable(editorComponent, action, condition, keyStroke, actionName);
-      }
-
-      return this;
+      return enable(requireNonNull(component), keyStroke(), actionMapKey(component));
     }
 
     @Override
     public Builder disable(JComponent component) {
-      requireNonNull(component, "component");
+      return disable(requireNonNull(component), keyStroke(), actionMapKey(component));
+    }
+
+    private Object actionMapKey(JComponent component) {
       if (action == null) {
-        throw new IllegalStateException("Can not disable a key event without an action");
+        throw new IllegalStateException("Can not enable/disable a key event without an action");
       }
-      Object actionName = action.getValue(Action.NAME);
-      if (actionName == null) {
-        actionName = createDefaultActionName(component);
+      Object actionMapKey = action.getValue(Action.NAME);
+      if (actionMapKey == null) {
+        actionMapKey = createDefaultActionMapKey(component);
       }
-      KeyStroke keyStroke = keyStroke();
-      disable(component, condition, keyStroke, actionName);
+
+      return actionMapKey;
+    }
+
+    private String createDefaultActionMapKey(JComponent component) {
+      return new StringBuilder(component.getClass().getSimpleName())
+              .append("_k:").append(keyEvent)
+              .append("_m:").append(modifiers)
+              .append("_c:").append(condition)
+              .append(onKeyReleased ? "_released" : "_pressed")
+              .toString();
+    }
+
+    private Builder enable(JComponent component, KeyStroke keyStroke, Object actionMapKey) {
+      component.getActionMap().put(actionMapKey, action);
+      component.getInputMap(condition).put(keyStroke, actionMapKey);
       if (component instanceof JComboBox<?>) {
-        JComponent editorComponent = (JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent();
-        disable(editorComponent, condition, keyStroke, actionName);
+        enable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), keyStroke, actionMapKey);
       }
 
       return this;
     }
 
-    private String createDefaultActionName(JComponent component) {
-      return component.getClass().getSimpleName() + keyEvent + modifiers + (onKeyReleased ? "keyReleased" : "keyPressed");
-    }
-
-    private static void enable(JComponent component, Action action, int condition, KeyStroke keyStroke, Object actionName) {
-      component.getActionMap().put(actionName, action);
-      component.getInputMap(condition).put(keyStroke, actionName);
-    }
-
-    private static void disable(JComponent component, int condition, KeyStroke keyStroke, Object actionName) {
-      component.getActionMap().put(actionName, null);
+    private Builder disable(JComponent component, KeyStroke keyStroke, Object actionMapKey) {
+      component.getActionMap().put(actionMapKey, null);
       component.getInputMap(condition).put(keyStroke, null);
+      if (component instanceof JComboBox<?>) {
+        disable((JComponent) ((JComboBox<?>) component).getEditor().getEditorComponent(), keyStroke, actionMapKey);
+      }
+
+      return this;
     }
   }
 }

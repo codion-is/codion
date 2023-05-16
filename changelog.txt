@@ -8979,3 +8979,4 @@
   FilteredTableSearchModel.removeCurrentResultListener() added
   DefaultFilteredTableModel.sortEvent() removed
   FilteredModel.add/removeFilterListener() removed
+  KeyEvents refactoring, javadoc improvements
