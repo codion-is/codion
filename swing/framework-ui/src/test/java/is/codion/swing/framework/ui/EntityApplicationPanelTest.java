@@ -20,7 +20,6 @@ import javax.swing.tree.TreeModel;
 import java.util.Enumeration;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -56,7 +55,7 @@ public class EntityApplicationPanelTest {
   @Test
   void test() throws Exception {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
-    entityApplicationBuilder(TestApplicationModel.class, TestApplicationPanel.class)
+    EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
             .automaticLoginUser(UNIT_TEST_USER)
             .domainClassName(TestDomain.class.getName())
             .setUncaughtExceptionHandler(false)

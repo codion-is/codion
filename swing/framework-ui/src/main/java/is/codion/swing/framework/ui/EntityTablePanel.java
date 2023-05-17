@@ -188,7 +188,7 @@ public class EntityTablePanel extends JPanel {
    * The standard controls available
    */
   public enum ControlCode {
-    PRINT_TABLE,
+    PRINT,
     DELETE_SELECTED,
     VIEW_DEPENDENCIES,
     UPDATE_SELECTED,
@@ -925,7 +925,7 @@ public class EntityTablePanel extends JPanel {
       toolbarControls.addSeparator();
     }
     control(ControlCode.DELETE_SELECTED).ifPresent(toolbarControls::add);
-    control(ControlCode.PRINT_TABLE).ifPresent(toolbarControls::add);
+    control(ControlCode.PRINT).ifPresent(toolbarControls::add);
     control(ControlCode.CLEAR_SELECTION).ifPresent(control -> {
       toolbarControls.add(control);
       toolbarControls.addSeparator();
@@ -1021,12 +1021,20 @@ public class EntityTablePanel extends JPanel {
     return popupControls;
   }
 
+  /**
+   * By default this method returns a {@link Controls} instance containing
+   * the {@link Control} associated with {@link ControlCode#PRINT}.
+   * If no {@link Control} has been assigned to that control key,
+   * an empty {@link Controls} instance is returned.
+   * Override to add print actions, which will then appear in the table popup menu.
+   * @return the print controls to display in the table popup menu
+   */
   protected Controls createPrintMenuControls() {
     Controls.Builder builder = Controls.builder()
             .caption(Messages.print())
             .mnemonic(Messages.printMnemonic())
             .smallIcon(FrameworkIcons.instance().print());
-    control(ControlCode.PRINT_TABLE).ifPresent(builder::control);
+    control(ControlCode.PRINT).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1161,19 +1169,6 @@ public class EntityTablePanel extends JPanel {
                     tableModel.selectionModel().selectionNotEmptyObserver()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(FrameworkIcons.instance().delete())
-            .build();
-  }
-
-  /**
-   * @return a control for printing the table
-   */
-  private Control createPrintTableControl() {
-    String printCaption = MESSAGES.getString("print_table");
-    return Control.builder(this::printTable)
-            .caption(printCaption)
-            .description(printCaption)
-            .mnemonic(Messages.printMnemonic())
-            .smallIcon(FrameworkIcons.instance().print())
             .build();
   }
 
@@ -1506,7 +1501,6 @@ public class EntityTablePanel extends JPanel {
       controls.putIfAbsent(ControlCode.TOGGLE_FILTER_PANEL, createToggleFilterPanelControl());
       controls.put(ControlCode.SELECT_FILTER_PANEL, Control.control(this::selectFilterPanel));
     }
-    controls.putIfAbsent(ControlCode.PRINT_TABLE, createPrintTableControl());
     controls.putIfAbsent(ControlCode.CLEAR_SELECTION, createClearSelectionControl());
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_UP, createMoveSelectionDownControl());
     controls.putIfAbsent(ControlCode.MOVE_SELECTION_DOWN, createMoveSelectionUpControl());

@@ -29,8 +29,6 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
-
 // tag::createEntityPanels[]
 public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
 
@@ -92,7 +90,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
-    entityApplicationBuilder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
+    EntityApplicationPanel.builder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
             .domainClassName("is.codion.framework.demos.empdept.domain.EmpDept")
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)

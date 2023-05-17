@@ -22,8 +22,6 @@ import javax.swing.JTable;
 import java.util.Collections;
 import java.util.List;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
-
 public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   public SchemaBrowserAppPanel(SchemaBrowserApplicationModel applicationModel) {
@@ -59,7 +57,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
   public static void main(String[] args) {
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
-    entityApplicationBuilder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
+    EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
             .domainClassName("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser")
             .frameSize(Windows.screenSizeRatio(0.5))

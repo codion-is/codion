@@ -9023,3 +9023,6 @@
   DefaultFilteredTableModelTest improved a bit
   ColumnConditionModel, a bunch of addListener() methods removed
   DefaultValueSet now returns the same value on subsequent calls to value()
+  EntityApplicationBuilder.ConnectionProviderFactory.create() renamed createConnectionProvider()
+  EntityApplicationBuilder moved to EntityApplicationPanel and renamed Builder
+  EntityTablePanel, no longer creates a default print action for printing the table, ControlCode.PRINT_TABLE replaced with PRINT, which can be assigned via setControl()
