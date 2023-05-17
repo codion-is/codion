@@ -8985,3 +8985,4 @@
   DefaultFilteredTableModelTest improved a bit
   ColumnConditionModel, a bunch of addListener() methods removed
   DefaultValueSet now returns the same value on subsequent calls to value()
+  EntityApplicationBuilder.ConnectionProviderFactory.create() renamed createConnectionProvider()

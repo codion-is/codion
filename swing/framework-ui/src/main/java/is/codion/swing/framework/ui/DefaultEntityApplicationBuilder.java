@@ -450,7 +450,7 @@ final class DefaultEntityApplicationBuilder<M extends SwingEntityApplicationMode
 
   private EntityConnectionProvider initializeConnectionProvider(User user, String domainClassName,
                                                                 String clientTypeId, Version clientVersion) {
-    return connectionProviderFactory.create(user, domainClassName, clientTypeId, clientVersion);
+    return connectionProviderFactory.createConnectionProvider(user, domainClassName, clientTypeId, clientVersion);
   }
 
   private static Border initializeStartupDialogBorder() {
