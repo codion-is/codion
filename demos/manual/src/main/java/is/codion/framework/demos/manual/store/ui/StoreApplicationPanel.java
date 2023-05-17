@@ -20,8 +20,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
-
 // tag::storeAppPanel[]
 public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicationModel> {
 
@@ -63,7 +61,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    entityApplicationBuilder(StoreApplicationModel.class, StoreApplicationPanel.class)
+    EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
             .applicationName("Store")
             .domainClassName(Store.class.getName())
             .frameSize(Windows.screenSizeRatio(0.6))

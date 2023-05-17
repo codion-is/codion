@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
@@ -84,7 +83,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
   public static void main(String[] args) {
     Locale.setDefault(new Locale("en"));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
-    entityApplicationBuilder(PetstoreAppModel.class, PetstoreAppPanel.class)
+    EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
             .applicationName("The Pet Store")
             .domainClassName("is.codion.framework.demos.petstore.domain.Petstore")
             .frameSize(Windows.screenSizeRatio(0.8))

@@ -25,7 +25,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
 public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
@@ -63,7 +62,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppModel> {
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    entityApplicationBuilder(WorldAppModel.class, WorldAppPanel.class)
+    EntityApplicationPanel.builder(WorldAppModel.class, WorldAppPanel.class)
             .applicationName("World")
             .domainClassName("is.codion.framework.demos.world.domain.WorldImpl")
             .applicationVersion(WorldAppModel.VERSION)

@@ -9,6 +9,7 @@ import is.codion.common.Text;
 import is.codion.common.credentials.CredentialsException;
 import is.codion.common.credentials.CredentialsProvider;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
@@ -17,6 +18,7 @@ import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -42,7 +44,9 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.ImageIcon;
 import javax.swing.JComponent;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
@@ -78,6 +82,8 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.Utilities.getParentWindow;
@@ -89,6 +95,7 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 /**
  * A central application panel class.
  * @param <M> the application model type
+ * @see #builder(Class, Class)
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
         extends JPanel implements HierarchyPanel {
@@ -405,6 +412,18 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     return new DefaultTreeModel(root);
+  }
+
+  /**
+   * @param <M> the application model type
+   * @param <P> the application panel type
+   * @param applicationModelClass the application model class
+   * @param applicationPanelClass the application panel class
+   * @return a {@link Builder}
+   */
+  public static <M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> Builder<M, P> builder(
+          Class<M> applicationModelClass, Class<P> applicationPanelClass) {
+    return new DefaultEntityApplicationPanelBuilder<>(applicationModelClass, applicationPanelClass);
   }
 
   /**
@@ -1063,6 +1082,231 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       }
 
       return false;
+    }
+  }
+
+  /**
+   * Builds a {@link EntityApplicationPanel} and starts the application.
+   * @param <M> the application model type
+   * @param <P> the application panel type
+   * @see EntityApplicationPanel#builder(Class, Class)
+   * @see #start()
+   */
+  public interface Builder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
+
+    /**
+     * @param domainClassName the full name of the domain implementation class
+     * @return this Builder instance
+     */
+    Builder<M, P> domainClassName(String domainClassName);
+
+    /**
+     * @param applicationName the application name
+     * @return this Builder instance
+     */
+    Builder<M, P> applicationName(String applicationName);
+
+    /**
+     * @param applicationIcon the application icon
+     * @return this Builder instance
+     */
+    Builder<M, P> applicationIcon(ImageIcon applicationIcon);
+
+    /**
+     * @param applicationVersion the application version
+     * @return this Builder instance
+     */
+    Builder<M, P> applicationVersion(Version applicationVersion);
+
+    /**
+     * Sets the default look and feel classname, used in case no look and feel settings are found in user preferences.
+     * Note that for an external Look and Feels to be enabled, it must be registered via
+     * {@link LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+     * before starting the application.
+     * @param defaultLookAndFeelClassName the default look and feel classname
+     * @return this Builder instance
+     */
+    Builder<M, P> defaultLookAndFeelClassName(String defaultLookAndFeelClassName);
+
+    /**
+     * Sets the look and feel classname, overrides any look and feel settings found in user preferences.
+     * Note that for an external Look and Feels to be enabled, it must be registered via
+     * {@link LookAndFeelProvider#addLookAndFeelProvider(LookAndFeelProvider)}
+     * before starting the application.
+     * @param lookAndFeelClassName the look and feel classname
+     * @return this Builder instance
+     */
+    Builder<M, P> lookAndFeelClassName(String lookAndFeelClassName);
+
+    /**
+     * @param connectionProviderFactory the connection provider factory
+     * @return this Builder instance
+     */
+    Builder<M, P> connectionProviderFactory(ConnectionProviderFactory connectionProviderFactory);
+
+    /**
+     * @param applicationModelFactory the application model factory
+     * @return this Builder instance
+     */
+    Builder<M, P> applicationModelFactory(Function<EntityConnectionProvider, M> applicationModelFactory);
+
+    /**
+     * @param applicationPanelFactory the application panel factory
+     * @return this Builder instance
+     */
+    Builder<M, P> applicationPanelFactory(Function<M, P> applicationPanelFactory);
+
+    /**
+     * @param loginProvider provides a way for a user to login
+     * @return this Builder instance
+     */
+    Builder<M, P> loginProvider(LoginProvider loginProvider);
+
+    /**
+     * @param defaultLoginUser the default user credentials to display in the login dialog
+     * @return this Builder instance
+     */
+    Builder<M, P> defaultLoginUser(User defaultLoginUser);
+
+    /**
+     * @param automaticLoginUser if specified the application is started automatically with the given user,
+     * instead of displaying a login dialog
+     * @return this Builder instance
+     */
+    Builder<M, P> automaticLoginUser(User automaticLoginUser);
+
+    /**
+     * @param saveDefaultUsername true if the username should be saved in user preferences after a successful login
+     * @return this Builder instance
+     */
+    Builder<M, P> saveDefaultUsername(boolean saveDefaultUsername);
+
+    /**
+     * Note that this does not apply when a custom {@link LoginProvider} has been specified.
+     * @param loginPanelSouthComponentSupplier supplies the component to add to the
+     * {@link BorderLayout#SOUTH} position of the default login panel
+     * @return this Builder instance
+     */
+    Builder<M, P> loginPanelSouthComponentSupplier(Supplier<JComponent> loginPanelSouthComponentSupplier);
+
+    /**
+     * Runs before the application is started, but after Look and Feel initialization.
+     * Throw {@link CancelException} in order to cancel the application startup.
+     * @param beforeApplicationStarted run before the application is started
+     * @return this Builder instance
+     */
+    Builder<M, P> beforeApplicationStarted(Runnable beforeApplicationStarted);
+
+    /**
+     * @param onApplicationStarted called after a successful application start
+     * @return this Builder instance
+     */
+    Builder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted);
+
+    /**
+     * @param frameSupplier the frame supplier
+     * @return this Builder instance
+     */
+    Builder<M, P> frameSupplier(Supplier<JFrame> frameSupplier);
+
+    /**
+     * @param frameTitleFactory the frame title factory
+     * @return this Builder instance
+     */
+    Builder<M, P> frameTitleFactory(Function<M, String> frameTitleFactory);
+
+    /**
+     * @param includeMainMenu if true then a main menu is included
+     * @return this Builder instance
+     */
+    Builder<M, P> includeMainMenu(boolean includeMainMenu);
+
+    /**
+     * @param maximizeFrame specifies whether the frame should be maximized or use it's preferred size
+     * @return this Builder instance
+     */
+    Builder<M, P> maximizeFrame(boolean maximizeFrame);
+
+    /**
+     * @param displayFrame specifies whether the frame should be displayed or left invisible
+     * @return this Builder instance
+     */
+    Builder<M, P> displayFrame(boolean displayFrame);
+
+    /**
+     * Specifies whether or not to set the default uncaught exception handler when starting the application, true by default.
+     * @param setUncaughtExceptionHandler if true the default uncaught exception handler is set on application start
+     * @return this Builder instance
+     * @see Thread#setDefaultUncaughtExceptionHandler(Thread.UncaughtExceptionHandler)
+     */
+    Builder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler);
+
+    /**
+     * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
+     * @return this Builder instance
+     */
+    Builder<M, P> displayStartupDialog(boolean displayProgressDialog);
+
+    /**
+     * @param frameSize the frame size when not maximized
+     * @return this Builder instance
+     */
+    Builder<M, P> frameSize(Dimension frameSize);
+
+    /**
+     * If this is set to false, the {@link #connectionProviderFactory(ConnectionProviderFactory)}
+     * {@link User} argument will be null.
+     * @param loginRequired true if a user login is required for this application, false if the user is supplied differently
+     * @return this Builder instance
+     */
+    Builder<M, P> loginRequired(boolean loginRequired);
+
+    /**
+     * Starts the application on the Event Dispatch Thread.
+     */
+    void start();
+
+    /**
+     * Starts the application.
+     * @param onEventDispatchThread if true then startup is performed on the EDT
+     */
+    void start(boolean onEventDispatchThread);
+
+    /**
+     * Provides a way for a user to login.
+     */
+    interface LoginProvider {
+
+      /**
+       * Performs the login and returns the User, may not return null.
+       * @return the user, not null
+       * @throws RuntimeException in case the login failed
+       * @throws CancelException in case the login is cancelled
+       */
+      User login();
+    }
+
+    /**
+     * A factory for a {@link EntityConnectionProvider} instance.
+     */
+    interface ConnectionProviderFactory {
+
+      /**
+       * Creates a new {@link EntityConnectionProvider} instance.
+       * @param user the user, may be null in case login is not required {@link Builder#loginRequired(boolean)}.
+       * @param domainClassName the full name of the domain model class
+       * @param clientTypeId the client type id
+       * @param clientVersion the client version
+       * @return a new {@link EntityConnectionProvider} instance.
+       */
+      default EntityConnectionProvider createConnectionProvider(User user, String domainClassName, String clientTypeId, Version clientVersion) {
+        return EntityConnectionProvider.builder()
+                .domainClassName(domainClassName)
+                .clientTypeId(clientTypeId)
+                .clientVersion(clientVersion)
+                .user(user)
+                .build();
+      }
     }
   }
 }

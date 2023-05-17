@@ -33,7 +33,6 @@ import static is.codion.framework.domain.entity.KeyGenerator.automatic;
 import static is.codion.framework.domain.property.Property.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Collections.singletonList;
 
 /**
@@ -166,7 +165,7 @@ public final class ClientTutorial {
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
     EntityPanel.TOOLBAR_BUTTONS.set(true);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
-    entityApplicationBuilder(ApplicationModel.class, ApplicationPanel.class)
+    EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")
             .domainClassName(Chinook.class.getName())
             .frameSize(screenSizeRatio(0.5))

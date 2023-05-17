@@ -8986,3 +8986,4 @@
   ColumnConditionModel, a bunch of addListener() methods removed
   DefaultValueSet now returns the same value on subsequent calls to value()
   EntityApplicationBuilder.ConnectionProviderFactory.create() renamed createConnectionProvider()
+  EntityApplicationBuilder moved to EntityApplicationPanel and renamed Builder

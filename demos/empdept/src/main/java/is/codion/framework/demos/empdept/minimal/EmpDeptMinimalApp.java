@@ -31,7 +31,6 @@ import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.property.Property.*;
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 
 /**
  * EmpDept minimal application demo
@@ -274,7 +273,7 @@ public final class EmpDeptMinimalApp {
     System.setProperty("java.security.policy", "resources/config/codion_demos.policy");
 
     //we create an instance of our application panel and start it
-    entityApplicationBuilder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
+    EntityApplicationPanel.builder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
             .applicationName("EmpDept Minimal")
             .domainClassName(EmpDept.class.getName())
             .frameSize(new Dimension(800, 600))

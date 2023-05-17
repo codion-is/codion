@@ -27,7 +27,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.swing.framework.ui.EntityApplicationBuilder.entityApplicationBuilder;
 import static java.util.Arrays.asList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
@@ -88,7 +87,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     ReferentialIntegrityErrorHandling.REFERENTIAL_INTEGRITY_ERROR_HANDLING
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
-    entityApplicationBuilder(PetclinicAppModel.class, PetclinicAppPanel.class)
+    EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
             .domainClassName("is.codion.framework.demos.petclinic.domain.Petclinic")
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
