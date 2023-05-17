@@ -5,7 +5,6 @@ import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.world.model.CountryTableModel;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -20,15 +19,11 @@ final class CountryTablePanel extends EntityTablePanel {
 
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-    setControl(ControlCode.PRINT_TABLE, Control.builder(this::viewCountryReport)
+    setControl(ControlCode.PRINT, Control.builder(this::viewCountryReport)
+            .caption("Country report")
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .smallIcon(FrameworkIcons.instance().print())
             .build());
-  }
-
-  @Override
-  protected Controls createPrintMenuControls() {
-    return super.createPrintMenuControls().removeAll();
   }
 
   private void viewCountryReport() throws Exception {
