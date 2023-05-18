@@ -1130,6 +1130,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
                       .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                       .action(control)
                       .enable(this));
+      KeyEvents.builder(VK_F)
+              .modifiers(CTRL_DOWN_MASK)
+              .action(Control.control(tablePanel.table().searchField()::requestFocusInWindow))
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .enable(this);
       if (containsEditPanel()) {
         tablePanel.control(EntityTablePanel.ControlCode.REQUEST_TABLE_FOCUS).ifPresent(control ->
                 KeyEvents.builder(VK_T)

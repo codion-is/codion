@@ -382,18 +382,30 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(Control.control(() -> conditionModel.setEnabled(!conditionModel.isEnabled())));
+    KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KeyEvent.VK_UP)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(Control.control(this::selectPreviousOperator));
+    KeyEvents.Builder nextOperatorKeyEvent = KeyEvents.builder(KeyEvent.VK_DOWN)
+            .modifiers(InputEvent.CTRL_DOWN_MASK)
+            .action(Control.control(this::selectNextOperator));
     enableOnEnterKeyEvent.enable(operatorCombo);
     if (equalField != null) {
       equalField.addFocusListener(focusGainedListener);
       enableOnEnterKeyEvent.enable(equalField);
+      previousOperatorKeyEvent.enable(equalField);
+      nextOperatorKeyEvent.enable(equalField);
     }
     if (upperBoundField != null) {
       upperBoundField.addFocusListener(focusGainedListener);
       enableOnEnterKeyEvent.enable(upperBoundField);
+      previousOperatorKeyEvent.enable(upperBoundField);
+      nextOperatorKeyEvent.enable(upperBoundField);
     }
     if (lowerBoundField != null) {
       lowerBoundField.addFocusListener(focusGainedListener);
       enableOnEnterKeyEvent.enable(lowerBoundField);
+      previousOperatorKeyEvent.enable(lowerBoundField);
+      nextOperatorKeyEvent.enable(lowerBoundField);
     }
     toggleEnabledButton.addFocusListener(focusGainedListener);
     enableOnEnterKeyEvent.enable(toggleEnabledButton);
@@ -482,6 +494,24 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .build();
   }
 
+  private void selectNextOperator() {
+    ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
+    List<Item<Operator>> visibleItems = itemComboBoxModel.visibleItems();
+    int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
+    if (index < itemComboBoxModel.visibleItemCount() - 1) {
+      itemComboBoxModel.setSelectedItem(visibleItems.get(index + 1));
+    }
+  }
+
+  private void selectPreviousOperator() {
+    ItemComboBoxModel<Operator> itemComboBoxModel = (ItemComboBoxModel<Operator>) operatorCombo.getModel();
+    List<Item<Operator>> visibleItems = itemComboBoxModel.visibleItems();
+    int index = visibleItems.indexOf(itemComboBoxModel.getSelectedItem());
+    if (index > 0) {
+      itemComboBoxModel.setSelectedItem(visibleItems.get(index - 1));
+    }
+  }
+
   private void initializeUI() {
     Utilities.linkToEnabledState(conditionModel.lockedObserver().reversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
@@ -495,7 +525,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private void singleValuePanel(JComponent boundField) {
     if (!Arrays.asList(inputPanel.getComponents()).contains(boundField)) {
       boolean requestFocus = boundFieldHasFocus();
-      inputPanel.removeAll();
+      clearInputPanel(requestFocus);
       inputPanel.add(boundField, BorderLayout.CENTER);
       if (requestFocus) {
         boundField.requestFocusInWindow();
@@ -506,12 +536,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private void rangePanel() {
     if (!Arrays.asList(inputPanel.getComponents()).contains(rangePanel)) {
       boolean requestFocus = boundFieldHasFocus();
-      if (requestFocus) {
-        //keep the focus here temporarily while we remove all
-        //otherwise it jumps to the first focusable component
-        inputPanel.requestFocusInWindow();
-      }
-      inputPanel.removeAll();
+      clearInputPanel(requestFocus);
       rangePanel.add(lowerBoundField);
       rangePanel.add(upperBoundField);
       inputPanel.add(rangePanel, BorderLayout.CENTER);
@@ -519,6 +544,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         lowerBoundField.requestFocusInWindow();
       }
     }
+  }
+
+  private void clearInputPanel(boolean requestFocus) {
+    if (requestFocus) {
+      //keep the focus here temporarily while we remove all
+      //otherwise it jumps to the first focusable component
+      inputPanel.requestFocusInWindow();
+    }
+    inputPanel.removeAll();
   }
 
   private boolean boundFieldHasFocus() {
