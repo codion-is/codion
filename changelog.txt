@@ -8991,3 +8991,4 @@
   Serializer.serializeToFile() and deserializeFromFile() removed
   DefaultConditionCombination now throws exception in case of null condition or empty conditions
   SwingEntityTableModel.createColumns() EntityDefinition parameter replaced with EntityType
+  EntityPanel, CTRL-F now global for find in table field
