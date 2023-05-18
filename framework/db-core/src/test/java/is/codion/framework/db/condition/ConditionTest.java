@@ -70,12 +70,7 @@ public final class ConditionTest {
 
   @Test
   void combinationEmpty() {
-    Condition.Combination combination = Condition.combination(Conjunction.AND);
-    assertEquals("", combination.toString(ENTITIES.definition(Employee.TYPE)));
-
-    combination = combination.and(Condition.condition(Employee.TYPE),
-            where(Employee.ID).equalTo(1));
-    assertEquals("(empno = ?)", combination.toString(ENTITIES.definition(Employee.TYPE)));
+    assertThrows(IllegalArgumentException.class, () -> Condition.combination(Conjunction.AND));
   }
 
   @Test

@@ -29,10 +29,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   private final Conjunction conjunction;
   private final EntityType entityType;
 
-  DefaultConditionCombination(Conjunction conjunction, Condition... conditions) {
-    this(conjunction, Arrays.asList(requireNonNull(conditions, CONDITIONS)));
-  }
-
   DefaultConditionCombination(Conjunction conjunction, Condition condition, Condition... conditions) {
     this(conjunction, combine(condition, conditions));
   }
@@ -43,8 +39,11 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   DefaultConditionCombination(Conjunction conjunction, List<Condition> conditions) {
     this.conjunction = requireNonNull(conjunction, "conjunction");
-    this.conditions = new ArrayList<>(requireNonNull(conditions, CONDITIONS));
-    this.entityType = this.conditions.isEmpty() ? null : this.conditions.get(0).entityType();
+    if (requireNonNull(conditions, CONDITIONS).isEmpty()) {
+      throw new IllegalArgumentException("One or more conditions must be specified for a condition combination");
+    }
+    this.conditions = new ArrayList<>(conditions);
+    this.entityType = conditions.get(0).entityType();
     for (int i = 1; i < this.conditions.size(); i++) {
       EntityType conditionEntityType = this.conditions.get(i).entityType();
       if (!conditionEntityType.equals(this.entityType)) {
@@ -55,10 +54,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public EntityType entityType() {
-    if (entityType == null) {
-      throw new IllegalStateException("No condition added to combination");
-    }
-
     return entityType;
   }
 
@@ -94,19 +89,11 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public Condition.Combination and(Condition... conditions) {
-    if (this.conditions.isEmpty()) {
-      return new DefaultConditionCombination(Conjunction.AND, combine(null, conditions));
-    }
-
     return new DefaultConditionCombination(Conjunction.AND, combine(this, conditions));
   }
 
   @Override
   public Condition.Combination or(Condition... conditions) {
-    if (this.conditions.isEmpty()) {
-      return new DefaultConditionCombination(Conjunction.OR, combine(null, conditions));
-    }
-
     return new DefaultConditionCombination(Conjunction.OR, combine(this, conditions));
   }
 
@@ -161,10 +148,9 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   private static List<Condition> combine(Condition condition, Condition... conditions) {
-    List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + (condition != null ? 1 : 0));
-    if (condition != null) {
-      list.add(condition);
-    }
+    requireNonNull(condition);
+    List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + 1);
+    list.add(condition);
     list.addAll(Arrays.asList(conditions));
 
     return list;
