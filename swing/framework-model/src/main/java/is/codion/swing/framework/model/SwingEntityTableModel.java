@@ -834,12 +834,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Initializes default {@link FilteredTableColumn}s for all visible properties in the given entity type.
+   * @param entityType the entity type
    * @param entities the domain entities
-   * @param definition the entity definition
    * @return a list of TableColumns based on the given entity
    */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(Entities entities, EntityDefinition definition) {
-    return createColumns(requireNonNull(entities), requireNonNull(definition).visibleProperties());
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityType entityType, Entities entities) {
+    return createColumns(requireNonNull(entities), entities.definition(requireNonNull(entityType)).visibleProperties());
   }
 
   /**
@@ -1213,7 +1213,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     private final SwingEntityTableModel tableModel;
 
     private EntityFilteredTableModel(SwingEntityTableModel tableModel) {
-      super(createColumns(requireNonNull(tableModel).entities(), tableModel.entityDefinition()),
+      super(createColumns(tableModel.entityType(), requireNonNull(tableModel).entities()),
               new EntityColumnValueProvider(), createFilterModels(new EntityFilterModelFactory(tableModel.entityDefinition())));
       this.tableModel = tableModel;
     }

@@ -13,6 +13,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -183,9 +184,10 @@ public interface Condition {
    * @param conjunction the Conjunction to use
    * @param conditions the conditions to combine
    * @return a new {@link Combination} instance
+   * @throws IllegalArgumentException in case {@code conditions} is empty
    */
   static Combination combination(Conjunction conjunction, Condition... conditions) {
-    return new DefaultConditionCombination(conjunction, conditions);
+    return combination(conjunction, Arrays.asList(requireNonNull(conditions)));
   }
 
   /**
@@ -193,6 +195,7 @@ public interface Condition {
    * @param conjunction the Conjunction to use
    * @param conditions the conditions to combine
    * @return a new {@link Combination} instance
+   * @throws IllegalArgumentException in case {@code conditions} is empty
    */
   static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
     return new DefaultConditionCombination(conjunction, conditions);

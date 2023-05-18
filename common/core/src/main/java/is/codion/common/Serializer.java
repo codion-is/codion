@@ -5,17 +5,9 @@ package is.codion.common;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.EOFException;
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Utility class for serialization.
@@ -57,40 +49,5 @@ public final class Serializer {
     }
 
     return null;
-  }
-
-  /**
-   * Deserializes a list of Objects from the given file
-   * @param file the file
-   * @param <T> the type of objects to read from the file
-   * @return deserialized objects
-   * @throws IOException in case the file can not be read
-   * @throws ClassNotFoundException in case the deserialized class is not found
-   */
-  public static <T> List<T> deserializeFromFile(File file) throws IOException, ClassNotFoundException {
-    List<T> objects = new ArrayList<>();
-    try (ObjectInputStream inputStream = new ObjectInputStream(Files.newInputStream(requireNonNull(file).toPath()))) {
-      while (true) {
-        objects.add((T) inputStream.readObject());
-      }
-    }
-    catch (EOFException ignored) {/*ignored*/}
-
-    return objects;
-  }
-
-  /**
-   * Serializes a Collection of Objects to a given file
-   * @param objects the objects to serialize
-   * @param file the file
-   * @param <T> the value type
-   * @throws IOException in case the file can not be written
-   */
-  public static <T> void serializeToFile(Collection<T> objects, File file) throws IOException {
-    try (ObjectOutputStream outputStream = new ObjectOutputStream(Files.newOutputStream(requireNonNull(file).toPath()))) {
-      for (T object : requireNonNull(objects)) {
-        outputStream.writeObject(object);
-      }
-    }
   }
 }
