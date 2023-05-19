@@ -50,7 +50,8 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   E editModel();
 
   /**
-   * @return the {@link EntityTableModel}, null if none is specified
+   * @return the {@link EntityTableModel}
+   * @throws IllegalStateException in case no table model is available
    */
   T tableModel();
 
