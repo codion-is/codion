@@ -9002,3 +9002,4 @@
   KeyGenerator, primaryKeyProperties removed from method parameters, accessible via entity.definition()
   FilteredTableModel.allowSelectionChange() removed
   FilteredTableSelectionModel.addBeforeSelectionChangeListener() added
+  User.clearPassword() now return the User instance

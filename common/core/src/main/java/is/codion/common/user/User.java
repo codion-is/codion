@@ -32,8 +32,9 @@ public interface User {
 
   /**
    * Clears the password
+   * @return this User instance
    */
-  void clearPassword();
+  User clearPassword();
 
   /**
    * Creates a new User with an empty password.

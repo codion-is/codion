@@ -42,9 +42,10 @@ final class DefaultUser implements User, Serializable {
   }
 
   @Override
-  public void clearPassword() {
+  public User clearPassword() {
     Arrays.fill(password, (char) 0);
     setPassword(null);
+    return this;
   }
 
   @Override
