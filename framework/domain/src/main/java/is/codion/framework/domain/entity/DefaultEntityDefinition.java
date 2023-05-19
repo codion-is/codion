@@ -391,7 +391,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   public <T> Property<T> property(Attribute<T> attribute) {
     Property<T> property = (Property<T>) entityProperties.propertyMap.get(requireNonNull(attribute, ATTRIBUTE));
     if (property == null) {
-      throw new IllegalArgumentException("Property based on " + attribute + " not found in entity: " + entityType);
+      throw new IllegalArgumentException("Attribute " + attribute + " not found in entity: " + entityType);
     }
 
     return property;
