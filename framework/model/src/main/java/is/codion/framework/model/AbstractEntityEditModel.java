@@ -159,7 +159,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
                                     EntityValidator validator) {
     this.entity = connectionProvider.entities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    this.validator = validator;
+    this.validator = requireNonNull(validator);
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
     configurePersistentForeignKeyValues();
