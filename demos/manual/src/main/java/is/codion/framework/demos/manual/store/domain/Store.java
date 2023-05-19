@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -21,7 +20,6 @@ import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serializable;
 import java.sql.SQLException;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -162,8 +160,7 @@ public final class Store extends DefaultDomain {
   private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
-    public void beforeInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
-                             DatabaseConnection connection) throws SQLException {
+    public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
       entity.put(Customer.ID, UUID.randomUUID().toString());
     }
   }

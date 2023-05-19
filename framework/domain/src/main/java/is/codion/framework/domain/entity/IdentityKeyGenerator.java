@@ -9,7 +9,6 @@ import is.codion.framework.domain.property.ColumnProperty;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 final class IdentityKeyGenerator implements KeyGenerator {
 
@@ -24,11 +23,10 @@ final class IdentityKeyGenerator implements KeyGenerator {
   }
 
   @Override
-  public void afterInsert(Entity entity, List<ColumnProperty<?>> primaryKeyProperties,
-                          DatabaseConnection connection, Statement insertStatement) throws SQLException {
+  public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
     try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
       if (generatedKeys.next()) {
-        ColumnProperty<?> property = primaryKeyProperties.get(0);
+        ColumnProperty<?> property = entity.definition().primaryKeyProperties().get(0);
         entity.put((Attribute<Object>) property.attribute(), generatedKeys.getObject(property.columnName()));
       }
     }

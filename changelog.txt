@@ -8999,3 +8999,4 @@
   ReportType.fillReport() parameter ordering changed
   EntityConnection.CopyEntities and InsertEntities now have a Builder
   RemoteEntityConnectionProvider.serverInformation() removed
+  KeyGenerator, primaryKeyProperties removed from method parameters, accessible via entity.definition()
