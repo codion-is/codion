@@ -21,13 +21,13 @@ public interface ReportType<T, R, P> {
 
   /**
    * Fills the given report.
-   * @param connection the connection
    * @param report the report to fill
-   * @param parameters the parameters
+   * @param connection the connection to use
+   * @param parameters the report parameters
    * @return a report result
    * @throws ReportException in case of an exception
    */
-  R fillReport(Connection connection, Report<T, R, P> report, P parameters) throws ReportException;
+  R fillReport(Report<T, R, P> report, Connection connection, P parameters) throws ReportException;
 
   /**
    * Instantiates a new Report instance with the given name.
