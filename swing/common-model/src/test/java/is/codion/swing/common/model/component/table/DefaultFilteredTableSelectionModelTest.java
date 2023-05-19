@@ -29,12 +29,6 @@ public class DefaultFilteredTableSelectionModelTest {
       protected Collection<String> refreshItems() {
         return data;
       }
-
-      @Override
-      public boolean allowSelectionChange() {
-        String selected = selectionModel().getSelectedItem();
-        return !"C".equals(selected);
-      }
     };
     tableModel.refresh();
 
@@ -47,20 +41,6 @@ public class DefaultFilteredTableSelectionModelTest {
     assertTrue(testModel.isSelectedItem("A"));
     testModel.clearSelection();
     assertFalse(testModel.isSelectedItem("A"));
-  }
-
-  @Test
-  void vetoSelectionChange() {
-    testModel.setSelectedIndex(0);
-    assertEquals("A", testModel.getSelectedItem());
-    testModel.setSelectedIndex(1);
-    assertEquals("B", testModel.getSelectedItem());
-    testModel.setSelectedIndex(2);
-    assertEquals("C", testModel.getSelectedItem());
-    testModel.setSelectedIndex(1);
-    assertEquals("C", testModel.getSelectedItem());
-    testModel.setSelectedIndex(0);
-    assertEquals("C", testModel.getSelectedItem());
   }
 
   @Test

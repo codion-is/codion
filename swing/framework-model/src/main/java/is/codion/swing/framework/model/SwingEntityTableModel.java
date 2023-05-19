@@ -598,11 +598,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public boolean allowSelectionChange() {
-    return tableModel.allowSelectionChange();
-  }
-
-  @Override
   public final int indexOf(Entity item) {
     return tableModel.indexOf(item);
   }

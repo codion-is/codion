@@ -44,6 +44,17 @@ public interface TableSelectionModel<R> {
   State singleSelectionModeState();
 
   /**
+   * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
+   * @param listener a listener to be notified before the selection changes
+   */
+  void addBeforeSelectionChangeListener(EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeBeforeSelectionChangeListener(EventListener listener);
+
+  /**
    * @param listener a listener to be notified each time the selection changes
    */
   void addSelectionListener(EventListener listener);

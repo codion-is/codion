@@ -51,11 +51,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void removeRowsRemovedListener(EventDataListener<RemovedRows> listener);
 
   /**
-   * @return true if an impending selection change should be allowed
-   */
-  boolean allowSelectionChange();
-
-  /**
    * @param item the item
    * @return the index of the item in the table model
    */

@@ -24,6 +24,7 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionModel implements FilteredTableSelectionModel<R> {
 
+  private final Event<?> beforeSelectionChangeEvent = Event.event();
   private final Event<?> selectionEvent = Event.event();
   private final Event<Integer> selectedIndexEvent = Event.event();
   private final Event<List<Integer>> selectedIndexesEvent = Event.event();
@@ -222,37 +223,32 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public void addSelectionInterval(int fromIndex, int toIndex) {
-    if (tableModel.allowSelectionChange()) {
-      super.addSelectionInterval(fromIndex, toIndex);
-    }
+    beforeSelectionChangeEvent.onEvent();
+    super.addSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void setSelectionInterval(int fromIndex, int toIndex) {
-    if (tableModel.allowSelectionChange()) {
-      super.setSelectionInterval(fromIndex, toIndex);
-    }
+    beforeSelectionChangeEvent.onEvent();
+    super.setSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void removeSelectionInterval(int fromIndex, int toIndex) {
-    if (tableModel.allowSelectionChange()) {
-      super.removeSelectionInterval(fromIndex, toIndex);
-    }
+    beforeSelectionChangeEvent.onEvent();
+    super.removeSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void insertIndexInterval(int fromIndex, int length, boolean before) {
-    if (tableModel.allowSelectionChange()) {
-      super.insertIndexInterval(fromIndex, length, before);
-    }
+    beforeSelectionChangeEvent.onEvent();
+    super.insertIndexInterval(fromIndex, length, before);
   }
 
   @Override
   public void removeIndexInterval(int fromIndex, int toIndex) {
-    if (tableModel.allowSelectionChange()) {
-      super.removeIndexInterval(fromIndex, toIndex);
-    }
+    beforeSelectionChangeEvent.onEvent();
+    super.removeIndexInterval(fromIndex, toIndex);
   }
 
   @Override
@@ -310,6 +306,16 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
               .mapToObj(tableModel::itemAt)
               .collect(toList()));
     }
+  }
+
+  @Override
+  public void addBeforeSelectionChangeListener(EventListener listener) {
+    beforeSelectionChangeEvent.addListener(listener);
+  }
+
+  @Override
+  public void removeBeforeSelectionChangeListener(EventListener listener) {
+    beforeSelectionChangeEvent.removeListener(listener);
   }
 
   @Override

@@ -395,15 +395,6 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     fireTableRowsDeleted(fromIndex, toIndex);
   }
 
-  /**
-   * A default implementation returning true
-   * @return true
-   */
-  @Override
-  public boolean allowSelectionChange() {
-    return true;
-  }
-
   @Override
   public final void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.addDataListener(listener);
