@@ -9,6 +9,9 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,58 +22,18 @@ final class DefaultCopyEntities implements CopyEntities {
 
   private final EntityConnection source;
   private final EntityConnection destination;
-  private final List<EntityType> entityTypes;
-
+  private final Collection<EntityType> entityTypes = new ArrayList<>();
   private final Map<EntityType, Condition> conditions = new HashMap<>();
+  private final int batchSize;
+  private final boolean includePrimaryKeys;
 
-  private int batchSize = 100;
-  private boolean includePrimaryKeys = true;
-
-  DefaultCopyEntities(EntityConnection source, EntityConnection destination, List<EntityType> entityTypes) {
-    this.source = requireNonNull(source, "source");
-    this.destination = requireNonNull(destination, "destination");
-    this.entityTypes = requireNonNull(entityTypes);
-  }
-
-  private DefaultCopyEntities(DefaultCopyEntities copyEntities) {
-    this.source = copyEntities.source;
-    this.destination = copyEntities.destination;
-    this.entityTypes = copyEntities.entityTypes;
-    this.conditions.putAll(copyEntities.conditions);
-    this.batchSize = copyEntities.batchSize;
-    this.includePrimaryKeys = copyEntities.includePrimaryKeys;
-  }
-
-  @Override
-  public CopyEntities batchSize(int batchSize) {
-    if (batchSize <= 0) {
-      throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
-    }
-    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
-    copyEntities.batchSize = batchSize;
-
-    return copyEntities;
-  }
-
-  @Override
-  public CopyEntities includePrimaryKeys(boolean includePrimaryKeys) {
-    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
-    copyEntities.includePrimaryKeys = includePrimaryKeys;
-
-    return copyEntities;
-  }
-
-  @Override
-  public CopyEntities condition(EntityType entityType, Condition condition) {
-    requireNonNull(entityType);
-    requireNonNull(condition);
-    if (!entityTypes.contains(entityType)) {
-      throw new IllegalArgumentException("CopyEntities does not contain entityType: " + entityType);
-    }
-    DefaultCopyEntities copyEntities = new DefaultCopyEntities(this);
-    copyEntities.conditions.put(entityType, condition);
-
-    return copyEntities;
+  DefaultCopyEntities(DefaultBuilder builder) {
+    this.source = builder.source;
+    this.destination = builder.destination;
+    this.entityTypes.addAll(builder.entityTypes);
+    this.conditions.putAll(builder.conditions);
+    this.batchSize = builder.batchSize;
+    this.includePrimaryKeys = builder.includePrimaryKeys;
   }
 
   @Override
@@ -83,9 +46,65 @@ final class DefaultCopyEntities implements CopyEntities {
       if (!includePrimaryKeys) {
         entities.forEach(Entity::clearPrimaryKey);
       }
-      new DefaultInsertEntities(destination, entities.iterator())
+      new DefaultInsertEntities.DefaultBuilder(destination, entities.iterator())
               .batchSize(batchSize)
               .execute();
+    }
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final EntityConnection source;
+    private final EntityConnection destination;
+    private final Collection<EntityType> entityTypes = new ArrayList<>();
+    private final Map<EntityType, Condition> conditions = new HashMap<>();
+
+    private boolean includePrimaryKeys = true;
+    private int batchSize = 100;
+
+    DefaultBuilder(EntityConnection source, EntityConnection destination) {
+      this.source = requireNonNull(source);
+      this.destination = requireNonNull(destination);
+    }
+
+    @Override
+    public Builder entityTypes(EntityType... entityTypes) {
+      this.entityTypes.addAll(Arrays.asList(requireNonNull(entityTypes)));
+      return this;
+    }
+
+    @Override
+    public Builder batchSize(int batchSize) {
+      if (batchSize <= 0) {
+        throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
+      }
+      this.batchSize = batchSize;
+      return this;
+    }
+
+    @Override
+    public Builder includePrimaryKeys(boolean includePrimaryKeys) {
+      this.includePrimaryKeys = includePrimaryKeys;
+      return this;
+    }
+
+    @Override
+    public Builder condition(Condition condition) {
+      if (!entityTypes.contains(requireNonNull(condition).entityType())) {
+        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + condition.entityType());
+      }
+      this.conditions.put(condition.entityType(), condition);
+      return this;
+    }
+
+    @Override
+    public void execute() throws DatabaseException {
+      build().execute();
+    }
+
+    @Override
+    public CopyEntities build() {
+      return new DefaultCopyEntities(this);
     }
   }
 }
