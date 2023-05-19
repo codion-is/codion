@@ -3,7 +3,7 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-[plantuml, state-diagram, svg, align=center]
+[plantuml, entity-edit-model-diagram, svg, align=center]
 -------------------------------------------
 skinparam genericDisplay old
 
