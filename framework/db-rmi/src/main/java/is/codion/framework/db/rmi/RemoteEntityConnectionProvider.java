@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.rmi;
 
-import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.EntityConnectionProvider;
 
 /**
@@ -21,11 +20,6 @@ public interface RemoteEntityConnectionProvider extends EntityConnectionProvider
    * @return the name of the host of the server providing the connection
    */
   String serverHostName();
-
-  /**
-   * @return the info on the server last connected to
-   */
-  ServerInformation serverInformation();
 
   /**
    * Instantiates a new builder instance.
