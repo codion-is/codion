@@ -1,0 +1,24 @@
+= Table UI
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+== FilteredTable
+
+[plantuml, filtered-table-diagram, svg, align=center]
+-------------------------------------------
+
+class JTable {}
+
+class FilteredTable {
+    +FilteredTableModel getModel()
+    +FilteredTableConditionPanel filterPanel()
+    +JTextField searchField()
+}
+
+class FilteredTableConditionPanel {}
+
+FilteredTable --|> JTable
+FilteredTable --o FilteredTableConditionPanel
+-------------------------------------------
+
+The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilteredTable.html[FilteredTable] is a *JTable* sublclass central to the framework.

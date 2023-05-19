@@ -64,7 +64,7 @@ interface ValueObserver<T> {
     +T get()
 }
 
-Value -> ValueObserver
+Value -|> ValueObserver
 EventObserver <-- ValueObserver
 -------------------------------------------
 
@@ -104,8 +104,8 @@ interface StateObserver {
 
 interface Value<Boolean> {}
 
-State -> Value
-State -> StateObserver
+State -|> Value
+State -|> StateObserver
 -------------------------------------------
 
 The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver]. A *State* implements *Value<Boolean>* and is non-nullable .

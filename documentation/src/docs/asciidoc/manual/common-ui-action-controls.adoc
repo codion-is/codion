@@ -11,7 +11,7 @@ class Control {}
 
 interface Action {}
 
-Control -> Action
+Control -|> Action
 -------------------------------------------
 
 [source,java,indent=0]

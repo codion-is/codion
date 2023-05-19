@@ -5,6 +5,8 @@ include::{basedir}/manual/common-core.adoc[leveloffset=+1]
 
 include::{basedir}/manual/common-db.adoc[leveloffset=+1]
 
+include::{basedir}/manual/common-model.adoc[leveloffset=+1]
+
 include::{basedir}/manual/common-ui.adoc[leveloffset=+1]
 
 include::{basedir}/manual/common-utilities.adoc[leveloffset=+1]

@@ -1,6 +1,8 @@
 = Common UI
 :basedir: ..
 
+include::{basedir}/manual/common-ui-table.adoc[leveloffset=+1]
+
 include::{basedir}/manual/common-ui-action-controls.adoc[leveloffset=+1]
 
 include::{basedir}/manual/common-ui-input-components.adoc[leveloffset=+1]
