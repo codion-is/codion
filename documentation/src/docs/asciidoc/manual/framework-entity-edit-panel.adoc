@@ -4,7 +4,7 @@
 
 The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel] manages the input components (text fields, combo boxes and such) for editing an entity instance.
 
-When extending an EntityEditPanel you must implement the *initializeUI()* method, which initializes the edit panel UI. The EntityEditPanel class exposes methods for creating input components and binding them with the underlying {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
+When extending an *EntityEditPanel* you must implement the *initializeUI()* method, which initializes the edit panel UI. The *EntityEditPanel* class exposes methods for creating input components and binding them with the underlying {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance.
 
 [source,java,indent=0]
 ----

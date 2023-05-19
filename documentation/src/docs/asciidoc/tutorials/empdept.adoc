@@ -98,7 +98,7 @@ At some point we are going to be editing the manager property of an employee whi
 
 NOTE: The foreign key attribute (EmpDept.EMPLOYEE_MGR_FK) is used when referring to the manager property, very rarely do we have to worry about the underlying reference attribute (EmpDept.EMPLOYEE_MGR).
 
-We start by calling the super class method which creates an unfiltered {url-javadoc}{framework-model}/is/codion/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so that it only displays employees with the job PRESIDENT or MANAGER.
+We start by calling the super class method which creates an unfiltered {url-javadoc}{framework-model}/is/codion/swing/framework/model/EntityComboBoxModel.html[EntityComboBoxModel], then we configure the one for the manager foreign key so that it only displays employees with the job PRESIDENT or MANAGER.
 
 [source,java]
 ----

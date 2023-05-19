@@ -7,7 +7,18 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-A Codion domain model is based on the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table. To define a domain model start by creating constants representing the following:
+A Codion domain model is based on the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table, providing access to the column values via its *get()* and *put()* methods.
+
+[plantuml, entity-diagram, svg, align=center]
+-------------------------------------------
+
+interface Entity {
+    +<T> T get(Attribute<T> attribute)
+    +<T> T put(Attribute<T> attribute, T value)
+}
+-------------------------------------------
+
+To define a domain model start by creating constants representing the following:
 
 [cols="1,4"]
 |===
@@ -347,7 +358,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 == StringFactory
 
-The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a Function<Entity, String> instance, which is then used to provide the *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
+The {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/StringFactory.html[StringFactory] class provides a builder for a *Function<Entity, String>* instance, which is then used to provide the *toString()* implementations for entities. This value is used wherever entities are displayed, for example in a ComboBox or as foreign key values in table views.
 
 [source,java,indent=0]
 ----

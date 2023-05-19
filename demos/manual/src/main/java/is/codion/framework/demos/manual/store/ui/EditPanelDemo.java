@@ -73,7 +73,6 @@ final class EditPanelDemo extends EntityEditPanel {
     firstNameLabel.setLabelFor(firstNameField);
 
     //create an input panel, with the label and text field
-    //JPanel firstNamePanel = createInputPanel(Customer.FIRST_NAME);
     JPanel firstNamePanel = new JPanel(borderLayout());
     firstNamePanel.add(firstNameLabel, BorderLayout.NORTH);
     firstNamePanel.add(firstNameField, BorderLayout.CENTER);

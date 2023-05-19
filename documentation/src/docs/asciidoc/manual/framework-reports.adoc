@@ -10,7 +10,7 @@ With the Codion JasperReports plugin you can either design your report based on 
 
 == JDBC Reports
 
-Using a report based on an SQL query is the simplest way of viewing a report using Codion, just add a method similar to the one below to a EntityTablePanel subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<framework-entity-table-panel.adoc#_adding_a_print_action, adding a print action>> section.
+Using a report based on an SQL query is the simplest way of viewing a report using Codion, just add a method similar to the one below to a *EntityTablePanel* subclass. You can then create an action calling that method and put it in for example the table popup menu as described in the <<framework-entity-table-panel.adoc#_adding_a_print_action, adding a print action>> section.
 
 [source,java,indent=0]
 ----

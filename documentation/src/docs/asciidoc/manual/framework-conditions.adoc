@@ -15,8 +15,8 @@ The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in th
 
 == SelectCondition
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause for an entity type specifically for selecting.
+{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause as well as extended configuration specifically for selecting, such as *limit*, *offset* and *fetchDepth*.
 
 == UpdateCondition
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition] represents a where clause and values for updating one or more entities.
+{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition] represents a where clause as well as the attribute values for updating one or more entities.

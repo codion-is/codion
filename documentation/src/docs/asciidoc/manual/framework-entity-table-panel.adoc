@@ -7,7 +7,9 @@ The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePa
 [#_adding_a_print_action]
 == Adding a print action
 
-The most common place to add a custom control is the table popup menu, i.e. an action for printing reports or for acting on the selected rows. The table popup menu is based on the Controls returned by **createPopupMenuControls()** in the EntityTablePanel class, which in turn calls **createPrintMenuControls()** to populate the print popup submenu controls. So, to add a custom print action you override it and add a custom action to the default Controls instance.
+The most common place to add a custom control is the table popup menu, i.e. an action for printing reports or for acting on the selected rows. For the simplest case, where a single print action is required, a custom control can be associated with the *PRINT* ControlCode, this control will appear in the Print submenu in the table popup menu as well as on the table toolbar.
+
+For more complex cases, where multiple print controls are required,*createPrintMenuControls()* can be overridden.
 
 [source,java]
 ----

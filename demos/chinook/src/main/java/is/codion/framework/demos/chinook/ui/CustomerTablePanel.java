@@ -8,10 +8,10 @@ import is.codion.common.db.report.ReportException;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -28,16 +28,12 @@ public final class CustomerTablePanel extends EntityTablePanel {
 
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
+    setControl(ControlCode.PRINT, Control.builder(this::viewCustomerReport)
+            .caption(BUNDLE.getString("customer_report"))
+            .smallIcon(FrameworkIcons.instance().print())
+            .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
+            .build());
     setRefreshButtonVisible(RefreshButtonVisible.ALWAYS);
-  }
-
-  @Override
-  protected Controls createPrintMenuControls() {
-    return super.createPrintMenuControls()
-            .add(Control.builder(this::viewCustomerReport)
-                    .caption(BUNDLE.getString("customer_report"))
-                    .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
-                    .build());
   }
 
   private void viewCustomerReport() throws Exception {
