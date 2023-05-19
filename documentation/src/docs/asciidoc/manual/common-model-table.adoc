@@ -1,0 +1,39 @@
+= Table Model
+:dir-source: ../../../../../demos/manual/src/main/java
+:url-javadoc: link:../api
+
+== FilteredTableModel
+
+[plantuml, filtered-table-model-diagram, svg, align=center]
+-------------------------------------------
+
+interface FilteredTableModel {
+    +TableConditionModel filterModel()
+    +TableSummaryModel summaryModel()
+    +FilteredTableColumnModel columnModel()
+    +FilteredTableSelectionModel selectionModel()
+    +FilteredTableSortModel sortModel()
+    +FilteredTableSearchModel searchModel()
+}
+
+interface TableConditionModel {}
+
+interface TableSummaryModel {}
+
+interface FilteredTableColumnModel {}
+
+interface FilteredTableSelectionModel {}
+
+interface FilteredTableSortModel {}
+
+interface FilteredTableSearchModel {}
+
+FilteredTableModel --o TableConditionModel
+FilteredTableModel --o TableSummaryModel
+FilteredTableModel --o FilteredTableColumnModel
+FilteredTableModel --o FilteredTableSelectionModel
+FilteredTableModel --o FilteredTableSortModel
+FilteredTableModel --o FilteredTableSearchModel
+-------------------------------------------
+
+The {url-javadoc}{swing-common-model}/is/codion/swing/common/model/component/table/FilteredTableModel.html[FilteredTableModel] is a table model implementation central to the framework.

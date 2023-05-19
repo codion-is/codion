@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-Use the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.Builder.html[EntityPanel.Builder] class to specify a EntityPanel class configuration, for panels that should not be initialized until used.
+Use the {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.Builder.html[EntityPanel.Builder] class to specify a EntityPanel class configuration, for panels that should not be initialized until used, such the support table panels.
 
 [source,java]
 ----

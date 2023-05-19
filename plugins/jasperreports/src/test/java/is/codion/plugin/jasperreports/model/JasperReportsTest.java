@@ -21,7 +21,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +67,7 @@ public class JasperReportsTest {
   void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    JRReport wrapper = JasperReports.fileReport("empdept_employees.jasper");
     JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
@@ -122,7 +121,7 @@ public class JasperReportsTest {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
-    report.fillReport(connection.databaseConnection().getConnection(), Employee.CLASS_PATH_REPORT, reportParameters);
+    report.fillReport(Employee.CLASS_PATH_REPORT, connection.databaseConnection().getConnection(), reportParameters);
 
     assertThrows(ReportException.class, () -> new ClassPathJRReport(JasperReportsTest.class, "non-existing.jasper").loadReport());
   }
@@ -133,7 +132,7 @@ public class JasperReportsTest {
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
     LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
-    report.fillReport(connection.databaseConnection().getConnection(), Employee.FILE_REPORT, reportParameters);
+    report.fillReport(Employee.FILE_REPORT, connection.databaseConnection().getConnection(), reportParameters);
     assertTrue(Employee.FILE_REPORT.isCached());
     Employee.FILE_REPORT.clearCache();
     assertFalse(Employee.FILE_REPORT.isCached());

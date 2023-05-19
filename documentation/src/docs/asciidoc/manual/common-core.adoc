@@ -2,11 +2,40 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
+[#_core_classes]
 == Core classes
 
 Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value], their respective observers {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver] and listeners {url-javadoc}{common-core}/is/codion/common/event/EventListener.html[EventListener] and {url-javadoc}{common-core}/is/codion/common/event/EventDataListener.html[EventDataListener].
 
 === Event
+
+[plantuml, event-diagram, svg, align=center]
+-------------------------------------------
+skinparam genericDisplay old
+
+interface Event<T> {
+    +void onEvent()
+    +void onEvent(T data)
+    +EventObserver<T> observer()
+}
+
+interface EventListener {
+    +void onEvent()
+}
+
+interface EventDataListener<T> {
+    +void onEvent(T data)
+}
+
+interface EventObserver<T> {
+    +void addListener(EventListener listener)
+    +void addDataListener(EventDataListener<T> listener)
+}
+
+EventListener <-- Event
+EventDataListener <-- Event
+EventObserver *-- Event
+-------------------------------------------
 
 The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
 
@@ -19,9 +48,67 @@ To listen to Events you use the {url-javadoc}{common-core}/is/codion/common/even
 include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=event]
 ----
 
+=== Value
+
+[plantuml, value-diagram, svg, align=center]
+-------------------------------------------
+skinparam genericDisplay old
+
+interface Value<T> {
+    +void set(T)
+    +ValueObserver<T> observer()
+    +void link(Value<T> value)
+}
+
+interface ValueObserver<T> {
+    +T get()
+}
+
+Value -|> ValueObserver
+EventObserver <-- ValueObserver
+-------------------------------------------
+
+A {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] wraps a value and provides a change listener.
+
+Values are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class.
+
+Values can be linked so that changes in one are reflected in the other.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
+----
+
+Values can be non-nullable if a _nullValue_ is specified when the value is initialized. Null is then translated to the _nullValue_ when set.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=nullValue]
+----
+
 === State
 
-The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
+[plantuml, state-diagram, svg, align=center]
+-------------------------------------------
+skinparam genericDisplay old
+
+interface State {
+    +void set(Boolean value)
+    +ValueObserver<Boolean> observer()
+    +void link(Value<Boolean> value)
+}
+
+interface StateObserver {
+    +Boolean get()
+}
+
+interface Value<Boolean> {}
+
+State -|> Value
+State -|> StateObserver
+-------------------------------------------
+
+The {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class encapsulates a boolean state and provides read only access and a change observer via {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver]. A *State* implements *Value<Boolean>* and is non-nullable .
 
 States are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/state/State.html[State] class.
 
@@ -45,23 +132,3 @@ include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.ja
 ----
 
 NOTE: When a State or Event is linked to a Swing component, for example its enabled state, all state changes must happen on the Event Dispatch Thread.
-
-=== Value
-
-A {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] wraps a value and provides a change listener.
-
-Values are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] class.
-
-Values can be linked so that changes in one are reflected in the other.
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=value]
-----
-
-Values can be non-nullable if a _nullValue_ is specified when the value is initialized. Null is then translated to the _nullValue_ when set.
-
-[source,java,indent=0]
-----
-include::{dir-source}/is/codion/framework/demos/manual/common/EventStateValue.java[tags=nullValue]
-----

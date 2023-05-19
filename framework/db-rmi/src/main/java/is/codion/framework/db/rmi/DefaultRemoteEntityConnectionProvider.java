@@ -78,14 +78,6 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
     return serverHostName;
   }
 
-  /**
-   * @return the info on the server last connected to
-   */
-  @Override
-  public ServerInformation serverInformation() {
-    return serverInformation;
-  }
-
   @Override
   protected EntityConnection connect() {
     if (!truststoreResolved) {

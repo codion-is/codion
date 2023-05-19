@@ -19,51 +19,16 @@ final class DefaultInsertEntities implements InsertEntities {
 
   private final EntityConnection connection;
   private final Iterator<Entity> entityIterator;
+  private final int batchSize;
+  private final EventDataListener<Integer> progressReporter;
+  private final EventDataListener<List<Key>> onInsert;
 
-  private int batchSize = 100;
-  private EventDataListener<Integer> progressReporter;
-  private EventDataListener<List<Key>> onInsert;
-
-  DefaultInsertEntities(EntityConnection connection, Iterator<Entity> entityIterator) {
-    this.connection = requireNonNull(connection);
-    this.entityIterator = requireNonNull(entityIterator);
-  }
-
-  private DefaultInsertEntities(DefaultInsertEntities insertEntities) {
-    this.connection = insertEntities.connection;
-    this.entityIterator = insertEntities.entityIterator;
-    this.batchSize = insertEntities.batchSize;
-    this.progressReporter = insertEntities.progressReporter;
-    this.onInsert = insertEntities.onInsert;
-  }
-
-  @Override
-  public InsertEntities batchSize(int batchSize) {
-    if (batchSize <= 0) {
-      throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
-    }
-    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
-    insertEntities.batchSize = batchSize;
-
-    return insertEntities;
-  }
-
-  @Override
-  public InsertEntities progressReporter(EventDataListener<Integer> progressReporter) {
-    requireNonNull(progressReporter);
-    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
-    insertEntities.progressReporter = progressReporter;
-
-    return insertEntities;
-  }
-
-  @Override
-  public InsertEntities onInsert(EventDataListener<List<Key>> onInsert) {
-    requireNonNull(onInsert);
-    DefaultInsertEntities insertEntities = new DefaultInsertEntities(this);
-    insertEntities.onInsert = onInsert;
-
-    return insertEntities;
+  DefaultInsertEntities(DefaultBuilder builder) {
+    this.connection = builder.connection;
+    this.entityIterator = builder.entityIterator;
+    this.batchSize = builder.batchSize;
+    this.progressReporter = builder.progressReporter;
+    this.onInsert = builder.onInsert;
   }
 
   @Override
@@ -83,6 +48,52 @@ final class DefaultInsertEntities implements InsertEntities {
       if (onInsert != null) {
         onInsert.onEvent(insertedKeys);
       }
+    }
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final EntityConnection connection;
+    private final Iterator<Entity> entityIterator;
+
+    private int batchSize = 100;
+    private EventDataListener<Integer> progressReporter;
+    private EventDataListener<List<Key>> onInsert;
+
+    DefaultBuilder(EntityConnection connection, Iterator<Entity> entityIterator) {
+      this.connection = requireNonNull(connection);
+      this.entityIterator = requireNonNull(entityIterator);
+    }
+
+    @Override
+    public Builder batchSize(int batchSize) {
+      if (batchSize <= 0) {
+        throw new IllegalArgumentException("Batch size must be a positive integer: " + batchSize);
+      }
+      this.batchSize = batchSize;
+      return this;
+    }
+
+    @Override
+    public Builder progressReporter(EventDataListener<Integer> progressReporter) {
+      this.progressReporter = requireNonNull(progressReporter);
+      return this;
+    }
+
+    @Override
+    public Builder onInsert(EventDataListener<List<Key>> onInsert) {
+      this.onInsert = requireNonNull(onInsert);
+      return this;
+    }
+
+    @Override
+    public void execute() throws DatabaseException {
+      build().execute();
+    }
+
+    @Override
+    public InsertEntities build() {
+      return new DefaultInsertEntities(this);
     }
   }
 }

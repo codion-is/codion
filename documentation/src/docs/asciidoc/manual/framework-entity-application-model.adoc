@@ -1,9 +1,18 @@
 = EntityApplicationModel
 :dir-source: ../../../../../demos/manual/src/main/java
 
-The EntityApplicationModel class serves as the base for the application. Its main purpose is to hold references to the root EntityModel instances used by the application.
+[plantuml, entity-application-model-diagram, svg, align=center]
+-------------------------------------------
+interface EntityApplicationModel {
+    +List<EntityModel> entityModels()
+}
 
-When extending this class you must provide a constructor with a single EntityConnectionProvider parameter, as seen below.
+EntityApplicationModel --o EntityModel
+-------------------------------------------
+
+The *EntityApplicationModel* class serves as the base for the application. Its main purpose is to hold references to the root EntityModel instances used by the application.
+
+When extending this class you must provide a constructor with a single *EntityConnectionProvider* parameter, as seen below.
 
 [source,java,indent=0]
 ----

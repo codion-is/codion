@@ -4,6 +4,16 @@
 
 == Control
 
+[plantuml, control-diagram, svg, align=center]
+-------------------------------------------
+
+class Control {}
+
+interface Action {}
+
+Control -|> Action
+-------------------------------------------
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/InputControls.java[tags=control]

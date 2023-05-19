@@ -3,6 +3,19 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
+[plantuml, entity-panel-diagram, svg, align=center]
+-------------------------------------------
+class EntityPanel {
+    +EntityEditPanel editPanel()
+    +EntityTablePanel tablePanel()
+    +Collection<EntityPanel> detailPanels()
+}
+
+EntityPanel --o EntityEditPanel
+EntityPanel --o EntityTablePanel
+EntityPanel --o EntityPanel
+-------------------------------------------
+
 The {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityPanel.html[EntityPanel] is the base UI class for working with entity instances. It usually consists of an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityTablePanel.html[EntityTablePanel], an {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditPanel.html[EntityEditPanel], and a set of detail panels representing the entities having a master/detail relationship with the underlying entity.
 
 == Detail panels

@@ -4,7 +4,26 @@
 :dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
-The {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class links together and coordinates between a {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] and a {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], where the *EntityEditModel* handles CRUD operations and the *EntityTableModel* provides a table representation of the underlying entities.
+The application model layer consists of the {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] class and its associates; the {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel], which provides a table represenation of entities and the {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] which provides the CRUD operations.
+
+An *EntityEntityModel* always contains an *EntityEditModel* instance and usually contains a *EntityTableModel* as well.
+
+[plantuml, entity-model-diagram, svg, align=center]
+-------------------------------------------
+interface EntityModel {
+    +EntityEditModel editModel()
+    +EntityTableModel tableModel()
+}
+
+interface EntityTableModel {
+    +EntityEditModel editModel()
+}
+
+interface EntityEditModel {}
+
+EntityModel --o EntityTableModel
+EntityTableModel --o EntityEditModel
+-------------------------------------------
 
 [source,java]
 ----
@@ -21,28 +40,35 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel
 include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerAddressModel.java[tags=customerAddressModel]
 ----
 
-== Edit model
+== EntityTableModel
 
-Each {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] contains a single {url-javadoc}{framework-model}/is/codion/framework/model/EntityEditModel.html[EntityEditModel] instance. This edit model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a custom implementation.
-
-[source,java]
-----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
-----
-
-== Table model
-
-Each {url-javadoc}{framework-model}/is/codion/framework/model/EntityModel.html[EntityModel] can contain a single {url-javadoc}{framework-model}/is/codion/framework/model/EntityTableModel.html[EntityTableModel] instance. This table model can be created automatically by the *EntityModel* or supplied via a constructor argument in case of a specialized implementation.
+Every *EntityTableModel* contains a *EntityEditModel* instance. A default edit model implementation is created automatically by the *EntityTableModel* if one is not supplied via a constructor argument.
 
 [source,java]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerTableModel.java[tags=customerTableModel]
 ----
 
+== EntityEditModel
+
+[source,java]
+----
+include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerEditModel.java[tags=customerEditModel]
+----
+
 [#_detail_models]
 == Detail models
 
-Detail models can be added to a model, this relies on a foreign key reference between the entities involved.
+An *EntityModel* can contain one or more detail models, usually based on foreign key relationships.
+
+[plantuml, entity-detail-model-diagram, svg, align=center]
+-------------------------------------------
+interface EntityModel {
+    +Collection<EntityModel> detailModels()
+}
+
+EntityModel --o EntityModel
+-------------------------------------------
 
 [source,java]
 ----
@@ -52,13 +78,15 @@ include::{dir-source}/is/codion/framework/demos/manual/store/model/StoreApplicat
 [#_event_binding]
 == Event binding
 
-The EntityModel, EntityEditModel and EntityTableModel classes expose a number of *addListener* methods.
+The model layer classes expose a number of <<manual.adoc#_core_classes, *Event* and *State* observers>> as well as *addListener* methods.
 
-The following example prints, to the standard output, all changes made to a given property as well as a message indicating that a refresh has started.
+* <<{dir-tutorials}/empdept.adoc#_model, EmpDept entity models>>
+
+The example below prints, to the standard output, all changes made to a given attribute value as well as a message indicating that a table refresh has started.
 
 [source,java,indent=0]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel.java[tags=bindEvents]
+include::{dir-source}/is/codion/framework/demos/manual/store/model/CustomerModel.java[tags=customerModel]
 ----
 
 == Examples

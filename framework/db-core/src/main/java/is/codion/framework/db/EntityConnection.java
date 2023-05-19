@@ -22,7 +22,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
@@ -368,16 +367,15 @@ public interface EntityConnection extends AutoCloseable {
   byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
 
   /**
-   * Creates a new {@link CopyEntities} instance for copying entities from source to destination, with a default batch size of 100.
+   * Creates a new {@link CopyEntities.Builder} instance for copying entities from source to destination, with a default batch size of 100.
    * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
-   * Call {@link CopyEntities#execute()} to perform the copy operation.
+   * Call {@link CopyEntities.Builder#execute()} to perform the copy operation.
    * @param source the source connection
    * @param destination the destination connection
-   * @param entityTypes the entity types to copy
-   * @return a new {@link CopyEntities} instance
+   * @return a new {@link CopyEntities.Builder} instance
    */
-  static CopyEntities copyEntities(EntityConnection source, EntityConnection destination, EntityType... entityTypes) {
-    return new DefaultCopyEntities(source, destination, Arrays.asList(entityTypes));
+  static CopyEntities.Builder copyEntities(EntityConnection source, EntityConnection destination) {
+    return new DefaultCopyEntities.DefaultBuilder(source, destination);
   }
 
   /**
@@ -386,77 +384,116 @@ public interface EntityConnection extends AutoCloseable {
    * Call {@link InsertEntities#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
-   * @return a new {@link InsertEntities} instance
+   * @return a new {@link InsertEntities.Builder} instance
    */
-  static InsertEntities insertEntities(EntityConnection connection, Iterator<Entity> entities) {
-    return new DefaultInsertEntities(connection, entities);
+  static InsertEntities.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
+    return new DefaultInsertEntities.DefaultBuilder(connection, entities);
   }
 
   /**
-   * Copies a set of entities between a source and destination connection, performing a commit after each {@link #batchSize(int)} number of inserts,
+   * Copies a set of entities between a source and destination connection, performing a commit after each {@code batchSize} number of inserts,
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
   interface CopyEntities {
 
     /**
-     * @param batchSize the commit batch size
-     * @return a new {@link CopyEntities} instance
-     * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
-     */
-    CopyEntities batchSize(int batchSize);
-
-    /**
-     * @param includePrimaryKeys true if the primary key values should be included when copying
-     * @return a new {@link CopyEntities} instance
-     */
-    CopyEntities includePrimaryKeys(boolean includePrimaryKeys);
-
-    /**
-     * Specifies a condition to use when determining which entities of the given type to copy,
-     * by default all entities are copied.
-     * @param entityType the entity type
-     * @param condition the condition to use for the entity type
-     * @return a new {@link CopyEntities} instance
-     */
-    CopyEntities condition(EntityType entityType, Condition condition);
-
-    /**
      * Executes this copy operation
      * @throws DatabaseException in case of an exception
      */
     void execute() throws DatabaseException;
+
+    /**
+     * A builder for a {@link CopyEntities} operation.
+     */
+    interface Builder {
+
+      /**
+       * @param entityTypes the entity types to copy
+       * @return this builder instance
+       */
+      Builder entityTypes(EntityType... entityTypes);
+
+      /**
+       * @param batchSize the commit batch size
+       * @return this buildr instance
+       * @throws IllegalArgumentException if {@code batchSize} is not a positive integer
+       */
+      Builder batchSize(int batchSize);
+
+      /**
+       * @param includePrimaryKeys true if the primary key values should be included when copying
+       * @return this builder instance
+       */
+      Builder includePrimaryKeys(boolean includePrimaryKeys);
+
+      /**
+       * Specifies a condition to use when determining which entities of the given type to copy,
+       * by default all entities are copied.
+       * @param condition the condition to use
+       * @return this builder instance
+       */
+      Builder condition(Condition condition);
+
+      /**
+       * Builds and executes this copy operation
+       * @throws DatabaseException in case of an exception
+       */
+      void execute() throws DatabaseException;
+
+      /**
+       * @return a new {@link CopyEntities} instance
+       */
+      CopyEntities build();
+    }
   }
 
   /**
-   * Inserts entities in batches, performing a commit after each {@link #batchSize(int)} number of inserts,
+   * Inserts entities in batches, performing a commit after each {@code batchSize} number of inserts,
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
   interface InsertEntities {
 
     /**
-     * @param batchSize the commit batch size
-     * @return a new {@link InsertEntities} instance
-     */
-    InsertEntities batchSize(int batchSize);
-
-    /**
-     * @param progressReporter if specified this will be used to report batch progress
-     * @return a new {@link InsertEntities} instance
-     */
-    InsertEntities progressReporter(EventDataListener<Integer> progressReporter);
-
-    /**
-     * @param onInsert notified each time a batch is inserted, providing the inserted keys
-     * @return a new {@link InsertEntities} instance
-     */
-    InsertEntities onInsert(EventDataListener<List<Key>> onInsert);
-
-    /**
      * Executes this batch insert
      * @throws DatabaseException in case of an exception
      */
     void execute() throws DatabaseException;
+
+    /**
+     * A builder for {@link InsertEntities} operation.
+     */
+    interface Builder {
+
+      /**
+       * @param batchSize the commit batch size
+       * @return this builder instance
+       */
+      Builder batchSize(int batchSize);
+
+      /**
+       * @param progressReporter if specified this will be used to report batch progress
+       * @return this builder instance
+       */
+      Builder progressReporter(EventDataListener<Integer> progressReporter);
+
+      /**
+       * @param onInsert notified each time a batch is inserted, providing the inserted keys
+       * @return this builder instance
+       */
+      Builder onInsert(EventDataListener<List<Key>> onInsert);
+
+      /**
+       * Builds and executes this insert operation
+       * @throws DatabaseException in case of an exception
+       */
+      void execute() throws DatabaseException;
+
+      /**
+       * @return a new {@link InsertEntities} instance
+       */
+      InsertEntities build();
+    }
   }
 }

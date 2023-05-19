@@ -65,23 +65,27 @@ public class EntityConnectionTest {
   @Test
   void copyEntities() throws SQLException, DatabaseException {
     EntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
-    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Department.TYPE)
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
+            .entityTypes(Department.TYPE)
             .batchSize(2)
             .execute();
 
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 
-    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
+            .entityTypes(Employee.TYPE)
             .batchSize(-10));
 
-    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
-            .condition(Department.TYPE, Condition.condition(Department.TYPE)));
+    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
+            .entityTypes(Employee.TYPE)
+            .condition(Condition.condition(Department.TYPE)));
 
-    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION, Employee.TYPE)
+    EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
+            .entityTypes(Employee.TYPE)
             .batchSize(2)
             .includePrimaryKeys(false)
-            .condition(Employee.TYPE, Condition.where(Employee.SALARY).greaterThan(1000d))
+            .condition(Condition.where(Employee.SALARY).greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.rowCount(condition(Employee.TYPE)));
 

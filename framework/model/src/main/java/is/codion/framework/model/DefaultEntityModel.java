@@ -108,6 +108,10 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
 
   @Override
   public final T tableModel() {
+    if (tableModel == null) {
+      throw new IllegalStateException("Entity model " + this + " does not contain a table model");
+    }
+
     return tableModel;
   }
 

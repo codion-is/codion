@@ -6,10 +6,10 @@ package is.codion.framework.demos.manual.store.ui;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.swing.JRViewer;
@@ -25,19 +25,14 @@ public class CustomerTablePanel extends EntityTablePanel {
 
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-  }
-
-  @Override
-  protected Controls createPrintMenuControls() {
-    Controls printMenuControls = super.createPrintMenuControls();
-    //add a Control which calls the viewCustomerReport method in this class
-    //enabled only when the selection is not empty
-    printMenuControls.add(Control.builder(this::viewCustomerReport)
+    // associate a custom Control with the PRINT control code,
+    // which calls the viewCustomerReport method in this class,
+    // enabled only when the selection is not empty
+    setControl(ControlCode.PRINT, Control.builder(this::viewCustomerReport)
             .caption("Customer report")
+            .smallIcon(FrameworkIcons.instance().print())
             .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
             .build());
-
-    return printMenuControls;
   }
 
   private void viewCustomerReport() throws Exception {
