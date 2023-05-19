@@ -49,6 +49,11 @@ final class DefaultUser implements User, Serializable {
   }
 
   @Override
+  public User copy() {
+    return new DefaultUser(username, getPassword());
+  }
+
+  @Override
   public String toString() {
     return "User: " + username;
   }

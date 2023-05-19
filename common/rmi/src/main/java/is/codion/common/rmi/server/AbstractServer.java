@@ -35,14 +35,14 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Predicate;
 
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
-import static java.util.stream.Collectors.toList;
-import static java.util.stream.Collectors.toSet;
+import static java.util.stream.Collectors.*;
 
 /**
  * A default Server implementation.
@@ -101,12 +101,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return a map containing the current connections
    */
   public final Map<RemoteClient, T> connections() {
-    Map<RemoteClient, T> clients = new HashMap<>();
-    for (ClientConnection<T> clientConnection : connections.values()) {
-      clients.put(clientConnection.remoteClient(), clientConnection.connection());
-    }
-
-    return clients;
+    return connections.values().stream().collect(toMap(ClientConnection::remoteClient, ClientConnection::connection));
   }
 
   /**
@@ -259,6 +254,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   final Collection<User> users() {
     return connections().keySet().stream()
             .map(ConnectionRequest::user)
+            .map(User::copy)
+            .map(User::clearPassword)
             .collect(toSet());
   }
 
@@ -266,7 +263,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return info on all connected clients
    */
   final Collection<RemoteClient> clients() {
-    return new ArrayList<>(connections().keySet());
+    return clients(remoteClient -> true);
   }
 
   /**
@@ -274,11 +271,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return all clients connected with the given user
    */
   final Collection<RemoteClient> clients(User user) {
-    requireNonNull(user);
-
-    return connections().keySet().stream()
-            .filter(remoteClient -> remoteClient.user().equals(user))
-            .collect(toList());
+    return clients(remoteClient -> remoteClient.user().equals(requireNonNull(user)));
   }
 
   protected final void setAdmin(A admin) {
@@ -331,11 +324,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @return all clients of the given type
    */
   protected final Collection<RemoteClient> clients(String clientTypeId) {
-    requireNonNull(clientTypeId);
-
-    return connections().keySet().stream()
-            .filter(client -> Objects.equals(client.clientTypeId(), clientTypeId))
-            .collect(toList());
+    return clients(remoteClient -> Objects.equals(remoteClient.clientTypeId(), requireNonNull(clientTypeId)));
   }
 
   protected final Registry registry() throws RemoteException {
@@ -406,6 +395,21 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       LOG.error("Starting auxiliary server", e);
       throw new RuntimeException(e);
     }
+  }
+
+  private Collection<RemoteClient> clients(Predicate<RemoteClient> predicate) {
+    return connections().keySet().stream()
+            .filter(predicate)
+            .map(RemoteClient::copy)
+            .map(AbstractServer::clearPasswords)
+            .collect(toList());
+  }
+
+  private static RemoteClient clearPasswords(RemoteClient remoteClient) {
+    remoteClient.user().clearPassword();
+    remoteClient.databaseUser().clearPassword();
+
+    return remoteClient;
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {

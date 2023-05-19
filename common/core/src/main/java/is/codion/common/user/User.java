@@ -37,6 +37,11 @@ public interface User {
   User clearPassword();
 
   /**
+   * @return a copy of this User
+   */
+  User copy();
+
+  /**
    * Creates a new User with an empty password.
    * @param username the username
    * @return a new User

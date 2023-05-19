@@ -81,6 +81,14 @@ public class AbstractServerTest {
     assertEquals(connection, connections.get(connectionRequest));
     assertEquals(connection, server.connection(connectionRequest.clientId()));
     assertNotNull(server.connection(connectionRequest.clientId()));
+
+    ServerAdmin admin = server.getAdmin();
+    Collection<RemoteClient> clients = admin.clients();
+    assertFalse(clients.isEmpty());
+    clients.forEach(client -> assertEquals(0, client.user().getPassword().length));
+    clients.forEach(client -> assertEquals(0, client.databaseUser().getPassword().length));
+    admin.users().forEach(user -> assertEquals(0, user.getPassword().length));
+
     RemoteClient client = server.clients(UNIT_TEST_USER).iterator().next();
     client.connectionRequest();
     client.getClientHost();
@@ -93,7 +101,7 @@ public class AbstractServerTest {
     ServerTest connection3 = server.connect(connectionRequest);
     assertNotSame(connection, connection3);
     assertNotNull(server.serverInformation());
-    server.getAdmin().disconnect(connection3.remoteClient().clientId());
+    admin.disconnect(connection3.remoteClient().clientId());
     assertThrows(IllegalArgumentException.class, () -> server.connection(connection3.remoteClient().clientId()));
     assertThrows(NullPointerException.class, () -> server.connect((ConnectionRequest) null));
     server.shutdown();
