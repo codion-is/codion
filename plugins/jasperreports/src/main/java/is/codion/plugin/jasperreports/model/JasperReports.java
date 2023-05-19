@@ -9,7 +9,6 @@ import is.codion.common.db.report.ReportException;
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -63,26 +62,25 @@ public final class JasperReports {
 
   /**
    * Fills the report using the data source wrapped by the given data wrapper
-   * @param report the report
+   * @param report the report to fill
    * @param dataSource the data provider to use for the report generation
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                                       JRDataSource dataSource) throws ReportException {
+  public static JasperPrint fillReport(JRReport report, JRDataSource dataSource) throws ReportException {
     return fillReport(report, dataSource, new HashMap<>());
   }
 
   /**
    * Fills the report using the given data.
-   * @param report the report
+   * @param report the report to fill
    * @param dataSource the data provider to use for the report generation
-   * @param reportParameters the report parameters
+   * @param reportParameters the report parameters, must be modifiable
    * @return a filled report ready for display
    * @throws ReportException in case of an exception
    */
-  public static JasperPrint fillReport(Report<JasperReport, JasperPrint, Map<String, Object>> report,
-                                       JRDataSource dataSource, Map<String, Object> reportParameters) throws ReportException {
+  public static JasperPrint fillReport(JRReport report, JRDataSource dataSource,
+                                       Map<String, Object> reportParameters) throws ReportException {
     requireNonNull(report, "report");
     requireNonNull(dataSource, "dataSource");
     requireNonNull(reportParameters, "reportParameters");

@@ -8995,3 +8995,4 @@
   ColumnConditionPanel bug fixed, lost focus when switching operators
   ColumnConditionPanel, CTRL-UP/DOWN in bound fields for scrolling through the operators
   EntityModel.tableModel() now throws exception in case no table model is available
+  JasperReports.fillReport() report parameter is now of type JRReport

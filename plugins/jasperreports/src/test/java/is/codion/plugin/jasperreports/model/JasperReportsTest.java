@@ -21,7 +21,6 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
-import net.sf.jasperreports.engine.JasperReport;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -68,7 +67,7 @@ public class JasperReportsTest {
   void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
-    Report<JasperReport, JasperPrint, Map<String, Object>> wrapper = JasperReports.fileReport("empdept_employees.jasper");
+    JRReport wrapper = JasperReports.fileReport("empdept_employees.jasper");
     JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
