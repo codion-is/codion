@@ -9010,3 +9010,4 @@
   FilteredTableModel.fireTableRowsUpdated() added
   SwingEntityTableModel, refactoring bug fixed, now uses fireTableRowsUpdated() instead of fireTableDataChanged() so as to not lose selection
   FilteredTable, T table model type parameter removed, related refactoring
+  FilteredTableModel.Builder.columnSummaryModelFactory() renamed summaryValueProviderFactory() and columnFilterModelFactory() renamed filterModelFactory()
