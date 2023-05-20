@@ -5,8 +5,9 @@ package is.codion.framework.demos.manual.keybinding;
 
 import is.codion.common.item.Item;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 
 import javax.swing.ActionMap;
@@ -18,6 +19,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -25,7 +27,7 @@ import static java.util.Comparator.comparing;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTableModel.KeyBinding, Integer> {
+final class KeyBindingModel {
 
   private static final String PACKAGE = "javax.swing.";
   private static final String PRESSED = "pressed ";
@@ -36,12 +38,16 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
   private static final int WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX = 2;
   private static final int WHEN_ANCESTOR_COLUMN_INDEX = 3;
 
+  private final FilteredTableModel<KeyBinding, Integer> tableModel;
   private final FilteredComboBoxModel<String> componentComboBoxModel;
 
-  KeyBindingTableModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-    super(createColumns(), new KeyBindingValueProvider());
+  KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
     this.componentComboBoxModel = new ComponentComboBoxModel(lookAndFeelComboBoxModel);
     this.componentComboBoxModel.refresh();
+    this.tableModel = FilteredTableModel.builder(new KeyBindingValueProvider())
+            .columns(createColumns())
+            .rowSupplier(new KeyBindingRowSupplier())
+            .build();
     bindEvents(lookAndFeelComboBoxModel);
   }
 
@@ -49,29 +55,8 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
     return componentComboBoxModel;
   }
 
-  @Override
-  protected Collection<KeyBindingTableModel.KeyBinding> refreshItems() {
-    String componentName = componentComboBoxModel.getSelectedItem();
-    if (componentName == null) {
-      return emptyList();
-    }
-    String componentClassName = className(componentName);
-    try {
-      JComponent component = (JComponent) Class.forName(componentClassName).newInstance();
-      ActionMap actionMap = component.getActionMap();
-      Object[] allKeys = actionMap.allKeys();
-      if (allKeys == null) {
-        return emptyList();
-      }
-
-      return Arrays.stream(allKeys)
-              .sorted(comparing(Objects::toString))
-              .map(actionKey -> KeyBinding.create(actionKey, component))
-              .collect(toList());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  FilteredTableModel<KeyBinding, Integer> tableModel() {
+    return tableModel;
   }
 
   private String className(String componentName) {
@@ -83,8 +68,8 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
   }
 
   private void bindEvents(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-    componentComboBoxModel.addRefreshListener(this::refresh);
-    componentComboBoxModel.addSelectionListener(component -> refresh());
+    componentComboBoxModel.addRefreshListener(tableModel::refresh);
+    componentComboBoxModel.addSelectionListener(component -> tableModel.refresh());
     lookAndFeelComboBoxModel.addSelectionListener(lookAndFeelProvider -> componentComboBoxModel.refresh());
   }
 
@@ -152,6 +137,34 @@ final class KeyBindingTableModel extends DefaultFilteredTableModel<KeyBindingTab
       }
 
       return keyStroke;
+    }
+  }
+
+  private final class KeyBindingRowSupplier implements Supplier<Collection<KeyBinding>> {
+
+    @Override
+    public Collection<KeyBinding> get() {
+      String componentName = componentComboBoxModel.getSelectedItem();
+      if (componentName == null) {
+        return emptyList();
+      }
+      String componentClassName = className(componentName);
+      try {
+        JComponent component = (JComponent) Class.forName(componentClassName).newInstance();
+        ActionMap actionMap = component.getActionMap();
+        Object[] allKeys = actionMap.allKeys();
+        if (allKeys == null) {
+          return emptyList();
+        }
+
+        return Arrays.stream(allKeys)
+                .sorted(comparing(Objects::toString))
+                .map(actionKey -> KeyBinding.create(actionKey, component))
+                .collect(toList());
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 

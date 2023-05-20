@@ -6,16 +6,22 @@ package is.codion.swing.common.model.component.table;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
+import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 
 import javax.swing.table.TableModel;
 import java.util.Collection;
+import java.util.List;
+import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 /**
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
+ * @see #builder(ColumnValueProvider)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
@@ -253,6 +259,75 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * The structure of the table (as in the order of the columns) is assumed to be the same.
    */
   void fireTableDataChanged();
+
+  /**
+   * Instantiates a new table model builder.
+   * @param columnValueProvider the column value provider
+   * @param <R> the row type
+   * @param <C> the column identifier type
+   * @return a new builder instance
+   * @throws NullPointerException in case {@code columnValueProvider} is null
+   */
+  static <R, C> Builder<R, C> builder(ColumnValueProvider<R, C> columnValueProvider) {
+    return new DefaultFilteredTableModel.DefaultBuilder<>(columnValueProvider);
+  }
+
+  /**
+   * A builder for a {@link FilteredTableModel}.
+   * @param <R> the row type
+   * @param <C> the column identifer type
+   */
+  interface Builder<R, C> {
+
+    /**
+     * @param columns the columns
+     * @return this builder instance
+     * @throws IllegalArgumentException in case columns is empty
+     */
+    Builder<R, C> columns(List<FilteredTableColumn<C>> columns);
+
+    /**
+     * @param columnFilterModelFactory the column filter model factory
+     * @return this builder instance
+     */
+    Builder<R, C> columnFilterModelFactory(ColumnConditionModel.Factory<C> columnFilterModelFactory);
+
+    /**
+     * @param columnSummaryModelFactory the column summary model factory
+     * @return this builder instance
+     */
+    Builder<R, C> columnSummaryModelFactory(ColumnSummaryModel.SummaryValueProvider.Factory<C> columnSummaryModelFactory);
+
+    /**
+     * @param rowSupplier the row supplier
+     * @return this builder instance
+     */
+    Builder<R, C> rowSupplier(Supplier<Collection<R>> rowSupplier);
+
+    /**
+     * Rows failing validation can not be added to the model.
+     * @param rowValidator the row validator
+     * @return this builder instance
+     */
+    Builder<R, C> rowValidator(Predicate<R> rowValidator);
+
+    /**
+     * @param mergeOnRefresh if true the merge on refresh is used
+     * @return this builder instance
+     */
+    Builder<R, C> mergeOnRefresh(boolean mergeOnRefresh);
+
+    /**
+     * @param asyncRefresh true if async refresh should be enabled
+     * @return this builder instance
+     */
+    Builder<R, C> asyncRefresh(boolean asyncRefresh);
+
+    /**
+     * @return a new {@link FilteredTableModel} instance.
+     */
+    FilteredTableModel<R, C> build();
+  }
 
   /**
    * Provides the column value for a row and column

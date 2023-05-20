@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +18,9 @@ public final class ColumnSelectionPanelTest {
     FilteredTableColumn<Integer> column = filteredTableColumn(0);
     column.setHeaderValue("Testing");
 
-    DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(singletonList(column),
-            (row, columnIdentifier) -> null);
+    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
+            .columns(singletonList(column))
+            .build();
 
     new ColumnSelectionPanel<>(tableModel.columnModel());
   }

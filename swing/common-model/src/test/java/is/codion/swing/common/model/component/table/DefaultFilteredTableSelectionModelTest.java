@@ -5,7 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,13 +22,10 @@ public class DefaultFilteredTableSelectionModelTest {
     FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
             .columnClass(String.class)
             .build();
-    FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
-            singletonList(column), (row, columnIdentifier) -> row) {
-      @Override
-      protected Collection<String> refreshItems() {
-        return data;
-      }
-    };
+    FilteredTableModel<String, Integer> tableModel = FilteredTableModel.<String, Integer>builder((row, integer) -> row)
+            .columns(singletonList(column))
+            .rowSupplier(() -> data)
+            .build();
     tableModel.refresh();
 
     testModel = tableModel.selectionModel();

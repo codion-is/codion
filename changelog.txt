@@ -9006,3 +9006,4 @@
   User.copy() added
   RemoteClient, ConnectionRequest.copy() added, with copied User instances
   AbstractServer now clears all user passwords before returning via users() and clients()
+  FilteredTableModel.Builder added, related refactoring

@@ -3,9 +3,9 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import org.junit.jupiter.api.Test;
 
@@ -25,8 +25,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void wrongColumn() {
-    DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            (row, columnIdentifier) -> null);
+    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
+            .columns(asList(column0, column1, column2))
+            .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(3, new JPanel());
@@ -35,8 +36,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void setColumnVisible() {
-    DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            (row, columnIdentifier) -> null);
+    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
+            .columns(asList(column0, column1, column2))
+            .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
@@ -54,8 +56,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void width() {
-    DefaultFilteredTableModel<Object, Integer> tableModel = new DefaultFilteredTableModel<>(asList(column0, column1, column2),
-            (row, columnIdentifier) -> null);
+    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
+            .columns(asList(column0, column1, column2))
+            .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);

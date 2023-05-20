@@ -10,16 +10,25 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.tools.metadata.MetaDataModel;
 import is.codion.swing.framework.tools.metadata.Schema;
 
+import javax.swing.SortOrder;
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Separators.LINE_SEPARATOR;
+import static is.codion.framework.domain.DomainType.domainType;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * For instances use the factory method {@link #databaseExplorerModel(Database, User)}.
@@ -27,8 +36,8 @@ import static java.util.Objects.requireNonNull;
 public final class DatabaseExplorerModel {
 
   private final MetaDataModel metaDataModel;
-  private final SchemaTableModel schemaTableModel;
-  private final DefinitionTableModel definitionTableModel;
+  private final FilteredTableModel<Schema, Integer> schemaTableModel;
+  private final FilteredTableModel<DefinitionRow, Integer> definitionTableModel;
   private final Connection connection;
   private final Value<String> domainSourceValue = Value.value();
 
@@ -40,8 +49,15 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = new SchemaTableModel(metaDataModel.schemas());
-      this.definitionTableModel = new DefinitionTableModel(schemaTableModel);
+      this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnValueProvider())
+              .columns(createSchemaColumns())
+              .rowSupplier(metaDataModel::schemas)
+              .build();
+      this.schemaTableModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
+      this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnValueProvider())
+              .columns(createDefinitionColumns())
+              .rowSupplier(new DefinitionRowSupplier())
+              .build();
       this.schemaTableModel.refresh();
       bindEvents();
     }
@@ -92,5 +108,86 @@ public final class DatabaseExplorerModel {
     domainSourceValue.set(definitionTableModel.selectionModel().getSelectedItems().stream()
             .map(definitionRow -> DomainToString.toString(definitionRow.definition))
             .collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));
+  }
+
+  private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
+    FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.SCHEMA)
+            .headerValue("Schema")
+            .columnClass(String.class)
+            .build();
+    FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.POPULATED)
+            .headerValue("Populated")
+            .columnClass(Boolean.class)
+            .build();
+
+    return asList(schemaColumn, populatedColumn);
+  }
+
+  private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
+    FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.DOMAIN)
+            .headerValue("Domain")
+            .columnClass(String.class)
+            .build();
+    FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
+            .headerValue("Entity")
+            .columnClass(String.class)
+            .build();
+
+    return asList(domainColumn, entityTypeColumn);
+  }
+
+  private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
+    DatabaseDomain domain = new DatabaseDomain(domainType(schema.name()), schema.tables().values());
+
+    return domain.entities().definitions().stream()
+            .map(definition -> new DefinitionRow(domain, definition))
+            .collect(toList());
+  }
+
+  private final class DefinitionRowSupplier implements Supplier<Collection<DefinitionRow>> {
+
+    @Override
+    public Collection<DefinitionRow> get() {
+      Collection<DefinitionRow> items = new ArrayList<>();
+      schemaTableModel.selectionModel().getSelectedItems().forEach(schema -> items.addAll(createDomainDefinitions(schema)));
+
+      return items;
+    }
+  }
+
+  private static final class SchemaColumnValueProvider implements FilteredTableModel.ColumnValueProvider<Schema, Integer> {
+
+    private static final int SCHEMA = 0;
+    private static final int POPULATED = 1;
+
+    @Override
+    public Object value(Schema row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case SCHEMA:
+          return row.name();
+        case POPULATED:
+          return row.isPopulated();
+        default:
+          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+      }
+    }
+  }
+
+  private static final class DefinitionColumnValueProvider implements FilteredTableModel.ColumnValueProvider<DefinitionRow, Integer> {
+
+    private static final int DOMAIN = 0;
+    private static final int ENTITY = 1;
+
+    @Override
+    public Object value(DefinitionRow row, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case DOMAIN:
+          return row.domain.type().name();
+        case ENTITY:
+          return row.definition.type().name();
+        default:
+          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+      }
+    }
   }
 }

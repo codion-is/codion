@@ -39,12 +39,6 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
   private final State lockedState = State.state();
 
-  /**
-   * Instantiates a new DefaultFilteredTableColumnModel.
-   * @param tableColumns the columns to base this model on
-   * @throws IllegalArgumentException in case {@code tableColumns} is empty
-   * @throws NullPointerException in case {@code tableColumns} is null
-   */
   DefaultFilteredTableColumnModel(List<FilteredTableColumn<C>> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");

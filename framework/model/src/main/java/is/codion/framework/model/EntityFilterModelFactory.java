@@ -47,6 +47,10 @@ public class EntityFilterModelFactory implements ColumnConditionModel.Factory<At
     }
 
     Property<?> property = entityDefinition.property(attribute);
+    if (property.isHidden()) {
+      return null;
+    }
+
     return ColumnConditionModel.builder(attribute, attribute.valueClass())
             .operators(operators(attribute.valueClass()))
             .format(property.format())

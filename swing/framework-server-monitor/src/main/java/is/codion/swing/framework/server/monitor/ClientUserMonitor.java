@@ -10,8 +10,8 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import org.slf4j.Logger;
@@ -31,6 +31,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
 
@@ -56,7 +57,11 @@ public final class ClientUserMonitor {
   private final Value<Integer> idleConnectionTimeoutValue;
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
-  private final UserHistoryTableModel userHistoryTableModel = new UserHistoryTableModel();
+  private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = FilteredTableModel.builder(new UserHistoryColumnValueProvider())
+          .columns(createUserHistoryColumns())
+          .rowSupplier(new UserHistoryRowSupplier())
+          .mergeOnRefresh(true)
+          .build();
 
   private final TaskScheduler updateScheduler;
   private final Value<Integer> updateIntervalValue;
@@ -101,7 +106,7 @@ public final class ClientUserMonitor {
   /**
    * @return a TableModel for displaying the user connection history
    */
-  public UserHistoryTableModel userHistoryTableModel() {
+  public FilteredTableModel<UserInfo, Integer> userHistoryTableModel() {
     return userHistoryTableModel;
   }
 
@@ -248,17 +253,12 @@ public final class ClientUserMonitor {
             .build();
   }
 
-  private final class UserHistoryTableModel extends DefaultFilteredTableModel<UserInfo, Integer> {
-
-    private UserHistoryTableModel() {
-      super(createUserHistoryColumns(), new UserHistoryColumnValueProvider());
-      setMergeOnRefresh(true);
-    }
+  private class UserHistoryRowSupplier implements Supplier<Collection<UserInfo>> {
 
     @Override
-    protected Collection<UserInfo> refreshItems() {
+    public Collection<UserInfo> get() {
       try {
-        List<UserInfo> items = new ArrayList<>(items());
+        List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items());
         for (RemoteClient remoteClient : server.clients()) {
           UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
                   remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.clientId(), remoteClient.clientVersion(),
