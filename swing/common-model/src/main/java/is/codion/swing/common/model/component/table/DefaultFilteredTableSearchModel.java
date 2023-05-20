@@ -26,8 +26,8 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   private static final RowColumn NULL_COORDINATE = new DefaultRowColumn(-1, -1);
 
   private final FilteredTableModel<?, C> tableModel;
-  private final State regularExpressionSearch = State.state();
-  private final State caseSensitiveSearch = State.state();
+  private final State regularExpressionState = State.state();
+  private final State caseSensitiveState = State.state();
   private final List<RowColumn> searchResults = new ArrayList<>();
   private final Value<String> searchStringValue = Value.value("", "");
   private final Value<Predicate<String>> searchPredicateValue = Value.value();
@@ -41,13 +41,13 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   }
 
   @Override
-  public State regularExpressionSearchState() {
-    return regularExpressionSearch;
+  public State regularExpressionState() {
+    return regularExpressionState;
   }
 
   @Override
-  public State caseSensitiveSearchState() {
-    return caseSensitiveSearch;
+  public State caseSensitiveState() {
+    return caseSensitiveState;
   }
 
   @Override
@@ -173,8 +173,8 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   private void bindEvents() {
     searchStringValue.addDataListener(searchString -> searchPredicateValue.set(createSearchPredicate(searchString)));
     searchPredicateValue.addListener(this::performSearch);
-    regularExpressionSearch.addListener(() -> searchStringValue.set(null));
-    caseSensitiveSearch.addListener(this::performSearch);
+    regularExpressionState.addListener(() -> searchStringValue.set(null));
+    caseSensitiveState.addListener(this::performSearch);
     tableModel.columnModel().addColumnModelListener(new ClearSearchListener());
     tableModel.addDataChangedListener(() -> {
       clearSearchResults();
@@ -186,7 +186,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
     if (searchText.isEmpty()) {
       return null;
     }
-    if (regularExpressionSearch.get()) {
+    if (regularExpressionState.get()) {
       try {
         return new RegexSearchCondition(searchText);
       }
@@ -195,7 +195,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
       }
     }
 
-    return new StringSearchCondition(searchText, caseSensitiveSearch);
+    return new StringSearchCondition(searchText, caseSensitiveState);
   }
 
   private final class ClearSearchListener implements TableColumnModelListener {

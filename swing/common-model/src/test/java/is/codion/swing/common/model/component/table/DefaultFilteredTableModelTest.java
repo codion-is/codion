@@ -329,7 +329,7 @@ public final class DefaultFilteredTableModelTest {
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
-    searchModel.regularExpressionSearchState().set(true);
+    searchModel.regularExpressionState().set(true);
     searchModel.searchStringValue().set("(?i)B");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 1), rowColumn);
@@ -373,7 +373,7 @@ public final class DefaultFilteredTableModelTest {
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
-    searchModel.regularExpressionSearchState().set(true);
+    searchModel.regularExpressionState().set(true);
     searchModel.searchStringValue().set("(?i)B");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 0), rowColumn);
