@@ -28,7 +28,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
@@ -54,6 +56,11 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final State refreshingState = State.state();
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
+
+  private Supplier<Collection<T>> rowSupplier = new DefaultRowSupplier();
+  private Predicate<T> rowValidator = new DefaultRowValidator<>();
+  private Function<Object, T> selectedItemTranslator = new DefaultSelectedItemTranslator<>();
+  private Predicate<T> allowSelectionPredicate = new DefaultAllowSelectionPredicate<>();
 
   /**
    * set during setItems()
@@ -141,7 +148,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
    * @see #isCleared()
-   * @see #validItem(Object)
+   * @see #setRowValidator(Predicate)
    */
   public final void setItems(Collection<T> items) {
     filteredItems.clear();
@@ -287,7 +294,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     removeItem(item);
     addItem(replacement);
     if (Objects.equals(selectedItem, item)) {
-      selectedItem = translateSelectionItem(null);
+      selectedItem = selectedItemTranslator.apply(null);
       setSelectedItem(replacement);
     }
   }
@@ -313,6 +320,62 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public final void setSortComparator(Comparator<T> sortComparator) {
     this.sortComparator = sortComparator;
     sortVisibleItems();
+  }
+
+  /**
+   * @return the row supplier
+   */
+  public final Supplier<Collection<T>> getRowSupplier() {
+    return rowSupplier;
+  }
+
+  /**
+   * @param rowSupplier the row supplier
+   */
+  public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
+    this.rowSupplier = requireNonNull(rowSupplier);
+  }
+
+  /**
+   * @return the row validator
+   */
+  public final Predicate<T> getRowValidator() {
+    return rowValidator;
+  }
+
+  /**
+   * @param rowValidator the row validator
+   */
+  public final void setRowValidator(Predicate<T> rowValidator) {
+    this.rowValidator = requireNonNull(rowValidator);
+  }
+
+  /**
+   * @return the selected item translator
+   */
+  public final Function<Object, T> getSelectedItemTranslator() {
+    return selectedItemTranslator;
+  }
+
+  /**
+   * @param selectedItemTranslator the selected item translator
+   */
+  public final void setSelectedItemTranslator(Function<Object, T> selectedItemTranslator) {
+    this.selectedItemTranslator = requireNonNull(selectedItemTranslator);
+  }
+
+  /**
+   * @return the allow selection predicate
+   */
+  public final Predicate<T> getAllowSelectionPredicate() {
+    return allowSelectionPredicate;
+  }
+
+  /**
+   * @param allowSelectionPredicate the allow selection predicate
+   */
+  public final void setAllowSelectionPredicate(Predicate<T> allowSelectionPredicate) {
+    this.allowSelectionPredicate = requireNonNull(allowSelectionPredicate);
   }
 
   /**
@@ -393,8 +456,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param item the item to select
    */
   public final void setSelectedItem(Object item) {
-    T toSelect = translateSelectionItem(Objects.equals(nullItem, item) ? null : item);
-    if (!Objects.equals(selectedItem, toSelect) && allowSelectionChange(toSelect)) {
+    T toSelect = selectedItemTranslator.apply(Objects.equals(nullItem, item) ? null : item);
+    if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
       selectionChangedEvent.onEvent(selectedItem);
@@ -500,50 +563,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     selectionChangedEvent.removeDataListener(listener);
   }
 
-  /**
-   * @return a Collection containing the items to be shown in this combo box model,
-   * by default this simply returns the items currently contained in the model,
-   * both filtered and visible, excluding the null value.
-   */
-  protected Collection<T> refreshItems() {
-    List<T> items = new ArrayList<>(visibleItems);
-    if (includeNull) {
-      items.remove(null);
-    }
-    items.addAll(filteredItems);
-
-    return items;
-  }
-
-  /**
-   * Override to validate that the given item can be added to this model.
-   * @param item the item being added
-   * @return true if the item can be added to this model, false otherwise
-   */
-  protected boolean validItem(T item) {
-    return true;
-  }
-
-  /**
-   * @param itemToSelect the item to be selected
-   * @return true if the selection change is ok, false if it should be vetoed
-   */
-  protected boolean allowSelectionChange(T itemToSelect) {
-    return true;
-  }
-
-  /**
-   * @param item the item to be selected
-   * @return the actual item to select
-   */
-  protected T translateSelectionItem(Object item) {
-    return (T) item;
-  }
-
-  /**
-   * Fires a {@link ListDataEvent#CONTENTS_CHANGED} event on all registered listeners
-   */
-  protected final void fireContentsChanged() {
+  private void fireContentsChanged() {
     ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
@@ -552,7 +572,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private void validate(T item) {
     requireNonNull(item);
-    if (!validItem(item)) {
+    if (!rowValidator.test(item)) {
       throw new IllegalArgumentException("Invalid item: " + item);
     }
   }
@@ -569,7 +589,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private void refreshAsync(Consumer<Collection<T>> afterRefresh) {
     cancelCurrentRefresh();
-    refreshWorker = ProgressWorker.builder(this::refreshItems)
+    refreshWorker = ProgressWorker.builder(rowSupplier::get)
             .onStarted(this::onRefreshStarted)
             .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
@@ -579,7 +599,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private void refreshSync(Consumer<Collection<T>> afterRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(refreshItems(), afterRefresh);
+      onRefreshResult(rowSupplier.get(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -659,30 +679,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private static final class SortComparator<T> implements Comparator<T> {
-
-    private final Comparator<T> comparator = Text.spaceAwareCollator();
-
-    @Override
-    public int compare(T o1, T o2) {
-      if (o1 == null && o2 == null) {
-        return 0;
-      }
-      if (o1 == null) {
-        return -1;
-      }
-      if (o2 == null) {
-        return 1;
-      }
-      if (o1 instanceof Comparable && o2 instanceof Comparable) {
-        return ((Comparable<T>) o1).compareTo(o2);
-      }
-      else {
-        return comparator.compare(o1, o2);
-      }
-    }
-  }
-
   private final class SelectorValue<V> extends AbstractValue<V> {
 
     private final ItemFinder<T, V> itemFinder;
@@ -704,6 +700,68 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     @Override
     protected void setValue(V value) {
       setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value));
+    }
+  }
+
+  private static final class DefaultSelectedItemTranslator<T> implements Function<Object, T> {
+
+    @Override
+    public T apply(Object item) {
+      return (T) item;
+    }
+  }
+
+  private static final class DefaultRowValidator<T> implements Predicate<T> {
+
+    @Override
+    public boolean test(T t) {
+      return true;
+    }
+  }
+
+  private final class DefaultRowSupplier implements Supplier<Collection<T>> {
+
+    @Override
+    public Collection<T> get() {
+      List<T> items = new ArrayList<>(visibleItems);
+      if (includeNull) {
+        items.remove(null);
+      }
+      items.addAll(filteredItems);
+
+      return items;
+    }
+  }
+
+  private static final class DefaultAllowSelectionPredicate<T> implements Predicate<T> {
+
+    @Override
+    public boolean test(T item) {
+      return true;
+    }
+  }
+
+  private static final class SortComparator<T> implements Comparator<T> {
+
+    private final Comparator<T> comparator = Text.spaceAwareCollator();
+
+    @Override
+    public int compare(T o1, T o2) {
+      if (o1 == null && o2 == null) {
+        return 0;
+      }
+      if (o1 == null) {
+        return -1;
+      }
+      if (o2 == null) {
+        return 1;
+      }
+      if (o1 instanceof Comparable && o2 instanceof Comparable) {
+        return ((Comparable<T>) o1).compareTo(o2);
+      }
+      else {
+        return comparator.compare(o1, o2);
+      }
     }
   }
 }

@@ -21,6 +21,8 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A ClientInstanceMonitor
  */
@@ -42,8 +44,8 @@ public final class ClientInstanceMonitor {
    * @throws RemoteException in case of an exception
    */
   public ClientInstanceMonitor(EntityServerAdmin server, RemoteClient remoteClient) throws RemoteException {
-    this.remoteClient = remoteClient;
-    this.server = server;
+    this.remoteClient = requireNonNull(remoteClient);
+    this.server = requireNonNull(server);
     this.loggingEnabledState = State.state(server.isLoggingEnabled(remoteClient.clientId()));
     bindEvents();
   }

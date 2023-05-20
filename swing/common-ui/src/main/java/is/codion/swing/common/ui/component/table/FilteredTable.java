@@ -326,6 +326,7 @@ public final class FilteredTable<R, C> extends JTable {
    * @param columnIdentifier the column identifier
    */
   public void scrollToColumn(C columnIdentifier) {
+    requireNonNull(columnIdentifier);
     JViewport viewport = Utilities.getParentOfType(JViewport.class, this);
     if (viewport != null) {
       scrollToRowColumn(viewport, rowAtPoint(viewport.getViewPosition()),
@@ -528,9 +529,9 @@ public final class FilteredTable<R, C> extends JTable {
 
   private Controls searchFieldPopupMenuControls() {
     return Controls.builder()
-            .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveSearchState())
+            .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveState())
                     .caption(MESSAGES.getString("case_sensitive_search")))
-            .controls(ToggleControl.builder(tableModel.searchModel().regularExpressionSearchState())
+            .controls(ToggleControl.builder(tableModel.searchModel().regularExpressionState())
                     .caption(MESSAGES.getString("regular_expression_search")))
             .build();
   }

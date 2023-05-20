@@ -14,6 +14,7 @@ import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A HostMonitorPanel
@@ -30,7 +31,7 @@ public final class HostMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public HostMonitorPanel(HostMonitor model) throws RemoteException {
-    this.model = model;
+    this.model = requireNonNull(model);
     initializeUI();
     bindEvents();
   }

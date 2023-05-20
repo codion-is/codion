@@ -13,6 +13,8 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A ClientMonitor
  */
@@ -34,7 +36,7 @@ public final class ClientMonitor {
    * @throws RemoteException in case of an exception
    */
   public ClientMonitor(EntityServerAdmin server, String clientTypeId, User user) throws RemoteException {
-    this.server = server;
+    this.server = requireNonNull(server);
     this.clientTypeId = clientTypeId;
     this.user = user;
     refresh();

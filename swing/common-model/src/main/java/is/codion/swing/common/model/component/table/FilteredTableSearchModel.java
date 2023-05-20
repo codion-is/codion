@@ -19,12 +19,12 @@ public interface FilteredTableSearchModel {
   /**
    * @return the state controlling whether regular expressions should be used when searching
    */
-  State regularExpressionSearchState();
+  State regularExpressionState();
 
   /**
    * @return the state controlling whether searching is case-sensitive
    */
-  State caseSensitiveSearchState();
+  State caseSensitiveState();
 
   /**
    * @return the Value for the search string

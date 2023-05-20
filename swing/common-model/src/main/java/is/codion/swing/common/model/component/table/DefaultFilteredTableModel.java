@@ -738,7 +738,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private List<FilteredTableColumn<C>> columns;
     private Supplier<Collection<R>> rowSupplier;
-    private Predicate<R> rowValidator = row -> true;
+    private Predicate<R> rowValidator = new ValidPredicate<>();
     private ColumnConditionModel.Factory<C> filterModelFactory;
     private SummaryValueProvider.Factory<C> summaryValueProviderFactory;
     private boolean mergeOnRefresh = false;
@@ -796,6 +796,14 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     @Override
     public FilteredTableModel<R, C> build() {
       return new DefaultFilteredTableModel<>(this);
+    }
+
+    private static final class ValidPredicate<R> implements Predicate<R> {
+
+      @Override
+      public boolean test(R r) {
+        return true;
+      }
     }
   }
 }

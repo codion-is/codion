@@ -18,6 +18,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -40,7 +41,7 @@ public final class DatabaseMonitorPanel extends JPanel {
    * @param model the DatabaseMonitor to base this panel on
    */
   public DatabaseMonitorPanel(DatabaseMonitor model) {
-    this.model = model;
+    this.model = requireNonNull(model);
     this.queriesPerSecondChart.getXYPlot().setDataset(model.queriesPerSecondCollection());
     ChartUtil.linkColors(this, queriesPerSecondChart);
     initializeUI();
