@@ -165,14 +165,19 @@ public final class FilteredTable<R, C> extends JTable {
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
-  private FilteredTable(FilteredTableModel<R, C> tableModel,
-                        ColumnConditionPanel.Factory<C> conditionPanelFactory,
-                        FilteredTableCellRendererFactory<C> cellRendererFactory) {
-    super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
-    this.tableModel = tableModel;
-    this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
-    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, requireNonNull(cellRendererFactory)));
-    initializeTableHeader();
+  private FilteredTable(DefaultBuilder<R, C> builder) {
+    super(requireNonNull(builder.tableModel, "tableModel"), builder.tableModel.columnModel(), builder.tableModel.selectionModel());
+    this.tableModel = builder.tableModel;
+    this.conditionPanelFactory = requireNonNull(builder.conditionPanelFactory);
+    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, requireNonNull(builder.cellRendererFactory)));
+    this.centerOnScroll = builder.centerOnScroll;
+    this.doubleClickAction = builder.doubleClickAction;
+    this.scrollToSelectedItem = builder.scrollToSelectedItem;
+    this.sortingEnabled = builder.sortingEnabled;
+    setAutoStartsEdit(builder.autoStartsEdit);
+    setSelectionMode(builder.selectionMode);
+    setAutoResizeMode(builder.autoResizeMode);
+    initializeTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
     bindEvents();
   }
 
@@ -577,10 +582,11 @@ public final class FilteredTable<R, C> extends JTable {
     column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column));
   }
 
-  private void initializeTableHeader() {
+  private void initializeTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
     JTableHeader header = getTableHeader();
     header.setFocusable(false);
-    header.setReorderingAllowed(true);
+    header.setReorderingAllowed(reorderingAllowed);
+    header.setResizingAllowed(columnResizingAllowed);
     header.setAutoscrolls(true);
     header.addMouseMotionListener(new ColumnDragMouseHandler());
     header.addMouseListener(new MouseSortHandler());
@@ -852,18 +858,7 @@ public final class FilteredTable<R, C> extends JTable {
 
     @Override
     protected FilteredTable<R, C> createComponent() {
-      FilteredTable<R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
-      filteredTable.setAutoStartsEdit(autoStartsEdit);
-      filteredTable.setCenterOnScroll(centerOnScroll);
-      filteredTable.setDoubleClickAction(doubleClickAction);
-      filteredTable.setScrollToSelectedItem(scrollToSelectedItem);
-      filteredTable.setSortingEnabled(sortingEnabled);
-      filteredTable.setSelectionMode(selectionMode);
-      filteredTable.getTableHeader().setReorderingAllowed(columnReorderingAllowed);
-      filteredTable.getTableHeader().setResizingAllowed(columnResizingAllowed);
-      filteredTable.setAutoResizeMode(autoResizeMode);
-
-      return filteredTable;
+      return new FilteredTable<>(this);
     }
 
     @Override
