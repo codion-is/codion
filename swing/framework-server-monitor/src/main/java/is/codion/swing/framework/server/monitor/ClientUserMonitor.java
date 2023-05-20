@@ -34,6 +34,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A ClientUserMonitor for monitoring connected clients and users connected to a server
@@ -73,7 +74,7 @@ public final class ClientUserMonitor {
    * @throws RemoteException in case of a communication error
    */
   public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
-    this.server = server;
+    this.server = requireNonNull(server);
     this.idleConnectionTimeoutValue = Value.value(this::getIdleConnectionTimeout, this::setIdleConnectionTimeout, 0);
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate, TimeUnit.SECONDS)

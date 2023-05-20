@@ -27,6 +27,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.*;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
 
@@ -48,7 +49,7 @@ public final class ClientUserMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public ClientUserMonitorPanel(ClientUserMonitor model) throws RemoteException {
-    this.model = model;
+    this.model = requireNonNull(model);
     initializeUI();
   }
 

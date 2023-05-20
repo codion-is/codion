@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A monitor for the EntityServer
@@ -44,6 +45,7 @@ public final class EntityServerMonitor {
     if (nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
     }
+    requireNonNull(adminUser);
     for (String hostname : hostNames.split(",")) {
       addHost(hostname, registryPort, adminUser);
     }

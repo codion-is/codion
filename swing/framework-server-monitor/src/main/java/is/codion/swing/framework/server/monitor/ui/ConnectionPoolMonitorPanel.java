@@ -31,6 +31,7 @@ import static is.codion.swing.common.ui.component.panel.Panels.createWestCenterP
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldSize;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.SwingConstants.CENTER;
@@ -95,7 +96,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
    * @param model the ConnectionPoolMonitor to base this panel on
    */
   public ConnectionPoolMonitorPanel(ConnectionPoolMonitor model) {
-    this.model = model;
+    this.model = requireNonNull(model);
     this.format.setMaximumFractionDigits(2);
     initializeUI();
     updateView();

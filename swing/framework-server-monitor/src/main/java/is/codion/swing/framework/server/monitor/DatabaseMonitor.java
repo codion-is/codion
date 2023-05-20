@@ -15,6 +15,8 @@ import org.jfree.data.xy.XYSeriesCollection;
 import java.rmi.RemoteException;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A DatabaseMonitor
  */
@@ -38,7 +40,7 @@ public final class DatabaseMonitor {
    * @throws RemoteException in case of an exception
    */
   public DatabaseMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
-    this.server = server;
+    this.server = requireNonNull(server);
     this.poolMonitor = new PoolMonitor(server, updateRate);
     this.queriesPerSecondCollection.addSeries(queriesPerSecond);
     this.queriesPerSecondCollection.addSeries(selectsPerSecond);

@@ -22,6 +22,8 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A ConnectionPoolMonitor
  */
@@ -67,7 +69,7 @@ public final class ConnectionPoolMonitor {
    * @param updateRate the initial statistics update rate in seconds
    */
   public ConnectionPoolMonitor(ConnectionPoolWrapper connectionPool, int updateRate) {
-    this.username = connectionPool.user().username();
+    this.username = requireNonNull(connectionPool).user().username();
     this.connectionPool = connectionPool;
     this.pooledConnectionTimeoutValue = Value.value(connectionPool::getIdleConnectionTimeout, connectionPool::setIdleConnectionTimeout, 0);
     this.pooledCleanupIntervalValue = Value.value(connectionPool::getCleanupInterval, connectionPool::setCleanupInterval, 0);

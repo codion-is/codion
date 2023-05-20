@@ -40,6 +40,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A ServerMonitor
  */
@@ -115,10 +117,10 @@ public final class ServerMonitor {
   public ServerMonitor(String hostName, ServerInformation serverInformation, int registryPort,
                        User serverAdminUser, int updateRate)
           throws RemoteException, ServerAuthenticationException {
-    this.hostName = hostName;
-    this.serverInformation = serverInformation;
+    this.hostName = requireNonNull(hostName);
+    this.serverInformation = requireNonNull(serverInformation);
     this.registryPort = registryPort;
-    this.serverAdminUser = serverAdminUser;
+    this.serverAdminUser = requireNonNull(serverAdminUser);
     this.server = connectServer(serverInformation.serverName());
     this.connectionLimitValue = Value.value(this::getConnectionLimit, this::setConnectionLimit, -1);
     this.logLevelValue = Value.value(this.server.getLogLevel());

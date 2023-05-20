@@ -11,6 +11,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.tabbedPane;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A PoolMonitorPanel
@@ -24,7 +25,7 @@ public final class PoolMonitorPanel extends JPanel {
    * @param model the PoolMonitor to base this panel on
    */
   public PoolMonitorPanel(PoolMonitor model) {
-    this.model = model;
+    this.model = requireNonNull(model);
     initializeUI();
   }
 

@@ -25,6 +25,8 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A HostMonitor
  */
@@ -50,9 +52,9 @@ public final class HostMonitor {
    * @throws RemoteException in case of an exception
    */
   public HostMonitor(String hostName, int registryPort, User adminUser, int updateRate) throws RemoteException {
-    this.hostName = hostName;
+    this.hostName = requireNonNull(hostName);
     this.registryPort = registryPort;
-    this.adminUser = adminUser;
+    this.adminUser = requireNonNull(adminUser);
     this.updateRate = updateRate;
     refresh();
   }

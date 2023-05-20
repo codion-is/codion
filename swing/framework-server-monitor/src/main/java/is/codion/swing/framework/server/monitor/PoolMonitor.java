@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A class responsible for monitoring the connection pools of a given EntityServer.
  */
@@ -30,7 +32,7 @@ public final class PoolMonitor {
    * @throws RemoteException in case of an exception
    */
   public PoolMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
-    this.server = server;
+    this.server = requireNonNull(server);
     for (String username : this.server.connectionPoolUsernames()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPoolWrapper(username, this.server), updateRate));
     }

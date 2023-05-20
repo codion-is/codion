@@ -35,6 +35,7 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -79,7 +80,7 @@ public final class ServerMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public ServerMonitorPanel(ServerMonitor model) throws RemoteException {
-    this.model = model;
+    this.model = requireNonNull(model);
     requestsPerSecondChart.getXYPlot().setDataset(model.connectionRequestsDataset());
     memoryUsageChart.getXYPlot().setDataset(model.memoryUsageDataset());
     connectionCountChart.getXYPlot().setDataset(model.connectionCountDataset());
