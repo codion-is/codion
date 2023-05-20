@@ -9007,3 +9007,5 @@
   RemoteClient, ConnectionRequest.copy() added, with copied User instances
   AbstractServer now clears all user passwords before returning via users() and clients()
   FilteredTableModel.Builder added, related refactoring
+  FilteredTableModel.fireTableRowsUpdated() added
+  SwingEntityTableModel, refactoring bug fixed, now uses fireTableRowsUpdated() instead of fireTableDataChanged() so as to not lose selection
