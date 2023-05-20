@@ -13,14 +13,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link FilteredTableCellRenderer.Builder} implementation.
- * @param <T> the table model type
  * @param <R> the row type
  * @param <C> the column identifier type
  */
-public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableModel<R, C>, R, C>
-        implements FilteredTableCellRenderer.Builder<T, R, C> {
+public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTableCellRenderer.Builder<R, C> {
 
-  final T tableModel;
+  final FilteredTableModel<R, C> tableModel;
   final C columnIdentifier;
 
   private final Class<?> columnClass;
@@ -41,7 +39,7 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
    * @param columnIdentifier the column identifier
    * @param columnClass the column class
    */
-  protected DefaultFilteredTableCellRendererBuilder(T tableModel, C columnIdentifier, Class<?> columnClass) {
+  protected DefaultFilteredTableCellRendererBuilder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
     this(tableModel, columnIdentifier, columnClass, Boolean.class.equals(requireNonNull(columnClass)));
   }
 
@@ -52,7 +50,7 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
    * @param columnClass the column class
    * @param useBooleanRenderer true if the boolean renderer should be used
    */
-  protected DefaultFilteredTableCellRendererBuilder(T tableModel, C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
+  protected DefaultFilteredTableCellRendererBuilder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass, boolean useBooleanRenderer) {
     this.tableModel = requireNonNull(tableModel);
     this.columnIdentifier = requireNonNull(columnIdentifier);
     this.columnClass = requireNonNull(columnClass);
@@ -61,49 +59,49 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> horizontalAlignment(int horizontalAlignment) {
+  public final FilteredTableCellRenderer.Builder<R, C> horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> toolTipData(boolean toolTipData) {
+  public final FilteredTableCellRenderer.Builder<R, C> toolTipData(boolean toolTipData) {
     this.toolTipData = toolTipData;
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> columnShadingEnabled(boolean columnShadingEnabled) {
+  public final FilteredTableCellRenderer.Builder<R, C> columnShadingEnabled(boolean columnShadingEnabled) {
     this.columnShadingEnabled = columnShadingEnabled;
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> alternateRowColoring(boolean alternateRowColoring) {
+  public final FilteredTableCellRenderer.Builder<R, C> alternateRowColoring(boolean alternateRowColoring) {
     this.alternateRowColoring = alternateRowColoring;
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> leftPadding(int leftPadding) {
+  public final FilteredTableCellRenderer.Builder<R, C> leftPadding(int leftPadding) {
     this.leftPadding = leftPadding;
     return null;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> rightPadding(int rightPadding) {
+  public final FilteredTableCellRenderer.Builder<R, C> rightPadding(int rightPadding) {
     this.rightPadding = rightPadding;
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> displayValueProvider(Function<Object, Object> displayValueProvider) {
+  public final FilteredTableCellRenderer.Builder<R, C> displayValueProvider(Function<Object, Object> displayValueProvider) {
     this.displayValueProvider = requireNonNull(displayValueProvider);
     return this;
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<T, R, C> cellColorProvider(FilteredTableCellRenderer.CellColorProvider<C> cellColorProvider) {
+  public final FilteredTableCellRenderer.Builder<R, C> cellColorProvider(FilteredTableCellRenderer.CellColorProvider<C> cellColorProvider) {
     this.cellColorProvider = requireNonNull(cellColorProvider);
     return this;
   }
@@ -121,7 +119,7 @@ public class DefaultFilteredTableCellRendererBuilder<T extends FilteredTableMode
    * @param alternateRowColoring true if alternate row coloring is enabled
    * @return the {@link FilteredTableCellRenderer.Settings} instance for this renderer
    */
-  protected FilteredTableCellRenderer.Settings<T, C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+  protected FilteredTableCellRenderer.Settings<C> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
     return new FilteredTableCellRenderer.Settings<>(leftPadding, rightPadding, alternateRowColoring);
   }
 

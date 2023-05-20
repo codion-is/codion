@@ -65,12 +65,11 @@ import static java.util.Objects.requireNonNull;
  * A JTable implementation for {@link FilteredTableModel}.
  * Note that for the table header to display you must add this table to a JScrollPane.
  * For instances use the builder {@link #builder(FilteredTableModel)}
- * @param <T> the table model type
  * @param <R> the type representing rows
  * @param <C> the type used to identify columns
  * @see #builder(FilteredTableModel)
  */
-public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> extends JTable {
+public final class FilteredTable<R, C> extends JTable {
 
   /**
    * Specifies the default table column resize mode for tables in the application<br>
@@ -124,7 +123,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * The table model
    */
-  private final T tableModel;
+  private final FilteredTableModel<R, C> tableModel;
 
   /**
    * The condition panel factory
@@ -166,7 +165,7 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
    */
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
-  private FilteredTable(T tableModel,
+  private FilteredTable(FilteredTableModel<R, C> tableModel,
                         ColumnConditionPanel.Factory<C> conditionPanelFactory,
                         FilteredTableCellRendererFactory<C> cellRendererFactory) {
     super(requireNonNull(tableModel, "tableModel"), tableModel.columnModel(), tableModel.selectionModel());
@@ -184,8 +183,8 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   }
 
   @Override
-  public T getModel() {
-    return (T) super.getModel();
+  public FilteredTableModel<R, C> getModel() {
+    return (FilteredTableModel<R, C>) super.getModel();
   }
 
   @Override
@@ -433,12 +432,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
   /**
    * Instantiates a new {@link FilteredTable.Builder} using the given model
    * @param tableModel the table model
-   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
    * @return a new {@link FilteredTable.Builder} instance
    */
-  public static <T extends FilteredTableModel<R, C>, R, C> Builder<T, R, C> builder(T tableModel) {
+  public static <R, C> Builder<R, C> builder(FilteredTableModel<R, C> tableModel) {
     return new DefaultBuilder<>(tableModel);
   }
 
@@ -690,85 +688,83 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
 
   /**
    * A builder for a {@link FilteredTable}
-   * @param <T> the table model type
    * @param <R> the type representing rows
    * @param <C> the type used to identify columns
    */
-  public interface Builder<T extends FilteredTableModel<R, C>, R, C>
-          extends ComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>> {
+  public interface Builder<R, C> extends ComponentBuilder<Void, FilteredTable<R, C>, Builder<R, C>> {
 
     /**
      * @param conditionPanelFactory the column condition panel factory
      * @return this builder instance
      */
-    Builder<T, R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory);
+    Builder<R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory);
 
     /**
      * @param cellRendererFactory the table cell renderer factory
      * @return this builder instance
      */
-    Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory);
+    Builder<R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory);
 
     /**
      * @param autoStartsEdit true if editing should start automatically
      * @return this builder instance
      */
-    Builder<T, R, C> autoStartsEdit(boolean autoStartsEdit);
+    Builder<R, C> autoStartsEdit(boolean autoStartsEdit);
 
     /**
      * @param centerOnScroll the center on scroll behavious
      * @return this builder instance
      */
-    Builder<T, R, C> centerOnScroll(CenterOnScroll centerOnScroll);
+    Builder<R, C> centerOnScroll(CenterOnScroll centerOnScroll);
 
     /**
      * @param doubleClickAction the double click action
      * @return this builder instance
      */
-    Builder<T, R, C> doubleClickAction(Action doubleClickAction);
+    Builder<R, C> doubleClickAction(Action doubleClickAction);
 
     /**
      * @param scrollToSelectedItem true if this table should scroll to the selected item
      * @return this builder instance
      */
-    Builder<T, R, C> scrollToSelectedItem(boolean scrollToSelectedItem);
+    Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem);
 
     /**
      * @param sortingEnabled true if sorting via clicking the header should be enbled
      * @return this builder instance
      */
-    Builder<T, R, C> sortingEnabled(boolean sortingEnabled);
+    Builder<R, C> sortingEnabled(boolean sortingEnabled);
 
     /**
      * @param selectionMode the table selection mode
      * @return this builder instance
      */
-    Builder<T, R, C> selectionMode(int selectionMode);
+    Builder<R, C> selectionMode(int selectionMode);
 
     /**
      * @param columnReorderingAllowed true if column reordering should be allowed
      * @return this builder instance
      */
-    Builder<T, R, C> columnReorderingAllowed(boolean columnReorderingAllowed);
+    Builder<R, C> columnReorderingAllowed(boolean columnReorderingAllowed);
 
     /**
      * @param columnResizingAllowed true if column resizing should be allowed
      * @return this builder instance
      */
-    Builder<T, R, C> columnResizingAllowed(boolean columnResizingAllowed);
+    Builder<R, C> columnResizingAllowed(boolean columnResizingAllowed);
 
     /**
      * @param autoResizeMode the table auto column resizing mode
      * @return this builder instance
      */
-    Builder<T, R, C> autoResizeMode(int autoResizeMode);
+    Builder<R, C> autoResizeMode(int autoResizeMode);
   }
 
-  private static final class DefaultBuilder<T extends FilteredTableModel<R, C>, R, C>
-          extends AbstractComponentBuilder<Void, FilteredTable<T, R, C>, Builder<T, R, C>>
-          implements Builder<T, R, C> {
+  private static final class DefaultBuilder<R, C>
+          extends AbstractComponentBuilder<Void, FilteredTable<R, C>, Builder<R, C>>
+          implements Builder<R, C> {
 
-    private final T tableModel;
+    private final FilteredTableModel<R, C> tableModel;
 
     private ColumnConditionPanel.Factory<C> conditionPanelFactory;
     private FilteredTableCellRendererFactory<C> cellRendererFactory;
@@ -782,81 +778,81 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     private boolean columnResizingAllowed = true;
     private int autoResizeMode = AUTO_RESIZE_MODE.get();
 
-    private DefaultBuilder(T tableModel) {
+    private DefaultBuilder(FilteredTableModel<R, C> tableModel) {
       this.tableModel = requireNonNull(tableModel);
       this.conditionPanelFactory = new DefaultFilterPanelFactory<>();
       this.cellRendererFactory = new DefaultFilteredTableCellRendererFactory<>(tableModel);
     }
 
     @Override
-    public Builder<T, R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory) {
+    public Builder<R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory) {
       this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
       return this;
     }
 
     @Override
-    public Builder<T, R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory) {
+    public Builder<R, C> cellRendererFactory(FilteredTableCellRendererFactory<C> cellRendererFactory) {
       this.cellRendererFactory = requireNonNull(cellRendererFactory);
       return this;
     }
 
     @Override
-    public Builder<T, R, C> autoStartsEdit(boolean autoStartsEdit) {
+    public Builder<R, C> autoStartsEdit(boolean autoStartsEdit) {
       this.autoStartsEdit = autoStartsEdit;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> centerOnScroll(CenterOnScroll centerOnScroll) {
+    public Builder<R, C> centerOnScroll(CenterOnScroll centerOnScroll) {
       this.centerOnScroll = requireNonNull(centerOnScroll);
       return this;
     }
 
     @Override
-    public Builder<T, R, C> doubleClickAction(Action doubleClickAction) {
+    public Builder<R, C> doubleClickAction(Action doubleClickAction) {
       this.doubleClickAction = requireNonNull(doubleClickAction);
       return this;
     }
 
     @Override
-    public Builder<T, R, C> scrollToSelectedItem(boolean scrollToSelectedItem) {
+    public Builder<R, C> scrollToSelectedItem(boolean scrollToSelectedItem) {
       this.scrollToSelectedItem = scrollToSelectedItem;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> sortingEnabled(boolean sortingEnabled) {
+    public Builder<R, C> sortingEnabled(boolean sortingEnabled) {
       this.sortingEnabled = sortingEnabled;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> selectionMode(int selectionMode) {
+    public Builder<R, C> selectionMode(int selectionMode) {
       this.selectionMode = selectionMode;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> columnReorderingAllowed(boolean columnReorderingAllowed) {
+    public Builder<R, C> columnReorderingAllowed(boolean columnReorderingAllowed) {
       this.columnReorderingAllowed = columnReorderingAllowed;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> columnResizingAllowed(boolean columnResizingAllowed) {
+    public Builder<R, C> columnResizingAllowed(boolean columnResizingAllowed) {
       this.columnResizingAllowed = columnResizingAllowed;
       return this;
     }
 
     @Override
-    public Builder<T, R, C> autoResizeMode(int autoResizeMode) {
+    public Builder<R, C> autoResizeMode(int autoResizeMode) {
       this.autoResizeMode = autoResizeMode;
       return this;
     }
 
     @Override
-    protected FilteredTable<T, R, C> createComponent() {
-      FilteredTable<T, R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
+    protected FilteredTable<R, C> createComponent() {
+      FilteredTable<R, C> filteredTable = new FilteredTable<>(tableModel, conditionPanelFactory, cellRendererFactory);
       filteredTable.setAutoStartsEdit(autoStartsEdit);
       filteredTable.setCenterOnScroll(centerOnScroll);
       filteredTable.setDoubleClickAction(doubleClickAction);
@@ -871,12 +867,12 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
 
     @Override
-    protected ComponentValue<Void, FilteredTable<T, R, C>> createComponentValue(FilteredTable<T, R, C> component) {
+    protected ComponentValue<Void, FilteredTable<R, C>> createComponentValue(FilteredTable<R, C> component) {
       throw new UnsupportedOperationException("A ComponentValue can not be based on a FilteredTable");
     }
 
     @Override
-    protected void setInitialValue(FilteredTable<T, R, C> component, Void initialValue) {}
+    protected void setInitialValue(FilteredTable<R, C> component, Void initialValue) {}
   }
 
   private final class MoveResizeColumnKeyListener extends KeyAdapter {
@@ -946,12 +942,11 @@ public final class FilteredTable<T extends FilteredTableModel<R, C>, R, C> exten
     }
   }
 
-  private static final class DefaultFilteredTableCellRendererFactory<T extends FilteredTableModel<R, C>, R, C>
-          implements FilteredTableCellRendererFactory<C> {
+  private static final class DefaultFilteredTableCellRendererFactory<R, C> implements FilteredTableCellRendererFactory<C> {
 
-    private final T tableModel;
+    private final FilteredTableModel<R, C> tableModel;
 
-    private DefaultFilteredTableCellRendererFactory(T tableModel) {
+    private DefaultFilteredTableCellRendererFactory(FilteredTableModel<R, C> tableModel) {
       this.tableModel = tableModel;
     }
 

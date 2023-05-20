@@ -4,7 +4,6 @@
 package is.codion.framework.demos.manual.keybinding;
 
 import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBinding;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
@@ -38,7 +37,7 @@ public final class KeyBindingPanel extends JPanel {
 
   private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
   private final KeyBindingModel keyBindingModel;
-  private final FilteredTable<FilteredTableModel<KeyBinding, Integer>, KeyBinding, Integer> table;
+  private final FilteredTable<KeyBinding, Integer> table;
   private final JComboBox<String> componentComboBox;
 
   public KeyBindingPanel() {

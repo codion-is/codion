@@ -258,7 +258,7 @@ public class EntityTablePanel extends JPanel {
 
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
-  private final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table;
+  private final FilteredTable<Entity, Attribute<?>> table;
   private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
@@ -327,7 +327,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @return the table
    */
-  public final FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> table() {
+  public final FilteredTable<Entity, Attribute<?>> table() {
     return table;
   }
 
@@ -1298,7 +1298,7 @@ public class EntityTablePanel extends JPanel {
     return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
   }
 
-  private FilteredTable<SwingEntityTableModel, Entity, Attribute<?>> createTable() {
+  private FilteredTable<Entity, Attribute<?>> createTable() {
     return FilteredTable.builder(tableModel)
             .cellRendererFactory(new EntityTableCellRendererFactory())
             .onBuild(filteredTable -> filteredTable.setRowHeight(filteredTable.getFont().getSize() + FONT_SIZE_TO_ROW_HEIGHT))

@@ -261,6 +261,13 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   void fireTableDataChanged();
 
   /**
+   * Notifies all listeners that the given rows have changed
+   * @param fromIndex the from index
+   * @param toIndex the to index
+   */
+  void fireTableRowsUpdated(int fromIndex, int toIndex);
+
+  /**
    * Instantiates a new table model builder.
    * @param columnValueProvider the column value provider
    * @param <R> the row type

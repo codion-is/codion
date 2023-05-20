@@ -20,7 +20,7 @@ public interface EntityTableCellRenderer {
    * @param attribute the attribute
    * @return a new {@link Builder} instance
    */
-  static Builder<SwingEntityTableModel, Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
+  static Builder<Entity, Attribute<?>> builder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
     return new EntityTableCellRendererBuilder(tableModel, attribute);
   }
 }

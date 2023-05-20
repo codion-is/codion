@@ -434,7 +434,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
     }
     if (changed) {
-      tableModel.fireTableDataChanged();
+      tableModel.fireTableRowsUpdated(0, getRowCount() - 1);
     }
   }
 
@@ -678,6 +678,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void fireTableDataChanged() {
     tableModel.fireTableDataChanged();
+  }
+
+  @Override
+  public void fireTableRowsUpdated(int fromIndex, int toIndex) {
+    tableModel.fireTableRowsUpdated(fromIndex, toIndex);
   }
 
   @Override
@@ -1051,14 +1056,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       Iterator<Map.Entry<Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
       while (iterator.hasNext()) {
         Map.Entry<Key, Entity> entry = iterator.next();
-        boolean changed = false;
         if (entity.primaryKey().equals(entry.getKey())) {
           iterator.remove();
           entity.setAs(entry.getValue());
-          changed = true;
-        }
-        if (changed) {
-          tableModel.fireTableDataChanged();
+          int index = indexOf(entity);
+          if (index >= 0) {
+            tableModel.fireTableRowsUpdated(index, index);
+          }
         }
       }
       if (entitiesByKey.isEmpty()) {
