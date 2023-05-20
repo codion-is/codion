@@ -155,7 +155,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     JDialog dialog = new JDialog(owner);
     if (titleProvider != null) {
       dialog.setTitle(titleProvider.get());
-      titleProvider.addDataListener(dialog::setTitle);
+      titleProvider.addDataListener(new DialogTitleListener(dialog));
     }
     if (icon != null) {
       dialog.setIconImage(icon.getImage());
@@ -180,12 +180,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     dialog.setModal(modal);
     dialog.setResizable(resizable);
     if (onShown != null) {
-      dialog.addComponentListener(new ComponentAdapter() {
-        @Override
-        public void componentShown(ComponentEvent e) {
-          onShown.accept(dialog);
-        }
-      });
+      dialog.addComponentListener(new OnShownAdapter(dialog, onShown));
     }
 
     return dialog;
@@ -248,6 +243,36 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     @Override
     public void onEvent() {
       disposeAction.actionPerformed(null);
+    }
+  }
+
+  private static final class DialogTitleListener implements EventDataListener<String> {
+
+    private final JDialog dialog;
+
+    private DialogTitleListener(JDialog dialog) {
+      this.dialog = dialog;
+    }
+
+    @Override
+    public void onEvent(String title) {
+      dialog.setTitle(title);
+    }
+  }
+
+  private static final class OnShownAdapter extends ComponentAdapter {
+
+    private final JDialog dialog;
+    private final Consumer<JDialog> onShown;
+
+    private OnShownAdapter(JDialog dialog, Consumer<JDialog> onShown) {
+      this.dialog = dialog;
+      this.onShown = onShown;
+    }
+
+    @Override
+    public void componentShown(ComponentEvent e) {
+      onShown.accept(dialog);
     }
   }
 }
