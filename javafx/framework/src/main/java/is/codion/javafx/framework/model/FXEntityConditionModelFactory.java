@@ -9,6 +9,8 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
 
+import java.util.Optional;
+
 /**
  * A {@link ColumnConditionModel.Factory} implementation using {@link EntityObservableList} for foreign keys based on small datasets
  */
@@ -19,12 +21,12 @@ public class FXEntityConditionModelFactory extends EntityConditionModelFactory {
   }
 
   @Override
-  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (definition(foreignKey.referencedType()).isSmallDataset()) {
-        return EntityListConditionModel.entityListConditionModel(foreignKey,
-                new EntityObservableList(foreignKey.referencedType(), connectionProvider()));
+        return Optional.of(EntityListConditionModel.entityListConditionModel(foreignKey,
+                new EntityObservableList(foreignKey.referencedType(), connectionProvider())));
       }
     }
 

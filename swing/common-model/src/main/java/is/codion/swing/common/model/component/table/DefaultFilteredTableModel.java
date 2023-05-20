@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -615,7 +614,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     columnModel.columns().stream()
             .map(FilteredTableColumn::getIdentifier)
             .map(filterModelFactory::createConditionModel)
-            .filter(Objects::nonNull)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .forEach(filterModel -> filterModels.add((ColumnConditionModel<C, ?>) filterModel));
 
     return filterModels;
@@ -624,13 +624,13 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
     @Override
-    public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
+    public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
       Class<?> columnClass = getColumnClass(columnIdentifier);
       if (Comparable.class.isAssignableFrom(columnClass)) {
-        return ColumnConditionModel.builder(columnIdentifier, columnClass).build();
+        return Optional.ofNullable(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
       }
 
-      return null;
+      return Optional.empty();
     }
   }
 

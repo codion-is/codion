@@ -12,6 +12,7 @@ import is.codion.framework.domain.property.Property;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -38,24 +39,24 @@ public class EntityFilterModelFactory implements ColumnConditionModel.Factory<At
   }
 
   @Override
-  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
     if (requireNonNull(attribute).isEntity()) {
-      return null;
+      return Optional.empty();
     }
     if (!Comparable.class.isAssignableFrom(attribute.valueClass())) {
-      return null;
+      return Optional.empty();
     }
 
     Property<?> property = entityDefinition.property(attribute);
     if (property.isHidden()) {
-      return null;
+      return Optional.empty();
     }
 
-    return ColumnConditionModel.builder(attribute, attribute.valueClass())
+    return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
             .operators(operators(attribute.valueClass()))
             .format(property.format())
             .dateTimePattern(property.dateTimePattern())
-            .build();
+            .build());
   }
 
   private static List<Operator> operators(Class<?> columnClass) {

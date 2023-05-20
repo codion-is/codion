@@ -19,8 +19,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -165,19 +163,10 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
                                                                        ColumnConditionModel.Factory<C> conditionModelFactory) {
     Collection<ColumnConditionModel<? extends C, ?>> models = new ArrayList<>();
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
-    for (ColumnProperty<?> columnProperty : definition.columnProperties()) {
-      ColumnConditionModel<? extends C, ?> columnConditionModel = conditionModelFactory.createConditionModel((C) columnProperty.attribute());
-      if (columnConditionModel != null) {
-        models.add(columnConditionModel);
-      }
-    }
-    for (ForeignKeyProperty foreignKeyProperty :
-            connectionProvider.entities().definition(entityType).foreignKeyProperties()) {
-      ColumnConditionModel<? extends C, ?> columnConditionModel = conditionModelFactory.createConditionModel((C) foreignKeyProperty.attribute());
-      if (columnConditionModel != null) {
-        models.add(columnConditionModel);
-      }
-    }
+    definition.columnProperties().forEach(columnProperty ->
+            conditionModelFactory.createConditionModel((C) columnProperty.attribute()).ifPresent(models::add));
+    definition.foreignKeyProperties().forEach(foreignKeyProperty ->
+            conditionModelFactory.createConditionModel((C) foreignKeyProperty.attribute()).ifPresent(models::add));
 
     return models.stream()
             .map(model -> (ColumnConditionModel<C, ?>) model)

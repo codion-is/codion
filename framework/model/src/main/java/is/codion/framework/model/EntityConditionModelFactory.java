@@ -15,6 +15,7 @@ import is.codion.framework.domain.property.ColumnProperty;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
 import static java.util.Objects.requireNonNull;
@@ -35,23 +36,23 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
   }
 
   @Override
-  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
-      return entitySearchModelConditionModel(foreignKey,
-              EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider));
+      return Optional.of(entitySearchModelConditionModel(foreignKey,
+              EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider)));
     }
 
     ColumnProperty<?> property = definition(attribute.entityType()).columnProperty(attribute);
     if (property.isAggregateColumn()) {
-      return null;
+      return Optional.empty();
     }
 
-    return ColumnConditionModel.builder(attribute, attribute.valueClass())
+    return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
             .operators(operators(attribute))
             .format(property.format())
             .dateTimePattern(property.dateTimePattern())
-            .build();
+            .build());
   }
 
   /**
