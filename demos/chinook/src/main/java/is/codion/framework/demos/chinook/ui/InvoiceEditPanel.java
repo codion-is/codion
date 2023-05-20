@@ -4,9 +4,11 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntitySearchField;
@@ -100,7 +102,7 @@ public final class InvoiceEditPanel extends EntityEditPanel {
 
     private CustomerSelectionProvider(EntitySearchModel searchModel) {
       super(searchModel);
-      SwingEntityTableModel tableModel = table().getModel();
+      FilteredTableModel<Entity, Attribute<?>> tableModel = table().getModel();
       tableModel.columnModel().setVisibleColumns(Customer.LASTNAME, Customer.FIRSTNAME, Customer.EMAIL);
       tableModel.sortModel().setSortOrder(Customer.LASTNAME, ASCENDING);
       setPreferredSize(new Dimension(500, 300));

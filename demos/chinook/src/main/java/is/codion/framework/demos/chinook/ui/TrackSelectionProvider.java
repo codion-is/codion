@@ -3,8 +3,10 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
+import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import java.awt.Dimension;
@@ -16,7 +18,7 @@ final class TrackSelectionProvider extends EntitySearchField.TableSelectionProvi
 
   TrackSelectionProvider(EntitySearchModel trackSearchModel) {
     super(trackSearchModel);
-    SwingEntityTableModel tableModel = table().getModel();
+    FilteredTableModel<Entity, Attribute<?>> tableModel = table().getModel();
     tableModel.columnModel().setVisibleColumns(Track.ARTIST_DENORM, Track.ALBUM_FK, Track.NAME);
     tableModel.sortModel().setSortOrder(Track.ARTIST_DENORM, ASCENDING);
     tableModel.sortModel().addSortOrder(Track.ALBUM_FK, ASCENDING);

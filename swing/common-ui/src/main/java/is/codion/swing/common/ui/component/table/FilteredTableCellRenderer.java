@@ -92,7 +92,6 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 
   /**
    * Instantiates a new {@link FilteredTableCellRenderer.Builder}.
-   * @param <T> the table model type
    * @param <R> the table row type
    * @param <C> the column identifier type
    * @param tableModel the table model providing the data to render
@@ -100,7 +99,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
    * @param columnClass the column class
    * @return a new {@link FilteredTableCellRenderer.Builder} instance
    */
-  static <T extends FilteredTableModel<R, C>, R, C> Builder<T, R, C> builder(T tableModel, C columnIdentifier, Class<?> columnClass) {
+  static <R, C> Builder<R, C> builder(FilteredTableModel<R, C> tableModel, C columnIdentifier, Class<?> columnClass) {
     return new DefaultFilteredTableCellRendererBuilder<>(tableModel, columnIdentifier, columnClass);
   }
 
@@ -136,55 +135,55 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
   /**
    * Builds a {@link FilteredTableCellRenderer}
    */
-  interface Builder<T extends FilteredTableModel<R, C>, R, C> {
+  interface Builder<R, C> {
 
     /**
      * @param horizontalAlignment the horizontal alignment
      * @return this builder instance
      */
-    Builder<T, R, C> horizontalAlignment(int horizontalAlignment);
+    Builder<R, C> horizontalAlignment(int horizontalAlignment);
 
     /**
      * @param toolTipData true if the cell should display its contents in a tool tip
      * @return this builder instance
      */
-    Builder<T, R, C> toolTipData(boolean toolTipData);
+    Builder<R, C> toolTipData(boolean toolTipData);
 
     /**
      * @param columnShadingEnabled true if column specific shading should be enabled, for example to indicated that the column is involved in a search/filter
      * @return this builder instance
      */
-    Builder<T, R, C> columnShadingEnabled(boolean columnShadingEnabled);
+    Builder<R, C> columnShadingEnabled(boolean columnShadingEnabled);
 
     /**
      * @param alternateRowColoring true if alternate row coloring should be enabled
      * @return this builder instance
      */
-    Builder<T, R, C> alternateRowColoring(boolean alternateRowColoring);
+    Builder<R, C> alternateRowColoring(boolean alternateRowColoring);
 
     /**
      * @param leftPadding the left cell padding
      * @return this builder instance
      */
-    Builder<T, R, C> leftPadding(int leftPadding);
+    Builder<R, C> leftPadding(int leftPadding);
 
     /**
      * @param rightPadding the right cell padding
      * @return this builder instance
      */
-    Builder<T, R, C> rightPadding(int rightPadding);
+    Builder<R, C> rightPadding(int rightPadding);
 
     /**
      * @param displayValueProvider provides the value to display in the cell, formatted or otherwise
      * @return this builder instance
      */
-    Builder<T, R, C> displayValueProvider(Function<Object, Object> displayValueProvider);
+    Builder<R, C> displayValueProvider(Function<Object, Object> displayValueProvider);
 
     /**
      * @param cellColorProvider provides cell/row background and foreground color
      * @return this builder instance
      */
-    Builder<T, R, C> cellColorProvider(CellColorProvider<C> cellColorProvider);
+    Builder<R, C> cellColorProvider(CellColorProvider<C> cellColorProvider);
 
     /**
      * @return a new {@link FilteredTableCellRenderer} instance based on this builder
@@ -194,10 +193,9 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
 
   /**
    * Settings for a {@link FilteredTableCellRenderer}
-   * @param <T> the table model type
    * @param <C> the column identifier type
    */
-  class Settings<T extends FilteredTableModel<?, C>, C> {
+  class Settings<C> {
 
     protected static final float SELECTION_COLOR_BLEND_RATIO = 0.5f;
     protected static final double DARKENING_FACTOR = 0.9;
@@ -269,7 +267,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
       focusedCellBorder = createFocusedCellBorder(foregroundColor, defaultCellBorder);
     }
 
-    protected final Color backgroundColor(T tableModel, int row, C columnIdentifier, boolean columnShadingEnabled,
+    protected final Color backgroundColor(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, boolean columnShadingEnabled,
                                           boolean selected, Color cellBackgroundColor) {
       cellBackgroundColor = backgroundColor(cellBackgroundColor, row, selected);
       if (columnShadingEnabled) {
@@ -290,7 +288,7 @@ public interface FilteredTableCellRenderer extends TableCellRenderer {
      * @param cellBackgroundColor the cell specific background color, if any
      * @return a shaded background color
      */
-    protected Color backgroundColorShaded(T tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
+    protected Color backgroundColorShaded(FilteredTableModel<?, C> tableModel, int row, C columnIdentifier, Color cellBackgroundColor) {
       ColumnConditionModel<?, ?> filterModel = tableModel.filterModel().conditionModels().get(columnIdentifier);
       boolean filterEnabled = filterModel != null && filterModel.isEnabled();
       if (filterEnabled) {

@@ -17,15 +17,13 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A default {@link FilteredTableCellRenderer} implementation.
- * @param <T> the table model type
  * @param <R> the row type
  * @param <C> the column identifier type
  */
-final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>, R, C>
-        extends DefaultTableCellRenderer implements FilteredTableCellRenderer {
+final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRenderer implements FilteredTableCellRenderer {
 
-  private final Settings<T, C> settings;
-  private final T tableModel;
+  private final Settings<C> settings;
+  private final FilteredTableModel<R, C> tableModel;
   private final C columnIdentifier;
   private final boolean toolTipData;
   private final boolean columnShadingEnabled;
@@ -37,7 +35,7 @@ final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>,
    * @param builder the builder
    * @param settings the UI settings for the renderer
    */
-  DefaultFilteredTableCellRenderer(DefaultFilteredTableCellRendererBuilder<T, R, C> builder, Settings<T, C> settings) {
+  DefaultFilteredTableCellRenderer(DefaultFilteredTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
     this.tableModel = requireNonNull(builder).tableModel;
     this.settings = requireNonNull(settings);
     this.settings.updateColors();
@@ -97,15 +95,14 @@ final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>,
 
   /**
    * A default {@link FilteredTableCellRenderer} implementation for Boolean values
-   * @param <T> the tabel model type
    * @param <R> the row type
    * @param <C> the column identifier type
    */
-  public static final class BooleanRenderer<T extends FilteredTableModel<R, C>, R, C> extends NullableCheckBox
+  public static final class BooleanRenderer<R, C> extends NullableCheckBox
           implements TableCellRenderer, javax.swing.plaf.UIResource, FilteredTableCellRenderer {
 
-    private final Settings<T, C> settings;
-    private final T tableModel;
+    private final Settings<C> settings;
+    private final FilteredTableModel<R, C> tableModel;
     private final C columnIdentifier;
     private final boolean columnShadingEnabled;
     private final boolean alternateRowColoring;
@@ -115,7 +112,7 @@ final class DefaultFilteredTableCellRenderer<T extends FilteredTableModel<R, C>,
      * @param builder the builder
      * @param settings the UI settings for the renderer
      */
-    BooleanRenderer(DefaultFilteredTableCellRendererBuilder<T, R, C> builder, Settings<T, C> settings) {
+    BooleanRenderer(DefaultFilteredTableCellRendererBuilder<R, C> builder, Settings<C> settings) {
       super(new NullableToggleButtonModel());
       this.tableModel = requireNonNull(builder).tableModel;
       this.settings = requireNonNull(settings);

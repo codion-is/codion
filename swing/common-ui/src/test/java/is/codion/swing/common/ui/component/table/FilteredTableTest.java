@@ -39,7 +39,7 @@ public class FilteredTableTest {
                     singletonList("dlabo")))
             .build();
 
-    FilteredTable<FilteredTableModel<List<String>, Integer>, List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
+    FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
     tableModel.refresh();
 
     new JScrollPane(filteredTable);

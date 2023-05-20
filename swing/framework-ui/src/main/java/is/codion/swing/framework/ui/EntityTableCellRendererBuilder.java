@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Settings;
@@ -18,7 +19,7 @@ import java.util.function.Function;
 import static is.codion.swing.common.ui.Colors.darker;
 import static java.util.Objects.requireNonNull;
 
-final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<SwingEntityTableModel, Entity, Attribute<?>> {
+final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<Entity, Attribute<?>> {
 
   EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
     this(requireNonNull(tableModel), tableModel.entityDefinition().property(attribute));
@@ -33,11 +34,11 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
   }
 
   @Override
-  protected Settings<SwingEntityTableModel, Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
+  protected Settings<Attribute<?>> settings(int leftPadding, int rightPadding, boolean alternateRowColoring) {
     return new EntitySettings(leftPadding, rightPadding, alternateRowColoring);
   }
 
-  private static final class EntitySettings extends Settings<SwingEntityTableModel, Attribute<?>> {
+  private static final class EntitySettings extends Settings<Attribute<?>> {
 
     private Color backgroundColorDoubleShade;
     private Color backgroundColorAlternateDoubleShade;
@@ -54,8 +55,9 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
     }
 
     @Override
-    protected Color backgroundColorShaded(SwingEntityTableModel tableModel, int row, Attribute<?> columnIdentifier, Color cellBackgroundColor) {
-      boolean conditionEnabled = tableModel.conditionModel().isEnabled(columnIdentifier);
+    protected Color backgroundColorShaded(FilteredTableModel<?, Attribute<?>> tableModel, int row,
+                                          Attribute<?> columnIdentifier, Color cellBackgroundColor) {
+      boolean conditionEnabled = ((SwingEntityTableModel) tableModel).conditionModel().isEnabled(columnIdentifier);
       boolean filterEnabled = tableModel.filterModel().isEnabled(columnIdentifier);
       boolean showCondition = conditionEnabled || filterEnabled;
       if (showCondition) {

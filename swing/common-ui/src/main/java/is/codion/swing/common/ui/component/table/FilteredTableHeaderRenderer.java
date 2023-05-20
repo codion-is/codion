@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
-import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
@@ -19,15 +18,15 @@ import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
 
-final class FilteredTableHeaderRenderer<T extends FilteredTableModel<R, C>, R, C> implements TableCellRenderer {
+final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 
   private static final int SORT_ICON_SIZE = 5;
 
-  private final FilteredTable<T, R, C> filteredTable;
+  private final FilteredTable<R, C> filteredTable;
   private final TableCellRenderer wrappedRenderer;
   private final TableCellRenderer columnCellRenderer;
 
-  FilteredTableHeaderRenderer(FilteredTable<T, R, C> filteredTable, FilteredTableColumn<C> column) {
+  FilteredTableHeaderRenderer(FilteredTable<R, C> filteredTable, FilteredTableColumn<C> column) {
     this.filteredTable = filteredTable;
     this.wrappedRenderer = column.getHeaderRenderer();
     this.columnCellRenderer = column.getCellRenderer();
