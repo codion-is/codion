@@ -9050,3 +9050,4 @@
   FilteredTable, T table model type parameter removed, related refactoring
   FilteredTableModel.Builder.columnSummaryModelFactory() renamed summaryValueProviderFactory() and columnFilterModelFactory() renamed filterModelFactory()
   ColumnConditionModelFactory.createConditionModel() now returns Optional
+  ColumnConditionPanel bug fixed, lost focus on operator change when bound field was a JComboBox, special handling added

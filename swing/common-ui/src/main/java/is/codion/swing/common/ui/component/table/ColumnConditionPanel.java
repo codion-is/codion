@@ -556,9 +556,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private boolean boundFieldHasFocus() {
-    return equalField.hasFocus() ||
-            lowerBoundField != null && lowerBoundField.hasFocus() ||
-            upperBoundField != null && upperBoundField.hasFocus();
+    return boundFieldHasFocus(equalField) ||
+            boundFieldHasFocus(lowerBoundField) ||
+            boundFieldHasFocus(upperBoundField);
   }
 
   private void addStringConfigurationPopupMenu() {
@@ -622,6 +622,20 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
                     .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
             .build();
+  }
+
+  private static boolean boundFieldHasFocus(JComponent field) {
+    if (field == null) {
+      return false;
+    }
+    if (field.hasFocus()) {
+      return true;
+    }
+    if (field instanceof JComboBox) {
+      return ((JComboBox<?>) field).getEditor().getEditorComponent().hasFocus();
+    }
+
+    return false;
   }
 
   private final class FocusGainedListener extends FocusAdapter {
