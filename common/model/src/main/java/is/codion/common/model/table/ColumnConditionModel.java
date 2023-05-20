@@ -15,6 +15,7 @@ import is.codion.common.value.ValueSet;
 import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static java.util.Objects.requireNonNull;
@@ -272,10 +273,10 @@ public interface ColumnConditionModel<C, T> {
     /**
      * Creates a {@link ColumnConditionModel} for a given column
      * @param columnIdentifier the identifier of the column for which to create a {@link ColumnConditionModel}
-     * @return a {@link ColumnConditionModel} for the given column, null if filtering should
+     * @return a {@link ColumnConditionModel} for the given column, an empty Optional if filtering should
      * not be allowed for this column
      */
-    ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier);
+    Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier);
   }
 
   /**

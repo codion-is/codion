@@ -7,7 +7,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.model.table.ColumnSummaryModel;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 
@@ -294,16 +294,16 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     Builder<R, C> columns(List<FilteredTableColumn<C>> columns);
 
     /**
-     * @param columnFilterModelFactory the column filter model factory
+     * @param filterModelFactory the column filter model factory
      * @return this builder instance
      */
-    Builder<R, C> columnFilterModelFactory(ColumnConditionModel.Factory<C> columnFilterModelFactory);
+    Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory);
 
     /**
-     * @param columnSummaryModelFactory the column summary model factory
+     * @param summaryValueProviderFactory the column summary value provider factory
      * @return this builder instance
      */
-    Builder<R, C> columnSummaryModelFactory(ColumnSummaryModel.SummaryValueProvider.Factory<C> columnSummaryModelFactory);
+    Builder<R, C> summaryValueProviderFactory(SummaryValueProvider.Factory<C> summaryValueProviderFactory);
 
     /**
      * @param rowSupplier the row supplier

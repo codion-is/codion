@@ -27,7 +27,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -73,10 +72,10 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     this.columnValueProvider = requireNonNull(builder.columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
-    this.filterModel = tableConditionModel(createColumnFilterModels(builder.columnFilterModelFactory == null ?
-            new DefaultColumnFilterModelFactory() : builder.columnFilterModelFactory));
-    this.summaryModel = tableSummaryModel(builder.columnSummaryModelFactory == null ?
-            new DefaultColumnSummaryValueProviderFactory() : builder.columnSummaryModelFactory);
+    this.filterModel = tableConditionModel(createColumnFilterModels(builder.filterModelFactory == null ?
+            new DefaultFilterModelFactory() : builder.filterModelFactory));
+    this.summaryModel = tableSummaryModel(builder.summaryValueProviderFactory == null ?
+            new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
     this.rowSupplier = builder.rowSupplier == null ? this::items : builder.rowSupplier;
     this.rowValidator = builder.rowValidator;
@@ -615,26 +614,27 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     columnModel.columns().stream()
             .map(FilteredTableColumn::getIdentifier)
             .map(filterModelFactory::createConditionModel)
-            .filter(Objects::nonNull)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .forEach(filterModel -> filterModels.add((ColumnConditionModel<C, ?>) filterModel));
 
     return filterModels;
   }
 
-  private final class DefaultColumnFilterModelFactory implements ColumnConditionModel.Factory<C> {
+  private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
     @Override
-    public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
+    public Optional<ColumnConditionModel<? extends C, ?>> createConditionModel(C columnIdentifier) {
       Class<?> columnClass = getColumnClass(columnIdentifier);
       if (Comparable.class.isAssignableFrom(columnClass)) {
-        return ColumnConditionModel.builder(columnIdentifier, columnClass).build();
+        return Optional.ofNullable(ColumnConditionModel.builder(columnIdentifier, columnClass).build());
       }
 
-      return null;
+      return Optional.empty();
     }
   }
 
-  private final class DefaultColumnSummaryValueProviderFactory implements SummaryValueProvider.Factory<C> {
+  private final class DefaultSummaryValueProviderFactory implements SummaryValueProvider.Factory<C> {
 
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format) {
@@ -739,8 +739,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     private List<FilteredTableColumn<C>> columns;
     private Supplier<Collection<R>> rowSupplier;
     private Predicate<R> rowValidator = row -> true;
-    private ColumnConditionModel.Factory<C> columnFilterModelFactory;
-    private SummaryValueProvider.Factory<C> columnSummaryModelFactory;
+    private ColumnConditionModel.Factory<C> filterModelFactory;
+    private SummaryValueProvider.Factory<C> summaryValueProviderFactory;
     private boolean mergeOnRefresh = false;
     private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
@@ -758,14 +758,14 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
 
     @Override
-    public Builder<R, C> columnFilterModelFactory(ColumnConditionModel.Factory<C> columnFilterModelFactory) {
-      this.columnFilterModelFactory = requireNonNull(columnFilterModelFactory);
+    public Builder<R, C> filterModelFactory(ColumnConditionModel.Factory<C> filterModelFactory) {
+      this.filterModelFactory = requireNonNull(filterModelFactory);
       return this;
     }
 
     @Override
-    public Builder<R, C> columnSummaryModelFactory(SummaryValueProvider.Factory<C> columnSummaryModelFactory) {
-      this.columnSummaryModelFactory = requireNonNull(columnSummaryModelFactory);
+    public Builder<R, C> summaryValueProviderFactory(SummaryValueProvider.Factory<C> summaryValueProviderFactory) {
+      this.summaryValueProviderFactory = requireNonNull(summaryValueProviderFactory);
       return this;
     }
 

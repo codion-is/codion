@@ -10,6 +10,8 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
+import java.util.Optional;
+
 import static is.codion.swing.framework.model.EntityComboBoxModelConditionModel.entityComboBoxModelConditionModel;
 
 /**
@@ -26,11 +28,11 @@ public class SwingEntityConditionModelFactory extends EntityConditionModelFactor
   }
 
   @Override
-  public ColumnConditionModel<? extends Attribute<?>, ?> createConditionModel(Attribute<?> attribute) {
+  public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       if (definition(foreignKey.referencedType()).isSmallDataset()) {
-        return entityComboBoxModelConditionModel(foreignKey, createComboBoxModel(foreignKey));
+        return Optional.of(entityComboBoxModelConditionModel(foreignKey, createComboBoxModel(foreignKey)));
       }
     }
 

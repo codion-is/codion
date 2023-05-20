@@ -1209,7 +1209,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityType entityType, Entities entities) {
     return FilteredTableModel.builder(new EntityColumnValueProvider())
             .columns(createColumns(entityType, entities))
-            .columnFilterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
+            .filterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
             .rowSupplier(SwingEntityTableModel.this::refreshItems)
             .rowValidator(row -> row.type().equals(entityType))
             .build();
