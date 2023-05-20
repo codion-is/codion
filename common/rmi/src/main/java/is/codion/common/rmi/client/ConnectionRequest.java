@@ -45,6 +45,11 @@ public interface ConnectionRequest {
   Map<String, Object> parameters();
 
   /**
+   * @return a copy of this connection request with a copy of the user instance
+   */
+  ConnectionRequest copy();
+
+  /**
    * @return a ConnectionRequest.Builder
    */
   static ConnectionRequest.Builder builder() {

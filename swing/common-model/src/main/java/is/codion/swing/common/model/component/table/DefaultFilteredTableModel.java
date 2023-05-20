@@ -27,10 +27,12 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -40,19 +42,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-/**
- * A TableModel implementation that supports filtering, searching and sorting.
- * <pre>
- * DefaultFilteredTableModel tableModel = ...;
- * JTable table = new JTable(tableModel, tableModel.columnModel(), tableModel.selectionModel());
- * </pre><br>
- * User: Björn Darri<br>
- * Date: 18.4.2010<br>
- * Time: 09:48:07<br>
- * @param <R> the type representing the rows in this table model
- * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- */
-public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
+final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
   private final Event<Throwable> refreshFailedEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
@@ -70,45 +60,33 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private final TableConditionModel<C> filterModel;
   private final TableSummaryModel<C> summaryModel;
   private final CombinedIncludeCondition combinedIncludeCondition;
+  private final Supplier<Collection<R>> rowSupplier;
+  private final Predicate<R> rowValidator;
 
   private ProgressWorker<Collection<R>, ?> refreshWorker;
   private boolean mergeOnRefresh = false;
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
+  private boolean asyncRefresh;
 
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @throws IllegalArgumentException in case {@code tableColumns} is empty
-   * @throws NullPointerException in case {@code tableColumns} or {@code columnValueProvider} is null
-   */
-  public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider) {
-    this(tableColumns, columnValueProvider, null);
-  }
-
-  /**
-   * Instantiates a new table model.
-   * @param tableColumns the table columns to base this table model on
-   * @param columnValueProvider the column value provider
-   * @param columnFilterModels the filter models if any, may be null
-   * @throws IllegalArgumentException in case {@code tableColumns} is empty
-   * @throws NullPointerException in case {@code tableColumns} or {@code columnValueProvider} is null
-   */
-  public DefaultFilteredTableModel(List<FilteredTableColumn<C>> tableColumns, ColumnValueProvider<R, C> columnValueProvider,
-                                   Collection<ColumnConditionModel<C, ?>> columnFilterModels) {
-    this.columnModel = new DefaultFilteredTableColumnModel<>(tableColumns);
+  private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
+    this.columnModel = new DefaultFilteredTableColumnModel<>(builder.columns);
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
-    this.columnValueProvider = requireNonNull(columnValueProvider);
+    this.columnValueProvider = requireNonNull(builder.columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
     this.selectionModel = new DefaultFilteredTableSelectionModel<>(this);
-    this.filterModel = tableConditionModel(columnFilterModels);
-    this.summaryModel = tableSummaryModel(new DefaultColumnSummaryModelFactory());
-    this.combinedIncludeCondition = new CombinedIncludeCondition(columnFilterModels);
+    this.filterModel = tableConditionModel(createColumnFilterModels(builder.columnFilterModelFactory == null ?
+            new DefaultColumnFilterModelFactory() : builder.columnFilterModelFactory));
+    this.summaryModel = tableSummaryModel(builder.columnSummaryModelFactory == null ?
+            new DefaultColumnSummaryValueProviderFactory() : builder.columnSummaryModelFactory);
+    this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
+    this.rowSupplier = builder.rowSupplier == null ? this::items : builder.rowSupplier;
+    this.rowValidator = builder.rowValidator;
+    this.mergeOnRefresh = builder.mergeOnRefresh;
+    this.asyncRefresh = builder.asyncRefresh;
     bindEventsInternal();
   }
 
   @Override
-  public final List<R> items() {
+  public List<R> items() {
     List<R> items = new ArrayList<>(visibleItems);
     items.addAll(filteredItems);
 
@@ -116,47 +94,47 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final List<R> visibleItems() {
+  public List<R> visibleItems() {
     return unmodifiableList(visibleItems);
   }
 
   @Override
-  public final List<R> filteredItems() {
+  public List<R> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 
   @Override
-  public final int visibleItemCount() {
+  public int visibleItemCount() {
     return getRowCount();
   }
 
   @Override
-  public final int filteredItemCount() {
+  public int filteredItemCount() {
     return filteredItems.size();
   }
 
   @Override
-  public final int getColumnCount() {
+  public int getColumnCount() {
     return columnModel.getColumnCount();
   }
 
   @Override
-  public final int getRowCount() {
+  public int getRowCount() {
     return visibleItems.size();
   }
 
   @Override
-  public final boolean containsItem(R item) {
+  public boolean containsItem(R item) {
     return visibleItems.contains(item) || filteredItems.contains(item);
   }
 
   @Override
-  public final boolean isVisible(R item) {
+  public boolean isVisible(R item) {
     return visibleItems.contains(item);
   }
 
   @Override
-  public final boolean isFiltered(R item) {
+  public boolean isFiltered(R item) {
     return filteredItems.contains(item);
   }
 
@@ -165,12 +143,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
    * @see #refreshItems()
    */
   @Override
-  public final void refresh() {
+  public void refresh() {
     refreshThen(null);
   }
 
   @Override
-  public final void refreshThen(Consumer<Collection<R>> afterRefresh) {
+  public void refreshThen(Consumer<Collection<R>> afterRefresh) {
     if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
       refreshAsync(afterRefresh);
     }
@@ -180,12 +158,12 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final StateObserver refreshingObserver() {
+  public StateObserver refreshingObserver() {
     return refreshingState.observer();
   }
 
   @Override
-  public final void clear() {
+  public void clear() {
     filteredItems.clear();
     int size = visibleItems.size();
     if (size > 0) {
@@ -196,79 +174,79 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final FilteredTableColumnModel<C> columnModel() {
+  public FilteredTableColumnModel<C> columnModel() {
     return columnModel;
   }
 
   @Override
-  public final FilteredTableSelectionModel<R> selectionModel() {
+  public FilteredTableSelectionModel<R> selectionModel() {
     return selectionModel;
   }
 
   @Override
-  public final FilteredTableSortModel<R, C> sortModel() {
+  public FilteredTableSortModel<R, C> sortModel() {
     return sortModel;
   }
 
   @Override
-  public final FilteredTableSearchModel searchModel() {
+  public FilteredTableSearchModel searchModel() {
     return searchModel;
   }
 
   @Override
-  public final TableConditionModel<C> filterModel() {
+  public TableConditionModel<C> filterModel() {
     return filterModel;
   }
 
   @Override
-  public final TableSummaryModel<C> summaryModel() {
+  public TableSummaryModel<C> summaryModel() {
     return summaryModel;
   }
 
   @Override
-  public final <T> Collection<T> values(C columnIdentifier) {
+  public <T> Collection<T> values(C columnIdentifier) {
     return (Collection<T>) columnValues(IntStream.range(0, visibleItemCount()).boxed(),
             columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
-  public final <T> Collection<T> selectedValues(C columnIdentifier) {
+  public <T> Collection<T> selectedValues(C columnIdentifier) {
     return (Collection<T>) columnValues(selectionModel().getSelectedIndexes().stream(),
             columnModel.column(columnIdentifier).getModelIndex());
   }
 
   @Override
-  public final boolean isMergeOnRefresh() {
+  public boolean isMergeOnRefresh() {
     return mergeOnRefresh;
   }
 
   @Override
-  public final void setMergeOnRefresh(boolean mergeOnRefresh) {
+  public void setMergeOnRefresh(boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
   }
 
   @Override
-  public final boolean isAsyncRefresh() {
+  public boolean isAsyncRefresh() {
     return asyncRefresh;
   }
 
   @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
+  public void setAsyncRefresh(boolean asyncRefresh) {
     this.asyncRefresh = asyncRefresh;
   }
 
   @Override
-  public final R itemAt(int rowIndex) {
+  public R itemAt(int rowIndex) {
     return visibleItems.get(rowIndex);
   }
 
   @Override
-  public final int indexOf(R item) {
+  public int indexOf(R item) {
     return visibleItems.indexOf(item);
   }
 
   @Override
-  public final void sortItems() {
+  public void sortItems() {
     if (sortModel.isSorted()) {
       List<R> selectedItems = selectionModel.getSelectedItems();
       sortModel.sort(visibleItems);
@@ -278,7 +256,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void filterItems() {
+  public void filterItems() {
     List<R> selectedItems = selectionModel.getSelectedItems();
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
@@ -295,35 +273,35 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final Predicate<R> getIncludeCondition() {
+  public Predicate<R> getIncludeCondition() {
     return combinedIncludeCondition.includeCondition;
   }
 
   @Override
-  public final void setIncludeCondition(Predicate<R> includeCondition) {
+  public void setIncludeCondition(Predicate<R> includeCondition) {
     combinedIncludeCondition.includeCondition = includeCondition;
     filterItems();
   }
 
   @Override
-  public final void addItems(Collection<R> items) {
+  public void addItems(Collection<R> items) {
     addItemsAt(visibleItems.size(), items);
   }
 
   @Override
-  public final void addItemsSorted(Collection<R> items) {
+  public void addItemsSorted(Collection<R> items) {
     addItemsAtSorted(visibleItems.size(), items);
   }
 
   @Override
-  public final void addItemsAt(int index, Collection<R> items) {
+  public void addItemsAt(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items)) {
       fireTableDataChanged();
     }
   }
 
   @Override
-  public final void addItemsAtSorted(int index, Collection<R> items) {
+  public void addItemsAtSorted(int index, Collection<R> items) {
     if (addItemsAtInternal(index, items)) {
       if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
@@ -333,17 +311,17 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addItem(R item) {
+  public void addItem(R item) {
     addItemInternal(item);
   }
 
   @Override
-  public final void addItemAt(int index, R item) {
+  public void addItemAt(int index, R item) {
     addItemAtInternal(index, item);
   }
 
   @Override
-  public final void addItemSorted(R item) {
+  public void addItemSorted(R item) {
     if (addItemInternal(item)) {
       if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
@@ -353,7 +331,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void setItemAt(int index, R item) {
+  public void setItemAt(int index, R item) {
     validate(item);
     if (include(item)) {
       visibleItems.set(index, item);
@@ -362,7 +340,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void removeItem(R item) {
+  public void removeItem(R item) {
     int visibleItemIndex = visibleItems.indexOf(item);
     if (visibleItemIndex >= 0) {
       visibleItems.remove(visibleItemIndex);
@@ -377,65 +355,56 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void removeItems(Collection<R> items) {
+  public void removeItems(Collection<R> items) {
     for (R item : items) {
       removeItem(item);
     }
   }
 
   @Override
-  public final void removeItemAt(int index) {
+  public void removeItemAt(int index) {
     visibleItems.remove(index);
     fireTableRowsDeleted(index, index);
   }
 
   @Override
-  public final void removeItems(int fromIndex, int toIndex) {
+  public void removeItems(int fromIndex, int toIndex) {
     visibleItems.subList(fromIndex, toIndex).clear();
     fireTableRowsDeleted(fromIndex, toIndex);
   }
 
-  /**
-   * A default implementation returning true
-   * @return true
-   */
   @Override
-  public boolean allowSelectionChange() {
-    return true;
-  }
-
-  @Override
-  public final void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
     rowsRemovedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final Class<?> getColumnClass(C columnIdentifier) {
+  public Class<?> getColumnClass(C columnIdentifier) {
     return columnModel.column(columnIdentifier).getColumnClass();
   }
 
   @Override
-  public final Class<?> getColumnClass(int columnIndex) {
+  public Class<?> getColumnClass(int columnIndex) {
     return getColumnClass(columnModel().columnIdentifier(columnIndex));
   }
 
   @Override
-  public final Object getValueAt(int rowIndex, int columnIndex) {
+  public Object getValueAt(int rowIndex, int columnIndex) {
     return columnValueProvider.value(itemAt(rowIndex), columnModel().columnIdentifier(columnIndex));
   }
 
   @Override
-  public final String getStringValueAt(int rowIndex, C columnIdentifier) {
+  public String getStringValueAt(int rowIndex, C columnIdentifier) {
     return columnValueProvider.string(itemAt(rowIndex), columnIdentifier);
   }
 
   @Override
-  public final String rowsAsDelimitedString(char delimiter) {
+  public String rowsAsDelimitedString(char delimiter) {
     List<Integer> rows = selectionModel.isSelectionEmpty() ?
             IntStream.range(0, getRowCount())
                     .boxed()
@@ -452,72 +421,43 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   }
 
   @Override
-  public final void addRefreshListener(EventListener listener) {
+  public void addRefreshListener(EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
   @Override
-  public final void removeRefreshListener(EventListener listener) {
+  public void removeRefreshListener(EventListener listener) {
     refreshEvent.removeListener(listener);
   }
 
   @Override
-  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
+  public void addRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
+  public void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
     refreshFailedEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addDataChangedListener(EventListener listener) {
+  public void addDataChangedListener(EventListener listener) {
     dataChangedEvent.addListener(listener);
   }
 
   @Override
-  public final void removeDataChangedListener(EventListener listener) {
+  public void removeDataChangedListener(EventListener listener) {
     dataChangedEvent.removeListener(listener);
   }
 
   @Override
-  public final void addClearListener(EventListener listener) {
+  public void addClearListener(EventListener listener) {
     clearEvent.addListener(listener);
   }
 
   @Override
-  public final void removeClearListener(EventListener listener) {
+  public void removeClearListener(EventListener listener) {
     clearEvent.removeListener(listener);
-  }
-
-  /**
-   * Returns the items this table model should contain.
-   * By default, this simply returns the items already in the model.
-   * Override to fetch data from a datasource of some kind.
-   * @return the items this table model should contain, an empty Collection in case of no items.
-   */
-  protected Collection<R> refreshItems() {
-    return items();
-  }
-
-  /**
-   * Override to validate that the given item can be added to this model.
-   * @param item the item being added
-   * @return true if the item can be added to this model, false otherwise
-   */
-  protected boolean validItem(R item) {
-    return true;
-  }
-
-  /**
-   * Creates a ColumnValueProvider for the given column
-   * @param columnIdentifier the column identifier
-   * @param <T> the value type
-   * @return a ColumnValueProvider for the column identified by the given identifier, an empty Optional if not applicable
-   */
-  protected <T extends Number> Optional<SummaryValueProvider<T>> createColumnValueProvider(C columnIdentifier) {
-    return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, this, null));
   }
 
   private void bindEventsInternal() {
@@ -576,7 +516,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private void validate(R item) {
     requireNonNull(item);
-    if (!validItem(item)) {
+    if (!rowValidator.test(item)) {
       throw new IllegalArgumentException("Invalid item: " + item);
     }
   }
@@ -587,7 +527,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
 
   private void refreshAsync(Consumer<Collection<R>> afterRefresh) {
     cancelCurrentRefresh();
-    refreshWorker = ProgressWorker.builder(this::refreshItems)
+    refreshWorker = ProgressWorker.builder(rowSupplier::get)
             .onStarted(this::onRefreshStarted)
             .onResult(items -> onRefreshResult(items, afterRefresh))
             .onException(this::onRefreshFailedAsync)
@@ -597,7 +537,7 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
   private void refreshSync(Consumer<Collection<R>> afterRefresh) {
     onRefreshStarted();
     try {
-      onRefreshResult(refreshItems(), afterRefresh);
+      onRefreshResult(rowSupplier.get(), afterRefresh);
     }
     catch (Exception e) {
       onRefreshFailedSync(e);
@@ -670,13 +610,40 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
     selectionModel.setSelectedItems(selectedItems);
   }
 
-  private final class DefaultColumnSummaryModelFactory implements ColumnSummaryModel.Factory<C> {
+  private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
+    Collection<ColumnConditionModel<C, ?>> filterModels = new ArrayList<>();
+    columnModel.columns().stream()
+            .map(FilteredTableColumn::getIdentifier)
+            .map(filterModelFactory::createConditionModel)
+            .filter(Objects::nonNull)
+            .forEach(filterModel -> filterModels.add((ColumnConditionModel<C, ?>) filterModel));
+
+    return filterModels;
+  }
+
+  private final class DefaultColumnFilterModelFactory implements ColumnConditionModel.Factory<C> {
 
     @Override
-    public ColumnSummaryModel createSummaryModel(C columnIdentifier) {
-      return createColumnValueProvider(columnIdentifier)
-              .map(ColumnSummaryModel::columnSummaryModel)
-              .orElse(null);
+    public ColumnConditionModel<? extends C, ?> createConditionModel(C columnIdentifier) {
+      Class<?> columnClass = getColumnClass(columnIdentifier);
+      if (Comparable.class.isAssignableFrom(columnClass)) {
+        return ColumnConditionModel.builder(columnIdentifier, columnClass).build();
+      }
+
+      return null;
+    }
+  }
+
+  private final class DefaultColumnSummaryValueProviderFactory implements SummaryValueProvider.Factory<C> {
+
+    @Override
+    public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format) {
+      Class<?> columnClass = getColumnClass(columnIdentifier);
+      if (Number.class.isAssignableFrom(columnClass)) {
+        return Optional.of(new DefaultSummaryValueProvider<T, C>(columnIdentifier, DefaultFilteredTableModel.this, format));
+      }
+
+      return Optional.empty();
     }
   }
 
@@ -762,6 +729,73 @@ public class DefaultFilteredTableModel<R, C> extends AbstractTableModel implemen
               tableSelectionModel.selectionCount() != tableModel.visibleItemCount();
 
       return ColumnSummaryModel.summaryValues(subset ? tableModel.selectedValues(columnIdentifier) : tableModel.values(columnIdentifier), subset);
+    }
+  }
+
+  static final class DefaultBuilder<R, C> implements Builder<R, C> {
+
+    private final ColumnValueProvider<R, C> columnValueProvider;
+
+    private List<FilteredTableColumn<C>> columns;
+    private Supplier<Collection<R>> rowSupplier;
+    private Predicate<R> rowValidator = row -> true;
+    private ColumnConditionModel.Factory<C> columnFilterModelFactory;
+    private SummaryValueProvider.Factory<C> columnSummaryModelFactory;
+    private boolean mergeOnRefresh = false;
+    private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
+
+    DefaultBuilder(ColumnValueProvider<R, C> columnValueProvider) {
+      this.columnValueProvider = requireNonNull(columnValueProvider);
+    }
+
+    @Override
+    public Builder<R, C> columns(List<FilteredTableColumn<C>> columns) {
+      if (requireNonNull(columns, "columns").isEmpty()) {
+        throw new IllegalArgumentException("One or more columns must be specified");
+      }
+      this.columns = columns;
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> columnFilterModelFactory(ColumnConditionModel.Factory<C> columnFilterModelFactory) {
+      this.columnFilterModelFactory = requireNonNull(columnFilterModelFactory);
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> columnSummaryModelFactory(SummaryValueProvider.Factory<C> columnSummaryModelFactory) {
+      this.columnSummaryModelFactory = requireNonNull(columnSummaryModelFactory);
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> rowSupplier(Supplier<Collection<R>> rowSupplier) {
+      this.rowSupplier = requireNonNull(rowSupplier);
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> rowValidator(Predicate<R> rowValidator) {
+      this.rowValidator = requireNonNull(rowValidator);
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> mergeOnRefresh(boolean mergeOnRefresh) {
+      this.mergeOnRefresh = mergeOnRefresh;
+      return this;
+    }
+
+    @Override
+    public Builder<R, C> asyncRefresh(boolean asyncRefresh) {
+      this.asyncRefresh = asyncRefresh;
+      return this;
+    }
+
+    @Override
+    public FilteredTableModel<R, C> build() {
+      return new DefaultFilteredTableModel<>(this);
     }
   }
 }

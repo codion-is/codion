@@ -65,6 +65,20 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   }
 
   @Override
+  public ConnectionRequest copy() {
+    Builder builder = new DefaultBuilder()
+            .user(user.copy())
+            .clientId(clientId)
+            .clientTypeId(clientTypeId)
+            .clientVersion(clientVersion);
+    if (parameters != null) {
+      parameters.forEach(builder::parameter);
+    }
+
+    return builder.build();
+  }
+
+  @Override
   public boolean equals(Object obj) {
     return this == obj || obj instanceof ConnectionRequest && clientId.equals(((ConnectionRequest) obj).clientId());
   }

@@ -21,7 +21,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
@@ -81,9 +80,7 @@ public final class Example {
 
     private static final class CustomerKeyGenerator implements KeyGenerator {
       @Override
-      public void beforeInsert(Entity entity,
-                               List<ColumnProperty<?>> primaryKeyProperties,
-                               DatabaseConnection connection) throws SQLException {
+      public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
         entity.put(Customer.ID, randomUUID().toString());
       }
     }

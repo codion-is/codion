@@ -98,6 +98,16 @@ public final class FXEntityListSelectionModel implements TableSelectionModel<Ent
   }
 
   @Override
+  public void addBeforeSelectionChangeListener(EventListener listener) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
+  public void removeBeforeSelectionChangeListener(EventListener listener) {
+    throw new UnsupportedOperationException();
+  }
+
+  @Override
   public void addSelectionListener(EventListener listener) {
     selectionEvent.addListener(listener);
   }

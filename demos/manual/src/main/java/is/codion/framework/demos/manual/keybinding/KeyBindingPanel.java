@@ -3,7 +3,8 @@
  */
 package is.codion.framework.demos.manual.keybinding;
 
-import is.codion.framework.demos.manual.keybinding.KeyBindingTableModel.KeyBinding;
+import is.codion.framework.demos.manual.keybinding.KeyBindingModel.KeyBinding;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
@@ -36,15 +37,18 @@ import static javax.swing.BorderFactory.createEmptyBorder;
 public final class KeyBindingPanel extends JPanel {
 
   private final LookAndFeelComboBox lookAndFeelComboBox = lookAndFeelComboBox(true);
-  private final KeyBindingTableModel tableModel = new KeyBindingTableModel(lookAndFeelComboBox.getModel());
-  private final FilteredTable<KeyBindingTableModel, KeyBinding, Integer> table = FilteredTable.builder(tableModel).build();
-  private final JComboBox<String> componentComboBox = comboBox(tableModel.componentComboBoxModel())
-          .preferredHeight(preferredTextFieldHeight())
-          .preferredWidth(200)
-          .build();
+  private final KeyBindingModel keyBindingModel;
+  private final FilteredTable<FilteredTableModel<KeyBinding, Integer>, KeyBinding, Integer> table;
+  private final JComboBox<String> componentComboBox;
 
   public KeyBindingPanel() {
     super(borderLayout());
+    this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
+    this.table = FilteredTable.builder(keyBindingModel.tableModel()).build();
+    this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
+          .preferredHeight(preferredTextFieldHeight())
+          .preferredWidth(200)
+          .build();
     setBorder(createEmptyBorder(10, 10, 10, 10));
     add(panel(flexibleGridLayout(1, 4))
             .add(label("Look & Feel")

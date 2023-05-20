@@ -3,16 +3,14 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.swing.common.model.component.table.DefaultFilteredTableModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import org.junit.jupiter.api.Test;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.AWTException;
-import java.util.Collection;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -20,9 +18,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class FilteredTableTest {
-
-  private static final Collection<List<String>> ITEMS = asList(
-          singletonList("a"), singletonList("b"), singletonList("c"), singletonList("d"), singletonList("e"));
 
   @Test
   void builderNullTableModel() {
@@ -34,19 +29,17 @@ public class FilteredTableTest {
     FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
             .columnClass(String.class)
             .build();
-    ColumnConditionModel<Integer, String> filterModel = ColumnConditionModel.builder(0, String.class).build();
 
-    TestAbstractFilteredTableModel tableModel = new TestAbstractFilteredTableModel(singletonList(column), singletonList(filterModel)) {
-      @Override
-      protected Collection<List<String>> refreshItems() {
-        return asList(
-                singletonList("darri"),
-                singletonList("dac"),
-                singletonList("dansinn"),
-                singletonList("dlabo"));
-      }
-    };
-    FilteredTable<TestAbstractFilteredTableModel, List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
+    FilteredTableModel<List<String>, Integer> tableModel = FilteredTableModel.<List<String>, Integer>builder(List::get)
+            .columns(singletonList(column))
+            .rowSupplier(() -> asList(
+                    singletonList("darri"),
+                    singletonList("dac"),
+                    singletonList("dansinn"),
+                    singletonList("dlabo")))
+            .build();
+
+    FilteredTable<FilteredTableModel<List<String>, Integer>, List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
     tableModel.refresh();
 
     new JScrollPane(filteredTable);
@@ -77,18 +70,5 @@ public class FilteredTableTest {
     assertTrue(tableModel.selectionModel().isSelectionEmpty());
 
     searchField.setText("");
-  }
-
-  private static class TestAbstractFilteredTableModel extends DefaultFilteredTableModel<List<String>, Integer> {
-
-    private TestAbstractFilteredTableModel(List<FilteredTableColumn<Integer>> columns,
-                                           List<ColumnConditionModel<Integer, ?>> columnFilterModels) {
-      super(columns, List::get, columnFilterModels);
-    }
-
-    @Override
-    protected Collection<List<String>> refreshItems() {
-      return ITEMS;
-    }
   }
 }

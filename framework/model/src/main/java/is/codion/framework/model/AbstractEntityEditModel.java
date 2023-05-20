@@ -53,7 +53,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityEditModel.class);
 
   private static final String ENTITIES = "entities";
-  private static final String PROPERTY = "property";
 
   private final Event<List<Entity>> beforeInsertEvent = Event.event();
   private final Event<List<Entity>> afterInsertEvent = Event.event();
@@ -159,7 +158,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
                                     EntityValidator validator) {
     this.entity = connectionProvider.entities().entity(entityType);
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
-    this.validator = validator;
+    this.validator = requireNonNull(validator);
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
     configurePersistentForeignKeyValues();
@@ -184,9 +183,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
-    requireNonNull(valueSupplier, "valueSupplier");
     entityDefinition().property(attribute);
-    defaultValueSuppliers.put(attribute, valueSupplier);
+    defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
   }
 
   @Override
@@ -335,9 +333,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
-    if (!requireNonNull(attribute).entityType().equals(entityType())) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
-    }
+    entityDefinition().property(attribute);
 
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
@@ -345,9 +341,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver nullObserver(Attribute<?> attribute) {
-    if (!requireNonNull(attribute).entityType().equals(entityType())) {
-      throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
-    }
+    entityDefinition().property(attribute);
+
     return attributeNullStateMap.computeIfAbsent(attribute, k ->
             State.state(entity.isNull(attribute))).observer();
   }
@@ -369,7 +364,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void put(Attribute<T> attribute, T value) {
-    requireNonNull(attribute, "attribute");
+    entityDefinition().property(attribute);
     Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
@@ -379,7 +374,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> T remove(Attribute<T> attribute) {
-    requireNonNull(attribute, PROPERTY);
+    entityDefinition().property(attribute);
     T value = null;
     if (entity.contains(attribute)) {
       Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);

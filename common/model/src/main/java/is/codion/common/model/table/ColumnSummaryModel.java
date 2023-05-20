@@ -9,8 +9,10 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
+import java.text.Format;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 import static java.util.Collections.unmodifiableCollection;
 
@@ -77,18 +79,6 @@ public interface ColumnSummaryModel {
   }
 
   /**
-   * @param <C> the column identifier type
-   */
-  interface Factory<C> {
-
-    /**
-     * @param columnIdentifier the column identifier
-     * @return a summary model, or null if none is available
-     */
-    ColumnSummaryModel createSummaryModel(C columnIdentifier);
-  }
-
-  /**
    * Provides the values on which to base the summary .
    * @param <T> the value type
    */
@@ -109,6 +99,20 @@ public interface ColumnSummaryModel {
      * @param listener the listener to notify of changes to the underlying data which require a summary refresh
      */
     void addValuesListener(EventListener listener);
+
+    /**
+     * @param <C> the column identifier type
+     */
+    interface Factory<C> {
+
+      /**
+       * @param columnIdentifier the column identifier
+       * @param format the format to use
+       * @return a summary value provider or an empty Optional, if no summary is available for the column
+       * @param <T> the column type
+       */
+      <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
+    }
   }
 
   /**

@@ -22,14 +22,14 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
 
   private String clientHost;
 
-  /**
-   * Instantiates a new RemoteClient
-   * @param connectionRequest the connection request
-   * @param databaseUser the user to use when connecting to the underlying database
-   */
   DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser) {
+    this(connectionRequest, databaseUser, null);
+  }
+
+  DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost) {
     this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
     this.databaseUser = requireNonNull(databaseUser, "databaseUser");
+    this.clientHost = clientHost;
   }
 
   @Override
@@ -88,6 +88,11 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
     client.setClientHost(clientHost);
 
     return client;
+  }
+
+  @Override
+  public RemoteClient copy() {
+    return new DefaultRemoteClient(connectionRequest.copy(), databaseUser.copy(), clientHost);
   }
 
   @Override

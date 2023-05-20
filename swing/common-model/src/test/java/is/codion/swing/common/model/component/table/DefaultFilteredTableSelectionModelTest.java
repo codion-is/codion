@@ -5,7 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -23,19 +22,10 @@ public class DefaultFilteredTableSelectionModelTest {
     FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
             .columnClass(String.class)
             .build();
-    FilteredTableModel<String, Integer> tableModel = new DefaultFilteredTableModel<String, Integer>(
-            singletonList(column), (row, columnIdentifier) -> row) {
-      @Override
-      protected Collection<String> refreshItems() {
-        return data;
-      }
-
-      @Override
-      public boolean allowSelectionChange() {
-        String selected = selectionModel().getSelectedItem();
-        return !"C".equals(selected);
-      }
-    };
+    FilteredTableModel<String, Integer> tableModel = FilteredTableModel.<String, Integer>builder((row, integer) -> row)
+            .columns(singletonList(column))
+            .rowSupplier(() -> data)
+            .build();
     tableModel.refresh();
 
     testModel = tableModel.selectionModel();
@@ -47,20 +37,6 @@ public class DefaultFilteredTableSelectionModelTest {
     assertTrue(testModel.isSelectedItem("A"));
     testModel.clearSelection();
     assertFalse(testModel.isSelectedItem("A"));
-  }
-
-  @Test
-  void vetoSelectionChange() {
-    testModel.setSelectedIndex(0);
-    assertEquals("A", testModel.getSelectedItem());
-    testModel.setSelectedIndex(1);
-    assertEquals("B", testModel.getSelectedItem());
-    testModel.setSelectedIndex(2);
-    assertEquals("C", testModel.getSelectedItem());
-    testModel.setSelectedIndex(1);
-    assertEquals("C", testModel.getSelectedItem());
-    testModel.setSelectedIndex(0);
-    assertEquals("C", testModel.getSelectedItem());
   }
 
   @Test

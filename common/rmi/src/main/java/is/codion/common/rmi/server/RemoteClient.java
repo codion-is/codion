@@ -40,6 +40,11 @@ public interface RemoteClient extends ConnectionRequest {
   RemoteClient withDatabaseUser(User databaseUser);
 
   /**
+   * @return a copy of this remote client with copies of its user instances
+   */
+  RemoteClient copy();
+
+  /**
    * Instantiates a new RemoteClient
    * @param connectionRequest the connection request
    * @return a new RemoteClient instance
