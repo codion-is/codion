@@ -14,5 +14,5 @@ include::{dir-source}/is/codion/framework/demos/manual/keybinding/KeyBindingPane
 
 [source,java,linenums]
 ----
-include::{dir-source}/is/codion/framework/demos/manual/keybinding/KeyBindingTableModel.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/manual/keybinding/KeyBindingModel.java[lines=4..-1]
 ----
