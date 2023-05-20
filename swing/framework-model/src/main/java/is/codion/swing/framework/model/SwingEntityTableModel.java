@@ -434,7 +434,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
     }
     if (changed) {
-      tableModel.fireTableRowsUpdated(0, getRowCount() - 1);
+      fireTableRowsUpdated(0, getRowCount() - 1);
     }
   }
 
@@ -1061,7 +1061,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
           entity.setAs(entry.getValue());
           int index = indexOf(entity);
           if (index >= 0) {
-            tableModel.fireTableRowsUpdated(index, index);
+            fireTableRowsUpdated(index, index);
           }
         }
       }

@@ -80,12 +80,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
-  private Supplier<JFrame> frameSupplier = JFrame::new;
+  private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
   private boolean displayStartupDialog = EntityApplicationPanel.SHOW_STARTUP_DIALOG.get();
   private ImageIcon applicationIcon;
   private Version applicationVersion;
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
-  private Supplier<JComponent> loginPanelSouthComponentSupplier = () -> null;
+  private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
   private Runnable beforeApplicationStarted;
   private EventDataListener<P> onApplicationStarted;
 
@@ -522,7 +522,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     }
   }
 
-  private class DefaultApplicationModelFactory implements Function<EntityConnectionProvider, M> {
+  private final class DefaultApplicationModelFactory implements Function<EntityConnectionProvider, M> {
 
     @Override
     public M apply(EntityConnectionProvider connectionProvider) {
@@ -538,7 +538,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     }
   }
 
-  private class DefaultApplicationPanelFactory implements Function<M, P> {
+  private final class DefaultApplicationPanelFactory implements Function<M, P> {
 
     @Override
     public P apply(M model) {
@@ -590,4 +590,20 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   }
 
   private static final class DefaultConnectionProviderFactory implements ConnectionProviderFactory {}
+
+  private static final class DefaultSouthComponentSupplier implements Supplier<JComponent> {
+
+    @Override
+    public JComponent get() {
+      return null;
+    }
+  }
+
+  private static final class DefaultFrameSupplier implements Supplier<JFrame> {
+
+    @Override
+    public JFrame get() {
+      return new JFrame();
+    }
+  }
 }

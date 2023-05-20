@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component.table;
 
 import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
 
 import java.time.temporal.Temporal;
 import java.util.Objects;
@@ -31,7 +32,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
   int leftPadding = FilteredTableCellRenderer.TABLE_CELL_LEFT_PADDING.get();
   int rightPadding = FilteredTableCellRenderer.TABLE_CELL_RIGHT_PADDING.get();
   Function<Object, Object> displayValueProvider = new DefaultDisplayValueProvider();
-  FilteredTableCellRenderer.CellColorProvider<C> cellColorProvider = new FilteredTableCellRenderer.CellColorProvider<C>() {};
+  CellColorProvider<C> cellColorProvider = new DefaultCellColorProvider<>();
 
   /**
    * Instantiates a new builder
@@ -101,7 +102,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
   }
 
   @Override
-  public final FilteredTableCellRenderer.Builder<R, C> cellColorProvider(FilteredTableCellRenderer.CellColorProvider<C> cellColorProvider) {
+  public final FilteredTableCellRenderer.Builder<R, C> cellColorProvider(CellColorProvider<C> cellColorProvider) {
     this.cellColorProvider = requireNonNull(cellColorProvider);
     return this;
   }
@@ -143,4 +144,6 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
       return Objects.toString(value);
     }
   }
+
+  private static final class DefaultCellColorProvider<R> implements CellColorProvider<R> {}
 }
