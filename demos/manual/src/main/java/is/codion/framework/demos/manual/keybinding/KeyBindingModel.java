@@ -29,6 +29,8 @@ import static java.util.stream.Collectors.toList;
 
 final class KeyBindingModel {
 
+  private static final Collection<String> EXCLUDED_COMPONENTS = asList("PopupMenuSeparator", "ToolBarSeparator", "DesktopIcon");
+
   private static final String PACKAGE = "javax.swing.";
   private static final String PRESSED = "pressed ";
   private static final String RELEASED = "released ";
@@ -42,7 +44,7 @@ final class KeyBindingModel {
   private final FilteredComboBoxModel<String> componentComboBoxModel;
 
   KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-    this.componentComboBoxModel = new ComponentComboBoxModel(lookAndFeelComboBoxModel);
+    this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
     this.componentComboBoxModel.refresh();
     this.tableModel = FilteredTableModel.builder(new KeyBindingValueProvider())
             .columns(createColumns())
@@ -187,18 +189,24 @@ final class KeyBindingModel {
     }
   }
 
-  private static final class ComponentComboBoxModel extends FilteredComboBoxModel<String> {
+  private static FilteredComboBoxModel<String> createComponentComboBoxModel(
+          FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+    FilteredComboBoxModel<String> comboBoxModel = new FilteredComboBoxModel<>();
+    comboBoxModel.setRowSupplier(new ComponentRowSupplier(lookAndFeelComboBoxModel));
 
-    private static final Collection<String> EXCLUDED_COMPONENTS = asList("PopupMenuSeparator", "ToolBarSeparator", "DesktopIcon");
+    return comboBoxModel;
+  }
+
+  private static final class ComponentRowSupplier implements Supplier<Collection<String>> {
 
     private final FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
 
-    private ComponentComboBoxModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+    private ComponentRowSupplier(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
       this.lookAndFeelComboBoxModel = lookAndFeelComboBoxModel;
     }
 
     @Override
-    protected Collection<String> refreshItems() {
+    public Collection<String> get() {
       Item<LookAndFeelProvider> selectedItem = lookAndFeelComboBoxModel.getSelectedItem();
       if (selectedItem == null) {
         return emptyList();

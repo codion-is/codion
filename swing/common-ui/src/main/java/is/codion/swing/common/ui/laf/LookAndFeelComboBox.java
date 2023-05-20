@@ -44,7 +44,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
 
   private final LookAndFeelProvider originalLookAndFeel;
 
-  private LookAndFeelComboBox(LookAndFeelComboBoxModel comboBoxModel, boolean changeOnSelection) {
+  private LookAndFeelComboBox(FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean changeOnSelection) {
     super(requireNonNull(comboBoxModel));
     Item<LookAndFeelProvider> selectedValue = comboBoxModel.selectedValue();
     originalLookAndFeel = selectedValue == null ? null : selectedValue.value();
@@ -95,7 +95,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
    * @return a new {@link LookAndFeelComboBox} instance
    */
   public static LookAndFeelComboBox lookAndFeelComboBox() {
-    return new LookAndFeelComboBox(new LookAndFeelComboBoxModel(), CHANGE_ON_SELECTION.get());
+    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), CHANGE_ON_SELECTION.get());
   }
 
   /**
@@ -104,7 +104,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
    * @return a new {@link LookAndFeelComboBox} instance
    */
   public static LookAndFeelComboBox lookAndFeelComboBox(boolean changeOnSelection) {
-    return new LookAndFeelComboBox(new LookAndFeelComboBoxModel(), changeOnSelection);
+    return new LookAndFeelComboBox(createLookAndFeelComboBoxModel(), changeOnSelection);
   }
 
   private static final class LookAndFeelEditor extends BasicComboBoxEditor {
@@ -147,26 +147,26 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
     }
   }
 
-  private static final class LookAndFeelComboBoxModel extends FilteredComboBoxModel<Item<LookAndFeelProvider>> {
+  private static FilteredComboBoxModel<Item<LookAndFeelProvider>> createLookAndFeelComboBoxModel() {
+    FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel = new FilteredComboBoxModel<>();
+    comboBoxModel.setItems(initializeAvailableLookAndFeels());
+    currentLookAndFeel(comboBoxModel).ifPresent(comboBoxModel::setSelectedItem);
 
-    private LookAndFeelComboBoxModel() {
-      setItems(initializeAvailableLookAndFeels());
-      currentLookAndFeel().ifPresent(this::setSelectedItem);
-    }
+    return comboBoxModel;
+  }
 
-    private Optional<Item<LookAndFeelProvider>> currentLookAndFeel() {
-      String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
+  private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
+    return LookAndFeelProvider.lookAndFeelProviders().values().stream()
+            .sorted(Comparator.comparing(lookAndFeelProvider -> lookAndFeelProvider.lookAndFeelInfo().getName()))
+            .map(provider -> Item.item(provider, provider.lookAndFeelInfo().getName()))
+            .collect(Collectors.toList());
+  }
 
-      return items().stream()
-              .filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
-              .findFirst();
-    }
+  private static Optional<Item<LookAndFeelProvider>> currentLookAndFeel(FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel) {
+    String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
-    private static List<Item<LookAndFeelProvider>> initializeAvailableLookAndFeels() {
-      return LookAndFeelProvider.lookAndFeelProviders().values().stream()
-              .sorted(Comparator.comparing(lookAndFeelProvider -> lookAndFeelProvider.lookAndFeelInfo().getName()))
-              .map(provider -> Item.item(provider, provider.lookAndFeelInfo().getName()))
-              .collect(Collectors.toList());
-    }
+    return comboBoxModel.items().stream()
+            .filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
+            .findFirst();
   }
 }

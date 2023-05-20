@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -76,6 +77,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
     this.orderBy = this.entities.definition(entityType).orderBy();
+    setSelectedItemTranslator(new SelectedItemTranslator());
+    setRowSupplier(new RowSupplier());
+    setRowValidator(new RowValidator());
     setStaticData(this.entities.definition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     addRefreshListener(() -> forceRefresh = false);
@@ -376,38 +380,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     return createSelectorValue(new EntityFinder<>(attribute));
   }
 
-  @Override
-  protected final Entity translateSelectionItem(Object item) {
-    if (item == null) {
-      return null;
-    }
-
-    if (item instanceof Entity) {
-      int indexOfKey = indexOfKey(((Entity) item).primaryKey());
-      if (indexOfKey >= 0) {
-        return getElementAt(indexOfKey);
-      }
-
-      return (Entity) item;
-    }
-    String itemToString = item.toString();
-
-    return visibleItems().stream()
-            .filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
-            .findFirst()
-            //item not found, select null value
-            .orElse(null);
-  }
-
-  @Override
-  protected final Collection<Entity> refreshItems() {
-    if (staticData && !isCleared() && !forceRefresh) {
-      return super.refreshItems();
-    }
-
-    return performQuery();
-  }
-
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
    * the select condition supplier ({@link #getSelectConditionSupplier()}) as well as the
@@ -428,11 +400,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  protected boolean validItem(Entity item) {
-    return item.type().equals(entityType);
   }
 
   private int indexOfKey(Key primaryKey) {
@@ -530,6 +497,52 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     EntityEditEvents.removeInsertListener(entityType, insertListener);
     EntityEditEvents.removeUpdateListener(entityType, updateListener);
     EntityEditEvents.removeDeleteListener(entityType, deleteListener);
+  }
+
+  private final class RowSupplier implements Supplier<Collection<Entity>> {
+
+    @Override
+    public Collection<Entity> get() {
+      if (staticData && !isCleared() && !forceRefresh) {
+        return items();
+      }
+
+      return performQuery();
+    }
+  }
+
+  private final class RowValidator implements Predicate<Entity> {
+
+    @Override
+    public boolean test(Entity entity) {
+      return entity.type().equals(entityType);
+    }
+  }
+
+  private final class SelectedItemTranslator implements Function<Object, Entity> {
+
+    @Override
+    public Entity apply(Object itemToSelect) {
+      if (itemToSelect == null) {
+        return null;
+      }
+
+      if (itemToSelect instanceof Entity) {
+        int indexOfKey = indexOfKey(((Entity) itemToSelect).primaryKey());
+        if (indexOfKey >= 0) {
+          return getElementAt(indexOfKey);
+        }
+
+        return (Entity) itemToSelect;
+      }
+      String itemToString = itemToSelect.toString();
+
+      return visibleItems().stream()
+              .filter(visibleItem -> visibleItem != null && itemToString.equals(visibleItem.toString()))
+              .findFirst()
+              //item not found, select null value
+              .orElse(null);
+    }
   }
 
   private final class InsertListener implements EventDataListener<List<Entity>> {

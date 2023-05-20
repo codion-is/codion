@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
 
@@ -199,7 +200,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    */
   public <T> FilteredComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
     requireNonNull(attribute, "attribute");
-    AttributeComboBoxModel<T> model = new AttributeComboBoxModel<>(connectionProvider(), attribute);
+    FilteredComboBoxModel<T> model = createAttributeComboBoxModel(attribute);
     if (isNullable(attribute)) {
       model.setIncludeNull(true);
       if (attribute.valueClass().isInterface()) {
@@ -292,18 +293,25 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     return comboBoxModel;
   }
 
-  private static final class AttributeComboBoxModel<T> extends FilteredComboBoxModel<T> {
+  private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Attribute<T> attribute) {
+    FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
+    model.setRowSupplier(new AttributeRowSupplier<>(connectionProvider(), attribute));
+
+    return model;
+  }
+
+  private static final class AttributeRowSupplier<T> implements Supplier<Collection<T>> {
 
     private final EntityConnectionProvider connectionProvider;
     private final Attribute<T> attribute;
 
-    private AttributeComboBoxModel(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+    private AttributeRowSupplier(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
       this.connectionProvider = connectionProvider;
       this.attribute = attribute;
     }
 
     @Override
-    protected Collection<T> refreshItems() {
+    public Collection<T> get() {
       try {
         return connectionProvider.connection().select(attribute);
       }

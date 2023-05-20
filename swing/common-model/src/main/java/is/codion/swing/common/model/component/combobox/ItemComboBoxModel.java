@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 
 import static is.codion.common.item.Item.item;
 import static java.util.Arrays.asList;
@@ -25,10 +26,12 @@ import static java.util.Objects.requireNonNull;
 public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
 
   private ItemComboBoxModel(List<Item<T>> items) {
+    setSelectedItemTranslator(new SelectedItemTranslator());
     setItems(items);
   }
 
   private ItemComboBoxModel(Comparator<Item<T>> sortComparator, Collection<Item<T>> items) {
+    setSelectedItemTranslator(new SelectedItemTranslator());
     setSortComparator(sortComparator);
     setItems(items);
     if (containsItem(Item.item(null))) {
@@ -135,17 +138,20 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
     return new ItemComboBoxModel<>(null, asList(item(null, nullCaption), item(true, trueCaption), item(false, falseCaption)));
   }
 
-  @Override
-  protected Item<T> translateSelectionItem(Object item) {
-    if (item instanceof Item) {
-      return (Item<T>) item;
-    }
+  private final class SelectedItemTranslator implements Function<Object, Item<T>> {
 
-    int index = indexOf((T) item);
-    if (index >= 0) {
-      return getElementAt(index);
-    }
+    @Override
+    public Item<T> apply(Object item) {
+      if (item instanceof Item) {
+        return (Item<T>) item;
+      }
 
-    return null;
+      int index = indexOf((T) item);
+      if (index >= 0) {
+        return getElementAt(index);
+      }
+
+      return null;
+    }
   }
 }
