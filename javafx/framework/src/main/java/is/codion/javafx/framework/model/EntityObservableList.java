@@ -208,12 +208,12 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final List<Entity> items() {
+  public final Collection<Entity> items() {
     return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override
-  public final List<Entity> filteredItems() {
+  public final Collection<Entity> filteredItems() {
     if (size() != filteredList.size()) {
       List<Entity> result = new ArrayList<>(this);
       result.removeAll(filteredList);

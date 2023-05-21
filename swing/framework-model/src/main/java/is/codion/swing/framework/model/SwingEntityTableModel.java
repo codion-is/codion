@@ -460,7 +460,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void update(List<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(Collection<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled in this table model");
@@ -468,7 +468,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not enabled!");
     }
-    editModel.update(entities);
+    editModel.update(new ArrayList<>(entities));
   }
 
   @Override
@@ -526,7 +526,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final List<Entity> items() {
+  public final Collection<Entity> items() {
     return tableModel.items();
   }
 
@@ -536,7 +536,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final List<Entity> filteredItems() {
+  public final Collection<Entity> filteredItems() {
     return tableModel.filteredItems();
   }
 

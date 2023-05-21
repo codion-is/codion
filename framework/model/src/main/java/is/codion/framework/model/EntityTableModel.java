@@ -237,7 +237,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);
 
   /**
-   * Updates the given entities. If the entities are unmodified or the list is empty
+   * Updates the given entities. If the entities are unmodified or the collection is empty
    * this method returns silently.
    * @param entities the entities to update
    * @throws DatabaseException in case of a database exception
@@ -247,7 +247,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see EntityValidator#validate(Entity)
    */
-  void update(List<Entity> entities) throws ValidationException, DatabaseException;
+  void update(Collection<Entity> entities) throws ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities

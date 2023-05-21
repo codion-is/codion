@@ -158,7 +158,7 @@ public final class EntityComponentsTest {
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) componentValue.component().getModel();
 
     //null item should be first, regardless of sorting
-    assertEquals(0, model.items().indexOf(Item.item(null)));
+    assertEquals(0, model.visibleItems().indexOf(Item.item(null)));
   }
 
   @Test

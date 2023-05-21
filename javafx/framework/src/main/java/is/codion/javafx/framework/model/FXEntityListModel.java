@@ -303,7 +303,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final void update(List<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(Collection<Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities);
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
@@ -311,7 +311,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not allowed!");
     }
-    editModel.update(entities);
+    editModel.update(new ArrayList<>(entities));
   }
 
   @Override

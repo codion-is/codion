@@ -75,7 +75,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public List<R> items() {
+  public Collection<R> items() {
     List<R> items = new ArrayList<>(visibleItems);
     items.addAll(filteredItems);
 
@@ -88,7 +88,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public List<R> filteredItems() {
+  public Collection<R> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 

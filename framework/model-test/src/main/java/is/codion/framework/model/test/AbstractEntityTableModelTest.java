@@ -93,9 +93,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
     tableModel.selectionModel().setSelectedIndexes(asList(0, 3, 5));
     Iterator<Entity> iterator = tableModel.selectionModel().getSelectedItems().iterator();
-    assertEquals(tableModel.items().get(0), iterator.next());
-    assertEquals(tableModel.items().get(3), iterator.next());
-    assertEquals(tableModel.items().get(5), iterator.next());
+    assertEquals(tableModel.visibleItems().get(0), iterator.next());
+    assertEquals(tableModel.visibleItems().get(3), iterator.next());
+    assertEquals(tableModel.visibleItems().get(5), iterator.next());
   }
 
   @Test
@@ -113,7 +113,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     int count = deptModel.getRowCount();
     deptModel.editModel().insert(singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
-    assertEquals(dept, deptModel.items().get(deptModel.getRowCount() - 1));
+    assertEquals(dept, deptModel.visibleItems().get(deptModel.getRowCount() - 1));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
     Entity dept2 = entities.builder(Department.TYPE)
@@ -123,7 +123,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .build();
     deptModel.editModel().insert(singletonList(dept2));
     assertEquals(count + 2, deptModel.getRowCount());
-    assertEquals(dept2, deptModel.items().get(2));
+    assertEquals(dept2, deptModel.visibleItems().get(2));
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
     Entity dept3 = entities.builder(Department.TYPE)
