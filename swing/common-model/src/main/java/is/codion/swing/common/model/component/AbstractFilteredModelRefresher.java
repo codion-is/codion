@@ -6,6 +6,7 @@ package is.codion.swing.common.model.component;
 import is.codion.common.model.FilteredModel;
 import is.codion.swing.common.model.worker.ProgressWorker;
 
+import javax.swing.SwingUtilities;
 import java.util.Collection;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
@@ -23,6 +24,11 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
    */
   protected AbstractFilteredModelRefresher(Supplier<Collection<T>> rowSupplier) {
     super(rowSupplier);
+  }
+
+  @Override
+  protected final boolean isUserInterfaceThread() {
+    return SwingUtilities.isEventDispatchThread();
   }
 
   protected final void refreshAsync(Consumer<Collection<T>> afterRefresh) {

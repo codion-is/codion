@@ -11,7 +11,6 @@ import is.codion.common.properties.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
-import javax.swing.SwingUtilities;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -245,7 +244,7 @@ public interface FilteredModel<T> {
 
     @Override
     public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-      if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
+      if (asyncRefresh && isUserInterfaceThread()) {
         refreshAsync(afterRefresh);
       }
       else {
@@ -302,6 +301,11 @@ public interface FilteredModel<T> {
     protected final void fireRefreshFailedEvent(Throwable throwable) {
       refreshFailedEvent.onEvent(throwable);
     }
+
+    /**
+     * @return true if we're running on the UI thread (meaning an async refresh is in order)
+     */
+    protected abstract boolean isUserInterfaceThread();
 
     /**
      * Performes an async refresh
