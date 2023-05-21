@@ -627,7 +627,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !isEntityNew() && modifiedSupplier.get();
+    return !isEntityNew() && modifiedObserver().get();
   }
 
   @Override
