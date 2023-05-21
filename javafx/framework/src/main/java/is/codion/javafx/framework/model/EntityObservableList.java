@@ -103,7 +103,12 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
 
   @Override
   public final void refresh() {
-    refresher.refresh();
+    refreshThen(null);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
+    refresher.refreshThen(afterRefresh);
   }
 
   /**

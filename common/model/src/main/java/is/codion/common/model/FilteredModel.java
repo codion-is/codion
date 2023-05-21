@@ -109,10 +109,22 @@ public interface FilteredModel<T> {
 
   /**
    * Refreshes the items in this filtered model using its {@link Refresher}.
-   * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
+   * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the user interface thread
    * @see Refresher#refresh()
    */
   void refresh();
+
+  /**
+   * Refreshes the data in this filtered model using its {@link Refresher}.
+   * Note that this method only throws exceptions when run synchronously off the user interface thread.
+   * Use {@link Refresher#addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
+   * @param afterRefresh called after a successful refresh, may be null
+   * @see Refresher#refreshingObserver()
+   * @see Refresher#addRefreshListener(EventListener)
+   * @see Refresher#addRefreshFailedListener(EventDataListener)
+   * @see Refresher#setAsyncRefresh(boolean)
+   */
+  void refreshThen(Consumer<Collection<T>> afterRefresh);
 
   /**
    * Handles refreshing data for a {@link FilteredModel}.
@@ -150,14 +162,14 @@ public interface FilteredModel<T> {
     /**
      * Refreshes the items in the associated filtered model.
      * If run on the Event Dispatch Thread and {@link #isAsyncRefresh()} returns true, the refresh happens asynchronously.
-     * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
+     * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the user interface thread.
      * @see #addRefreshFailedListener(EventDataListener)
      * @see #setAsyncRefresh(boolean)
      */
     void refresh();
 
     /**
-     * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the EDT.
+     * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the user interface thread.
      * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
      * @param afterRefresh called after a successful refresh, may be null
      * @see #refreshingObserver()
@@ -303,7 +315,7 @@ public interface FilteredModel<T> {
     }
 
     /**
-     * @return true if we're running on the UI thread (meaning an async refresh is in order)
+     * @return true if we're running on the user interface thread (meaning an async refresh is in order)
      */
     protected abstract boolean isUserInterfaceThread();
 
