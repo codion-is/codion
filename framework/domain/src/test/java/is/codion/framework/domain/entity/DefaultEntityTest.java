@@ -854,11 +854,25 @@ public class DefaultEntityTest {
 
   @Test
   void immutableEntity() {
-    Entity dept = ENTITIES.builder(Department.TYPE)
-            .with(Department.NO, 1)
-            .with(Department.NAME, "Name1")
+    Entity emp = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 1)
+            .with(Employee.NAME, "Name")
+            .with(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
+                    .with(Department.NO, 42)
+                    .with(Department.NAME, "Dept name")
+                    .build())
             .build()
             .immutable();
+    assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.NO, 2));
+    assertThrows(UnsupportedOperationException.class, emp::clearPrimaryKey);
+    assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.NO));
+    assertThrows(UnsupportedOperationException.class, emp::saveAll);
+    assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.NO));
+    assertThrows(UnsupportedOperationException.class, emp::revertAll);
+    assertThrows(UnsupportedOperationException.class, () -> emp.remove(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> emp.setAs(emp));
+
+    Entity dept = emp.get(Employee.DEPARTMENT_FK);
     assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
     assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
     assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.NO));
