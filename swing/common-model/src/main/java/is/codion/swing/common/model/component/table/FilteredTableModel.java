@@ -14,6 +14,7 @@ import is.codion.common.model.table.TableSummaryModel;
 import javax.swing.table.TableModel;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
@@ -243,7 +244,20 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
    */
+  @Override
   void refresh();
+
+  /**
+   * {@inheritDoc}
+   * <br><br>
+   *  Respects the selection, filtering as well as sorting states.
+   *  Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+   *  before it is repopulated, during which the selection is cleared as well. Using merge on insert
+   *  ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
+   * @param afterRefresh called after a successful refresh, may be null
+   */
+  @Override
+  void refreshThen(Consumer<Collection<R>> afterRefresh);
 
   /**
    * Clears all items from this table model

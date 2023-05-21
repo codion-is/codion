@@ -26,6 +26,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -135,7 +136,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void refresh() {
-    refresher.refresh();
+    refreshThen(null);
+  }
+
+  @Override
+  public void refreshThen(Consumer<Collection<R>> afterRefresh) {
+    refresher.refreshThen(afterRefresh);
   }
 
   @Override

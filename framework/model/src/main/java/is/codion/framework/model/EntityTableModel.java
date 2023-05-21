@@ -34,9 +34,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 /**
  * Specifies a table model containing {@link Entity} instances.
@@ -443,10 +445,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      * @return a map containing the {@link ColumnPreferences} instances parsed from the given JSONObject
      */
     static Map<Attribute<?>, ColumnPreferences> fromJSONObject(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
-      requireNonNull(attributes);
-      requireNonNull(jsonObject);
-
-      return DefaultColumnPreferences.fromJSONObject(attributes, jsonObject);
+      return requireNonNull(attributes).stream()
+            .map(attribute -> DefaultColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
     }
 
     /**

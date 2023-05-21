@@ -119,6 +119,7 @@ is.codion.framework.domain.entity.DefaultAttribute
 is.codion.framework.domain.entity.DefaultForeignKey
 is.codion.framework.domain.entity.DefaultForeignKey$DefaultReference
 is.codion.framework.domain.entity.Entity
+is.codion.framework.domain.entity.ImmutableEntity
 is.codion.framework.domain.entity.OrderBy$NullOrder
 is.codion.framework.demos.chinook.domain.Chinook
 is.codion.framework.demos.chinook.domain.Chinook$Invoice

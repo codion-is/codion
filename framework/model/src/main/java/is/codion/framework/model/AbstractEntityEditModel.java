@@ -312,8 +312,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity entityCopy() {
-    return entity().deepCopy();
+  public final Entity entity() {
+    return entity.immutableCopy();
   }
 
   @Override
@@ -349,7 +349,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return entity().isNew();
+    return entity.isNew();
   }
 
   @Override
@@ -458,7 +458,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
-    Entity toInsert = entityCopy();
+    Entity toInsert = entity.copy();
     if (entityDefinition().isKeyGenerated()) {
       toInsert.clearPrimaryKey();
     }
@@ -492,7 +492,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    List<Entity> updated = update(singletonList(entityCopy()));
+    List<Entity> updated = update(singletonList(entity()));
     if (updated.isEmpty()) {
       throw new UpdateException("Active entity is not modified");
     }
@@ -522,7 +522,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     LOG.debug("{} - update {}", this, entities);
 
     List<Entity> updatedEntities = doUpdate(modifiedEntities);
-    int index = updatedEntities.indexOf(entity());
+    int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
     }
@@ -534,7 +534,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity delete() throws DatabaseException {
-    Entity originalEntity = entityCopy();
+    Entity originalEntity = entity.copy();
     originalEntity.revertAll();
 
     return delete(singletonList(originalEntity)).get(0);
@@ -554,7 +554,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     notifyBeforeDelete(unmodifiableList(entities));
 
     List<Entity> deleted = doDelete(entities);
-    if (deleted.contains(entity())) {
+    if (deleted.contains(entity)) {
       doSetEntity(null);
     }
 
@@ -573,7 +573,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(connectionProvider().connection().select(entity().primaryKey()));
+        setEntity(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
     catch (DatabaseException e) {
@@ -627,7 +627,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !isEntityNew() && modifiedSupplier.get();
+    return !isEntityNew() && modifiedObserver().get();
   }
 
   @Override
@@ -772,13 +772,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void removeRefreshListener(EventListener listener) {
     refreshEvent.removeListener(listener);
-  }
-
-  /**
-   * @return the actual {@link Entity} instance being edited
-   */
-  protected final Entity entity() {
-    return entity;
   }
 
   /**

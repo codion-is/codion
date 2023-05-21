@@ -1025,7 +1025,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .fetchDepth(conditionFetchDepthLimit)
               .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))
               .build();
-      referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1));
+      referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
+              .map(Entity::immutableCopy)
+              .collect(toList()));
     }
 
     return Entity.mapToPrimaryKey(referencedEntities);

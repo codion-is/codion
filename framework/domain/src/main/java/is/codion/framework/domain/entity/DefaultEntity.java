@@ -34,13 +34,18 @@ import static java.util.Objects.requireNonNull;
 /**
  * Represents a row in a database table.
  */
-final class DefaultEntity implements Entity, Serializable {
+class DefaultEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private static final String ATTRIBUTE = "attribute";
 
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
+
+  /**
+   * Keep a reference to this frequently referenced object
+   */
+  private EntityDefinition definition;
 
   /**
    * Holds the values contained in this entity.
@@ -64,14 +69,11 @@ final class DefaultEntity implements Entity, Serializable {
   private Map<ForeignKey, Key> referencedKeyCache;
 
   /**
-   * Keep a reference to this frequently referenced object
-   */
-  private EntityDefinition definition;
-
-  /**
    * The primary key of this entity
    */
   private Key primaryKey;
+
+  protected DefaultEntity() {}
 
   /**
    * Instantiates a new DefaultEntity
@@ -98,17 +100,17 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public EntityType type() {
+  public final EntityType type() {
     return definition.type();
   }
 
   @Override
-  public EntityDefinition definition() {
+  public final EntityDefinition definition() {
     return definition;
   }
 
   @Override
-  public Key primaryKey() {
+  public final Key primaryKey() {
     if (primaryKey == null) {
       primaryKey = createPrimaryKey(false);
     }
@@ -117,12 +119,12 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key originalPrimaryKey() {
+  public final Key originalPrimaryKey() {
     return createPrimaryKey(true);
   }
 
   @Override
-  public boolean isModified() {
+  public final boolean isModified() {
     return isModified(false);
   }
 
@@ -132,34 +134,34 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> T get(Attribute<T> attribute) {
+  public final <T> T get(Attribute<T> attribute) {
     return get(definition.property(attribute));
   }
 
   @Override
-  public <T> Optional<T> getOptional(Attribute<T> attribute) {
+  public final <T> Optional<T> getOptional(Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
   }
 
   @Override
-  public boolean isNull(Attribute<?> attribute) {
+  public final boolean isNull(Attribute<?> attribute) {
     return isNull(definition.property(attribute));
   }
 
   @Override
-  public boolean isNotNull(Attribute<?> attribute) {
+  public final boolean isNotNull(Attribute<?> attribute) {
     return !isNull(attribute);
   }
 
   @Override
-  public boolean isModified(Attribute<?> attribute) {
+  public final boolean isModified(Attribute<?> attribute) {
     definition.property(requireNonNull(attribute, ATTRIBUTE));
 
     return isModifiedInternal(attribute);
   }
 
   @Override
-  public boolean isNew() {
+  public final boolean isNew() {
     Key key = primaryKey();
     Key originalKey = originalPrimaryKey();
 
@@ -167,7 +169,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Entity referencedEntity(ForeignKey foreignKey) {
+  public final Entity referencedEntity(ForeignKey foreignKey) {
     Entity value = (Entity) values.get(foreignKey);
     if (value == null) {//possibly not loaded
       Key referencedKey = referencedKey(foreignKey);
@@ -180,13 +182,13 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean isLoaded(ForeignKey foreignKey) {
+  public final boolean isLoaded(ForeignKey foreignKey) {
     definition.foreignKeyProperty(foreignKey);
     return values.get(foreignKey) != null;
   }
 
   @Override
-  public <T> String toString(Attribute<T> attribute) {
+  public final <T> String toString(Attribute<T> attribute) {
     Property<T> property = definition.property(attribute);
     if (attribute instanceof ForeignKey && values.get(attribute) == null) {
       Key referencedKey = referencedKey((ForeignKey) attribute);
@@ -207,7 +209,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> T getOriginal(Attribute<T> attribute) {
+  public final <T> T getOriginal(Attribute<T> attribute) {
     return getOriginal(definition.property(attribute));
   }
 
@@ -281,7 +283,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Entity copy() {
+  public final Entity copy() {
     Entity entity = new DefaultEntity(definition, null, null);
     entity.setAs(this);
 
@@ -289,17 +291,26 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Builder copyBuilder() {
+  public final Builder copyBuilder() {
     return new DefaultEntityBuilder(definition, values, originalValues);
   }
 
   @Override
-  public Entity deepCopy() {
+  public final Entity deepCopy() {
     return deepCopy(new HashMap<>());
   }
 
   @Override
-  public <T extends Entity> T castTo(Class<T> entityClass) {
+  public final Entity immutableCopy() {
+    if (this instanceof ImmutableEntity) {
+      return this;
+    }
+
+    return new ImmutableEntity(this);
+  }
+
+  @Override
+  public final <T extends Entity> T castTo(Class<T> entityClass) {
     requireNonNull(entityClass, "entityClass");
     if (entityClass.isAssignableFrom(getClass())) {
       // no wrapping required
@@ -314,7 +325,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean columnValuesEqual(Entity entity) {
+  public final boolean columnValuesEqual(Entity entity) {
     if (!definition.type().equals(requireNonNull(entity, "entity").type())) {
       throw new IllegalArgumentException("Entity of type " + definition.type() +
               " expected, got: " + entity.type());
@@ -329,7 +340,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @return true if the given object is an Entity and its primary key is equal to this ones
    */
   @Override
-  public boolean equals(Object obj) {
+  public final boolean equals(Object obj) {
     return this == obj || obj instanceof Entity && primaryKey().equals(((Entity) obj).primaryKey());
   }
 
@@ -339,7 +350,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @see EntityDefinition.Builder#comparator(java.util.Comparator)
    */
   @Override
-  public int compareTo(Entity entity) {
+  public final int compareTo(Entity entity) {
     return definition.comparator().compare(this, entity);
   }
 
@@ -347,7 +358,7 @@ final class DefaultEntity implements Entity, Serializable {
    * Returns the hash code of the primary key
    */
   @Override
-  public int hashCode() {
+  public final int hashCode() {
     return primaryKey().hashCode();
   }
 
@@ -360,7 +371,7 @@ final class DefaultEntity implements Entity, Serializable {
    * @see EntityDefinition#stringFactory()
    */
   @Override
-  public String toString() {
+  public final String toString() {
     if (toString == null) {
       toString = createToString();
     }
@@ -369,7 +380,7 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Key referencedKey(ForeignKey foreignKey) {
+  public final Key referencedKey(ForeignKey foreignKey) {
     definition.foreignKeyProperty(foreignKey);
     Key cachedReferencedKey = cachedReferencedKey(foreignKey);
     if (cachedReferencedKey != null) {
@@ -380,22 +391,42 @@ final class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public boolean contains(Attribute<?> attribute) {
+  public final boolean contains(Attribute<?> attribute) {
     return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
   }
 
   @Override
-  public Set<Map.Entry<Attribute<?>, Object>> entrySet() {
+  public final Set<Map.Entry<Attribute<?>, Object>> entrySet() {
     return unmodifiableSet(values.entrySet());
   }
 
   @Override
-  public Set<Map.Entry<Attribute<?>, Object>> originalEntrySet() {
+  public final Set<Map.Entry<Attribute<?>, Object>> originalEntrySet() {
     if (originalValues == null) {
       return emptySet();
     }
 
     return unmodifiableSet(originalValues.entrySet());
+  }
+
+  protected final void setDefinition(EntityDefinition definition) {
+    this.definition = definition;
+  }
+
+  protected final Map<Attribute<?>, Object> getValues() {
+    return values;
+  }
+
+  protected final void setValues(Map<Attribute<?>, Object> values) {
+    this.values = values;
+  }
+
+  protected final Map<Attribute<?>, Object> getOriginalValues() {
+    return originalValues;
+  }
+
+  protected final void setOriginalValues(Map<Attribute<?>, Object> originalValues) {
+    this.originalValues = originalValues;
   }
 
   private String createToString() {

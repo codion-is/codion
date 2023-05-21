@@ -143,7 +143,7 @@ public final class AbstractEntityEditModelTest {
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(
             Employee.NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
-    Entity copyWithPrimaryKeyValue = employeeEditModel.entityCopy();
+    Entity copyWithPrimaryKeyValue = employeeEditModel.entity();
     assertEquals(employee, copyWithPrimaryKeyValue);
     assertTrue(copyWithPrimaryKeyValue.primaryKey().isNotNull());
   }
@@ -170,7 +170,7 @@ public final class AbstractEntityEditModelTest {
     assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK));
     assertFalse(employeeEditModel.isNotNull(Employee.DEPARTMENT_FK));
     employeeEditModel.put(Employee.DEPARTMENT, dept.get(Department.ID));
-    assertFalse(employeeEditModel.entityCopy().isLoaded(Employee.DEPARTMENT_FK));
+    assertFalse(employeeEditModel.entity().isLoaded(Employee.DEPARTMENT_FK));
     dept = employeeEditModel.get(Employee.DEPARTMENT_FK);
     assertNull(dept);
     employeeEditModel.setDefaultValues();
@@ -247,16 +247,16 @@ public final class AbstractEntityEditModelTest {
     assertFalse(primaryKeyNullState.get());
     assertFalse(entityNewState.get());
 
-    assertTrue(employeeEditModel.entityCopy().columnValuesEqual(employee), "Active entity is not equal to the entity just set");
+    assertTrue(employeeEditModel.entity().columnValuesEqual(employee), "Active entity is not equal to the entity just set");
     assertFalse(employeeEditModel.isEntityNew(), "Active entity is new after an entity is set");
     assertFalse(employeeEditModel.modifiedObserver().get());
     employeeEditModel.setDefaultValues();
     assertTrue(employeeEditModel.isEntityNew(), "Active entity is new after entity is set to null");
     assertFalse(employeeEditModel.modifiedObserver().get());
-    assertTrue(employeeEditModel.entityCopy().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
+    assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity primary key is not null after entity is set to null");
 
     employeeEditModel.setEntity(employee);
-    assertTrue(employeeEditModel.entityCopy().primaryKey().isNotNull(), "Active entity primary key is null after entity is set");
+    assertTrue(employeeEditModel.entity().primaryKey().isNotNull(), "Active entity primary key is null after entity is set");
 
     Integer originalEmployeeId = employeeEditModel.get(Employee.ID);
     employeeEditModel.put(Employee.ID, null);
@@ -310,7 +310,7 @@ public final class AbstractEntityEditModelTest {
     }
 
     employeeEditModel.setDefaultValues();
-    assertTrue(employeeEditModel.entityCopy().primaryKey().isNull(), "Active entity is not null after model is cleared");
+    assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
     employeeEditModel.removeAfterDeleteListener(eventDataListener);
     employeeEditModel.removeAfterInsertListener(eventDataListener);
@@ -372,7 +372,7 @@ public final class AbstractEntityEditModelTest {
 
       employeeEditModel.insert();
       assertFalse(employeeEditModel.isEntityNew());
-      Entity entityCopy = employeeEditModel.entityCopy();
+      Entity entityCopy = employeeEditModel.entity();
       assertTrue(entityCopy.primaryKey().isNotNull());
       assertEquals(entityCopy.primaryKey(), entityCopy.originalPrimaryKey());
 
@@ -398,7 +398,7 @@ public final class AbstractEntityEditModelTest {
     try {
       employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
       employeeEditModel.put(Employee.NAME, "BJORN");
-      List<Entity> toUpdate = singletonList(employeeEditModel.entityCopy());
+      List<Entity> toUpdate = singletonList(employeeEditModel.entity());
       EventDataListener<Map<Key, Entity>> listener = updatedEntities ->
               assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
       employeeEditModel.addAfterUpdateListener(listener);
@@ -424,7 +424,7 @@ public final class AbstractEntityEditModelTest {
     connection.beginTransaction();
     try {
       employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
-      List<Entity> toDelete = singletonList(employeeEditModel.entityCopy());
+      List<Entity> toDelete = singletonList(employeeEditModel.entity());
       employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
       employeeEditModel.setDeleteEnabled(false);
       assertFalse(employeeEditModel.isDeleteEnabled());
@@ -451,8 +451,8 @@ public final class AbstractEntityEditModelTest {
     assertNull(employeeEditModel.get(Employee.MGR_FK));
     employeeEditModel.setDefaultValues();
     assertEquals(LocalDate.now(), employeeEditModel.get(Employee.HIREDATE));
-    assertFalse(employeeEditModel.entityCopy().isModified(Employee.HIREDATE));
-    assertFalse(employeeEditModel.entityCopy().isModified());
+    assertFalse(employeeEditModel.entity().isModified(Employee.HIREDATE));
+    assertFalse(employeeEditModel.entity().isModified());
   }
 
   @Test
@@ -485,7 +485,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.setEntity(king);
     employeeEditModel.put(Employee.NAME, "New name");
     employeeEditModel.setEntity(adams);
-    assertEquals(adams, employeeEditModel.entityCopy());
+    assertEquals(adams, employeeEditModel.entity());
 
     employeeEditModel.removeConfirmSetEntityObserver(alwaysConfirmListener);
     employeeEditModel.setDefaultValues();

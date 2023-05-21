@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -88,7 +89,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   @Override
   public final void refresh() {
-    refresher.refresh();
+    refreshThen(null);
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
+    refresher.refreshThen(afterRefresh);
   }
 
   /**

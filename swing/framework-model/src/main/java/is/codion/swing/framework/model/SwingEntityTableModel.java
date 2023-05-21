@@ -59,6 +59,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
@@ -427,7 +428,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       for (Entity foreignKeyValue : foreignKeyValues) {
         Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
         if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
-          currentForeignKeyValue.setAs(foreignKeyValue);
+          entity.put(foreignKey, foreignKeyValue);
           changed = true;
         }
       }
@@ -572,6 +573,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void refresh() {
     tableModel.refresh();
+  }
+
+  @Override
+  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
+    tableModel.refreshThen(afterRefresh);
   }
 
   @Override

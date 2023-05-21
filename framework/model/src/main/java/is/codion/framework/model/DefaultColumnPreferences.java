@@ -9,13 +9,9 @@ import is.codion.framework.model.EntityTableModel.ColumnPreferences;
 
 import org.json.JSONObject;
 
-import java.util.Collection;
-import java.util.Map;
 import java.util.Optional;
-import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toMap;
 
 final class DefaultColumnPreferences implements ColumnPreferences {
 
@@ -72,20 +68,7 @@ final class DefaultColumnPreferences implements ColumnPreferences {
     return columnObject;
   }
 
-  /**
-   * @param attributes the available column attributes
-   * @param jsonObject the column preferences
-   * @return the {@link ColumnPreferences} parsed from the given JSONObject
-   */
-  static Map<Attribute<?>, ColumnPreferences> fromJSONObject(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
-    return attributes.stream()
-            .map(attribute -> columnPreferences(attribute, jsonObject))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
-  }
-
-  private static Optional<ColumnPreferences> columnPreferences(Attribute<?> attribute, JSONObject preferences) {
+  static Optional<ColumnPreferences> columnPreferences(Attribute<?> attribute, JSONObject preferences) {
     if (preferences.has(attribute.name())) {
       return Optional.of(fromJSONObject(attribute, preferences.getJSONObject(attribute.name())));
     }

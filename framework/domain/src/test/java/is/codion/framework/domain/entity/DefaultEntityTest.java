@@ -114,6 +114,11 @@ public class DefaultEntityTest {
     assertEquals(master.get(Master.ID), masterDeserialized.get(Master.ID));
     assertEquals(master.get(Master.CODE), masterDeserialized.get(Master.CODE));
     assertFalse(masterDeserialized.contains(Master.NAME));
+
+    masterDeserialized = Serializer.deserialize(Serializer.serialize(master.immutableCopy()));
+    assertEquals(master.get(Master.ID), masterDeserialized.get(Master.ID));
+    assertEquals(master.get(Master.CODE), masterDeserialized.get(Master.CODE));
+    assertFalse(masterDeserialized.contains(Master.NAME));
   }
 
   @Test
@@ -845,6 +850,23 @@ public class DefaultEntityTest {
             .with(NullString.ID, 42)
             .build();
     assertEquals("null_string: id:42", entity.toString());
+  }
+
+  @Test
+  void immutableEntity() {
+    Entity dept = ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .with(Department.NAME, "Name1")
+            .build()
+            .immutableCopy();
+    assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
+    assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
+    assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.NO));
+    assertThrows(UnsupportedOperationException.class, dept::saveAll);
+    assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.NO));
+    assertThrows(UnsupportedOperationException.class, dept::revertAll);
+    assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.NO));
+    assertThrows(UnsupportedOperationException.class, () -> dept.setAs(dept));
   }
 
   private static Entity detailEntity(long id, Integer intValue, Double doubleValue,

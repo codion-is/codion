@@ -234,6 +234,11 @@ public interface Entity extends Comparable<Entity> {
   Entity deepCopy();
 
   /**
+   * @return an immutable copy of this entity or this entity in case it is already immutable
+   */
+  Entity immutableCopy();
+
+  /**
    * Casts this entity to the given type.
    * @param entityClass the entity class to cast to
    * @param <T> the entity class type
