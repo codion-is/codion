@@ -550,6 +550,17 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
+   * Returns immutable versions of the given entities.
+   * @param entities the entities
+   * @return immutable versions of the given entities
+   */
+  static List<Entity> immutable(List<? extends Entity> entities) {
+    return requireNonNull(entities).stream()
+            .map(Entity::immutable)
+            .collect(toList());
+  }
+
+  /**
    * Casts the given entities to the given type.
    * @param entityClass the entity class to cast to
    * @param entities the entities
