@@ -102,7 +102,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * Refreshes the items in this combo box model.
-   * If run on the Event Dispatch Thread the refresh happens asynchronously.
+   * If run on the Event Dispatch Thread and {@link #isAsyncRefresh()} returns true, the refresh happens asynchronously.
    * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
    * @see #addRefreshFailedListener(EventDataListener)
    * @see #setAsyncRefresh(boolean)
@@ -128,7 +128,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * Clears all items from this combo box model
+   * Clears all items from this combo box model, including the null item and sets the selected item to null
    */
   public final void clear() {
     setSelectedItem(null);
@@ -144,7 +144,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * Resets the items of this model using the values found in {@code items},
-   * if items is null then the model is considered to be cleared.
+   * if {@code items} is null then the model is cleared.
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
    * @see #isCleared()
@@ -330,6 +330,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * Supplies the rows when {@link #refresh()} is called.
    * @param rowSupplier the row supplier
    */
   public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
@@ -344,13 +345,21 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * Provides a way for the model to prevent the addition of certain rows.
+   * Trying to add rows that fail validation will result in an exception.
+   * Note that any translation of the selected item is done before validation.
    * @param rowValidator the row validator
+   * @throws IllegalArgumentException in case an item fails validation
    */
   public final void setRowValidator(Predicate<T> rowValidator) {
-    this.rowValidator = requireNonNull(rowValidator);
+    requireNonNull(rowValidator);
+    items().stream().filter(Objects::nonNull).forEach(rowValidator::test);
+    this.rowValidator = rowValidator;
   }
 
   /**
+   * Provides a way for the combo box model to translate an item when it is selected, such
+   * as selecting the String "1" in a String based model when selected item is set to the number 1.
    * @return the selected item translator
    */
   public final Function<Object, T> getSelectedItemTranslator() {

@@ -9014,3 +9014,4 @@
   ColumnConditionModelFactory.createConditionModel() now returns Optional
   ColumnConditionPanel bug fixed, lost focus on operator change when bound field was a JComboBox, special handling added
   FilteredComboBoxModel no longer has overridable methods, replaced with suppliers and such
+  FilteredComboBoxModel now validates items before the row validator is set, javadoc improvements
