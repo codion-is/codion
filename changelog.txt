@@ -9020,3 +9020,4 @@
   FilteredModel.AbstractRefresher.isUserInterfaceThread() added
   FilteredModel.refreshThen() added
   Entity.immutableCopy() added along with ImmutableEntity
+  AbstractEntityEditModel.entity() now public, returns an immutable copy, related refactoring

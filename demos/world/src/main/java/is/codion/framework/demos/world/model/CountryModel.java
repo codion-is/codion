@@ -29,7 +29,7 @@ public final class CountryModel extends SwingEntityModel {
     }
 
     SwingEntityTableModel cityTableModel = detailModel(City.TYPE).tableModel();
-    Entity country = editModel().entityCopy();
+    Entity country = editModel().entity();
 
     return Entity.castTo(City.class, cityTableModel.items()).stream()
             .filter(city -> city.isInCountry(country))

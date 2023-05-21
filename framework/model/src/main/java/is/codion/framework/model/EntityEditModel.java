@@ -89,10 +89,10 @@ public interface EntityEditModel {
   void refreshEntity();
 
   /**
-   * @return a deep copy of the active entity
-   * @see is.codion.framework.domain.entity.Entity#copy()
+   * @return an immutable copy of the {@link Entity} instance being edited
+   * @see Entity#immutableCopy()
    */
-  Entity entityCopy();
+  Entity entity();
 
   /**
    * Returns true if the active entity is new or false if it represents a row already persisted.

@@ -261,7 +261,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       return emptyList();
     }
 
-    return singletonList(editModel.entityCopy());
+    return singletonList(editModel.entity());
   }
 
   private void bindEventsInternal() {

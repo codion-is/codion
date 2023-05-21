@@ -45,17 +45,17 @@ class DefaultEntity implements Entity, Serializable {
   /**
    * Keep a reference to this frequently referenced object
    */
-  protected EntityDefinition definition;
+  private EntityDefinition definition;
 
   /**
    * Holds the values contained in this entity.
    */
-  protected Map<Attribute<?>, Object> values;
+  private Map<Attribute<?>, Object> values;
 
   /**
    * Holds the original value for attributes which values have changed since they were first set.
    */
-  protected Map<Attribute<?>, Object> originalValues;
+  private Map<Attribute<?>, Object> originalValues;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -403,6 +403,26 @@ class DefaultEntity implements Entity, Serializable {
     }
 
     return unmodifiableSet(originalValues.entrySet());
+  }
+
+  protected final void setDefinition(EntityDefinition definition) {
+    this.definition = definition;
+  }
+
+  protected final Map<Attribute<?>, Object> getValues() {
+    return values;
+  }
+
+  protected final void setValues(Map<Attribute<?>, Object> values) {
+    this.values = values;
+  }
+
+  protected final Map<Attribute<?>, Object> getOriginalValues() {
+    return originalValues;
+  }
+
+  protected final void setOriginalValues(Map<Attribute<?>, Object> originalValues) {
+    this.originalValues = originalValues;
   }
 
   private String createToString() {

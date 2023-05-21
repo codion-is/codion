@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import java.io.Serializable;
+import java.util.HashMap;
 import java.util.Map;
 
 final class ImmutableEntity extends DefaultEntity implements Serializable {
@@ -13,9 +14,11 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   private static final String ERROR_MESSAGE = "This entity instance is immutable";
 
   ImmutableEntity(DefaultEntity entity) {
-    this.definition = entity.definition();
-    this.values = entity.values;
-    this.originalValues = entity.originalValues;
+    setDefinition(entity.definition());
+    setValues(new HashMap<>(entity.getValues()));
+    if (entity.getOriginalValues() != null) {
+      setOriginalValues(new HashMap<>(entity.getOriginalValues()));
+    }
   }
 
   @Override

@@ -99,7 +99,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   private void setLocation() throws ValidationException, IOException, DatabaseException {
     ((CityEditModel) editModel()).setLocation();
-    displayLocationListener.onEvent(singletonList(editModel().entityCopy()));
+    displayLocationListener.onEvent(singletonList(editModel().entity()));
   }
 
   private static JXMapKit createMapKit() {

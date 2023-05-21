@@ -312,8 +312,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity entityCopy() {
-    return entity.deepCopy();
+  public final Entity entity() {
+    return entity.immutableCopy();
   }
 
   @Override
@@ -458,7 +458,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
-    Entity toInsert = entityCopy();
+    Entity toInsert = entity.copy();
     if (entityDefinition().isKeyGenerated()) {
       toInsert.clearPrimaryKey();
     }
@@ -492,7 +492,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    List<Entity> updated = update(singletonList(entityCopy()));
+    List<Entity> updated = update(singletonList(entity()));
     if (updated.isEmpty()) {
       throw new UpdateException("Active entity is not modified");
     }
@@ -534,7 +534,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity delete() throws DatabaseException {
-    Entity originalEntity = entityCopy();
+    Entity originalEntity = entity.copy();
     originalEntity.revertAll();
 
     return delete(singletonList(originalEntity)).get(0);
@@ -772,13 +772,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void removeRefreshListener(EventListener listener) {
     refreshEvent.removeListener(listener);
-  }
-
-  /**
-   * @return an immutable copy of the {@link Entity} instance being edited!
-   */
-  protected final Entity entity() {
-    return entity.immutableCopy();
   }
 
   /**
