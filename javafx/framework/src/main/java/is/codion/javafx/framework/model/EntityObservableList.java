@@ -14,6 +14,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -385,6 +386,11 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
 
     private DefaultRefresher(Supplier<Collection<Entity>> rowSupplier) {
       super(rowSupplier);
+    }
+
+    @Override
+    protected boolean isUserInterfaceThread() {
+      return Platform.isFxApplicationThread();
     }
 
     protected void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {

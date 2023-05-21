@@ -9017,3 +9017,4 @@
   FilteredComboBoxModel now validates items before the row validator is set, javadoc improvements
   FilteredModel.Refresher added, related refactoring
   EntityObservableList.DefaultRefresher async refresh now cancels ongoing refresh
+  FilteredModel.AbstractRefresher.isUserInterfaceThread() added
