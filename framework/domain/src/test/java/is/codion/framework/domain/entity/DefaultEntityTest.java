@@ -115,7 +115,7 @@ public class DefaultEntityTest {
     assertEquals(master.get(Master.CODE), masterDeserialized.get(Master.CODE));
     assertFalse(masterDeserialized.contains(Master.NAME));
 
-    masterDeserialized = Serializer.deserialize(Serializer.serialize(master.immutableCopy()));
+    masterDeserialized = Serializer.deserialize(Serializer.serialize(master.immutable()));
     assertEquals(master.get(Master.ID), masterDeserialized.get(Master.ID));
     assertEquals(master.get(Master.CODE), masterDeserialized.get(Master.CODE));
     assertFalse(masterDeserialized.contains(Master.NAME));
@@ -858,7 +858,7 @@ public class DefaultEntityTest {
             .with(Department.NO, 1)
             .with(Department.NAME, "Name1")
             .build()
-            .immutableCopy();
+            .immutable();
     assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
     assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
     assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.NO));

@@ -89,8 +89,8 @@ public interface EntityEditModel {
   void refreshEntity();
 
   /**
-   * @return an immutable copy of the {@link Entity} instance being edited
-   * @see Entity#immutableCopy()
+   * @return an immutable version of the {@link Entity} instance being edited
+   * @see Entity#immutable()
    */
   Entity entity();
 

@@ -301,8 +301,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Entity immutableCopy() {
-    if (this instanceof ImmutableEntity) {
+  public final Entity immutable() {
+    if (isImmutable()) {
       return this;
     }
 

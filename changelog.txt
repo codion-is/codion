@@ -9028,3 +9028,4 @@
   Entity.castTo() now takes a Collection instead of List
   FilteredModel.items() and filteredItems() now return Collection instead of List
   EntityTableModel.update() now takes a Collection instead of List
+  Entity.immutableCopy() renamed immutable()

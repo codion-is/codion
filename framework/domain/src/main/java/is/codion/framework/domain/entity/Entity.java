@@ -234,9 +234,9 @@ public interface Entity extends Comparable<Entity> {
   Entity deepCopy();
 
   /**
-   * @return an immutable copy of this entity or this entity in case it is already immutable
+   * @return an immutable version of this entity, may be the same instance if already immutable
    */
-  Entity immutableCopy();
+  Entity immutable();
 
   /**
    * @return true if this is an immutable instance
