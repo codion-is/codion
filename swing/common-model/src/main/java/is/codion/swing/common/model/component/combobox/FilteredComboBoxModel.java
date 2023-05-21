@@ -173,12 +173,12 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final List<T> filteredItems() {
+  public final Collection<T> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 
   @Override
-  public final List<T> items() {
+  public final Collection<T> items() {
     List<T> entities = new ArrayList<>(visibleItems());
     entities.addAll(filteredItems);
 

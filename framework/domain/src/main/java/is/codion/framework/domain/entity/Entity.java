@@ -557,7 +557,7 @@ public interface Entity extends Comparable<Entity> {
    * @return typed entities
    * @throws IllegalArgumentException in case any of the entities is not of the given entity type
    */
-  static <T extends Entity> List<T> castTo(Class<T> entityClass, List<Entity> entities) {
+  static <T extends Entity> List<T> castTo(Class<T> entityClass, Collection<Entity> entities) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.castTo(entityClass))
             .collect(toList());

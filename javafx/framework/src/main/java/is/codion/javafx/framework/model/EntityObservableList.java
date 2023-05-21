@@ -208,12 +208,12 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
-  public final List<Entity> items() {
+  public final Collection<Entity> items() {
     return FXCollections.unmodifiableObservableList(this);
   }
 
   @Override
-  public final List<Entity> filteredItems() {
+  public final Collection<Entity> filteredItems() {
     if (size() != filteredList.size()) {
       List<Entity> result = new ArrayList<>(this);
       result.removeAll(filteredList);
@@ -365,20 +365,6 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
   }
 
-  private void setSelectedItems(List<Entity> selectedItems) {
-    if (selectedItems != null && selectionModel != null) {
-      selectionModel.setSelectedItems(selectedItems);
-    }
-  }
-
-  private List<Entity> getSelectedItems() {
-    if (selectionModel != null) {
-      return new ArrayList<>(selectionModel.getSelectedItems());
-    }
-
-    return emptyList();
-  }
-
   private void checkIfSelectionModelHasBeenSet() {
     if (!selectionModelHasBeenSet()) {
       throw new IllegalStateException(SELECTION_MODEL_HAS_NOT_BEEN_SET);
@@ -448,6 +434,20 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
       RefreshTask task = refreshTask;
       if (task != null) {
         task.cancel(true);
+      }
+    }
+
+    private List<Entity> getSelectedItems() {
+      if (selectionModel != null) {
+        return new ArrayList<>(selectionModel.getSelectedItems());
+      }
+
+      return emptyList();
+    }
+
+    private void setSelectedItems(List<Entity> selectedItems) {
+      if (selectedItems != null && selectionModel != null) {
+        selectionModel.setSelectedItems(selectedItems);
       }
     }
 

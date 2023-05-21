@@ -9063,3 +9063,6 @@
   Entity.isImmutable() added
   DefaultLocalEntityConnectionTest, now tests for foreign key immutability
   DefaultLocalEntityConnection.selectDependencies() now returns immutable entities
+  Entity.castTo() now takes a Collection instead of List
+  FilteredModel.items() and filteredItems() now return Collection instead of List
+  EntityTableModel.update() now takes a Collection instead of List

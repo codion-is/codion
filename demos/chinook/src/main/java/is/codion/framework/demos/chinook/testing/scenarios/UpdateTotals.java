@@ -12,7 +12,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Random;
 
 import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRows;
@@ -30,7 +30,7 @@ public final class UpdateTotals extends AbstractEntityUsageScenario<ChinookAppMo
     selectRandomRows(invoiceModel.tableModel(), random.nextInt(6) + 2);
     SwingEntityTableModel invoiceLineTableModel =
             invoiceModel.detailModel(InvoiceLine.TYPE).tableModel();
-    List<Entity> invoiceLines = invoiceLineTableModel.items();
+    Collection<Entity> invoiceLines = invoiceLineTableModel.items();
     Entity.put(InvoiceLine.QUANTITY, random.nextInt(4) + 1, invoiceLines);
 
     invoiceLineTableModel.update(invoiceLines);

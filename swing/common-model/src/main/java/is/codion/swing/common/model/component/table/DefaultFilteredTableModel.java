@@ -54,9 +54,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private final TableSummaryModel<C> summaryModel;
   private final CombinedIncludeCondition combinedIncludeCondition;
   private final Predicate<R> rowValidator;
-  private final Refresher<R> refresher;
-
-  private boolean mergeOnRefresh = false;
+  private final DefaultRefresher refresher;
 
   private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(builder.columns);
@@ -69,15 +67,15 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     this.summaryModel = tableSummaryModel(builder.summaryValueProviderFactory == null ?
             new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-    this.refresher = new FilteredTableModelRefresher(builder.rowSupplier == null ? this::items : builder.rowSupplier);
+    this.refresher = new DefaultRefresher(builder.rowSupplier == null ? this::items : builder.rowSupplier);
     this.refresher.setAsyncRefresh(builder.asyncRefresh);
+    this.refresher.mergeOnRefresh = builder.mergeOnRefresh;
     this.rowValidator = builder.rowValidator;
-    this.mergeOnRefresh = builder.mergeOnRefresh;
     bindEventsInternal();
   }
 
   @Override
-  public List<R> items() {
+  public Collection<R> items() {
     List<R> items = new ArrayList<>(visibleItems);
     items.addAll(filteredItems);
 
@@ -90,7 +88,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public List<R> filteredItems() {
+  public Collection<R> filteredItems() {
     return unmodifiableList(filteredItems);
   }
 
@@ -199,12 +197,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public boolean isMergeOnRefresh() {
-    return mergeOnRefresh;
+    return refresher.mergeOnRefresh;
   }
 
   @Override
   public void setMergeOnRefresh(boolean mergeOnRefresh) {
-    this.mergeOnRefresh = mergeOnRefresh;
+    refresher.mergeOnRefresh = mergeOnRefresh;
   }
 
   @Override
@@ -477,31 +475,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     return combinedIncludeCondition.test(item);
   }
 
-  private void merge(Collection<R> items) {
-    Set<R> itemSet = new HashSet<>(items);
-    items().forEach(item -> {
-      if (!itemSet.contains(item)) {
-        removeItem(item);
-      }
-    });
-    items.forEach(item -> {
-      int index = indexOf(item);
-      if (index == -1) {
-        addItemSorted(item);
-      }
-      else {
-        setItemAt(index, item);
-      }
-    });
-  }
-
-  private void clearAndAdd(Collection<R> items) {
-    Collection<R> selectedItems = selectionModel.getSelectedItems();
-    clear();
-    addItemsSorted(items);
-    selectionModel.setSelectedItems(selectedItems);
-  }
-
   private Collection<ColumnConditionModel<C, ?>> createColumnFilterModels(ColumnConditionModel.Factory<C> filterModelFactory) {
     Collection<ColumnConditionModel<C, ?>> filterModels = new ArrayList<>();
     columnModel.columns().stream()
@@ -509,14 +482,16 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
             .map(filterModelFactory::createConditionModel)
             .filter(Optional::isPresent)
             .map(Optional::get)
-            .forEach(filterModel -> filterModels.add((ColumnConditionModel<C, ?>) filterModel));
+            .forEach(conditionModel -> filterModels.add((ColumnConditionModel<C, ?>) conditionModel));
 
     return filterModels;
   }
 
-  private final class FilteredTableModelRefresher extends AbstractFilteredModelRefresher<R> {
+  private final class DefaultRefresher extends AbstractFilteredModelRefresher<R> {
 
-    private FilteredTableModelRefresher(Supplier<Collection<R>> rowSupplier) {
+    private boolean mergeOnRefresh = false;
+
+    private DefaultRefresher(Supplier<Collection<R>> rowSupplier) {
       super(rowSupplier);
     }
 
@@ -528,6 +503,31 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
       else {
         clearAndAdd(items);
       }
+    }
+
+    private void merge(Collection<R> items) {
+      Set<R> itemSet = new HashSet<>(items);
+      items().forEach(item -> {
+        if (!itemSet.contains(item)) {
+          removeItem(item);
+        }
+      });
+      items.forEach(item -> {
+        int index = indexOf(item);
+        if (index == -1) {
+          addItemSorted(item);
+        }
+        else {
+          setItemAt(index, item);
+        }
+      });
+    }
+
+    private void clearAndAdd(Collection<R> items) {
+      Collection<R> selectedItems = selectionModel.getSelectedItems();
+      clear();
+      addItemsSorted(items);
+      selectionModel.setSelectedItems(selectedItems);
     }
   }
 

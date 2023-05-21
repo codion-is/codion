@@ -223,10 +223,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       setSelectedItem(getElementAt(indexOfKey));
     }
     else {
-      int filteredIndexOfKey = indexOfFilteredKey(primaryKey);
-      if (filteredIndexOfKey >= 0) {
-        setSelectedItem(filteredItems().get(filteredIndexOfKey));
-      }
+      filteredEntity(primaryKey).ifPresent(this::setSelectedItem);
     }
   }
 
@@ -414,15 +411,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     return -1;
   }
 
-  private int indexOfFilteredKey(Key primaryKey) {
-    List<Entity> filteredItems = filteredItems();
-    for (int index = 0; index < filteredItems.size(); index++) {
-      Entity item = filteredItems.get(index);
-      if (item.primaryKey().equals(primaryKey)) {
-        return index;
-      }
-    }
-    return -1;
+  private Optional<Entity> filteredEntity(Key primaryKey) {
+    return filteredItems().stream()
+            .filter(entity -> entity.primaryKey().equals(primaryKey))
+            .findFirst();
   }
 
   private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
