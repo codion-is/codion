@@ -381,12 +381,16 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
 
   private final class DefaultRefresher extends AbstractRefresher<Entity> {
 
+    private RefreshTask refreshTask;
+
     private DefaultRefresher(Supplier<Collection<Entity>> rowSupplier) {
       super(rowSupplier);
     }
 
     protected void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {
-      new Thread(new RefreshTask(getSelectedItems(), afterRefresh)).start();
+      cancelCurrentRefresh();
+      refreshTask = new RefreshTask(getSelectedItems(), afterRefresh);
+      new Thread(refreshTask).start();
     }
 
     protected void refreshSync(Consumer<Collection<Entity>> afterRefresh) {
@@ -410,6 +414,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
 
     private void onRefreshFailedSync(Throwable throwable) {
+      refreshTask = null;
       setRefreshing(false);
       if (throwable instanceof RuntimeException) {
         throw (RuntimeException) throwable;
@@ -419,12 +424,20 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
 
     private void onRefreshResult(Collection<Entity> items, Consumer<Collection<Entity>> afterRefresh) {
+      refreshTask = null;
       setRefreshing(false);
       handleRefreshResult(items);
       if (afterRefresh != null) {
         afterRefresh.accept(items);
       }
       fireRefreshEvent();
+    }
+
+    private void cancelCurrentRefresh() {
+      RefreshTask task = refreshTask;
+      if (task != null) {
+        task.cancel(true);
+      }
     }
 
     private final class RefreshTask extends Task<Collection<Entity>> {
