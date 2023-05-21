@@ -7,17 +7,13 @@ import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.properties.PropertyValue;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.SwingUtilities;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
@@ -27,7 +23,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -51,13 +46,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public static final PropertyValue<String> COMBO_BOX_NULL_CAPTION = Configuration.stringValue("is.codion.common.model.combobox.nullCaption", "-");
 
   private final Event<T> selectionChangedEvent = Event.event();
-  private final Event<?> refreshEvent = Event.event();
-  private final Event<Throwable> refreshFailedEvent = Event.event();
-  private final State refreshingState = State.state();
   private final List<T> visibleItems = new ArrayList<>();
   private final List<T> filteredItems = new ArrayList<>();
+  private final Refresher<T> refresher;
 
-  private Supplier<Collection<T>> rowSupplier = new DefaultRowSupplier();
   private Predicate<T> rowValidator = new DefaultRowValidator<>();
   private Function<Object, T> selectedItemTranslator = new DefaultSelectedItemTranslator<>();
   private Predicate<T> allowSelectionPredicate = new DefaultAllowSelectionPredicate<>();
@@ -73,8 +65,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private T nullItem;
   private Predicate<T> includeCondition;
   private boolean filterSelectedItem = true;
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
-  private ProgressWorker<Collection<T>, ?> refreshWorker;
 
   /**
    * Due to a java.util.ConcurrentModificationException in OSX
@@ -88,47 +78,21 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public FilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
+    this.refresher = new FilteredComboBoxRefresher(new DefaultRowSupplier());
   }
 
   @Override
-  public final boolean isAsyncRefresh() {
-    return asyncRefresh;
+  public final Refresher<T> refresher() {
+    return refresher;
   }
 
   @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
+  public final void refresh() {
+    refresher.refresh();
   }
 
   /**
-   * Refreshes the items in this combo box model.
-   * If run on the Event Dispatch Thread the refresh happens asynchronously.
-   * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the Event Dispatch Thread
-   * @see #addRefreshFailedListener(EventDataListener)
-   * @see #setAsyncRefresh(boolean)
-   */
-  @Override
-  public final void refresh() {
-    refreshThen(null);
-  }
-
-  @Override
-  public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
-      refreshAsync(afterRefresh);
-    }
-    else {
-      refreshSync(afterRefresh);
-    }
-  }
-
-  @Override
-  public final StateObserver refreshingObserver() {
-    return refreshingState.observer();
-  }
-
-  /**
-   * Clears all items from this combo box model
+   * Clears all items from this combo box model, including the null item and sets the selected item to null
    */
   public final void clear() {
     setSelectedItem(null);
@@ -144,7 +108,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   /**
    * Resets the items of this model using the values found in {@code items},
-   * if items is null then the model is considered to be cleared.
+   * if {@code items} is null then the model is cleared.
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
    * @see #isCleared()
@@ -326,14 +290,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @return the row supplier
    */
   public final Supplier<Collection<T>> getRowSupplier() {
-    return rowSupplier;
+    return refresher.getRowSupplier();
   }
 
   /**
+   * Supplies the rows when {@link #refresh()} is called.
    * @param rowSupplier the row supplier
    */
   public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
-    this.rowSupplier = requireNonNull(rowSupplier);
+    this.refresher.setRowSupplier(rowSupplier);
   }
 
   /**
@@ -344,13 +309,21 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * Provides a way for the model to prevent the addition of certain rows.
+   * Trying to add rows that fail validation will result in an exception.
+   * Note that any translation of the selected item is done before validation.
    * @param rowValidator the row validator
+   * @throws IllegalArgumentException in case an item fails validation
    */
   public final void setRowValidator(Predicate<T> rowValidator) {
-    this.rowValidator = requireNonNull(rowValidator);
+    requireNonNull(rowValidator);
+    items().stream().filter(Objects::nonNull).forEach(rowValidator::test);
+    this.rowValidator = rowValidator;
   }
 
   /**
+   * Provides a way for the combo box model to translate an item when it is selected, such
+   * as selecting the String "1" in a String based model when selected item is set to the number 1.
    * @return the selected item translator
    */
   public final Function<Object, T> getSelectedItemTranslator() {
@@ -529,26 +502,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     return new SelectorValue<>(itemFinder);
   }
 
-  @Override
-  public final void addRefreshListener(EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(EventListener listener) {
-    refreshEvent.removeListener(listener);
-  }
-
-  @Override
-  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.removeDataListener(listener);
-  }
-
   /**
    * @param listener a listener notified each time the selection changes
    */
@@ -584,61 +537,6 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (sortComparator != null && !visibleItems.isEmpty()) {
       visibleItems.sort(sortComparator);
       fireContentsChanged();
-    }
-  }
-
-  private void refreshAsync(Consumer<Collection<T>> afterRefresh) {
-    cancelCurrentRefresh();
-    refreshWorker = ProgressWorker.builder(rowSupplier::get)
-            .onStarted(this::onRefreshStarted)
-            .onResult(items -> onRefreshResult(items, afterRefresh))
-            .onException(this::onRefreshFailedAsync)
-            .execute();
-  }
-
-  private void refreshSync(Consumer<Collection<T>> afterRefresh) {
-    onRefreshStarted();
-    try {
-      onRefreshResult(rowSupplier.get(), afterRefresh);
-    }
-    catch (Exception e) {
-      onRefreshFailedSync(e);
-    }
-  }
-
-  private void onRefreshStarted() {
-    refreshingState.set(true);
-  }
-
-  private void onRefreshFailedAsync(Throwable throwable) {
-    refreshWorker = null;
-    refreshingState.set(false);
-    refreshFailedEvent.onEvent(throwable);
-  }
-
-  private void onRefreshFailedSync(Throwable throwable) {
-    refreshingState.set(false);
-    if (throwable instanceof RuntimeException) {
-      throw (RuntimeException) throwable;
-    }
-
-    throw new RuntimeException(throwable);
-  }
-
-  private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
-    refreshWorker = null;
-    refreshingState.set(false);
-    setItems(items);
-    if (afterRefresh != null) {
-      afterRefresh.accept(items);
-    }
-    refreshEvent.onEvent();
-  }
-
-  private void cancelCurrentRefresh() {
-    ProgressWorker<?, ?> worker = refreshWorker;
-    if (worker != null) {
-      worker.cancel(true);
     }
   }
 
@@ -700,6 +598,18 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     @Override
     protected void setValue(V value) {
       setSelectedItem(value == null ? null : itemFinder.findItem(visibleItems(), value));
+    }
+  }
+
+  private final class FilteredComboBoxRefresher extends AbstractFilteredModelRefresher<T> {
+
+    private FilteredComboBoxRefresher(Supplier<Collection<T>> rowSupplier) {
+      super(rowSupplier);
+    }
+
+    @Override
+    protected void handleRefreshResult(Collection<T> items) {
+      setItems(items);
     }
   }
 

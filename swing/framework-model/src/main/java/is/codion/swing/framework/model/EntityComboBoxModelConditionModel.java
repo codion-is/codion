@@ -58,7 +58,7 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(new SelectedEntityListener());
     equalValueSet().value().addDataListener(new EqualValueListener());
-    entityComboBoxModel.addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
+    entityComboBoxModel.refresher().addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
   }
 
   private final class SelectedEntityListener implements EventDataListener<Entity> {

@@ -1181,7 +1181,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
-            .enabledState(tableModel.refreshingObserver().reversedObserver())
+            .enabledState(tableModel.refresher().refreshingObserver().reversedObserver())
             .build();
   }
 
@@ -1404,8 +1404,8 @@ public class EntityTablePanel extends JPanel {
     filterPanelVisibleState.addDataListener(this::setFilterPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
     tableModel.conditionModel().addChangeListener(condition -> onConditionChanged());
-    tableModel.refreshingObserver().addDataListener(this::onRefreshingChanged);
-    tableModel.addRefreshFailedListener(this::onException);
+    tableModel.refresher().refreshingObserver().addDataListener(this::onRefreshingChanged);
+    tableModel.refresher().addRefreshFailedListener(this::onException);
     tableModel.editModel().addEntitiesEditedListener(table::repaint);
     if (conditionPanel != null) {
       KeyEvents.builder(VK_ENTER)
@@ -1896,7 +1896,7 @@ public class EntityTablePanel extends JPanel {
               .build(), STATUS);
       add(createRefreshingProgressPanel(), REFRESHING);
       CardLayout layout = (CardLayout) getLayout();
-      tableModel.refreshingObserver().addDataListener(isRefreshing -> {
+      tableModel.refresher().refreshingObserver().addDataListener(isRefreshing -> {
         if (showRefreshProgressBar) {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }

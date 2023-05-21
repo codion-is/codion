@@ -5,10 +5,8 @@ package is.codion.javafx.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
@@ -16,7 +14,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
-import javafx.application.Platform;
 import javafx.beans.property.SimpleListProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -32,6 +29,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 import static is.codion.framework.db.condition.Condition.condition;
@@ -52,18 +50,14 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
   private final SortedList<Entity> sortedList;
   private final FilteredList<Entity> filteredList;
 
-  private final Event<?> refreshStartedEvent = Event.event();
-  private final Event<Throwable> refreshFailedEvent = Event.event();
-  private final Event<?> refreshEvent = Event.event();
   private final Event<?> selectionChangedEvent = Event.event();
   private final Event<?> filterEvent = Event.event();
-  private final State refreshingState = State.state();
+  private final Refresher<Entity> refresher;
 
   private FXEntityListSelectionModel selectionModel;
 
   private Condition selectCondition;
   private Predicate<Entity> includeCondition;
-  private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
   /**
    * Instantiates a new {@link EntityObservableList}
@@ -77,6 +71,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     this.entityDefinition = connectionProvider.entities().definition(entityType);
     this.filteredList = new FilteredList<>(this);
     this.sortedList = new SortedList<>(filteredList, connectionProvider.entities().definition(entityType).comparator());
+    this.refresher = new DefaultRefresher(this::items);
   }
 
   /**
@@ -101,33 +96,13 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
   }
 
   @Override
+  public final Refresher<Entity> refresher() {
+    return refresher;
+  }
+
+  @Override
   public final void refresh() {
-    refreshThen(null);
-  }
-
-  @Override
-  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
-    if (asyncRefresh && Platform.isFxApplicationThread()) {
-      refreshAsync(afterRefresh);
-    }
-    else {
-      refreshSync(afterRefresh);
-    }
-  }
-
-  @Override
-  public final StateObserver refreshingObserver() {
-    return refreshingState.observer();
-  }
-
-  @Override
-  public final boolean isAsyncRefresh() {
-    return asyncRefresh;
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
+    refresher.refresh();
   }
 
   /**
@@ -159,20 +134,6 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
       ((MultipleSelectionModel<Entity>) selectionModel).setSelectionMode(SelectionMode.MULTIPLE);
     }
     bindSelectionModelEvents();
-  }
-
-  /**
-   * @param listener notified when the selection changes in the underlying selection model
-   */
-  public final void addRefreshListener(EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  /**
-   * @param listener notified each time this model is refreshed.
-   */
-  public final void removeRefreshListener(EventListener listener) {
-    refreshEvent.removeListener(listener);
   }
 
   /**
@@ -342,23 +303,6 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
   }
 
   /**
-   * @param listener a listener to be notified each time a refresh has failed
-   * @see #refresh()
-   */
-  @Override
-  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  @Override
-  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.removeDataListener(listener);
-  }
-
-  /**
    * Sets the condition to use when querying data
    * @param selectCondition the select condition to use
    * @see #performQuery()
@@ -415,45 +359,6 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
   }
 
-  private void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {
-    new Thread(new RefreshTask(getSelectedItems(), afterRefresh)).start();
-  }
-
-  private void refreshSync(Consumer<Collection<Entity>> afterRefresh) {
-    List<Entity> selectedItems = getSelectedItems();
-    onRefreshStarted();
-    try {
-      onRefreshResult(performQuery(), afterRefresh);
-    }
-    catch (Exception e) {
-      onRefreshFailedSync(e);
-    }
-    setSelectedItems(selectedItems);
-  }
-
-  private void onRefreshStarted() {
-    refreshingState.set(true);
-    refreshStartedEvent.onEvent();
-  }
-
-  private void onRefreshFailedSync(Throwable throwable) {
-    refreshingState.set(false);
-    if (throwable instanceof RuntimeException) {
-      throw (RuntimeException) throwable;
-    }
-
-    throw new RuntimeException(throwable);
-  }
-
-  private void onRefreshResult(Collection<Entity> items, Consumer<Collection<Entity>> afterRefresh) {
-    setAll(items);
-    refreshingState.set(false);
-    if (afterRefresh != null) {
-      afterRefresh.accept(items);
-    }
-    refreshEvent.onEvent();
-  }
-
   private void setSelectedItems(List<Entity> selectedItems) {
     if (selectedItems != null && selectionModel != null) {
       selectionModel.setSelectedItems(selectedItems);
@@ -474,36 +379,98 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
   }
 
-  private final class RefreshTask extends Task<Collection<Entity>> {
+  private final class DefaultRefresher extends AbstractRefresher<Entity> {
 
-    private final List<Entity> selectedItems;
-    private final Consumer<Collection<Entity>> afterRefresh;
+    private RefreshTask refreshTask;
 
-    private RefreshTask(List<Entity> selectedItems, Consumer<Collection<Entity>> afterRefresh) {
-      this.selectedItems = selectedItems;
-      this.afterRefresh = afterRefresh;
+    private DefaultRefresher(Supplier<Collection<Entity>> rowSupplier) {
+      super(rowSupplier);
     }
 
-    @Override
-    protected Collection<Entity> call() throws Exception {
-      return performQuery();
+    protected void refreshAsync(Consumer<Collection<Entity>> afterRefresh) {
+      cancelCurrentRefresh();
+      refreshTask = new RefreshTask(getSelectedItems(), afterRefresh);
+      new Thread(refreshTask).start();
     }
 
-    @Override
-    protected void running() {
+    protected void refreshSync(Consumer<Collection<Entity>> afterRefresh) {
+      List<Entity> selectedItems = getSelectedItems();
       onRefreshStarted();
-    }
-
-    @Override
-    protected void failed() {
-      refreshingState.set(false);
-      refreshFailedEvent.onEvent(getException());
-    }
-
-    @Override
-    protected void succeeded() {
-      onRefreshResult(getValue(), afterRefresh);
+      try {
+        onRefreshResult(performQuery(), afterRefresh);
+      }
+      catch (Exception e) {
+        onRefreshFailedSync(e);
+      }
       setSelectedItems(selectedItems);
+    }
+
+    protected void handleRefreshResult(Collection<Entity> items) {
+      setAll(items);
+    }
+
+    private void onRefreshStarted() {
+      setRefreshing(true);
+    }
+
+    private void onRefreshFailedSync(Throwable throwable) {
+      refreshTask = null;
+      setRefreshing(false);
+      if (throwable instanceof RuntimeException) {
+        throw (RuntimeException) throwable;
+      }
+
+      throw new RuntimeException(throwable);
+    }
+
+    private void onRefreshResult(Collection<Entity> items, Consumer<Collection<Entity>> afterRefresh) {
+      refreshTask = null;
+      setRefreshing(false);
+      handleRefreshResult(items);
+      if (afterRefresh != null) {
+        afterRefresh.accept(items);
+      }
+      fireRefreshEvent();
+    }
+
+    private void cancelCurrentRefresh() {
+      RefreshTask task = refreshTask;
+      if (task != null) {
+        task.cancel(true);
+      }
+    }
+
+    private final class RefreshTask extends Task<Collection<Entity>> {
+
+      private final List<Entity> selectedItems;
+      private final Consumer<Collection<Entity>> afterRefresh;
+
+      private RefreshTask(List<Entity> selectedItems, Consumer<Collection<Entity>> afterRefresh) {
+        this.selectedItems = selectedItems;
+        this.afterRefresh = afterRefresh;
+      }
+
+      @Override
+      protected Collection<Entity> call() throws Exception {
+        return performQuery();
+      }
+
+      @Override
+      protected void running() {
+        onRefreshStarted();
+      }
+
+      @Override
+      protected void failed() {
+        setRefreshing(false);
+        fireRefreshFailedEvent(getException());
+      }
+
+      @Override
+      protected void succeeded() {
+        onRefreshResult(getValue(), afterRefresh);
+        setSelectedItems(selectedItems);
+      }
     }
   }
 }

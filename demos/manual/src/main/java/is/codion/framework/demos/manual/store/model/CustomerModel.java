@@ -17,7 +17,7 @@ public class CustomerModel extends SwingEntityModel {
 
   // tag::bindEvents[]
   private void bindEvents() {
-    tableModel().refreshingObserver().addDataListener(refreshing -> {
+    tableModel().refresher().refreshingObserver().addDataListener(refreshing -> {
       if (refreshing) {
         System.out.println("Refresh is about to start");
       }

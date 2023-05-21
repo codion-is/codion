@@ -79,7 +79,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   @Override
   public void onSelection(List<Entity> selectedEntities) {
     if (detailModel().containsTableModel() && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, selectedEntities) && isRefreshOnSelection()) {
-      detailModel().tableModel().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
+      detailModel().tableModel().refresher().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
     }
     else {
       setEditModelForeignKeyValue(selectedEntities);

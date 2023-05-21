@@ -59,7 +59,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
@@ -566,18 +565,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isAsyncRefresh() {
-    return tableModel.isAsyncRefresh();
-  }
-
-  @Override
-  public final void setAsyncRefresh(boolean asyncRefresh) {
-    tableModel.setAsyncRefresh(asyncRefresh);
-  }
-
-  @Override
-  public final void refreshThen(Consumer<Collection<Entity>> afterRefresh) {
-    tableModel.refreshThen(afterRefresh);
+  public final Refresher<Entity> refresher() {
+    return tableModel.refresher();
   }
 
   @Override
@@ -766,31 +755,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final StateObserver refreshingObserver() {
-    return tableModel.refreshingObserver();
-  }
-
-  @Override
-  public final void addRefreshListener(EventListener listener) {
-    tableModel.addRefreshListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshListener(EventListener listener) {
-    tableModel.removeRefreshListener(listener);
-  }
-
-  @Override
-  public final void addRefreshFailedListener(EventDataListener<Throwable> listener) {
-    tableModel.addRefreshFailedListener(listener);
-  }
-
-  @Override
-  public final void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
-    tableModel.removeRefreshFailedListener(listener);
-  }
-
-  @Override
   public final void addDataChangedListener(EventListener listener) {
     tableModel.addDataChangedListener(listener);
   }
@@ -972,7 +936,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    addRefreshListener(this::rememberCondition);
+    refresher().addRefreshListener(this::rememberCondition);
     conditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
@@ -980,7 +944,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addAfterDeleteListener(this::onDelete);
     editModel.addRefreshListener(this::refresh);
     editModel.addEntityListener(this::onEntitySet);
-    editModel.addRefreshingObserver(refreshingObserver());
+    editModel.addRefreshingObserver(refresher().refreshingObserver());
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
     EventListener statusListener = () -> statusMessageValue.set(statusMessage());

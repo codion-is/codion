@@ -825,7 +825,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
-    comboBoxModel.addRefreshFailedListener(this::onException);
+    comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
@@ -839,7 +839,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <B extends ComboBoxBuilder<Entity, EntityComboBox, B>> ComboBoxBuilder<Entity, EntityComboBox, B> createForeignKeyComboBox(ForeignKey foreignKey) {
     EntityComboBoxModel comboBoxModel = editModel().foreignKeyComboBoxModel(foreignKey);
-    comboBoxModel.addRefreshFailedListener(this::onException);
+    comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
     return (ComboBoxBuilder<Entity, EntityComboBox, B>) setComponentBuilder(foreignKey, entityComponents.foreignKeyComboBox(foreignKey, comboBoxModel)
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));

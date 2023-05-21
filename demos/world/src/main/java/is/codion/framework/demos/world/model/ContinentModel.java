@@ -26,7 +26,7 @@ public final class ContinentModel extends SwingEntityModel {
 
   ContinentModel(EntityConnectionProvider connectionProvider) {
     super(Continent.TYPE, connectionProvider);
-    tableModel().addRefreshListener(this::refreshChartDatasets);
+    tableModel().refresher().addRefreshListener(this::refreshChartDatasets);
     CountryModel countryModel = new CountryModel(connectionProvider);
     addDetailModel(new CountryModelLink(countryModel)).setActive(true);
   }

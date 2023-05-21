@@ -82,8 +82,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     setRowValidator(new RowValidator());
     setStaticData(this.entities.definition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
-    addRefreshListener(() -> forceRefresh = false);
-    addRefreshFailedListener(throwable -> forceRefresh = false);
+    refresher().addRefreshListener(() -> forceRefresh = false);
+    refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
     addEditEventListeners();
   }
 
@@ -459,7 +459,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
         foreignKeyModel.selectByKey(selected.referencedKey(foreignKey));
       }
     });
-    addRefreshListener(foreignKeyModel::forceRefresh);
+    refresher().addRefreshListener(foreignKeyModel::forceRefresh);
   }
 
   private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
