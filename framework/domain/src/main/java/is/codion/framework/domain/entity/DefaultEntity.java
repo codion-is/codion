@@ -302,6 +302,10 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final Entity immutableCopy() {
+    if (this instanceof ImmutableEntity) {
+      return this;
+    }
+
     return new ImmutableEntity(this);
   }
 

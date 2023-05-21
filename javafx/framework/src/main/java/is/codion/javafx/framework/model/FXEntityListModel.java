@@ -205,13 +205,20 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
 
   @Override
   public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
+    requireNonNull(foreignKey, "foreignKey");
+    requireNonNull(foreignKeyValues, "foreignKeyValues");
+    boolean changed = false;
     for (Entity entity : items()) {
       for (Entity foreignKeyValue : foreignKeyValues) {
         Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
-        if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
-          currentForeignKeyValue.setAs(foreignKeyValue);
+        if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
+          entity.put(foreignKey, foreignKeyValue);
+          changed = true;
         }
       }
+    }
+    if (changed) {
+      fireValueChangedEvent();
     }
   }
 

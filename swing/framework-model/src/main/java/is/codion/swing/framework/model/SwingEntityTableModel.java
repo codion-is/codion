@@ -428,7 +428,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       for (Entity foreignKeyValue : foreignKeyValues) {
         Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
         if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
-          currentForeignKeyValue.setAs(foreignKeyValue);
+          entity.put(foreignKey, foreignKeyValue);
           changed = true;
         }
       }
