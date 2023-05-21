@@ -45,17 +45,17 @@ class DefaultEntity implements Entity, Serializable {
   /**
    * Keep a reference to this frequently referenced object
    */
-  private EntityDefinition definition;
+  protected EntityDefinition definition;
 
   /**
    * Holds the values contained in this entity.
    */
-  private Map<Attribute<?>, Object> values;
+  protected Map<Attribute<?>, Object> values;
 
   /**
    * Holds the original value for attributes which values have changed since they were first set.
    */
-  private Map<Attribute<?>, Object> originalValues;
+  protected Map<Attribute<?>, Object> originalValues;
 
   /**
    * Used to cache the return value of the frequently called toString(),
@@ -129,11 +129,6 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public <T> T put(Attribute<T> attribute, T value) {
-    return put(definition.property(attribute), value);
-  }
-
-  @Override
   public final <T> T get(Attribute<T> attribute) {
     return get(definition.property(attribute));
   }
@@ -141,6 +136,11 @@ class DefaultEntity implements Entity, Serializable {
   @Override
   public final <T> Optional<T> getOptional(Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
+  }
+
+  @Override
+  public final <T> T getOriginal(Attribute<T> attribute) {
+    return getOriginal(definition.property(attribute));
   }
 
   @Override
@@ -201,16 +201,16 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public <T> T put(Attribute<T> attribute, T value) {
+    return put(definition.property(attribute), value);
+  }
+
+  @Override
   public Entity clearPrimaryKey() {
     definition.primaryKeyAttributes().forEach(this::remove);
     primaryKey = null;
 
     return this;
-  }
-
-  @Override
-  public final <T> T getOriginal(Attribute<T> attribute) {
-    return getOriginal(definition.property(attribute));
   }
 
   @Override
@@ -301,8 +301,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final Entity immutableCopy() {
-    if (this instanceof ImmutableEntity) {
+  public final Entity immutable() {
+    if (isImmutable()) {
       return this;
     }
 
@@ -412,26 +412,6 @@ class DefaultEntity implements Entity, Serializable {
     }
 
     return unmodifiableSet(originalValues.entrySet());
-  }
-
-  protected final void setDefinition(EntityDefinition definition) {
-    this.definition = definition;
-  }
-
-  protected final Map<Attribute<?>, Object> getValues() {
-    return values;
-  }
-
-  protected final void setValues(Map<Attribute<?>, Object> values) {
-    this.values = values;
-  }
-
-  protected final Map<Attribute<?>, Object> getOriginalValues() {
-    return originalValues;
-  }
-
-  protected final void setOriginalValues(Map<Attribute<?>, Object> originalValues) {
-    this.originalValues = originalValues;
   }
 
   private String createToString() {

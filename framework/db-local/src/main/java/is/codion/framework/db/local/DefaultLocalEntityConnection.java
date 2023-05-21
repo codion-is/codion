@@ -652,7 +652,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                 .fetchDepth(1)
                 .build())
                 .stream()
-                .map(Entity::immutableCopy)
+                .map(Entity::immutable)
                 .collect(toList());
         if (!dependencies.isEmpty()) {
           dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
@@ -1029,7 +1029,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))
               .build();
       referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
-              .map(Entity::immutableCopy)
+              .map(Entity::immutable)
               .collect(toList()));
     }
 

@@ -313,7 +313,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity entity() {
-    return entity.immutableCopy();
+    return entity.immutable();
   }
 
   @Override

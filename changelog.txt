@@ -9066,3 +9066,6 @@
   Entity.castTo() now takes a Collection instead of List
   FilteredModel.items() and filteredItems() now return Collection instead of List
   EntityTableModel.update() now takes a Collection instead of List
+  Entity.immutableCopy() renamed immutable()
+  Entity.immutable(List<Entity>) added, minor refactoring
+  Entity.immutable() now replaces all entity values with immutable instances, so the whole tree is immutable

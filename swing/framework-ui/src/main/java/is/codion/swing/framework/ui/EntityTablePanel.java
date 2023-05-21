@@ -638,7 +638,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     Property<T> property = tableModel.entityDefinition().property(attributeToUpdate);
-    List<Entity> selectedEntities = Entity.deepCopy(tableModel.selectionModel().getSelectedItems());
+    List<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
     Collection<T> values = Entity.getDistinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);

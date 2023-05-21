@@ -234,9 +234,11 @@ public interface Entity extends Comparable<Entity> {
   Entity deepCopy();
 
   /**
-   * @return an immutable copy of this entity or this entity in case it is already immutable
+   * Returns an immutable version of this entity, all foreign key entities are also immutable.
+   * Note that this may be the same instance in case this instance is already immutable.
+   * @return an immutable version of this entity
    */
-  Entity immutableCopy();
+  Entity immutable();
 
   /**
    * @return true if this is an immutable instance
@@ -546,6 +548,17 @@ public interface Entity extends Comparable<Entity> {
   static List<Entity> copy(List<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::copy)
+            .collect(toList());
+  }
+
+  /**
+   * Returns immutable versions of the given entities.
+   * @param entities the entities
+   * @return immutable versions of the given entities
+   */
+  static List<Entity> immutable(List<? extends Entity> entities) {
+    return requireNonNull(entities).stream()
+            .map(Entity::immutable)
             .collect(toList());
   }
 
