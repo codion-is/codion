@@ -775,7 +775,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * @return the actual {@link Entity} instance being edited
+   * Be careful not to modify the entity returned by this method. All value modifications
+   * should go through {@link #put(Attribute, Object)}.
+   * @return the actual {@link Entity} instance being edited, do not modify it!
    */
   protected final Entity entity() {
     return entity;
