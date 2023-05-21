@@ -239,6 +239,11 @@ public interface Entity extends Comparable<Entity> {
   Entity immutableCopy();
 
   /**
+   * @return true if this is an immutable instance
+   */
+  boolean isImmutable();
+
+  /**
    * Casts this entity to the given type.
    * @param entityClass the entity class to cast to
    * @param <T> the entity class type

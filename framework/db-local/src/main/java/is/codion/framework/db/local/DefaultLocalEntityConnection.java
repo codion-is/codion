@@ -650,7 +650,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities)
                 .selectBuilder()
                 .fetchDepth(1)
-                .build());
+                .build())
+                .stream()
+                .map(Entity::immutableCopy)
+                .collect(toList());
         if (!dependencies.isEmpty()) {
           dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
         }
