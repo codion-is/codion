@@ -313,7 +313,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity entityCopy() {
-    return entity().deepCopy();
+    return entity.deepCopy();
   }
 
   @Override
@@ -349,7 +349,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public boolean isEntityNew() {
-    return entity().isNew();
+    return entity.isNew();
   }
 
   @Override
@@ -522,7 +522,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     LOG.debug("{} - update {}", this, entities);
 
     List<Entity> updatedEntities = doUpdate(modifiedEntities);
-    int index = updatedEntities.indexOf(entity());
+    int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
     }
@@ -554,7 +554,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     notifyBeforeDelete(unmodifiableList(entities));
 
     List<Entity> deleted = doDelete(entities);
-    if (deleted.contains(entity())) {
+    if (deleted.contains(entity)) {
       doSetEntity(null);
     }
 
@@ -573,7 +573,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(connectionProvider().connection().select(entity().primaryKey()));
+        setEntity(connectionProvider().connection().select(entity.primaryKey()));
       }
     }
     catch (DatabaseException e) {
@@ -775,12 +775,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Be careful not to modify the entity returned by this method. All value modifications
-   * should go through {@link #put(Attribute, Object)}.
-   * @return the actual {@link Entity} instance being edited, do not modify it!
+   * @return an immutable copy of the {@link Entity} instance being edited!
    */
   protected final Entity entity() {
-    return entity;
+    return entity.immutableCopy();
   }
 
   /**

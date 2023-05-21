@@ -9019,3 +9019,4 @@
   EntityObservableList.DefaultRefresher async refresh now cancels ongoing refresh
   FilteredModel.AbstractRefresher.isUserInterfaceThread() added
   FilteredModel.refreshThen() added
+  Entity.immutableCopy() added along with ImmutableEntity
