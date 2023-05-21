@@ -18,6 +18,7 @@ import java.util.Objects;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
+import static java.util.stream.Collectors.toList;
 
 final class DefaultConditionCombination implements Condition.Combination, Serializable {
 
@@ -69,22 +70,16 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
 
   @Override
   public List<?> values() {
-    List<Object> values = new ArrayList<>();
-    for (int i = 0; i < conditions.size(); i++) {
-      values.addAll(conditions.get(i).values());
-    }
-
-    return unmodifiableList(values);
+    return unmodifiableList(conditions.stream()
+            .flatMap(condition -> condition.values().stream())
+            .collect(toList()));
   }
 
   @Override
   public List<Attribute<?>> attributes() {
-    List<Attribute<?>> attributes = new ArrayList<>();
-    for (int i = 0; i < conditions.size(); i++) {
-      attributes.addAll(conditions.get(i).attributes());
-    }
-
-    return unmodifiableList(attributes);
+    return unmodifiableList(conditions.stream()
+            .flatMap(condition -> condition.attributes().stream())
+            .collect(toList()));
   }
 
   @Override

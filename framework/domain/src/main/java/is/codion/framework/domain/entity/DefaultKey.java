@@ -18,6 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Collections.*;
+import static java.util.stream.Collectors.joining;
 
 /**
  * A class representing a unique key for entities.
@@ -159,16 +160,9 @@ class DefaultKey implements Key, Serializable {
 
   @Override
   public String toString() {
-    StringBuilder stringBuilder = new StringBuilder();
-    for (int i = 0; i < attributes.size(); i++) {
-      Attribute<Object> attribute = (Attribute<Object>) attributes.get(i);
-      stringBuilder.append(attribute.name()).append(":").append(values.get(attribute));
-      if (i < attributes.size() - 1) {
-        stringBuilder.append(",");
-      }
-    }
-
-    return stringBuilder.toString();
+    return attributes.stream()
+            .map(attribute -> attribute.name() + ":" + values.get(attribute))
+            .collect(joining(","));
   }
 
   /**

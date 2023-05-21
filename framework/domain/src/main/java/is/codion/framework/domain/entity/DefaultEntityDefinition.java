@@ -416,12 +416,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes) {
-    List<ColumnProperty<?>> theProperties = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
+    List<ColumnProperty<?>> propertyList = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
     for (int i = 0; i < attributes.size(); i++) {
-      theProperties.add(columnProperty(attributes.get(i)));
+      propertyList.add(columnProperty(attributes.get(i)));
     }
 
-    return theProperties;
+    return propertyList;
   }
 
   @Override

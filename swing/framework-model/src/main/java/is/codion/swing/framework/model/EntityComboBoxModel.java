@@ -218,9 +218,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    */
   public final void selectByKey(Key primaryKey) {
     requireNonNull(primaryKey);
-    int indexOfKey = indexOfKey(primaryKey);
-    if (indexOfKey >= 0) {
-      setSelectedItem(getElementAt(indexOfKey));
+    Optional<Entity> entity = entity(primaryKey);
+    if (entity.isPresent()) {
+      setSelectedItem(entity.get());
     }
     else {
       filteredEntity(primaryKey).ifPresent(this::setSelectedItem);
@@ -399,18 +399,6 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private int indexOfKey(Key primaryKey) {
-    int size = getSize();
-    int startIndex = isIncludeNull() ? 1 : 0;
-    for (int index = startIndex; index < size; index++) {
-      Entity item = getElementAt(index);
-      if (item != null && item.primaryKey().equals(primaryKey)) {
-        return index;
-      }
-    }
-    return -1;
-  }
-
   private Optional<Entity> filteredEntity(Key primaryKey) {
     return filteredItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
@@ -520,12 +508,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       }
 
       if (itemToSelect instanceof Entity) {
-        int indexOfKey = indexOfKey(((Entity) itemToSelect).primaryKey());
-        if (indexOfKey >= 0) {
-          return getElementAt(indexOfKey);
-        }
-
-        return (Entity) itemToSelect;
+        return entity(((Entity) itemToSelect).primaryKey()).orElse((Entity) itemToSelect);
       }
       String itemToString = itemToSelect.toString();
 
