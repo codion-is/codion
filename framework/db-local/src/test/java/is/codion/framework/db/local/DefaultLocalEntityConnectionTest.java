@@ -202,6 +202,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(Employee.TYPE));
     assertEquals(7, emps.get(Employee.TYPE).size());
+    emps.get(Employee.TYPE).forEach(entity -> assertTrue(entity.isImmutable()));
 
     Entity emp = connection.selectSingle(Employee.NAME, "KING");
     Map<EntityType, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
