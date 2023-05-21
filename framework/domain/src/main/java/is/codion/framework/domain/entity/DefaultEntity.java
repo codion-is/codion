@@ -162,10 +162,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isNew() {
-    Key key = primaryKey();
-    Key originalKey = originalPrimaryKey();
-
-    return key.isNull() || originalKey.isNull();
+    return primaryKey().isNull() || originalPrimaryKey().isNull();
   }
 
   @Override
@@ -240,17 +237,17 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> T remove(Attribute<T> attribute) {
-    if (values.containsKey(requireNonNull(attribute, ATTRIBUTE))) {
-      T value = (T) values.remove(attribute);
+    definition.property(requireNonNull(attribute, ATTRIBUTE));
+    T value = null;
+    if (values.containsKey(attribute)) {
+      value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
       if (definition.isForeignKeyAttribute(attribute)) {
         definition.foreignKeyProperties(attribute).forEach(foreignKeyProperty -> remove(foreignKeyProperty.attribute()));
       }
-
-      return value;
     }
 
-    return null;
+    return value;
   }
 
   @Override
