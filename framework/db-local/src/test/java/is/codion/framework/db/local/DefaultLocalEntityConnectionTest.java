@@ -370,11 +370,13 @@ public class DefaultLocalEntityConnectionTest {
             .build());
     for (Entity emp : emps) {
       Entity mgr = emp.referencedEntity(EmployeeFk.MGR_FK);
+      assertTrue(mgr.isImmutable());
       assertTrue(mgr.contains(EmployeeFk.ID));//pk automatically included
       assertTrue(mgr.contains(EmployeeFk.NAME));
       assertTrue(mgr.contains(EmployeeFk.JOB));
       assertTrue(mgr.contains(EmployeeFk.DEPARTMENT));
       assertTrue(mgr.contains(EmployeeFk.DEPARTMENT_FK));
+      assertTrue(mgr.get(EmployeeFk.DEPARTMENT_FK).isImmutable());
       assertFalse(mgr.contains(EmployeeFk.MGR));
       assertFalse(mgr.contains(EmployeeFk.MGR_FK));
       assertFalse(mgr.contains(EmployeeFk.COMMISSION));

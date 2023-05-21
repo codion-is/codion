@@ -310,6 +310,11 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
+  public final boolean isImmutable() {
+    return this instanceof ImmutableEntity;
+  }
+
+  @Override
   public final <T extends Entity> T castTo(Class<T> entityClass) {
     requireNonNull(entityClass, "entityClass");
     if (entityClass.isAssignableFrom(getClass())) {
