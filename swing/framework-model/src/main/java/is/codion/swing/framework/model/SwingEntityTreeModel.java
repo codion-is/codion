@@ -143,7 +143,7 @@ public final class SwingEntityTreeModel extends DefaultTreeModel {
   }
 
   private void bindEvents(SwingEntityTableModel tableModel) {
-    tableModel.addRefreshListener(this::refreshRoot);
+    tableModel.refresher().addRefreshListener(this::refreshRoot);
     tableModel.editModel().addAfterUpdateListener(updatedEntities -> this.nodesUpdated(updatedEntities.values()));
     tableModel.editModel().addAfterInsertListener(this::nodesUpdated);
     tableModel.editModel().addAfterDeleteListener(this::nodesDeleted);

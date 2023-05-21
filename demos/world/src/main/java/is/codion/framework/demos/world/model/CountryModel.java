@@ -17,7 +17,7 @@ public final class CountryModel extends SwingEntityModel {
     SwingEntityModel countryLanguageModel = new SwingEntityModel(new CountryLanguageTableModel(connectionProvider));
     addDetailModels(cityModel, countryLanguageModel);
 
-    cityModel.tableModel().addRefreshListener(() ->
+    cityModel.tableModel().refresher().addRefreshListener(() ->
             averageCityPopulationValue.set(averageCityPopulation()));
     CountryEditModel countryEditModel = (CountryEditModel) editModel();
     countryEditModel.setAverageCityPopulationObserver(averageCityPopulationValue.observer());

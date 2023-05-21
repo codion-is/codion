@@ -627,14 +627,14 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   private void bindEvents() {
-    addRefreshListener(this::rememberCondition);
+    refresher().addRefreshListener(this::rememberCondition);
     conditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
     editModel.addRefreshListener(this::refresh);
-    editModel.addRefreshingObserver(refreshingObserver());
+    editModel.addRefreshingObserver(refresher().refreshingObserver());
     editModel.addEntityListener(entity -> {
       if (entity == null && selectionModelHasBeenSet() && selectionModel().isSelectionNotEmpty()) {
         selectionModel().clearSelection();

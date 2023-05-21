@@ -73,7 +73,7 @@ public final class EntityListConditionModel extends AbstractForeignKeyConditionM
         updatingModel = false;
       }
     });
-    listModel.addRefreshListener(() -> listModel.selectionModelOptional().ifPresent(selectionModel -> {
+    listModel.refresher().addRefreshListener(() -> listModel.selectionModelOptional().ifPresent(selectionModel -> {
       Collection<Entity> equalsValues = getEqualValues();
       if (!equalsValues.isEmpty()) {
         selectionModel.setSelectedItem(equalsValues.iterator().next());

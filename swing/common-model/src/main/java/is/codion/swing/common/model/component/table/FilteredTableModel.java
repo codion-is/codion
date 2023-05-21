@@ -236,15 +236,12 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   TableSummaryModel<C> summaryModel();
 
   /**
-   * Refreshes the items in this table model, respecting the selection, filtering as well as sorting states.
-   * If run on the Event Dispatch Thread the refresh happens asynchronously, unless async refresh has been disabled
-   * via {@link #setAsyncRefresh(boolean)}.
+   * {@inheritDoc}
+   *<br><br>
+   * Respects the selection, filtering as well as sorting states.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
    * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
-   * @throws RuntimeException in case of an exception when refresh is run synchronously
-   * @see #addRefreshFailedListener(EventDataListener)
-   * @see #setAsyncRefresh(boolean)
    */
   void refresh();
 

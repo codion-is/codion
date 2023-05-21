@@ -13,11 +13,8 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
-import is.codion.swing.common.model.worker.ProgressWorker;
+import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
-import javax.swing.SwingUtilities;
 import javax.swing.event.TableModelEvent;
 import javax.swing.table.AbstractTableModel;
 import java.text.Format;
@@ -29,7 +26,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 import java.util.stream.IntStream;
@@ -43,12 +39,9 @@ import static java.util.stream.Collectors.toList;
 
 final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
-  private final Event<Throwable> refreshFailedEvent = Event.event();
-  private final Event<?> refreshEvent = Event.event();
   private final Event<?> dataChangedEvent = Event.event();
   private final Event<?> clearEvent = Event.event();
   private final Event<RemovedRows> rowsRemovedEvent = Event.event();
-  private final State refreshingState = State.state();
   private final ColumnValueProvider<R, C> columnValueProvider;
   private final List<R> visibleItems = new ArrayList<>();
   private final List<R> filteredItems = new ArrayList<>();
@@ -59,12 +52,10 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private final TableConditionModel<C> filterModel;
   private final TableSummaryModel<C> summaryModel;
   private final CombinedIncludeCondition combinedIncludeCondition;
-  private final Supplier<Collection<R>> rowSupplier;
   private final Predicate<R> rowValidator;
+  private final Refresher<R> refresher;
 
-  private ProgressWorker<Collection<R>, ?> refreshWorker;
   private boolean mergeOnRefresh = false;
-  private boolean asyncRefresh;
 
   private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
     this.columnModel = new DefaultFilteredTableColumnModel<>(builder.columns);
@@ -77,10 +68,10 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     this.summaryModel = tableSummaryModel(builder.summaryValueProviderFactory == null ?
             new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-    this.rowSupplier = builder.rowSupplier == null ? this::items : builder.rowSupplier;
+    this.refresher = new FilteredTableModelRefresher(builder.rowSupplier == null ? this::items : builder.rowSupplier);
+    this.refresher.setAsyncRefresh(builder.asyncRefresh);
     this.rowValidator = builder.rowValidator;
     this.mergeOnRefresh = builder.mergeOnRefresh;
-    this.asyncRefresh = builder.asyncRefresh;
     bindEventsInternal();
   }
 
@@ -137,28 +128,14 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     return filteredItems.contains(item);
   }
 
-  /**
-   * {@inheritDoc}
-   * @see #refreshItems()
-   */
+  @Override
+  public Refresher<R> refresher() {
+    return refresher;
+  }
+
   @Override
   public void refresh() {
-    refreshThen(null);
-  }
-
-  @Override
-  public void refreshThen(Consumer<Collection<R>> afterRefresh) {
-    if (asyncRefresh && SwingUtilities.isEventDispatchThread()) {
-      refreshAsync(afterRefresh);
-    }
-    else {
-      refreshSync(afterRefresh);
-    }
-  }
-
-  @Override
-  public StateObserver refreshingObserver() {
-    return refreshingState.observer();
+    refresher.refresh();
   }
 
   @Override
@@ -222,16 +199,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   @Override
   public void setMergeOnRefresh(boolean mergeOnRefresh) {
     this.mergeOnRefresh = mergeOnRefresh;
-  }
-
-  @Override
-  public boolean isAsyncRefresh() {
-    return asyncRefresh;
-  }
-
-  @Override
-  public void setAsyncRefresh(boolean asyncRefresh) {
-    this.asyncRefresh = asyncRefresh;
   }
 
   @Override
@@ -420,26 +387,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public void addRefreshListener(EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  @Override
-  public void removeRefreshListener(EventListener listener) {
-    refreshEvent.removeListener(listener);
-  }
-
-  @Override
-  public void addRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.addDataListener(listener);
-  }
-
-  @Override
-  public void removeRefreshFailedListener(EventDataListener<Throwable> listener) {
-    refreshFailedEvent.removeDataListener(listener);
-  }
-
-  @Override
   public void addDataChangedListener(EventListener listener) {
     dataChangedEvent.addListener(listener);
   }
@@ -524,66 +471,6 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     return combinedIncludeCondition.test(item);
   }
 
-  private void refreshAsync(Consumer<Collection<R>> afterRefresh) {
-    cancelCurrentRefresh();
-    refreshWorker = ProgressWorker.builder(rowSupplier::get)
-            .onStarted(this::onRefreshStarted)
-            .onResult(items -> onRefreshResult(items, afterRefresh))
-            .onException(this::onRefreshFailedAsync)
-            .execute();
-  }
-
-  private void refreshSync(Consumer<Collection<R>> afterRefresh) {
-    onRefreshStarted();
-    try {
-      onRefreshResult(rowSupplier.get(), afterRefresh);
-    }
-    catch (Exception e) {
-      onRefreshFailedSync(e);
-    }
-  }
-
-  private void onRefreshStarted() {
-    refreshingState.set(true);
-  }
-
-  private void onRefreshFailedAsync(Throwable throwable) {
-    refreshWorker = null;
-    refreshingState.set(false);
-    refreshFailedEvent.onEvent(throwable);
-  }
-
-  private void onRefreshFailedSync(Throwable throwable) {
-    refreshingState.set(false);
-    if (throwable instanceof RuntimeException) {
-      throw (RuntimeException) throwable;
-    }
-
-    throw new RuntimeException(throwable);
-  }
-
-  private void onRefreshResult(Collection<R> items, Consumer<Collection<R>> afterRefresh) {
-    refreshWorker = null;
-    refreshingState.set(false);
-    if (mergeOnRefresh && !items.isEmpty()) {
-      merge(items);
-    }
-    else {
-      clearAndAdd(items);
-    }
-    if (afterRefresh != null) {
-      afterRefresh.accept(items);
-    }
-    refreshEvent.onEvent();
-  }
-
-  private void cancelCurrentRefresh() {
-    ProgressWorker<?, ?> worker = refreshWorker;
-    if (worker != null) {
-      worker.cancel(true);
-    }
-  }
-
   private void merge(Collection<R> items) {
     Set<R> itemSet = new HashSet<>(items);
     items().forEach(item -> {
@@ -619,6 +506,23 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
             .forEach(filterModel -> filterModels.add((ColumnConditionModel<C, ?>) filterModel));
 
     return filterModels;
+  }
+
+  private final class FilteredTableModelRefresher extends AbstractFilteredModelRefresher<R> {
+
+    private FilteredTableModelRefresher(Supplier<Collection<R>> rowSupplier) {
+      super(rowSupplier);
+    }
+
+    @Override
+    protected void handleRefreshResult(Collection<R> items) {
+      if (mergeOnRefresh && !items.isEmpty()) {
+        merge(items);
+      }
+      else {
+        clearAndAdd(items);
+      }
+    }
   }
 
   private final class DefaultFilterModelFactory implements ColumnConditionModel.Factory<C> {
