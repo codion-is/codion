@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
-import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
