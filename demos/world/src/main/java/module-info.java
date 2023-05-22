@@ -4,7 +4,7 @@
 module is.codion.framework.demos.world {
   requires is.codion.swing.framework.ui;
   requires is.codion.plugin.jasperreports;
-  requires is.codion.plugin.jackson.json;
+  requires is.codion.framework.json;
   requires com.formdev.flatlaf;
   requires com.formdev.flatlaf.intellijthemes;
   requires org.kordamp.ikonli.foundation;
@@ -27,7 +27,7 @@ module is.codion.framework.demos.world {
   provides is.codion.framework.domain.Domain
           with is.codion.framework.demos.world.domain.WorldImpl;
   // tag::customSerializer[]
-  provides is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory
+  provides is.codion.framework.json.domain.EntityObjectMapperFactory
           with is.codion.framework.demos.world.domain.api.WorldObjectMapperFactory;
   // end::customSerializer[]
 }

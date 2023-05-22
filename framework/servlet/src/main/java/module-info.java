@@ -13,7 +13,7 @@ module is.codion.framework.servlet {
   requires jersey.container.servlet.core;
   requires is.codion.common.http;
   requires is.codion.framework.db.rmi;
-  requires is.codion.plugin.jackson.json;
+  requires is.codion.framework.json;
 
   exports is.codion.framework.servlet;
 
