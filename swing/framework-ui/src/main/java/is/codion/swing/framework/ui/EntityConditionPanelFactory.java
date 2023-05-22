@@ -13,18 +13,23 @@ import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
+import is.codion.swing.common.ui.component.table.ColumnConditionPanel.BoundFieldFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.EntityComboBoxModelConditionModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
@@ -35,8 +40,6 @@ import static java.util.Objects.requireNonNull;
  * Override {@link #createConditionPanel(ColumnConditionModel)} to provide custom condition panels.
  */
 public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory<Attribute<?>> {
-
-  private static final Logger LOG = LoggerFactory.getLogger(EntityConditionPanelFactory.class);
 
   private final EntityComponents entityComponents;
 
@@ -51,26 +54,26 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
   @Override
   public <T> Optional<ColumnConditionPanel<Attribute<?>, T>> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
     requireNonNull(conditionModel);
-    ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
-    if (conditionModel.columnIdentifier() instanceof ForeignKey) {
-      boundFieldFactory = new ForeignKeyBoundFieldFactory((ColumnConditionModel<ForeignKey, Entity>) conditionModel, entityComponents);
+    BoundFieldFactory boundFieldFactory = createBoundFieldFactory(conditionModel);
+    if (boundFieldFactory != null) {
+      return columnConditionPanel(conditionModel, boundFieldFactory);
     }
-    else if (entityComponents.supports(conditionModel.columnIdentifier())) {
-      boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, (Attribute<T>) conditionModel.columnIdentifier());
-    }
-    else {
-      return Optional.empty();
-    }
-    try {
-      return Optional.of(columnConditionPanel(conditionModel, boundFieldFactory));
-    }
-    catch (Exception e) {
-      LOG.error("Unable to create ColumnConditionPanel for attribute: " + conditionModel.columnIdentifier(), e);
-      return Optional.empty();
-    }
+
+    return Optional.empty();
   }
 
-  private static final class ForeignKeyBoundFieldFactory implements ColumnConditionPanel.BoundFieldFactory {
+  private <T> BoundFieldFactory createBoundFieldFactory(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
+    if (conditionModel.columnIdentifier() instanceof ForeignKey) {
+      return new ForeignKeyBoundFieldFactory((ColumnConditionModel<ForeignKey, Entity>) conditionModel, entityComponents);
+    }
+    else if (entityComponents.supports(conditionModel.columnIdentifier())) {
+      return new AttributeBoundFieldFactory<>(conditionModel, entityComponents, (Attribute<T>) conditionModel.columnIdentifier());
+    }
+
+    return null;
+  }
+
+  private static final class ForeignKeyBoundFieldFactory implements BoundFieldFactory {
 
     private final EntityComponents entityComponents;
     private final ColumnConditionModel<ForeignKey, Entity> model;
@@ -119,7 +122,12 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
     }
   }
 
-  private static final class AttributeBoundFieldFactory<T> implements ColumnConditionPanel.BoundFieldFactory {
+  private static final class AttributeBoundFieldFactory<T> implements BoundFieldFactory {
+
+    private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
+            String.class, Boolean.class, Short.class, Integer.class, Double.class,
+            BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
+            LocalDateTime.class, OffsetDateTime.class);
 
     private final ColumnConditionModel<? extends Attribute<?>, T> conditionModel;
     private final EntityComponents inputComponents;
@@ -131,6 +139,11 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
       this.conditionModel = requireNonNull(conditionModel);
       this.inputComponents = inputComponents;
       this.attribute = requireNonNull(attribute);
+    }
+
+    @Override
+    public boolean supportsType(Class<?> columnClass) {
+      return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
     }
 
     @Override

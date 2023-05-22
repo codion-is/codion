@@ -9040,3 +9040,5 @@
   ImmutableEntity, minor refactoring
   json plugin module now a framework module
   json module renamed, repackaged
+  ColumnConditionPanel.columnConditionPanel() factory methods now return Optional, for consistency, related refactoring
+  ColumnConditionPanel.BoundFieldFactory.supportsType(), default implementation removed
