@@ -372,7 +372,7 @@ public interface Entity extends Comparable<Entity> {
    * @return a List of entities that have been modified
    * @see Entity#isModified()
    */
-  static <T extends Entity> List<T> getModified(Collection<T> entities) {
+  static <T extends Entity> List<T> modified(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .filter(Entity::isModified)
             .collect(toList());
@@ -387,7 +387,7 @@ public interface Entity extends Comparable<Entity> {
    * @return the updatable column attributes which values differ from the ones in the comparison entity
    * @see BlobProperty#isEagerlyLoaded()
    */
-  static Collection<Attribute<?>> getModifiedColumnAttributes(Entity entity, Entity comparison) {
+  static Collection<Attribute<?>> modifiedColumnAttributes(Entity entity, Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
@@ -407,7 +407,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> getPrimaryKeys(Collection<? extends Entity> entities) {
+  static List<Key> primaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::primaryKey)
             .collect(toList());
@@ -419,7 +419,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key
    * @return the non-null keys referenced by the given foreign key
    */
-  static Set<Key> getReferencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
+  static Set<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
@@ -431,7 +431,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return a Collection containing the primary keys of the given entities with their original values
    */
-  static Collection<Key> getOriginalPrimaryKeys(Collection<? extends Entity> entities) {
+  static Collection<Key> originalPrimaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::originalPrimaryKey)
             .collect(toList());
@@ -443,7 +443,7 @@ public interface Entity extends Comparable<Entity> {
    * @param keys the keys
    * @return the attribute values of the given keys
    */
-  static <T> Collection<T> getValues(Collection<Key> keys) {
+  static <T> Collection<T> values(Collection<Key> keys) {
     return requireNonNull(keys).stream()
             .map(key -> (T) key.get())
             .collect(toList());
@@ -456,7 +456,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> get(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> values(Attribute<T> attribute, Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -471,7 +471,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the values of the given attributes from the given entities, including null values.
    */
-  static <T> Collection<T> getIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -485,7 +485,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> getDistinct(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinct(Attribute<T> attribute, Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -500,7 +500,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct values of the given attribute from the given entities, may contain null.
    */
-  static <T> Collection<T> getDistinctIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -623,7 +623,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return the values of the given attributes from the given entities in a two-dimensional list
    */
-  static List<List<String>> getValuesAsString(List<Attribute<?>> attributes, List<Entity> entities) {
+  static List<List<String>> valuesAsString(List<Attribute<?>> attributes, List<Entity> entities) {
     requireNonNull(attributes);
     return requireNonNull(entities).stream()
             .map(entity -> attributes.stream()
@@ -638,7 +638,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to search
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static Collection<Entity> getByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
+  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
     requireNonNull(values);
     return requireNonNull(entities).stream()
             .filter(entity -> values.entrySet().stream()

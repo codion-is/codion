@@ -29,7 +29,7 @@ import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.property.Property.*;
@@ -228,7 +228,7 @@ public final class EntitiesTutorial {
     // note that the order of the entities matters, since we can't delete
     // the artist before the album, this method deletes records in the
     // same order as the are received
-    connection.delete(getPrimaryKeys(asList(album, myBand)));
+    connection.delete(primaryKeys(asList(album, myBand)));
   }
 
   public static void main(String[] args) throws DatabaseException {

@@ -81,7 +81,7 @@ public final class ContinentModel extends SwingEntityModel {
 
     @Override
     public void onSelection(List<Entity> selectedEntities) {
-      Collection<String> continentNames = Entity.get(Continent.NAME, selectedEntities);
+      Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
       if (detailModel().tableModel().conditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
         detailModel().tableModel().refresh();
       }

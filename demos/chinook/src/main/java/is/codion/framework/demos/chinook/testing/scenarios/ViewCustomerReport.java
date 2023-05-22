@@ -23,7 +23,7 @@ public final class ViewCustomerReport extends AbstractEntityUsageScenario<Chinoo
     EntityLoadTestModel.selectRandomRow(customerModel);
 
     Collection<Long> customerIDs =
-            Entity.getDistinct(Customer.ID, customerModel.selectionModel().getSelectedItems());
+            Entity.distinct(Customer.ID, customerModel.selectionModel().getSelectedItems());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
     customerModel.connectionProvider().connection().fillReport(Customer.REPORT, reportParameters);

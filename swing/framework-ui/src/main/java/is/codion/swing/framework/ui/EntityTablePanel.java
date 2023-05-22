@@ -639,7 +639,7 @@ public class EntityTablePanel extends JPanel {
 
     Property<T> property = tableModel.entityDefinition().property(attributeToUpdate);
     List<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
-    Collection<T> values = Entity.getDistinct(attributeToUpdate, selectedEntities);
+    Collection<T> values = Entity.distinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
     State validValueState = State.state(initialValue != null || property.isNullable());

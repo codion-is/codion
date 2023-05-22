@@ -43,7 +43,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
   }
 
   private JasperPrint fillCustomerReport() throws DatabaseException, ReportException {
-    Collection<Long> customerIDs = Entity.get(Customer.ID,
+    Collection<Long> customerIDs = Entity.values(Customer.ID,
             tableModel().selectionModel().getSelectedItems());
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);

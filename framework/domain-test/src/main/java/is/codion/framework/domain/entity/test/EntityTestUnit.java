@@ -254,7 +254,7 @@ public class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   private static void testDelete(Entity testEntity, EntityConnection connection) throws DatabaseException {
-    connection.delete(Entity.getPrimaryKeys(singletonList(testEntity)));
+    connection.delete(Entity.primaryKeys(singletonList(testEntity)));
     boolean caught = false;
     try {
       connection.select(testEntity.primaryKey());

@@ -9044,3 +9044,5 @@
   ColumnConditionPanel.BoundFieldFactory.supportsType(), default implementation removed
   Entity.getOptional() renamed optional(), getOriginal() renamed original(), originalOptional() added
   EntityEditModel.getOriginal() renamed original()
+  Entity, get prefix removed from static helper methods
+  AbstractEntityEditModel.modifiedEntities() renamed modified()

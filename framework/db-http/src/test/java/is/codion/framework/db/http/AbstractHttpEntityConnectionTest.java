@@ -143,7 +143,7 @@ abstract class AbstractHttpEntityConnectionTest {
     try {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
+      List<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
         assertEquals(4200d, entity.get(Employee.SALARY));
