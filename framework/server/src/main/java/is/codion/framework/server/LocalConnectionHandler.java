@@ -419,7 +419,7 @@ final class LocalConnectionHandler implements InvocationHandler {
         if (property.isPrimaryKeyColumn() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.getOriginal(property.attribute())).append("->");
+            valueString.append(entity.original(property.attribute())).append("->");
           }
           valueString.append(entity.toString(property.attribute()));
           builder.append(property.attribute()).append(":").append(valueString).append(",");

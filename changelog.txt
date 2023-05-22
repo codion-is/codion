@@ -9042,3 +9042,5 @@
   json module renamed, repackaged
   ColumnConditionPanel.columnConditionPanel() factory methods now return Optional, for consistency, related refactoring
   ColumnConditionPanel.BoundFieldFactory.supportsType(), default implementation removed
+  Entity.getOptional() renamed optional(), getOriginal() renamed original(), originalOptional() added
+  EntityEditModel.getOriginal() renamed original()

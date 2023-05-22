@@ -1383,7 +1383,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static String createModifiedExceptionMessage(Entity entity, Entity modified,
                                                        Collection<Attribute<?>> modifiedAttributes) {
     return modifiedAttributes.stream()
-            .map(attribute -> " \n" + attribute + ": " + entity.getOriginal(attribute) + " -> " + modified.get(attribute))
+            .map(attribute -> " \n" + attribute + ": " + entity.original(attribute) + " -> " + modified.get(attribute))
             .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.type(), ""));
   }
 

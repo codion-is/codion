@@ -162,7 +162,7 @@ public interface EntityEditModel {
    * @param <T> the value type
    * @return the value associated with the given attribute, an empty Optional in case it is null
    */
-  <T> Optional<T> getOptional(Attribute<T> attribute);
+  <T> Optional<T> optional(Attribute<T> attribute);
 
   /**
    * Returns the value associated with the given foreign key.

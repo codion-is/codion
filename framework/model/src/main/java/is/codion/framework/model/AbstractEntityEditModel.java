@@ -358,8 +358,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> Optional<T> getOptional(Attribute<T> attribute) {
-    return entity.getOptional(attribute);
+  public final <T> Optional<T> optional(Attribute<T> attribute) {
+    return entity.optional(attribute);
   }
 
   @Override

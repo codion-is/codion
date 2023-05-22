@@ -134,13 +134,18 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T> Optional<T> getOptional(Attribute<T> attribute) {
+  public final <T> Optional<T> optional(Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
   }
 
   @Override
-  public final <T> T getOriginal(Attribute<T> attribute) {
+  public final <T> T original(Attribute<T> attribute) {
     return getOriginal(definition.property(attribute));
+  }
+
+  @Override
+  public final <T> Optional<T> originalOptional(Attribute<T> attribute) {
+    return Optional.ofNullable(original(attribute));
   }
 
   @Override
@@ -224,7 +229,7 @@ class DefaultEntity implements Entity, Serializable {
   public void revert(Attribute<?> attribute) {
     if (isModified(attribute)) {
       Attribute<Object> objectAttribute = (Attribute<Object>) attribute;
-      put(objectAttribute, getOriginal(objectAttribute));
+      put(objectAttribute, original(objectAttribute));
     }
   }
 
@@ -673,14 +678,14 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private DefaultKey createSingleAttributePrimaryKey(boolean originalValues, Attribute<?> attribute) {
-    return new DefaultKey(definition, attribute, originalValues ? getOriginal(attribute) : values.get(attribute), true);
+    return new DefaultKey(definition, attribute, originalValues ? original(attribute) : values.get(attribute), true);
   }
 
   private DefaultKey createMultiAttributePrimaryKey(boolean originalValues, List<Attribute<?>> primaryKeyAttributes) {
     Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
     for (int i = 0; i < primaryKeyAttributes.size(); i++) {
       Attribute<?> attribute = primaryKeyAttributes.get(i);
-      keyValues.put(attribute, originalValues ? getOriginal(attribute) : values.get(attribute));
+      keyValues.put(attribute, originalValues ? original(attribute) : values.get(attribute));
     }
 
     return new DefaultKey(definition, keyValues, true);
@@ -700,14 +705,14 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> sourceAttribute, boolean originalValue) {
-    return singletonMap(sourceAttribute, originalValue ? getOriginal(sourceAttribute) : get(sourceAttribute));
+    return singletonMap(sourceAttribute, originalValue ? original(sourceAttribute) : get(sourceAttribute));
   }
 
   private Map<Attribute<?>, Object> createMultiAttributeSourceValueMap(List<Attribute<?>> sourceAttributes, boolean originalValue) {
     Map<Attribute<?>, Object> valueMap = new HashMap<>(sourceAttributes.size());
     for (int i = 0; i < sourceAttributes.size(); i++) {
       Attribute<?> sourceAttribute = sourceAttributes.get(i);
-      valueMap.put(sourceAttribute, originalValue ? getOriginal(sourceAttribute) : get(sourceAttribute));
+      valueMap.put(sourceAttribute, originalValue ? original(sourceAttribute) : get(sourceAttribute));
     }
 
     return valueMap;
