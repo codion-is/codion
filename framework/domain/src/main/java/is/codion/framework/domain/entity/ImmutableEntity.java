@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.BiConsumer;
 
 final class ImmutableEntity extends DefaultEntity implements Serializable {
 
@@ -16,10 +17,10 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   ImmutableEntity(DefaultEntity entity) {
     definition = entity.definition();
     values = new HashMap<>(entity.values);
-    values.forEach((attribute, value) -> replaceWithImmutable(attribute, value, values));
+    values.forEach(new ReplaceWithImmutable(values));
     if (entity.originalValues != null) {
       originalValues = new HashMap<>(entity.originalValues);
-      originalValues.forEach((attribute, value) -> replaceWithImmutable(attribute, value, originalValues));
+      originalValues.forEach(new ReplaceWithImmutable(originalValues));
     }
   }
 
@@ -63,9 +64,19 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
   }
 
-  private static void replaceWithImmutable(Attribute<?> attribute, Object value, Map<Attribute<?>, Object> map) {
-    if (value instanceof Entity && !(value instanceof ImmutableEntity)) {
-      map.replace(attribute, ((Entity) value).immutable());
+  private static final class ReplaceWithImmutable implements BiConsumer<Attribute<?>, Object> {
+
+    private final Map<Attribute<?>, Object> map;
+
+    private ReplaceWithImmutable(Map<Attribute<?>, Object> map) {
+      this.map = map;
+    }
+
+    @Override
+    public void accept(Attribute<?> attribute, Object value) {
+      if (value instanceof Entity && !(value instanceof ImmutableEntity)) {
+        map.replace(attribute, ((Entity) value).immutable());
+      }
     }
   }
 }

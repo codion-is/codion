@@ -9037,3 +9037,4 @@
   ColumnConditionPanel.Factory.createConditionPanel() now returns Optional, for consistency
   Refresher.setRowSupplier() renamed setItemSupplier()
   FilteredTableModel.Builder.rowValidator() renamed itemValidator()
+  ImmutableEntity, minor refactoring
