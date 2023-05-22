@@ -79,7 +79,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.orderBy = this.entities.definition(entityType).orderBy();
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
-    setRowValidator(new RowValidator());
+    setItemValidator(new ItemValidator());
     setStaticData(this.entities.definition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
@@ -491,7 +491,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class RowValidator implements Predicate<Entity> {
+  private final class ItemValidator implements Predicate<Entity> {
 
     @Override
     public boolean test(Entity entity) {

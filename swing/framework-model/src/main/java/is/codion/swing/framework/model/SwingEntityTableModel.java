@@ -1181,7 +1181,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             .columns(createColumns(entityType, entities))
             .filterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
-            .rowValidator(row -> row.type().equals(entityType))
+            .itemValidator(row -> row.type().equals(entityType))
             .build();
   }
 
