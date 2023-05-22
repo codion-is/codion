@@ -253,6 +253,17 @@ HTTP connection related classes.
 image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
+=== codion-framework-json
+
+[discrete]
+==== codion-framework-json
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/framework/json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
 [discrete]
 === codion-framework-model
 
@@ -497,17 +508,6 @@ image::modules/plugins/tomcat-pool/build/reports/dependency-graph/dependency-gra
 [%collapsible]
 ====
 image::modules/plugins/jasperreports/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-=== JSON
-
-[discrete]
-==== codion-plugin-jackson-json
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/plugins/jackson-json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 === Other
