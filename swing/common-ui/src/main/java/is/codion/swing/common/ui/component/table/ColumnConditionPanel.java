@@ -238,12 +238,12 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   public interface Factory<C> {
 
     /**
-     * Creates a ColumnConditionPanel for the given column, returns null if none is available
+     * Creates a ColumnConditionPanel for the given column, returns an empty Optional if none is available
      * @param <T> the column value type
      * @param conditionModel the column condition model
-     * @return a ColumnConditionPanel or null if none is available for the given column
+     * @return a ColumnConditionPanel or an empty Optional if none is available for the given column
      */
-    <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
+    <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
   }
 
   /**

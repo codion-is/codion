@@ -49,7 +49,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
   }
 
   @Override
-  public <T> ColumnConditionPanel<Attribute<?>, T> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
+  public <T> Optional<ColumnConditionPanel<Attribute<?>, T>> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
     requireNonNull(conditionModel);
     ColumnConditionPanel.BoundFieldFactory boundFieldFactory;
     if (conditionModel.columnIdentifier() instanceof ForeignKey) {
@@ -59,14 +59,14 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
       boundFieldFactory = new AttributeBoundFieldFactory<>(conditionModel, entityComponents, (Attribute<T>) conditionModel.columnIdentifier());
     }
     else {
-      return null;
+      return Optional.empty();
     }
     try {
-      return columnConditionPanel(conditionModel, boundFieldFactory);
+      return Optional.of(columnConditionPanel(conditionModel, boundFieldFactory));
     }
     catch (Exception e) {
       LOG.error("Unable to create ColumnConditionPanel for attribute: " + conditionModel.columnIdentifier(), e);
-      return null;
+      return Optional.empty();
     }
   }
 

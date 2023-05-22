@@ -933,8 +933,8 @@ public final class FilteredTable<R, C> extends JTable {
   private static final class DefaultFilterPanelFactory<C> implements ColumnConditionPanel.Factory<C> {
 
     @Override
-    public <T> ColumnConditionPanel<C, T> createConditionPanel(ColumnConditionModel<? extends C, T> filterModel) {
-      return (ColumnConditionPanel<C, T>) columnConditionPanel(filterModel);
+    public <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<? extends C, T> filterModel) {
+      return Optional.ofNullable((ColumnConditionPanel<C, T>) columnConditionPanel(filterModel));
     }
   }
 

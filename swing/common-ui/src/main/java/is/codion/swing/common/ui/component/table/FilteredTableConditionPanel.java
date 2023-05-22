@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -142,7 +143,8 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
             .map(column -> conditionModel.conditionModels().get(column.getIdentifier()))
             .filter(Objects::nonNull)
             .map(conditionPanelFactory::createConditionPanel)
-            .filter(Objects::nonNull)
+            .filter(Optional::isPresent)
+            .map(Optional::get)
             .collect(Collectors.toMap(conditionPanel -> conditionPanel.model().columnIdentifier(), Function.identity()));
   }
 }
