@@ -60,7 +60,7 @@ public final class ClientUserMonitor {
   private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
   private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = FilteredTableModel.builder(new UserHistoryColumnValueProvider())
           .columns(createUserHistoryColumns())
-          .rowSupplier(new UserHistoryRowSupplier())
+          .itemSupplier(new UserHistoryItemSupplier())
           .mergeOnRefresh(true)
           .build();
 
@@ -254,7 +254,7 @@ public final class ClientUserMonitor {
             .build();
   }
 
-  private class UserHistoryRowSupplier implements Supplier<Collection<UserInfo>> {
+  private class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
 
     @Override
     public Collection<UserInfo> get() {

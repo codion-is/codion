@@ -1180,7 +1180,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return FilteredTableModel.builder(new EntityColumnValueProvider())
             .columns(createColumns(entityType, entities))
             .filterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
-            .rowSupplier(SwingEntityTableModel.this::refreshItems)
+            .itemSupplier(SwingEntityTableModel.this::refreshItems)
             .rowValidator(row -> row.type().equals(entityType))
             .build();
   }

@@ -67,7 +67,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     this.summaryModel = tableSummaryModel(builder.summaryValueProviderFactory == null ?
             new DefaultSummaryValueProviderFactory() : builder.summaryValueProviderFactory);
     this.combinedIncludeCondition = new CombinedIncludeCondition(filterModel.conditionModels().values());
-    this.refresher = new DefaultRefresher(builder.rowSupplier == null ? this::items : builder.rowSupplier);
+    this.refresher = new DefaultRefresher(builder.itemSupplier == null ? this::items : builder.itemSupplier);
     this.refresher.setAsyncRefresh(builder.asyncRefresh);
     this.refresher.mergeOnRefresh = builder.mergeOnRefresh;
     this.rowValidator = builder.rowValidator;
@@ -491,8 +491,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private boolean mergeOnRefresh = false;
 
-    private DefaultRefresher(Supplier<Collection<R>> rowSupplier) {
-      super(rowSupplier);
+    private DefaultRefresher(Supplier<Collection<R>> itemSupplier) {
+      super(itemSupplier);
     }
 
     @Override
@@ -647,7 +647,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     private final ColumnValueProvider<R, C> columnValueProvider;
 
     private List<FilteredTableColumn<C>> columns;
-    private Supplier<Collection<R>> rowSupplier;
+    private Supplier<Collection<R>> itemSupplier;
     private Predicate<R> rowValidator = new ValidPredicate<>();
     private ColumnConditionModel.Factory<C> filterModelFactory;
     private SummaryValueProvider.Factory<C> summaryValueProviderFactory;
@@ -680,8 +680,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
 
     @Override
-    public Builder<R, C> rowSupplier(Supplier<Collection<R>> rowSupplier) {
-      this.rowSupplier = requireNonNull(rowSupplier);
+    public Builder<R, C> itemSupplier(Supplier<Collection<R>> itemSupplier) {
+      this.itemSupplier = requireNonNull(itemSupplier);
       return this;
     }
 

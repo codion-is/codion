@@ -32,7 +32,7 @@ public class FilteredTableTest {
 
     FilteredTableModel<List<String>, Integer> tableModel = FilteredTableModel.<List<String>, Integer>builder(List::get)
             .columns(singletonList(column))
-            .rowSupplier(() -> asList(
+            .itemSupplier(() -> asList(
                     singletonList("darri"),
                     singletonList("dac"),
                     singletonList("dansinn"),

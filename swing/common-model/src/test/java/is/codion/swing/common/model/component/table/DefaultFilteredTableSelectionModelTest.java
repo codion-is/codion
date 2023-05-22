@@ -24,7 +24,7 @@ public class DefaultFilteredTableSelectionModelTest {
             .build();
     FilteredTableModel<String, Integer> tableModel = FilteredTableModel.<String, Integer>builder((row, integer) -> row)
             .columns(singletonList(column))
-            .rowSupplier(() -> data)
+            .itemSupplier(() -> data)
             .build();
     tableModel.refresh();
 

@@ -375,8 +375,8 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
 
     private RefreshTask refreshTask;
 
-    private DefaultRefresher(Supplier<Collection<Entity>> rowSupplier) {
-      super(rowSupplier);
+    private DefaultRefresher(Supplier<Collection<Entity>> itemSupplier) {
+      super(itemSupplier);
     }
 
     @Override

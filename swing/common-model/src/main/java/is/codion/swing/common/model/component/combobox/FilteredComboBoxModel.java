@@ -79,7 +79,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public FilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
-    this.refresher = new FilteredComboBoxRefresher(new DefaultRowSupplier());
+    this.refresher = new FilteredComboBoxRefresher(new DefaultItemSupplier());
   }
 
   @Override
@@ -293,18 +293,18 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the row supplier
+   * @return the item supplier
    */
-  public final Supplier<Collection<T>> getRowSupplier() {
-    return refresher.getRowSupplier();
+  public final Supplier<Collection<T>> getItemSupplier() {
+    return refresher.getItemSupplier();
   }
 
   /**
-   * Supplies the rows when {@link #refresh()} is called.
-   * @param rowSupplier the row supplier
+   * Supplies the items when {@link #refresh()} is called.
+   * @param itemSupplier the item supplier
    */
-  public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
-    this.refresher.setRowSupplier(rowSupplier);
+  public final void setItemSupplier(Supplier<Collection<T>> itemSupplier) {
+    this.refresher.setItemSupplier(itemSupplier);
   }
 
   /**
@@ -609,8 +609,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private final class FilteredComboBoxRefresher extends AbstractFilteredModelRefresher<T> {
 
-    private FilteredComboBoxRefresher(Supplier<Collection<T>> rowSupplier) {
-      super(rowSupplier);
+    private FilteredComboBoxRefresher(Supplier<Collection<T>> itemSupplier) {
+      super(itemSupplier);
     }
 
     @Override
@@ -635,7 +635,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private final class DefaultRowSupplier implements Supplier<Collection<T>> {
+  private final class DefaultItemSupplier implements Supplier<Collection<T>> {
 
     @Override
     public Collection<T> get() {

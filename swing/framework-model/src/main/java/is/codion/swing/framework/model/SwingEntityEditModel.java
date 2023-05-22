@@ -295,17 +295,17 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Attribute<T> attribute) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.setRowSupplier(new AttributeRowSupplier<>(connectionProvider(), attribute));
+    model.setItemSupplier(new AttributeItemSupplier<>(connectionProvider(), attribute));
 
     return model;
   }
 
-  private static final class AttributeRowSupplier<T> implements Supplier<Collection<T>> {
+  private static final class AttributeItemSupplier<T> implements Supplier<Collection<T>> {
 
     private final EntityConnectionProvider connectionProvider;
     private final Attribute<T> attribute;
 
-    private AttributeRowSupplier(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+    private AttributeItemSupplier(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
       this.connectionProvider = connectionProvider;
       this.attribute = attribute;
     }

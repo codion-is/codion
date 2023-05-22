@@ -78,7 +78,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.entities = connectionProvider.entities();
     this.orderBy = this.entities.definition(entityType).orderBy();
     setSelectedItemTranslator(new SelectedItemTranslator());
-    setRowSupplier(new RowSupplier());
+    setItemSupplier(new ItemSupplier());
     setRowValidator(new RowValidator());
     setStaticData(this.entities.definition(entityType).isStaticData());
     setIncludeCondition(foreignKeyIncludeCondition);
@@ -479,7 +479,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     EntityEditEvents.removeDeleteListener(entityType, deleteListener);
   }
 
-  private final class RowSupplier implements Supplier<Collection<Entity>> {
+  private final class ItemSupplier implements Supplier<Collection<Entity>> {
 
     @Override
     public Collection<Entity> get() {
