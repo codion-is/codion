@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -251,6 +252,94 @@ public final class EntityTest {
     assertTrue(propertyValues.containsAll(values));
 
     assertEquals(0, Entity.getDistinctIncludingNull(Department.NO, new ArrayList<>()).size());
+  }
+
+  @Test
+  void getModified() {
+    Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .with(Department.NAME, "name1")
+            .with(Department.LOCATION, "loc1")
+            .build();
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 2)
+            .with(Department.NAME, "name2")
+            .with(Department.LOCATION, "loc2")
+            .build();
+    dept2.put(Department.NAME, "newname");
+
+    assertTrue(Entity.getModified(asList(dept1, dept2)).contains(dept2));
+  }
+
+  @Test
+  void getOriginalPrimaryKeys() {
+    Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 2)
+            .build();
+    dept1.put(Department.NO, 3);
+    dept2.put(Department.NO, 4);
+
+    Collection<Key> originalPrimaryKeys = Entity.getOriginalPrimaryKeys(asList(dept1, dept2));
+    assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
+    assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 2)));
+  }
+
+  @Test
+  void immutable() {
+    Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 2)
+            .build();
+    List<Entity> entityList = asList(dept1, dept2);
+    List<Entity> immutables = Entity.immutable(entityList);
+    entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
+    immutables.forEach(entity -> assertTrue(entity.isImmutable()));
+  }
+
+  @Test
+  void copy() {
+    Entity dept1 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 2)
+            .build();
+    List<Entity> entityList = asList(dept1, dept2);
+    List<Entity> copied = Entity.copy(entityList);
+    entityList.forEach(entity -> assertTrue(copied.contains(entity)));
+  }
+
+  @Test
+  void mapToPrimaryKey() {
+    Entity dept = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    Entity emp = entities.builder(Employee.TYPE)
+            .with(Employee.ID, 3)
+            .build();
+    Map<Key, Entity> entityMap = Entity.mapToPrimaryKey(asList(dept, emp));
+    assertEquals(dept, entityMap.get(dept.primaryKey()));
+    assertEquals(emp, entityMap.get(emp.primaryKey()));
+
+    Entity dept2 = entities.builder(Department.TYPE)
+            .with(Department.NO, 1)
+            .build();
+    assertThrows(IllegalStateException.class, () -> Entity.mapToPrimaryKey(asList(dept, dept2, emp)));
+  }
+
+  @Test
+  void mapKeysToType() {
+    Key dept = entities.primaryKey(Department.TYPE, 1);
+    Key emp = entities.primaryKey(Employee.TYPE, 3);
+
+    LinkedHashMap<EntityType, List<Key>> mapped = Entity.mapKeysToType(asList(dept, emp));
+    assertEquals(dept, mapped.get(Department.TYPE).get(0));
+    assertEquals(emp, mapped.get(Employee.TYPE).get(0));
   }
 
   @Test

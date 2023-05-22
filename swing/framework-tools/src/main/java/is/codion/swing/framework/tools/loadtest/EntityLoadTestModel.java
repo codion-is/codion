@@ -15,9 +15,10 @@ import is.codion.swing.common.tools.loadtest.UsageScenario;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
@@ -101,12 +102,10 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
     }
     else {
       int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
-      List<Integer> indexes = new ArrayList<>();
-      for (int i = startIdx; i < count + startIdx; i++) {
-        indexes.add(i);
-      }
 
-      tableModel.selectionModel().setSelectedIndexes(indexes);
+      tableModel.selectionModel().setSelectedIndexes(IntStream.range(startIdx, count + startIdx)
+              .boxed()
+              .collect(Collectors.toList()));
     }
   }
 
@@ -116,17 +115,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
    * @param ratio the ratio of available rows to select
    */
   public static void selectRandomRows(EntityTableModel<?> tableModel, double ratio) {
-    if (tableModel.getRowCount() == 0) {
-      return;
-    }
-
-    int toSelect = ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1;
-    List<Integer> indexes = new ArrayList<>();
-    for (int i = 0; i < toSelect; i++) {
-      indexes.add(i);
-    }
-
-    tableModel.selectionModel().setSelectedIndexes(indexes);
+    selectRandomRows(tableModel, ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1);
   }
 
   /**

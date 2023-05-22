@@ -9069,3 +9069,6 @@
   Entity.immutableCopy() renamed immutable()
   Entity.immutable(List<Entity>) added, minor refactoring
   Entity.immutable() now replaces all entity values with immutable instances, so the whole tree is immutable
+  DefaultEntity.remove() now validates the attribute, minor refactoring + tests
+  Entity.put(destination, source) removed
+  AbstractProperty.resourceNotFound() now uses ResourceBundle.containsKey() instead of relying on exception

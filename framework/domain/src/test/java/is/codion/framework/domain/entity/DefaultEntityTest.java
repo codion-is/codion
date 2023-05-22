@@ -8,6 +8,7 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
+import is.codion.framework.domain.TestDomain.InvalidDerived;
 import is.codion.framework.domain.TestDomain.Master;
 import is.codion.framework.domain.TestDomain.NoPk;
 import is.codion.framework.domain.TestDomain.NullString;
@@ -136,6 +137,8 @@ public class DefaultEntityTest {
     assertEquals(test, testEntity, "Entities should be equal after .setAs()");
     assertTrue(test.columnValuesEqual(testEntity), "Entity property values should be equal after .setAs()");
 
+    assertTrue(test.setAs(test).isEmpty());
+
     //assure that no cached foreign key values linger
     test.put(Detail.MASTER_FK, null);
     testEntity.setAs(test);
@@ -197,11 +200,15 @@ public class DefaultEntityTest {
 
     assertEquals(0, original.setAs(entity).size());
     assertEquals(0, entity.setAs(original).size());
+
+    entity.remove(Detail.STRING);
+    assertFalse(Entity.valuesEqual(entity, original));
   }
 
   @Test
   void derivedOriginal() {
     Entity entity = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.ID, 0L)
             .with(Detail.INT, 1)
             .build();
     assertEquals(10, entity.get(Detail.INT_DERIVED));
@@ -214,6 +221,13 @@ public class DefaultEntityTest {
     entity.put(Detail.INT, 1);
     assertEquals(10, entity.get(Detail.INT_DERIVED));
     assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+
+    Entity invalidDerived = ENTITIES.builder(InvalidDerived.TYPE)
+            .with(InvalidDerived.ID, 0)
+            .with(InvalidDerived.INT, 1)
+            .build();
+
+    assertThrows(IllegalArgumentException.class, () -> invalidDerived.get(InvalidDerived.INVALID_DERIVED));
   }
 
   @Test
@@ -255,6 +269,10 @@ public class DefaultEntityTest {
     entity2.save(Master.NAME);
     entity2.put(Master.NAME, "name");
     assertEquals("newname", entity2.getOriginal(Master.NAME));
+
+    assertTrue(entity2.isModified());
+    entity2.revertAll();
+    assertFalse(entity2.isModified());
   }
 
   @Test
@@ -638,6 +656,13 @@ public class DefaultEntityTest {
     assertNotNull(employee.get(Employee.DEPARTMENT_NO));
     assertFalse(employee.contains(Employee.DEPARTMENT_FK));
     assertTrue(employee.contains(Employee.DEPARTMENT_NO));
+
+    employee = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, -10)
+            .with(Employee.DEPARTMENT_FK, department)
+            .build();
+    employee.remove(Employee.DEPARTMENT_NO);
+    assertTrue(employee.isNull(Employee.DEPARTMENT_FK));
   }
 
   @Test
@@ -733,6 +758,12 @@ public class DefaultEntityTest {
             copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK));
     assertTrue(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)
             .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
+
+    emp.saveAll();
+    emp.definition().foreignKeys().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
+    emp.definition().foreignKeys().forEach(emp::remove);
+    assertFalse(emp.isModified());
+    emp.definition().foreignKeys().forEach(foreignKey -> assertFalse(emp.isLoaded(foreignKey)));
   }
 
   @Test
@@ -854,15 +885,23 @@ public class DefaultEntityTest {
 
   @Test
   void immutableEntity() {
-    Entity emp = ENTITIES.builder(Employee.TYPE)
+    Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.ID, 1)
             .with(Employee.NAME, "Name")
             .with(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
                     .with(Department.NO, 42)
                     .with(Department.NAME, "Dept name")
                     .build())
-            .build()
-            .immutable();
+            .build();
+    employee.put(Employee.DEPARTMENT_FK, ENTITIES.builder(Department.TYPE)
+            .with(Department.NO, 99)
+            .with(Department.NAME, "Another")
+            .build());
+
+    Entity emp = employee.immutable();
+
+    assertSame(emp, emp.immutable());
+
     assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.NO, 2));
     assertThrows(UnsupportedOperationException.class, emp::clearPrimaryKey);
     assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.NO));
@@ -881,6 +920,41 @@ public class DefaultEntityTest {
     assertThrows(UnsupportedOperationException.class, dept::revertAll);
     assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.NO));
     assertThrows(UnsupportedOperationException.class, () -> dept.setAs(dept));
+  }
+
+  @Test
+  void isNew() {
+    Entity emp = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.NAME, "Name")
+            .with(Employee.ID, null)
+            .build();
+    assertTrue(emp.originalPrimaryKey().isNull());
+    assertTrue(emp.isNew());
+    emp.put(Employee.ID, 1);
+    assertTrue(emp.isNew());
+    emp.saveAll();
+    emp.put(Employee.ID, 2);
+    assertFalse(emp.isNew());
+    emp.remove(Employee.ID);
+    assertTrue(emp.isNew());
+  }
+
+  @Test
+  void misc() {
+    Entity aron = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 42)
+            .with(Employee.NAME, "Aron")
+            .with(Employee.DEPARTMENT_NO, 1)
+            .build();
+    assertEquals("deptno:1", aron.toString(Employee.DEPARTMENT_FK));
+    assertEquals(42, aron.hashCode());
+
+    Entity bjorn = ENTITIES.builder(Employee.TYPE)
+            .with(Employee.ID, 99)
+            .with(Employee.NAME, "Björn")
+            .build();
+
+    assertEquals(-1, aron.compareTo(bjorn));
   }
 
   private static Entity detailEntity(long id, Integer intValue, Double doubleValue,

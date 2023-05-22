@@ -46,6 +46,7 @@ public final class TestDomain extends DefaultDomain {
     transientModifies();
     transientModifiesNot();
     nullString();
+    invalidDerived();
   }
 
   public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
@@ -405,6 +406,23 @@ public final class TestDomain extends DefaultDomain {
     add(definition(
             primaryKeyProperty(NullString.ID),
             columnProperty(NullString.TRANS))
+            .stringFactory(entity -> null));
+  }
+
+  public interface InvalidDerived {
+    EntityType TYPE = DOMAIN.entityType("invalid_derived");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<Integer> INT = TYPE.integerAttribute("int");
+    Attribute<Integer> INVALID_DERIVED = TYPE.integerAttribute("invalid_derived");
+  }
+
+  void invalidDerived() {
+    add(definition(
+            primaryKeyProperty(InvalidDerived.ID),
+            columnProperty(InvalidDerived.INT),
+            derivedProperty(InvalidDerived.INVALID_DERIVED, InvalidDerived.INVALID_DERIVED.name(),
+                    linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))//incorrect source value, trigger exception
             .stringFactory(entity -> null));
   }
 }

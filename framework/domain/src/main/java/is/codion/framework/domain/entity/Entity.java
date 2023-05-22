@@ -517,19 +517,6 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Puts all the values from the source entity into the destination entity.
-   * @param destination the destination
-   * @param source the source
-   * @throws IllegalArgumentException in case the entities are not of the same type
-   */
-  static void put(Entity destination, Entity source) {
-    if (!requireNonNull(destination).type().equals(requireNonNull(source).type())) {
-      throw new IllegalArgumentException("Entities of same type expected");
-    }
-    source.entrySet().forEach(entry -> destination.put((Attribute<Object>) entry.getKey(), entry.getValue()));
-  }
-
-  /**
    * Deep copies the given entities, with new copied instances of all foreign key value entities.
    * @param entities the entities to copy
    * @return a deep copy of the given entities

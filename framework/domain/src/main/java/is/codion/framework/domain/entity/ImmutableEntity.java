@@ -16,10 +16,10 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   ImmutableEntity(DefaultEntity entity) {
     definition = entity.definition();
     values = new HashMap<>(entity.values);
-    values.forEach((attribute, value) -> replaceMutableEntity(attribute, value, values));
+    values.forEach((attribute, value) -> replaceWithImmutable(attribute, value, values));
     if (entity.originalValues != null) {
       originalValues = new HashMap<>(entity.originalValues);
-      originalValues.forEach((attribute, value) -> replaceMutableEntity(attribute, value, originalValues));
+      originalValues.forEach((attribute, value) -> replaceWithImmutable(attribute, value, originalValues));
     }
   }
 
@@ -63,7 +63,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
   }
 
-  private static void replaceMutableEntity(Attribute<?> attribute, Object value, Map<Attribute<?>, Object> map) {
+  private static void replaceWithImmutable(Attribute<?> attribute, Object value, Map<Attribute<?>, Object> map) {
     if (value instanceof Entity && !(value instanceof ImmutableEntity)) {
       map.replace(attribute, ((Entity) value).immutable());
     }

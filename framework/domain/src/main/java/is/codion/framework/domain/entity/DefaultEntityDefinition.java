@@ -416,12 +416,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
   @Override
   public List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes) {
-    List<ColumnProperty<?>> theProperties = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
+    List<ColumnProperty<?>> propertyList = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
     for (int i = 0; i < attributes.size(); i++) {
-      theProperties.add(columnProperty(attributes.get(i)));
+      propertyList.add(columnProperty(attributes.get(i)));
     }
 
-    return theProperties;
+    return propertyList;
   }
 
   @Override
@@ -1029,8 +1029,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void setForeignKeyNullable(ForeignKeyProperty.Builder foreignKeyBuilder,
                                               Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
-      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute())
-              .stream()
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute()).stream()
               .anyMatch(Property::isNullable));
     }
   }

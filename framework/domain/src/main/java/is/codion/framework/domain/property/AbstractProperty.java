@@ -647,9 +647,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
         return true;
       }
       try {
-        ResourceBundle.getBundle(resourceBundleName).getString(captionResourceKey);
-
-        return false;
+        return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
       }
       catch (MissingResourceException e) {
         return true;

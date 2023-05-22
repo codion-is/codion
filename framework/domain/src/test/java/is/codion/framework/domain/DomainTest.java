@@ -735,6 +735,8 @@ public class DomainTest {
             .with(Master.NAME, "name")
             .build();
 
+    assertThrows(IllegalArgumentException.class, () -> master.castTo(Detail.class));
+
     Master master1 = master.castTo(Master.class);
 
     assertSame(master1, master1.castTo(Master.class));
