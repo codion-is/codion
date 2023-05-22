@@ -140,7 +140,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final <T> T original(Attribute<T> attribute) {
-    return getOriginal(definition.property(attribute));
+    return original(definition.property(attribute));
   }
 
   @Override
@@ -441,7 +441,7 @@ class DefaultEntity implements Entity, Serializable {
     return (T) values.get(property.attribute());
   }
 
-  private <T> T getOriginal(Property<T> property) {
+  private <T> T original(Property<T> property) {
     if (property instanceof DerivedProperty) {
       return derivedValue((DerivedProperty<T>) property, true);
     }
