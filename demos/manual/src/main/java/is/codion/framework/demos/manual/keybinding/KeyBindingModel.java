@@ -48,7 +48,7 @@ final class KeyBindingModel {
     this.componentComboBoxModel.refresh();
     this.tableModel = FilteredTableModel.builder(new KeyBindingValueProvider())
             .columns(createColumns())
-            .rowSupplier(new KeyBindingRowSupplier())
+            .itemSupplier(new KeyBindingItemSupplier())
             .build();
     bindEvents(lookAndFeelComboBoxModel);
   }
@@ -142,7 +142,7 @@ final class KeyBindingModel {
     }
   }
 
-  private final class KeyBindingRowSupplier implements Supplier<Collection<KeyBinding>> {
+  private final class KeyBindingItemSupplier implements Supplier<Collection<KeyBinding>> {
 
     @Override
     public Collection<KeyBinding> get() {
@@ -192,16 +192,16 @@ final class KeyBindingModel {
   private static FilteredComboBoxModel<String> createComponentComboBoxModel(
           FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
     FilteredComboBoxModel<String> comboBoxModel = new FilteredComboBoxModel<>();
-    comboBoxModel.setRowSupplier(new ComponentRowSupplier(lookAndFeelComboBoxModel));
+    comboBoxModel.setItemSupplier(new ComponentItemSupplier(lookAndFeelComboBoxModel));
 
     return comboBoxModel;
   }
 
-  private static final class ComponentRowSupplier implements Supplier<Collection<String>> {
+  private static final class ComponentItemSupplier implements Supplier<Collection<String>> {
 
     private final FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel;
 
-    private ComponentRowSupplier(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+    private ComponentItemSupplier(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
       this.lookAndFeelComboBoxModel = lookAndFeelComboBoxModel;
     }
 

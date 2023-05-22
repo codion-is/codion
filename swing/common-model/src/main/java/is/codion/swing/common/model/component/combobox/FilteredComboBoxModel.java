@@ -51,7 +51,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private final List<T> filteredItems = new ArrayList<>();
   private final Refresher<T> refresher;
 
-  private Predicate<T> rowValidator = new DefaultRowValidator<>();
+  private Predicate<T> itemValidator = new DefaultItemValidator<>();
   private Function<Object, T> selectedItemTranslator = new DefaultSelectedItemTranslator<>();
   private Predicate<T> allowSelectionPredicate = new DefaultAllowSelectionPredicate<>();
 
@@ -79,7 +79,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public FilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
-    this.refresher = new FilteredComboBoxRefresher(new DefaultRowSupplier());
+    this.refresher = new FilteredComboBoxRefresher(new DefaultItemSupplier());
   }
 
   @Override
@@ -118,7 +118,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * @param items the items to display in this combo box model
    * @throws IllegalArgumentException in case an item fails validation
    * @see #isCleared()
-   * @see #setRowValidator(Predicate)
+   * @see #setItemValidator(Predicate)
    */
   public final void setItems(Collection<T> items) {
     filteredItems.clear();
@@ -293,38 +293,38 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
-   * @return the row supplier
+   * @return the item supplier
    */
-  public final Supplier<Collection<T>> getRowSupplier() {
-    return refresher.getRowSupplier();
+  public final Supplier<Collection<T>> getItemSupplier() {
+    return refresher.getItemSupplier();
   }
 
   /**
-   * Supplies the rows when {@link #refresh()} is called.
-   * @param rowSupplier the row supplier
+   * Supplies the items when {@link #refresh()} is called.
+   * @param itemSupplier the item supplier
    */
-  public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
-    this.refresher.setRowSupplier(rowSupplier);
+  public final void setItemSupplier(Supplier<Collection<T>> itemSupplier) {
+    this.refresher.setItemSupplier(itemSupplier);
   }
 
   /**
-   * @return the row validator
+   * @return the item validator
    */
-  public final Predicate<T> getRowValidator() {
-    return rowValidator;
+  public final Predicate<T> getItemValidator() {
+    return itemValidator;
   }
 
   /**
-   * Provides a way for the model to prevent the addition of certain rows.
-   * Trying to add rows that fail validation will result in an exception.
+   * Provides a way for the model to prevent the addition of certain items.
+   * Trying to add items that fail validation will result in an exception.
    * Note that any translation of the selected item is done before validation.
-   * @param rowValidator the row validator
+   * @param itemValidator the item validator
    * @throws IllegalArgumentException in case an item fails validation
    */
-  public final void setRowValidator(Predicate<T> rowValidator) {
-    requireNonNull(rowValidator);
-    items().stream().filter(Objects::nonNull).forEach(rowValidator::test);
-    this.rowValidator = rowValidator;
+  public final void setItemValidator(Predicate<T> itemValidator) {
+    requireNonNull(itemValidator);
+    items().stream().filter(Objects::nonNull).forEach(itemValidator::test);
+    this.itemValidator = itemValidator;
   }
 
   /**
@@ -531,7 +531,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private void validate(T item) {
     requireNonNull(item);
-    if (!rowValidator.test(item)) {
+    if (!itemValidator.test(item)) {
       throw new IllegalArgumentException("Invalid item: " + item);
     }
   }
@@ -609,8 +609,8 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
   private final class FilteredComboBoxRefresher extends AbstractFilteredModelRefresher<T> {
 
-    private FilteredComboBoxRefresher(Supplier<Collection<T>> rowSupplier) {
-      super(rowSupplier);
+    private FilteredComboBoxRefresher(Supplier<Collection<T>> itemSupplier) {
+      super(itemSupplier);
     }
 
     @Override
@@ -627,15 +627,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private static final class DefaultRowValidator<T> implements Predicate<T> {
+  private static final class DefaultItemValidator<T> implements Predicate<T> {
 
     @Override
-    public boolean test(T t) {
+    public boolean test(T item) {
       return true;
     }
   }
 
-  private final class DefaultRowSupplier implements Supplier<Collection<T>> {
+  private final class DefaultItemSupplier implements Supplier<Collection<T>> {
 
     @Override
     public Collection<T> get() {

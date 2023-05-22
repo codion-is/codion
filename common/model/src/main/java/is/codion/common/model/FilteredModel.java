@@ -149,15 +149,15 @@ public interface FilteredModel<T> {
     void setAsyncRefresh(boolean asyncRefresh);
 
     /**
-     * @return the row supplier
+     * @return the item supplier
      */
-    Supplier<Collection<T>> getRowSupplier();
+    Supplier<Collection<T>> getItemSupplier();
 
     /**
-     * Supplies the rows when {@link #refresh()} is called.
-     * @param rowSupplier the row supplier
+     * Supplies the items when {@link #refresh()} is called.
+     * @param itemSupplier the item supplier
      */
-    void setRowSupplier(Supplier<Collection<T>> rowSupplier);
+    void setItemSupplier(Supplier<Collection<T>> itemSupplier);
 
     /**
      * Refreshes the items in the associated filtered model.
@@ -210,7 +210,7 @@ public interface FilteredModel<T> {
 
   /**
    * An abstract base implementation of {@link Refresher}.
-   * @param <T> the model row type
+   * @param <T> the model item type
    */
   abstract class AbstractRefresher<T> implements Refresher<T> {
 
@@ -220,13 +220,13 @@ public interface FilteredModel<T> {
 
     private boolean asyncRefresh = ASYNC_REFRESH.get();
 
-    private Supplier<Collection<T>> rowSupplier;
+    private Supplier<Collection<T>> itemSupplier;
 
     /**
-     * @param rowSupplier the row supplier
+     * @param itemSupplier the item supplier
      */
-    protected AbstractRefresher(Supplier<Collection<T>> rowSupplier) {
-      this.rowSupplier = requireNonNull(rowSupplier);
+    protected AbstractRefresher(Supplier<Collection<T>> itemSupplier) {
+      this.itemSupplier = requireNonNull(itemSupplier);
     }
 
     @Override
@@ -240,13 +240,13 @@ public interface FilteredModel<T> {
     }
 
     @Override
-    public final Supplier<Collection<T>> getRowSupplier() {
-      return rowSupplier;
+    public final Supplier<Collection<T>> getItemSupplier() {
+      return itemSupplier;
     }
 
     @Override
-    public final void setRowSupplier(Supplier<Collection<T>> rowSupplier) {
-      this.rowSupplier = requireNonNull(rowSupplier);
+    public final void setItemSupplier(Supplier<Collection<T>> itemSupplier) {
+      this.itemSupplier = requireNonNull(itemSupplier);
     }
 
     @Override

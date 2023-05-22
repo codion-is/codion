@@ -51,12 +51,12 @@ public final class DatabaseExplorerModel {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
       this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnValueProvider())
               .columns(createSchemaColumns())
-              .rowSupplier(metaDataModel::schemas)
+              .itemSupplier(metaDataModel::schemas)
               .build();
       this.schemaTableModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
       this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnValueProvider())
               .columns(createDefinitionColumns())
-              .rowSupplier(new DefinitionRowSupplier())
+              .itemSupplier(new DefinitionItemSupplier())
               .build();
       this.schemaTableModel.refresh();
       bindEvents();
@@ -144,7 +144,7 @@ public final class DatabaseExplorerModel {
             .collect(toList());
   }
 
-  private final class DefinitionRowSupplier implements Supplier<Collection<DefinitionRow>> {
+  private final class DefinitionItemSupplier implements Supplier<Collection<DefinitionRow>> {
 
     @Override
     public Collection<DefinitionRow> get() {
