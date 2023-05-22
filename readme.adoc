@@ -249,7 +249,7 @@ Boolean active = customer.get(Customer.IS_ACTIVE);
 customer.put(Customer.LAST_NAME, "Carter");
 
 System.out.println(customer.isModified()); //true
-System.out.println(customer.getOriginal(Customer.LAST_NAME)); //"Doe"
+System.out.println(customer.original(Customer.LAST_NAME)); //"Doe"
 
 customer.put(Customer.LAST_NAME, "Doe");
 

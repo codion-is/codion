@@ -70,7 +70,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      connection.delete(Entity.getPrimaryKeys(entities));
+      connection.delete(Entity.primaryKeys(entities));
       updateTotals(entities, connection);
       connection.commitTransaction();
 
@@ -87,6 +87,6 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   private void updateTotals(List<Entity> entities, EntityConnection connection) throws DatabaseException {
-    totalsUpdatedEvent.onEvent(connection.executeFunction(Invoice.UPDATE_TOTALS, Entity.getDistinct(InvoiceLine.INVOICE_ID, entities)));
+    totalsUpdatedEvent.onEvent(connection.executeFunction(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, entities)));
   }
 }

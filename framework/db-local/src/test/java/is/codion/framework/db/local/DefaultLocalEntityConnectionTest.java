@@ -48,7 +48,7 @@ import java.util.TimeZone;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.local.TestDomain.*;
-import static is.codion.framework.domain.entity.Entity.getPrimaryKeys;
+import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -283,7 +283,7 @@ public class DefaultLocalEntityConnectionTest {
     assertTrue(result.isEmpty());
     result = connection.select(Department.DEPTNO, asList(10, 20));
     assertEquals(2, result.size());
-    result = connection.select(getPrimaryKeys(result));
+    result = connection.select(primaryKeys(result));
     assertEquals(2, result.size());
     result = connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
             asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
@@ -632,7 +632,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(condition));
-      List<Entity> afterUpdate = connection.select(Entity.getPrimaryKeys(entities));
+      List<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
         assertEquals(4200d, entity.get(Employee.SALARY));

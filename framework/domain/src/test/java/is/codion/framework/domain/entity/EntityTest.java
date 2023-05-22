@@ -86,7 +86,7 @@ public final class EntityTest {
   }
 
   @Test
-  void getModifiedColumnAttributes() {
+  void modifiedColumnAttributes() {
     Entity entity = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.LOCATION, "Location")
@@ -109,38 +109,38 @@ public final class EntityTest {
     current.put(Department.NO, 2);
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
-    assertEquals(Department.NO, Entity.getModifiedColumnAttributes(current, entity).iterator().next());
+    assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     Integer id = current.remove(Department.NO);
     assertEquals(2, id);
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
-    assertEquals(Department.NO, Entity.getModifiedColumnAttributes(current, entity).iterator().next());
+    assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.put(Department.NO, 1);
     current.saveAll();
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NO));
-    assertTrue(Entity.getModifiedColumnAttributes(current, entity).isEmpty());
+    assertTrue(Entity.modifiedColumnAttributes(current, entity).isEmpty());
 
     current.put(Department.LOCATION, "New location");
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.getModifiedColumnAttributes(current, entity).iterator().next());
+    assertEquals(Department.LOCATION, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.remove(Department.LOCATION);
     current.saveAll();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
-    assertEquals(Department.LOCATION, Entity.getModifiedColumnAttributes(current, entity).iterator().next());
+    assertEquals(Department.LOCATION, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.put(Department.LOCATION, "Location");
     current.saveAll();
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
-    assertTrue(Entity.getModifiedColumnAttributes(current, entity).isEmpty());
+    assertTrue(Entity.modifiedColumnAttributes(current, entity).isEmpty());
 
     entity.put(Department.LOCATION, "new loc");
     entity.put(Department.NAME, "new name");
 
-    assertEquals(2, Entity.getModifiedColumnAttributes(current, entity).size());
+    assertEquals(2, Entity.modifiedColumnAttributes(current, entity).size());
   }
 
   @Test
-  void getModifiedColumnAttributesWithBlob() {
+  void modifiedColumnAttributesWithBlob() {
     Random random = new Random();
     byte[] bytes = new byte[1024];
     random.nextBytes(bytes);
@@ -160,7 +160,7 @@ public final class EntityTest {
             .with(Employee.DATA, modifiedBytes)
             .build();
 
-    Collection<Attribute<?>> modifiedAttributes = Entity.getModifiedColumnAttributes(emp1, emp2);
+    Collection<Attribute<?>> modifiedAttributes = Entity.modifiedColumnAttributes(emp1, emp2);
     assertTrue(modifiedAttributes.contains(Employee.DATA));
 
     //lazy loaded blob
@@ -177,20 +177,20 @@ public final class EntityTest {
 
     EntityDefinition departmentDefinition = entities.definition(Department.TYPE);
 
-    modifiedAttributes = Entity.getModifiedColumnAttributes(dept1, dept2);
+    modifiedAttributes = Entity.modifiedColumnAttributes(dept1, dept2);
     assertFalse(modifiedAttributes.contains(Department.DATA));
 
     dept2.put(Department.LOCATION, "new loc");
-    modifiedAttributes = Entity.getModifiedColumnAttributes(dept1, dept2);
+    modifiedAttributes = Entity.modifiedColumnAttributes(dept1, dept2);
     assertTrue(modifiedAttributes.contains(Department.LOCATION));
 
     dept2.remove(Department.DATA);
-    modifiedAttributes = Entity.getModifiedColumnAttributes(dept1, dept2);
+    modifiedAttributes = Entity.modifiedColumnAttributes(dept1, dept2);
     assertFalse(modifiedAttributes.contains(Department.DATA));
   }
 
   @Test
-  void get() {
+  void values() {
     List<Entity> entityList = new ArrayList<>();
     List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
@@ -201,17 +201,17 @@ public final class EntityTest {
         values.add(i);
       }
     }
-    Collection<Integer> attributeValues = Entity.get(Department.NO, entityList);
+    Collection<Integer> attributeValues = Entity.values(Department.NO, entityList);
     assertTrue(attributeValues.containsAll(values));
-    assertTrue(Entity.get(Department.NO, emptyList()).isEmpty());
+    assertTrue(Entity.values(Department.NO, emptyList()).isEmpty());
 
     values.add(null);
-    attributeValues = Entity.getIncludingNull(Department.NO, entityList);
+    attributeValues = Entity.valuesIncludingNull(Department.NO, entityList);
     assertTrue(attributeValues.containsAll(values));
   }
 
   @Test
-  void getDistinct() {
+  void distinct() {
     List<Entity> entityList = new ArrayList<>();
     List<Object> values = new ArrayList<>();
 
@@ -242,20 +242,20 @@ public final class EntityTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> propertyValues = Entity.getDistinct(Department.NO, entityList);
+    Collection<Integer> propertyValues = Entity.distinct(Department.NO, entityList);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
-    propertyValues = Entity.getDistinctIncludingNull(Department.NO, entityList);
+    propertyValues = Entity.distinctIncludingNull(Department.NO, entityList);
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
 
-    assertEquals(0, Entity.getDistinctIncludingNull(Department.NO, new ArrayList<>()).size());
+    assertEquals(0, Entity.distinctIncludingNull(Department.NO, new ArrayList<>()).size());
   }
 
   @Test
-  void getModified() {
+  void modified() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.NAME, "name1")
@@ -268,11 +268,11 @@ public final class EntityTest {
             .build();
     dept2.put(Department.NAME, "newname");
 
-    assertTrue(Entity.getModified(asList(dept1, dept2)).contains(dept2));
+    assertTrue(Entity.modified(asList(dept1, dept2)).contains(dept2));
   }
 
   @Test
-  void getOriginalPrimaryKeys() {
+  void originalPrimaryKeys() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .build();
@@ -282,7 +282,7 @@ public final class EntityTest {
     dept1.put(Department.NO, 3);
     dept2.put(Department.NO, 4);
 
-    Collection<Key> originalPrimaryKeys = Entity.getOriginalPrimaryKeys(asList(dept1, dept2));
+    Collection<Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 2)));
   }
@@ -343,7 +343,7 @@ public final class EntityTest {
   }
 
   @Test
-  void getStringValueList() {
+  void valuesAsString() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.NAME, "name1")
@@ -359,7 +359,7 @@ public final class EntityTest {
             .columnProperties().stream().map(Property::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
-            Entity.getValuesAsString(attributes, asList(dept1, dept2));
+            Entity.valuesAsString(attributes, asList(dept1, dept2));
     assertEquals("1", strings.get(0).get(0));
     assertEquals("name1", strings.get(0).get(1));
     assertEquals("loc1", strings.get(0).get(2));
@@ -471,7 +471,7 @@ public final class EntityTest {
   }
 
   @Test
-  void getByValue() {
+  void entitiesByValue() {
     Entity one = entities.builder(Detail.TYPE)
             .with(Detail.ID, 1L)
             .with(Detail.STRING, "b")
@@ -491,15 +491,15 @@ public final class EntityTest {
 
     Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(Detail.STRING, "b");
-    assertEquals(1, Entity.getByValue(values, entities).size());
+    assertEquals(1, Entity.entitiesByValue(values, entities).size());
     values.put(Detail.STRING, "zz");
-    assertEquals(2, Entity.getByValue(values, entities).size());
+    assertEquals(2, Entity.entitiesByValue(values, entities).size());
     values.put(Detail.ID, 3L);
-    assertEquals(1, Entity.getByValue(values, entities).size());
+    assertEquals(1, Entity.entitiesByValue(values, entities).size());
   }
 
   @Test
-  void getReferencedKeys() {
+  void referencedKeys() {
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .build();
@@ -519,11 +519,11 @@ public final class EntityTest {
     Entity emp4 = entities.builder(Employee.TYPE)
             .build();
 
-    Set<Key> referencedKeys = Entity.getReferencedKeys(asList(emp1, emp2, emp3, emp4),
+    Set<Key> referencedKeys = Entity.referencedKeys(asList(emp1, emp2, emp3, emp4),
             Employee.DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.type()));
-    Collection<Integer> values = Entity.getValues(new ArrayList<>(referencedKeys));
+    Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));
     assertTrue(values.contains(1));
     assertTrue(values.contains(2));
     assertFalse(values.contains(3));
@@ -536,7 +536,7 @@ public final class EntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    Collection<Key> keys = Entity.getPrimaryKeys(singletonList(noPk));
+    Collection<Key> keys = Entity.primaryKeys(singletonList(noPk));
     assertTrue(keys.iterator().next().isNull());
   }
 }

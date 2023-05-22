@@ -7,6 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.ConditionType;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -24,7 +25,6 @@ import java.util.stream.Collectors;
 import static is.codion.common.Operator.EQUAL;
 import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeCondition;
 import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeKeyCondition;
-import static is.codion.framework.domain.entity.Entity.getValues;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -151,7 +151,7 @@ public interface Condition {
       return compositeKeyCondition(attributeMap, EQUAL, valueMaps);
     }
 
-    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), getValues(keys), EQUAL);
+    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), Entity.values(keys), EQUAL);
   }
 
   /**

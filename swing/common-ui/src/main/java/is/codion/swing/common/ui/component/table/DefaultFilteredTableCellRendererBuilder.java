@@ -86,7 +86,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
   @Override
   public final FilteredTableCellRenderer.Builder<R, C> leftPadding(int leftPadding) {
     this.leftPadding = leftPadding;
-    return null;
+    return this;
   }
 
   @Override

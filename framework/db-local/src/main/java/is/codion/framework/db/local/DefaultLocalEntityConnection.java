@@ -305,7 +305,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(condition(Entity.getPrimaryKeys(entitiesToUpdate)).selectBuilder().build(), 0);//bypass caching
+          List<Entity> selected = doSelect(condition(Entity.primaryKeys(entitiesToUpdate)).selectBuilder().build(), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -906,7 +906,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
-    Collection<Key> originalKeys = Entity.getOriginalPrimaryKeys(entities);
+    Collection<Key> originalKeys = Entity.originalPrimaryKeys(entities);
     SelectCondition selectForUpdateCondition = condition(originalKeys)
             .selectBuilder()
             .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
@@ -922,7 +922,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                 + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
       }
-      Collection<Attribute<?>> modified = Entity.getModifiedColumnAttributes(entity, current);
+      Collection<Attribute<?>> modified = Entity.modifiedColumnAttributes(entity, current);
       if (!modified.isEmpty()) {
         throw new RecordModifiedException(entity, current, createModifiedExceptionMessage(entity, current, modified));
       }
@@ -975,7 +975,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
           logEntry("setForeignKeys", foreignKeyProperty);
-          List<Key> referencedKeys = new ArrayList<>(Entity.getReferencedKeys(entities, foreignKey));
+          List<Key> referencedKeys = new ArrayList<>(Entity.referencedKeys(entities, foreignKey));
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKey, null);

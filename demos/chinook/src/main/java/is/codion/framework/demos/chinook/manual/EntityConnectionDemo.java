@@ -276,10 +276,10 @@ public final class EntityConnectionDemo {
     List<Entity> invoiceLines = connection.select(InvoiceLine.TRACK_FK, tracks);
 
     List<Key> toDelete = new ArrayList<>();
-    toDelete.addAll(Entity.getPrimaryKeys(invoiceLines));
-    toDelete.addAll(Entity.getPrimaryKeys(playlistTracks));
-    toDelete.addAll(Entity.getPrimaryKeys(tracks));
-    toDelete.addAll(Entity.getPrimaryKeys(albums));
+    toDelete.addAll(Entity.primaryKeys(invoiceLines));
+    toDelete.addAll(Entity.primaryKeys(playlistTracks));
+    toDelete.addAll(Entity.primaryKeys(tracks));
+    toDelete.addAll(Entity.primaryKeys(albums));
     toDelete.add(audioslave.primaryKey());
 
     connection.delete(toDelete);

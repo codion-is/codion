@@ -510,7 +510,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return emptyList();
     }
 
-    List<Entity> modifiedEntities = modifiedEntities(entities);
+    List<Entity> modifiedEntities = modified(entities);
     if (modifiedEntities.isEmpty()) {
       return emptyList();
     }
@@ -801,7 +801,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(List<Entity> entities) throws DatabaseException {
-    connectionProvider.connection().delete(Entity.getPrimaryKeys(entities));
+    connectionProvider.connection().delete(Entity.primaryKeys(entities));
 
     return entities;
   }
@@ -816,8 +816,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #update()
    * @see #update(java.util.List)
    */
-  protected List<Entity> modifiedEntities(List<Entity> entities) {
-    return Entity.getModified(entities);
+  protected List<Entity> modified(List<Entity> entities) {
+    return Entity.modified(entities);
   }
 
   /**
