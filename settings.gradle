@@ -66,6 +66,9 @@ project(':codion-framework-db-rmi').projectDir = file('framework/db-rmi')
 include 'codion-framework-db-http'
 project(':codion-framework-db-http').projectDir = file('framework/db-http')
 
+include 'codion-framework-json'
+project(':codion-framework-json').projectDir = file('framework/json')
+
 include 'codion-framework-model'
 project(':codion-framework-model').projectDir = file('framework/model')
 
@@ -119,9 +122,6 @@ project(':codion-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
 
 include 'codion-plugin-imagepanel'
 project(':codion-plugin-imagepanel').projectDir = file('plugins/imagepanel')
-
-include 'codion-plugin-jackson-json'
-project(':codion-plugin-jackson-json').projectDir = file('plugins/jackson-json')
 
 include 'codion-plugin-jasperreports'
 project(':codion-plugin-jasperreports').projectDir = file('plugins/jasperreports')

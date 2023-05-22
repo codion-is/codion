@@ -9038,3 +9038,5 @@
   Refresher.setRowSupplier() renamed setItemSupplier()
   FilteredTableModel.Builder.rowValidator() renamed itemValidator()
   ImmutableEntity, minor refactoring
+  json plugin module now a framework module
+  json module renamed, repackaged

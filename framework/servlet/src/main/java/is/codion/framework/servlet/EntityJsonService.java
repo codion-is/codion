@@ -18,9 +18,9 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
-import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
-import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
-import is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory;
+import is.codion.framework.json.db.ConditionObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 

@@ -2,8 +2,8 @@ package is.codion.framework.demos.world.domain.api;
 
 import is.codion.framework.demos.world.domain.api.World.Location;
 import is.codion.framework.domain.entity.Entities;
-import is.codion.plugin.jackson.json.domain.DefaultEntityObjectMapperFactory;
-import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
+import is.codion.framework.json.domain.DefaultEntityObjectMapperFactory;
+import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParser;

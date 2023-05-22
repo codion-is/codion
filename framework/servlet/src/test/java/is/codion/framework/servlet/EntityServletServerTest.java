@@ -17,13 +17,13 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.json.db.ConditionObjectMapper;
+import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.TestDomain.Department;
 import is.codion.framework.servlet.TestDomain.Employee;
-import is.codion.plugin.jackson.json.db.ConditionObjectMapper;
-import is.codion.plugin.jackson.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.node.ObjectNode;
