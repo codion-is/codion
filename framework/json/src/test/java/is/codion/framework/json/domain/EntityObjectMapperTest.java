@@ -225,16 +225,16 @@ public final class EntityObjectMapperTest {
     emp1Deserialized = mapper.deserializeEntities(jsonString).get(0);
     assertTrue(emp1.columnValuesEqual(emp1Deserialized));
 
-    assertEquals(500.5, emp1Deserialized.getOriginal(Employee.COMMISSION));
-    assertEquals(dept10, emp1Deserialized.getOriginal(Employee.DEPARTMENT_FK));
-    assertEquals("CLERK", emp1Deserialized.getOriginal(Employee.JOB));
-    assertEquals(mgr30, emp1Deserialized.getOriginal(Employee.MGR_FK));
-    assertEquals(hiredate, emp1Deserialized.getOriginal(Employee.HIREDATE));
-    assertEquals("A NAME", emp1Deserialized.getOriginal(Employee.NAME));
-    assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.getOriginal(Employee.SALARY));
+    assertEquals(500.5, emp1Deserialized.original(Employee.COMMISSION));
+    assertEquals(dept10, emp1Deserialized.original(Employee.DEPARTMENT_FK));
+    assertEquals("CLERK", emp1Deserialized.original(Employee.JOB));
+    assertEquals(mgr30, emp1Deserialized.original(Employee.MGR_FK));
+    assertEquals(hiredate, emp1Deserialized.original(Employee.HIREDATE));
+    assertEquals("A NAME", emp1Deserialized.original(Employee.NAME));
+    assertEquals(BigDecimal.valueOf(2500.55), emp1Deserialized.original(Employee.SALARY));
 
-    assertTrue(emp1Deserialized.getOriginal(Employee.DEPARTMENT_FK).columnValuesEqual(dept10));
-    assertTrue(emp1Deserialized.getOriginal(Employee.MGR_FK).columnValuesEqual(mgr30));
+    assertTrue(emp1Deserialized.original(Employee.DEPARTMENT_FK).columnValuesEqual(dept10));
+    assertTrue(emp1Deserialized.original(Employee.MGR_FK).columnValuesEqual(mgr30));
 
     Entity emp2 = entities.builder(Employee.TYPE)
             .with(Employee.COMMISSION, 300.5)

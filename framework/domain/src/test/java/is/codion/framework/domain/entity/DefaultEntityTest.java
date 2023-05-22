@@ -98,7 +98,7 @@ public class DefaultEntityTest {
     assertTrue(entity.columnValuesEqual(entityFromFile));
     assertTrue(entityFromFile.isModified());
     assertTrue(entityFromFile.isModified(Detail.STRING));
-    assertEquals(originalStringValue, entityFromFile.getOriginal(Detail.STRING));
+    assertEquals(originalStringValue, entityFromFile.original(Detail.STRING));
 
     Key key = entity.primaryKey();
     byte[] serialized = Serializer.serialize(singletonList(key));
@@ -212,15 +212,15 @@ public class DefaultEntityTest {
             .with(Detail.INT, 1)
             .build();
     assertEquals(10, entity.get(Detail.INT_DERIVED));
-    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+    assertEquals(10, entity.original(Detail.INT_DERIVED));
 
     entity.put(Detail.INT, 2);
-    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+    assertEquals(10, entity.original(Detail.INT_DERIVED));
     assertEquals(20, entity.get(Detail.INT_DERIVED));
 
     entity.put(Detail.INT, 1);
     assertEquals(10, entity.get(Detail.INT_DERIVED));
-    assertEquals(10, entity.getOriginal(Detail.INT_DERIVED));
+    assertEquals(10, entity.original(Detail.INT_DERIVED));
 
     Entity invalidDerived = ENTITIES.builder(InvalidDerived.TYPE)
             .with(InvalidDerived.ID, 0)
@@ -265,10 +265,10 @@ public class DefaultEntityTest {
             .build();
     entity2.put(Master.NAME, "newname");
     assertTrue(entity2.isModified());
-    assertEquals("name", entity2.getOriginal(Master.NAME));
+    assertEquals("name", entity2.original(Master.NAME));
     entity2.save(Master.NAME);
     entity2.put(Master.NAME, "name");
-    assertEquals("newname", entity2.getOriginal(Master.NAME));
+    assertEquals("newname", entity2.original(Master.NAME));
 
     assertTrue(entity2.isModified());
     entity2.revertAll();
@@ -373,7 +373,7 @@ public class DefaultEntityTest {
 
     //assert values
     assertEquals(testEntity.get(Detail.ID), detailId);
-    assertTrue(testEntity.getOptional(Detail.ID).isPresent());
+    assertTrue(testEntity.optional(Detail.ID).isPresent());
     assertEquals(testEntity.get(Detail.INT), detailInt);
     assertEquals(testEntity.get(Detail.DOUBLE), detailDouble);
     assertEquals(testEntity.get(Detail.STRING), detailString);
@@ -420,7 +420,7 @@ public class DefaultEntityTest {
     testEntity.put(Detail.MASTER_FK, null);
     assertTrue(testEntity.isNull(Detail.MASTER_ID));
     assertTrue(testEntity.isNull(Detail.MASTER_NAME));
-    assertFalse(testEntity.getOptional(Detail.MASTER_NAME).isPresent());
+    assertFalse(testEntity.optional(Detail.MASTER_NAME).isPresent());
     assertTrue(testEntity.isNull(Detail.MASTER_CODE));
 
     testEntity.put(Detail.MASTER_FK, referencedEntityValue);

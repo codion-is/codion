@@ -541,10 +541,10 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.put(Employee.MGR, 2);
     assertEquals(2, value.get());
     value.set(null);
-    assertFalse(employeeEditModel.getOptional(Employee.MGR).isPresent());
-    assertFalse(employeeEditModel.getOptional(Employee.MGR_FK).isPresent());
+    assertFalse(employeeEditModel.optional(Employee.MGR).isPresent());
+    assertFalse(employeeEditModel.optional(Employee.MGR_FK).isPresent());
     value.set(3);
-    assertTrue(employeeEditModel.getOptional(Employee.MGR).isPresent());
+    assertTrue(employeeEditModel.optional(Employee.MGR).isPresent());
   }
 
   @Test

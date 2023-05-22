@@ -140,7 +140,7 @@ final class EntityPopupMenu extends JPopupMenu {
   private static String createValueString(Entity entity, Property<?> property) {
     StringBuilder builder = new StringBuilder();
     if (entity.isModified(property.attribute())) {
-      builder.append(createValueString(entity.getOriginal(property.attribute()), (Property<Object>) property));
+      builder.append(createValueString(entity.original(property.attribute()), (Property<Object>) property));
       builder.append(" → ");
     }
     builder.append(createValueString(entity.get(property.attribute()), (Property<Object>) property));

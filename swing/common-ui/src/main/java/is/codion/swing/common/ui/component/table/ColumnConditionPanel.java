@@ -208,10 +208,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param conditionModel the condition model to base this panel on
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
-   * @return a new {@link ColumnConditionPanel} instance
+   * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
-    return columnConditionPanel(conditionModel, new DefaultBoundFieldFactory<>(conditionModel));
+  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel) {
+    return columnConditionPanel(conditionModel, new DefaultBoundFieldFactory(conditionModel));
   }
 
   /**
@@ -220,15 +220,17 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param boundFieldFactory the input field factory
    * @param <C> the type of objects used to identify columns
    * @param <T> the column value type
-   * @return a new {@link ColumnConditionPanel} instance or null if the column type is not supported
+   * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
    */
-  public static <C, T> ColumnConditionPanel<C, T> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
-                                                                       BoundFieldFactory boundFieldFactory) {
+  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
+                                                                                 BoundFieldFactory boundFieldFactory) {
+    requireNonNull(conditionModel);
+    requireNonNull(boundFieldFactory);
     if (boundFieldFactory.supportsType(conditionModel.columnClass())) {
-      return new ColumnConditionPanel<>(conditionModel, boundFieldFactory);
+      return Optional.of(new ColumnConditionPanel<>(conditionModel, boundFieldFactory));
     }
 
-    return null;
+    return Optional.empty();
   }
 
   /**
@@ -255,14 +257,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
      * @param columnClass the column class
      * @return true if the type is supported
      */
-    default boolean supportsType(Class<?> columnClass) {
-      requireNonNull(columnClass);
-
-      return Arrays.asList(String.class, Boolean.class, Short.class, Integer.class, Double.class,
-                      BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
-                      LocalDateTime.class, OffsetDateTime.class)
-              .contains(columnClass);
-    }
+    boolean supportsType(Class<?> columnClass);
 
     /**
      * @return the equal value field
@@ -283,12 +278,22 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     Optional<JComponent> createLowerBoundField();
   }
 
-  private static final class DefaultBoundFieldFactory<T> implements BoundFieldFactory {
+  private static final class DefaultBoundFieldFactory implements BoundFieldFactory {
 
-    private final ColumnConditionModel<?, T> columnConditionModel;
+    private static final List<Class<?>> SUPPORTED_TYPES = Arrays.asList(
+            String.class, Boolean.class, Short.class, Integer.class, Double.class,
+            BigDecimal.class, Long.class, LocalTime.class, LocalDate.class,
+            LocalDateTime.class, OffsetDateTime.class);
 
-    private DefaultBoundFieldFactory(ColumnConditionModel<?, T> columnConditionModel) {
+    private final ColumnConditionModel<?, ?> columnConditionModel;
+
+    private DefaultBoundFieldFactory(ColumnConditionModel<?, ?> columnConditionModel) {
       this.columnConditionModel = requireNonNull(columnConditionModel, "columnConditionModel");
+    }
+
+    @Override
+    public boolean supportsType(Class<?> columnClass) {
+      return SUPPORTED_TYPES.contains(requireNonNull(columnClass));
     }
 
     public JComponent createEqualField() {

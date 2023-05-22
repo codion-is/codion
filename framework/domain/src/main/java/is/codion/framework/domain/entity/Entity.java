@@ -66,7 +66,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return the value of the given attribute, wrapped in an {@link Optional}
    */
-  <T> Optional<T> getOptional(Attribute<T> attribute);
+  <T> Optional<T> optional(Attribute<T> attribute);
 
   /**
    * Returns the original value associated with {@code attribute}.
@@ -75,7 +75,16 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return the original value of the given attribute
    */
-  <T> T getOriginal(Attribute<T> attribute);
+  <T> T original(Attribute<T> attribute);
+
+  /**
+   * Returns the original value associated with {@code attribute}, wrapped in an {@link Optional}.
+   * If the value has not been modified the current value is returned.
+   * @param attribute the attribute for which to retrieve the original value
+   * @param <T> the value type
+   * @return the original value of the given attribute, wrapped in an {@link Optional}.
+   */
+  <T> Optional<T> originalOptional(Attribute<T> attribute);
 
   /**
    * This method returns a String representation of the value associated with the given attribute,
@@ -692,7 +701,7 @@ public interface Entity extends Comparable<Entity> {
       return true;
     }
 
-    T originalValue = entity.getOriginal(attribute);
+    T originalValue = entity.original(attribute);
     T comparisonValue = comparison.get(attribute);
     if (attribute.isByteArray()) {
       return !Arrays.equals((byte[]) originalValue, (byte[]) comparisonValue);

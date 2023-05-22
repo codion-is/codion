@@ -934,7 +934,7 @@ public final class FilteredTable<R, C> extends JTable {
 
     @Override
     public <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<? extends C, T> filterModel) {
-      return Optional.ofNullable((ColumnConditionPanel<C, T>) columnConditionPanel(filterModel));
+      return columnConditionPanel(filterModel);
     }
   }
 
