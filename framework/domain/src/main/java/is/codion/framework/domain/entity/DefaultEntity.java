@@ -144,11 +144,6 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final <T> Optional<T> originalOptional(Attribute<T> attribute) {
-    return Optional.ofNullable(original(attribute));
-  }
-
-  @Override
   public final boolean isNull(Attribute<?> attribute) {
     return isNull(definition.property(attribute));
   }

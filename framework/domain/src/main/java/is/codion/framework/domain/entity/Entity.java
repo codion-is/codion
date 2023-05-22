@@ -78,15 +78,6 @@ public interface Entity extends Comparable<Entity> {
   <T> T original(Attribute<T> attribute);
 
   /**
-   * Returns the original value associated with {@code attribute}, wrapped in an {@link Optional}.
-   * If the value has not been modified the current value is returned.
-   * @param attribute the attribute for which to retrieve the original value
-   * @param <T> the value type
-   * @return the original value of the given attribute, wrapped in an {@link Optional}.
-   */
-  <T> Optional<T> originalOptional(Attribute<T> attribute);
-
-  /**
    * This method returns a String representation of the value associated with the given attribute,
    * if the associated property has a format it is used.
    * @param attribute the attribute for which to retrieve the value
