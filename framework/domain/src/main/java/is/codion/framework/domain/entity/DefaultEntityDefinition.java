@@ -1028,8 +1028,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private static void setForeignKeyNullable(ForeignKeyProperty.Builder foreignKeyBuilder,
                                               Map<ForeignKey, List<ColumnProperty<?>>> foreignKeyColumnProperties) {
       //make foreign key properties nullable if and only if any of their constituent column properties are nullable
-      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute())
-              .stream()
+      foreignKeyBuilder.nullable(foreignKeyColumnProperties.get(foreignKeyBuilder.attribute()).stream()
               .anyMatch(Property::isNullable));
     }
   }
