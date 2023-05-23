@@ -28,6 +28,8 @@ import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JSlider;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
@@ -297,6 +299,48 @@ public final class EntityComponentsTest {
     ItemComboBoxModel<Integer> model = (ItemComboBoxModel<Integer>) comboBox.getModel();
     assertEquals(0, model.indexOf(null));
     assertTrue(model.containsItem(Item.item(null)));
+  }
+
+  @Test
+  void integerSpinner() {
+    Value<Integer> value = Value.value();
+    ComponentValue<Integer, JSpinner> componentValue =
+            inputComponents.integerSpinner(Detail.INT)
+                    .linkedValue(value)
+                    .buildValue();
+    JSpinner spinner = componentValue.component();
+    value.set(100);
+    assertEquals(100, componentValue.get());
+    spinner.setValue(42);
+    assertEquals(42, value.get());
+  }
+
+  @Test
+  void doubleSpinner() {
+    Value<Double> value = Value.value();
+    ComponentValue<Double, JSpinner> componentValue =
+            inputComponents.doubleSpinner(Detail.DOUBLE)
+                    .linkedValue(value)
+                    .buildValue();
+    JSpinner spinner = componentValue.component();
+    value.set(100d);
+    assertEquals(100d, componentValue.get());
+    spinner.setValue(42d);
+    assertEquals(42d, value.get());
+  }
+
+  @Test
+  void slider() {
+    Value<Integer> value = Value.value();
+    ComponentValue<Integer, JSlider> componentValue =
+            inputComponents.slider(Detail.INT)
+                    .linkedValue(value)
+                    .buildValue();
+    JSlider slider = componentValue.component();
+    value.set(100);
+    assertEquals(100, slider.getValue());
+    slider.setValue(42);
+    assertEquals(42, value.get());
   }
 
   @Test

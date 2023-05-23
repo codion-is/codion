@@ -87,8 +87,10 @@ public final class TestDomain extends DefaultDomain {
   void detail() {
     add(definition(
             primaryKeyProperty(Detail.ID),
-            columnProperty(Detail.INT, Detail.INT.name()),
-            columnProperty(Detail.DOUBLE, Detail.DOUBLE.name()),
+            columnProperty(Detail.INT, Detail.INT.name())
+                    .valueRange(-10_000, 10_000),
+            columnProperty(Detail.DOUBLE, Detail.DOUBLE.name())
+                    .valueRange(-10_000, 10_000),
             columnProperty(Detail.BIG_DECIMAL, Detail.BIG_DECIMAL.name()),
             columnProperty(Detail.STRING, "Detail string"),
             columnProperty(Detail.DATE, Detail.DATE.name()),
