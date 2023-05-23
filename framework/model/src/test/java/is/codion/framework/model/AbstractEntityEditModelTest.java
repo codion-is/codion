@@ -80,7 +80,7 @@ public final class AbstractEntityEditModelTest {
     try {
       Entity jones = connection.selectSingle(Employee.NAME, "JONES");
       employeeEditModel.setEntity(jones);
-      employeeEditModel.put(Employee.NAME, "Noname");
+      assertEquals("JONES", employeeEditModel.put(Employee.NAME, "Noname"));
       employeeEditModel.insert();
       assertEquals(1, insertEvents.get());
       employeeEditModel.put(Employee.NAME, "Another");

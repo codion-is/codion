@@ -178,8 +178,8 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns true if one or more writable attributes have been modified from their initial value,
-   * read only and non-updatable attributes are excluded unless they are transient.
-   * @return true if one or more attributes have been modified since the entity was initialized
+   * non-insertable and non-updatable attributes are excluded unless they are transient.
+   * @return true if one or more writable attributes have been modified since they were first set
    */
   boolean isModified();
 

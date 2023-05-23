@@ -9098,3 +9098,7 @@
   EntitySearchModel.Builder added
   EntityTablePanel.createTableCellEditor() now returns null in case of foreign keys based only on non-updatable column properties
   EntityTablePanel.createTableCellEditor() now returns Optional
+  EntityEditModel.put() now returns the previous value, some renaming
+  AbstractEntityEditModel.notifyValueEdit() now recursively handles depending attributes
+  EntityTableModel.replaceForeignKeyValues() implementations now make the references immutable
+  DefaultEntity bug fixed, original values of non-insertable and non-updatable column properties were not included when serialized

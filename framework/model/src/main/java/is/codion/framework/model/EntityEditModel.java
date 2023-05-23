@@ -137,8 +137,9 @@ public interface EntityEditModel {
    * @param attribute the attribute to associate the given value with
    * @param value the value to associate with the given attribute
    * @param <T> the value type
+   * @return the previous value, if any
    */
-  <T> void put(Attribute<T> attribute, T value);
+  <T> T put(Attribute<T> attribute, T value);
 
   /**
    * Removes the given value from the underlying Entity
