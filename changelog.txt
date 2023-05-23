@@ -9046,3 +9046,4 @@
   EntityEditModel.getOriginal() renamed original()
   Entity, get prefix removed from static helper methods
   AbstractEntityEditModel.modifiedEntities() renamed modified()
+  KeyEvents.Builder.keyEvent() renamed keyCode()

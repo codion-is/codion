@@ -42,12 +42,12 @@ public final class KeyEvents {
   /**
    * Instantiates a new {@link KeyEvents.Builder} instance.
    * Note that an Action must be set via {@link Builder#action(Action)} before enabling/disabling.
-   * @param keyEvent the key event
+   * @param keyCode the key code
    * @return a {@link Builder} instance.
    */
-  public static Builder builder(int keyEvent) {
+  public static Builder builder(int keyCode) {
     return new DefaultBuilder()
-            .keyEvent(keyEvent);
+            .keyCode(keyCode);
   }
 
   /**
@@ -58,10 +58,10 @@ public final class KeyEvents {
   public interface Builder {
 
     /**
-     * @param keyEvent the key event code
+     * @param keyCode the key code
      * @return this builder instance
      */
-    Builder keyEvent(int keyEvent);
+    Builder keyCode(int keyCode);
 
     /**
      * @param modifiers the modifiers
@@ -117,15 +117,15 @@ public final class KeyEvents {
 
   private static final class DefaultBuilder implements Builder {
 
-    private int keyEvent;
+    private int keyCode;
     private int modifiers;
     private int condition = WHEN_FOCUSED;
     private boolean onKeyReleased = false;
     private Action action;
 
     @Override
-    public Builder keyEvent(int keyEvent) {
-      this.keyEvent = keyEvent;
+    public Builder keyCode(int keyCode) {
+      this.keyCode = keyCode;
       return this;
     }
 
@@ -161,7 +161,7 @@ public final class KeyEvents {
 
     @Override
     public KeyStroke keyStroke() {
-      return getKeyStroke(keyEvent, modifiers, onKeyReleased);
+      return getKeyStroke(keyCode, modifiers, onKeyReleased);
     }
 
     @Override
@@ -188,7 +188,7 @@ public final class KeyEvents {
 
     private String createDefaultActionMapKey(JComponent component) {
       return new StringBuilder(component.getClass().getSimpleName())
-              .append("_k:").append(keyEvent)
+              .append("_k:").append(keyCode)
               .append("_m:").append(modifiers)
               .append("_c:").append(condition)
               .append(onKeyReleased ? "_released" : "_pressed")
