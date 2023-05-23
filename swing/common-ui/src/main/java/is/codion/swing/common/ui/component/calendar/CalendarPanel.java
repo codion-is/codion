@@ -452,65 +452,64 @@ public final class CalendarPanel extends JPanel {
 
   private void addKeyEvents() {
     KeyEvents.Builder keyEvent = KeyEvents.builder()
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .onKeyPressed();
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     keyEvent.modifiers(CTRL_DOWN_MASK)
-            .keyEvent(VK_LEFT)
+            .keyCode(VK_LEFT)
             .action(control(this::previousYear))
             .enable(this);
-    keyEvent.keyEvent(VK_DOWN)
+    keyEvent.keyCode(VK_DOWN)
             .enable(this);
-    keyEvent.keyEvent(VK_RIGHT)
+    keyEvent.keyCode(VK_RIGHT)
             .action(control(this::nextYear))
             .enable(this);
-    keyEvent.keyEvent(VK_UP)
+    keyEvent.keyCode(VK_UP)
             .enable(this);
     keyEvent.modifiers(SHIFT_DOWN_MASK)
-            .keyEvent(VK_LEFT)
+            .keyCode(VK_LEFT)
             .action(control(this::previousMonth))
             .enable(this);
-    keyEvent.keyEvent(VK_DOWN)
+    keyEvent.keyCode(VK_DOWN)
             .enable(this);
-    keyEvent.keyEvent(VK_RIGHT)
+    keyEvent.keyCode(VK_RIGHT)
             .action(control(this::nextMonth))
             .enable(this);
-    keyEvent.keyEvent(VK_UP)
+    keyEvent.keyCode(VK_UP)
             .enable(this);
     keyEvent.modifiers(ALT_DOWN_MASK)
-            .keyEvent(VK_UP)
+            .keyCode(VK_UP)
             .action(control(this::previousWeek))
             .enable(this);
-    keyEvent.keyEvent(VK_DOWN)
+    keyEvent.keyCode(VK_DOWN)
             .action(control(this::nextWeek))
             .enable(this);
-    keyEvent.keyEvent(VK_LEFT)
+    keyEvent.keyCode(VK_LEFT)
             .action(control(this::previousDay))
             .enable(this);
-    keyEvent.keyEvent(VK_RIGHT)
+    keyEvent.keyCode(VK_RIGHT)
             .action(control(this::nextDay))
             .enable(this);
     if (includeTime) {
       keyEvent.modifiers(SHIFT_DOWN_MASK | ALT_DOWN_MASK)
-              .keyEvent(VK_LEFT)
+              .keyCode(VK_LEFT)
               .action(control(this::previousHour))
               .enable(this);
-      keyEvent.keyEvent(VK_DOWN)
+      keyEvent.keyCode(VK_DOWN)
               .enable(this);
-      keyEvent.keyEvent(VK_RIGHT)
+      keyEvent.keyCode(VK_RIGHT)
               .action(control(this::nextHour))
               .enable(this);
-      keyEvent.keyEvent(VK_UP)
+      keyEvent.keyCode(VK_UP)
               .enable(this);
       keyEvent.modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-              .keyEvent(VK_LEFT)
+              .keyCode(VK_LEFT)
               .action(control(this::previousMinute))
               .enable(this);
-      keyEvent.keyEvent(VK_DOWN)
+      keyEvent.keyCode(VK_DOWN)
               .enable(this);
-      keyEvent.keyEvent(VK_RIGHT)
+      keyEvent.keyCode(VK_RIGHT)
               .action(control(this::nextMinute))
               .enable(this);
-      keyEvent.keyEvent(VK_UP)
+      keyEvent.keyCode(VK_UP)
               .enable(this);
     }
   }

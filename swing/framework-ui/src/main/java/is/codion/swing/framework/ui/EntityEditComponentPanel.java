@@ -21,6 +21,9 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
+import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -41,6 +44,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
@@ -169,8 +173,21 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editModel the edit model
    */
   protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
+    this(editModel, new EntityComponents(editModel.entityDefinition()));
+  }
+
+  /**
+   * Instantiates a new EntityEditComponentPanel
+   * @param editModel the edit model
+   * @param entityComponents the entity components to use when creating components
+   * @throws IllegalArgumentException in case the edit model and entity components entityTypes don't match
+   */
+  protected EntityEditComponentPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
     this.editModel = requireNonNull(editModel, "editModel");
-    this.entityComponents = new EntityComponents(editModel.entityDefinition());
+    this.entityComponents = requireNonNull(entityComponents, "entityComponents");
+    if (!editModel.entityType().equals(entityComponents.entityDefinition().type())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().type());
+    }
     addFocusedComponentListener();
   }
 
@@ -702,6 +719,15 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * Creates a builder for a slider
+   * @param attribute the attribute
+   * @return a slider builder
+   */
+  protected final SliderBuilder createSlider(Attribute<Integer> attribute) {
+    return setComponentBuilder(attribute, entityComponents.slider(attribute));
+  }
+
+  /**
    * Creates a builder for a spinner
    * @param attribute the attribute
    * @return a spinner builder
@@ -717,6 +743,27 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberSpinnerBuilder<Double> createDoubleSpinner(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleSpinner(attribute));
+  }
+
+  /**
+   * Creates a builder for a list spinner
+   * @param attribute the attribute
+   * @param spinnerListModel the spinner model
+   * @return a spinner builder
+   * @param <T> the value type
+   */
+  protected final <T> ListSpinnerBuilder<T> createListSpinner(Attribute<T> attribute, SpinnerListModel spinnerListModel) {
+    return setComponentBuilder(attribute, entityComponents.listSpinner(attribute, spinnerListModel));
+  }
+
+  /**
+   * Creates a builder for a list spinner
+   * @param attribute the attribute
+   * @return a spinner builder
+   * @param <T> the value type
+   */
+  protected final <T> ItemSpinnerBuilder<T> createItemSpinner(Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponents.itemSpinner(attribute));
   }
 
   /**

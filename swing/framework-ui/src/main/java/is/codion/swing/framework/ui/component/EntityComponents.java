@@ -18,6 +18,9 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
+import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -31,11 +34,14 @@ import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
+import javax.swing.SpinnerListModel;
 import java.math.BigDecimal;
 import java.text.FieldPosition;
 import java.text.Format;
@@ -555,6 +561,35 @@ public class EntityComponents {
   }
 
   /**
+   * Creates a {@link javax.swing.JSlider} builder based on the given attribute,
+   * with a bounded range model based on the min/max values of the associated property.
+   * @param attribute the attribute
+   * @return a {@link javax.swing.JSlider} builder
+   */
+  public final SliderBuilder slider(Attribute<Integer> attribute) {
+    Property<Integer> property = entityDefinition.property(attribute);
+
+    BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
+    boundedRangeModel.setMinimum(property.minimumValue().intValue());
+    boundedRangeModel.setMaximum(property.maximumValue().intValue());
+
+    return slider(attribute, boundedRangeModel);
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSlider} builder based on the given attribute.
+   * @param attribute the attribute
+   * @param boundedRangeModel the bounded range model
+   * @return a {@link javax.swing.JSlider} builder
+   */
+  public final SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
+    Property<Integer> property = entityDefinition.property(attribute);
+
+    return Components.slider(boundedRangeModel)
+            .toolTipText(property.description());
+  }
+
+  /**
    * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
    * @param attribute the attribute
    * @return a {@link javax.swing.JSpinner} builder
@@ -579,6 +614,36 @@ public class EntityComponents {
     return Components.doubleSpinner()
             .minimum(property.minimumValue().doubleValue())
             .maximum(property.maximumValue().doubleValue())
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
+   * @param attribute the attribute
+   * @param listModel the spinner model
+   * @param <T> the value type
+   * @return a {@link javax.swing.JSpinner} builder
+   */
+  public final <T> ListSpinnerBuilder<T> listSpinner(Attribute<T> attribute, SpinnerListModel listModel) {
+    Property<T> property = entityDefinition.property(attribute);
+
+    return Components.<T>listSpinner(listModel)
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSpinner} builder based on the given attribute.
+   * @param attribute the attribute
+   * @param <T> the value type
+   * @return a {@link javax.swing.JSpinner} builder
+   */
+  public final <T> ItemSpinnerBuilder<T> itemSpinner(Attribute<T> attribute) {
+    Property<T> property = entityDefinition.property(attribute);
+    if (!(property instanceof ItemProperty)) {
+      throw new IllegalArgumentException("Property based on '" + property.attribute() + "' is not a ItemProperty");
+    }
+
+    return Components.<T>itemSpinner(new SpinnerListModel(((ItemProperty<T>) property).items()))
             .toolTipText(property.description());
   }
 

@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.component.AbstractComponentValue;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;
+import java.util.List;
 
 final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
 
@@ -25,6 +26,7 @@ final class SpinnerListValue<T> extends AbstractComponentValue<T, JSpinner> {
 
   @Override
   protected void setComponentValue(T value) {
-    component().setValue(value == null ? ((SpinnerListModel) component().getModel()).getList().get(0) : value);
+    List<?> list = ((SpinnerListModel) component().getModel()).getList();
+    component().setValue(value == null ? (list.isEmpty() ? null : list.get(0)) : value);
   }
 }

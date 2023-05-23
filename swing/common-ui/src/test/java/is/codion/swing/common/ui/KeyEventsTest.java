@@ -31,7 +31,7 @@ public class KeyEventsTest {
   @Test
   void addKeyEventWithoutName() {
     JComboBox<String> comboBox = new JComboBox<>();
-    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(Control.control(() -> {})).onKeyReleased();
+    KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(Control.control(() -> {})).onKeyRelease(true);
     builder.enable(comboBox);
     builder.disable(comboBox);
   }
