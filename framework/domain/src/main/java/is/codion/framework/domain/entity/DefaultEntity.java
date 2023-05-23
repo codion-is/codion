@@ -242,9 +242,7 @@ class DefaultEntity implements Entity, Serializable {
     if (values.containsKey(attribute)) {
       value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
-      if (definition.isForeignKeyAttribute(attribute)) {
-        definition.foreignKeyProperties(attribute).forEach(foreignKeyProperty -> remove(foreignKeyProperty.attribute()));
-      }
+      definition.foreignKeyProperties(attribute).forEach(foreignKeyProperty -> remove(foreignKeyProperty.attribute()));
     }
 
     return value;
