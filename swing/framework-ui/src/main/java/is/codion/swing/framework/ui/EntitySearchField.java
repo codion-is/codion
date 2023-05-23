@@ -207,7 +207,7 @@ public final class EntitySearchField extends HintTextField {
    * @return a new builder instance
    */
   public static Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    return new DefaultEntitySearchFieldBuilder(EntitySearchModel.entitySearchModel(entityType, connectionProvider));
+    return new DefaultEntitySearchFieldBuilder(EntitySearchModel.builder(entityType, connectionProvider).build());
   }
 
   /**
