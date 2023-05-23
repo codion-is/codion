@@ -9055,3 +9055,4 @@
   EntityComponents.slider() added
   EntityEditComponentPanel.createSlider() added
   Key.getOptional() renamed optional()
+  FilteredTableColumn.getColumnClass() and getComparator() renamed columnClass() and comparator()

@@ -85,14 +85,14 @@ public final class FilteredTableColumn<C> extends TableColumn {
   /**
    * @return the column class
    */
-  public Class<?> getColumnClass() {
+  public Class<?> columnClass() {
     return columnClass;
   }
 
   /**
    * @return the column comparator
    */
-  public Comparator<?> getComparator() {
+  public Comparator<?> comparator() {
     return comparator;
   }
 

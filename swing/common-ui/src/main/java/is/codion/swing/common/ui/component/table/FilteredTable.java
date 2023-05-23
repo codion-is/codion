@@ -948,7 +948,7 @@ public final class FilteredTable<R, C> extends JTable {
 
     @Override
     public TableCellRenderer tableCellRenderer(FilteredTableColumn<C> column) {
-      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.getColumnClass()).build();
+      return FilteredTableCellRenderer.builder(tableModel, column.getIdentifier(), column.columnClass()).build();
     }
   }
 }
