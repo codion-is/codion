@@ -49,13 +49,13 @@ public interface State extends StateObserver, Value<Boolean> {
      * Adds a state to this state combination
      * @param state the state to add to this state combination
      */
-    void addState(StateObserver state);
+    void add(StateObserver state);
 
     /**
      * Removes a state from this state combination
      * @param state the state to remove from this state combination
      */
-    void removeState(StateObserver state);
+    void remove(StateObserver state);
   }
 
   /**
@@ -71,7 +71,7 @@ public interface State extends StateObserver, Value<Boolean> {
      * Adding an active state deactivates all other states in the group.
      * @param state the {@link State} instance to add
      */
-    void addState(State state);
+    void add(State state);
 
     /**
      * Adds the given states to this {@link State.Group} via a WeakReference,
@@ -79,7 +79,7 @@ public interface State extends StateObserver, Value<Boolean> {
      * Adding an active state deactivates all other states in the group.
      * @param states the {@link State} instances to add
      */
-    void addStates(Collection<State> states);
+    void add(Collection<State> states);
   }
 
   /**

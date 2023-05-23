@@ -30,7 +30,7 @@ final class DefaultStateCombination implements State.Combination {
     this.observer = new DefaultStateObserver(this, false);
     this.conjunction = requireNonNull(conjunction);
     for (StateObserver state : requireNonNull(states)) {
-      addState(state);
+      add(state);
     }
   }
 
@@ -53,7 +53,7 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public void addState(StateObserver state) {
+  public void add(StateObserver state) {
     requireNonNull(state, "state");
     synchronized (observer) {
       if (!findListener(state).isPresent()) {
@@ -65,7 +65,7 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public void removeState(StateObserver state) {
+  public void remove(StateObserver state) {
     requireNonNull(state, "state");
     synchronized (observer) {
       boolean previousValue = get();

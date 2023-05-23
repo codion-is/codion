@@ -79,7 +79,7 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
     requireNonNull(foreignKey);
     ForeignKeyProperty foreignKeyProperty = entityDefinition().foreignKeyProperty(foreignKey);
     FXEntityListModel entityListModel = new FXEntityListModel(foreignKeyProperty.referencedType(), connectionProvider());
-    refreshingObserver.addState(entityListModel.refresher().refreshingObserver());
+    refreshingObserver.add(entityListModel.refresher().refreshingObserver());
 
     return entityListModel;
   }
@@ -117,7 +117,7 @@ public class FXEntityEditModel extends AbstractEntityEditModel {
 
   @Override
   public final void addRefreshingObserver(StateObserver refreshingObserver) {
-    this.refreshingObserver.addState(refreshingObserver);
+    this.refreshingObserver.add(refreshingObserver);
   }
 
   @Override
