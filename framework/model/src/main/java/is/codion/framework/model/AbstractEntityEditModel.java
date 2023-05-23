@@ -363,13 +363,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final <T> void put(Attribute<T> attribute, T value) {
+  public final <T> T put(Attribute<T> attribute, T value) {
     entityDefinition().property(attribute);
-    Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);
+    Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
       notifyValueEdit(attribute, value, dependingValues);
     }
+
+    return previousValue;
   }
 
   @Override
@@ -377,7 +379,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityDefinition().property(attribute);
     T value = null;
     if (entity.contains(attribute)) {
-      Map<Attribute<?>, Object> dependingValues = dependentValues(attribute);
+      Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
       value = entity.remove(attribute);
       notifyValueEdit(attribute, null, dependingValues);
     }
@@ -1024,7 +1026,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     afterUpdateEvent.addListener(entitiesEditedEvent);
   }
 
-  private Map<Attribute<?>, Object> dependentValues(Attribute<?> attribute) {
+  private Map<Attribute<?>, Object> dependendingValues(Attribute<?> attribute) {
     Map<Attribute<?>, Object> dependentValues = new HashMap<>();
     EntityDefinition entityDefinition = entityDefinition();
     entityDefinition.derivedAttributes(attribute).forEach(derivedAttribute ->
@@ -1039,13 +1041,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return dependentValues;
   }
 
-  private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependentValues) {
+  private <T> void notifyValueEdit(Attribute<T> attribute, T value, Map<Attribute<?>, Object> dependingValues) {
     onValueChange(attribute, value);
     editEvent(attribute).onEvent(value);
-    dependentValues.forEach((dependentAttribute, previousValue) -> {
-      Object currentValue = get(dependentAttribute);
+    dependingValues.forEach((dependingAttribute, previousValue) -> {
+      Object currentValue = get(dependingAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit((Attribute<Object>) dependentAttribute, currentValue, emptyMap());
+        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
       }
     });
   }
