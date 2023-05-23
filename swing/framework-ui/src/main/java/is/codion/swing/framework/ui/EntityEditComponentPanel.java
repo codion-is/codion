@@ -21,6 +21,8 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
+import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
 import is.codion.swing.common.ui.component.text.MaskedTextFieldBuilder;
 import is.codion.swing.common.ui.component.text.NumberField;
@@ -41,6 +43,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.JTextField;
+import javax.swing.SpinnerListModel;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
@@ -717,6 +720,28 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final NumberSpinnerBuilder<Double> createDoubleSpinner(Attribute<Double> attribute) {
     return setComponentBuilder(attribute, entityComponents.doubleSpinner(attribute));
+  }
+
+  /**
+   * Creates a builder for a list spinner
+   * @param attribute the attribute
+   * @param spinnerListModel the spinner model
+   * @return a spinner builder
+   * @param <T> the value type
+   */
+  protected final <T> ListSpinnerBuilder<T> createListSpinner(Attribute<T> attribute, SpinnerListModel spinnerListModel) {
+    return setComponentBuilder(attribute, entityComponents.listSpinner(attribute, spinnerListModel));
+  }
+
+  /**
+   * Creates a builder for a list spinner
+   * @param attribute the attribute
+   * @param spinnerListModel the spinner model
+   * @return a spinner builder
+   * @param <T> the value type
+   */
+  protected final <T> ItemSpinnerBuilder<T> createItemSpinner(Attribute<T> attribute) {
+    return setComponentBuilder(attribute, entityComponents.itemSpinner(attribute));
   }
 
   /**

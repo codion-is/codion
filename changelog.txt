@@ -9049,3 +9049,5 @@
   KeyEvents.Builder.keyEvent() renamed keyCode()
   KeyEvents.Builder.onKeyReleased() and onKeyPressed() replaced with onKeyRelease(boolean)
   KeyEvents.keyStroke() removed, keyStroke(keyStroke) and keyChar(char) added, minor refactoring
+  EntityComponents.listSpinner() and itemSpinner() added
+  EntityComponentPanel.createListSpinner() and createItemSpinner() added
