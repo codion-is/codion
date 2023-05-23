@@ -38,7 +38,7 @@ public final class WaitCursor {
    * @see #hide(JComponent)
    */
   public static void show(JComponent component) {
-    show(Utilities.getParentWindow(component));
+    show(Utilities.parentWindow(component));
   }
 
   /**
@@ -58,7 +58,7 @@ public final class WaitCursor {
    * @see #show(JComponent)
    */
   public static void hide(JComponent component) {
-    hide(Utilities.getParentWindow(component));
+    hide(Utilities.parentWindow(component));
   }
 
   /**

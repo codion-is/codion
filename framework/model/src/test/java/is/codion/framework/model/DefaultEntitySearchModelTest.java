@@ -20,7 +20,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -46,28 +45,28 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void constructorNullEntityType() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(null, CONNECTION_PROVIDER, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(null, CONNECTION_PROVIDER));
   }
 
   @Test
   void constructorNullConnectionProvider() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, null, new ArrayList<>()));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, null));
   }
 
   @Test
   void constructorNullSearchProperties() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchAttributes(null));
   }
 
   @Test
   void searchWithNoSearchProperties() {
-    assertThrows(IllegalStateException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, emptyList()).performQuery());
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchAttributes(emptyList()));
   }
 
   @Test
   void constructorIncorrectEntitySearchProperty() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER,
-            singletonList(Department.NAME)));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+            .searchAttributes(singletonList(Department.NAME)));
   }
 
   @Test
@@ -219,7 +218,9 @@ public final class DefaultEntitySearchModelTest {
   @BeforeEach
   void setUp() throws Exception {
     searchAttributes = asList(Employee.NAME, Employee.JOB);
-    searchModel = new DefaultEntitySearchModel(Employee.TYPE, CONNECTION_PROVIDER, searchAttributes);
+    searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
+            .searchAttributes(searchAttributes)
+            .build();
 
     CONNECTION_PROVIDER.connection().beginTransaction();
     setupData();

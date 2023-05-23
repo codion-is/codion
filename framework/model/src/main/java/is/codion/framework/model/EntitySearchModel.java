@@ -22,11 +22,9 @@ import java.util.Optional;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * Responsible for performing entity searches based on a search text and set of condition attributes.
- * Factory for {@link EntitySearchModel} instances via {@link EntitySearchModel#entitySearchModel(EntityType, EntityConnectionProvider)}.
+ * Factory for {@link EntitySearchModel.Builder} instances via {@link EntitySearchModel#builder(EntityType, EntityConnectionProvider)}.
  */
 public interface EntitySearchModel {
 
@@ -198,26 +196,64 @@ public interface EntitySearchModel {
   }
 
   /**
-   * Instantiates a new {@link EntitySearchModel}, using the search properties for the given entity type
-   * @param entityType the type of the entity to search
-   * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @return a new {@link EntitySearchModel} instance
-   * @see EntityDefinition#searchAttributes()
+   * A builder for a {@link EntitySearchModel}.
    */
-  static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    return entitySearchModel(entityType, connectionProvider,
-            requireNonNull(connectionProvider).entities().definition(entityType).searchAttributes());
+  interface Builder {
+
+    /**
+     * @param searchAttributes the search attributes
+     * @return this builder
+     * @throws IllegalArgumentException in case {@code searchAttributes} is empty
+     */
+    Builder searchAttributes(Collection<Attribute<String>> searchAttributes);
+
+    /**
+     * Override the default toString() for search elements when displayed in a field based on this model
+     * @param toStringProvider the toString provider
+     * @return this builder
+     */
+    Builder toStringProvider(Function<Entity, String> toStringProvider);
+
+    /**
+     * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
+     * @return this builder
+     */
+    Builder resultSorter(Comparator<Entity> resultSorter);
+
+    /**
+     * @param description the description
+     * @return this builder
+     */
+    Builder description(String description);
+
+    /**
+     * Default true
+     * @param multiSelectionEnabled true if multiple selection should be enabled
+     * @return this builder
+     */
+    Builder multipleSelectionEnabled(boolean multiSelectionEnabled);
+
+    /**
+     * Default ','
+     * @param multipleItemSeparator the text used to separate multiple selected items
+     * @return this builder
+     */
+    Builder multipleItemSeparator(String multipleItemSeparator);
+
+    /**
+     * @return a new {@link EntitySearchModel} based on this builder
+     */
+    EntitySearchModel build();
   }
 
   /**
-   * Instantiates a new {@link EntitySearchModel}
+   * Instantiates a new {@link EntitySearchModel.Builder}, intialized with the search properties for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
-   * @param searchAttributes the attributes to search by
-   * @return a new {@link EntitySearchModel} instance
+   * @return a new {@link EntitySearchModel.Builder} instance
+   * @see EntityDefinition#searchAttributes()
    */
-  static EntitySearchModel entitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                                             Collection<Attribute<String>> searchAttributes) {
-    return new DefaultEntitySearchModel(entityType, connectionProvider, searchAttributes);
+  static EntitySearchModel.Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+    return new DefaultEntitySearchModel.DefaultBuilder(entityType, connectionProvider);
   }
 }

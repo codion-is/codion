@@ -115,7 +115,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
     @Override
     public void run() {
-      Utilities.getParentDialog(componentValue.component()).dispose();
+      Utilities.parentDialog(componentValue.component()).dispose();
       okPressed.set(true);
     }
   }

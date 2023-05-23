@@ -171,7 +171,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
       }
       else {
         comparison = ((Comparator<Object>) columnComparators.computeIfAbsent(columnIdentifier,
-                k -> columnModel.column(columnIdentifier).getComparator())).compare(valueOne, valueTwo);
+                k -> columnModel.column(columnIdentifier).comparator())).compare(valueOne, valueTwo);
       }
       if (comparison != 0) {
         return sortOrder == SortOrder.DESCENDING ? -comparison : comparison;

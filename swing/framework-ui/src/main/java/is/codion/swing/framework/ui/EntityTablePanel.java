@@ -12,6 +12,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ItemProperty;
@@ -753,7 +754,7 @@ public class EntityTablePanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityTablePanel.this;
     }
-    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
   }
 
   /**
@@ -1049,17 +1050,21 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates a TableCellEditor for the given attribute, returns null if no editor is available
+   * Creates a TableCellEditor for the given attribute, returns an empty Optional if no editor is available,
+   * such as for non-updatable properties.
    * @param attribute the attribute
-   * @return a TableCellEditor for the given attribute
+   * @return a TableCellEditor for the given attribute, an empty Optional in case none is available
    */
-  protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
+  protected Optional<TableCellEditor> createTableCellEditor(Attribute<?> attribute) {
     Property<?> property = tableModel.entityDefinition().property(attribute);
     if (attribute instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
-      return null;
+      return Optional.empty();
+    }
+    if (isNonUpdatableForeignKey(attribute)) {
+      return Optional.empty();
     }
 
-    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null));
+    return Optional.of(new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null)));
   }
 
   /**
@@ -1520,7 +1525,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-    column.setCellEditor(createTableCellEditor(column.getIdentifier()));
+    createTableCellEditor(column.getIdentifier()).ifPresent(column::setCellEditor);
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 
@@ -1632,10 +1637,10 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
+  private void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
     if (scrollPane != null && scrollPane.isVisible()) {
       if (advancedState.get()) {
-        boolean isParentOfFocusOwner = getParentOfType(JScrollPane.class,
+        boolean isParentOfFocusOwner = parentOfType(JScrollPane.class,
                 getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
         visibleState.set(false);
         if (isParentOfFocusOwner) {
@@ -1650,6 +1655,21 @@ public class EntityTablePanel extends JPanel {
       advancedState.set(false);
       visibleState.set(true);
     }
+  }
+
+  private boolean isNonUpdatableForeignKey(Attribute<?> attribute) {
+    if (attribute instanceof ForeignKey) {
+      ForeignKey foreignKey = (ForeignKey) attribute;
+
+      return foreignKey.references().stream()
+              .map(ForeignKey.Reference::attribute)
+              .map(referenceAttribute -> tableModel.entityDefinition().property(referenceAttribute))
+              .filter(ColumnProperty.class::isInstance)
+              .map(ColumnProperty.class::cast)
+              .noneMatch(ColumnProperty::isUpdatable);
+    }
+
+    return false;
   }
 
   private FilteredTableConditionPanel<Attribute<?>> configureHorizontalAlignment(FilteredTableConditionPanel<Attribute<?>> tableConditionPanel) {

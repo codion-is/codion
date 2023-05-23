@@ -355,7 +355,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public Class<?> getColumnClass(C columnIdentifier) {
-    return columnModel.column(columnIdentifier).getColumnClass();
+    return columnModel.column(columnIdentifier).columnClass();
   }
 
   @Override

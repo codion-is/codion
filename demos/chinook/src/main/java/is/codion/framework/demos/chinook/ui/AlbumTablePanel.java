@@ -41,11 +41,11 @@ public final class AlbumTablePanel extends EntityTablePanel {
   private void displayImage(String title, byte[] imageBytes) throws IOException {
     imagePanel.setImage(ImageIO.read(new ByteArrayInputStream(imageBytes)));
     if (imagePanel.isShowing()) {
-      Utilities.getParentDialog(imagePanel).toFront();
+      Utilities.parentDialog(imagePanel).toFront();
     }
     else {
       Dialogs.componentDialog(imagePanel)
-              .owner(Utilities.getParentWindow(this))
+              .owner(Utilities.parentWindow(this))
               .title(title)
               .modal(false)
               .onClosed(dialog -> imagePanel.setImage(null))

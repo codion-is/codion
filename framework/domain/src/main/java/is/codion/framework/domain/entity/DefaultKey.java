@@ -135,7 +135,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Optional<T> getOptional() {
+  public <T> Optional<T> optional() {
     return Optional.ofNullable(get());
   }
 
@@ -149,7 +149,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Optional<T> getOptional(Attribute<T> attribute) {
+  public <T> Optional<T> optional(Attribute<T> attribute) {
     return Optional.ofNullable(get(attribute));
   }
 

@@ -72,24 +72,26 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private final Map<Attribute<String>, SearchSettings> attributeSearchSettings = new HashMap<>();
 
   private final Value<String> searchStringValue = Value.value("");
-  private final Value<String> multipleItemSeparatorValue = Value.value(DEFAULT_SEPARATOR, DEFAULT_SEPARATOR);
+  private final Value<String> multipleItemSeparatorValue;
   private final State multipleSelectionEnabledState = State.state(true);
   private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final State selectionEmptyState = State.state(true);
 
-  private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
-  private Supplier<Condition> additionalConditionSupplier;
-  private Comparator<Entity> resultSorter = new EntityComparator();
+  private Function<Entity, String> toStringProvider;
+  private Comparator<Entity> resultSorter;
   private String description;
+  private Supplier<Condition> additionalConditionSupplier;
 
-  DefaultEntitySearchModel(EntityType entityType, EntityConnectionProvider connectionProvider,
-                           Collection<Attribute<String>> searchAttributes) {
-    validateSearchAttributes(requireNonNull(entityType), requireNonNull(searchAttributes));
-    this.connectionProvider = requireNonNull(connectionProvider);
-    this.entityType = entityType;
-    this.searchAttributes = unmodifiableCollection(searchAttributes);
-    this.description = createDescription();
+  private DefaultEntitySearchModel(DefaultBuilder builder) {
+    this.entityType = builder.entityType;
+    this.connectionProvider = builder.connectionProvider;
+    this.multipleItemSeparatorValue = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
+    this.searchAttributes = unmodifiableCollection(builder.searchAttributes);
     this.searchAttributes.forEach(attribute -> attributeSearchSettings.put(attribute, new DefaultSearchSettings()));
+    this.toStringProvider = builder.toStringProvider;
+    this.resultSorter = builder.resultSorter;
+    this.description = builder.description == null ? createDescription() : builder.description;
+    this.multipleSelectionEnabledState.set(builder.multiSelectionEnabled);
     bindEventsInternal();
   }
 
@@ -325,14 +327,6 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
   }
 
-  private static void validateSearchAttributes(EntityType entityType, Collection<Attribute<String>> searchAttributes) {
-    for (Attribute<String> attribute : searchAttributes) {
-      if (!entityType.equals(attribute.entityType())) {
-        throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
-      }
-    }
-  }
-
   private static final class DefaultSearchSettings implements SearchSettings {
 
     private final State wildcardPrefixState = State.state(true);
@@ -360,6 +354,77 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     @Override
     public int compare(Entity o1, Entity o2) {
       return o1.compareTo(o2);
+    }
+  }
+
+  static final class DefaultBuilder implements Builder {
+
+    private final EntityType entityType;
+    private final EntityConnectionProvider connectionProvider;
+    private Collection<Attribute<String>> searchAttributes;
+    private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
+    private Comparator<Entity> resultSorter = new EntityComparator();
+    private String description;
+    private boolean multiSelectionEnabled = true;
+    private String multipleItemSeparator = DEFAULT_SEPARATOR;
+
+    DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
+      this.entityType = requireNonNull(entityType);
+      this.connectionProvider = requireNonNull(connectionProvider);
+      this.searchAttributes = connectionProvider.entities().definition(entityType).searchAttributes();
+    }
+
+    @Override
+    public Builder searchAttributes(Collection<Attribute<String>> searchAttributes) {
+      if (requireNonNull(searchAttributes).isEmpty()) {
+        throw new IllegalArgumentException("One or more search attribute is required");
+      }
+      validateSearchAttributes(searchAttributes);
+      this.searchAttributes = searchAttributes;
+      return this;
+    }
+
+    @Override
+    public Builder toStringProvider(Function<Entity, String> toStringProvider) {
+      this.toStringProvider = requireNonNull(toStringProvider);
+      return this;
+    }
+
+    @Override
+    public Builder resultSorter(Comparator<Entity> resultSorter) {
+      this.resultSorter = resultSorter;
+      return this;
+    }
+
+    @Override
+    public Builder description(String description) {
+      this.description = requireNonNull(description);
+      return this;
+    }
+
+    @Override
+    public Builder multipleSelectionEnabled(boolean multiSelectionEnabled) {
+      this.multiSelectionEnabled = multiSelectionEnabled;
+      return this;
+    }
+
+    @Override
+    public Builder multipleItemSeparator(String multipleItemSeparator) {
+      this.multipleItemSeparator = requireNonNull(multipleItemSeparator);
+      return this;
+    }
+
+    @Override
+    public EntitySearchModel build() {
+      return new DefaultEntitySearchModel(this);
+    }
+
+    private void validateSearchAttributes(Collection<Attribute<String>> searchAttributes) {
+      for (Attribute<String> attribute : searchAttributes) {
+        if (!entityType.equals(attribute.entityType())) {
+          throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
+        }
+      }
     }
   }
 }

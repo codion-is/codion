@@ -225,7 +225,7 @@ public final class Utilities {
    * @param component the component
    * @return the parent of the given component of the given type, null if none is found
    */
-  public static <T> T getParentOfType(Class<T> clazz, Component component) {
+  public static <T> T parentOfType(Class<T> clazz, Component component) {
     return (T) SwingUtilities.getAncestorOfClass(clazz, component);
   }
 
@@ -235,12 +235,12 @@ public final class Utilities {
    * @param component the component
    * @return the parent Window of the given component, null if none is found
    */
-  public static Window getParentWindow(Component component) {
+  public static Window parentWindow(Component component) {
     if (component instanceof Window) {
       return (Window) component;
     }
 
-    return getParentOfType(Window.class, component);
+    return parentOfType(Window.class, component);
   }
 
   /**
@@ -249,12 +249,12 @@ public final class Utilities {
    * @param component the component
    * @return the parent JFrame of the given component, null if none is found
    */
-  public static JFrame getParentFrame(Component component) {
+  public static JFrame parentFrame(Component component) {
     if (component instanceof JFrame) {
       return (JFrame) component;
     }
 
-    return getParentOfType(JFrame.class, component);
+    return parentOfType(JFrame.class, component);
   }
 
   /**
@@ -263,12 +263,12 @@ public final class Utilities {
    * @param component the component
    * @return the parent JDialog of the given component, null if none is found
    */
-  public static JDialog getParentDialog(Component component) {
+  public static JDialog parentDialog(Component component) {
     if (component instanceof JDialog) {
       return (JDialog) component;
     }
 
-    return getParentOfType(JDialog.class, component);
+    return parentOfType(JDialog.class, component);
   }
 
   /**
@@ -277,7 +277,7 @@ public final class Utilities {
    * @return true if a parent Window was found and disposed
    */
   public static boolean disposeParentWindow(Component component) {
-    Window parentWindow = getParentWindow(component);
+    Window parentWindow = parentWindow(component);
     if (parentWindow != null) {
       parentWindow.dispose();
 

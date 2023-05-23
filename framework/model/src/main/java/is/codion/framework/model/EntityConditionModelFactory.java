@@ -40,7 +40,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
     if (attribute instanceof ForeignKey) {
       ForeignKey foreignKey = (ForeignKey) attribute;
       return Optional.of(entitySearchModelConditionModel(foreignKey,
-              EntitySearchModel.entitySearchModel(foreignKey.referencedType(), connectionProvider)));
+              EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
     }
 
     ColumnProperty<?> property = definition(attribute.entityType()).columnProperty(attribute);

@@ -35,8 +35,9 @@ public class EntitySearchModelConditionModelTest {
 
   @Test
   void searchEntitiesSearchModel() throws DatabaseException {
-    EntitySearchModel searchModel = new DefaultEntitySearchModel(Department.TYPE, CONNECTION_PROVIDER,
-            singletonList(Department.NAME));
+    EntitySearchModel searchModel = EntitySearchModel.builder(Department.TYPE, CONNECTION_PROVIDER)
+            .searchAttributes(singletonList(Department.NAME))
+            .build();
     EntitySearchModelConditionModel conditionModel = entitySearchModelConditionModel(Employee.DEPARTMENT_FK, searchModel);
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
     searchModel.setSelectedEntity(sales);

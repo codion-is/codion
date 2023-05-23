@@ -30,7 +30,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -162,7 +162,7 @@ public final class EntitySelectionDialog extends JDialog {
       entityTablePanel.table().requestFocusInWindow();
     }
     else {
-      JOptionPane.showMessageDialog(getParentWindow(entityTablePanel), FrameworkMessages.noResultsFromCondition());
+      JOptionPane.showMessageDialog(parentWindow(entityTablePanel), FrameworkMessages.noResultsFromCondition());
     }
   }
 
