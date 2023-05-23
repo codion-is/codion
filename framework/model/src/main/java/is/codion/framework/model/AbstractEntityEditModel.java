@@ -1047,7 +1047,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     dependingValues.forEach((dependingAttribute, previousValue) -> {
       Object currentValue = get(dependingAttribute);
       if (!Objects.equals(previousValue, currentValue)) {
-        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, emptyMap());
+        notifyValueEdit((Attribute<Object>) dependingAttribute, currentValue, dependendingValues(dependingAttribute));
       }
     });
   }
