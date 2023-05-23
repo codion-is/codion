@@ -82,7 +82,7 @@ public interface Key {
    * @throws IllegalStateException in case this is a composite key
    * @throws NoSuchElementException in case this key contains no values
    */
-  <T> Optional<T> getOptional();
+  <T> Optional<T> optional();
 
   /**
    * @param attribute the attribute
@@ -96,7 +96,7 @@ public interface Key {
    * @param <T> the value type
    * @return the value associated with the given attribute, wrapped in an {@link Optional}
    */
-  <T> Optional<T> getOptional(Attribute<T> attribute);
+  <T> Optional<T> optional(Attribute<T> attribute);
 
   /**
    * Creates a new {@link Key.Builder} instance, initialized with the values in this key.

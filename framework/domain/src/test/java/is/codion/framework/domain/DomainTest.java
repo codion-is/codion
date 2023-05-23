@@ -226,7 +226,7 @@ public class DomainTest {
 
     assertThrows(IllegalStateException.class, () -> entities.primaryKey(entityType, 1));
     assertThrows(NoSuchElementException.class, key::get);
-    assertThrows(NoSuchElementException.class, key::getOptional);
+    assertThrows(NoSuchElementException.class, key::optional);
     assertThrows(NoSuchElementException.class, key::attribute);
 
     key = key.copyBuilder()
@@ -236,7 +236,7 @@ public class DomainTest {
             .build();
     assertTrue(key.isNotNull());
     assertEquals(6, key.hashCode());
-    assertTrue(key.getOptional(attribute1).isPresent());
+    assertTrue(key.optional(attribute1).isPresent());
 
     key = key.copyBuilder()
             .with(attribute2, 3)
@@ -252,12 +252,12 @@ public class DomainTest {
             .with(attribute2, null)
             .build();
     assertTrue(key.isNull());
-    assertFalse(key.getOptional(attribute2).isPresent());
+    assertFalse(key.optional(attribute2).isPresent());
     assertEquals(0, key.hashCode());
     key = key.copyBuilder()
             .with(attribute2, 4)
             .build();
-    assertTrue(key.getOptional(attribute2).isPresent());
+    assertTrue(key.optional(attribute2).isPresent());
     assertTrue(key.isNotNull());
     assertEquals(5, key.hashCode());
 

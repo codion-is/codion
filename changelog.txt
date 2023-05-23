@@ -9054,3 +9054,4 @@
   EntityEditComponentPanel, EntityEditPanel, constructor overloaded with EntityComponents parameter
   EntityComponents.slider() added
   EntityEditComponentPanel.createSlider() added
+  Key.getOptional() renamed optional()
