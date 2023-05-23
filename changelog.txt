@@ -9047,3 +9047,5 @@
   Entity, get prefix removed from static helper methods
   AbstractEntityEditModel.modifiedEntities() renamed modified()
   KeyEvents.Builder.keyEvent() renamed keyCode()
+  KeyEvents.Builder.onKeyReleased() and onKeyPressed() replaced with onKeyRelease(boolean)
+  KeyEvents.keyStroke() removed, keyStroke(keyStroke) and keyChar(char) added, minor refactoring

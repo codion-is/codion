@@ -1208,13 +1208,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .onKeyPressed()
             .action(resizeRightAction)
             .enable(this);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .onKeyPressed()
             .action(resizeLeftAction)
             .enable(this);
     if (containsEditPanel()) {

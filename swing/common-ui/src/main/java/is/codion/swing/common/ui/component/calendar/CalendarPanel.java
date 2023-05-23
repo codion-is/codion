@@ -452,8 +452,7 @@ public final class CalendarPanel extends JPanel {
 
   private void addKeyEvents() {
     KeyEvents.Builder keyEvent = KeyEvents.builder()
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .onKeyPressed();
+            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     keyEvent.modifiers(CTRL_DOWN_MASK)
             .keyCode(VK_LEFT)
             .action(control(this::previousYear))
