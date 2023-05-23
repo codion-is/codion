@@ -38,7 +38,6 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 
 General model classes shared between Swing and JavaFX UI components.
 
-* {url-javadoc}{common-model}/is/codion/common/model/combobox/package-summary.html[is.codion.common.model.combobox]
 * {url-javadoc}{common-model}/is/codion/common/model/table/package-summary.html[is.codion.common.model.table]
 
 .Dependency graph
