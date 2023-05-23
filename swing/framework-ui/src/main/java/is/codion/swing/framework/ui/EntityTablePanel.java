@@ -1050,21 +1050,21 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates a TableCellEditor for the given attribute, returns null if no editor is available,
+   * Creates a TableCellEditor for the given attribute, returns an empty Optional if no editor is available,
    * such as for non-updatable properties.
    * @param attribute the attribute
-   * @return a TableCellEditor for the given attribute
+   * @return a TableCellEditor for the given attribute, an empty Optional in case none is available
    */
-  protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
+  protected Optional<TableCellEditor> createTableCellEditor(Attribute<?> attribute) {
     Property<?> property = tableModel.entityDefinition().property(attribute);
     if (attribute instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
-      return null;
+      return Optional.empty();
     }
     if (isNonUpdatableForeignKey(attribute)) {
-      return null;
+      return Optional.empty();
     }
 
-    return new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null));
+    return Optional.of(new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null)));
   }
 
   /**
@@ -1525,7 +1525,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-    column.setCellEditor(createTableCellEditor(column.getIdentifier()));
+    createTableCellEditor(column.getIdentifier()).ifPresent(column::setCellEditor);
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 

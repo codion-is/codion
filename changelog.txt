@@ -9059,3 +9059,4 @@
   Utilities, get prefix removed from a few methods
   EntitySearchModel.Builder added
   EntityTablePanel.createTableCellEditor() now returns null in case of foreign keys based only on non-updatable column properties
+  EntityTablePanel.createTableCellEditor() now returns Optional
