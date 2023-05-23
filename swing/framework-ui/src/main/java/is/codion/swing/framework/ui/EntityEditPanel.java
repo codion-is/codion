@@ -22,6 +22,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -94,6 +95,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     INSERT, UPDATE, DELETE, REFRESH, CLEAR
   }
 
+  private static final ControlCode[] DEFAULT_CONTROL_CODES = {
+          ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH
+  };
+
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -148,7 +153,16 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(SwingEntityEditModel editModel) {
-    this(editModel, ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH);
+    this(editModel, DEFAULT_CONTROL_CODES);
+  }
+
+  /**
+   * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
+   * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
+   * @param entityComponents the entity components instance to use when creating components
+   */
+  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
+    this(editModel, entityComponents, DEFAULT_CONTROL_CODES);
   }
 
   /**
@@ -158,7 +172,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * null or an empty array will result in no controls being initialized
    */
   public EntityEditPanel(SwingEntityEditModel editModel, ControlCode... controlCodes) {
-    super(editModel);
+    this(editModel, new EntityComponents(editModel.entityDefinition()), controlCodes);
+  }
+
+  /**
+   * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
+   * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
+   * @param entityComponents the entity components instance to use when creating components
+   * @param controlCodes if specified only controls with those keys are initialized,
+   * null or an empty array will result in no controls being initialized
+   */
+  public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, ControlCode... controlCodes) {
+    super(editModel, entityComponents);
     if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.addState(activeState);
     }
@@ -372,7 +397,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       WaitCursor.show(this);
       try {
         setupControls();
-        bindEventsInternal();
+        bindEvents();
         initializeUI();
       }
       finally {
@@ -713,7 +738,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .build();
   }
 
-  private void bindEventsInternal() {
+  private void bindEvents() {
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)

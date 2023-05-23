@@ -172,8 +172,21 @@ public class EntityEditComponentPanel extends JPanel {
    * @param editModel the edit model
    */
   protected EntityEditComponentPanel(SwingEntityEditModel editModel) {
+    this(editModel, new EntityComponents(editModel.entityDefinition()));
+  }
+
+  /**
+   * Instantiates a new EntityEditComponentPanel
+   * @param editModel the edit model
+   * @param entityComponents the entity components to use when creating components
+   * @throws IllegalArgumentException in case the edit model and entity components entityTypes don't match
+   */
+  protected EntityEditComponentPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
     this.editModel = requireNonNull(editModel, "editModel");
-    this.entityComponents = new EntityComponents(editModel.entityDefinition());
+    this.entityComponents = requireNonNull(entityComponents, "entityComponents");
+    if (!editModel.entityType().equals(entityComponents.entityDefinition().type())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().type());
+    }
     addFocusedComponentListener();
   }
 
@@ -736,7 +749,6 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for a list spinner
    * @param attribute the attribute
-   * @param spinnerListModel the spinner model
    * @return a spinner builder
    * @param <T> the value type
    */

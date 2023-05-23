@@ -9051,3 +9051,4 @@
   KeyEvents.keyStroke() removed, keyStroke(keyStroke) and keyChar(char) added, minor refactoring
   EntityComponents.listSpinner() and itemSpinner() added
   EntityComponentPanel.createListSpinner() and createItemSpinner() added
+  EntityEditComponentPanel, EntityEditPanel, constructor overloaded with EntityComponents parameter
