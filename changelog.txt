@@ -9062,3 +9062,4 @@
   EntityTablePanel.createTableCellEditor() now returns Optional
   EntityEditModel.put() now returns the previous value, some renaming
   AbstractEntityEditModel.notifyValueEdit() now recursively handles depending attributes
+  EntityTableModel.replaceForeignKeyValues() implementations now make the references immutable

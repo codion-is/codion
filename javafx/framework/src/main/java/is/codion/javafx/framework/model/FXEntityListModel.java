@@ -212,7 +212,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
       for (Entity foreignKeyValue : foreignKeyValues) {
         Entity currentForeignKeyValue = entity.referencedEntity(foreignKey);
         if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
-          entity.put(foreignKey, foreignKeyValue);
+          entity.put(foreignKey, foreignKeyValue.immutable());
           changed = true;
         }
       }

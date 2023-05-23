@@ -472,12 +472,6 @@ class DefaultEntity implements Entity, Serializable {
     return previousValue;
   }
 
-  /**
-   * Returns true if the value associated with the given property is null. In case of foreign key properties
-   * the value of the underlying reference property is checked.
-   * @param property the property
-   * @return true if the value associated with the property is null
-   */
   private <T> boolean isNull(Property<T> property) {
     if (property instanceof ForeignKeyProperty) {
       return isReferenceNull(((ForeignKeyProperty) property).attribute());
