@@ -598,12 +598,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       throw new IllegalStateException("No search attributes defined for entity: " + property.referencedType());
     }
 
-    EntitySearchModel searchModel = EntitySearchModel.builder(property.referencedType(), connectionProvider)
+    return EntitySearchModel.builder(property.referencedType(), connectionProvider)
             .searchAttributes(searchAttributes)
             .multipleSelectionEnabled(false)
             .build();
-
-    return searchModel;
   }
 
   @Override
