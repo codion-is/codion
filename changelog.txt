@@ -9052,3 +9052,5 @@
   EntityComponents.listSpinner() and itemSpinner() added
   EntityComponentPanel.createListSpinner() and createItemSpinner() added
   EntityEditComponentPanel, EntityEditPanel, constructor overloaded with EntityComponents parameter
+  EntityComponents.slider() added
+  EntityEditComponentPanel.createSlider() added

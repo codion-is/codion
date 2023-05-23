@@ -18,6 +18,7 @@ import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
@@ -33,7 +34,9 @@ import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntitySearchField;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
+import javax.swing.BoundedRangeModel;
 import javax.swing.ComboBoxModel;
+import javax.swing.DefaultBoundedRangeModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -554,6 +557,35 @@ public class EntityComponents {
             .minimumValue(property.minimumValue())
             .maximumValue(property.maximumValue())
             .maximumFractionDigits(property.maximumFractionDigits())
+            .toolTipText(property.description());
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSlider} builder based on the given attribute,
+   * with a bounded range model based on the min/max values of the associated property.
+   * @param attribute the attribute
+   * @return a {@link javax.swing.JSlider} builder
+   */
+  public final SliderBuilder slider(Attribute<Integer> attribute) {
+    Property<Integer> property = entityDefinition.property(attribute);
+
+    BoundedRangeModel boundedRangeModel = new DefaultBoundedRangeModel();
+    boundedRangeModel.setMinimum(property.minimumValue().intValue());
+    boundedRangeModel.setMaximum(property.maximumValue().intValue());
+
+    return slider(attribute, boundedRangeModel);
+  }
+
+  /**
+   * Creates a {@link javax.swing.JSlider} builder based on the given attribute.
+   * @param attribute the attribute
+   * @param boundedRangeModel the bounded range model
+   * @return a {@link javax.swing.JSlider} builder
+   */
+  public final SliderBuilder slider(Attribute<Integer> attribute, BoundedRangeModel boundedRangeModel) {
+    Property<Integer> property = entityDefinition.property(attribute);
+
+    return Components.slider(boundedRangeModel)
             .toolTipText(property.description());
   }
 

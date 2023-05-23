@@ -21,6 +21,7 @@ import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
+import is.codion.swing.common.ui.component.slider.SliderBuilder;
 import is.codion.swing.common.ui.component.spinner.ItemSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.ListSpinnerBuilder;
 import is.codion.swing.common.ui.component.spinner.NumberSpinnerBuilder;
@@ -715,6 +716,15 @@ public class EntityEditComponentPanel extends JPanel {
   protected final <T extends Temporal> TemporalField.Builder<T> createTemporalField(Attribute<T> attribute, String dateTimePattern) {
     return setComponentBuilder(attribute, entityComponents.temporalField(attribute, dateTimePattern)
             .onBuild(field -> addFormattedValidator(attribute, field, editModel())));
+  }
+
+  /**
+   * Creates a builder for a slider
+   * @param attribute the attribute
+   * @return a slider builder
+   */
+  protected final SliderBuilder createSlider(Attribute<Integer> attribute) {
+    return setComponentBuilder(attribute, entityComponents.slider(attribute));
   }
 
   /**
