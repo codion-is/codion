@@ -125,7 +125,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isModified() {
-    return isModified(false);
+    return isModifiedInternal();
   }
 
   @Override
@@ -705,7 +705,7 @@ class DefaultEntity implements Entity, Serializable {
     return valueMap;
   }
 
-  private boolean isModified(boolean overrideTransientModifiesEntity) {
+  private boolean isModifiedInternal() {
     if (originalValues != null && !originalValues.isEmpty()) {
       for (Attribute<?> attribute : originalValues.keySet()) {
         Property<?> property = definition.property(attribute);
@@ -715,8 +715,8 @@ class DefaultEntity implements Entity, Serializable {
             return true;
           }
         }
-        if (property instanceof TransientProperty) {
-          return overrideTransientModifiesEntity || ((TransientProperty<?>) property).modifiesEntity();
+        if (property instanceof TransientProperty && ((TransientProperty<?>) property).modifiesEntity()) {
+          return true;
         }
       }
     }
@@ -793,7 +793,7 @@ class DefaultEntity implements Entity, Serializable {
     stream.writeObject(definition.domainName());
     stream.writeObject(definition.type().name());
     stream.writeInt(definition.serializationVersion());
-    boolean isModified = isModified(true);
+    boolean isModified = originalValues != null && !originalValues.isEmpty();
     stream.writeBoolean(isModified);
     List<Property<?>> properties = definition.properties();
     for (int i = 0; i < properties.size(); i++) {
