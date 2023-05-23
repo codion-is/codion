@@ -544,7 +544,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         JOptionPane.showMessageDialog(component, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
       }
       catch (Exception e) {
-        Dialogs.displayExceptionDialog(e, Utilities.getParentWindow(component));
+        Dialogs.displayExceptionDialog(e, Utilities.parentWindow(component));
       }
 
       return false;
@@ -653,7 +653,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         JOptionPane.showMessageDialog(component, e.getMessage(), Messages.error(), JOptionPane.ERROR_MESSAGE);
       }
       catch (Exception e) {
-        Dialogs.displayExceptionDialog(e, Utilities.getParentWindow(component));
+        Dialogs.displayExceptionDialog(e, Utilities.parentWindow(component));
       }
 
       return false;

@@ -753,7 +753,7 @@ public class EntityTablePanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityTablePanel.this;
     }
-    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
   }
 
   /**
@@ -1635,7 +1635,7 @@ public class EntityTablePanel extends JPanel {
   private final void toggleConditionPanel(JScrollPane scrollPane, State advancedState, State visibleState) {
     if (scrollPane != null && scrollPane.isVisible()) {
       if (advancedState.get()) {
-        boolean isParentOfFocusOwner = getParentOfType(JScrollPane.class,
+        boolean isParentOfFocusOwner = parentOfType(JScrollPane.class,
                 getCurrentKeyboardFocusManager().getFocusOwner()) == scrollPane;
         visibleState.set(false);
         if (isParentOfFocusOwner) {

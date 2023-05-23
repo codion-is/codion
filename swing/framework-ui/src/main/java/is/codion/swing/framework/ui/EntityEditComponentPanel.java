@@ -72,7 +72,7 @@ import java.util.Set;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
 import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
@@ -371,7 +371,7 @@ public class EntityEditComponentPanel extends JPanel {
     if (focusOwner == null) {
       focusOwner = EntityEditComponentPanel.this;
     }
-    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
   }
 
   /**

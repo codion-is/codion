@@ -74,7 +74,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     this(new EntityServerMonitor(Clients.SERVER_HOSTNAME.get(),
             ServerConfiguration.REGISTRY_PORT.get(), adminUser()));
     Thread.setDefaultUncaughtExceptionHandler((t, e) ->
-            displayExceptionDialog(e, Utilities.getParentWindow(EntityServerMonitorPanel.this)));
+            displayExceptionDialog(e, Utilities.parentWindow(EntityServerMonitorPanel.this)));
   }
 
   /**

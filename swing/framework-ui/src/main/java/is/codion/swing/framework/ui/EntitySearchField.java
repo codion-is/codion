@@ -304,7 +304,7 @@ public final class EntitySearchField extends HintTextField {
             selectAll();
           }
           catch (Exception e) {
-            Dialogs.displayExceptionDialog(e, Utilities.getParentWindow(this));
+            Dialogs.displayExceptionDialog(e, Utilities.parentWindow(this));
           }
         }
       }

@@ -100,7 +100,7 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
 
   private void resetPanel() {
     Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    if (Utilities.getParentOfType(FilteredTableColumnComponentPanel.class, focusOwner) != null) {
+    if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) != null) {
       basePanel.requestFocusInWindow();
     }
     basePanel.removeAll();

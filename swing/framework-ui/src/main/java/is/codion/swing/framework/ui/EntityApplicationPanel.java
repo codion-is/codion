@@ -86,7 +86,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -205,7 +204,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (focusOwner == null) {
       focusOwner = EntityApplicationPanel.this;
     }
-    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, Utilities.parentWindow(focusOwner));
   }
 
   /**
@@ -237,7 +236,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the parent window of this panel, if one exists, an empty Optional otherwise
    */
   public final Optional<Window> parentWindow() {
-    return Optional.ofNullable(getParentWindow(this));
+    return Optional.ofNullable(Utilities.parentWindow(this));
   }
 
   /**
@@ -699,7 +698,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Window parentWindow = getParentWindow(entityPanel);
+        Window parentWindow = Utilities.parentWindow(entityPanel);
         if (parentWindow != null) {
           parentWindow.toFront();
         }
@@ -740,7 +739,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     try {
       EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
-        Window parentWindow = getParentWindow(entityPanel);
+        Window parentWindow = Utilities.parentWindow(entityPanel);
         if (parentWindow != null) {
           parentWindow.toFront();
         }

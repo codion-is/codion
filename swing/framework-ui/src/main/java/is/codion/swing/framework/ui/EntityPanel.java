@@ -52,8 +52,8 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.Utilities.getParentOfType;
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.parentOfType;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -568,7 +568,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     parentPanel().ifPresent(panel ->
             panel.selectChildPanel(this));
     initializePanel();
-    Window parentWindow = getParentWindow(this);
+    Window parentWindow = parentWindow(this);
     if (parentWindow != null) {
       parentWindow.toFront();
     }
@@ -581,7 +581,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   @Override
   public final Optional<HierarchyPanel> parentPanel() {
     if (parentPanel == null) {
-      return Optional.ofNullable(getParentOfType(HierarchyPanel.class, this));
+      return Optional.ofNullable(parentOfType(HierarchyPanel.class, this));
     }
 
     return Optional.of(parentPanel);
@@ -666,7 +666,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (focusOwner == null) {
       focusOwner = EntityPanel.this;
     }
-    Dialogs.displayExceptionDialog(exception, getParentWindow(focusOwner));
+    Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
   }
 
   /**
@@ -1445,7 +1445,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Shows the detail panels in a window
    */
   private void showDetailWindow() {
-    Window parent = getParentWindow(this);
+    Window parent = parentWindow(this);
     if (parent != null) {
       Dimension parentSize = parent.getSize();
       Dimension size = detailWindowSize(parentSize);
@@ -1682,14 +1682,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     @Override
     public void propertyChange(PropertyChangeEvent changeEvent) {
       Component focusedComponent = (Component) changeEvent.getNewValue();
-      EntityPanel entityPanelParent = getParentOfType(EntityPanel.class, focusedComponent);
+      EntityPanel entityPanelParent = parentOfType(EntityPanel.class, focusedComponent);
       if (entityPanelParent != null) {
         if (entityPanelParent.editPanel() != null) {
           entityPanelParent.editPanel().setActive(true);
         }
       }
       else {
-        EntityEditPanel editPanelParent = getParentOfType(EntityEditPanel.class, focusedComponent);
+        EntityEditPanel editPanelParent = parentOfType(EntityEditPanel.class, focusedComponent);
         if (editPanelParent != null) {
           editPanelParent.setActive(true);
         }

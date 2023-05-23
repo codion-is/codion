@@ -23,7 +23,7 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-import static is.codion.swing.common.ui.Utilities.getParentWindow;
+import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_LEFT;
@@ -96,7 +96,7 @@ public final class EntityDependenciesPanel extends JPanel {
       return connectionProvider.connection().selectDependencies(entities);
     }
     catch (DatabaseException e) {
-      Dialogs.displayExceptionDialog(e, getParentWindow(dialogParent));
+      Dialogs.displayExceptionDialog(e, parentWindow(dialogParent));
 
       return Collections.emptyMap();
     }
