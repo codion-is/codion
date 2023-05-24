@@ -987,11 +987,11 @@ public class DefaultLocalEntityConnectionTest {
 
       assertEquals("New Name", department.getName());
 
-      List<Department> departmentsCast = Entity.castTo(Department.class, connection.select(condition(Department.TYPE)));
+      Collection<Department> departmentsCast = Entity.castTo(Department.class, connection.select(condition(Department.TYPE)));
 
       departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 
-      departmentsCast = Entity.castTo(Department.class, connection.update(departmentsCast));
+      departmentsCast = Entity.castTo(Department.class, connection.update(new ArrayList<>(departmentsCast)));
 
       Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
       newDept1.setId(-1);

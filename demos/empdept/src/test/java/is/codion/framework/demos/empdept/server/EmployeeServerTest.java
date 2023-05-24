@@ -20,7 +20,7 @@ import org.junit.jupiter.api.Test;
 
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Collection;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -62,10 +62,10 @@ public final class EmployeeServerTest {
             .clientTypeId("EmployeeServerTest")
             .build());
 
-    List<Entity> employees = employeeService.employees();
+    Collection<Entity> employees = employeeService.employees();
     assertEquals(16, employees.size());
 
-    List<Employee> employeeBeans = employeeService.employeeBeans();
+    Collection<Employee> employeeBeans = employeeService.employeeBeans();
     assertEquals(16, employeeBeans.size());
 
     employeeServer.disconnect(clientId);

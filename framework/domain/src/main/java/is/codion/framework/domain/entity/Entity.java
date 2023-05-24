@@ -360,10 +360,10 @@ public interface Entity extends Comparable<Entity> {
    * Returns the entities which have been modified
    * @param entities the entities
    * @param <T> the entity type
-   * @return a List of entities that have been modified
+   * @return the modified entities
    * @see Entity#isModified()
    */
-  static <T extends Entity> List<T> modified(Collection<T> entities) {
+  static <T extends Entity> Collection<T> modified(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .filter(Entity::isModified)
             .collect(toList());
@@ -398,7 +398,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> primaryKeys(Collection<? extends Entity> entities) {
+  static Collection<Key> primaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::primaryKey)
             .collect(toList());
@@ -410,7 +410,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key
    * @return the non-null keys referenced by the given foreign key
    */
-  static Set<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
+  static Collection<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
@@ -521,7 +521,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to copy
    * @return a deep copy of the given entities
    */
-  static List<Entity> deepCopy(List<? extends Entity> entities) {
+  static Collection<Entity> deepCopy(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::deepCopy)
             .collect(toList());
@@ -532,7 +532,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to copy
    * @return copies of the given entities, in the same order as they are received
    */
-  static List<Entity> copy(List<? extends Entity> entities) {
+  static Collection<Entity> copy(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::copy)
             .collect(toList());
@@ -543,7 +543,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return immutable versions of the given entities
    */
-  static List<Entity> immutable(List<? extends Entity> entities) {
+  static Collection<Entity> immutable(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::immutable)
             .collect(toList());

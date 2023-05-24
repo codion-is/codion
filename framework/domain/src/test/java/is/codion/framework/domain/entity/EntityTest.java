@@ -19,7 +19,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import static java.util.Arrays.asList;
@@ -296,7 +295,7 @@ public final class EntityTest {
             .with(Department.NO, 2)
             .build();
     List<Entity> entityList = asList(dept1, dept2);
-    List<Entity> immutables = Entity.immutable(entityList);
+    Collection<Entity> immutables = Entity.immutable(entityList);
     entityList.forEach(entity -> assertTrue(immutables.contains(entity)));
     immutables.forEach(entity -> assertTrue(entity.isImmutable()));
   }
@@ -310,7 +309,7 @@ public final class EntityTest {
             .with(Department.NO, 2)
             .build();
     List<Entity> entityList = asList(dept1, dept2);
-    List<Entity> copied = Entity.copy(entityList);
+    Collection<Entity> copied = Entity.copy(entityList);
     entityList.forEach(entity -> assertTrue(copied.contains(entity)));
   }
 
@@ -519,8 +518,7 @@ public final class EntityTest {
     Entity emp4 = entities.builder(Employee.TYPE)
             .build();
 
-    Set<Key> referencedKeys = Entity.referencedKeys(asList(emp1, emp2, emp3, emp4),
-            Employee.DEPARTMENT_FK);
+    Collection<Key> referencedKeys = Entity.referencedKeys(asList(emp1, emp2, emp3, emp4), Employee.DEPARTMENT_FK);
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.type()));
     Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));

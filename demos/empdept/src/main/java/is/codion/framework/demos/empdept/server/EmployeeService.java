@@ -9,11 +9,11 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Collection;
 
 public interface EmployeeService extends Remote {
 
-  List<Entity> employees() throws RemoteException, DatabaseException;
+  Collection<Entity> employees() throws RemoteException, DatabaseException;
 
-  List<Employee> employeeBeans() throws RemoteException, DatabaseException;
+  Collection<Employee> employeeBeans() throws RemoteException, DatabaseException;
 }

@@ -512,24 +512,24 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return emptyList();
     }
 
-    List<Entity> modifiedEntities = modified(entities);
+    Collection<Entity> modifiedEntities = modified(entities);
     if (modifiedEntities.isEmpty()) {
       return emptyList();
     }
 
-    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities)));
+    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, entities));
     validate(modifiedEntities);
     //entity.toString() could potentially cause NullPointerException if null-validation
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = doUpdate(modifiedEntities);
+    List<Entity> updatedEntities = doUpdate(new ArrayList<>(modifiedEntities));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
     }
 
-    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities)));
+    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, updatedEntities));
 
     return updatedEntities;
   }
@@ -818,7 +818,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #update()
    * @see #update(java.util.List)
    */
-  protected List<Entity> modified(List<Entity> entities) {
+  protected Collection<Entity> modified(Collection<Entity> entities) {
     return Entity.modified(entities);
   }
 
@@ -1091,8 +1091,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Key, Entity> mapToOriginalPrimaryKey(List<Entity> entitiesBeforeUpdate,
-                                                          List<Entity> entitiesAfterUpdate) {
+  private static Map<Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+                                                          Collection<Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (Entity entity : entitiesBeforeUpdate) {
