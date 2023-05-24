@@ -347,10 +347,11 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Checks if any of the primary keys of the given entities is modified
+   * @param <T> the entity type
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  static boolean isKeyModified(Collection<Entity> entities) {
+  static <T extends Entity> boolean isKeyModified(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .anyMatch(entity -> entity.primaryKey().attributes().stream()
                     .anyMatch(entity::isModified));
@@ -406,11 +407,11 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns the non-null keys referenced by the given foreign key
-   * @param entities the entities
    * @param foreignKey the foreign key
+   * @param entities the entities
    * @return the non-null keys referenced by the given foreign key
    */
-  static Collection<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
+  static Collection<Key> referencedKeys(ForeignKey foreignKey, Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
@@ -565,10 +566,11 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Maps the given entities to their primary key
+   * @param <T> the entity type
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToPrimaryKey(Collection<? extends Entity> entities) {
+  static <T extends Entity> Map<Key, T> mapToPrimaryKey(Collection<T> entities) {
     return requireNonNull(entities).stream()
             .collect(toMap(Entity::primaryKey, Function.identity()));
   }
@@ -577,23 +579,24 @@ public interface Entity extends Comparable<Entity> {
    * Returns a LinkedHashMap containing the given entities mapped to the value of {@code attribute},
    * respecting the iteration order of the given collection
    * @param <T> the key type
+   * @param <E> the entity type
    * @param attribute the attribute which value should be used for mapping
    * @param entities the entities to map by attribute value
    * @return a Map of entities mapped to attribute value
    */
-  static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<? extends Entity> entities) {
+  static <T, E extends Entity> LinkedHashMap<T, List<E>> mapToValue(Attribute<T> attribute, Collection<E> entities) {
     return requireNonNull(entities).stream()
-            .map(entity -> (Entity) entity)//necessary to prevent compile failure on later JDKs than 8
             .collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
   }
 
   /**
    * Returns a LinkedHashMap containing the given entities mapped to their entityTypes,
    * respecting the iteration order of the given collection
+   * @param <T> the entity type
    * @param entities the entities to map by entityType
    * @return a Map of entities mapped to entityType
    */
-  static LinkedHashMap<EntityType, List<Entity>> mapToType(Collection<? extends Entity> entities) {
+  static <T extends Entity> LinkedHashMap<EntityType, List<T>> mapToType(Collection<? extends T> entities) {
     return requireNonNull(entities).stream()
             .collect(groupingBy(Entity::type, LinkedHashMap::new, toList()));
   }
@@ -626,11 +629,12 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Finds entities according to attribute values
+   * @param <T> the entity type
    * @param values the attribute values to use as condition mapped to their respective attributes
    * @param entities the entities to search
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<? extends Entity> entities) {
+  static <T extends Entity> Collection<T> entitiesByValue(Map<Attribute<?>, Object> values, Collection<T> entities) {
     requireNonNull(values);
     return requireNonNull(entities).stream()
             .filter(entity -> values.entrySet().stream()
