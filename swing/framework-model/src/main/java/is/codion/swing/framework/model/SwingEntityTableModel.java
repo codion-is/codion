@@ -460,7 +460,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void update(Collection<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled in this table model");

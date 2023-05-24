@@ -363,7 +363,7 @@ public interface Entity extends Comparable<Entity> {
    * @return the modified entities
    * @see Entity#isModified()
    */
-  static <T extends Entity> Collection<T> modified(Collection<T> entities) {
+  static <T extends Entity> Collection<T> modified(Collection<? extends T> entities) {
     return requireNonNull(entities).stream()
             .filter(Entity::isModified)
             .collect(toList());
@@ -447,7 +447,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> values(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> values(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -462,7 +462,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the values of the given attributes from the given entities, including null values.
    */
-  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -476,7 +476,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> distinct(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinct(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -491,7 +491,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct values of the given attribute from the given entities, may contain null.
    */
-  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -506,7 +506,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return the previous attribute values mapped to the primary key of the entity
    */
-  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<Entity> entities) {
+  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
     for (Entity entity : entities) {
@@ -568,7 +568,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
+  static Map<Key, Entity> mapToPrimaryKey(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .collect(toMap(Entity::primaryKey, Function.identity()));
   }
@@ -581,7 +581,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map by attribute value
    * @return a Map of entities mapped to attribute value
    */
-  static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
   }
@@ -629,7 +629,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to search
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
+  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<? extends Entity> entities) {
     requireNonNull(values);
     return requireNonNull(entities).stream()
             .filter(entity -> values.entrySet().stream()
