@@ -247,7 +247,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see EntityValidator#validate(Entity)
    */
-  void update(Collection<Entity> entities) throws ValidationException, DatabaseException;
+  void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities

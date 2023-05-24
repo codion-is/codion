@@ -178,7 +178,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(entities);
     }

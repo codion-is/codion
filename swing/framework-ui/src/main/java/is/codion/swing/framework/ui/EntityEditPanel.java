@@ -185,7 +185,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   public EntityEditPanel(SwingEntityEditModel editModel, EntityComponents entityComponents, ControlCode... controlCodes) {
     super(editModel, entityComponents);
     if (USE_FOCUS_ACTIVATION.get()) {
-      ACTIVE_STATE_GROUP.addState(activeState);
+      ACTIVE_STATE_GROUP.add(activeState);
     }
     this.controlCodes = controlCodes == null ? emptySet() : new HashSet<>(Arrays.asList(controlCodes));
     if (editModel.isEntityNew()) {

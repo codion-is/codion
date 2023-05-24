@@ -246,11 +246,11 @@ public interface Entity extends Comparable<Entity> {
   boolean isImmutable();
 
   /**
-   * Casts this entity to the given type.
+   * Casts this entity to the given type. If the entity is already of the given type it is returned as is.
    * @param entityClass the entity class to cast to
    * @param <T> the entity class type
    * @return a typed entity
-   * @throws IllegalArgumentException in case the given class has not been associated with the underlying {@link EntityType}.
+   * @throws IllegalArgumentException in case the given entity class has not been associated with the underlying {@link EntityType}.
    */
   <T extends Entity> T castTo(Class<T> entityClass);
 
@@ -360,10 +360,10 @@ public interface Entity extends Comparable<Entity> {
    * Returns the entities which have been modified
    * @param entities the entities
    * @param <T> the entity type
-   * @return a List of entities that have been modified
+   * @return the modified entities
    * @see Entity#isModified()
    */
-  static <T extends Entity> List<T> modified(Collection<T> entities) {
+  static <T extends Entity> Collection<T> modified(Collection<? extends T> entities) {
     return requireNonNull(entities).stream()
             .filter(Entity::isModified)
             .collect(toList());
@@ -398,7 +398,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  static List<Key> primaryKeys(Collection<? extends Entity> entities) {
+  static Collection<Key> primaryKeys(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::primaryKey)
             .collect(toList());
@@ -410,7 +410,7 @@ public interface Entity extends Comparable<Entity> {
    * @param foreignKey the foreign key
    * @return the non-null keys referenced by the given foreign key
    */
-  static Set<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
+  static Collection<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)
@@ -447,7 +447,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> values(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> values(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -462,7 +462,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the attribute value
    * @return the values of the given attributes from the given entities, including null values.
    */
-  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> valuesIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -476,7 +476,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct non-null values of the given attribute from the given entities.
    */
-  static <T> Collection<T> distinct(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinct(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -491,7 +491,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities from which to retrieve the values
    * @return the distinct values of the given attribute from the given entities, may contain null.
    */
-  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> Collection<T> distinctIncludingNull(Attribute<T> attribute, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     return requireNonNull(entities).stream()
             .map(entity -> entity.get(attribute))
@@ -506,7 +506,7 @@ public interface Entity extends Comparable<Entity> {
    * @param <T> the value type
    * @return the previous attribute values mapped to the primary key of the entity
    */
-  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<Entity> entities) {
+  static <T> Map<Key, T> put(Attribute<T> attribute, T value, Collection<? extends Entity> entities) {
     requireNonNull(attribute, "attribute");
     Map<Key, T> previousValues = new HashMap<>(requireNonNull(entities).size());
     for (Entity entity : entities) {
@@ -521,7 +521,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to copy
    * @return a deep copy of the given entities
    */
-  static List<Entity> deepCopy(List<? extends Entity> entities) {
+  static Collection<Entity> deepCopy(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::deepCopy)
             .collect(toList());
@@ -532,7 +532,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to copy
    * @return copies of the given entities, in the same order as they are received
    */
-  static List<Entity> copy(List<? extends Entity> entities) {
+  static Collection<Entity> copy(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::copy)
             .collect(toList());
@@ -543,19 +543,19 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities
    * @return immutable versions of the given entities
    */
-  static List<Entity> immutable(List<? extends Entity> entities) {
+  static Collection<Entity> immutable(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(Entity::immutable)
             .collect(toList());
   }
 
   /**
-   * Casts the given entities to the given type.
+   * Casts the given entities to the given type. If an entity is already of the given type it is returned as is.
    * @param entityClass the entity class to cast to
    * @param entities the entities
    * @param <T> the entity class type
    * @return typed entities
-   * @throws IllegalArgumentException in case any of the entities is not of the given entity type
+   * @throws IllegalArgumentException in case the given entity class has not been associated with the underlying {@link EntityType}.
    */
   static <T extends Entity> List<T> castTo(Class<T> entityClass, Collection<Entity> entities) {
     return requireNonNull(entities).stream()
@@ -568,7 +568,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  static Map<Key, Entity> mapToPrimaryKey(Collection<Entity> entities) {
+  static Map<Key, Entity> mapToPrimaryKey(Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .collect(toMap(Entity::primaryKey, Function.identity()));
   }
@@ -581,7 +581,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to map by attribute value
    * @return a Map of entities mapped to attribute value
    */
-  static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<Entity> entities) {
+  static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
   }
@@ -629,7 +629,7 @@ public interface Entity extends Comparable<Entity> {
    * @param entities the entities to search
    * @return the entities having the exact same attribute values as in the given value map
    */
-  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<Entity> entities) {
+  static Collection<Entity> entitiesByValue(Map<Attribute<?>, Object> values, Collection<? extends Entity> entities) {
     requireNonNull(values);
     return requireNonNull(entities).stream()
             .filter(entity -> values.entrySet().stream()

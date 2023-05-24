@@ -11,7 +11,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;
 
@@ -25,7 +24,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
   public void raisePriceOfSelected(BigDecimal increase) throws DatabaseException {
     if (selectionModel().isSelectionNotEmpty()) {
       Collection<Long> trackIds = Entity.values(Track.ID, selectionModel().getSelectedItems());
-      List<Entity> result = connectionProvider().connection()
+      Collection<Entity> result = connectionProvider().connection()
               .executeFunction(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
       replaceEntities(result);
     }

@@ -350,7 +350,7 @@ public interface EntityEditModel {
    * @see #addAfterInsertListener(EventDataListener)
    * @see EntityValidator#validate(Entity)
    */
-  List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException;
+  List<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs an update on the active entity
@@ -376,7 +376,7 @@ public interface EntityEditModel {
    * @see #addAfterUpdateListener(EventDataListener)
    * @see EntityValidator#validate(Entity)
    */
-  List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException;
+  List<Entity> update(List<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Deletes the active entity
@@ -397,7 +397,7 @@ public interface EntityEditModel {
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  List<Entity> delete(List<Entity> entities) throws DatabaseException;
+  List<Entity> delete(List<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Refreshes all data models used by this edit model, combo box models f.ex.
@@ -463,7 +463,7 @@ public interface EntityEditModel {
    * @see #validator()
    * @see EntityDefinition#validator()
    */
-  void validate(Collection<Entity> entities) throws ValidationException;
+  void validate(Collection<? extends Entity> entities) throws ValidationException;
 
   /**
    * Validates the given entity, using the underlying validator.

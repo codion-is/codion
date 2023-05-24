@@ -423,7 +423,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void validate(Collection<Entity> entities) throws ValidationException {
+  public final void validate(Collection<? extends Entity> entities) throws ValidationException {
     for (Entity entityToValidate : entities) {
       validate(entityToValidate);
     }
@@ -477,7 +477,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> insert(List<Entity> entities) throws DatabaseException, ValidationException {
+  public final List<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
@@ -503,7 +503,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> update(List<Entity> entities) throws DatabaseException, ValidationException {
+  public final List<Entity> update(List<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
@@ -512,24 +512,24 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       return emptyList();
     }
 
-    List<Entity> modifiedEntities = modified(entities);
+    Collection<Entity> modifiedEntities = modified(entities);
     if (modifiedEntities.isEmpty()) {
       return emptyList();
     }
 
-    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(entities)));
+    notifyBeforeUpdate(mapToOriginalPrimaryKey(modifiedEntities, entities));
     validate(modifiedEntities);
     //entity.toString() could potentially cause NullPointerException if null-validation
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = doUpdate(modifiedEntities);
+    List<Entity> updatedEntities = new ArrayList<>(doUpdate(new ArrayList<>(modifiedEntities)));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
     }
 
-    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, new ArrayList<>(updatedEntities)));
+    notifyAfterUpdate(mapToOriginalPrimaryKey(modifiedEntities, updatedEntities));
 
     return updatedEntities;
   }
@@ -543,7 +543,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final List<Entity> delete(List<Entity> entities) throws DatabaseException {
+  public final List<Entity> delete(List<? extends Entity> entities) throws DatabaseException {
     if (!isDeleteEnabled()) {
       throw new IllegalStateException("Delete is not enabled!");
     }
@@ -782,17 +782,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return a list containing the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Key> doInsert(List<Entity> entities) throws DatabaseException {
+  protected List<Key> doInsert(List<? extends Entity> entities) throws DatabaseException {
     return connectionProvider.connection().insert(entities);
   }
 
   /**
    * Updates the given entities in the database
    * @param entities the entities to update
-   * @return a list containing the updated entities
+   * @return the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doUpdate(List<? extends Entity> entities) throws DatabaseException {
     return connectionProvider.connection().update(entities);
   }
 
@@ -802,10 +802,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return a list containing the deleted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doDelete(List<Entity> entities) throws DatabaseException {
+  protected List<Entity> doDelete(List<? extends Entity> entities) throws DatabaseException {
     connectionProvider.connection().delete(Entity.primaryKeys(entities));
 
-    return entities;
+    return (List<Entity>) entities;
   }
 
   /**
@@ -818,7 +818,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @see #update()
    * @see #update(java.util.List)
    */
-  protected List<Entity> modified(List<Entity> entities) {
+  protected Collection<Entity> modified(Collection<? extends Entity> entities) {
     return Entity.modified(entities);
   }
 
@@ -916,7 +916,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
   }
 
-  private List<Entity> insertEntities(List<Entity> entities) throws DatabaseException, ValidationException {
+  private List<Entity> insertEntities(List<? extends Entity> entities) throws DatabaseException, ValidationException {
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation
@@ -1091,8 +1091,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Key, Entity> mapToOriginalPrimaryKey(List<Entity> entitiesBeforeUpdate,
-                                                          List<Entity> entitiesAfterUpdate) {
+  private static Map<Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+                                                          Collection<? extends Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
     Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (Entity entity : entitiesBeforeUpdate) {

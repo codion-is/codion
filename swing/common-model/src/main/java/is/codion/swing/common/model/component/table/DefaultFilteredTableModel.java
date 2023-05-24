@@ -496,7 +496,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
 
     @Override
-    protected void handleRefreshResult(Collection<R> items) {
+    protected void processResult(Collection<R> items) {
       if (mergeOnRefresh && !items.isEmpty()) {
         merge(items);
       }
@@ -627,7 +627,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
 
     @Override
-    public void addValuesListener(EventListener listener) {
+    public void addListener(EventListener listener) {
       tableModel.addDataChangedListener(listener);
       tableModel.selectionModel().addSelectionListener(listener);
     }

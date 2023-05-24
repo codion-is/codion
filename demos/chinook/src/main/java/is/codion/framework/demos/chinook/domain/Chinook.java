@@ -30,7 +30,6 @@ import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.time.LocalDate;
 import java.util.Collection;
-import java.util.List;
 import java.util.ResourceBundle;
 import java.util.function.Function;
 import java.util.regex.Pattern;
@@ -142,7 +141,7 @@ public interface Chinook {
     ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);
     ForeignKey GENRE_FK = TYPE.foreignKey("genre_fk", GENRE_ID, Genre.ID);
 
-    FunctionType<EntityConnection, RaisePriceParameters, List<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
+    FunctionType<EntityConnection, RaisePriceParameters, Collection<Entity>> RAISE_PRICE = functionType("chinook.raise_price");
 
     default Track raisePrice(BigDecimal priceIncrease) {
       put(UNITPRICE, get(UNITPRICE).add(priceIncrease));

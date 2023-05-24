@@ -249,7 +249,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   @Override
   public final void addRefreshingObserver(StateObserver refreshingObserver) {
-    this.refreshingObserver.addState(refreshingObserver);
+    this.refreshingObserver.add(refreshingObserver);
   }
 
   @Override
@@ -281,14 +281,14 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private EntityComboBoxModel createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
     EntityComboBoxModel comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
-    refreshingObserver.addState(comboBoxModel.refresher().refreshingObserver());
+    refreshingObserver.add(comboBoxModel.refresher().refreshingObserver());
 
     return comboBoxModel;
   }
 
   private <T> FilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
-    refreshingObserver.addState(comboBoxModel.refresher().refreshingObserver());
+    refreshingObserver.add(comboBoxModel.refresher().refreshingObserver());
 
     return comboBoxModel;
   }

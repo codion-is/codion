@@ -17,6 +17,7 @@ import is.codion.framework.server.EntityServerConfiguration;
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
+import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Condition.condition;
@@ -46,14 +47,14 @@ public final class EmployeeServer extends EntityServer {
     }
 
     @Override
-    public List<Entity> employees() throws RemoteException, DatabaseException {
+    public Collection<Entity> employees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
         return connectionProxy.select(condition(Employee.TYPE));
       }
     }
 
     @Override
-    public List<Employee> employeeBeans() throws RemoteException, DatabaseException {
+    public Collection<Employee> employeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
         List<Entity> employees = connectionProxy.select(condition(Employee.TYPE)
                 .selectBuilder()

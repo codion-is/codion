@@ -303,7 +303,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final void update(Collection<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities);
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not allowed via this table model");

@@ -45,7 +45,7 @@ public interface ColumnSummaryModel {
   /**
    * @return a list containing the available summaries
    */
-  List<Summary> availableSummaries();
+  List<Summary> summaries();
 
   /**
    * @return the value controlling the summary
@@ -96,9 +96,9 @@ public interface ColumnSummaryModel {
     SummaryValues<T> values();
 
     /**
-     * @param listener the listener to notify of changes to the underlying data which require a summary refresh
+     * @param listener the listener notified the underlying data changes, requiring a summary refresh
      */
-    void addValuesListener(EventListener listener);
+    void addListener(EventListener listener);
 
     /**
      * @param <C> the column identifier type

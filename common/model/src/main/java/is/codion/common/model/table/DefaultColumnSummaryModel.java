@@ -32,7 +32,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
         throw new IllegalStateException("Summary model is locked");
       }
     });
-    this.valueProvider.addValuesListener(this::updateSummary);
+    this.valueProvider.addListener(this::updateSummary);
     this.summaryValue.addListener(this::updateSummary);
   }
 
@@ -47,7 +47,7 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
   }
 
   @Override
-  public List<Summary> availableSummaries() {
+  public List<Summary> summaries() {
     return summaries;
   }
 

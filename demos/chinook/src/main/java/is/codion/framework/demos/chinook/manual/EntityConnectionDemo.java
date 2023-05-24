@@ -307,7 +307,7 @@ public final class EntityConnectionDemo {
     List<Long> trackIds = asList(123L, 1234L);
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
-    List<Entity> modifiedTracks =
+    Collection<Entity> modifiedTracks =
             connection.executeFunction(Track.RAISE_PRICE,
                     new RaisePriceParameters(trackIds, priceIncrease));
 

@@ -40,6 +40,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -632,11 +633,13 @@ public class DomainTest {
             .with(Department.NAME, "name2")
             .build();
 
-    List<Entity> copies = Entity.deepCopy(asList(dept1, dept2));
-    assertNotSame(copies.get(0), dept1);
-    assertTrue(copies.get(0).columnValuesEqual(dept1));
-    assertNotSame(copies.get(1), dept2);
-    assertTrue(copies.get(1).columnValuesEqual(dept2));
+    Iterator<Entity> copies = Entity.deepCopy(asList(dept1, dept2)).iterator();
+    Entity dept1Copy = copies.next();
+    Entity dept2Copy = copies.next();
+    assertNotSame(dept1Copy, dept1);
+    assertTrue(dept1Copy.columnValuesEqual(dept1));
+    assertNotSame(dept2Copy, dept2);
+    assertTrue(dept2Copy.columnValuesEqual(dept2));
 
     Entity emp1 = entities.builder(Employee.TYPE)
             .with(Employee.DEPARTMENT_FK, dept1)

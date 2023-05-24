@@ -27,7 +27,7 @@ public class DefaultColumnSummaryModelTest {
       return ColumnSummaryModel.summaryValues(asList(1, 2, 3, null, 4, 5), false);
     }
     @Override
-    public void addValuesListener(EventListener event) {}
+    public void addListener(EventListener event) {}
   });
 
   final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel<>(new SummaryValueProvider<Double>() {
@@ -38,14 +38,14 @@ public class DefaultColumnSummaryModelTest {
       return ColumnSummaryModel.summaryValues(asList(1.1, 2.2, 3.3, null, 4.4, 5.5), false);
     }
     @Override
-    public void addValuesListener(EventListener event) {}
+    public void addListener(EventListener event) {}
   });
 
   @Test
   void test() {
     testIntModel.summaryValue().set(ColumnSummary.SUM);
     assertEquals(ColumnSummary.SUM, testIntModel.summaryValue().get());
-    assertTrue(testIntModel.availableSummaries().size() > 0);
+    assertTrue(testIntModel.summaries().size() > 0);
   }
 
   @Test

@@ -9102,3 +9102,10 @@
   AbstractEntityEditModel.notifyValueEdit() now recursively handles depending attributes
   EntityTableModel.replaceForeignKeyValues() implementations now make the references immutable
   DefaultEntity bug fixed, original values of non-insertable and non-updatable column properties were not included when serialized
+  State.Combination, State.Group.addState() and removeState() renamed add() and remove()
+  ColumnSummaryModel.availableSummaries() renamed summaries()
+  SummaryValueProvider.addValuesListener() renamed addListener()
+  FilteredModel.AbstractRefresher.handleResult() renamed processResult()
+  Entity, List replaced with Collection in utility methods, related refactoring
+  EntityConnection.update() now returns Collection
+  EntityEditModel, EntityTableModel, Entity, Collection<Entity> replaced with Collection<? extends Entity> where applicable, for handling wrapped entities, now consistent with EntityConnection

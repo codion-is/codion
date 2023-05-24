@@ -99,11 +99,11 @@ public class StateTest {
     State stateThree = State.state(true);
     State.Group stateGroup = State.group(stateOne);
 
-    stateGroup.addState(stateOne);//has no effect
-    stateGroup.addState(stateTwo);
+    stateGroup.add(stateOne);//has no effect
+    stateGroup.add(stateTwo);
     assertFalse(stateOne.get());
     assertTrue(stateTwo.get());
-    stateGroup.addState(stateThree);
+    stateGroup.add(stateThree);
     assertFalse(stateOne.get());
     assertFalse(stateTwo.get());
     assertTrue(stateThree.get());
@@ -119,9 +119,9 @@ public class StateTest {
     State stateOne = State.state();
     State stateTwo = State.state();
     State stateThree = State.state();
-    orState.addState(stateOne);
-    orState.addState(stateTwo);
-    orState.addState(stateThree);
+    orState.add(stateOne);
+    orState.add(stateTwo);
+    orState.add(stateThree);
 
     State.Combination andState = State.and(stateOne, stateTwo, stateThree);
     assertEquals(Conjunction.AND, andState.conjunction());
@@ -152,16 +152,16 @@ public class StateTest {
     assertTrue(orState.get(), "Or state should be active when two component states are active");
     assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
 
-    andState.removeState(stateOne);
+    andState.remove(stateOne);
     assertTrue(andState.get());
 
     stateOne.set(false);
     stateTwo.set(false);
     stateThree.set(false);
     orState = State.or();
-    orState.addState(stateOne);
-    orState.addState(stateTwo);
-    orState.addState(stateThree);
+    orState.add(stateOne);
+    orState.add(stateTwo);
+    orState.add(stateThree);
     andState = State.and(stateOne, stateTwo, stateThree);
     assertEquals("Combination and false, false, false, false", andState.toString());
     assertEquals("Combination or false, false, false, false", orState.toString());
@@ -189,7 +189,7 @@ public class StateTest {
     assertTrue(orState.get(), "Or state should be active when two component states are active");
     assertFalse(andState.get(), "And state should be inactive when only two of three component states is active");
 
-    andState.removeState(stateOne);
+    andState.remove(stateOne);
     assertTrue(andState.get());
 
     stateTwo.set(false);
@@ -238,20 +238,20 @@ public class StateTest {
     combination.addListener(stateChangeEvents::incrementAndGet);
     assertTrue(combination.get());
 
-    combination.removeState(stateTwo);
+    combination.remove(stateTwo);
 
     assertFalse(combination.get());
     assertEquals(1, stateChangeEvents.get());
 
-    combination.addState(stateTwo);
+    combination.add(stateTwo);
     assertTrue(combination.get());
     assertEquals(2, stateChangeEvents.get());
 
-    combination.removeState(stateOne);
+    combination.remove(stateOne);
     assertTrue(combination.get());
     assertEquals(2, stateChangeEvents.get());
 
-    combination.addState(stateOne);
+    combination.add(stateOne);
     stateTwo.set(false);
     assertFalse(combination.get());
     assertEquals(3, stateChangeEvents.get());

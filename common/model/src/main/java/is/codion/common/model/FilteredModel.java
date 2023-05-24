@@ -332,9 +332,9 @@ public interface FilteredModel<T> {
     protected abstract void refreshSync(Consumer<Collection<T>> afterRefresh);
 
     /**
-     * Handles the refresh result, by adding the given items to the model
+     * Processes the refresh result, by replacing the current model items by the result items.
      * @param items the items resulting from the refresh operation
      */
-    protected abstract void handleRefreshResult(Collection<T> items);
+    protected abstract void processResult(Collection<T> items);
   }
 }

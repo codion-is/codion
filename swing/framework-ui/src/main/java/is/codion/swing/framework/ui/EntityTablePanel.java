@@ -639,7 +639,7 @@ public class EntityTablePanel extends JPanel {
     }
 
     Property<T> property = tableModel.entityDefinition().property(attributeToUpdate);
-    List<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
+    Collection<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
     Collection<T> values = Entity.distinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
@@ -1111,7 +1111,7 @@ public class EntityTablePanel extends JPanel {
    * @param entities the entities being updated, including the values being modified
    * @throws ValidationException in case of a validation failure
    */
-  protected void beforeUpdate(List<Entity> entities) throws ValidationException {}
+  protected void beforeUpdate(Collection<Entity> entities) throws ValidationException {}
 
   /**
    * Called before delete is performed on the selected entities.
@@ -1603,7 +1603,7 @@ public class EntityTablePanel extends JPanel {
     table.repaint();
   }
 
-  private boolean update(List<Entity> entities) {
+  private boolean update(Collection<Entity> entities) {
     try {
       beforeUpdate(entities);
       WaitCursor.show(this);

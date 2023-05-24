@@ -234,11 +234,11 @@ final class HttpJsonEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public Entity update(Entity entity) throws DatabaseException {
-    return update(singletonList(entity)).get(0);
+    return update(singletonList(entity)).iterator().next();
   }
 
   @Override
-  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {

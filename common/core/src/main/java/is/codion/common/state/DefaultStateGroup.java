@@ -17,18 +17,18 @@ final class DefaultStateGroup implements State.Group {
 
   DefaultStateGroup(State... states) {
     for (State state : requireNonNull(states)) {
-      addState(state);
+      add(state);
     }
   }
 
   DefaultStateGroup(Collection<State> states) {
     for (State state : requireNonNull(states)) {
-      addState(state);
+      add(state);
     }
   }
 
   @Override
-  public void addState(State state) {
+  public void add(State state) {
     requireNonNull(state);
     synchronized (members) {
       for (WeakReference<State> reference : members) {
@@ -54,8 +54,8 @@ final class DefaultStateGroup implements State.Group {
   }
 
   @Override
-  public void addStates(Collection<State> states) {
-    requireNonNull(states).forEach(this::addState);
+  public void add(Collection<State> states) {
+    requireNonNull(states).forEach(this::add);
   }
 
   private void disableOthers(State state) {
