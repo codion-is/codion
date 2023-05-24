@@ -50,12 +50,6 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
     }
   }
 
-  /**
-   * Handles the refresh result, by adding the given items to the model
-   * @param items the items resulting from the refresh operation
-   */
-  protected abstract void handleRefreshResult(Collection<T> items);
-
   private void onRefreshStarted() {
     setRefreshing(true);
   }
@@ -78,7 +72,7 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
   private void onRefreshResult(Collection<T> items, Consumer<Collection<T>> afterRefresh) {
     refreshWorker = null;
     setRefreshing(false);
-    handleRefreshResult(items);
+    processResult(items);
     if (afterRefresh != null) {
       afterRefresh.accept(items);
     }

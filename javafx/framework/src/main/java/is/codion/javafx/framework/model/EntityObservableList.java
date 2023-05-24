@@ -402,7 +402,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
       setSelectedItems(selectedItems);
     }
 
-    protected void handleRefreshResult(Collection<Entity> items) {
+    protected void processResult(Collection<Entity> items) {
       setAll(items);
     }
 
@@ -423,7 +423,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     private void onRefreshResult(Collection<Entity> items, Consumer<Collection<Entity>> afterRefresh) {
       refreshTask = null;
       setRefreshing(false);
-      handleRefreshResult(items);
+      processResult(items);
       if (afterRefresh != null) {
         afterRefresh.accept(items);
       }

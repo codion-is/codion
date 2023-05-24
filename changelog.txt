@@ -9067,3 +9067,4 @@
   State.Combination, State.Group.addState() and removeState() renamed add() and remove()
   ColumnSummaryModel.availableSummaries() renamed summaries()
   SummaryValueProvider.addValuesListener() renamed addListener()
+  FilteredModel.AbstractRefresher.handleResult() renamed processResult()

@@ -79,7 +79,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public FilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
-    this.refresher = new FilteredComboBoxRefresher(new DefaultItemSupplier());
+    this.refresher = new DefaultRefresher(new DefaultItemSupplier());
   }
 
   @Override
@@ -607,14 +607,14 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     }
   }
 
-  private final class FilteredComboBoxRefresher extends AbstractFilteredModelRefresher<T> {
+  private final class DefaultRefresher extends AbstractFilteredModelRefresher<T> {
 
-    private FilteredComboBoxRefresher(Supplier<Collection<T>> itemSupplier) {
+    private DefaultRefresher(Supplier<Collection<T>> itemSupplier) {
       super(itemSupplier);
     }
 
     @Override
-    protected void handleRefreshResult(Collection<T> items) {
+    protected void processResult(Collection<T> items) {
       setItems(items);
     }
   }
