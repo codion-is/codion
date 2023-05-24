@@ -5,7 +5,9 @@
 :url-technical: https://codion.is/doc/{version}/jdk11/technical
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
+
 image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
+image::https://img.shields.io/badge/JDK_Compatibility-11+-blue.svg[Java Compatability 11+]
 
 == Introduction
 
