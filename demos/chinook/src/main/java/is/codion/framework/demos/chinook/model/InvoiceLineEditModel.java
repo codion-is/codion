@@ -49,11 +49,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      List<Entity> updated = connection.update(entities);
+      Collection<Entity> updated = connection.update(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 

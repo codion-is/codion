@@ -456,10 +456,10 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     }
   }
 
-  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, List<Entity>> {
+  private static final class RaisePriceFunction implements DatabaseFunction<EntityConnection, RaisePriceParameters, Collection<Entity>> {
 
     @Override
-    public List<Entity> execute(EntityConnection entityConnection,
+    public Collection<Entity> execute(EntityConnection entityConnection,
                                 RaisePriceParameters parameters) throws DatabaseException {
       SelectCondition selectCondition = where(Track.ID)
               .equalTo(parameters.trackIds())

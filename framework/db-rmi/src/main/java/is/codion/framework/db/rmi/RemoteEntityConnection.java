@@ -187,7 +187,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> update(List<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity> update(List<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Performs an update based on the given condition, updating the attributes found

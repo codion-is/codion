@@ -585,7 +585,7 @@ public class DefaultLocalEntityConnectionTest {
       final String newName = "New name";
       sales.put(Department.DNAME, newName);
       king.put(Employee.NAME, newName);
-      List<Entity> updated = connection.update(asList(sales, king));
+      List<Entity> updated = new ArrayList<>(connection.update(asList(sales, king)));
       assertTrue(updated.containsAll(asList(sales, king)));
       assertEquals(newName, updated.get(updated.indexOf(sales)).get(Department.DNAME));
       assertEquals(newName, updated.get(updated.indexOf(king)).get(Employee.NAME));
@@ -608,7 +608,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void update() throws DatabaseException {
-    List<Entity> updated = connection.update(new ArrayList<>());
+    Collection<Entity> updated = connection.update(new ArrayList<>());
     assertTrue(updated.isEmpty());
   }
 

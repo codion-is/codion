@@ -257,11 +257,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Entity update(Entity entity) throws DatabaseException {
-    return update(singletonList(requireNonNull(entity, "entity"))).get(0);
+    return update(singletonList(requireNonNull(entity, "entity"))).iterator().next();
   }
 
   @Override
-  public List<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
       return emptyList();
     }

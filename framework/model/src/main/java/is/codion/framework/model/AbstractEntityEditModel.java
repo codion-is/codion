@@ -523,7 +523,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - update {}", this, entities);
 
-    List<Entity> updatedEntities = doUpdate(new ArrayList<>(modifiedEntities));
+    List<Entity> updatedEntities = new ArrayList<>(doUpdate(new ArrayList<>(modifiedEntities)));
     int index = updatedEntities.indexOf(entity);
     if (index >= 0) {
       doSetEntity(updatedEntities.get(index));
@@ -789,10 +789,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Updates the given entities in the database
    * @param entities the entities to update
-   * @return a list containing the updated entities
+   * @return the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doUpdate(List<Entity> entities) throws DatabaseException {
     return connectionProvider.connection().update(entities);
   }
 

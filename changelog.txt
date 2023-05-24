@@ -9069,3 +9069,4 @@
   SummaryValueProvider.addValuesListener() renamed addListener()
   FilteredModel.AbstractRefresher.handleResult() renamed processResult()
   Entity, List replaced with Collection in utility methods, related refactoring
+  EntityConnection.update() now returns Collection
