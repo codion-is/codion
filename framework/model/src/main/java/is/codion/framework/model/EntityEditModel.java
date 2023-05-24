@@ -380,24 +380,22 @@ public interface EntityEditModel {
 
   /**
    * Deletes the active entity
-   * @return the deleted entity
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  Entity delete() throws DatabaseException;
+  void delete() throws DatabaseException;
 
   /**
    * Deletes the given entities, returns silently on receiving an empty list
    * @param entities the entities to delete
-   * @return the deleted entities
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  List<Entity> delete(List<? extends Entity> entities) throws DatabaseException;
+  void delete(List<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Refreshes all data models used by this edit model, combo box models f.ex.

@@ -66,15 +66,13 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected List<Entity> doDelete(List<? extends Entity> entities) throws DatabaseException {
+  protected void doDelete(List<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
       connection.delete(Entity.primaryKeys(entities));
       updateTotals(entities, connection);
       connection.commitTransaction();
-
-      return (List<Entity>) entities;
     }
     catch (DatabaseException e) {
       connection.rollbackTransaction();

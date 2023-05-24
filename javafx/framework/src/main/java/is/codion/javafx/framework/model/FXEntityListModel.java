@@ -228,7 +228,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final void refreshEntities(List<Key> keys) {
+  public final void refreshEntities(Collection<Key> keys) {
     try {
       replaceEntities(connectionProvider().connection().select(keys));
     }

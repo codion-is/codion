@@ -138,7 +138,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(List<Key> keys);
+  void refreshEntities(Collection<Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
