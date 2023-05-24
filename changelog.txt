@@ -9071,3 +9071,4 @@
   Entity, List replaced with Collection in utility methods, related refactoring
   EntityConnection.update() now returns Collection
   EntityEditModel, EntityTableModel, Entity, Collection<Entity> replaced with Collection<? extends Entity> where applicable, for handling wrapped entities, now consistent with EntityConnection
+  EntityModel.delete() no longer returns the entities

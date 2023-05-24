@@ -419,7 +419,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void delete() throws Exception {
-    assertTrue(employeeEditModel.delete(new ArrayList<>()).isEmpty());
+    employeeEditModel.delete(new ArrayList<>());
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {

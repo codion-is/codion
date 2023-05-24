@@ -535,34 +535,32 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Entity delete() throws DatabaseException {
+  public final void delete() throws DatabaseException {
     Entity originalEntity = entity.copy();
     originalEntity.revertAll();
 
-    return delete(singletonList(originalEntity)).get(0);
+    delete(singletonList(originalEntity));
   }
 
   @Override
-  public final List<Entity> delete(List<? extends Entity> entities) throws DatabaseException {
+  public final void delete(List<? extends Entity> entities) throws DatabaseException {
+    requireNonNull(entities, ENTITIES);
     if (!isDeleteEnabled()) {
       throw new IllegalStateException("Delete is not enabled!");
     }
-    requireNonNull(entities, ENTITIES);
     if (entities.isEmpty()) {
-      return emptyList();
+      return;
     }
     LOG.debug("{} - delete {}", this, entities);
 
     notifyBeforeDelete(unmodifiableList(entities));
 
-    List<Entity> deleted = doDelete(entities);
-    if (deleted.contains(entity)) {
+    doDelete(entities);
+    if (entities.contains(entity)) {
       doSetEntity(null);
     }
 
-    notifyAfterDelete(unmodifiableList(deleted));
-
-    return deleted;
+    notifyAfterDelete(unmodifiableList(entities));
   }
 
   @Override
@@ -799,13 +797,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Deletes the given entities from the database
    * @param entities the entities to delete
-   * @return a list containing the deleted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Entity> doDelete(List<? extends Entity> entities) throws DatabaseException {
+  protected void doDelete(List<? extends Entity> entities) throws DatabaseException {
     connectionProvider.connection().delete(Entity.primaryKeys(entities));
-
-    return (List<Entity>) entities;
   }
 
   /**
