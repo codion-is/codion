@@ -9073,3 +9073,4 @@
   EntityEditModel, EntityTableModel, Entity, Collection<Entity> replaced with Collection<? extends Entity> where applicable, for handling wrapped entities, now consistent with EntityConnection
   EntityModel.delete() no longer returns the entities
   EntityTableModel.refreshEntities() now takes a Collection instead of List
+  Entity, added some type parameters to helper methods for working with wrapped entities
