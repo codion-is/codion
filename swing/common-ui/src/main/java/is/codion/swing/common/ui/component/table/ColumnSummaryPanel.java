@@ -60,7 +60,7 @@ public final class ColumnSummaryPanel extends JPanel {
   private static JPopupMenu createPopupMenu(ColumnSummaryModel model) {
     JPopupMenu popupMenu = new JPopupMenu();
     ButtonGroup group = new ButtonGroup();
-    for (ColumnSummaryModel.Summary summary : model.availableSummaries()) {
+    for (ColumnSummaryModel.Summary summary : model.summaries()) {
       JRadioButtonMenuItem item = new JRadioButtonMenuItem(Control.builder(() -> model.summaryValue().set(summary))
               .caption(summary.toString())
               .build());

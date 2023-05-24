@@ -9065,3 +9065,5 @@
   EntityTableModel.replaceForeignKeyValues() implementations now make the references immutable
   DefaultEntity bug fixed, original values of non-insertable and non-updatable column properties were not included when serialized
   State.Combination, State.Group.addState() and removeState() renamed add() and remove()
+  ColumnSummaryModel.availableSummaries() renamed summaries()
+  SummaryValueProvider.addValuesListener() renamed addListener()
