@@ -9074,3 +9074,4 @@
   EntityModel.delete() no longer returns the entities
   EntityTableModel.refreshEntities() now takes a Collection instead of List
   Entity, added some type parameters to helper methods for working with wrapped entities
+  Entity.referencedKeys(), entities parameter moved for consistency

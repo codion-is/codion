@@ -407,11 +407,11 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns the non-null keys referenced by the given foreign key
-   * @param entities the entities
    * @param foreignKey the foreign key
+   * @param entities the entities
    * @return the non-null keys referenced by the given foreign key
    */
-  static Collection<Key> referencedKeys(Collection<? extends Entity> entities, ForeignKey foreignKey) {
+  static Collection<Key> referencedKeys(ForeignKey foreignKey, Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
             .map(entity -> entity.referencedKey(foreignKey))
             .filter(Objects::nonNull)

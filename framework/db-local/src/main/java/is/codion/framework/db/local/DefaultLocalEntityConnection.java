@@ -975,15 +975,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
           logEntry("setForeignKeys", foreignKeyProperty);
-          List<Key> referencedKeys = new ArrayList<>(Entity.referencedKeys(entities, foreignKey));
+          Collection<Key> referencedKeys = Entity.referencedKeys(foreignKey, entities);
           if (referencedKeys.isEmpty()) {
             for (int j = 0; j < entities.size(); j++) {
               entities.get(j).put(foreignKey, null);
             }
           }
           else {
-            Map<Key, Entity> referencedEntitiesMappedByKey = selectReferencedEntities(foreignKeyProperty, referencedKeys,
-                    currentForeignKeyFetchDepth, conditionFetchDepthLimit);
+            Map<Key, Entity> referencedEntitiesMappedByKey = selectReferencedEntities(foreignKeyProperty,
+                    new ArrayList<>(referencedKeys), currentForeignKeyFetchDepth, conditionFetchDepthLimit);
             for (int j = 0; j < entities.size(); j++) {
               Entity entity = entities.get(j);
               Key referencedKey = entity.referencedKey(foreignKey);
