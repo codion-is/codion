@@ -583,7 +583,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T> LinkedHashMap<T, List<Entity>> mapToValue(Attribute<T> attribute, Collection<? extends Entity> entities) {
     return requireNonNull(entities).stream()
-            .map(entity -> (Entity) entity)//necessary to prevent compile failure on later JDKs than 8
+            .map(Entity.class::cast)//necessary to prevent compile failure on later JDKs than 8
             .collect(groupingBy(entity -> entity.get(attribute), LinkedHashMap::new, toList()));
   }
 
