@@ -3,7 +3,9 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Configuration;
 import is.codion.common.Primitives;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -39,6 +41,11 @@ class DefaultEntity implements Entity, Serializable {
   private static final long serialVersionUID = 1;
 
   private static final String ATTRIBUTE = "attribute";
+
+  private static final PropertyValue<Boolean> LEGACY_SERIALIZATION =
+          Configuration.booleanValue("codion.domain.legacySerialization", false);
+
+  private static final EntitySerializer SERIALIZER = LEGACY_SERIALIZATION.get() ? new LegacyEntitySerializer() : new DefaultEntitySerializer();
 
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
 
@@ -125,7 +132,22 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isModified() {
-    return isModifiedInternal();
+    if (originalValues != null) {
+      for (Attribute<?> attribute : originalValues.keySet()) {
+        Property<?> property = definition.property(attribute);
+        if (property instanceof ColumnProperty) {
+          ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
+          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
+            return true;
+          }
+        }
+        if (property instanceof TransientProperty && ((TransientProperty<?>) property).modifiesEntity()) {
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 
   @Override
@@ -705,25 +727,6 @@ class DefaultEntity implements Entity, Serializable {
     return valueMap;
   }
 
-  private boolean isModifiedInternal() {
-    if (originalValues != null && !originalValues.isEmpty()) {
-      for (Attribute<?> attribute : originalValues.keySet()) {
-        Property<?> property = definition.property(attribute);
-        if (property instanceof ColumnProperty) {
-          ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
-            return true;
-          }
-        }
-        if (property instanceof TransientProperty && ((TransientProperty<?>) property).modifiesEntity()) {
-          return true;
-        }
-      }
-    }
-
-    return false;
-  }
-
   private <T> void setOriginalValue(Attribute<T> attribute, T originalValue) {
     if (originalValues == null) {
       originalValues = new HashMap<>();
@@ -790,54 +793,11 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.domainName());
-    stream.writeObject(definition.type().name());
-    stream.writeInt(definition.serializationVersion());
-    boolean isModified = originalValues != null && !originalValues.isEmpty();
-    stream.writeBoolean(isModified);
-    List<Property<?>> properties = definition.properties();
-    for (int i = 0; i < properties.size(); i++) {
-      Property<?> property = properties.get(i);
-      if (!(property instanceof DerivedProperty)) {
-        Attribute<?> attribute = property.attribute();
-        boolean containsValue = values.containsKey(attribute);
-        stream.writeBoolean(containsValue);
-        if (containsValue) {
-          stream.writeObject(values.get(attribute));
-          if (isModified) {
-            boolean valueModified = originalValues.containsKey(attribute);
-            stream.writeBoolean(valueModified);
-            if (valueModified) {
-              stream.writeObject(originalValues.get(attribute));
-            }
-          }
-        }
-      }
-    }
+    SERIALIZER.serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    Entities entities = DefaultEntities.entities((String) stream.readObject());
-    definition = entities.definition((String) stream.readObject());
-    if (definition.serializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.type() + "' can not be deserialized due to version difference");
-    }
-    boolean isModified = stream.readBoolean();
-    values = new HashMap<>();
-    List<Property<?>> properties = definition.properties();
-    for (int i = 0; i < properties.size(); i++) {
-      Property<Object> property = (Property<Object>) properties.get(i);
-      if (!(property instanceof DerivedProperty)) {
-        boolean containsValue = stream.readBoolean();
-        if (containsValue) {
-          Attribute<Object> attribute = property.attribute();
-          values.put(attribute, attribute.validateType(stream.readObject()));
-          if (isModified && stream.readBoolean()) {
-            setOriginalValue(attribute, attribute.validateType(stream.readObject()));
-          }
-        }
-      }
-    }
+    SERIALIZER.deserialize(this, stream);
   }
 
   private static Map<Attribute<?>, Object> validate(EntityDefinition definition, Map<Attribute<?>, Object> values) {
