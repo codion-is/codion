@@ -401,7 +401,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void refreshEntities(List<Key> keys) {
+  public final void refreshEntities(Collection<Key> keys) {
     try {
       replaceEntities(connectionProvider().connection().select(keys));
     }
