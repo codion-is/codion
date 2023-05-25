@@ -26,7 +26,6 @@ final class LegacyEntitySerializer implements EntitySerializer {
   @Override
   public void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
     EntityDefinition definition = entity.definition;
-    stream.writeObject(definition.domainName());
     stream.writeObject(definition.type().name());
     stream.writeInt(definition.serializationVersion());
     boolean isModified = entity.originalValues != null && !entity.originalValues.isEmpty();
@@ -78,7 +77,6 @@ final class LegacyEntitySerializer implements EntitySerializer {
 
   @Override
   public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
-    stream.writeObject(key.definition.domainName());
     stream.writeObject(key.definition.type().name());
     stream.writeInt(key.definition.serializationVersion());
     stream.writeBoolean(key.primaryKey);
