@@ -9,6 +9,8 @@ import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Employee;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -25,53 +27,59 @@ public final class EntitySerializerTest {
 
   private static final Entities ENTITIES = new TestDomain().entities();
 
-  @org.junit.jupiter.api.Test
+  @Test
   void defaultSerializer() throws IOException, ClassNotFoundException {
-    testSerializer(new DefaultEntitySerializer(ENTITIES));
+    testSerializer(new DefaultEntitySerializer(ENTITIES, true));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   void legacySerializer() throws IOException, ClassNotFoundException {
     testSerializer(new LegacyEntitySerializer(ENTITIES));
   }
 
-  @org.junit.jupiter.api.Test
+  @Test
   void mismatch() throws IOException, ClassNotFoundException {
     SerialDomain domain1 = new SerialDomain(definition(
-            primaryKeyProperty(Test.ID),
-            columnProperty(Test.NAME))
+            primaryKeyProperty(TestTable.ID),
+            columnProperty(TestTable.NAME))
             .build());
     SerialDomain domain2 = new SerialDomain(definition(
-            primaryKeyProperty(Test.ID),
-            columnProperty(Test.NAME),
-            columnProperty(Test.EXTRA))
+            primaryKeyProperty(TestTable.ID),
+            columnProperty(TestTable.NAME),
+            columnProperty(TestTable.EXTRA))
             .build());
 
-    EntitySerializer serializer1 = new DefaultEntitySerializer(domain1.entities());
-    EntitySerializer serializer2 = new DefaultEntitySerializer(domain2.entities());
+    EntitySerializer serializer1 = new DefaultEntitySerializer(domain1.entities(), true);
+    EntitySerializer serializer2 = new DefaultEntitySerializer(domain2.entities(), true);
+    EntitySerializer serializer3 = new DefaultEntitySerializer(domain1.entities(), false);
 
-    DefaultEntity entity = (DefaultEntity) domain1.entities().builder(Test.TYPE)
-            .with(Test.ID, 1)
-            .with(Test.NAME, "name")
+    DefaultEntity entity = (DefaultEntity) domain1.entities().builder(TestTable.TYPE)
+            .with(TestTable.ID, 1)
+            .with(TestTable.NAME, "name")
             .build();
-    DefaultEntity deserialized = (DefaultEntity) domain2.entities().entity(Test.TYPE);
-    assertFalse(deserialized.contains(Test.EXTRA));
+    DefaultEntity deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
+    assertFalse(deserialized.contains(TestTable.EXTRA));
 
     serializeDeserialize(serializer1, serializer2, entity, deserialized);
 
-    entity = (DefaultEntity) domain2.entities().builder(Test.TYPE)
-            .with(Test.ID, 1)
-            .with(Test.NAME, "name")
-            .with(Test.EXTRA, "extra")
+    entity = (DefaultEntity) domain2.entities().builder(TestTable.TYPE)
+            .with(TestTable.ID, 1)
+            .with(TestTable.NAME, "name")
+            .with(TestTable.EXTRA, "extra")
             .build();
-    deserialized = (DefaultEntity) domain1.entities().entity(Test.TYPE);
+    deserialized = (DefaultEntity) domain1.entities().entity(TestTable.TYPE);
 
-    serializeDeserialize(serializer2, serializer1, entity, deserialized);
-    assertFalse(deserialized.contains(Test.EXTRA));
+    DefaultEntity toSerialize = entity;
+    DefaultEntity toDeserialize = deserialized;
 
-    deserialized = (DefaultEntity) domain2.entities().entity(Test.TYPE);
+    assertThrows(IOException.class, () -> serializeDeserialize(serializer2, serializer1, toSerialize, toDeserialize));
+
+    serializeDeserialize(serializer2, serializer3, toSerialize, toDeserialize);
+    assertFalse(deserialized.contains(TestTable.EXTRA));
+
+    deserialized = (DefaultEntity) domain2.entities().entity(TestTable.TYPE);
     serializeDeserialize(serializer2, serializer2, entity, deserialized);
-    assertTrue(deserialized.contains(Test.EXTRA));
+    assertTrue(deserialized.contains(TestTable.EXTRA));
   }
 
   private void testSerializer(EntitySerializer serializer) throws IOException, ClassNotFoundException {
@@ -155,7 +163,7 @@ public final class EntitySerializerTest {
 
   private static final DomainType DOMAIN = DomainType.domainType("EntitySerializerTest");
 
-  interface Test {
+  interface TestTable {
     EntityType TYPE = DOMAIN.entityType("test");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");

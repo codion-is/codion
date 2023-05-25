@@ -153,7 +153,9 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private static EntitySerializer createSerializer(Entities entities) {
-    return LEGACY_SERIALIZATION.get() ? new LegacyEntitySerializer(entities) : new DefaultEntitySerializer(entities);
+    return LEGACY_SERIALIZATION.get() ?
+            new LegacyEntitySerializer(entities) :
+            new DefaultEntitySerializer(entities, STRICT_DESERIALIZATION.get());
   }
 
   private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
