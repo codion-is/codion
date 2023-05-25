@@ -53,10 +53,13 @@ final class DefaultEntitySerializer implements EntitySerializer {
     key.values = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
       Attribute<Object> attribute = key.definition.attribute((String) stream.readObject());
-      key.attributes.add(attribute);
-      key.values.put(attribute, attribute.validateType(stream.readObject()));
+      Object value = stream.readObject();
+      if (attribute != null) {
+        key.attributes.add(attribute);
+        key.values.put(attribute, attribute.validateType(value));
+      }
     }
-    key.singleIntegerKey = valueCount == 1 && key.attributes.get(0).isInteger();
+    key.singleIntegerKey = valueCount == 1 && isIntegerKey(key);
     key.hashCodeDirty = true;
   }
 
@@ -89,11 +92,16 @@ final class DefaultEntitySerializer implements EntitySerializer {
     Map<Attribute<?>, Object> map = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
       Attribute<Object> attribute = definition.attribute((String) stream.readObject());
+      Object value = stream.readObject();
       if (attribute != null) {
-        map.put(attribute, attribute.validateType(stream.readObject()));
+        map.put(attribute, attribute.validateType(value));
       }
     }
 
     return map;
+  }
+
+  private static boolean isIntegerKey(DefaultKey key) {
+    return key.attributes.size() == 1 && key.attributes.get(0).isInteger();
   }
 }
