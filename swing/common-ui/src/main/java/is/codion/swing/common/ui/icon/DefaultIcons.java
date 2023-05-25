@@ -30,10 +30,6 @@ final class DefaultIcons implements Icons {
     UIManager.addPropertyChangeListener(new OnLookAndFeelChangedListener());
   }
 
-  DefaultIcons() {
-    ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
-  }
-
   @Override
   public void add(Ikon... ikons) {
     for (Ikon ikon : requireNonNull(ikons)) {
@@ -55,13 +51,31 @@ final class DefaultIcons implements Icons {
     return icons.get(ikon).imageIcon();
   }
 
+  @Override
+  public void setIconColor(Color color) {
+    requireNonNull(color);
+    icons.values().forEach(icon -> icon.setColor(color));
+    logos.values().forEach(logo -> logo.setColor(color));
+  }
+
+  @Override
+  public Icons addIconColorListener() {
+    ICON_COLOR.addWeakDataListener(onIconColorChangedListener);
+    return this;
+  }
+
+  @Override
+  public Icons removeIconColorListener() {
+    ICON_COLOR.removeWeakDataListener(onIconColorChangedListener);
+    return this;
+  }
+
   private final class OnIconColorChangedListener implements EventDataListener<Color> {
 
     @Override
     public void onEvent(Color color) {
       if (color != null) {
-        icons.values().forEach(icon -> icon.setColor(color));
-        logos.values().forEach(logo -> logo.setColor(color));
+        setIconColor(color);
       }
     }
   }

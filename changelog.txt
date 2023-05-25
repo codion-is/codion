@@ -9083,3 +9083,5 @@
   DefaultEntitySerializer bug fixed, key deserializer didn't use unmodifiableList/Map(), refactoring
   ValueFetcher.fetchValue() renamed fetch(), some more renaming
   DefaultAttribute.isNumerical() now based on isAssignableFrom()
+  Icons.setIconColor() added
+  DefaultIcons no longer adds color listener on construction, Icons.addColorListener() added, DefaultFrameworkIcons.instance() adds the listener
