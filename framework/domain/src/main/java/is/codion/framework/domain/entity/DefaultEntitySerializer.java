@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultEntitySerializer implements EntitySerializer {
@@ -37,32 +39,13 @@ final class DefaultEntitySerializer implements EntitySerializer {
   @Override
   public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
     stream.writeObject(key.definition.type().name());
-    stream.writeBoolean(key.primaryKey);
-    stream.writeInt(key.attributes.size());
-    for (int i = 0; i < key.attributes.size(); i++) {
-      Attribute<?> attribute = key.attributes.get(i);
-      stream.writeObject(attribute.name());
-      stream.writeObject(key.values.get(attribute));
-    }
+    serializeValues(key, stream);
   }
 
   @Override
   public void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
     key.definition = entities.definition((String) stream.readObject());
-    key.primaryKey = stream.readBoolean();
-    int valueCount = stream.readInt();
-    key.attributes = new ArrayList<>(valueCount);
-    key.values = new HashMap<>(valueCount);
-    for (int i = 0; i < valueCount; i++) {
-      Attribute<Object> attribute = getAttribute(key.definition, (String) stream.readObject());
-      Object value = stream.readObject();
-      if (attribute != null) {
-        key.attributes.add(attribute);
-        key.values.put(attribute, attribute.validateType(value));
-      }
-    }
-    key.singleIntegerKey = valueCount == 1 && isIntegerKey(key);
-    key.hashCodeDirty = true;
+    deserializeValues(key, stream);
   }
 
   private void deserializeValues(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -84,6 +67,25 @@ final class DefaultEntitySerializer implements EntitySerializer {
     }
 
     return map;
+  }
+
+  private void deserializeValues(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    key.primaryKey = stream.readBoolean();
+    int valueCount = stream.readInt();
+    key.attributes = new ArrayList<>(valueCount);
+    key.values = new HashMap<>(valueCount);
+    for (int i = 0; i < valueCount; i++) {
+      Attribute<Object> attribute = getAttribute(key.definition, (String) stream.readObject());
+      Object value = stream.readObject();
+      if (attribute != null) {
+        key.attributes.add(attribute);
+        key.values.put(attribute, attribute.validateType(value));
+      }
+    }
+    key.attributes = unmodifiableList(key.attributes);
+    key.values = unmodifiableMap(key.values);
+    key.singleIntegerKey = valueCount == 1 && isIntegerKey(key);
+    key.hashCodeDirty = true;
   }
 
   private Attribute<Object> getAttribute(EntityDefinition definition, String attributeName) throws IOException, ClassNotFoundException {
@@ -109,6 +111,16 @@ final class DefaultEntitySerializer implements EntitySerializer {
     for (Map.Entry<Attribute<?>, Object> entry : valueMap.entrySet()) {
       stream.writeObject(entry.getKey().name());
       stream.writeObject(entry.getValue());
+    }
+  }
+
+  private static void serializeValues(DefaultKey key, ObjectOutputStream stream) throws IOException {
+    stream.writeBoolean(key.primaryKey);
+    stream.writeInt(key.attributes.size());
+    for (int i = 0; i < key.attributes.size(); i++) {
+      Attribute<?> attribute = key.attributes.get(i);
+      stream.writeObject(attribute.name());
+      stream.writeObject(key.values.get(attribute));
     }
   }
 

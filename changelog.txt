@@ -9080,3 +9080,4 @@
   DefaultEntity, DefaultKey.writeObject() now handles writing the domainName, mirrors readObject()
   DefaultEntitySerializer now handles missing key attributes, some bugfixes
   Entities.STRICT_DESERIALIZATION added, implemented in DefaultEntitySerializer
+  DefaultEntitySerializer bug fixed, key deserializer didn't use unmodifiableList/Map(), refactoring
