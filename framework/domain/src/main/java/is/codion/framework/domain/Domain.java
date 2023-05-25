@@ -108,7 +108,7 @@ public interface Domain {
    * @return a {@link Domain} implementation with the given name, if found
    * @see DomainType#name()
    */
-  static Optional<Domain> instanceByName(String name) {
+  static Optional<Domain> domainByName(String name) {
     requireNonNull(name);
     for (Domain domain : domains()) {
       if (domain.type().name().equals(name)) {
@@ -124,7 +124,7 @@ public interface Domain {
    * @return a {@link Domain} implementation of the given type, if found
    * @see DomainType#name()
    */
-  static Optional<Domain> instanceByClassName(String className) {
+  static Optional<Domain> domainByClassName(String className) {
     requireNonNull(className);
     for (Domain domain : domains()) {
       if (domain.getClass().getName().equals(className)) {

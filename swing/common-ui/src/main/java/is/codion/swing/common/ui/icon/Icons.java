@@ -15,7 +15,7 @@ import java.awt.Color;
 /**
  * Provides icons for ui components.
  * The icon color follows the 'Button.foreground' color of the current Look and feel.
- * Add custom icons via {@link #add(Ikon...)} (Ikon)} and retrieve them via {@link #icon(Ikon)}.
+ * Add icons via {@link #add(Ikon...)} (Ikon)} and retrieve them via {@link #icon(Ikon)}.
  * @see #icons()
  */
 public interface Icons {
@@ -51,6 +51,25 @@ public interface Icons {
    * @see #add(Ikon...)
    */
   ImageIcon icon(Ikon ikon);
+
+  /**
+   * Sets the icon color
+   * @param color the color
+   */
+  void setIconColor(Color color);
+
+  /**
+   * Adds a listener to the {@link #ICON_COLOR} property value,
+   * dynamically changing color of the icons in this instance.
+   * @return this icons instance
+   */
+  Icons addIconColorListener();
+
+  /**
+   * Removes the dynamic color change listener
+   * @return this icons instance
+   */
+  Icons removeIconColorListener();
 
   /**
    * @return a new {@link Icons} instance

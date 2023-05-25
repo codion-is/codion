@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
-import static is.codion.framework.domain.entity.EntitySerializer.getSerializer;
+import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.stream.Collectors.joining;
 
@@ -287,11 +287,11 @@ class DefaultKey implements Key, Serializable {
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.domainName());
-    getSerializer(definition.domainName()).serialize(this, stream);
+    serializerForDomain(definition.domainName()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    getSerializer((String) stream.readObject()).deserialize(this, stream);
+    serializerForDomain((String) stream.readObject()).deserialize(this, stream);
   }
 
   private static Map<Attribute<?>, Object> createNullValueMap(List<Attribute<?>> attributes) {
