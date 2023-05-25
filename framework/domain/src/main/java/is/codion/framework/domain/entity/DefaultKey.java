@@ -286,6 +286,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
+    stream.writeObject(definition.domainName());
     getSerializer(definition.domainName()).serialize(this, stream);
   }
 

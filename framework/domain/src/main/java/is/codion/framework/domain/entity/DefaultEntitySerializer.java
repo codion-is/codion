@@ -22,9 +22,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   @Override
   public void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
-    EntityDefinition definition = entity.definition;
-    stream.writeObject(definition.domainName());
-    stream.writeObject(definition.type().name());
+    stream.writeObject(entity.definition.type().name());
     serializeValues(entity, stream);
   }
 
@@ -36,7 +34,6 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   @Override
   public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
-    stream.writeObject(key.definition.domainName());
     stream.writeObject(key.definition.type().name());
     stream.writeBoolean(key.primaryKey);
     stream.writeInt(key.attributes.size());
@@ -51,15 +48,15 @@ final class DefaultEntitySerializer implements EntitySerializer {
   public void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
     key.definition = entities.definition((String) stream.readObject());
     key.primaryKey = stream.readBoolean();
-    int attributeCount = stream.readInt();
-    key.attributes = new ArrayList<>(attributeCount);
-    key.values = new HashMap<>(attributeCount);
-    for (int i = 0; i < attributeCount; i++) {
+    int valueCount = stream.readInt();
+    key.attributes = new ArrayList<>(valueCount);
+    key.values = new HashMap<>(valueCount);
+    for (int i = 0; i < valueCount; i++) {
       Attribute<Object> attribute = key.definition.attribute((String) stream.readObject());
       key.attributes.add(attribute);
       key.values.put(attribute, attribute.validateType(stream.readObject()));
     }
-    key.singleIntegerKey = attributeCount == 1 && key.attributes.get(0).isInteger();
+    key.singleIntegerKey = valueCount == 1 && key.attributes.get(0).isInteger();
     key.hashCodeDirty = true;
   }
 

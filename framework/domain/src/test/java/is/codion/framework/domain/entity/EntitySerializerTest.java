@@ -59,7 +59,6 @@ public final class EntitySerializerTest {
     }
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     try (ObjectInputStream in = new ObjectInputStream(bis)) {
-      assertTrue(in.readObject() instanceof String);
       serializer.deserialize(toDeserialize, in);
     }
   }
@@ -72,7 +71,6 @@ public final class EntitySerializerTest {
     }
     ByteArrayInputStream bis = new ByteArrayInputStream(bos.toByteArray());
     try (ObjectInputStream in = new ObjectInputStream(bis)) {
-      assertTrue(in.readObject() instanceof String);
       serializer.deserialize(toDeserialize, in);
     }
   }

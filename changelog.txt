@@ -9077,3 +9077,4 @@
   Entity.referencedKeys(), entities parameter moved for consistency
   EntitySerializer added, along with the new DefaultEntitySerializer and the old LegacyEntitySerializer implementations, related refactoring
   EntitySerializer now handles serialisation of DefaultKey, DefaultEntities.REGISTERED_ENTITIES removed, DefaultEntities now configures a EntitySerializer instance on construction and deserialization
+  DefaultEntity, DefaultKey.writeObject() now handles writing the domainName, mirrors readObject()
