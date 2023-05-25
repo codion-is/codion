@@ -13,8 +13,8 @@ import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
+import static is.codion.framework.domain.entity.EntitySerializer.setSerializer;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -25,8 +25,6 @@ import static java.util.stream.Collectors.toList;
 public abstract class DefaultEntities implements Entities, Serializable {
 
   private static final long serialVersionUID = 1;
-
-  private static final Map<DomainType, Entities> REGISTERED_ENTITIES = new ConcurrentHashMap<>();
 
   private final DomainType domainType;
   private final Map<String, DefaultEntityDefinition> entityDefinitions = new LinkedHashMap<>();
@@ -39,7 +37,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    */
   protected DefaultEntities(DomainType domainType) {
     this.domainType = requireNonNull(domainType, "domainType");
-    REGISTERED_ENTITIES.put(domainType, this);
+    setSerializer(domainType.name(), createSerializer(this));
   }
 
   @Override
@@ -94,21 +92,6 @@ public abstract class DefaultEntities implements Entities, Serializable {
   @Override
   public final Key.Builder keyBuilder(EntityType entityType) {
     return new DefaultKeyBuilder(definition(entityType));
-  }
-
-  /**
-   * Retrieves the Entities for the given domain type.
-   * @param domainName the name of the domain for which to retrieve the entity definitions
-   * @return the Entities instance registered for the given domainType
-   * @throws IllegalArgumentException in case the domain has not been registered
-   */
-  static Entities entities(String domainName) {
-    Entities entities = REGISTERED_ENTITIES.get(DomainType.getDomainType(domainName));
-    if (entities == null) {
-      throw new IllegalArgumentException("Entities for domain '" + domainName + "' have not been registered");
-    }
-
-    return entities;
   }
 
   protected final void setStrictForeignKeys(boolean strictForeignKeys) {
@@ -166,7 +149,11 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
-    REGISTERED_ENTITIES.put(domainType, this);
+    setSerializer(domainType.name(), createSerializer(this));
+  }
+
+  private static EntitySerializer createSerializer(Entities entities) {
+    return LEGACY_SERIALIZATION.get() ? new LegacyEntitySerializer(entities) : new DefaultEntitySerializer(entities);
   }
 
   private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {

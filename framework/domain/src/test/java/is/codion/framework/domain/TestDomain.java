@@ -49,34 +49,40 @@ public final class TestDomain extends DefaultDomain {
     invalidDerived();
   }
 
-  public static final EntityType T_COMPOSITE_MASTER = DOMAIN.entityType("domain.composite_master");
-  public static final Attribute<Integer> COMPOSITE_MASTER_ID = T_COMPOSITE_MASTER.integerAttribute("id");
-  public static final Attribute<Integer> COMPOSITE_MASTER_ID_2 = T_COMPOSITE_MASTER.integerAttribute("id2");
-  public static final Attribute<Integer> COMPOSITE_MASTER_ID_3 = T_COMPOSITE_MASTER.integerAttribute("id3");
+  public interface CompositeMaster {
+    EntityType TYPE = DOMAIN.entityType("domain.composite_master");
+
+    Attribute<Integer> COMPOSITE_MASTER_ID_3 = TYPE.integerAttribute("id3");
+    Attribute<Integer> COMPOSITE_MASTER_ID_2 = TYPE.integerAttribute("id2");
+    Attribute<Integer> COMPOSITE_MASTER_ID = TYPE.integerAttribute("id");
+  }
 
   void compositeMaster() {
     add(definition(
-            columnProperty(COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
-            columnProperty(COMPOSITE_MASTER_ID_2).primaryKeyIndex(1),
-            columnProperty(COMPOSITE_MASTER_ID_3).primaryKeyIndex(2)));
+            columnProperty(CompositeMaster.COMPOSITE_MASTER_ID).primaryKeyIndex(0).nullable(true),
+            columnProperty(CompositeMaster.COMPOSITE_MASTER_ID_2).primaryKeyIndex(1),
+            columnProperty(CompositeMaster.COMPOSITE_MASTER_ID_3).primaryKeyIndex(2)));
   }
 
-  public static final EntityType T_COMPOSITE_DETAIL = DOMAIN.entityType("domain.composite_detail");
-  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = T_COMPOSITE_DETAIL.integerAttribute("master_id");
-  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = T_COMPOSITE_DETAIL.integerAttribute("master_id2");
-  public static final Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = T_COMPOSITE_DETAIL.integerAttribute("master_id3");
-  public static final ForeignKey COMPOSITE_DETAIL_MASTER_FK = T_COMPOSITE_DETAIL.foreignKey("master_fk",
-          COMPOSITE_DETAIL_MASTER_ID, COMPOSITE_MASTER_ID,
-          COMPOSITE_DETAIL_MASTER_ID_2, COMPOSITE_MASTER_ID_2,
-          COMPOSITE_DETAIL_MASTER_ID_3, COMPOSITE_MASTER_ID_3);
+  public interface CompositeDetail {
+    EntityType TYPE = DOMAIN.entityType("domain.composite_detail");
+
+    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = TYPE.integerAttribute("master_id");
+    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = TYPE.integerAttribute("master_id2");
+    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = TYPE.integerAttribute("master_id3");
+    ForeignKey COMPOSITE_DETAIL_MASTER_FK = TYPE.foreignKey("master_fk",
+            COMPOSITE_DETAIL_MASTER_ID, CompositeMaster.COMPOSITE_MASTER_ID,
+            COMPOSITE_DETAIL_MASTER_ID_2, CompositeMaster.COMPOSITE_MASTER_ID_2,
+            COMPOSITE_DETAIL_MASTER_ID_3, CompositeMaster.COMPOSITE_MASTER_ID_3);
+  }
 
   void compositeDetail() {
     add(definition(
-            columnProperty(COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
-            columnProperty(COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
-            columnProperty(COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
-            foreignKeyProperty(COMPOSITE_DETAIL_MASTER_FK, "master")
-                    .readOnly(COMPOSITE_DETAIL_MASTER_ID_3)));
+            columnProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID).primaryKeyIndex(0),
+            columnProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2).primaryKeyIndex(1),
+            columnProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3).primaryKeyIndex(2),
+            foreignKeyProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, "master")
+                    .readOnly(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3)));
   }
 
   public interface Master extends Entity {

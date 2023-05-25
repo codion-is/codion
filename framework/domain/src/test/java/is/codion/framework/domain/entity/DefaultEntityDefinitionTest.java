@@ -8,6 +8,8 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain.CompositeDetail;
+import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -220,7 +222,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().definition(TestDomain.T_COMPOSITE_DETAIL).foreignKeyProperty(TestDomain.COMPOSITE_DETAIL_MASTER_FK).isNullable());
+    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeyProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
     assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).isNullable());
   }
 
@@ -401,7 +403,7 @@ public class DefaultEntityDefinitionTest {
   @Test
   void compositeKeySingleValueConstructor() {
     assertThrows(IllegalStateException.class, () -> new TestDomain().entities()
-            .definition(TestDomain.T_COMPOSITE_MASTER).primaryKey(1L));
+            .definition(CompositeMaster.TYPE).primaryKey(1L));
   }
 
   @Test

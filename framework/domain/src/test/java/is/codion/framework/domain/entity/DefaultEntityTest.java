@@ -5,6 +5,8 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Serializer;
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain.CompositeDetail;
+import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -277,13 +279,13 @@ public class DefaultEntityTest {
 
   @Test
   void referencedKeyCache() {
-    Entity compositeDetail = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
-            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1)
-            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 2)
+    Entity compositeDetail = ENTITIES.builder(CompositeDetail.TYPE)
+            .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1)
+            .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 2)
             .build();
 
-    Key referencedKey = compositeDetail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
-    Key cachedKey = compositeDetail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK);
+    Key referencedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
+    Key cachedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
 
@@ -305,43 +307,43 @@ public class DefaultEntityTest {
 
   @Test
   void compositeReferenceKey() {
-    Entity master = ENTITIES.builder(TestDomain.T_COMPOSITE_MASTER)
-            .with(TestDomain.COMPOSITE_MASTER_ID, null)
-            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
-            .with(TestDomain.COMPOSITE_MASTER_ID_3, 3)
+    Entity master = ENTITIES.builder(CompositeMaster.TYPE)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, null)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
             .build();
 
-    Entity detail = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
-            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 1)
+    Entity detail = ENTITIES.builder(CompositeDetail.TYPE)
+            .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 1)
             .build();
     //can not update read only attribute reference, with a different value
-    assertThrows(IllegalArgumentException.class, () -> detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master));
+    assertThrows(IllegalArgumentException.class, () -> detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master));
 
-    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3);
-    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master);
+    detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3);
+    detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master);
 
     //otherwise the values are equal and put() returns before propagating foreign key values
     Entity masterCopy = master.deepCopy();
-    masterCopy.put(TestDomain.COMPOSITE_MASTER_ID, 1);
-    masterCopy.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
-    detail.put(TestDomain.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
+    masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
+    masterCopy.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
+    detail.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, masterCopy);
 
-    assertNull(detail.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    assertNull(detail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID, 1);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 3);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID, 1);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, 3);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
 
-    Entity detail2 = ENTITIES.builder(TestDomain.T_COMPOSITE_DETAIL)
-            .with(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 3)
-            .with(TestDomain.COMPOSITE_DETAIL_MASTER_FK, master)
+    Entity detail2 = ENTITIES.builder(CompositeDetail.TYPE)
+            .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 3)
+            .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK, master)
             .build();
 
-    assertEquals(3, detail2.get(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2));
+    assertEquals(3, detail2.get(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2));
 
-    detail2.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
-    assertTrue(detail2.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
-    assertNull(detail2.referencedKey(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    detail2.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
+    assertTrue(detail2.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+    assertNull(detail2.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test
@@ -477,16 +479,16 @@ public class DefaultEntityTest {
     assertFalse(testEntity.isNull(Detail.MASTER_FK));
     assertFalse(testEntity.isNull(Detail.MASTER_ID));
 
-    Entity composite = ENTITIES.entity(TestDomain.T_COMPOSITE_DETAIL);
-    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, null);
-    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
-    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID, 1);
-    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
-    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, null);
-    assertTrue(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
-    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_2, 1);
-    composite.put(TestDomain.COMPOSITE_DETAIL_MASTER_ID_3, 2);
-    assertFalse(composite.isNull(TestDomain.COMPOSITE_DETAIL_MASTER_FK));
+    Entity composite = ENTITIES.entity(CompositeDetail.TYPE);
+    composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, null);
+    assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+    composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID, 1);
+    assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+    composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, null);
+    assertTrue(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
+    composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 1);
+    composite.put(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_3, 2);
+    assertFalse(composite.isNull(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK));
   }
 
   @Test

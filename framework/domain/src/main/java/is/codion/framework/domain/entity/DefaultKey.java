@@ -17,6 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 
+import static is.codion.framework.domain.entity.EntitySerializer.getSerializer;
 import static java.util.Collections.*;
 import static java.util.stream.Collectors.joining;
 
@@ -30,22 +31,22 @@ class DefaultKey implements Key, Serializable {
   /**
    * The attributes comprising this key
    */
-  private List<Attribute<?>> attributes;
+  List<Attribute<?>> attributes;
 
   /**
    * True if this key represents a primary key
    */
-  private boolean primaryKey;
+  boolean primaryKey;
 
   /**
    * Holds the values contained in this key.
    */
-  private Map<Attribute<?>, Object> values;
+  Map<Attribute<?>, Object> values;
 
   /**
    * true if this key consists of a single integer value
    */
-  private boolean singleIntegerKey;
+  boolean singleIntegerKey;
 
   /**
    * Caching the hash code
@@ -55,12 +56,12 @@ class DefaultKey implements Key, Serializable {
   /**
    * True until cachedHashCode has been computed
    */
-  private boolean hashCodeDirty = true;
+  boolean hashCodeDirty = true;
 
   /**
    * Caching this extremely frequently referenced object
    */
-  private EntityDefinition definition;
+  EntityDefinition definition;
 
   /**
    * Instantiates a new DefaultKey based on the given attributes, with the associated values as null
@@ -285,35 +286,11 @@ class DefaultKey implements Key, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.domainName());
-    stream.writeObject(definition.type().name());
-    stream.writeInt(definition.serializationVersion());
-    stream.writeBoolean(primaryKey);
-    stream.writeInt(attributes.size());
-    for (int i = 0; i < attributes.size(); i++) {
-      Attribute<?> attribute = attributes.get(i);
-      stream.writeObject(attribute.name());
-      stream.writeObject(values.get(attribute));
-    }
+    getSerializer(definition.domainName()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    Entities entities = DefaultEntities.entities((String) stream.readObject());
-    definition = entities.definition((String) stream.readObject());
-    if (definition.serializationVersion() != stream.readInt()) {
-      throw new IllegalArgumentException("Entity type '" + definition.type() + "' can not be deserialized due to version difference");
-    }
-    primaryKey = stream.readBoolean();
-    int attributeCount = stream.readInt();
-    attributes = new ArrayList<>(attributeCount);
-    values = new HashMap<>(attributeCount);
-    for (int i = 0; i < attributeCount; i++) {
-      Attribute<Object> attribute = definition.attribute((String) stream.readObject());
-      attributes.add(attribute);
-      values.put(attribute, attribute.validateType(stream.readObject()));
-    }
-    singleIntegerKey = attributeCount == 1 && attributes.get(0).isInteger();
-    hashCodeDirty = true;
+    getSerializer((String) stream.readObject()).deserialize(this, stream);
   }
 
   private static Map<Attribute<?>, Object> createNullValueMap(List<Attribute<?>> attributes) {
