@@ -123,7 +123,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       EntityType referencedType = foreignKey.referencedType();
       EntityDefinition referencedEntity = referencedType.equals(entityType) ?
               definition : entityDefinitions.get(referencedType.name());
-      if (strictForeignKeys && referencedEntity == null) {
+      if (referencedEntity == null && strictForeignKeys) {
         throw new IllegalArgumentException("Entity '" + referencedType
                 + "' referenced by entity '" + entityType + "' via foreign key '"
                 + foreignKey + "' has not been defined");

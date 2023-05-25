@@ -369,7 +369,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       throw new IllegalArgumentException("'" + RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE + "' parameter not specified");
     }
 
-    return domainModels.get(DomainType.getDomainType(domainTypeName));
+    return domainModels.get(DomainType.domainTypeByName(domainTypeName));
   }
 
   private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {

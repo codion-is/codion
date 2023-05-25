@@ -87,7 +87,7 @@ public interface DomainType {
    * @return the domain type with the given name
    * @throws IllegalArgumentException in case the domain has not been defined
    */
-  static DomainType getDomainType(String domainName) {
+  static DomainType domainTypeByName(String domainName) {
     return DefaultDomainType.getDomainType(domainName);
   }
 }
