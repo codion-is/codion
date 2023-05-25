@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.framework.domain.entity.EntitySerializer.getSerializer;
+import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -788,11 +788,11 @@ class DefaultEntity implements Entity, Serializable {
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
     stream.writeObject(definition.domainName());
-    getSerializer(definition.domainName()).serialize(this, stream);
+    serializerForDomain(definition.domainName()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    getSerializer((String) stream.readObject()).deserialize(this, stream);
+    serializerForDomain((String) stream.readObject()).deserialize(this, stream);
   }
 
   private static Map<Attribute<?>, Object> validate(EntityDefinition definition, Map<Attribute<?>, Object> values) {

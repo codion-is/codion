@@ -56,10 +56,10 @@ interface EntitySerializer {
    * @return the serializer to use for the given domain
    * @throws IllegalArgumentException in case no serialiser has been associated with the domain
    */
-  static EntitySerializer getSerializer(String domainName) {
+  static EntitySerializer serializerForDomain(String domainName) {
     EntitySerializer serializer = SERIALIZERS.get(requireNonNull(domainName));
     if (serializer == null) {
-      throw new IllegalArgumentException("No EntitySerializer specified for domain: " + domainName);
+      throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
     }
 
     return serializer;

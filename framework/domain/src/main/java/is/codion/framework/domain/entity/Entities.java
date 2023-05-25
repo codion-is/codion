@@ -27,6 +27,7 @@ public interface Entities {
    * Value type: Boolean<br>
    * Default value: false
    */
+  @Deprecated
   PropertyValue<Boolean> LEGACY_SERIALIZATION =
           Configuration.booleanValue("codion.domain.legacySerialization", false);
 

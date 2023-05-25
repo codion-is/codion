@@ -59,7 +59,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
                                                       ObjectInputStream stream) throws IOException, ClassNotFoundException {
     Map<Attribute<?>, Object> map = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
-      Attribute<Object> attribute = getAttribute(definition, (String) stream.readObject());
+      Attribute<Object> attribute = attributeByName(definition, (String) stream.readObject());
       Object value = stream.readObject();
       if (attribute != null) {
         map.put(attribute, attribute.validateType(value));
@@ -75,7 +75,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     key.attributes = new ArrayList<>(valueCount);
     key.values = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
-      Attribute<Object> attribute = getAttribute(key.definition, (String) stream.readObject());
+      Attribute<Object> attribute = attributeByName(key.definition, (String) stream.readObject());
       Object value = stream.readObject();
       if (attribute != null) {
         key.attributes.add(attribute);
@@ -88,7 +88,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     key.hashCodeDirty = true;
   }
 
-  private Attribute<Object> getAttribute(EntityDefinition definition, String attributeName) throws IOException, ClassNotFoundException {
+  private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException, ClassNotFoundException {
     Attribute<Object> attribute = definition.attribute(attributeName);
     if (attribute == null && strictDeserialization) {
       throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.type().name() + "'");
