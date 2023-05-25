@@ -21,8 +21,24 @@ import java.util.List;
  */
 public interface Entities {
 
+  /**
+   * Specifies whether legacy serialization should be used.<br>
+   * There is nothing gained from using it, so don't.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
   PropertyValue<Boolean> LEGACY_SERIALIZATION =
           Configuration.booleanValue("codion.domain.legacySerialization", false);
+
+  /**
+   * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
+   * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.<br>
+   * Has no effect when legacy serialization is in use.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  PropertyValue<Boolean> STRICT_DESERIALIZATION =
+          Configuration.booleanValue("codion.domain.strictDeserialization", true);
 
   /**
    * @return the {@link DomainType} this {@link Entities} instance is associated with
