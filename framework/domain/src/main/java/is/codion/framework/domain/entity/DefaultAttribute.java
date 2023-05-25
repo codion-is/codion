@@ -61,7 +61,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
 
   @Override
   public final boolean isNumerical() {
-    return isInteger() || isDecimal() || isLong() || isShort() || isBigDecimal();
+    return Number.class.isAssignableFrom(valueClass);
   }
 
   @Override

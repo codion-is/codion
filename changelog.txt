@@ -9082,3 +9082,4 @@
   Entities.STRICT_DESERIALIZATION added, implemented in DefaultEntitySerializer
   DefaultEntitySerializer bug fixed, key deserializer didn't use unmodifiableList/Map(), refactoring
   ValueFetcher.fetchValue() renamed fetch(), some more renaming
+  DefaultAttribute.isNumerical() now based on isAssignableFrom()
