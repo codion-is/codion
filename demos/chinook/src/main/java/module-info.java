@@ -16,7 +16,7 @@ module is.codion.framework.demos.chinook {
   requires com.formdev.flatlaf.intellijthemes;
 
   exports is.codion.framework.demos.chinook.model
-          to is.codion.swing.framework.ui;
+          to is.codion.swing.framework.model, is.codion.swing.framework.ui;
   exports is.codion.framework.demos.chinook.ui
           to is.codion.swing.framework.ui;
   exports is.codion.framework.demos.chinook.tutorial
