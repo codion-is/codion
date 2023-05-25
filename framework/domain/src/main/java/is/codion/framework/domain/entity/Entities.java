@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.common.Configuration;
+import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.DomainType;
 
 import java.util.Collection;
@@ -18,6 +20,9 @@ import java.util.List;
  * @see #keyBuilder(EntityType)
  */
 public interface Entities {
+
+  PropertyValue<Boolean> LEGACY_SERIALIZATION =
+          Configuration.booleanValue("codion.domain.legacySerialization", false);
 
   /**
    * @return the {@link DomainType} this {@link Entities} instance is associated with

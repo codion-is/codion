@@ -3,9 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.common.Configuration;
 import is.codion.common.Primitives;
-import is.codion.common.properties.PropertyValue;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
@@ -30,6 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
+import static is.codion.framework.domain.entity.EntitySerializer.getSerializer;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -41,11 +40,6 @@ class DefaultEntity implements Entity, Serializable {
   private static final long serialVersionUID = 1;
 
   private static final String ATTRIBUTE = "attribute";
-
-  private static final PropertyValue<Boolean> LEGACY_SERIALIZATION =
-          Configuration.booleanValue("codion.domain.legacySerialization", false);
-
-  private static final EntitySerializer SERIALIZER = LEGACY_SERIALIZATION.get() ? new LegacyEntitySerializer() : new DefaultEntitySerializer();
 
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
 
@@ -793,11 +787,11 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    SERIALIZER.serialize(this, stream);
+    getSerializer(definition.domainName()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    SERIALIZER.deserialize(this, stream);
+    getSerializer((String) stream.readObject()).deserialize(this, stream);
   }
 
   private static Map<Attribute<?>, Object> validate(EntityDefinition definition, Map<Attribute<?>, Object> values) {

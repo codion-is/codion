@@ -4,6 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.TestDomain;
+import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -20,25 +21,25 @@ public final class DefaultKeyTest {
 
   @Test
   void compositeKeyNull() {
-    Entity master = ENTITIES.entity(TestDomain.T_COMPOSITE_MASTER);
+    Entity master = ENTITIES.entity(CompositeMaster.TYPE);
     assertTrue(master.primaryKey().isNull());
     assertFalse(master.primaryKey().isNotNull());
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID_2, 2);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_3, 3);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, 2);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID_3, 3);
     assertFalse(master.primaryKey().isNull());
     assertTrue(master.primaryKey().isNotNull());
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
     assertFalse(master.primaryKey().isNull());
     assertTrue(master.primaryKey().isNotNull());
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID, 2);
-    master.put(TestDomain.COMPOSITE_MASTER_ID_2, null);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID, 2);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID_2, null);
     assertTrue(master.primaryKey().isNull());
     assertFalse(master.primaryKey().isNotNull());
 
-    master.put(TestDomain.COMPOSITE_MASTER_ID, null);
+    master.put(CompositeMaster.COMPOSITE_MASTER_ID, null);
     assertTrue(master.primaryKey().isNull());
     assertFalse(master.primaryKey().isNotNull());
   }
@@ -70,38 +71,38 @@ public final class DefaultKeyTest {
     Key deptKey = ENTITIES.primaryKey(Department.TYPE, 1);
     assertNotEquals(empKey1, deptKey);
 
-    Key compMasterKey = ENTITIES.keyBuilder(TestDomain.T_COMPOSITE_MASTER)
-            .with(TestDomain.COMPOSITE_MASTER_ID, 1)
-            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
+    Key compMasterKey = ENTITIES.keyBuilder(CompositeMaster.TYPE)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
             .build();
     assertEquals(compMasterKey, compMasterKey);
     assertNotEquals(empKey1, compMasterKey);
     assertNotEquals(compMasterKey, new Object());
 
-    Key compMasterKey2 = ENTITIES.keyBuilder(TestDomain.T_COMPOSITE_MASTER)
-            .with(TestDomain.COMPOSITE_MASTER_ID, 1)
+    Key compMasterKey2 = ENTITIES.keyBuilder(CompositeMaster.TYPE)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
             .build();
     assertNotEquals(compMasterKey, compMasterKey2);
 
     compMasterKey2 = compMasterKey2.copyBuilder()
-            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
             .build();
     //keys are still null, since COMPOSITE_MASTER_ID_3 is null
     assertNotEquals(compMasterKey, compMasterKey2);
 
     compMasterKey = compMasterKey.copyBuilder()
-            .with(TestDomain.COMPOSITE_MASTER_ID_3, 3)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
             .build();
     compMasterKey2 = compMasterKey2.copyBuilder()
-            .with(TestDomain.COMPOSITE_MASTER_ID_3, 3)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_3, 3)
             .build();
     assertEquals(compMasterKey, compMasterKey2);
 
     compMasterKey = compMasterKey.copyBuilder()
-            .with(TestDomain.COMPOSITE_MASTER_ID, null)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, null)
             .build();
     compMasterKey2 = compMasterKey2.copyBuilder()
-            .with(TestDomain.COMPOSITE_MASTER_ID, null)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, null)
             .build();
     //not null since COMPOSITE_MASTER_ID is nullable
     assertEquals(compMasterKey, compMasterKey2);

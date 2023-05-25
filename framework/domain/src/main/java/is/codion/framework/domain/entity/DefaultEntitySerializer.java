@@ -6,10 +6,19 @@ package is.codion.framework.domain.entity;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import static java.util.Objects.requireNonNull;
+
 final class DefaultEntitySerializer implements EntitySerializer {
+
+  private final Entities entities;
+
+  DefaultEntitySerializer(Entities entities) {
+    this.entities = requireNonNull(entities);
+  }
 
   @Override
   public void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
@@ -21,9 +30,37 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   @Override
   public void deserialize(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    Entities entities = DefaultEntities.entities((String) stream.readObject());
     entity.definition = entities.definition((String) stream.readObject());
     deserializeValues(entity, stream);
+  }
+
+  @Override
+  public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
+    stream.writeObject(key.definition.domainName());
+    stream.writeObject(key.definition.type().name());
+    stream.writeBoolean(key.primaryKey);
+    stream.writeInt(key.attributes.size());
+    for (int i = 0; i < key.attributes.size(); i++) {
+      Attribute<?> attribute = key.attributes.get(i);
+      stream.writeObject(attribute.name());
+      stream.writeObject(key.values.get(attribute));
+    }
+  }
+
+  @Override
+  public void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    key.definition = entities.definition((String) stream.readObject());
+    key.primaryKey = stream.readBoolean();
+    int attributeCount = stream.readInt();
+    key.attributes = new ArrayList<>(attributeCount);
+    key.values = new HashMap<>(attributeCount);
+    for (int i = 0; i < attributeCount; i++) {
+      Attribute<Object> attribute = key.definition.attribute((String) stream.readObject());
+      key.attributes.add(attribute);
+      key.values.put(attribute, attribute.validateType(stream.readObject()));
+    }
+    key.singleIntegerKey = attributeCount == 1 && key.attributes.get(0).isInteger();
+    key.hashCodeDirty = true;
   }
 
   private static void serializeValues(DefaultEntity entity, ObjectOutputStream stream) throws IOException {

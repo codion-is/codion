@@ -9,6 +9,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
@@ -789,9 +790,9 @@ public class DomainTest {
     assertEquals(detailTyped.getDouble().orElse(null), 3.2);
     assertSame(detailTyped.getMaster().orElse(null), mastersTyped.get(2));
 
-    Entity compositeMaster = entities.builder(TestDomain.T_COMPOSITE_MASTER)
-            .with(TestDomain.COMPOSITE_MASTER_ID, 1)
-            .with(TestDomain.COMPOSITE_MASTER_ID_2, 2)
+    Entity compositeMaster = entities.builder(CompositeMaster.TYPE)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
+            .with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
             .build();
 
     assertSame(compositeMaster, compositeMaster.castTo(Entity.class));
@@ -818,7 +819,7 @@ public class DomainTest {
 
     entities.entity(TestDomainExtended.T_EXTENDED);
 
-    entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    entities.entity(CompositeMaster.TYPE);
 
     TestDomainExtended.TestDomainSecondExtension second = new TestDomainExtended.TestDomainSecondExtension();
     entities = second.entities();
@@ -827,7 +828,7 @@ public class DomainTest {
 
     entities.entity(TestDomainExtended.T_EXTENDED);
 
-    entities.entity(TestDomain.T_COMPOSITE_MASTER);
+    entities.entity(CompositeMaster.TYPE);
 
     assertNotNull(second.procedure(TestDomainExtended.PROC_TYPE));
     assertNotNull(second.function(TestDomainExtended.FUNC_TYPE));
