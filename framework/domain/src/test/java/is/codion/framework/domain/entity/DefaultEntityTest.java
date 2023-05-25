@@ -553,6 +553,9 @@ public class DefaultEntityTest {
 
     employee.put(Employee.NAME, "noname");
     assertEquals(employee.get(Employee.NAME), "noname");
+
+    //noinspection rawtypes
+    assertThrows(IllegalArgumentException.class, () -> employee.put((Attribute) Employee.NAME, 42));
   }
 
   @Test
