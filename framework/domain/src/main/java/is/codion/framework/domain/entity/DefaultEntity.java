@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
+import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 

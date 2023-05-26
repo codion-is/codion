@@ -14,7 +14,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.domain.entity.EntitySerializer.setSerializer;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
@@ -37,7 +36,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
    */
   protected DefaultEntities(DomainType domainType) {
     this.domainType = requireNonNull(domainType, "domainType");
-    setSerializer(domainType.name(), createSerializer(this));
+    DefaultKey.setSerializer(domainType.name(), createSerializer(this));
   }
 
   @Override
@@ -149,7 +148,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
-    setSerializer(domainType.name(), createSerializer(this));
+    DefaultKey.setSerializer(domainType.name(), createSerializer(this));
   }
 
   private static EntitySerializer createSerializer(Entities entities) {

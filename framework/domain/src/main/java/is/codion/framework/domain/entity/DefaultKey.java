@@ -16,9 +16,10 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.concurrent.ConcurrentHashMap;
 
-import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
 import static java.util.Collections.*;
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
@@ -27,6 +28,8 @@ import static java.util.stream.Collectors.joining;
 class DefaultKey implements Key, Serializable {
 
   private static final long serialVersionUID = 1;
+
+  private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
 
   /**
    * The attributes comprising this key
@@ -301,5 +304,24 @@ class DefaultKey implements Key, Serializable {
     }
 
     return values;
+  }
+
+  static void setSerializer(String domainName, EntitySerializer serializer) {
+    SERIALIZERS.put(requireNonNull(domainName), requireNonNull(serializer));
+  }
+
+  /**
+   * Returns the serializer associated with the given domain name
+   * @param domainName the domain name
+   * @return the serializer to use for the given domain
+   * @throws IllegalArgumentException in case no serializer has been associated with the domain
+   */
+  static EntitySerializer serializerForDomain(String domainName) {
+    EntitySerializer serializer = SERIALIZERS.get(requireNonNull(domainName));
+    if (serializer == null) {
+      throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
+    }
+
+    return serializer;
   }
 }
