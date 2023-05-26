@@ -55,7 +55,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .add(dependencies())
             .scrollPane()
             .verticalUnitIncrement(VERTICAL_UNIT_INCREMENT)
-            .onBuild(this::addScrollKeyEvents)
+            .onBuild(KeyboardShortcutsPanel::addScrollKeyEvents)
             .build(this::add);
   }
 
@@ -181,7 +181,7 @@ final class KeyboardShortcutsPanel extends JPanel {
             .build();
   }
 
-  private void addScrollKeyEvents(JScrollPane scrollPane) {
+  private static void addScrollKeyEvents(JScrollPane scrollPane) {
     JScrollBar verticalScrollBar = scrollPane.getVerticalScrollBar();
     KeyEvents.builder(VK_UP)
             .action(control(() -> verticalScrollBar.setValue(verticalScrollBar.getValue() - VERTICAL_UNIT_INCREMENT)))

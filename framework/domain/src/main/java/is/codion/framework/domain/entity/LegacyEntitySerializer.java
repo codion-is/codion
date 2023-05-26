@@ -107,7 +107,7 @@ final class LegacyEntitySerializer implements EntitySerializer {
     key.hashCodeDirty = true;
   }
 
-  private <T> void setOriginalValue(DefaultEntity entity, Attribute<T> attribute, T originalValue) {
+  private static <T> void setOriginalValue(DefaultEntity entity, Attribute<T> attribute, T originalValue) {
     if (entity.originalValues == null) {
       entity.originalValues = new HashMap<>();
     }

@@ -88,7 +88,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     key.hashCodeDirty = true;
   }
 
-  private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException, ClassNotFoundException {
+  private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException {
     Attribute<Object> attribute = definition.attribute(attributeName);
     if (attribute == null && strictDeserialization) {
       throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.type().name() + "'");
