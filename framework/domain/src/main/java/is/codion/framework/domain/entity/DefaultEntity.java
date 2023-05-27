@@ -238,16 +238,18 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public void revert(Attribute<?> attribute) {
-    if (isModified(attribute)) {
-      Attribute<Object> objectAttribute = (Attribute<Object>) attribute;
-      put(objectAttribute, original(objectAttribute));
+    Property<?> property = definition.property(requireNonNull(attribute, ATTRIBUTE));
+    if (isModifiedInternal(attribute)) {
+      put((Property<Object>) property, original(property));
     }
   }
 
   @Override
   public void revertAll() {
-    for (Attribute<?> attribute : new ArrayList<>(values.keySet())) {
-      revert(attribute);
+    if (originalValues != null) {
+      for (Attribute<?> attribute : new ArrayList<>(originalValues.keySet())) {
+        revert(attribute);
+      }
     }
   }
 

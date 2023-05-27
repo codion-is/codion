@@ -9085,3 +9085,4 @@
   DefaultAttribute.isNumerical() now based on isAssignableFrom()
   Icons.setIconColor() added
   DefaultIcons no longer adds color listener on construction, Icons.addColorListener() added, DefaultFrameworkIcons.instance() adds the listener
+  DefaultEntity.revert() and revertAll() minor refactoring
