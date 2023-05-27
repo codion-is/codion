@@ -85,9 +85,9 @@ public class AbstractServerTest {
     ServerAdmin admin = server.getAdmin();
     Collection<RemoteClient> clients = admin.clients();
     assertFalse(clients.isEmpty());
-    clients.forEach(client -> assertEquals(0, client.user().getPassword().length));
-    clients.forEach(client -> assertEquals(0, client.databaseUser().getPassword().length));
-    admin.users().forEach(user -> assertEquals(0, user.getPassword().length));
+    clients.forEach(client -> assertEquals(0, client.user().password().length));
+    clients.forEach(client -> assertEquals(0, client.databaseUser().password().length));
+    admin.users().forEach(user -> assertEquals(0, user.password().length));
 
     RemoteClient client = server.clients(UNIT_TEST_USER).iterator().next();
     client.connectionRequest();
@@ -169,7 +169,10 @@ public class AbstractServerTest {
     ConnectionRequest connectionRequest = ConnectionRequest.builder()
             .user(UNIT_TEST_USER).clientId(connectionId).clientTypeId(clientTypeId).build();
     ConnectionRequest connectionRequest2 = ConnectionRequest.builder()
-            .user(User.user("test", UNIT_TEST_USER.getPassword())).clientId(connectionId).clientTypeId(clientTypeId).build();
+            .user(User.user("test", UNIT_TEST_USER.password()))
+            .clientId(connectionId)
+            .clientTypeId(clientTypeId)
+            .build();
 
     server.connect(connectionRequest);
 

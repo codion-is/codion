@@ -157,6 +157,5 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();
-
   }
 }

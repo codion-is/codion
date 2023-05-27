@@ -9126,3 +9126,10 @@
   DefaultEntity.revert() and revertAll() minor refactoring
   Property.isDerived() added, replacing multiple instanceof DerivedProperty
   DerivedProperty no longer extends TransientProperty, can't be set so modifiesEntity() doesn't make sense, note that DefaultDerivedProperty still extends DefaultTransientProperty for serialization compatibility
+  EntitiesTest split from DomainTest
+  DefaultLocalEntityConnection.selectDependencies(), minor refactoring
+  DefaultLocalEntityConnectionTest, added soft reference test
+  User.setPassword() removed, getPassword() renamed password()
+  Domain.configureDatabase() added, for schema migrations and such
+  EntityServer calls Domain.configureDatabase() on all loaded domains during construction
+  DefaultLocalEntityConnection calls Domain.configureDatabase() on construction, some refactoring

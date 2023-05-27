@@ -158,7 +158,7 @@ public abstract class AbstractConnectionPoolWrapper<T> implements ConnectionPool
    * @throws AuthenticationException in case the username or password do not match the ones in the connection pool
    */
   private void checkConnectionPoolCredentials(User user) throws AuthenticationException {
-    if (!this.user.username().equalsIgnoreCase(user.username()) || !Arrays.equals(this.user.getPassword(), user.getPassword())) {
+    if (!this.user.username().equalsIgnoreCase(user.username()) || !Arrays.equals(this.user.password(), user.password())) {
       throw new AuthenticationException("Wrong username or password");
     }
   }

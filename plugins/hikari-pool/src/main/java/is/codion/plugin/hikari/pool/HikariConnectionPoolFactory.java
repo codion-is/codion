@@ -39,7 +39,7 @@ public final class HikariConnectionPoolFactory implements ConnectionPoolFactory 
 
     private HikariConnectionPoolWrapper(ConnectionFactory connectionFactory, User user) {
       super(connectionFactory, user, new DriverDataSource(connectionFactory.url(), null,
-              new Properties(), user.username(), String.valueOf(user.getPassword())));
+              new Properties(), user.username(), String.valueOf(user.password())));
       config.setJdbcUrl(connectionFactory.url());
       config.setAutoCommit(false);
       config.setUsername(user.username());

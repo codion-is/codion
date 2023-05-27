@@ -42,6 +42,7 @@ public final class TestDomain extends DefaultDomain {
     detail();
     department();
     employee();
+    keyTest();
     noPKEntity();
     transientModifies();
     transientModifiesNot();
@@ -358,6 +359,25 @@ public final class TestDomain extends DefaultDomain {
       }
       return name + " - " + department.get(Department.NAME);
     }
+  }
+
+  public interface KeyTest {
+    EntityType TYPE = DOMAIN.entityType("KeyTest");
+
+    Attribute<Integer> ID1 = TYPE.integerAttribute("id1");
+    Attribute<Integer> ID2 = TYPE.integerAttribute("id2");
+    Attribute<Integer> ID3 = TYPE.integerAttribute("id3");
+  }
+
+  void keyTest() {
+    add(definition(
+            primaryKeyProperty(KeyTest.ID1)
+                    .primaryKeyIndex(0),
+            primaryKeyProperty(KeyTest.ID2)
+                    .primaryKeyIndex(1),
+            primaryKeyProperty(KeyTest.ID3)
+                    .primaryKeyIndex(2)
+                    .nullable(true)));
   }
 
   public interface NoPk {

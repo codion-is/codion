@@ -201,7 +201,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
     CredentialsProvider credentialsProvider = new BasicCredentialsProvider();
     credentialsProvider.setCredentials(
             new AuthScope(targetHost.getHostName(), targetHost.getPort()),
-            new UsernamePasswordCredentials(user.username(), String.valueOf(user.getPassword())));
+            new UsernamePasswordCredentials(user.username(), String.valueOf(user.password())));
 
     AuthCache authCache = new BasicAuthCache();
     authCache.put(targetHost, new BasicScheme());

@@ -90,7 +90,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final SelectQueries selectQueries;
   private final Map<EntityType, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
-  private final Map<EntityType, List<ForeignKeyProperty>> foreignKeyReferenceCache = new HashMap<>();
+  private final Map<EntityType, List<ForeignKeyProperty>> nonSoftForeignKeyReferenceCache = new HashMap<>();
   private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<SelectCondition, List<Entity>> queryCache = new HashMap<>();
 
@@ -108,11 +108,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
-    this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.entities();
-    this.connection = DatabaseConnection.databaseConnection(database, user);
-    this.selectQueries = new SelectQueries(database);
-    this.domain.configureConnection(this.connection);
+    this(domain, DatabaseConnection.databaseConnection(database, user));
   }
 
   /**
@@ -122,11 +118,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    */
   DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
+    this(domain, DatabaseConnection.databaseConnection(database, connection));
+  }
+
+  private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.entities();
-    this.connection = DatabaseConnection.databaseConnection(database, connection);
-    this.selectQueries = new SelectQueries(database);
+    this.domain.configureDatabase(requireNonNull(connection).database());
+    this.connection = connection;
     this.domain.configureConnection(this.connection);
+    this.domainEntities = domain.entities();
+    this.selectQueries = new SelectQueries(connection.database());
   }
 
   @Override
@@ -644,19 +645,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-    Collection<ForeignKeyProperty> foreignKeyReferences = foreignKeyReferences(entities.iterator().next().type());
-    for (ForeignKeyProperty foreignKeyReference : foreignKeyReferences) {
-      if (!foreignKeyReference.isSoftReference()) {
-        List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities)
-                .selectBuilder()
-                .fetchDepth(1)
-                .build())
-                .stream()
-                .map(Entity::immutable)
-                .collect(toList());
-        if (!dependencies.isEmpty()) {
-          dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
-        }
+    for (ForeignKeyProperty foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
+      List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities)
+              .selectBuilder()
+              .fetchDepth(1)
+              .build())
+              .stream()
+              .map(Entity::immutable)
+              .collect(toList());
+      if (!dependencies.isEmpty()) {
+        dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
       }
     }
 
@@ -1136,15 +1134,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * @param entityType the entityType
-   * @return all foreign keys in the domain referencing entities of type {@code entityType}
+   * @return all non-soft foreign keys in the domain referencing entities of type {@code entityType}
    */
-  private Collection<ForeignKeyProperty> foreignKeyReferences(EntityType entityType) {
-    return foreignKeyReferenceCache.computeIfAbsent(entityType, this::initializeForeignKeyReferences);
+  private Collection<ForeignKeyProperty> nonSoftForeignKeyReferences(EntityType entityType) {
+    return nonSoftForeignKeyReferenceCache.computeIfAbsent(entityType, this::initializeNonSoftForeignKeyReferences);
   }
 
-  private List<ForeignKeyProperty> initializeForeignKeyReferences(EntityType entityType) {
+  private List<ForeignKeyProperty> initializeNonSoftForeignKeyReferences(EntityType entityType) {
     return domainEntities.definitions().stream()
             .flatMap(entityDefinition -> entityDefinition.foreignKeyProperties().stream())
+            .filter(foreignKeyProperty -> !foreignKeyProperty.isSoftReference())
             .filter(foreignKeyProperty -> foreignKeyProperty.referencedType().equals(entityType))
             .collect(toList());
   }

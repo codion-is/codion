@@ -48,7 +48,7 @@ public final class TestLoginProxy implements LoginProxy {
 
   private void authenticateUser(User user) throws ServerAuthenticationException {
     String password = users.get(user.username());
-    if (password == null || !Arrays.equals(password.toCharArray(), user.getPassword())) {
+    if (password == null || !Arrays.equals(password.toCharArray(), user.password())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }
   }

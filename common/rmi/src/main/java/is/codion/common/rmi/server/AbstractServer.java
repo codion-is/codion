@@ -350,7 +350,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   protected static final void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
             || !Objects.equals(userToCheck.username(), requiredUser.username())
-            || !Arrays.equals(userToCheck.getPassword(), requiredUser.getPassword())) {
+            || !Arrays.equals(userToCheck.password(), requiredUser.password())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }
   }

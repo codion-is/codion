@@ -65,7 +65,7 @@ final class LoginPanel extends JPanel {
             .enabledState(validatingState.reversedObserver())
             .build();
     this.passwordField = Components.passwordField()
-            .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.getPassword()))
+            .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .build();

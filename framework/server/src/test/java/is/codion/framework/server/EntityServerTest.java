@@ -24,6 +24,7 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.server.ConfigureDb.Configured;
 import is.codion.framework.server.TestDomain.Employee;
 
 import org.junit.jupiter.api.AfterAll;
@@ -35,6 +36,8 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
 
+import static is.codion.framework.db.condition.Condition.condition;
+import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
 import static org.junit.jupiter.api.Assertions.*;
@@ -111,6 +114,18 @@ public class EntityServerTest {
   @Test
   void serverAdminWrongUsername() throws Exception {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
+  }
+
+  @Test
+  void configureConnection() throws Exception {
+    ConnectionRequest connectionRequestTwo = ConnectionRequest.builder()
+            .user(UNIT_TEST_USER)
+            .clientTypeId("ClientTypeID")
+            .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
+    try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
+      //throws exception if table does not exist, which is created during connection configuration
+      connection.select(condition(Configured.TYPE));
+    }
   }
 
   @Test
@@ -309,7 +324,7 @@ public class EntityServerTest {
             .database(Database.instance())
             .connectionPoolUsers(singletonList(UNIT_TEST_USER))
             .clientTypeIdleConnectionTimeouts(singletonMap("ClientTypeID", 10000))
-            .domainClassNames(singletonList("is.codion.framework.server.TestDomain"))
+            .domainClassNames(asList("is.codion.framework.server.TestDomain", "is.codion.framework.server.ConfigureDb"))
             .clientLoggingEnabled(true)
             .sslEnabled(true)
             .serializationFilterWhitelist("classpath:serialization-whitelist-test.txt")

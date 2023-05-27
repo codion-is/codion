@@ -4,6 +4,7 @@
 package is.codion.framework.domain;
 
 import is.codion.common.db.connection.DatabaseConnection;
+import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
@@ -85,10 +86,19 @@ public interface Domain {
 
   /**
    * Configures a database connection for applications using this domain model, for example adding extensions or properties.
+   * Called each time a new connection based on this domain is created.
    * @param connection the connection to configure
    * @throws DatabaseException in case of an exception
    */
   default void configureConnection(DatabaseConnection connection) throws DatabaseException {}
+
+  /**
+   * Configures a database, for example run migration scripts.
+   * Called each time a new connection based on this domain is created.
+   * @param database the database
+   * @throws DatabaseException in case of an exception
+   */
+  default void configureDatabase(Database database) throws DatabaseException {}
 
   /**
    * @return a list containing all the Domains registered with {@link ServiceLoader}.
