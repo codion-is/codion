@@ -19,6 +19,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -71,6 +72,14 @@ public class DefaultLocalEntityConnectionTest {
   @AfterEach
   void tearDown() {
     connection.close();
+  }
+
+  @Test
+  void configuraDatabase() throws DatabaseException {
+    try (LocalEntityConnection connection = new DefaultLocalEntityConnection(Database.instance(), new ConfigureDb(), UNIT_TEST_USER)) {
+      //throws exception if table does not exist, which is created during connection configuration
+      connection.select(condition(Configured.TYPE));
+    }
   }
 
   @Test

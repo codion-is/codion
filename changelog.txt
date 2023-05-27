@@ -9092,3 +9092,6 @@
   DefaultLocalEntityConnection.selectDependencies(), minor refactoring
   DefaultLocalEntityConnectionTest, added soft reference test
   User.setPassword() removed, getPassword() renamed password()
+  Domain.configureDatabase() added, for schema migrations and such
+  EntityServer calls Domain.configureDatabase() on all loaded domains during construction
+  DefaultLocalEntityConnection calls Domain.configureDatabase() on construction, some refactoring

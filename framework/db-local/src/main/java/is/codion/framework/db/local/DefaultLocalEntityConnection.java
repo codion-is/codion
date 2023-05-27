@@ -108,11 +108,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
-    this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.entities();
-    this.connection = DatabaseConnection.databaseConnection(database, user);
-    this.selectQueries = new SelectQueries(database);
-    this.domain.configureConnection(this.connection);
+    this(domain, DatabaseConnection.databaseConnection(database, user));
   }
 
   /**
@@ -122,11 +118,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    */
   DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
+    this(domain, DatabaseConnection.databaseConnection(database, connection));
+  }
+
+  private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) throws DatabaseException {
     this.domain = requireNonNull(domain, "domain");
-    this.domainEntities = domain.entities();
-    this.connection = DatabaseConnection.databaseConnection(database, connection);
-    this.selectQueries = new SelectQueries(database);
+    this.domain.configureDatabase(requireNonNull(connection).database());
+    this.connection = connection;
     this.domain.configureConnection(this.connection);
+    this.domainEntities = domain.entities();
+    this.selectQueries = new SelectQueries(connection.database());
   }
 
   @Override

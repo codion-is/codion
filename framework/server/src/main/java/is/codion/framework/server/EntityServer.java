@@ -86,6 +86,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       this.database = requireNonNull(configuration.database(), "database");
       this.clientLoggingEnabled = configuration.isClientLoggingEnabled();
       this.domainModels = loadDomainModels(configuration.domainClassNames());
+      configureDatabase(domainModels.values(), database);
       setAdmin(createServerAdmin(configuration));
       setIdleConnectionTimeout(configuration.idleConnectionTimeout());
       setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
@@ -370,6 +371,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
 
     return domainModels.get(DomainType.domainTypeByName(domainTypeName));
+  }
+
+  private static void configureDatabase(Collection<Domain> domainModels, Database database) throws DatabaseException {
+    for (Domain domain : domainModels) {
+      domain.configureDatabase(database);
+    }
   }
 
   private static Map<DomainType, Domain> loadDomainModels(Collection<String> domainModelClassNames) throws Throwable {
