@@ -249,6 +249,9 @@ public class DefaultLocalEntityConnectionTest {
 
     deps = connection.selectDependencies(singletonList(master4));
     assertFalse(deps.containsKey(Detail.TYPE));
+
+    Entity jones = connection.selectSingle(EmployeeFk.NAME, "JONES");
+    assertTrue(connection.selectDependencies(singletonList(jones)).isEmpty());//soft reference
   }
 
   @Test

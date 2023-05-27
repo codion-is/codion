@@ -7,6 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.ForeignKey.Reference;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -63,7 +64,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public List<ForeignKey.Reference<?>> references() {
+  public List<Reference<?>> references() {
     return this.attribute().references();
   }
 

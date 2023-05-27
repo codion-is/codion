@@ -231,7 +231,8 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.name()),
             columnProperty(EmployeeFk.MGR),
             foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.name())
-                    .selectAttributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK),
+                    .selectAttributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK)
+                    .softReference(true),
             columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.name())
                     .nullable(false),
             columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.name()))
