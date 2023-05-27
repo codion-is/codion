@@ -13,7 +13,7 @@ import java.util.Optional;
  * A property which value is derived from the values of one or more properties.
  * @param <T> the underlying type
  */
-public interface DerivedProperty<T> extends TransientProperty<T> {
+public interface DerivedProperty<T> extends Property<T> {
 
   /**
    * @return the attributes this property derives from.

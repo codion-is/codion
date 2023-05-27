@@ -13,7 +13,7 @@ final class Properties {
   static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(Attribute<T> attribute, String caption,
                                                                                                                  Attribute<Entity> entityAttribute,
                                                                                                                  Attribute<T> denormalizedAttribute) {
-    //todo replace with concrete package level class
+    //todo replace with concrete package level class, see below
     DerivedProperty.Provider<T> valueProvider = sourceValues -> {
       Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
@@ -22,4 +22,26 @@ final class Properties {
 
     return new DefaultDerivedProperty.DefaultDerivedPropertyBuilder<>(attribute, caption, valueProvider, entityAttribute);
   }
+
+  /*
+  final class DenormalizedViewValueProvider<T> implements DerivedProperty.Provider<T> {
+
+    private static final long serialVersionUID = 1;
+
+    private final Attribute<Entity> entityAttribute;
+    private final Attribute<T> denormalizedAttribute;
+
+    DenormalizedViewValueProvider(Attribute<Entity> entityAttribute, Attribute<T> denormalizedAttribute) {
+      this.entityAttribute = entityAttribute;
+      this.denormalizedAttribute = denormalizedAttribute;
+    }
+
+    @Override
+    public T get(DerivedProperty.SourceValues sourceValues) {
+      Entity foreignKeyValue = sourceValues.get(entityAttribute);
+
+      return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);
+    }
+  }
+  */
 }

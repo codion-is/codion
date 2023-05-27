@@ -9087,3 +9087,4 @@
   DefaultIcons no longer adds color listener on construction, Icons.addColorListener() added, DefaultFrameworkIcons.instance() adds the listener
   DefaultEntity.revert() and revertAll() minor refactoring
   Property.isDerived() added, replacing multiple instanceof DerivedProperty
+  DerivedProperty no longer extends TransientProperty, can't be set so modifiesEntity() doesn't make sense, note that DefaultDerivedProperty still extends DefaultTransientProperty for serialization compatibility
