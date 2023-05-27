@@ -253,6 +253,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @return the column property associated with the attribute
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
+   * @throws NullPointerException in case {@code attribute} is null
    */
   <T> ColumnProperty<T> columnProperty(Attribute<T> attribute);
 
@@ -261,6 +262,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @return the property associated with {@code attribute}.
    * @throws IllegalArgumentException in case no such property exists
+   * @throws NullPointerException in case {@code attribute} is null
    */
   <T> Property<T> property(Attribute<T> attribute);
 
@@ -269,6 +271,7 @@ public interface EntityDefinition {
    * @param <T> the attribute type
    * @return the primary key property associated with {@code attribute}.
    * @throws IllegalArgumentException in case no such property exists
+   * @throws NullPointerException in case {@code attribute} is null
    */
   <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute);
 

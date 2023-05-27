@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
@@ -159,16 +158,18 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static boolean isNonGeneratedPrimaryKeyProperty(EntityDefinition definition, Property<?> property) {
     return (property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).isPrimaryKeyColumn()) && !definition.isKeyGenerated();
+            && ((ColumnProperty<?>) property).isPrimaryKeyColumn())
+            && !definition.isKeyGenerated();
   }
 
   private static boolean isNonKeyColumnPropertyWithoutDefaultValue(Property<?> property) {
-    return property instanceof ColumnProperty && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
+    return property instanceof ColumnProperty
+            && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
             && !((ColumnProperty<?>) property).columnHasDefaultValue();
   }
 
   private static boolean validationRequired(Property<?> property) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       return false;
     }
     if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isReadOnly()) {

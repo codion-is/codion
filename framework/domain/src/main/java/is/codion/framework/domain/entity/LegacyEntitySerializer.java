@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.Property;
 
 import java.io.IOException;
@@ -33,7 +32,7 @@ final class LegacyEntitySerializer implements EntitySerializer {
     List<Property<?>> properties = definition.properties();
     for (int i = 0; i < properties.size(); i++) {
       Property<?> property = properties.get(i);
-      if (!(property instanceof DerivedProperty)) {
+      if (!property.isDerived()) {
         Attribute<?> attribute = property.attribute();
         boolean containsValue = entity.values.containsKey(attribute);
         stream.writeBoolean(containsValue);
@@ -62,7 +61,7 @@ final class LegacyEntitySerializer implements EntitySerializer {
     List<Property<?>> properties = entity.definition.properties();
     for (int i = 0; i < properties.size(); i++) {
       Property<Object> property = (Property<Object>) properties.get(i);
-      if (!(property instanceof DerivedProperty)) {
+      if (!property.isDerived()) {
         boolean containsValue = stream.readBoolean();
         if (containsValue) {
           Attribute<Object> attribute = property.attribute();
@@ -107,7 +106,7 @@ final class LegacyEntitySerializer implements EntitySerializer {
     key.hashCodeDirty = true;
   }
 
-  private <T> void setOriginalValue(DefaultEntity entity, Attribute<T> attribute, T originalValue) {
+  private static <T> void setOriginalValue(DefaultEntity entity, Attribute<T> attribute, T originalValue) {
     if (entity.originalValues == null) {
       entity.originalValues = new HashMap<>();
     }

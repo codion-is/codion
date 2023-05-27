@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.TransientProperty;
 
 import java.sql.ResultSet;
@@ -61,7 +60,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     List<TransientProperty<?>> transientProperties = definition.transientProperties();
     for (int i = 0; i < transientProperties.size(); i++) {
       TransientProperty<?> transientProperty = transientProperties.get(i);
-      if (!(transientProperty instanceof DerivedProperty)) {
+      if (!transientProperty.isDerived()) {
         values.put(transientProperty.attribute(), null);
       }
     }

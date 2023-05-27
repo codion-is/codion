@@ -176,6 +176,11 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
+  public boolean isDerived() {
+    return false;
+  }
+
+  @Override
   public final EntityType entityType() {
     return attribute.entityType();
   }

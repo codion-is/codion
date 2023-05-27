@@ -28,18 +28,13 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
 
-import static is.codion.framework.domain.entity.EntitySerializer.serializerForDomain;
+import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
-/**
- * Represents a row in a database table.
- */
 class DefaultEntity implements Entity, Serializable {
 
   private static final long serialVersionUID = 1;
-
-  private static final String ATTRIBUTE = "attribute";
 
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
 
@@ -81,7 +76,7 @@ class DefaultEntity implements Entity, Serializable {
    * @param key the key
    */
   DefaultEntity(Key key) {
-    this(requireNonNull(key, "key").definition(), createValueMap(key), null);
+    this(requireNonNull(key).definition(), createValueMap(key), null);
     if (key.isPrimaryKey()) {
       this.primaryKey = key;
     }
@@ -95,7 +90,7 @@ class DefaultEntity implements Entity, Serializable {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
-    this.values = validate(requireNonNull(definition, "definition"), values == null ? new HashMap<>() : new HashMap<>(values));
+    this.values = validate(requireNonNull(definition), values == null ? new HashMap<>() : new HashMap<>(values));
     this.originalValues = validate(definition, originalValues == null ? null : new HashMap<>(originalValues));
     this.definition = definition;
   }
@@ -171,8 +166,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isModified(Attribute<?> attribute) {
-    definition.property(requireNonNull(attribute, ATTRIBUTE));
-
+    definition.property(attribute);
     return isModifiedInternal(attribute);
   }
 
@@ -228,7 +222,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public void save(Attribute<?> attribute) {
-    removeOriginalValue(requireNonNull(attribute, ATTRIBUTE));
+    removeOriginalValue(requireNonNull(attribute));
   }
 
   @Override
@@ -238,22 +232,24 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public void revert(Attribute<?> attribute) {
-    if (isModified(attribute)) {
-      Attribute<Object> objectAttribute = (Attribute<Object>) attribute;
-      put(objectAttribute, original(objectAttribute));
+    Property<?> property = definition.property(attribute);
+    if (isModifiedInternal(attribute)) {
+      put((Property<Object>) property, original(property));
     }
   }
 
   @Override
   public void revertAll() {
-    for (Attribute<?> attribute : new ArrayList<>(values.keySet())) {
-      revert(attribute);
+    if (originalValues != null) {
+      for (Attribute<?> attribute : new ArrayList<>(originalValues.keySet())) {
+        revert(attribute);
+      }
     }
   }
 
   @Override
   public <T> T remove(Attribute<T> attribute) {
-    definition.property(requireNonNull(attribute, ATTRIBUTE));
+    definition.property(attribute);
     T value = null;
     if (values.containsKey(attribute)) {
       value = (T) values.remove(attribute);
@@ -327,7 +323,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final <T extends Entity> T castTo(Class<T> entityClass) {
-    requireNonNull(entityClass, "entityClass");
+    requireNonNull(entityClass);
     if (entityClass.isAssignableFrom(getClass())) {
       // no wrapping required
       return (T) this;
@@ -342,7 +338,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean columnValuesEqual(Entity entity) {
-    if (!definition.type().equals(requireNonNull(entity, "entity").type())) {
+    if (!definition.type().equals(requireNonNull(entity).type())) {
       throw new IllegalArgumentException("Entity of type " + definition.type() +
               " expected, got: " + entity.type());
     }
@@ -408,7 +404,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean contains(Attribute<?> attribute) {
-    return values.containsKey(requireNonNull(attribute, ATTRIBUTE));
+    return values.containsKey(requireNonNull(attribute));
   }
 
   @Override
@@ -443,7 +439,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T get(Property<T> property) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       return derivedValue((DerivedProperty<T>) property, false);
     }
 
@@ -451,7 +447,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T original(Property<T> property) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       return derivedValue((DerivedProperty<T>) property, true);
     }
     if (isModifiedInternal(property.attribute())) {
@@ -514,7 +510,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T validateAndPrepareForPut(Property<T> property, T value) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
     if (property instanceof ItemProperty && value != null && !((ItemProperty<T>) property).isValid(value)) {

@@ -217,6 +217,12 @@ public interface Property<T> {
   boolean isNullable();
 
   /**
+   * The value of a derived property can not be set, as it's value is derived from other values
+   * @return true if the value of this property is derived from one or more values
+   */
+  boolean isDerived();
+
+  /**
    * @return the maximum length of this property value, -1 is returned if the maximum length is undefined,
    * this only applies to String (varchar) based properties
    */
