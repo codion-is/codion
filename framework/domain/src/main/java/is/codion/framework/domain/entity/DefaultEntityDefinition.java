@@ -944,7 +944,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
 
     private int createSerializationVersion() {
       return propertyMap.values().stream()
-              .filter(property -> !(property instanceof DerivedProperty))
+              .filter(property -> !property.isDerived())
               .map(Property::attribute)
               .map(attribute -> attribute.name() + attribute.valueClass().getName())
               .collect(Collectors.joining())

@@ -17,7 +17,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.swing.common.ui.control.Control;
@@ -127,7 +126,7 @@ final class EntityPopupMenu extends JPopupMenu {
       if (!isPrimaryKeyProperty && !(property instanceof ForeignKeyProperty)) {
         JMenuItem menuItem = new JMenuItem(new StringBuilder(property.toString())
                 .append(" [").append(property.attribute().valueClass().getSimpleName())
-                .append(property instanceof DerivedProperty ? "*" : "").append("]: ")
+                .append(property.isDerived() ? "*" : "").append("]: ")
                 .append(createValueString(entity, property)).toString());
         menuItem.addActionListener(Control.control(() -> setClipboard(entity.toString(property.attribute()))));
         setInvalidModified(menuItem, isValid(validator, entity, property.attribute()), entity.isModified(property.attribute()));

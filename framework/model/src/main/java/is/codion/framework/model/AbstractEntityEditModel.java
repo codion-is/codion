@@ -23,7 +23,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DerivedProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.domain.property.TransientProperty;
@@ -984,15 +983,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    for (@SuppressWarnings("rawtypes") ColumnProperty property : definition.columnProperties()) {
+    for (ColumnProperty<?> property : definition.columnProperties()) {
       if (!definition.isForeignKeyAttribute(property.attribute())//these are set via their respective parent properties
               && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        newEntity.put(property.attribute(), valueSupplier.get(property));
+        newEntity.put((Attribute<Object>) property.attribute(), valueSupplier.get(property));
       }
     }
-    for (@SuppressWarnings("rawtypes") TransientProperty transientProperty : definition.transientProperties()) {
-      if (!(transientProperty instanceof DerivedProperty)) {
-        newEntity.put(transientProperty.attribute(), valueSupplier.get(transientProperty));
+    for (TransientProperty<?> transientProperty : definition.transientProperties()) {
+      if (!transientProperty.isDerived()) {
+        newEntity.put((Attribute<Object>) transientProperty.attribute(), valueSupplier.get(transientProperty));
       }
     }
     for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties()) {

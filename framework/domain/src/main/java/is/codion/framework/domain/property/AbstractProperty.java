@@ -206,6 +206,11 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   }
 
   @Override
+  public final boolean isDerived() {
+    return this instanceof DerivedProperty;
+  }
+
+  @Override
   public final int maximumLength() {
     return maximumLength;
   }

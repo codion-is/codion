@@ -439,7 +439,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T get(Property<T> property) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       return derivedValue((DerivedProperty<T>) property, false);
     }
 
@@ -447,7 +447,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T original(Property<T> property) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       return derivedValue((DerivedProperty<T>) property, true);
     }
     if (isModifiedInternal(property.attribute())) {
@@ -510,7 +510,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T validateAndPrepareForPut(Property<T> property, T value) {
-    if (property instanceof DerivedProperty) {
+    if (property.isDerived()) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
     if (property instanceof ItemProperty && value != null && !((ItemProperty<T>) property).isValid(value)) {
