@@ -9091,3 +9091,4 @@
   EntitiesTest split from DomainTest
   DefaultLocalEntityConnection.selectDependencies(), minor refactoring
   DefaultLocalEntityConnectionTest, added soft reference test
+  User.setPassword() removed, getPassword() renamed password()

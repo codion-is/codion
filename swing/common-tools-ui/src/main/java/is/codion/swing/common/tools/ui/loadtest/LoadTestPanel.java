@@ -174,7 +174,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .columns(LARGE_TEXT_FIELD_COLUMNS)
             .build();
     JPasswordField passwordField = passwordField()
-            .initialValue(String.valueOf(user.getPassword()))
+            .initialValue(String.valueOf(user.password()))
             .columns(LARGE_TEXT_FIELD_COLUMNS)
             .build();
     ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));

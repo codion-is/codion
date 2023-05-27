@@ -31,7 +31,7 @@ public interface ConnectionProvider {
   default Connection connection(User user, String url) throws SQLException {
     Properties connectionProperties = new Properties();
     connectionProperties.put(Database.USER_PROPERTY, requireNonNull(user, "user").username());
-    connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.getPassword()));
+    connectionProperties.put(Database.PASSWORD_PROPERTY, String.valueOf(user.password()));
 
     return DriverManager.getConnection(requireNonNull(url, "url"), connectionProperties);
   }

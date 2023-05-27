@@ -827,7 +827,7 @@ public final class FXUiUtil {
     TextField username = new TextField(defaultUser == null ? "" : defaultUser.username());
     username.setPromptText(Messages.username());
     PasswordField password = new PasswordField();
-    password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : String.valueOf(defaultUser.getPassword()));
+    password.setText(defaultUser == null || defaultUser.password() == null ? "" : String.valueOf(defaultUser.password()));
     password.setPromptText(Messages.password());
 
     grid.add(new Label(Messages.username()), 0, 0);
