@@ -10,7 +10,6 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.properties.PropertyValue;
-import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -569,11 +568,7 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   private ToggleControl createToggleColumnControl(FilteredTableColumn<C> column) {
-    C identifier = column.getIdentifier();
-    State visibleState = State.state(tableModel.columnModel().isColumnVisible(identifier));
-    visibleState.addDataListener(visible -> tableModel.columnModel().setColumnVisible(identifier, visible));
-
-    return ToggleControl.builder(visibleState)
+    return ToggleControl.builder(tableModel.columnModel().visibleState(column.getIdentifier()))
             .caption(column.getHeaderValue().toString())
             .build();
   }

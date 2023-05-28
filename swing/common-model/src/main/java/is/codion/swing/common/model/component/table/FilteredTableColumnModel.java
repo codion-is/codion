@@ -70,20 +70,27 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
   /**
    * Returns the TableColumn with the given identifier
-   * @param identifier the column identifier
+   * @param columnIdentifier the column identifier
    * @return the TableColumn with the given identifier
    * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
-  FilteredTableColumn<C> column(C identifier);
+  FilteredTableColumn<C> column(C columnIdentifier);
 
   @Override
   FilteredTableColumn<C> getColumn(int columnIndex);
 
   /**
-   * @param identifier the column identifier
+   * Returns a State for toggling the column visibility
+   * @param columnIdentifier the column identifier
+   * @return a State for toggling the column visibility
+   */
+  State visibleState(C columnIdentifier);
+
+  /**
+   * @param columnIdentifier the column identifier
    * @return true if this column model contains a column with the given identifier
    */
-  boolean containsColumn(C identifier);
+  boolean containsColumn(C columnIdentifier);
 
   /**
    * @param modelColumnIndex the column model index

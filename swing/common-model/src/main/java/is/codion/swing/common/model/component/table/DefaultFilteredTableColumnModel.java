@@ -29,14 +29,13 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnModel<C> {
 
-  private static final String COLUMN_IDENTIFIER = "columnIdentifier";
-
   private final DefaultTableColumnModel tableColumnModel = new DefaultTableColumnModel();
   private final Event<C> columnHiddenEvent = Event.event();
   private final Event<C> columnShownEvent = Event.event();
   private final Map<C, FilteredTableColumn<C>> columns = new LinkedHashMap<>();
   private final Map<Integer, C> columnIdentifiers = new HashMap<>();
   private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
+  private final Map<C, State> visibleStates = new HashMap<>();
   private final State lockedState = State.state();
 
   DefaultFilteredTableColumnModel(List<FilteredTableColumn<C>> tableColumns) {
@@ -48,6 +47,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       columns.put(identifier, column);
       columnIdentifiers.put(column.getModelIndex(), identifier);
       tableColumnModel.addColumn(column);
+      visibleStates.put(identifier, createVisibleState(identifier));
     });
   }
 
@@ -63,17 +63,16 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public boolean setColumnVisible(C columnIdentifier, boolean visible) {
-    checkIfLocked();
-    if (visible) {
-      return showColumn(columnIdentifier);
-    }
+    State visibleState = visibleStates.get(columnIdentifier);
+    boolean stateChanged = visibleState.get() != visible;
+    visibleState.set(visible);
 
-    return hideColumn(columnIdentifier);
+    return stateChanged;
   }
 
   @Override
   public boolean isColumnVisible(C columnIdentifier) {
-    return !hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    return !hiddenColumns.containsKey(requireNonNull(columnIdentifier));
   }
 
   @Override
@@ -84,15 +83,14 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   @Override
   public void setVisibleColumns(List<C> columnIdentifiers) {
     requireNonNull(columnIdentifiers);
-    checkIfLocked();
     int columnIndex = 0;
     for (C identifier : columnIdentifiers) {
-      showColumn(identifier);
+      visibleStates.get(identifier).set(true);
       moveColumn(getColumnIndex(identifier), columnIndex++);
     }
     for (FilteredTableColumn<C> column : columns()) {
       if (!columnIdentifiers.contains(column.getIdentifier())) {
-        hideColumn(column.getIdentifier());
+        visibleStates.get(column.getIdentifier()).set(false);
       }
     }
   }
@@ -117,7 +115,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public FilteredTableColumn<C> column(C columnIdentifier) {
-    FilteredTableColumn<C> column = columns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    FilteredTableColumn<C> column = columns.get(requireNonNull(columnIdentifier));
     if (column != null) {
       return column;
     }
@@ -127,7 +125,17 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public boolean containsColumn(C columnIdentifier) {
-    return columns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    return columns.containsKey(requireNonNull(columnIdentifier));
+  }
+
+  @Override
+  public State visibleState(C columnIdentifier) {
+    State visibleState = visibleStates.get(requireNonNull(columnIdentifier));
+    if (visibleState != null) {
+      return visibleState;
+    }
+
+    throw new IllegalArgumentException("Column not found: " + columnIdentifier);
   }
 
   @Override
@@ -264,9 +272,25 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     columnShownEvent.removeDataListener(listener);
   }
 
+  private State createVisibleState(C identifier) {
+    State visibleState = State.state(true);
+    visibleState.addValidator(value -> checkIfLocked());
+    visibleState.addDataListener(visible -> setColumnVisibleInternal(identifier, visible));
+
+    return visibleState;
+  }
+
+  private void setColumnVisibleInternal(C identifier, boolean visible) {
+    if (visible) {
+      showColumn(identifier);
+    }
+    else {
+      hideColumn(identifier);
+    }
+  }
+
   private boolean showColumn(C columnIdentifier) {
-    checkIfLocked();
-    HiddenColumn column = hiddenColumns.get(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER));
+    HiddenColumn column = hiddenColumns.get(columnIdentifier);
     if (column != null) {
       hiddenColumns.remove(columnIdentifier);
       tableColumnModel.addColumn(column.column);
@@ -280,8 +304,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   private boolean hideColumn(C columnIdentifier) {
-    checkIfLocked();
-    if (!hiddenColumns.containsKey(requireNonNull(columnIdentifier, COLUMN_IDENTIFIER))) {
+    if (!hiddenColumns.containsKey(columnIdentifier)) {
       HiddenColumn hiddenColumn = new HiddenColumn(column(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);

@@ -80,8 +80,10 @@ public class DefaultFilteredTableColumnModelTest {
     assertEquals(1, columnModel.getColumnIndex(3));
     columnModel.setVisibleColumns(0, 1);
     assertTrue(columnModel.isColumnVisible(0));
+    assertTrue(columnModel.visibleState(0).get());
     assertTrue(columnModel.isColumnVisible(1));
     assertFalse(columnModel.isColumnVisible(2));
+    assertFalse(columnModel.visibleState(2).get());
     assertFalse(columnModel.isColumnVisible(3));
     assertEquals(0, columnModel.getColumnIndex(0));
     assertEquals(1, columnModel.getColumnIndex(1));
