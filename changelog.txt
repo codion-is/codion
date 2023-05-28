@@ -9098,3 +9098,4 @@
   LocalEntityConnection.configureDatabase() added, keeps track of configured databases and prevents multiple configurations
   DefaultLocalEntityConnection bug fixed, now configures the database before configuring the connection
   H2DatabaseFactory.createDatabase(url, initScript) now takes one or more init scripts, usages no longer instance based
+  H2Database now initializes in memory and file databases when no init scripts are specified

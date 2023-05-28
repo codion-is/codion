@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.Properties;
 import java.util.Set;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
@@ -61,7 +60,7 @@ final class H2Database extends AbstractDatabase {
     super(url);
     this.nowait = nowait;
     synchronized (INITIALIZED_DATABASES) {
-      if (!nullOrEmpty(scriptPaths) && !INITIALIZED_DATABASES.contains(url.toLowerCase())) {
+      if (!INITIALIZED_DATABASES.contains(url.toLowerCase())) {
         initializeEmbeddedDatabase(scriptPaths);
       }
     }
@@ -69,10 +68,7 @@ final class H2Database extends AbstractDatabase {
 
   @Override
   public String name() {
-    String name = removeUrlPrefixOptionsAndParameters(url(), JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
-            JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
-
-    return name.isEmpty() ? "private" : name;
+    return databaseName(url());
   }
 
   @Override
@@ -120,17 +116,23 @@ final class H2Database extends AbstractDatabase {
     return exception.getErrorCode() == TIMEOUT_ERROR;
   }
 
+  static String databaseName(String url) {
+    String name = removeUrlPrefixOptionsAndParameters(url, JDBC_URL_PREFIX_TCP, JDBC_URL_PREFIX_FILE,
+            JDBC_URL_PREFIX_MEM, JDBC_URL_PREFIX_SSL, JDBC_URL_PREFIX_ZIP, JDBC_URL_PREFIX);
+
+    return name.isEmpty() ? "private" : name;
+  }
+
   private void initializeEmbeddedDatabase(List<String> scriptPaths) {
     if ((isEmbeddedInMemory() || !databaseFileExists())) {
       Properties properties = new Properties();
       properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-      for (String scriptPath : scriptPaths) {
-        String initUrl = url() + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'";
-        try {
-          DriverManager.getConnection(initUrl, properties).close();
-        }
-        catch (SQLException e) {
-          throw new RuntimeException(e);
+      if (scriptPaths.isEmpty()) {
+        initialize(properties, ";DB_CLOSE_DELAY=-1");
+      }
+      else {
+        for (String scriptPath : scriptPaths) {
+          initialize(properties, ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath.replace("\\", "/") + "'");
         }
       }
     }
@@ -148,5 +150,14 @@ final class H2Database extends AbstractDatabase {
   private boolean databaseFileExists() {
     return Files.exists(Paths.get(databasePath() + FILE_SUFFIX_PAGESTORE)) ||
             Files.exists(Paths.get(databasePath() + FILE_SUFFIX_MVSTORE));
+  }
+
+  private void initialize(Properties properties, String appendToUrl) {
+    try {
+      DriverManager.getConnection(url() + appendToUrl, properties).close();
+    }
+    catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }

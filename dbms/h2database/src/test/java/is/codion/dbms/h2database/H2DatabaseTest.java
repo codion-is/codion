@@ -19,48 +19,39 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class H2DatabaseTest {
 
+  private static final H2Database DATABASE = new H2Database("jdbc:h2:mem:test");
+
   @Test
-  void name() {
-    H2Database database = new H2Database("jdbc:h2:file:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.name());
-    database = new H2Database("jdbc:h2:C:/data/sample;option=true;option2=false");
-    assertEquals("C:/data/sample", database.name());
-    database = new H2Database("jdbc:h2:mem:sampleDb;option=true;option2=false");
-    assertEquals("sampleDb", database.name());
-    database = new H2Database("jdbc:h2:mem:");
-    assertEquals("private", database.name());
-    database = new H2Database("jdbc:h2:tcp://sample.Db:1234");
-    assertEquals("sample.Db:1234", database.name());
-    database = new H2Database("jdbc:h2:tcp://sample.Db:1234;option=true;option2=false");
-    assertEquals("sample.Db:1234", database.name());
-    database = new H2Database("jdbc:h2:zip:db.zip!/h2db");
-    assertEquals("db.zip!/h2db", database.name());
-    database = new H2Database("jdbc:h2:zip:db.zip!/h2db;option");
-    assertEquals("db.zip!/h2db", database.name());
+  void databaseName() {
+    assertEquals("C:/data/sample", H2Database.databaseName("jdbc:h2:file:C:/data/sample;trace_level_file=3;trace_level_system_out=3"));
+    assertEquals("C:/data/sample", H2Database.databaseName("jdbc:h2:C:/data/sample;trace_level_file=3;trace_level_system_out=3"));
+    assertEquals("sampleDb", H2Database.databaseName("jdbc:h2:mem:sampleDb;trace_level_file=3;trace_level_system_out=3"));
+    assertEquals("private", H2Database.databaseName("jdbc:h2:mem:"));
+    assertEquals("sample.db:1234/db", H2Database.databaseName("jdbc:h2:tcp://sample.db:1234/db"));
+    assertEquals("sample.db:1234/db", H2Database.databaseName("jdbc:h2:tcp://sample.db:1234/db;trace_level_file=3;trace_level_system_out=3"));
+    assertEquals("db.zip!/h2db", H2Database.databaseName("jdbc:h2:zip:db.zip!/h2db"));
+    assertEquals("db.zip!/h2db", H2Database.databaseName("jdbc:h2:zip:db.zip!/h2db;trace_level_file=3;trace_level_system_out=3"));
   }
 
   @Test
   void sequenceSQLNullSequence() {
-    assertThrows(NullPointerException.class, () -> new H2Database("url").sequenceQuery(null));
+    assertThrows(NullPointerException.class, () -> new H2Database("jdbc:h2:mem:test").sequenceQuery(null));
   }
 
   @Test
   void supportsIsValid() {
-    H2Database db = new H2Database("url");
-    assertTrue(db.supportsIsValid());
+    assertTrue(DATABASE.supportsIsValid());
   }
 
   @Test
   void autoIncrementQuery() {
-    H2Database db = new H2Database("url");
-    assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.autoIncrementQuery(null));
+    assertEquals(H2Database.AUTO_INCREMENT_QUERY, DATABASE.autoIncrementQuery(null));
   }
 
   @Test
   void sequenceQuery() {
-    H2Database db = new H2Database("url");
     final String idSource = "seq";
-    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.sequenceQuery(idSource));
+    assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, DATABASE.sequenceQuery(idSource));
   }
 
   @Test
