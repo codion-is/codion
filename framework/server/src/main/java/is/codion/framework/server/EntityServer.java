@@ -18,6 +18,7 @@ import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
+import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
@@ -375,7 +376,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   private static void configureDatabase(Collection<Domain> domainModels, Database database) throws DatabaseException {
     for (Domain domain : domainModels) {
-      domain.configureDatabase(database);
+      LocalEntityConnection.configureDatabase(database, domain);
     }
   }
 

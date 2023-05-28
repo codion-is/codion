@@ -9095,3 +9095,5 @@
   Domain.configureDatabase() added, for schema migrations and such
   EntityServer calls Domain.configureDatabase() on all loaded domains during construction
   DefaultLocalEntityConnection calls Domain.configureDatabase() on construction, some refactoring
+  LocalEntityConnection.configureDatabase() added, keeps track of configured databases and prevents multiple configurations
+  DefaultLocalEntityConnection bug fixed, now configures the database before configuring the connection

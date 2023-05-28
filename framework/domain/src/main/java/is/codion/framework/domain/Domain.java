@@ -93,8 +93,7 @@ public interface Domain {
   default void configureConnection(DatabaseConnection connection) throws DatabaseException {}
 
   /**
-   * Configures a database, for example run migration scripts.
-   * Called each time a new connection based on this domain is created.
+   * Configures a database, for example run migration scripts. Only called once per database instance.
    * @param database the database
    * @throws DatabaseException in case of an exception
    */
