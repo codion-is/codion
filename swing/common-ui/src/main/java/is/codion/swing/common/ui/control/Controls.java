@@ -11,7 +11,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import java.util.List;
 
@@ -114,18 +113,6 @@ public interface Controls extends Control {
    * @return the button panel
    */
   JPanel createHorizontalButtonPanel();
-
-  /**
-   * Creates a JToolBar populated with these controls.
-   * @return a toolbar based on these controls
-   */
-  JToolBar createVerticalToolBar();
-
-  /**
-   * Creates a JToolBar populated with these controls.
-   * @return a toolbar based on these controls
-   */
-  JToolBar createHorizontalToolBar();
 
   /**
    * Creates a popup menu from this controls instance

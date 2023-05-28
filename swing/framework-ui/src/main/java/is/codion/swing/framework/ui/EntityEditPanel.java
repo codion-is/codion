@@ -372,18 +372,19 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @see SwingConstants#HORIZONTAL
    */
   public final JToolBar createControlToolBar(int orientation) {
+    if (orientation != SwingConstants.VERTICAL && orientation != SwingConstants.HORIZONTAL) {
+      throw new IllegalArgumentException("Unknown orientation value: " + orientation);
+    }
+
     Controls controlPanelControls = createControlPanelControls();
     if (controlPanelControls.isEmpty()) {
       return null;
     }
-    if (orientation == SwingConstants.VERTICAL) {
-      return controlPanelControls.createVerticalToolBar();
-    }
-    else if (orientation == SwingConstants.HORIZONTAL) {
-      return controlPanelControls.createHorizontalToolBar();
-    }
 
-    throw new IllegalArgumentException("Unknown orientation value: " + orientation);
+    return Components.toolBar()
+            .controls(controlPanelControls)
+            .orientation(orientation)
+            .build();
   }
 
   /**

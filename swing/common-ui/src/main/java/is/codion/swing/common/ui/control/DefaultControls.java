@@ -12,8 +12,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -134,16 +132,6 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public JToolBar createVerticalToolBar() {
-    return createToolBar(SwingConstants.VERTICAL);
-  }
-
-  @Override
-  public JToolBar createHorizontalToolBar() {
-    return createToolBar(SwingConstants.HORIZONTAL);
-  }
-
-  @Override
   public JPopupMenu createPopupMenu() {
     return createMenu().getPopupMenu();
   }
@@ -169,13 +157,6 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   @Override
   public void actionPerformed(ActionEvent e) {/*Not required*/}
-
-  private JToolBar createToolBar(int orientation) {
-    JToolBar toolBar = new JToolBar(orientation);
-    actions.forEach(new ToolBarControlHandler(toolBar));
-
-    return toolBar;
-  }
 
   private static JPanel addEmptyBorder(JPanel panel) {
     Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
