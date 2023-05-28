@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
+
 import javax.swing.Action;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
@@ -51,6 +54,12 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
   }
 
   @Override
+  public ToolBarBuilder controls(Controls controls) {
+    actions.addAll(requireNonNull(controls).actions());
+    return this;
+  }
+
+  @Override
   public ToolBarBuilder separator() {
     actions.add(null);
     return this;
@@ -66,6 +75,9 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
     for (Action action : actions) {
       if (action == null) {
         toolBar.addSeparator();
+      }
+      else if (action instanceof ToggleControl) {
+        toolBar.add(((ToggleControl) action).createCheckBox());
       }
       else {
         toolBar.add(action);

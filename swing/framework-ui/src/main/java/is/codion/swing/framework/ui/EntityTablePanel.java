@@ -1091,15 +1091,15 @@ public class EntityTablePanel extends JPanel {
   protected JToolBar createSouthToolBar() {
     Controls toolbarControls = createToolBarControls(additionalToolBarControls);
     if (toolbarControls != null && !toolbarControls.isEmpty()) {
-      JToolBar toolBar = toolbarControls.createHorizontalToolBar();
-      Arrays.stream(toolBar.getComponents())
-              .map(JComponent.class::cast)
-              .forEach(component -> component.setToolTipText(null));
-      toolBar.setFocusable(false);
-      toolBar.setFloatable(false);
-      toolBar.setRollover(true);
-
-      return toolBar;
+      return Components.toolBar()
+              .controls(toolbarControls)
+              .orientation(SwingConstants.HORIZONTAL)
+              .focusable(false)
+              .floatable(false)
+              .rollover(true)
+              .build(toolBar -> Arrays.stream(toolBar.getComponents())
+                      .map(JComponent.class::cast)
+                      .forEach(component -> component.setToolTipText(null)));
     }
 
     return null;

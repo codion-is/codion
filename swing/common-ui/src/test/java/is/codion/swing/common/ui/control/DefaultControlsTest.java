@@ -109,10 +109,4 @@ public class DefaultControlsTest {
     JPanel base = new JPanel();
     base.add(controls.createVerticalButtonPanel());
   }
-
-  @Test
-  void toolBar() {
-    controls.createVerticalToolBar();
-    controls.createHorizontalToolBar();
-  }
 }

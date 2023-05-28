@@ -9101,3 +9101,5 @@
   H2Database now initializes in memory and file databases when no init scripts are specified
   FilteredTableColumnModel.visibleState() added
   FilteredTable.createToggleColumnControl() uses the above, now all toggle column actions are in sync
+  ToolBarBuilder.controls() added
+  Controls.createVerticalToolBar() and createHorizontalToolBar() removed

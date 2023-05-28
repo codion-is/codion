@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.control.Controls;
+
 import javax.swing.Action;
 import javax.swing.JToolBar;
 
@@ -40,6 +42,13 @@ public interface ToolBarBuilder extends ComponentBuilder<Void, JToolBar, ToolBar
    * @return this builder instance
    */
   ToolBarBuilder action(Action action);
+
+  /**
+   * Adds all actions from the given {@link Controls} instance
+   * @param controls the Controls instance
+   * @return this builder instance
+   */
+  ToolBarBuilder controls(Controls controls);
 
   /**
    * Adds a separator
