@@ -19,7 +19,7 @@ public final class AbstractConnectionPoolWrapperTest {
 
   @Test
   void test() throws DatabaseException, SQLException, InterruptedException {
-    Database database = new H2DatabaseFactory().createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
+    Database database = H2DatabaseFactory.createDatabase("jdbc:h2:mem:h2db", "src/test/sql/create_h2_db.sql");
 
     assertThrows(IllegalStateException.class, () -> ConnectionPoolFactory.instance("is.codion.none.existing.Factory"));
 

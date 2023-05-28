@@ -142,4 +142,16 @@ public interface LocalEntityConnection extends EntityConnection {
                                                      Connection connection) throws DatabaseException {
     return new DefaultLocalEntityConnection(database, domain, connection);
   }
+
+  /**
+   * Runs the database configuration for the given domain on the given database.
+   * Prevents multiple runs for the same domain/database combination.
+   * @param database the database to configure
+   * @param domain the domain doing the configuring
+   * @return the Database instance
+   * @throws DatabaseException in case of an exception
+   */
+  static Database configureDatabase(Database database, Domain domain) throws DatabaseException {
+    return DefaultLocalEntityConnection.configureDatabase(database, domain);
+  }
 }

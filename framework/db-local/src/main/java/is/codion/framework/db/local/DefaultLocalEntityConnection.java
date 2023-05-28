@@ -54,6 +54,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
 import java.util.function.Predicate;
@@ -108,7 +109,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @throws is.codion.common.db.exception.AuthenticationException in case of an authentication error
    */
   DefaultLocalEntityConnection(Database database, Domain domain, User user) throws DatabaseException {
-    this(domain, DatabaseConnection.databaseConnection(database, user));
+    this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), user));
   }
 
   /**
@@ -118,14 +119,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    */
   DefaultLocalEntityConnection(Database database, Domain domain, Connection connection) throws DatabaseException {
-    this(domain, DatabaseConnection.databaseConnection(database, connection));
+    this(domain, DatabaseConnection.databaseConnection(configureDatabase(database, domain), connection));
   }
 
   private DefaultLocalEntityConnection(Domain domain, DatabaseConnection connection) throws DatabaseException {
-    this.domain = requireNonNull(domain, "domain");
-    this.domain.configureDatabase(requireNonNull(connection).database());
+    this.domain = domain;
     this.connection = connection;
-    this.domain.configureConnection(this.connection);
+    this.domain.configureConnection(connection);
     this.domainEntities = domain.entities();
     this.selectQueries = new SelectQueries(connection.database());
   }
@@ -1450,6 +1450,55 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         return "'" + string + "'";
       default:
         return string;
+    }
+  }
+
+  static Database configureDatabase(Database database, Domain domain) throws DatabaseException {
+    new DatabaseConfiguration(requireNonNull(domain), requireNonNull(database)).configure();
+
+    return database;
+  }
+
+  private static final class DatabaseConfiguration {
+
+    private static final Set<DatabaseConfiguration> CONFIGURED_DATABASES = new HashSet<>();
+
+    private final Domain domain;
+    private final Database database;
+    private final int hashCode;
+
+    private DatabaseConfiguration(Domain domain, Database database) {
+      this.domain = domain;
+      this.database= database;
+      this.hashCode = Objects.hash(domain.type(), database);
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (!(object instanceof DatabaseConfiguration)) {
+        return false;
+      }
+
+      DatabaseConfiguration that = (DatabaseConfiguration) object;
+
+      return Objects.equals(domain.type(), that.domain.type()) && database == that.database;
+    }
+
+    @Override
+    public int hashCode() {
+      return hashCode;
+    }
+
+    private void configure() throws DatabaseException {
+      synchronized (CONFIGURED_DATABASES) {
+        if (!CONFIGURED_DATABASES.contains(this)) {
+          domain.configureDatabase(database);
+          CONFIGURED_DATABASES.add(this);
+        }
+      }
     }
   }
 }

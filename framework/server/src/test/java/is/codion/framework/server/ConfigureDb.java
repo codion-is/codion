@@ -38,7 +38,7 @@ public final class ConfigureDb extends DefaultDomain {
   public void configureDatabase(Database database) throws DatabaseException {
     try {
       database.createConnection(User.parse("sa")).createStatement()
-              .execute("create table if not exists scott.configured(id integer)");
+              .execute("create table scott.configured(id integer)");
     }
     catch (SQLException e) {
       throw new DatabaseException(e);
