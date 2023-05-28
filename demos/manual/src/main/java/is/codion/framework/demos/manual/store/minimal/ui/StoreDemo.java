@@ -68,7 +68,7 @@ public class StoreDemo {
   public static void main(String[] args) throws Exception {
     UIManager.setLookAndFeel(new FlatMaterialDarkerContrastIJTheme());
 
-    Database database = new H2DatabaseFactory()
+    Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:h2db",
                     "src/main/sql/create_schema_minimal.sql");
 

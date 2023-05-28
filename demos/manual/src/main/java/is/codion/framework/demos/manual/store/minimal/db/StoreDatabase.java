@@ -26,7 +26,7 @@ import static java.util.Arrays.asList;
 public class StoreDatabase {
 
   static void storeEntityConnection() throws SQLException, DatabaseException {
-    Database database = new H2DatabaseFactory()
+    Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:store",
                     "src/main/sql/create_schema_minimal.sql");
 

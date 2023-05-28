@@ -11,9 +11,9 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.Arrays;
 
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -36,8 +36,14 @@ public final class H2DatabaseFactory implements DatabaseFactory {
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 
-  public static Database createDatabase(String url, String initScript) {
-    return new H2Database(url, initScript == null ? emptyList() : singletonList(initScript),
+  /**
+   * Creates a H2 Database instance
+   * @param url the jdbc url
+   * @param initScripts initialization scripts to run on database creation
+   * @return a H2 Database instance
+   */
+  public static Database createDatabase(String url, String... initScripts) {
+    return new H2Database(url, initScripts == null ? emptyList() : Arrays.asList(initScripts),
             Database.SELECT_FOR_UPDATE_NOWAIT.get());
   }
 

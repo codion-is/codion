@@ -32,7 +32,7 @@ public final class ClientServer {
 
   private static void runServer() throws RemoteException, DatabaseException {
     // tag::runServer[]
-    Database database = new H2DatabaseFactory()
+    Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:testdb",
                     "src/main/sql/create_schema.sql");
 
@@ -66,7 +66,7 @@ public final class ClientServer {
 
   private static void runServerWithHttp() throws RemoteException, DatabaseException {
     // tag::runServerWithHttp[]
-    Database database = new H2DatabaseFactory()
+    Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:testdb",
                     "src/main/sql/create_schema.sql");
 
