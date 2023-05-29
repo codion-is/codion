@@ -12,6 +12,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 import java.util.Properties;
@@ -92,12 +93,12 @@ public final class DefaultPropertyStoreTest {
     PropertyValue<Boolean> booleanValue = store.booleanValue("boolean.property", false);
     assertTrue(booleanValue.get());
 
-    List<String> intProperties = store.propertyNames("int.");
+    Collection<String> intProperties = store.propertyNames("int.");
     assertTrue(intProperties.contains("int.property1"));
     assertTrue(intProperties.contains("int.property2"));
     assertTrue(intProperties.contains("int.property3"));
 
-    List<String> intPropertyValues = store.properties("int.");
+    Collection<String> intPropertyValues = store.properties("int.");
     assertTrue(intPropertyValues.contains("42"));
     assertTrue(intPropertyValues.contains("0"));
     assertTrue(intPropertyValues.contains("44"));

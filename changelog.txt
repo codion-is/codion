@@ -9104,3 +9104,4 @@
   ToolBarBuilder.controls() added
   Controls.createVerticalToolBar() and createHorizontalToolBar() removed
   ToolBarBuilder.toggleButtonType() added along with a ToggleButtonType enum
+  PropertyStore.properties() and propertyNames() now return Collection instead of List

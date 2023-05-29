@@ -12,6 +12,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;
@@ -179,7 +180,7 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> properties(String prefix) {
+  public Collection<String> properties(String prefix) {
     requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
@@ -188,7 +189,7 @@ final class DefaultPropertyStore implements PropertyStore {
   }
 
   @Override
-  public List<String> propertyNames(String prefix) {
+  public Collection<String> propertyNames(String prefix) {
     requireNonNull(prefix);
     return properties.stringPropertyNames().stream()
             .filter(propertyName -> propertyName.startsWith(prefix))
@@ -202,7 +203,7 @@ final class DefaultPropertyStore implements PropertyStore {
 
   @Override
   public void removeAll(String prefix) {
-    List<String> propertyKeys = propertyNames(prefix);
+    Collection<String> propertyKeys = propertyNames(prefix);
     if (propertyKeys.stream().anyMatch(propertyValues::containsKey)) {
       throw new IllegalArgumentException("Value bound properties can only be modified through their Value instances");
     }
