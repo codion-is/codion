@@ -1300,10 +1300,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
        */
       default EntityConnectionProvider createConnectionProvider(User user, String domainClassName, String clientTypeId, Version clientVersion) {
         return EntityConnectionProvider.builder()
+                .user(user)
                 .domainClassName(domainClassName)
                 .clientTypeId(clientTypeId)
                 .clientVersion(clientVersion)
-                .user(user)
                 .build();
       }
     }
