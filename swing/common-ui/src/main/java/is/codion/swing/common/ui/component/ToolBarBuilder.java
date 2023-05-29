@@ -14,6 +14,13 @@ import javax.swing.JToolBar;
 public interface ToolBarBuilder extends ComponentBuilder<Void, JToolBar, ToolBarBuilder> {
 
   /**
+   * Specifies how toggle controls are presented on a toolbar.
+   */
+  enum ToggleButtonType {
+    CHECKBOX, BUTTON
+  }
+
+  /**
    * @param floatable true if the toolbar should be floatable
    * @return this builder instance
    */
@@ -55,4 +62,12 @@ public interface ToolBarBuilder extends ComponentBuilder<Void, JToolBar, ToolBar
    * @return this builder instance
    */
   ToolBarBuilder separator();
+
+  /**
+   * Specifies how toggle controls are presented on this tool bar.
+   * The default is {@link ToggleButtonType#BUTTON}.
+   * @param toggleButtonType the toggle button type
+   * @return this builder instance
+   */
+  ToolBarBuilder toggleButtonType(ToggleButtonType toggleButtonType);
 }

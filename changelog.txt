@@ -9103,3 +9103,4 @@
   FilteredTable.createToggleColumnControl() uses the above, now all toggle column actions are in sync
   ToolBarBuilder.controls() added
   Controls.createVerticalToolBar() and createHorizontalToolBar() removed
+  ToolBarBuilder.toggleButtonType() added along with a ToggleButtonType enum
