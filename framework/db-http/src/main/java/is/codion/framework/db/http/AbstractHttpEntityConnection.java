@@ -5,7 +5,6 @@ package is.codion.framework.db.http;
 
 import is.codion.common.Serializer;
 import is.codion.common.user.User;
-import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entities;
 
 import org.apache.http.HttpEntity;
@@ -38,7 +37,7 @@ import java.net.URISyntaxException;
 import java.util.Objects;
 import java.util.UUID;
 
-abstract class AbstractHttpEntityConnection implements EntityConnection {
+abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractHttpEntityConnection.class);
 
@@ -68,7 +67,7 @@ abstract class AbstractHttpEntityConnection implements EntityConnection {
   private boolean closed;
 
   /**
-   * Instantiates a new {@link HttpJsonEntityConnection} instance
+   * Instantiates a new {@link JsonHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
    * @param serverPort the http server port

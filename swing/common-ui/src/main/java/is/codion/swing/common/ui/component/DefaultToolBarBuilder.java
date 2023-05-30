@@ -22,6 +22,7 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
   private int orientation = SwingConstants.HORIZONTAL;
   private boolean rollover = false;
   private boolean borderPainted = true;
+  private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
 
   @Override
   public ToolBarBuilder floatable(boolean floatable) {
@@ -66,6 +67,12 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
   }
 
   @Override
+  public ToolBarBuilder toggleButtonType(ToggleButtonType toggleButtonType) {
+    this.toggleButtonType = requireNonNull(toggleButtonType);
+    return this;
+  }
+
+  @Override
   protected JToolBar createComponent() {
     JToolBar toolBar = new JToolBar();
     toolBar.setFloatable(floatable);
@@ -77,7 +84,8 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
         toolBar.addSeparator();
       }
       else if (action instanceof ToggleControl) {
-        toolBar.add(((ToggleControl) action).createCheckBox());
+        ToggleControl toggleControl = (ToggleControl) action;
+        toolBar.add(toggleButtonType == ToggleButtonType.CHECKBOX ? toggleControl.createCheckBox() : toggleControl.createToggleButton());
       }
       else {
         toolBar.add(action);

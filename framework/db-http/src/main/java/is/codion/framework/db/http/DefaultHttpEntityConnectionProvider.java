@@ -52,7 +52,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", user());
-      return HttpEntityConnections.builder()
+      return HttpEntityConnection.builder()
               .domainTypeName(domainTypeName(domainClassName()))
               .serverHostName(serverHostName())
               .serverPort(serverPort)

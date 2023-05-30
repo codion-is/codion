@@ -7,6 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -241,14 +242,14 @@ public interface PropertyStore {
    * @param prefix the property prefix
    * @return all values associated with the properties with the given prefix
    */
-  List<String> properties(String prefix);
+  Collection<String> properties(String prefix);
 
   /**
    * Returns all property names with the given prefix
    * @param prefix the property name prefix
    * @return all property names with the given prefix
    */
-  List<String> propertyNames(String prefix);
+  Collection<String> propertyNames(String prefix);
 
   /**
    * Returns true if this PropertyStore contains a value for the given property

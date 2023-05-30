@@ -7,7 +7,6 @@ import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;
-import is.codion.common.rmi.server.ServerInformation;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entities;
@@ -41,7 +40,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   private static final String ENTITIES = "entities";
 
   private Server<RemoteEntityConnection, ServerAdmin> server;
-  private ServerInformation serverInformation;
+  private String serverName;
   private boolean truststoreResolved = false;
 
   private final String serverHostName;
@@ -67,7 +66,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   @Override
   public String description() {
-    return serverInformation.serverName() + "@" + serverHostName;
+    return serverName + "@" + serverHostName;
   }
 
   /**
@@ -119,32 +118,32 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
   private Server<RemoteEntityConnection, ServerAdmin> server() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
-      if (this.server != null) {
-        this.server.serverLoad();
+      if (server != null) {
+        server.serverLoad();
       }//just to check the connection
     }
     catch (RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", serverInformation.serverName(), user(), clientId());
+      LOG.info("{} was unreachable, {} - {} reconnecting...", serverName, user(), clientId());
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverInformation.serverName());
+      LOG.info("ClientID: {}, {} connected to server: {}", user(), clientId(), serverName);
     }
 
     return this.server;
   }
 
   private void connectToServer() throws RemoteException, NotBoundException {
-    this.server = Server.Locator.builder()
+    server = Server.Locator.builder()
             .serverHostName(serverHostName)
             .serverNamePrefix(serverNamePrefix)
             .registryPort(registryPort)
             .serverPort(serverPort)
             .build()
             .locateServer();
-    this.serverInformation = this.server.serverInformation();
+    serverName = server.serverInformation().serverName();
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {
