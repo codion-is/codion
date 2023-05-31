@@ -30,6 +30,7 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -839,6 +840,44 @@ public final class Components {
    * @return a {@link javax.swing.JToolBar} builder
    */
   public static ToolBarBuilder toolBar() {
-    return new DefaultToolBarBuilder();
+    return ToolBarBuilder.builder(null);
+  }
+
+  /**
+   * @param controls the Controls
+   * @return a {@link javax.swing.JToolBar} builder
+   */
+  public static ToolBarBuilder toolBar(Controls controls) {
+    return ToolBarBuilder.builder(controls);
+  }
+
+  /**
+   * @return a button panel builder
+   */
+  public static ButtonPanelBuilder buttonPanel() {
+    return ButtonPanelBuilder.builder();
+  }
+
+  /**
+   * @param controls the Controls
+   * @return a button panel builder
+   */
+  public static ButtonPanelBuilder buttonPanel(Controls controls) {
+    return ButtonPanelBuilder.builder(controls);
+  }
+
+  /**
+   * @return a new menu builder
+   */
+  public static MenuBuilder menu() {
+    return MenuBuilder.builder(null);
+  }
+
+  /**
+   * @param controls the controls to base the menu on
+   * @return a new menu builder
+   */
+  public static MenuBuilder menu(Controls controls) {
+    return MenuBuilder.builder(controls);
   }
 }

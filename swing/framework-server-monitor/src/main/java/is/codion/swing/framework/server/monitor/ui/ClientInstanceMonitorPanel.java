@@ -127,13 +127,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
     State lineWrapState = State.state();
     lineWrapState.addDataListener(textArea::setLineWrap);
-    textArea.setComponentPopupMenu(Controls.builder()
+    textArea.setComponentPopupMenu(menu(Controls.builder()
             .control(Control.builder(() -> saveLogToFile(textArea))
                     .caption("Save to file..."))
             .separator()
             .control(ToggleControl.builder(lineWrapState)
                     .caption("Line wrap"))
-            .build().createPopupMenu());
+            .build())
+            .createPopupMenu());
 
     return textArea;
   }

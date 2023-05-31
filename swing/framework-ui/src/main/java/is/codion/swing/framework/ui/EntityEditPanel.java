@@ -17,10 +17,8 @@ import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
@@ -42,6 +40,9 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
+import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -381,8 +382,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       return null;
     }
 
-    return Components.toolBar()
-            .controls(controlPanelControls)
+    return toolBar(controlPanelControls)
             .orientation(orientation)
             .build();
   }
@@ -726,16 +726,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private JPanel createControlPanel(boolean horizontal) {
     Controls controlPanelControls = createControlPanelControls();
-    if (controlPanelControls.isEmpty()) {
+    if (controlPanelControls == null || controlPanelControls.isEmpty()) {
       return null;
     }
     if (horizontal) {
-      return Components.panel(Layouts.flowLayout(FlowLayout.CENTER))
-              .add(controlPanelControls.createHorizontalButtonPanel())
+      return panel(flowLayout(FlowLayout.CENTER))
+              .add(buttonPanel(controlPanelControls).build())
               .build();
     }
-    return Components.panel(Layouts.borderLayout())
-            .add(controlPanelControls.createVerticalButtonPanel(), BorderLayout.NORTH)
+    return panel(borderLayout())
+            .add(buttonPanel(controlPanelControls)
+                    .orientation(SwingConstants.VERTICAL)
+                    .build(), BorderLayout.NORTH)
             .build();
   }
 

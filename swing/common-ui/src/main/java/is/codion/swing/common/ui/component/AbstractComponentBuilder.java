@@ -41,7 +41,8 @@ import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
 import static java.awt.ComponentOrientation.getOrientation;
 import static java.util.Objects.requireNonNull;
 
-public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>> implements ComponentBuilder<T, C, B> {
+public abstract class AbstractComponentBuilder<T, C extends JComponent, B extends ComponentBuilder<T, C, B>>
+        implements ComponentBuilder<T, C, B> {
 
   private final Event<C> buildEvent = Event.event();
   private final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
@@ -202,7 +203,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B popupMenuControls(Controls popupMenuControls) {
-    return popupMenu(requireNonNull(popupMenuControls).createPopupMenu());
+    return popupMenu(new DefaultMenuBuilder(popupMenuControls).createPopupMenu());
   }
 
   @Override

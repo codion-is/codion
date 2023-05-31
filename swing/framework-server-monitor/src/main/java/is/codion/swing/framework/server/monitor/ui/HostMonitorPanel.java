@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.HostMonitor;
@@ -11,10 +10,10 @@ import is.codion.swing.framework.server.monitor.ServerMonitor;
 
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
 
+import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Objects.requireNonNull;
 
@@ -40,10 +39,7 @@ public final class HostMonitorPanel extends JPanel {
 
   private void initializeUI() throws RemoteException {
     setLayout(borderLayout());
-    add(Components.toolBar()
-            .controls(controls())
-            .orientation(SwingConstants.HORIZONTAL)
-            .build(), BorderLayout.NORTH);
+    add(toolBar(controls()).build(), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     add(serverPane, BorderLayout.CENTER);
     addServerTabs();

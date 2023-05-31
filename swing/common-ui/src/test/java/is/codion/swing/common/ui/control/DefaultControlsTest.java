@@ -8,11 +8,6 @@ import is.codion.common.value.Value;
 
 import org.junit.jupiter.api.Test;
 
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import java.util.ArrayList;
-import java.util.List;
-
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -47,7 +42,7 @@ public class DefaultControlsTest {
     assertEquals("list", list.getCaption());
     Controls list1 = Controls.controls();
     assertTrue(nullOrEmpty(list1.getCaption()));
-    assertNull(list1.getCaption());
+    assertEquals("", list1.getCaption());
     Controls list2 = Controls.builder().control(two).build();
     list2.setCaption("list");
     assertFalse(nullOrEmpty(list2.getCaption()));
@@ -71,42 +66,5 @@ public class DefaultControlsTest {
     list2.removeAll();
     assertFalse(list2.actions().contains(one));
     assertTrue(list2.isEmpty());
-  }
-
-  @Test
-  void menuBar() {
-    Controls base = Controls.controls();
-    base.add(controls);
-
-    JMenuBar menu = base.createMenuBar();
-    assertEquals(1, menu.getMenuCount());
-    assertEquals(3, menu.getMenu(0).getItemCount());
-    assertEquals("one", menu.getMenu(0).getItem(0).getText());
-    assertEquals("two", menu.getMenu(0).getItem(1).getText());
-    assertEquals("three", menu.getMenu(0).getItem(2).getText());
-
-    List<Controls> lists = new ArrayList<>();
-    lists.add(controls);
-    lists.add(base);
-  }
-
-  @Test
-  void popupMenu() {
-    Controls base = Controls.controls();
-    base.add(controls);
-
-    base.createPopupMenu();
-  }
-
-  @Test
-  void horizontalButtonPanel() {
-    JPanel base = new JPanel();
-    base.add(controls.createHorizontalButtonPanel());
-  }
-
-  @Test
-  void verticalButtonPanel() {
-    JPanel base = new JPanel();
-    base.add(controls.createVerticalButtonPanel());
   }
 }

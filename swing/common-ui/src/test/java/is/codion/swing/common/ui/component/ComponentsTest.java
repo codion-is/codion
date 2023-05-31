@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component;
 
 import is.codion.common.item.Item;
+import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
@@ -17,6 +18,8 @@ import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.common.ui.component.text.UpdateOn;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.icon.Logos;
 
 import org.junit.jupiter.api.Test;
@@ -31,6 +34,8 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JMenuBar;
+import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
@@ -63,6 +68,12 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ComponentsTest {
+
+  private final Controls controls = Controls.builder().controls(
+          Control.builder(() -> {}).caption("one"),
+          Control.builder(() -> {}).caption("two"),
+          ToggleControl.builder(State.state())
+                  .caption("three")).build();
 
   @Test
   void testDoubleLink() {
@@ -682,12 +693,41 @@ public final class ComponentsTest {
             .borderPainted(true)
             .floatable(true)
             .rollover(true)
-            .orientation(SwingConstants.HORIZONTAL)
+            .orientation(SwingConstants.VERTICAL)
             .action(new AbstractAction() {
               @Override
               public void actionPerformed(ActionEvent e) {}
             })
             .separator()
             .build();
+  }
+
+  @Test
+  void menuBar() {
+    Controls base = Controls.controls();
+    base.add(controls);
+
+    JMenuBar menu = Components.menu(base).createMenuBar();
+    assertEquals(1, menu.getMenuCount());
+    assertEquals(3, menu.getMenu(0).getItemCount());
+    assertEquals("one", menu.getMenu(0).getItem(0).getText());
+    assertEquals("two", menu.getMenu(0).getItem(1).getText());
+    assertEquals("three", menu.getMenu(0).getItem(2).getText());
+  }
+
+  @Test
+  void popupMenu() {
+    Controls base = Controls.controls();
+    base.add(controls);
+
+    Components.menu(base).createPopupMenu();
+  }
+
+  @Test
+  void buttonPanel() {
+    JPanel base = new JPanel();
+    base.add(Components.buttonPanel(controls)
+            .orientation(SwingConstants.VERTICAL)
+            .build());
   }
 }

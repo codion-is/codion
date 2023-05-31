@@ -112,7 +112,7 @@ public final class LoadTestPanel<T> extends JPanel {
   public JFrame showFrame() {
     return frame(this)
             .icon(logoTransparent())
-            .menuBar(createMainMenuControls().createMenuBar())
+            .menuBar(menu(createMainMenuControls()).createMenuBar())
             .title("Codion - " + loadTestModel.title())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
             .onClosing(windowEvent -> {

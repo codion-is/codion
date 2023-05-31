@@ -100,7 +100,7 @@ public final class InputControls {
                             .mnemonic('u')))
             .build();
 
-    JMenu menu = controls.createMenu();
+    JMenu menu = Components.menu(controls).build();
 
     Control firstControl = Control.builder(this::doFirst)
             .caption("First")
@@ -115,7 +115,7 @@ public final class InputControls {
             .controls(firstControl, secondControl)
             .build();
 
-    JPanel buttonPanel = twoControls.createHorizontalButtonPanel();
+    JPanel buttonPanel = Components.buttonPanel(twoControls).build();
     // end::controls[]
   }
 
