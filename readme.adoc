@@ -6,12 +6,12 @@
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 
-image::https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
-image::https://img.shields.io/badge/JDK_Compatibility-11+-blue.svg[Java Compatability 11+]
+image:https://github.com/bjorndarri/codion/workflows/Java%20CI/badge.svg[CI]
+image:https://img.shields.io/badge/JDK_Compatibility-11+-blue.svg[Java Compatability 11+]
 
 == Introduction
 
-Codion is a minimalistic full-stack Java rich client CRUD application framework based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components.
+Codion is a full-stack, Java rich client desktop CRUD application framework, based solely on https://en.wikipedia.org/wiki/Java_Platform,_Standard_Edition[Java Standard Edition] components.
 
 * <<Domain model, Domain modelling>> in plain Java code without annotations.
 * Integrated https://github.com/junit-team/junit5[JUnit] testing of the domain model.
@@ -26,14 +26,14 @@ Codion is a minimalistic full-stack Java rich client CRUD application framework 
 
 == Motivation
 
-I started developing Codion back in 2004, when the only Swing rich client CRUD framework available was practically unusable, and I was not about to abandon my good friend Swing in favor of my sworn enemy, HTML, which was fast becoming all the rage in the world of CRUD applications.
+My main motivation for developing Codion back in 2004 was the lack of Java application frameworks which were not based on Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
 
 I figured a CRUD application framework should:
 
 * Embody Alan Kay’s adage "simple things should be simple, complex things should be possible".
 * Provide a reasonable set of application functionality out of the box.
 * Have a clear separation between model and UI for easy unit testing.
-* Limit accidental complexity and be enjoyable to use.
+* Limit accidental complexity and be intuitive and enjoyable to use.
 
 == Dependencies
 
