@@ -4,7 +4,7 @@
 module is.codion.common.rmi {
   requires org.slf4j;
   requires jdk.management;
-  requires io.github.hakky54.sslcontext.kickstart;
+  requires nl.altindag.ssl;
   requires transitive java.rmi;
   requires transitive is.codion.common.core;
 
