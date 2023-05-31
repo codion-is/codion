@@ -3,36 +3,27 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.ToggleButtonType;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import java.util.ArrayList;
-import java.util.List;
 
-import static java.util.Objects.requireNonNull;
-
-final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBar, ToolBarBuilder> implements ToolBarBuilder {
-
-  private final List<Action> actions = new ArrayList<>();
+final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
   private boolean floatable = true;
-  private int orientation = SwingConstants.HORIZONTAL;
   private boolean rollover = false;
   private boolean borderPainted = true;
-  private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
+
+  DefaultToolBarBuilder(Controls controls) {
+    super(controls);
+  }
 
   @Override
   public ToolBarBuilder floatable(boolean floatable) {
     this.floatable = floatable;
-    return this;
-  }
-
-  @Override
-  public ToolBarBuilder orientation(int orientation) {
-    this.orientation = orientation;
     return this;
   }
 
@@ -49,57 +40,51 @@ final class DefaultToolBarBuilder extends AbstractComponentBuilder<Void, JToolBa
   }
 
   @Override
-  public ToolBarBuilder action(Action action) {
-    actions.add(requireNonNull(action));
-    return this;
-  }
-
-  @Override
-  public ToolBarBuilder controls(Controls controls) {
-    actions.addAll(requireNonNull(controls).actions());
-    return this;
-  }
-
-  @Override
-  public ToolBarBuilder separator() {
-    actions.add(null);
-    return this;
-  }
-
-  @Override
-  public ToolBarBuilder toggleButtonType(ToggleButtonType toggleButtonType) {
-    this.toggleButtonType = requireNonNull(toggleButtonType);
-    return this;
-  }
-
-  @Override
   protected JToolBar createComponent() {
     JToolBar toolBar = new JToolBar();
     toolBar.setFloatable(floatable);
-    toolBar.setOrientation(orientation);
+    toolBar.setOrientation(orientation());
     toolBar.setRollover(rollover);
     toolBar.setBorderPainted(borderPainted);
-    for (Action action : actions) {
-      if (action == null) {
-        toolBar.addSeparator();
-      }
-      else if (action instanceof ToggleControl) {
-        ToggleControl toggleControl = (ToggleControl) action;
-        toolBar.add(toggleButtonType == ToggleButtonType.CHECKBOX ? toggleControl.createCheckBox() : toggleControl.createToggleButton());
-      }
-      else {
-        toolBar.add(action);
-      }
-    }
+    controls().actions().forEach(new ToolBarControlHandler(toolBar));
 
     return toolBar;
   }
 
-  @Override
-  protected ComponentValue<Void, JToolBar> createComponentValue(JToolBar component) {
-    throw new UnsupportedOperationException("A ComponentValue can not be based on a JToolBar");
-  }
+  private final class ToolBarControlHandler extends ControlHandler {
 
-  @Override
-  protected void setInitialValue(JToolBar component, Void initialValue) {}
+    private final JToolBar toolBar;
+
+    private ToolBarControlHandler(JToolBar toolBar) {
+      this.toolBar = toolBar;
+    }
+
+    @Override
+    public void onSeparator() {
+      toolBar.addSeparator();
+    }
+
+    @Override
+    public void onControl(Control control) {
+      if (control instanceof ToggleControl) {
+        ToggleControl toggleControl = (ToggleControl) control;
+        toolBar.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
+                toggleControl.createCheckBox() :
+                toggleControl.createToggleButton());
+      }
+      else {
+        toolBar.add(control);
+      }
+    }
+
+    @Override
+    public void onControls(Controls controls) {
+      controls.actions().forEach(new ToolBarControlHandler(toolBar));
+    }
+
+    @Override
+    public void onAction(Action action) {
+      toolBar.add(action);
+    }
+  }
 }

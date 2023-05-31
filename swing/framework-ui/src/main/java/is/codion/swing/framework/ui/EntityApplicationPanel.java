@@ -29,7 +29,6 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -86,6 +85,8 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.swing.common.ui.component.Components.menu;
+import static is.codion.swing.common.ui.component.Components.panel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -651,7 +652,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel createAboutPanel() {
-    PanelBuilder versionMemoryPanel = Components.panel(gridLayout(0, 2))
+    PanelBuilder versionMemoryPanel = panel(gridLayout(0, 2))
             .border(createEmptyBorder(5, 5, 5, 5));
     applicationModel().version().ifPresent(version -> versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
@@ -662,7 +663,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"))
             .add(new JLabel(Memory.memoryUsage()));
 
-    return Components.panel(borderLayout())
+    return panel(borderLayout())
             .border(createEmptyBorder(5, 5, 5, 5))
             .add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST)
             .add(versionMemoryPanel.build(), BorderLayout.CENTER)
@@ -770,7 +771,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     applicationTabPane = createApplicationTabPane();
     setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
-    add(Components.panel(borderLayout())
+    add(panel(borderLayout())
             .add(applicationTabPane, BorderLayout.CENTER)
             .build(), BorderLayout.CENTER);
     JPanel northPanel = createNorthPanel();
@@ -834,8 +835,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JMenuBar createMenuBar() {
     Controls mainMenuControls = createMainMenuControls();
+    if (mainMenuControls == null || mainMenuControls.isEmpty()) {
+      return null;
+    }
 
-    return mainMenuControls == null || mainMenuControls.isEmpty() ? null : mainMenuControls.createMenuBar();
+    return menu(mainMenuControls).createMenuBar();
   }
 
   /**

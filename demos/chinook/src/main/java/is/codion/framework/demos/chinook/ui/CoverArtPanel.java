@@ -31,6 +31,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 
 /**
@@ -73,13 +74,13 @@ final class CoverArtPanel extends JPanel {
             .border(BorderFactory.createEmptyBorder(5, 5, 5, 5))
             .preferredSize(EMBEDDED_SIZE)
             .add(imagePanel, BorderLayout.CENTER)
-            .add(Controls.builder()
+            .add(buttonPanel(Controls.builder()
                     .control(Control.builder(this::selectCover)
                             .caption(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
                             .caption(BUNDLE.getString(REMOVE_COVER)))
-                    .build()
-                    .createHorizontalButtonPanel(), BorderLayout.SOUTH)
+                    .build())
+                    .build())
             .build();
   }
 

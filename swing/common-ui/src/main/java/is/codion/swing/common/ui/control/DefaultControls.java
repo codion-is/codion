@@ -4,14 +4,8 @@
 package is.codion.swing.common.ui.control;
 
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
@@ -116,54 +110,5 @@ final class DefaultControls extends AbstractControl implements Controls {
   }
 
   @Override
-  public JPanel createVerticalButtonPanel() {
-    JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(0, 1)));
-    new ButtonControlHandler(panel, this, true);
-
-    return panel;
-  }
-
-  @Override
-  public JPanel createHorizontalButtonPanel() {
-    JPanel panel = addEmptyBorder(new JPanel(Layouts.gridLayout(1, 0)));
-    new ButtonControlHandler(panel, this, false);
-
-    return panel;
-  }
-
-  @Override
-  public JPopupMenu createPopupMenu() {
-    return createMenu().getPopupMenu();
-  }
-
-  @Override
-  public JMenu createMenu() {
-    JMenu menu = new JMenu(this);
-    new MenuControlHandler(menu, this);
-
-    return menu;
-  }
-
-  @Override
-  public JMenuBar createMenuBar() {
-    JMenuBar menuBar = new JMenuBar();
-    actions.stream()
-            .filter(Controls.class::isInstance)
-            .map(Controls.class::cast)
-            .forEach(subControls -> menuBar.add(subControls.createMenu()));
-
-    return menuBar;
-  }
-
-  @Override
   public void actionPerformed(ActionEvent e) {/*Not required*/}
-
-  private static JPanel addEmptyBorder(JPanel panel) {
-    Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    if (gap != null) {
-      panel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
-    }
-
-    return panel;
-  }
 }

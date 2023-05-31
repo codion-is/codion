@@ -87,6 +87,8 @@ import java.util.Set;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.component.Components.menu;
+import static is.codion.swing.common.ui.component.Components.toolBar;
 import static is.codion.swing.common.ui.component.table.ColumnSummaryPanel.columnSummaryPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
@@ -1090,19 +1092,18 @@ public class EntityTablePanel extends JPanel {
    */
   protected JToolBar createSouthToolBar() {
     Controls toolbarControls = createToolBarControls(additionalToolBarControls);
-    if (toolbarControls != null && !toolbarControls.isEmpty()) {
-      return Components.toolBar()
-              .controls(toolbarControls)
-              .orientation(SwingConstants.HORIZONTAL)
-              .focusable(false)
-              .floatable(false)
-              .rollover(true)
-              .build(toolBar -> Arrays.stream(toolBar.getComponents())
-                      .map(JComponent.class::cast)
-                      .forEach(component -> component.setToolTipText(null)));
+    if (toolbarControls == null || toolbarControls.isEmpty()) {
+      return null;
     }
 
-    return null;
+    return toolBar()
+            .controls(toolbarControls)
+            .focusable(false)
+            .floatable(false)
+            .rollover(true)
+            .build(toolBar -> Arrays.stream(toolBar.getComponents())
+                    .map(JComponent.class::cast)
+                    .forEach(component -> component.setToolTipText(null)));
   }
 
   /**
@@ -1336,7 +1337,7 @@ public class EntityTablePanel extends JPanel {
             .action(conditionRefreshControl)
             .enable(this);
 
-    return Components.toolBar()
+    return toolBar()
             .action(conditionRefreshControl)
             .focusable(false)
             .floatable(false)
@@ -1535,7 +1536,7 @@ public class EntityTablePanel extends JPanel {
       return;
     }
 
-    JPopupMenu popupMenu = popupControls.createPopupMenu();
+    JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);

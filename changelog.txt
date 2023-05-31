@@ -9106,3 +9106,4 @@
   ToolBarBuilder.toggleButtonType() added along with a ToggleButtonType enum
   PropertyStore.properties() and propertyNames() now return Collection instead of List
   HttpEntityConnection now interface, related refactoring/renaming
+  MenuBuilder, ButtonPanelBuilder added, Controls.createMenu() and Controls.createButtonPanel() removed, related refactoring

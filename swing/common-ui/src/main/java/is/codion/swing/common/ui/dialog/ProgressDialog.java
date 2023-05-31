@@ -17,6 +17,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
+import static is.codion.swing.common.ui.component.Components.buttonPanel;
+
 /**
  * A dialog containing a progress bar.
  * @see Dialogs#progressDialog()
@@ -85,7 +87,7 @@ public final class ProgressDialog extends JDialog {
     basePanel.add(progressBar, BorderLayout.CENTER);
     if (controls != null) {
       JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-      southPanel.add(controls.createHorizontalButtonPanel());
+      southPanel.add(buttonPanel(controls).build());
       basePanel.add(southPanel, BorderLayout.SOUTH);
     }
     return basePanel;

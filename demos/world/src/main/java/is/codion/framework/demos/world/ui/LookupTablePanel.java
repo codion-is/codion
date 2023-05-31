@@ -2,8 +2,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.model.LookupTableModel;
-import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.ToolBarBuilder.ToggleButtonType;
+import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -25,6 +24,7 @@ import java.io.IOException;
 import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.scrollPane;
+import static is.codion.swing.common.ui.component.Components.toolBar;
 import static javax.swing.BorderFactory.createTitledBorder;
 
 final class LookupTablePanel extends EntityTablePanel {
@@ -78,13 +78,12 @@ final class LookupTablePanel extends EntityTablePanel {
   private JToolBar createColumnSelectionToolBar() {
     Controls toggleColumnsControls = table().createToggleColumnsControls();
 
-    return Components.toolBar()
+    return toolBar(Controls.controls()
+            .add(createSelectAllColumnsControl(toggleColumnsControls))
+            .addSeparator()
+            .addAll(toggleColumnsControls))
             .orientation(SwingConstants.VERTICAL)
             .toggleButtonType(ToggleButtonType.CHECKBOX)
-            .controls(Controls.controls()
-                    .add(createSelectAllColumnsControl(toggleColumnsControls))
-                    .addSeparator()
-                    .addAll(toggleColumnsControls))
             .border(createTitledBorder("Columns"))
             .build();
   }

@@ -93,10 +93,10 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private JPopupMenu createPopupMenu() {
-    return Controls.builder()
+    return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
                     .caption("Disconnect"))
-            .build()
+            .build())
             .createPopupMenu();
   }
 

@@ -74,6 +74,7 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.*;
@@ -326,14 +327,14 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private JPopupMenu createPopupMenu() {
-    return Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
-                            .owner(EntitySearchField.this)
-                            .title(FrameworkMessages.settings())
-                            .icon(FrameworkIcons.instance().settings())
-                            .show())
-                    .caption(FrameworkMessages.settings())
-                    .smallIcon(FrameworkIcons.instance().settings())
-                    .build())
+    return menu(Controls.controls(Control.builder(() -> Dialogs.componentDialog(settingsPanel)
+                    .owner(EntitySearchField.this)
+                    .title(FrameworkMessages.settings())
+                    .icon(FrameworkIcons.instance().settings())
+                    .show())
+            .caption(FrameworkMessages.settings())
+            .smallIcon(FrameworkIcons.instance().settings())
+            .build()))
             .createPopupMenu();
   }
 

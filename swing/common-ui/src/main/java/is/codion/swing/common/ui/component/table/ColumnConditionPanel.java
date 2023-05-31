@@ -90,9 +90,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     this.operatorCombo = createOperatorComboBox(conditionModel.operators());
     this.toggleEnabledButton = radioButton(conditionModel.enabledState())
             .horizontalAlignment(CENTER)
-            .popupMenu(Controls.builder()
+            .popupMenu(menu(Controls.builder()
                     .control(ToggleControl.builder(conditionModel.autoEnableState())
-                            .caption(MESSAGES.getString("auto_enable"))).build()
+                            .caption(MESSAGES.getString("auto_enable"))).build())
                     .createPopupMenu())
             .build();
     conditionModel.setLocked(modelLocked);
@@ -568,12 +568,13 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
 
   private void addStringConfigurationPopupMenu() {
     if (conditionModel.columnClass().equals(String.class)) {
-      JPopupMenu popupMenu = Controls.builder()
+      JPopupMenu popupMenu = menu(Controls.builder()
               .control(ToggleControl.builder(conditionModel.caseSensitiveState())
                       .caption(MESSAGES.getString("case_sensitive"))
                       .build())
               .controls(createAutomaticWildcardControls())
-              .build().createPopupMenu();
+              .build())
+              .createPopupMenu();
       equalField.setComponentPopupMenu(popupMenu);
       if (lowerBoundField != null) {
         lowerBoundField.setComponentPopupMenu(popupMenu);

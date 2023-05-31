@@ -62,7 +62,9 @@ abstract class AbstractControl extends AbstractAction implements Control {
 
   @Override
   public final String getCaption() {
-    return (String) getValue(NAME);
+    Object value = getValue(NAME);
+
+    return value == null ? "" : String.valueOf(value);
   }
 
   @Override

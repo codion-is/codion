@@ -7,10 +7,6 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JMenu;
-import javax.swing.JMenuBar;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.KeyStroke;
 import java.util.List;
 
@@ -101,35 +97,6 @@ public interface Controls extends Control {
    * @return this Controls instance
    */
   Controls addAll(Controls controls);
-
-  /**
-   * Creates a vertically laid out panel of buttons from this controls instance
-   * @return the button panel
-   */
-  JPanel createVerticalButtonPanel();
-
-  /**
-   * Creates a horizontally laid out panel of buttons from this controls instance
-   * @return the button panel
-   */
-  JPanel createHorizontalButtonPanel();
-
-  /**
-   * Creates a popup menu from this controls instance
-   * @return a popup menu based on this controls instance
-   */
-  JPopupMenu createPopupMenu();
-
-  /**
-   * Creates a menu from this controls instance
-   * @return a menu based on this controls instance
-   */
-  JMenu createMenu();
-
-  /**
-   * @return a menu bar based on the controls instances contained in this controls instance
-   */
-  JMenuBar createMenuBar();
 
   /**
    * Constructs a new Controls instance.
