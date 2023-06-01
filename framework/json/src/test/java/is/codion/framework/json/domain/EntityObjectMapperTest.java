@@ -48,6 +48,7 @@ public final class EntityObjectMapperTest {
     byte[] logoBytes = new byte[20];
     new Random().nextBytes(logoBytes);
     dept.put(Department.LOGO, logoBytes);
+    dept = dept.immutable();
 
     String jsonString = mapper.writeValueAsString(dept);
     Entity readDept = mapper.readValue(jsonString, Entity.class);
@@ -73,6 +74,7 @@ public final class EntityObjectMapperTest {
     Entity entityModified = mapper.readValue(jsonString, Entity.class);
     assertTrue(entityModified.isModified());
     assertTrue(entityModified.isModified(TestEntity.BOOLEAN));
+    assertTrue(entityModified.get(TestEntity.ENTITY).isImmutable());
   }
 
   @Test
