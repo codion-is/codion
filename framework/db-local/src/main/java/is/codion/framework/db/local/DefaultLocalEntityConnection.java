@@ -489,7 +489,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
+  public Collection<Entity> select(Collection<Key> keys) throws DatabaseException {
     if (requireNonNull(keys, "keys").isEmpty()) {
       return emptyList();
     }

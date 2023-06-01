@@ -291,7 +291,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void select() throws Exception {
-    List<Entity> result = connection.select(new ArrayList<>());
+    Collection<Entity> result = connection.select(new ArrayList<>());
     assertTrue(result.isEmpty());
     result = connection.select(Department.DEPTNO, asList(10, 20));
     assertEquals(2, result.size());
@@ -305,7 +305,7 @@ public class DefaultLocalEntityConnectionTest {
 
     SelectCondition condition = Condition.customCondition(Employee.NAME_IS_BLAKE_CONDITION_ID).selectBuilder().build();
     result = connection.select(condition);
-    Entity emp = result.get(0);
+    Entity emp = result.iterator().next();
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
@@ -314,21 +314,21 @@ public class DefaultLocalEntityConnectionTest {
     condition = condition.selectBuilder().fetchDepth(Employee.DEPARTMENT_FK, 0).build();
     result = connection.select(condition);
     assertEquals(1, result.size());
-    emp = result.get(0);
+    emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
     condition = condition.selectBuilder().fetchDepth(Employee.MGR_FK, 0).build();
     result = connection.select(condition);
     assertEquals(1, result.size());
-    emp = result.get(0);
+    emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
     condition = condition.selectBuilder().fetchDepth(Employee.MGR_FK, 2).build();
     result = connection.select(condition);
     assertEquals(1, result.size());
-    emp = result.get(0);
+    emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
@@ -337,7 +337,7 @@ public class DefaultLocalEntityConnectionTest {
     condition = condition.selectBuilder().fetchDepth(Employee.MGR_FK, -1).build();
     result = connection.select(condition);
     assertEquals(1, result.size());
-    emp = result.get(0);
+    emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
@@ -371,7 +371,7 @@ public class DefaultLocalEntityConnectionTest {
     Key deptKey = ENTITIES.primaryKey(Department.TYPE, 10);
     Key empKey = ENTITIES.primaryKey(Employee.TYPE, 8);
 
-    List<Entity> selected = connection.select(asList(deptKey, empKey));
+    Collection<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
@@ -644,7 +644,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(condition));
-      List<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
+      Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
         assertEquals(4200d, entity.get(Employee.SALARY));

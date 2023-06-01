@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -275,9 +276,9 @@ public class EntityTestUnit {
   private static Entity insertOrSelect(Entity entity, EntityConnection connection) throws DatabaseException {
     try {
       if (entity.primaryKey().isNotNull()) {
-        List<Entity> selected = connection.select(singletonList(entity.primaryKey()));
+        Collection<Entity> selected = connection.select(singletonList(entity.primaryKey()));
         if (!selected.isEmpty()) {
-          return selected.get(0);
+          return selected.iterator().next();
         }
       }
 

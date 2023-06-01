@@ -32,6 +32,7 @@ import javax.swing.JOptionPane;
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -550,10 +551,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       return false;
     }
 
-    private final class AfterInsertListener implements EventDataListener<List<Entity>> {
+    private final class AfterInsertListener implements EventDataListener<Collection<Entity>> {
 
       @Override
-      public void onEvent(List<Entity> inserted) {
+      public void onEvent(Collection<Entity> inserted) {
         insertedEntities.clear();
         insertedEntities.addAll(inserted);
       }

@@ -25,7 +25,6 @@ import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -55,9 +54,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
-  private final EventDataListener<List<Entity>> insertListener = new InsertListener();
+  private final EventDataListener<Collection<Entity>> insertListener = new InsertListener();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
-  private final EventDataListener<List<Entity>> deleteListener = new DeleteListener();
+  private final EventDataListener<Collection<Entity>> deleteListener = new DeleteListener();
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
   private boolean staticData = false;
@@ -520,10 +519,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class InsertListener implements EventDataListener<List<Entity>> {
+  private final class InsertListener implements EventDataListener<Collection<Entity>> {
 
     @Override
-    public void onEvent(List<Entity> inserted) {
+    public void onEvent(Collection<Entity> inserted) {
       inserted.forEach(EntityComboBoxModel.this::addItem);
     }
   }
@@ -536,10 +535,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class DeleteListener implements EventDataListener<List<Entity>> {
+  private final class DeleteListener implements EventDataListener<Collection<Entity>> {
 
     @Override
-    public void onEvent(List<Entity> deleted) {
+    public void onEvent(Collection<Entity> deleted) {
       deleted.forEach(EntityComboBoxModel.this::removeItem);
     }
   }

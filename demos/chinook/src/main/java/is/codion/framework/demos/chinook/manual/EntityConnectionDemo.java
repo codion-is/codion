@@ -120,7 +120,7 @@ public final class EntityConnectionDemo {
     Key key42 = entities.primaryKey(Artist.TYPE, 42L);
     Key key43 = entities.primaryKey(Artist.TYPE, 43L);
 
-    List<Entity> artists = connection.select(asList(key42, key43));
+    Collection<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
   }
 

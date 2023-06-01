@@ -65,9 +65,9 @@ public final class AbstractEntityEditModelTest {
     AtomicInteger updateEvents = new AtomicInteger();
     AtomicInteger deleteEvents = new AtomicInteger();
 
-    EventDataListener<List<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
+    EventDataListener<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
     EventDataListener<Map<Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
-    EventDataListener<List<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
+    EventDataListener<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
     EntityEditEvents.addInsertListener(Employee.TYPE, insertListener);
     EntityEditEvents.addUpdateListener(Employee.TYPE, updateListener);
@@ -363,7 +363,7 @@ public final class AbstractEntityEditModelTest {
       employeeEditModel.put(Employee.DEPARTMENT_FK, department);
 
       employeeEditModel.addAfterInsertListener(insertedEntities ->
-              assertEquals(department, insertedEntities.get(0).get(Employee.DEPARTMENT_FK)));
+              assertEquals(department, insertedEntities.iterator().next().get(Employee.DEPARTMENT_FK)));
       employeeEditModel.setInsertEnabled(false);
       assertFalse(employeeEditModel.isInsertEnabled());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());

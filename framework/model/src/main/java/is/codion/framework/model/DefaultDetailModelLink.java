@@ -6,7 +6,7 @@ package is.codion.framework.model;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -17,10 +17,10 @@ import static java.util.Objects.requireNonNull;
  * @param <M> the {@link EntityModel} type
  * @param <E> the {@link EntityEditModel} type
  * @param <T> the {@link EntityTableModel} type
- * @see #onSelection(List)
- * @see #onInsert(List)
+ * @see #onSelection(Collection)
+ * @see #onInsert(Collection)
  * @see #onUpdate(Map)
- * @see #onDelete(List)
+ * @see #onDelete(Collection)
  */
 public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E extends AbstractEntityEditModel,
         T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {

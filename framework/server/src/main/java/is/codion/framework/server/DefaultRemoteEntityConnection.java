@@ -248,7 +248,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
+  public Collection<Entity> select(Collection<Key> keys) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(keys);
     }

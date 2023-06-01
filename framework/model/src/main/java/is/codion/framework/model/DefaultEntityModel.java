@@ -276,7 +276,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     }
   }
 
-  private void onInsert(List<Entity> insertedEntities) {
+  private void onInsert(Collection<Entity> insertedEntities) {
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onInsert(insertedEntities));
   }
 
@@ -284,7 +284,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onUpdate(updatedEntities));
   }
 
-  private void onDelete(List<Entity> deletedEntities) {
+  private void onDelete(Collection<Entity> deletedEntities) {
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onDelete(deletedEntities));
   }
 }

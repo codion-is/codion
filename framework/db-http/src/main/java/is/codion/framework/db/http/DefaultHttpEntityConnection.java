@@ -332,7 +332,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
+  public Collection<Entity> select(Collection<Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       synchronized (this.entities) {
