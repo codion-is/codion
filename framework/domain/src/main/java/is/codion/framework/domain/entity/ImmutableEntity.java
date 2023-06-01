@@ -3,10 +3,15 @@
  */
 package is.codion.framework.domain.entity;
 
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.BiConsumer;
+
+import static is.codion.framework.domain.entity.DefaultKey.serializerForDomain;
 
 final class ImmutableEntity extends DefaultEntity implements Serializable {
 
@@ -62,6 +67,15 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   @Override
   public Map<Attribute<?>, Object> setAs(Entity entity) {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
+  }
+
+  private void writeObject(ObjectOutputStream stream) throws IOException {
+    stream.writeObject(definition.domainName());
+    serializerForDomain(definition.domainName()).serialize(this, stream);
+  }
+
+  private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    serializerForDomain((String) stream.readObject()).deserialize(this, stream);
   }
 
   private static final class ReplaceWithImmutable implements BiConsumer<Attribute<?>, Object> {
