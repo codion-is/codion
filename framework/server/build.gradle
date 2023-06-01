@@ -115,7 +115,7 @@ tasks.register('runServer', ModularJavaExec) {
             'codion.server.admin.user'                  : 'scott:tiger',
             'codion.server.http.secure'                 : 'false',
             'codion.server.pooling.poolFactoryClass'    : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
-            'codion.server.auxiliaryServerFactoryClassNames'   : 'is.codion.framework.servlet.EntityServletServerFactory',
+            'codion.server.auxiliaryServerFactoryClassNames'   : 'is.codion.framework.servlet.EntityServiceFactory',
             'codion.server.serializationFilterWhitelist': 'src/main/config/serialization-whitelist.txt',
             'codion.server.serializationFilterDryRun'   : 'false',
             'javax.net.ssl.keyStore'                    : 'src/main/config/keystore.jks',
