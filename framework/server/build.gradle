@@ -39,6 +39,7 @@ dependencies {
 
     serverRuntime project(':codion-dbms-h2database')
     serverRuntime (libs.h2)
+    serverRuntime (libs.javalin)
 }
 
 mainClassName = "is.codion.framework.server.EntityServer"

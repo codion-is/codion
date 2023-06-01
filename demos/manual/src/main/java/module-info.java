@@ -5,7 +5,6 @@ module is.codion.framework.demos.manual {
   requires java.desktop;
   requires jasperreports;
   requires is.codion.common.core;
-  requires is.codion.common.http;
   requires is.codion.dbms.h2database;
   requires is.codion.framework.db.local;
   requires is.codion.framework.db.rmi;

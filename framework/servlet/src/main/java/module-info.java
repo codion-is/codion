@@ -4,19 +4,15 @@
  */
 module is.codion.framework.servlet {
   requires org.slf4j;
-  requires jakarta.ws.rs;
-  requires jakarta.activation;
-  requires jakarta.annotation;
-  requires jakarta.inject;
-  requires com.fasterxml.jackson.databind;
+  requires io.javalin;
+  requires kotlin.stdlib;
   requires org.eclipse.jetty.servlet;
-  requires jersey.container.servlet.core;
-  requires is.codion.common.http;
+  requires org.eclipse.jetty.websocket.jetty.server;
   requires is.codion.framework.db.rmi;
   requires is.codion.framework.json;
 
   exports is.codion.framework.servlet;
 
   provides is.codion.common.rmi.server.AuxiliaryServerFactory
-          with is.codion.framework.servlet.EntityServletServerFactory;
+          with is.codion.framework.servlet.EntityServiceFactory;
 }

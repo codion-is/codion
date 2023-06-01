@@ -48,7 +48,6 @@ asciidoctor {
             'comma': ',',
             'common-core': '/is.codion.common.core',
             'common-db': '/is.codion.common.db',
-            'common-http': '/is.codion.common.http',
             'common-model': '/is.codion.common.model',
             'common-rmi': '/is.codion.common.rmi',
             'framework-db-core': '/is.codion.framework.db.core',

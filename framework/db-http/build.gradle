@@ -21,8 +21,8 @@ dependencies {
 }
 
 ext {
-    testAddModules = ['java.sql,java.rmi,is.codion.common.rmi,is.codion.common.http,is.codion.framework.server,is.codion.framework.servlet']
-    testAddReads = ['is.codion.framework.db.http': 'java.sql,java.rmi,is.codion.common.rmi,is.codion.common.http,is.codion.framework.server,is.codion.framework.servlet']
+    testAddModules = ['java.sql,java.rmi,is.codion.common.rmi,is.codion.framework.server,is.codion.framework.servlet']
+    testAddReads = ['is.codion.framework.db.http': 'java.sql,java.rmi,is.codion.common.rmi,is.codion.framework.server,is.codion.framework.servlet']
 }
 
 compileTestJava {
