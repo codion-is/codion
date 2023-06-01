@@ -5,6 +5,9 @@ package is.codion.framework.servlet;
 
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
+import is.codion.common.db.report.AbstractReport;
+import is.codion.common.db.report.ReportException;
+import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -12,6 +15,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
+import java.sql.Connection;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -32,6 +36,7 @@ public final class TestDomain extends DefaultDomain {
     department();
     employee();
     operations();
+    report();
   }
 
   public interface Department {
@@ -117,5 +122,21 @@ public final class TestDomain extends DefaultDomain {
   void operations() {
     add(PROCEDURE_ID, (connection, objects) -> {});
     add(FUNCTION_ID, (connection, objects) -> emptyList());
+  }
+
+  public static final ReportType<Object, String, String> REPORT_TYPE = ReportType.reportType("test");
+
+  void report() {
+    add(REPORT_TYPE, new AbstractReport<Object, String, String>("report.path", false) {
+      @Override
+      public String fillReport(Connection connection, String parameters) throws ReportException {
+        return parameters;
+      }
+
+      @Override
+      public Object loadReport() throws ReportException {
+        return null;
+      }
+    });
   }
 }

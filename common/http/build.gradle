@@ -1,9 +1,0 @@
-dependencies {
-    api project(':codion-common-core')
-
-    api (libs.jetty)
-
-    implementation (libs.slf4j.api)
-
-    testImplementation (libs.http.client)
-}

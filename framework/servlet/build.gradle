@@ -2,18 +2,13 @@ dependencies {
     implementation project(':codion-common-core')
     implementation project(':codion-common-db')
     implementation project(':codion-common-rmi')
-    implementation project(':codion-common-http')
 
     implementation project(':codion-framework-domain')
     implementation project(':codion-framework-db-core')
     implementation project(':codion-framework-db-rmi')
     implementation project(':codion-framework-json')
 
-    implementation (libs.jaxb.api)
-    implementation (libs.javax.activation)
-
-    implementation (libs.jersey.servlet)
-    implementation (libs.jersey.hk2)
+    implementation (libs.javalin)
 
     implementation (libs.slf4j.api)
 

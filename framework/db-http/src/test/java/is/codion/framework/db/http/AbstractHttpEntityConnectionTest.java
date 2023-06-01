@@ -8,8 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
-import is.codion.common.http.server.HttpServerConfiguration;
-import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
@@ -20,20 +18,15 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.framework.servlet.EntityServletServerFactory;
+import is.codion.framework.servlet.EntityService;
+import is.codion.framework.servlet.EntityServiceFactory;
 
-import org.apache.http.config.RegistryBuilder;
-import org.apache.http.conn.socket.ConnectionSocketFactory;
-import org.apache.http.conn.ssl.NoopHostnameVerifier;
-import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import javax.net.ssl.SSLContext;
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -260,29 +253,13 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   static BasicHttpClientConnectionManager createConnectionManager() {
-    try {
-      SSLContext sslContext = SSLContext.getDefault();
-
-      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
-                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
-              .build());
-    }
-    catch (NoSuchAlgorithmException e) {
-      throw new RuntimeException(e);
-    }
+    return new BasicHttpClientConnectionManager();
   }
 
   private static EntityServerConfiguration configure() {
-    Clients.SERVER_HOSTNAME.set("localhost");
-    Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
-    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
-    Clients.resolveTrustStore();
     Report.REPORT_PATH.set("report/path");
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(true);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(true);
+    EntityService.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
@@ -291,21 +268,13 @@ abstract class AbstractHttpEntityConnectionTest {
             .database(Database.instance())
             .domainClassNames(singletonList(TestDomain.class.getName()))
             .sslEnabled(false)
-            .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
+            .auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
             .build();
   }
 
   private static void deconfigure() {
-    Clients.SERVER_HOSTNAME.set(null);
-    Clients.TRUSTSTORE.set(null);
-    Clients.TRUSTSTORE_PASSWORD.set(null);
-    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
-    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     Report.REPORT_PATH.set(null);
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(null);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PATH.set(null);
-    HttpServerConfiguration.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    EntityService.HTTP_SERVER_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
     HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
     System.clearProperty("java.security.policy");

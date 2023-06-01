@@ -9107,3 +9107,4 @@
   PropertyStore.properties() and propertyNames() now return Collection instead of List
   HttpEntityConnection now interface, related refactoring/renaming
   MenuBuilder, ButtonPanelBuilder added, Controls.createMenu() and Controls.createButtonPanel() removed, related refactoring
+  Jersey replaced with Javalin for HTTP, common.http module removed

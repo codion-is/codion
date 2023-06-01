@@ -5,6 +5,7 @@ package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -47,6 +48,7 @@ public final class EntityObjectMapper extends ObjectMapper {
     module.addDeserializer(Entity.class, entityDeserializer);
     module.addSerializer(Key.class, new EntityKeySerializer(this));
     module.addDeserializer(Key.class, new EntityKeyDeserializer(entities, this));
+    module.addKeyDeserializer(EntityType.class, new EntityTypeKeyDeserializer(entities));
     registerModule(module);
     registerModule(new JavaTimeModule());
     disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
