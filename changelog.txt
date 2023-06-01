@@ -9146,3 +9146,6 @@
   HttpEntityConnection now interface, related refactoring/renaming
   MenuBuilder, ButtonPanelBuilder added, Controls.createMenu() and Controls.createButtonPanel() removed, related refactoring
   Jersey replaced with Javalin for HTTP, common.http module removed
+  DefaultMenuBuilder bug fixed, createMenuBar() did not include submenu captions
+  EntitySerializer and EntityDeserializer now handle immutable entities
+  ImmutableEntity.writeObject() and readObject() implemented, so that immutability survives serialization

@@ -16,12 +16,10 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
 
-  private final Controls controls = Controls.controls();
+  private final Controls controls;
 
   DefaultMenuBuilder(Controls controls) {
-    if (controls != null) {
-      this.controls.addAll(controls);
-    }
+    this.controls = controls == null ? Controls.controls() : controls;
   }
 
   @Override

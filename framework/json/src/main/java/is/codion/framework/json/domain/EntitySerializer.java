@@ -44,6 +44,9 @@ final class EntitySerializer extends StdSerializer<Entity> {
       generator.writeFieldName("originalValues");
       writeValues(entity, generator, entity.originalEntrySet());
     }
+    if (entity.isImmutable()) {
+      generator.writeBooleanField("immutable", Boolean.TRUE);
+    }
     generator.writeEndObject();
   }
 

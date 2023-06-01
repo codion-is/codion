@@ -40,7 +40,13 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
     JsonNode entityNode = parser.getCodec().readTree(parser);
     EntityDefinition definition = definitions.computeIfAbsent(entityNode.get("entityType").asText(), entities::definition);
 
-    return definition.entity(valueMap(entityNode, definition), originalValueMap(entityNode, definition));
+    Entity entity = definition.entity(valueMap(entityNode, definition), originalValueMap(entityNode, definition));
+    JsonNode immutable = entityNode.get("immutable");
+    if (immutable != null && immutable.booleanValue()) {
+      entity = entity.immutable();
+    }
+
+    return entity;
   }
 
   private Map<Attribute<?>, Object> valueMap(JsonNode node, EntityDefinition definition)

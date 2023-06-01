@@ -69,11 +69,15 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public final class ComponentsTest {
 
-  private final Controls controls = Controls.builder().controls(
-          Control.builder(() -> {}).caption("one"),
-          Control.builder(() -> {}).caption("two"),
-          ToggleControl.builder(State.state())
-                  .caption("three")).build();
+  private final Controls controls = Controls.builder()
+          .caption("SubMenu")
+          .controls(Control.builder(() -> {})
+                          .caption("one"),
+                  Control.builder(() -> {})
+                          .caption("two"),
+                  ToggleControl.builder(State.state())
+                          .caption("three"))
+          .build();
 
   @Test
   void testDoubleLink() {
@@ -709,6 +713,7 @@ public final class ComponentsTest {
 
     JMenuBar menu = Components.menu(base).createMenuBar();
     assertEquals(1, menu.getMenuCount());
+    assertEquals("SubMenu", menu.getMenu(0).getText());
     assertEquals(3, menu.getMenu(0).getItemCount());
     assertEquals("one", menu.getMenu(0).getItem(0).getText());
     assertEquals("two", menu.getMenu(0).getItem(1).getText());
