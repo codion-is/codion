@@ -9,9 +9,6 @@ project(':codion-common-core').projectDir = file('common/core')
 include 'codion-common-db'
 project(':codion-common-db').projectDir = file('common/db')
 
-include 'codion-common-http'
-project(':codion-common-http').projectDir = file('common/http')
-
 include 'codion-common-model'
 project(':codion-common-model').projectDir = file('common/model')
 
@@ -174,12 +171,11 @@ dependencyResolutionManagement {
             version('jcommon', '1.0.24')
             version('jetty', '11.0.14')
             version('http.client', '4.5.14')
-            version('javax.activation', '2.1.0')
-            version('jersey', '3.0.4')
             version('junit', '5.9.3')
             version('sslcontext.kickstart', '8.0.0')
             version('flatlaf', '3.1.1')
             version('ikonli', '12.3.1')
+            version('javalin', '5.5.0')
             //plugins
             version('hikari', '5.0.1')
             version('jackson', '2.15.2')
@@ -202,12 +198,9 @@ dependencyResolutionManagement {
             library('jfreechart', 'org.jfree', 'jfreechart').versionRef('jfreechart')
             library('jcommon', 'org.jfree', 'jcommon').versionRef('jcommon')
 
+            library('javalin', 'io.javalin', 'javalin').versionRef('javalin')
             library('jetty', 'org.eclipse.jetty', 'jetty-server').versionRef('jetty')
             library('http-client', 'org.apache.httpcomponents', 'httpclient').versionRef('http.client')
-            library('jetty-servlet', 'org.eclipse.jetty', 'jetty-servlet').versionRef('jetty')
-            library('javax-activation', 'jakarta.activation', 'jakarta.activation-api').versionRef('javax.activation')
-            library('jersey-servlet', 'org.glassfish.jersey.containers', 'jersey-container-servlet-core').versionRef('jersey')
-            library('jersey-hk2', 'org.glassfish.jersey.inject', 'jersey-hk2').versionRef('jersey')
 
             library('junit-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')
             library('junit-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit')

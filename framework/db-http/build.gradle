@@ -12,7 +12,6 @@ dependencies {
     implementation (libs.http.client)
 
     testImplementation project(':codion-common-rmi')
-    testImplementation project(':codion-common-http')
     testImplementation project(':codion-framework-server')
     testImplementation project(':codion-framework-servlet')
 

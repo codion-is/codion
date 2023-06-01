@@ -8,8 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.http.server.HttpServer;
-import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -21,6 +19,9 @@ import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
@@ -98,19 +99,21 @@ public class JasperReportsTest {
   void urlReport() throws Exception {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set("http://localhost:1234");
-    HttpServer server = new HttpServer(HttpServerConfiguration.builder(1234)
-            .secure(false)
-            .documentRoot(REPORT_PATH)
-            .build());
+    Server server = new Server(1234);
+    HandlerList handlers = new HandlerList();
+    ResourceHandler fileHandler = new ResourceHandler();
+    fileHandler.setResourceBase(REPORT_PATH);
+    handlers.addHandler(fileHandler);
+    server.setHandler(handlers);
     try {
-      server.startServer();
+      server.start();
       HashMap<String, Object> reportParameters = new HashMap<>();
       reportParameters.put("DEPTNO", asList(10, 20));
       LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
       Employee.FILE_REPORT.fillReport(connection.databaseConnection().getConnection(), reportParameters);
     }
     finally {
-      server.stopServer();
+      server.stop();
     }
   }
 

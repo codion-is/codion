@@ -25,7 +25,9 @@ INSERT INTO scott.dept(deptno, dname, loc)
 VALUES (10, 'ACCOUNTING', 'NEW YORK'),
   (20, 'RESEARCH', 'DALLAS'),
   (30, 'SALES', 'CHICAGO'),
-  (40, 'OPERATIONS', 'BOSTON');
+  (40, 'OPERATIONS', 'BOSTON'),
+  (50, 'TEST', 'BOSTON'),
+  (60, 'TEST2', 'BOSTON');
 
 INSERT INTO scott.emp(empno, ename, job, mgr, hiredate, sal, comm, deptno)
 VALUES (8, 'KING', 'PRESIDENT', NULL, '1981-11-17', 5000, NULL, 10),

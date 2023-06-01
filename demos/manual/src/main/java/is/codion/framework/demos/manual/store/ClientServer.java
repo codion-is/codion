@@ -5,7 +5,6 @@ package is.codion.framework.demos.manual.store;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.http.server.HttpServerConfiguration;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.http.HttpEntityConnectionProvider;
@@ -15,7 +14,8 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
-import is.codion.framework.servlet.EntityServletServerFactory;
+import is.codion.framework.servlet.EntityService;
+import is.codion.framework.servlet.EntityServiceFactory;
 
 import java.rmi.RemoteException;
 import java.util.List;
@@ -70,14 +70,13 @@ public final class ClientServer {
             .createDatabase("jdbc:h2:mem:testdb",
                     "src/main/sql/create_schema.sql");
 
-    HttpServerConfiguration.HTTP_SERVER_PORT.set(HTTP_PORT);
-    HttpServerConfiguration.HTTP_SERVER_SECURE.set(false);
+    EntityService.HTTP_SERVER_PORT.set(HTTP_PORT);
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)
             .domainClassNames(singletonList(Store.class.getName()))
             .database(database)
             .sslEnabled(false)
-            .auxiliaryServerFactoryClassNames(singletonList(EntityServletServerFactory.class.getName()))
+            .auxiliaryServerFactoryClassNames(singletonList(EntityServiceFactory.class.getName()))
             .build();
 
     EntityServer server = EntityServer.startServer(configuration);

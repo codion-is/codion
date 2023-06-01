@@ -4,7 +4,6 @@ dependencies {
     implementation project(':codion-common-core')
     implementation project(':codion-common-db')
 
-    testImplementation project(':codion-common-http')
     testImplementation project(':codion-framework-db-local')
 
     implementation (libs.jasperreports) {
@@ -22,6 +21,7 @@ dependencies {
     implementation (libs.jdt.core.compiler)
 
     testImplementation project(':codion-dbms-h2database')
+    testImplementation (libs.jetty)
     testRuntimeOnly (libs.h2)
 }
 
