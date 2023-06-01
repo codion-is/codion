@@ -350,7 +350,7 @@ public interface EntityEditModel {
    * @see #addAfterInsertListener(EventDataListener)
    * @see EntityValidator#validate(Entity)
    */
-  List<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException;
+  Collection<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs an update on the active entity
@@ -627,24 +627,24 @@ public interface EntityEditModel {
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(EventDataListener<List<Entity>> listener);
+  void addBeforeInsertListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(EventDataListener<List<Entity>> listener);
+  void removeBeforeInsertListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time insert has been performed
    */
-  void addAfterInsertListener(EventDataListener<List<Entity>> listener);
+  void addAfterInsertListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(EventDataListener<List<Entity>> listener);
+  void removeAfterInsertListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
@@ -673,24 +673,24 @@ public interface EntityEditModel {
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(EventDataListener<List<Entity>> listener);
+  void addBeforeDeleteListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(EventDataListener<List<Entity>> listener);
+  void removeBeforeDeleteListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time delete has been performed
    */
-  void addAfterDeleteListener(EventDataListener<List<Entity>> listener);
+  void addAfterDeleteListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(EventDataListener<List<Entity>> listener);
+  void removeAfterDeleteListener(EventDataListener<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed

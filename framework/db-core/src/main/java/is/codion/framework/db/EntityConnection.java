@@ -284,7 +284,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return entities based on {@code keys}
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(Collection<Key> keys) throws DatabaseException;
+  Collection<Entity> select(Collection<Key> keys) throws DatabaseException;
 
   /**
    * Selects entities based on the given condition

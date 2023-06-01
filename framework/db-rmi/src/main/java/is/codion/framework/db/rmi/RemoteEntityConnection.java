@@ -299,7 +299,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(Collection<Key> keys) throws RemoteException, DatabaseException;
+  Collection<Entity> select(Collection<Key> keys) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities based on the given condition

@@ -26,6 +26,7 @@ public interface Entities {
    * There is nothing gained from using it, so don't.<br>
    * Value type: Boolean<br>
    * Default value: false
+   * @deprecated for removal
    */
   @Deprecated
   PropertyValue<Boolean> LEGACY_SERIALIZATION =

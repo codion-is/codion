@@ -66,7 +66,7 @@ public final class ClientUI {
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(artistNameTextField,
-                    "Inserted: " + insertedEntities.get(0)));
+                    "Inserted: " + insertedEntities.iterator().next()));
 
     JPanel artistPanel = Components.panel(gridLayout(2, 1))
             .add(new JLabel("Artist name"))
@@ -132,7 +132,7 @@ public final class ClientUI {
     // show a message after insert
     editModel.addAfterInsertListener(insertedEntities ->
             JOptionPane.showMessageDialog(titleTextField,
-                    "Inserted: " + insertedEntities.get(0)));
+                    "Inserted: " + insertedEntities.iterator().next()));
 
     JPanel albumPanel = Components.panel(gridLayout(4, 1))
             .add(new JLabel("Artist"))

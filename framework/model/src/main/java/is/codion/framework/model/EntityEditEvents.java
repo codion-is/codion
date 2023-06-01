@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -40,7 +41,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+  public static void addInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
     EDIT_LISTENER.addInsertListener(entityType, listener);
   }
 
@@ -62,7 +63,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+  public static void addDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
     EDIT_LISTENER.addDeleteListener(entityType, listener);
   }
 
@@ -71,7 +72,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+  public static void removeInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
     EDIT_LISTENER.removeInsertListener(entityType, listener);
   }
 
@@ -89,7 +90,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+  public static void removeDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
     EDIT_LISTENER.removeDeleteListener(entityType, listener);
   }
 
@@ -97,7 +98,7 @@ public final class EntityEditEvents {
    * Notifies insert
    * @param insertedEntities the inserted entities
    */
-  public static void notifyInserted(List<Entity> insertedEntities) {
+  public static void notifyInserted(Collection<Entity> insertedEntities) {
     EDIT_LISTENER.notifyInserted(requireNonNull(insertedEntities));
   }
 
@@ -119,15 +120,15 @@ public final class EntityEditEvents {
 
   private static final class EntityEditListener {
 
-    private final Map<EntityType, Listeners<List<Entity>>> insertListeners = new ConcurrentHashMap<>();
+    private final Map<EntityType, Listeners<Collection<Entity>>> insertListeners = new ConcurrentHashMap<>();
     private final Map<EntityType, Listeners<Map<Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
-    private final Map<EntityType, Listeners<List<Entity>>> deleteListeners = new ConcurrentHashMap<>();
+    private final Map<EntityType, Listeners<Collection<Entity>>> deleteListeners = new ConcurrentHashMap<>();
 
-    private void addInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+    private void addInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
       insertListeners(entityType).addDataListener(listener);
     }
 
-    private void removeInsertListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+    private void removeInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
       insertListeners(entityType).removeDataListener(listener);
     }
 
@@ -139,20 +140,20 @@ public final class EntityEditEvents {
       updateListeners(entityType).removeDataListener(listener);
     }
 
-    private void addDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+    private void addDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
       deleteListeners(entityType).addDataListener(listener);
     }
 
-    private void removeDeleteListener(EntityType entityType, EventDataListener<List<Entity>> listener) {
+    private void removeDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
       deleteListeners(entityType).removeDataListener(listener);
     }
 
-    private void notifyInserted(List<Entity> inserted) {
+    private void notifyInserted(Collection<Entity> inserted) {
       mapToType(inserted).forEach(this::notifyInserted);
     }
 
-    private void notifyInserted(EntityType entityType, List<Entity> inserted) {
-      Listeners<List<Entity>> listeners = insertListeners.get(entityType);
+    private void notifyInserted(EntityType entityType, Collection<Entity> inserted) {
+      Listeners<Collection<Entity>> listeners = insertListeners.get(entityType);
       if (listeners != null) {
         listeners.onEvent(inserted);
       }
@@ -177,14 +178,14 @@ public final class EntityEditEvents {
       mapToType(deleted).forEach(this::notifyDeleted);
     }
 
-    private void notifyDeleted(EntityType entityType, List<Entity> deleted) {
-      Listeners<List<Entity>> listeners = deleteListeners.get(entityType);
+    private void notifyDeleted(EntityType entityType, Collection<Entity> deleted) {
+      Listeners<Collection<Entity>> listeners = deleteListeners.get(entityType);
       if (listeners != null) {
         listeners.onEvent(deleted);
       }
     }
 
-    private Listeners<List<Entity>> insertListeners(EntityType entityType) {
+    private Listeners<Collection<Entity>> insertListeners(EntityType entityType) {
       return insertListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
@@ -192,7 +193,7 @@ public final class EntityEditEvents {
       return updateListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<List<Entity>> deleteListeners(EntityType entityType) {
+    private Listeners<Collection<Entity>> deleteListeners(EntityType entityType) {
       return deleteListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 

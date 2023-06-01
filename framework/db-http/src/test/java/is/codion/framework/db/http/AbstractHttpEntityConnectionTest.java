@@ -92,7 +92,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void selectByKey() throws IOException, DatabaseException {
     Key key = connection.entities().primaryKey(Department.TYPE, 10);
-    List<Entity> depts = connection.select(singletonList(key));
+    Collection<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
@@ -101,7 +101,7 @@ abstract class AbstractHttpEntityConnectionTest {
     Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
     Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
 
-    List<Entity> selected = connection.select(asList(deptKey, empKey));
+    Collection<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
   }
 
@@ -136,7 +136,7 @@ abstract class AbstractHttpEntityConnectionTest {
     try {
       connection.update(updateCondition);
       assertEquals(0, connection.rowCount(selectCondition));
-      List<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
+      Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
         assertEquals(4200d, entity.get(Employee.SALARY));
@@ -153,7 +153,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.delete(employee.primaryKey());
-      List<Entity> selected = connection.select(singletonList(employee.primaryKey()));
+      Collection<Entity> selected = connection.select(singletonList(employee.primaryKey()));
       assertTrue(selected.isEmpty());
     }
     finally {
@@ -169,7 +169,7 @@ abstract class AbstractHttpEntityConnectionTest {
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());
       connection.delete(asList(deptKey, empKey));
-      List<Entity> selected = connection.select(asList(deptKey, empKey));
+      Collection<Entity> selected = connection.select(asList(deptKey, empKey));
       assertTrue(selected.isEmpty());
     }
     finally {

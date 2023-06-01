@@ -53,12 +53,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private static final String ENTITIES = "entities";
 
-  private final Event<List<Entity>> beforeInsertEvent = Event.event();
-  private final Event<List<Entity>> afterInsertEvent = Event.event();
+  private final Event<Collection<Entity>> beforeInsertEvent = Event.event();
+  private final Event<Collection<Entity>> afterInsertEvent = Event.event();
   private final Event<Map<Key, Entity>> beforeUpdateEvent = Event.event();
   private final Event<Map<Key, Entity>> afterUpdateEvent = Event.event();
-  private final Event<List<Entity>> beforeDeleteEvent = Event.event();
-  private final Event<List<Entity>> afterDeleteEvent = Event.event();
+  private final Event<Collection<Entity>> beforeDeleteEvent = Event.event();
+  private final Event<Collection<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> entitiesEditedEvent = Event.event();
   private final Event<State> confirmSetEntityEvent = Event.event();
   private final Event<Entity> entityEvent = Event.event();
@@ -464,19 +464,20 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       toInsert.clearPrimaryKey();
     }
     toInsert.saveAll();
-    List<Entity> insertedEntities = insertEntities(singletonList(toInsert));
+    Collection<Entity> insertedEntities = insertEntities(singletonList(toInsert));
     if (insertedEntities.isEmpty()) {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
-    doSetEntity(insertedEntities.get(0));
+    Entity inserted = insertedEntities.iterator().next();
+    doSetEntity(inserted);
 
-    notifyAfterInsert(unmodifiableList(insertedEntities));
+    notifyAfterInsert(unmodifiableCollection(insertedEntities));
 
-    return insertedEntities.get(0);
+    return inserted;
   }
 
   @Override
-  public final List<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException {
+  public final Collection<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
@@ -484,9 +485,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (entities.isEmpty()) {
       return emptyList();
     }
-    List<Entity> insertedEntities = insertEntities(entities);
+    Collection<Entity> insertedEntities = insertEntities(entities);
 
-    notifyAfterInsert(unmodifiableList(insertedEntities));
+    notifyAfterInsert(unmodifiableCollection(insertedEntities));
 
     return insertedEntities;
   }
@@ -684,22 +685,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeBeforeInsertListener(EventDataListener<List<Entity>> listener) {
+  public final void removeBeforeInsertListener(EventDataListener<Collection<Entity>> listener) {
     beforeInsertEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addBeforeInsertListener(EventDataListener<List<Entity>> listener) {
+  public final void addBeforeInsertListener(EventDataListener<Collection<Entity>> listener) {
     beforeInsertEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeAfterInsertListener(EventDataListener<List<Entity>> listener) {
+  public final void removeAfterInsertListener(EventDataListener<Collection<Entity>> listener) {
     afterInsertEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterInsertListener(EventDataListener<List<Entity>> listener) {
+  public final void addAfterInsertListener(EventDataListener<Collection<Entity>> listener) {
     afterInsertEvent.addDataListener(listener);
   }
 
@@ -724,22 +725,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void addBeforeDeleteListener(EventDataListener<List<Entity>> listener) {
+  public final void addBeforeDeleteListener(EventDataListener<Collection<Entity>> listener) {
     beforeDeleteEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeBeforeDeleteListener(EventDataListener<List<Entity>> listener) {
+  public final void removeBeforeDeleteListener(EventDataListener<Collection<Entity>> listener) {
     beforeDeleteEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void removeAfterDeleteListener(EventDataListener<List<Entity>> listener) {
+  public final void removeAfterDeleteListener(EventDataListener<Collection<Entity>> listener) {
     afterDeleteEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterDeleteListener(EventDataListener<List<Entity>> listener) {
+  public final void addAfterDeleteListener(EventDataListener<Collection<Entity>> listener) {
     afterDeleteEvent.addDataListener(listener);
   }
 
@@ -861,7 +862,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param insertedEntities the inserted entities
    * @see #addAfterInsertListener(EventDataListener)
    */
-  protected final void notifyAfterInsert(List<Entity> insertedEntities) {
+  protected final void notifyAfterInsert(Collection<Entity> insertedEntities) {
     afterInsertEvent.onEvent(insertedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyInserted(insertedEntities);
@@ -910,7 +911,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
   }
 
-  private List<Entity> insertEntities(List<? extends Entity> entities) throws DatabaseException, ValidationException {
+  private Collection<Entity> insertEntities(List<? extends Entity> entities) throws DatabaseException, ValidationException {
     notifyBeforeInsert(unmodifiableList(entities));
     validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation

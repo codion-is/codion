@@ -512,10 +512,10 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     });
   }
 
-  private void onInsert(List<Entity> insertedEntities) {
+  private void onInsert(Collection<Entity> insertedEntities) {
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      List<Entity> entitiesToAdd = insertedEntities.stream()
+      Collection<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.type().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
@@ -537,7 +537,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
-  private void onDelete(List<Entity> deletedEntities) {
+  private void onDelete(Collection<Entity> deletedEntities) {
     if (removeDeletedEntities) {
       removeAll(deletedEntities);
     }

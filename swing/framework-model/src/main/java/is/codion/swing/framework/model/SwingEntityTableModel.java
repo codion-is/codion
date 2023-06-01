@@ -973,10 +973,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     conditionChangedState.set(false);
   }
 
-  private void onInsert(List<Entity> insertedEntities) {
+  private void onInsert(Collection<Entity> insertedEntities) {
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
-      List<Entity> entitiesToAdd = insertedEntities.stream()
+      Collection<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.type().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
@@ -997,7 +997,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
-  private void onDelete(List<Entity> deletedEntities) {
+  private void onDelete(Collection<Entity> deletedEntities) {
     if (removeDeletedEntities) {
       removeItems(deletedEntities);
     }

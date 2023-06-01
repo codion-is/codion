@@ -15,7 +15,6 @@ import org.jfree.data.general.DefaultPieDataset;
 import org.jfree.data.general.PieDataset;
 
 import java.util.Collection;
-import java.util.List;
 
 public final class ContinentModel extends SwingEntityModel {
 
@@ -80,7 +79,7 @@ public final class ContinentModel extends SwingEntityModel {
     }
 
     @Override
-    public void onSelection(List<Entity> selectedEntities) {
+    public void onSelection(Collection<Entity> selectedEntities) {
       Collection<String> continentNames = Entity.values(Continent.NAME, selectedEntities);
       if (detailModel().tableModel().conditionModel().setEqualConditionValues(Country.CONTINENT, continentNames)) {
         detailModel().tableModel().refresh();

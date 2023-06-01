@@ -7,7 +7,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -35,7 +35,7 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
 
   /**
    * Sets the active state of this link. Active detail model handlers update and filter
-   * the detail model according to the entity/entities selected in this (the master) model.
+   * the detail model according to the entity/entities selected in the master model.
    * @param active true if this link should be activated
    */
   void setActive(boolean active);
@@ -44,13 +44,13 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
    * Called when the selection changes in the master model
    * @param selectedEntities the selected master entities
    */
-  default void onSelection(List<Entity> selectedEntities) {}
+  default void onSelection(Collection<Entity> selectedEntities) {}
 
   /**
    * Called when a insert is performed in the master model, regardless of entity type.
    * @param insertedEntities the inserted entities
    */
-  default void onInsert(List<Entity> insertedEntities) {}
+  default void onInsert(Collection<Entity> insertedEntities) {}
 
   /**
    * Called when an update is performed in the master model, regardless of entity type.
@@ -62,5 +62,5 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
    * Called when delete is performed in the master model, regardless of entity type.
    * @param deletedEntities the deleted entities
    */
-  default void onDelete(List<Entity> deletedEntities) {}
+  default void onDelete(Collection<Entity> deletedEntities) {}
 }

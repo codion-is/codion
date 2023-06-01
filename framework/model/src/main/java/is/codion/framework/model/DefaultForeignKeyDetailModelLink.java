@@ -8,7 +8,6 @@ import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
@@ -77,7 +76,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   }
 
   @Override
-  public void onSelection(List<Entity> selectedEntities) {
+  public void onSelection(Collection<Entity> selectedEntities) {
     if (detailModel().containsTableModel() && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, selectedEntities) && isRefreshOnSelection()) {
       detailModel().tableModel().refresher().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
     }
@@ -87,11 +86,11 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   }
 
   @Override
-  public void onInsert(List<Entity> insertedEntities) {
-    List<Entity> entities = ofReferencedType(insertedEntities);
+  public void onInsert(Collection<Entity> insertedEntities) {
+    Collection<Entity> entities = ofReferencedType(insertedEntities);
     detailModel().editModel().addForeignKeyValues(foreignKey, entities);
     if (!entities.isEmpty()) {
-      detailModel().editModel().put(foreignKey, entities.get(0));
+      detailModel().editModel().put(foreignKey, entities.iterator().next());
     }
     if (detailModel().containsTableModel() && isSearchByInsertedEntity()
             && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, entities)) {
@@ -101,7 +100,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   @Override
   public void onUpdate(Map<Key, Entity> updatedEntities) {
-    List<Entity> entities = ofReferencedType(updatedEntities.values());
+    Collection<Entity> entities = ofReferencedType(updatedEntities.values());
     detailModel().editModel().replaceForeignKeyValues(foreignKey, entities);
     if (detailModel().containsTableModel()) {
       detailModel().tableModel().replaceForeignKeyValues(foreignKey, entities);
@@ -109,18 +108,18 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   }
 
   @Override
-  public void onDelete(List<Entity> deletedEntities) {
+  public void onDelete(Collection<Entity> deletedEntities) {
     detailModel().editModel().removeForeignKeyValues(foreignKey, ofReferencedType(deletedEntities));
   }
 
-  private List<Entity> ofReferencedType(Collection<Entity> entities) {
+  private Collection<Entity> ofReferencedType(Collection<Entity> entities) {
     return entities.stream()
             .filter(entity -> entity.type().equals(foreignKey.referencedType()))
             .collect(toList());
   }
 
-  private void setEditModelForeignKeyValue(List<Entity> selectedEntities) {
-    Entity foreignKeyValue = selectedEntities.isEmpty() ? null : selectedEntities.get(0);
+  private void setEditModelForeignKeyValue(Collection<Entity> selectedEntities) {
+    Entity foreignKeyValue = selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     if (detailModel().editModel().isEntityNew() && (foreignKeyValue != null || isClearForeignKeyOnEmptySelection())) {
       detailModel().editModel().put(foreignKey, foreignKeyValue);
     }
