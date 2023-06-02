@@ -201,11 +201,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Key insert(Entity entity) throws DatabaseException {
-    return insert(singletonList(requireNonNull(entity, "entity"))).get(0);
+    return insert(singletonList(requireNonNull(entity, "entity"))).iterator().next();
   }
 
   @Override
-  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
       return emptyList();
     }
@@ -218,8 +218,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String insertQuery = null;
     synchronized (connection) {
       try {
-        for (int i = 0; i < entities.size(); i++) {
-          Entity entity = entities.get(i);
+        for (Entity entity : entities) {
           EntityDefinition entityDefinition = domainEntities.definition(entity.type());
           KeyGenerator keyGenerator = entityDefinition.keyGenerator();
           keyGenerator.beforeInsert(entity, connection);
@@ -262,7 +261,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
       return emptyList();
     }
@@ -1276,9 +1275,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     connection.database().countQuery(query);
   }
 
-  private void checkIfReadOnly(List<? extends Entity> entities) throws DatabaseException {
-    for (int i = 0; i < entities.size(); i++) {
-      checkIfReadOnly(entities.get(i).type());
+  private void checkIfReadOnly(Collection<? extends Entity> entities) throws DatabaseException {
+    for (Entity entity : entities) {
+      checkIfReadOnly(entity.type());
     }
   }
 

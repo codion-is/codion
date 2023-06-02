@@ -154,16 +154,14 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Key insert(Entity entity) throws RemoteException, DatabaseException;
 
   /**
-   * Inserts the given entities, returning a list containing the primary keys
-   * in the same order as they were received.
-   * If the primary key value of an entity is specified the id generation is disregarded.
+   * Inserts the given entities, returning the primary keys in the same order as they were received.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
-   * @return the primary key values of the inserted entities
+   * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Key> insert(List<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Key> insert(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values. Returns the updated entity.
@@ -187,7 +185,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  Collection<Entity> update(List<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity> update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Performs an update based on the given condition, updating the attributes found

@@ -19,8 +19,7 @@ final class DefaultControls extends AbstractControl implements Controls {
 
   private final List<Action> actions = new ArrayList<>();
 
-  DefaultControls(String name, char mnemonic, StateObserver enabledState,
-                  List<Action> controls) {
+  DefaultControls(String name, char mnemonic, StateObserver enabledState, List<Action> controls) {
     super(name, enabledState);
     setMnemonic(mnemonic);
     for (Action control : controls) {

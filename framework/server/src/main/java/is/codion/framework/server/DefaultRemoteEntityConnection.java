@@ -164,7 +164,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
     }
@@ -178,7 +178,7 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.update(entities);
     }

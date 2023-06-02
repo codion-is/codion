@@ -208,7 +208,7 @@ public final class EntityConnectionDemo {
             .with(Album.TITLE, "Second album")
             .build();
 
-    List<Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
+    Collection<Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
     // end::insert[]
   }
 

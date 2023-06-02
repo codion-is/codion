@@ -194,11 +194,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public Key insert(Entity entity) throws DatabaseException {
-    return insert(singletonList(entity)).get(0);
+    return insert(singletonList(entity)).iterator().next();
   }
 
   @Override
-  public List<Key> insert(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
@@ -219,7 +219,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {

@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -21,7 +22,7 @@ final class DefaultInsertEntities implements InsertEntities {
   private final Iterator<Entity> entityIterator;
   private final int batchSize;
   private final EventDataListener<Integer> progressReporter;
-  private final EventDataListener<List<Key>> onInsert;
+  private final EventDataListener<Collection<Key>> onInsert;
 
   DefaultInsertEntities(DefaultBuilder builder) {
     this.connection = builder.connection;
@@ -39,7 +40,7 @@ final class DefaultInsertEntities implements InsertEntities {
       while (batch.size() < batchSize && entityIterator.hasNext()) {
         batch.add(entityIterator.next());
       }
-      List<Key> insertedKeys = connection.insert(batch);
+      Collection<Key> insertedKeys = connection.insert(batch);
       progress += insertedKeys.size();
       batch.clear();
       if (progressReporter != null) {
@@ -58,7 +59,7 @@ final class DefaultInsertEntities implements InsertEntities {
 
     private int batchSize = 100;
     private EventDataListener<Integer> progressReporter;
-    private EventDataListener<List<Key>> onInsert;
+    private EventDataListener<Collection<Key>> onInsert;
 
     DefaultBuilder(EntityConnection connection, Iterator<Entity> entityIterator) {
       this.connection = requireNonNull(connection);
@@ -81,7 +82,7 @@ final class DefaultInsertEntities implements InsertEntities {
     }
 
     @Override
-    public Builder onInsert(EventDataListener<List<Key>> onInsert) {
+    public Builder onInsert(EventDataListener<Collection<Key>> onInsert) {
       this.onInsert = requireNonNull(onInsert);
       return this;
     }

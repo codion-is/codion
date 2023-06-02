@@ -584,8 +584,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void insertEmptyList() throws DatabaseException {
-    List<Key> pks = connection.insert(new ArrayList<>());
-    assertTrue(pks.isEmpty());
+    assertTrue(connection.insert(new ArrayList<>()).isEmpty());
   }
 
   @Test
@@ -1015,7 +1014,7 @@ public class DefaultLocalEntityConnectionTest {
       newDept2.setName("hello2");
       newDept2.setLocation("location");
 
-      List<Key> keys = connection.insert(asList(newDept1, newDept2));
+      List<Key> keys = new ArrayList<>(connection.insert(asList(newDept1, newDept2)));
       assertEquals(Integer.valueOf(-1), keys.get(0).get());
       assertEquals(Integer.valueOf(-2), keys.get(1).get());
     }
