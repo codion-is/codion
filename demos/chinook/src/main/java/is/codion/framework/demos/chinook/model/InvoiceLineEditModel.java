@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
-import java.util.List;
 
 public final class InvoiceLineEditModel extends SwingEntityEditModel {
 
@@ -32,11 +31,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected List<Key> doInsert(List<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      List<Key> keys = connection.insert(entities);
+      Collection<Key> keys = connection.insert(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 
@@ -49,7 +48,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected Collection<Entity> doUpdate(List<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doUpdate(Collection<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
@@ -66,7 +65,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected void doDelete(List<? extends Entity> entities) throws DatabaseException {
+  protected void doDelete(Collection<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
@@ -84,7 +83,7 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
     put(InvoiceLine.UNITPRICE, track == null ? null : track.get(Track.UNITPRICE));
   }
 
-  private void updateTotals(List<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
+  private void updateTotals(Collection<? extends Entity> entities, EntityConnection connection) throws DatabaseException {
     totalsUpdatedEvent.onEvent(connection.executeFunction(Invoice.UPDATE_TOTALS, Entity.distinct(InvoiceLine.INVOICE_ID, entities)));
   }
 }

@@ -777,11 +777,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Inserts the given entities into the database
    * @param entities the entities to insert
-   * @return a list containing the primary keys of the inserted entities
+   * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected List<Key> doInsert(List<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().insert(entities);
+  protected Collection<Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
+    return connectionProvider.connection().insert(new ArrayList<>(entities));
   }
 
   /**
@@ -790,7 +790,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity> doUpdate(List<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doUpdate(Collection<? extends Entity> entities) throws DatabaseException {
     return connectionProvider.connection().update(entities);
   }
 
@@ -799,13 +799,13 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entities the entities to delete
    * @throws DatabaseException in case of a database exception
    */
-  protected void doDelete(List<? extends Entity> entities) throws DatabaseException {
+  protected void doDelete(Collection<? extends Entity> entities) throws DatabaseException {
     connectionProvider.connection().delete(Entity.primaryKeys(entities));
   }
 
   /**
    * Called during the {@link #update()} function, to determine which entities need to be updated,
-   * these entities will then be forwarded to {@link #doUpdate(java.util.List)}.
+   * these entities will then be forwarded to {@link #doUpdate(Collection)}.
    * Returns the entities that have been modified and require updating, override to be able to
    * perform an update on unmodified entities or to return an empty list to veto an update action.
    * @param entities the entities

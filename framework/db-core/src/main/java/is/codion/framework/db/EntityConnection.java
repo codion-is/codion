@@ -31,8 +31,8 @@ import java.util.Map;
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
  * {@link #executeFunction(FunctionType)}  and {@link #executeProcedure(ProcedureType)}
- * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(List)},
- * {@link #update(Entity)}, {@link #update(List)}, {@link #delete(Key)} and {@link #delete(Collection)}
+ * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)},
+ * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
  * @see #beginTransaction()
@@ -151,14 +151,13 @@ public interface EntityConnection extends AutoCloseable {
   Key insert(Entity entity) throws DatabaseException;
 
   /**
-   * Inserts the given entities, returning a list containing the primary keys
-   * in the same order as they were received.
+   * Inserts the given entities, returning the primary keys in the same order as they were received.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
-   * @return the primary key values of the inserted entities
+   * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  List<Key> insert(List<? extends Entity> entities) throws DatabaseException;
+  Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values. Returns the updated entity.
@@ -482,7 +481,7 @@ public interface EntityConnection extends AutoCloseable {
        * @param onInsert notified each time a batch is inserted, providing the inserted keys
        * @return this builder instance
        */
-      Builder onInsert(EventDataListener<List<Key>> onInsert);
+      Builder onInsert(EventDataListener<Collection<Key>> onInsert);
 
       /**
        * Builds and executes this insert operation
