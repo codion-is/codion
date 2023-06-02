@@ -511,8 +511,8 @@ public final class EntitiesTest {
             .with(TestDomain.Department.ACTIVE, deptActive)
             .build();
 
-    List<TestDomain.Department> deptBeans = Entity.castTo(TestDomain.Department.class, singletonList(department));
-    TestDomain.Department departmentBean = deptBeans.get(0);
+    Collection<TestDomain.Department> deptBeans = Entity.castTo(TestDomain.Department.class, singletonList(department));
+    TestDomain.Department departmentBean = deptBeans.iterator().next();
     assertEquals(deptNo, departmentBean.deptNo());
     assertEquals(deptName, departmentBean.name());
     assertEquals(deptLocation, departmentBean.location());
@@ -552,8 +552,8 @@ public final class EntitiesTest {
             .with(TestDomain.Employee.SALARY, salary)
             .build();
 
-    List<TestDomain.Employee> empBeans = Entity.castTo(TestDomain.Employee.class, singletonList(employee));
-    TestDomain.Employee employeeBean = empBeans.get(0);
+    Collection<TestDomain.Employee> empBeans = Entity.castTo(TestDomain.Employee.class, singletonList(employee));
+    TestDomain.Employee employeeBean = empBeans.iterator().next();
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
     assertEquals(deptNo, employeeBean.getDeptno());
@@ -590,7 +590,7 @@ public final class EntitiesTest {
 
     List<Entity> masters = asList(master, master1, master2);
 
-    List<TestDomain.Master> mastersTyped = Entity.castTo(TestDomain.Master.class, masters);
+    List<TestDomain.Master> mastersTyped = new ArrayList<>(Entity.castTo(TestDomain.Master.class, masters));
 
     assertSame(master1, mastersTyped.get(1));
 
