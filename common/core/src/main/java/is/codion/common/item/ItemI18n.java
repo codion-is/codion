@@ -3,9 +3,8 @@
  */
 package is.codion.common.item;
 
-import java.util.ResourceBundle;
-
 import static java.util.Objects.requireNonNull;
+import static java.util.ResourceBundle.getBundle;
 
 final class ItemI18n<T> extends AbstractItem<T> {
 
@@ -18,14 +17,15 @@ final class ItemI18n<T> extends AbstractItem<T> {
 
   ItemI18n(T value, String resourceBundleName, String resourceBundleKey) {
     super(value);
-    this.resourceBundleName = requireNonNull(resourceBundleName, "resourceBundleName");
-    this.resourceBundleKey = requireNonNull(resourceBundleKey, "resourceBundleKey");
+    getBundle(requireNonNull(resourceBundleName)).getString(requireNonNull(resourceBundleKey));
+    this.resourceBundleName = resourceBundleName;
+    this.resourceBundleKey = resourceBundleKey;
   }
 
   @Override
   public String caption() {
     if (caption == null) {
-      caption = ResourceBundle.getBundle(resourceBundleName).getString(resourceBundleKey);
+      caption = getBundle(resourceBundleName).getString(resourceBundleKey);
     }
 
     return caption;

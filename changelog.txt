@@ -9118,3 +9118,4 @@
   AbstractEntityEditModel.doInsert(), doUpdate() and doDelete() now take Collection
   EntityConnection.insert() now takes a Collection and returns a Collection
   Database.closeSilently() for Statement, Connection and ResultSet replaced with a single one based on AutoCloseable
+  ItemI18n now validates the resource bundle and key on construction
