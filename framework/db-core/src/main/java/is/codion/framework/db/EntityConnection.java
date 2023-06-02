@@ -182,7 +182,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
-  Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Performs an update based on the given condition, updating the attributes found

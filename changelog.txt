@@ -9113,3 +9113,4 @@
   ImmutableEntity.writeObject() and readObject() implemented, so that immutability survives serialization
   EntityConnection.select(keys) now returns Collection instead of List
   EntityEditEvents.insert and delete listeners now Collection based
+  EntityConnection.update() now takes Collection instead of List

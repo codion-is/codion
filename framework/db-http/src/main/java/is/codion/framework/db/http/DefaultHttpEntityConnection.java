@@ -219,7 +219,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {

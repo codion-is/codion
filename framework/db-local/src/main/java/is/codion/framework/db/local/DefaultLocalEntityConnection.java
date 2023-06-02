@@ -262,7 +262,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Collection<Entity> update(List<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
       return emptyList();
     }
