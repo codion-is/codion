@@ -56,8 +56,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public int serverPort() {
-    return serverConfiguration.serverPort();
+  public int port() {
+    return serverConfiguration.port();
   }
 
   @Override
@@ -101,8 +101,8 @@ final class DefaultEntityServerConfiguration implements EntityServerConfiguratio
   }
 
   @Override
-  public int serverAdminPort() {
-    return serverConfiguration.serverAdminPort();
+  public int adminPort() {
+    return serverConfiguration.adminPort();
   }
 
   @Override

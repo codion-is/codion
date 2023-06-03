@@ -157,7 +157,7 @@ public interface ServerConfiguration {
   /**
    * @return the server port
    */
-  int serverPort();
+  int port();
 
   /**
    * @return the registry port to use
@@ -167,7 +167,7 @@ public interface ServerConfiguration {
   /**
    * @return the port on which to make the server admin interface accessible
    */
-  int serverAdminPort();
+  int adminPort();
 
   /**
    * @return the class names of auxiliary server factories, providing the servers to run alongside this server

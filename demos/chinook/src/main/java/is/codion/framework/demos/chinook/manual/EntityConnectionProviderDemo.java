@@ -52,7 +52,7 @@ public final class EntityConnectionProviderDemo {
                     .domainClassName(ChinookImpl.class.getName())
                     .user(User.parse("scott:tiger"))
                     .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
-                    .serverHostName("localhost")
+                    .hostName("localhost")
                     .registryPort(1099)
                     .build();
 
@@ -74,8 +74,8 @@ public final class EntityConnectionProviderDemo {
                     .domainClassName(ChinookImpl.class.getName())
                     .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
                     .user(User.parse("scott:tiger"))
-                    .serverHostName("localhost")
-                    .serverPort(8080)
+                    .hostName("localhost")
+                    .port(8080)
                     .https(false)
                     .build();
 

@@ -50,17 +50,17 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   /**
    * Instantiates a new {@link DefaultHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
-   * @param serverHostName the http server host name
+   * @param hostName the http server host name
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
-   * @param serverPort the http server port
+   * @param port the http server port
    * @param httpsEnabled if true then https is used
    */
-  DefaultHttpEntityConnection(String domainTypeName, String serverHostName, User user, String clientTypeId,
-                              UUID clientId, int serverPort, boolean httpsEnabled) {
-    super(domainTypeName, serverHostName, user, clientTypeId, clientId,
-            "application/octet-stream", "/entities/ser", serverPort, httpsEnabled);
+  DefaultHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId,
+                              UUID clientId, int port, boolean httpsEnabled) {
+    super(domainTypeName, hostName, user, clientTypeId, clientId,
+            "application/octet-stream", "/entities/ser", port, httpsEnabled);
   }
 
   @Override
@@ -461,8 +461,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   static final class DefaultBuilder implements Builder {
 
     private String domainTypeName;
-    private String serverHostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get();
-    private int serverPort = HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get();
+    private String hostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get();
+    private int port = HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get();
     private boolean https = HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get();
     private boolean json = HttpEntityConnectionProvider.HTTP_CLIENT_JSON.get();
     private User user;
@@ -476,14 +476,14 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     }
 
     @Override
-    public Builder serverHostName(String serverHostName) {
-      this.serverHostName = requireNonNull(serverHostName);
+    public Builder hostName(String hostName) {
+      this.hostName = requireNonNull(hostName);
       return this;
     }
 
     @Override
-    public Builder serverPort(int serverPort) {
-      this.serverPort = serverPort;
+    public Builder port(int port) {
+      this.port = port;
       return this;
     }
 
@@ -520,10 +520,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, serverHostName, user, clientTypeId, clientId, serverPort, https);
+        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https);
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, serverHostName, user, clientTypeId, clientId, serverPort, https);
+      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https);
     }
   }
 }

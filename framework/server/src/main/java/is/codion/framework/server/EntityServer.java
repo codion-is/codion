@@ -123,7 +123,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     requireNonNull(remoteClient, "remoteClient");
     try {
       AbstractRemoteEntityConnection connection = createRemoteConnection(database(), remoteClient,
-              configuration.serverPort(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
+              configuration.port(), configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
       connection.setLoggingEnabled(clientLoggingEnabled);
 
       connection.addDisconnectListener(this::disconnectQuietly);
@@ -335,7 +335,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * @throws RemoteException in case of an exception
    */
   private EntityServerAdmin createServerAdmin(EntityServerConfiguration configuration) throws RemoteException {
-    if (configuration.serverAdminPort() != 0) {
+    if (configuration.adminPort() != 0) {
       return new DefaultEntityServerAdmin(this, configuration);
     }
 

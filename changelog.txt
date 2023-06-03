@@ -9128,3 +9128,4 @@
   AbstractHttpEntityConnection, minor refactoring
   Server.CLIENT_HOST_KEY renamed CLIENT_HOST
   EntityConnectionProvider.connection() now with type parameter, for reduced casting
+  HttpEntityConnectionProvider.Builder, RemoteEntityConnectionProvider.Builder, serverHostName() and serverPort() renamed to hostName() and port(), related renaming

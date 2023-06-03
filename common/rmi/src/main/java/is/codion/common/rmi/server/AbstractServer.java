@@ -77,13 +77,13 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @throws RemoteException in case of an exception
    */
   protected AbstractServer(ServerConfiguration configuration) throws RemoteException {
-    super(requireNonNull(configuration, "configuration").serverPort(),
+    super(requireNonNull(configuration, "configuration").port(),
             configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());
     Runtime.getRuntime().addShutdownHook(new Thread(this::shutdown));
     try {
       this.configuration = configuration;
-      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(), configuration.serverName(),
-              configuration.serverPort(), ZonedDateTime.now());
+      this.serverInformation = new DefaultServerInformation(UUID.randomUUID(),
+              configuration.serverName(), configuration.port(), ZonedDateTime.now());
       this.connectionMaintenanceScheduler = TaskScheduler.builder(new MaintenanceTask())
               .interval(configuration.connectionMaintenanceInterval(), TimeUnit.MILLISECONDS)
               .initialDelay(configuration.connectionMaintenanceInterval())

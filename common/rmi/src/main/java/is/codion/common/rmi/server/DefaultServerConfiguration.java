@@ -30,10 +30,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
 
   private static final Logger LOG = LoggerFactory.getLogger(ServerConfiguration.class);
 
-  private final int serverPort;
+  private final int port;
   private final int registryPort;
   private final Collection<String> auxiliaryServerFactoryClassNames;
-  private final int serverAdminPort;
+  private final int adminPort;
   private final boolean sslEnabled;
   private final Supplier<String> serverNameProvider;
   private final RMIClientSocketFactory rmiClientSocketFactory;
@@ -45,10 +45,10 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private String serverName;
 
   DefaultServerConfiguration(DefaultServerConfiguration.DefaultBuilder builder) {
-    this.serverPort = builder.serverPort;
+    this.port = builder.serverPort;
     this.registryPort = builder.registryPort;
     this.auxiliaryServerFactoryClassNames = unmodifiableCollection(builder.auxiliaryServerFactoryClassNames);
-    this.serverAdminPort = builder.serverAdminPort;
+    this.adminPort = builder.serverAdminPort;
     this.sslEnabled = builder.sslEnabled;
     this.serverName = builder.serverName;
     this.serverNameProvider = builder.serverNameProvider == null ? () -> serverName : builder.serverNameProvider;
@@ -69,8 +69,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public int serverPort() {
-    return serverPort;
+  public int port() {
+    return port;
   }
 
   @Override
@@ -79,8 +79,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   }
 
   @Override
-  public int serverAdminPort() {
-    return serverAdminPort;
+  public int adminPort() {
+    return adminPort;
   }
 
   @Override

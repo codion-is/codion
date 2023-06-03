@@ -46,11 +46,6 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
   PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
 
   /**
-   * @return the name of the host of the server providing the connection
-   */
-  String serverHostName();
-
-  /**
    * Instantiates a new builder instance.
    * @return a new builder
    */
@@ -64,16 +59,16 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
   interface Builder extends EntityConnectionProvider.Builder<HttpEntityConnectionProvider, Builder> {
 
     /**
-     * @param serverHostName the server host name
+     * @param hostName the server host name
      * @return this builder instance
      */
-    Builder serverHostName(String serverHostName);
+    Builder hostName(String hostName);
 
     /**
-     * @param serverPort the server port
+     * @param port the server port
      * @return this builder instance
      */
-    Builder serverPort(int serverPort);
+    Builder port(int port);
 
     /**
      * @param https true if https should be enabled
