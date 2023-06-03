@@ -37,6 +37,7 @@ import java.util.concurrent.ThreadFactory;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Predicate;
 
+import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 import static is.codion.common.rmi.server.SerializationWhitelist.isSerializationDryRunActive;
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
@@ -361,8 +362,8 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
-    RemoteClient remoteClient = RemoteClient.remoteClient(connectionRequest);
-    setClientHost(remoteClient, (String) connectionRequest.parameters().get(CLIENT_HOST));
+    RemoteClient remoteClient = remoteClient(connectionRequest,
+            clientHost((String) connectionRequest.parameters().get(CLIENT_HOST)));
     for (LoginProxy loginProxy : sharedLoginProxies) {
       remoteClient = loginProxy.login(remoteClient);
     }
@@ -468,16 +469,15 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
   }
 
-  private static void setClientHost(RemoteClient remoteClient, String requestParameterHost) {
+  private static String clientHost(String requestParameterHost) {
     if (requestParameterHost == null) {
       try {
-        remoteClient.setClientHost(getClientHost());
+        return getClientHost();
       }
       catch (ServerNotActiveException ignored) {/*ignored*/}
     }
-    else {
-      remoteClient.setClientHost(requestParameterHost);
-    }
+
+    return requestParameterHost;
   }
 
   private static boolean onClasspath(String className) {

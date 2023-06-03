@@ -242,7 +242,7 @@ public class EntityServerTest {
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     server.connect(connectionRequestJohn);
     RemoteClient clientJohn = admin.clients(john).iterator().next();
-    assertNotNull(clientJohn.getClientHost());
+    assertNotNull(clientJohn.clientHost());
     server.connect(connectionRequestHelen);
     try {
       server.connect(connectionRequestInvalid);

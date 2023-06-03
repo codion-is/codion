@@ -12,6 +12,8 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static is.codion.common.rmi.server.RemoteClient.remoteClient;
+
 public final class TestLoginProxy implements LoginProxy {
 
   private final Map<String, String> users = new HashMap<>();
@@ -32,10 +34,7 @@ public final class TestLoginProxy implements LoginProxy {
   public RemoteClient login(RemoteClient remoteClient) throws ServerAuthenticationException {
     authenticateUser(remoteClient.user());
 
-    RemoteClient authenticatedClient = RemoteClient.remoteClient(remoteClient.connectionRequest(), databaseUser);
-    authenticatedClient.setClientHost(remoteClient.getClientHost());
-
-    return authenticatedClient;
+    return remoteClient(remoteClient.connectionRequest(), databaseUser, remoteClient.clientHost());
   }
 
   @Override
