@@ -26,7 +26,7 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
   /**
    * Specifies the client host connection parameter
    */
-  String CLIENT_HOST_KEY = "clientHost";
+  String CLIENT_HOST = "clientHost";
 
   /**
    * Establishes a connection to this Server

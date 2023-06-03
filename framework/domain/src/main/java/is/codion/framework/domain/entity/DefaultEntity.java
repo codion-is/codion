@@ -90,8 +90,8 @@ class DefaultEntity implements Entity, Serializable {
    * @throws IllegalArgumentException in case any of the properties are not part of the entity.
    */
   DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
-    this.values = validate(requireNonNull(definition), values == null ? new HashMap<>() : new HashMap<>(values));
-    this.originalValues = validate(definition, originalValues == null ? null : new HashMap<>(originalValues));
+    this.values = validateTypes(requireNonNull(definition), values == null ? new HashMap<>() : new HashMap<>(values));
+    this.originalValues = validateTypes(definition, originalValues == null ? null : new HashMap<>(originalValues));
     this.definition = definition;
   }
 
@@ -458,7 +458,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> T put(Property<T> property, T value) {
-    T newValue = validateAndPrepareForPut(property, value);
+    T newValue = validateAndPrepareValue(property, value);
     Attribute<T> attribute = property.attribute();
     boolean initialization = !values.containsKey(attribute);
     T previousValue = (T) values.put(attribute, newValue);
@@ -509,7 +509,7 @@ class DefaultEntity implements Entity, Serializable {
     return false;
   }
 
-  private <T> T validateAndPrepareForPut(Property<T> property, T value) {
+  private <T> T validateAndPrepareValue(Property<T> property, T value) {
     if (property.isDerived()) {
       throw new IllegalArgumentException("Can not set the value of a derived property");
     }
@@ -791,7 +791,7 @@ class DefaultEntity implements Entity, Serializable {
     serializerForDomain((String) stream.readObject()).deserialize(this, stream);
   }
 
-  private static Map<Attribute<?>, Object> validate(EntityDefinition definition, Map<Attribute<?>, Object> values) {
+  private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
     if (values != null && !values.isEmpty()) {
       for (Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
         definition.property((Attribute<Object>) valueEntry.getKey()).attribute().validateType(valueEntry.getValue());

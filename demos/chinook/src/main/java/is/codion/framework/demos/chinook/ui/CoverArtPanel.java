@@ -80,7 +80,7 @@ final class CoverArtPanel extends JPanel {
                     .control(Control.builder(this::removeCover)
                             .caption(BUNDLE.getString(REMOVE_COVER)))
                     .build())
-                    .build())
+                    .build(), BorderLayout.SOUTH)
             .build();
   }
 

@@ -156,6 +156,6 @@ public class DefaultComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBo
   }
 
   protected C createComboBox() {
-    return (C) new FocusableComboBox<T>(comboBoxModel);
+    return (C) new FocusableComboBox<>(comboBoxModel);
   }
 }

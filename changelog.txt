@@ -9164,3 +9164,5 @@
   AbstractHttpEntityConnection.execute() workaround replaced with a HttpRequestRetryHandler implementation
   AbstractHttpEntityConnection, connectionManager constructor parameter removed
   AbstractHttpEntityConnection, minor refactoring
+  Server.CLIENT_HOST_KEY renamed CLIENT_HOST
+  EntityConnectionProvider.connection() now with type parameter, for reduced casting

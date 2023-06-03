@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 
 /**
- * Handles serialisation of {@link DefaultEntity} and {@link DefaultKey}.
+ * Handles serialization of {@link DefaultEntity} and {@link DefaultKey}.
  */
 interface EntitySerializer {
 
