@@ -35,7 +35,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   private final Collection<String> auxiliaryServerFactoryClassNames;
   private final int adminPort;
   private final boolean sslEnabled;
-  private final Supplier<String> serverNameProvider;
+  private final Supplier<String> serverNameSupplier;
   private final RMIClientSocketFactory rmiClientSocketFactory;
   private final RMIServerSocketFactory rmiServerSocketFactory;
   private final String serializationFilterWhitelist;
@@ -51,7 +51,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     this.adminPort = builder.serverAdminPort;
     this.sslEnabled = builder.sslEnabled;
     this.serverName = builder.serverName;
-    this.serverNameProvider = builder.serverNameProvider == null ? () -> serverName : builder.serverNameProvider;
+    this.serverNameSupplier = builder.serverNameSupplier == null ? () -> serverName : builder.serverNameSupplier;
     this.rmiClientSocketFactory = builder.rmiClientSocketFactory;
     this.rmiServerSocketFactory = builder.rmiServerSocketFactory;
     this.serializationFilterWhitelist = builder.serializationFilterWhitelist;
@@ -62,7 +62,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
   @Override
   public String serverName() {
     if (serverName == null) {
-      serverName = serverNameProvider.get();
+      serverName = serverNameSupplier.get();
     }
 
     return serverName;
@@ -130,7 +130,7 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     private int serverAdminPort;
     private boolean sslEnabled = true;
     private String serverName;
-    private Supplier<String> serverNameProvider;
+    private Supplier<String> serverNameSupplier;
     private RMIClientSocketFactory rmiClientSocketFactory = new SslRMIClientSocketFactory();
     private RMIServerSocketFactory rmiServerSocketFactory = new SslRMIServerSocketFactory();
     private String serializationFilterWhitelist;
@@ -149,8 +149,8 @@ final class DefaultServerConfiguration implements ServerConfiguration {
     }
 
     @Override
-    public DefaultBuilder serverNameProvider(Supplier<String> serverNameProvider) {
-      this.serverNameProvider = requireNonNull(serverNameProvider);
+    public DefaultBuilder serverNameSupplier(Supplier<String> serverNameSupplier) {
+      this.serverNameSupplier = requireNonNull(serverNameSupplier);
       return this;
     }
 
