@@ -379,7 +379,7 @@ include::{dir-source}/is/codion/framework/demos/manual/store/domain/Store.java[t
 
 == ColorProvider
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for entity properties, used as foreground or background color in table cells for example.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ColorProvider.html[ColorProvider] is used to provide colors for attributes, used as foreground or background color in table cells for example.
 
 The framework supports String color definitions, in a format recognized by *java.awt.Color.decode()*, like the one below, in case you don't want a dependency on *java.awt.Color* in the domain model.
 
@@ -479,7 +479,7 @@ The unit tests are run within a single transaction which is rolled back after th
 
 === EntityTestUnit
 
-The following methods all have default implementations which are based on randomly created property values, based on the constraints set in the domain model, override if the default ones are not working.
+The following methods all have default implementations which are based on randomly created values, based on the value constraints set in the domain model, override if the default ones are not working.
 
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeForeignKeyEntity{opar}is.codion.framework.domain.entity.ForeignKey{comma}java.util.Map{cpar}[initializeForeignKeyEntity] should return an entity instance for the given foreign key to use for a foreign key reference required for inserting the entity being tested.
 * {url-javadoc}{framework-domain-test}/is/codion/framework/domain/entity/test/EntityTestUnit.html#initializeTestEntity{opar}is.codion.framework.domain.entity.EntityType{comma}java.util.Map{cpar}[initializeTestEntity] should return an entity to use as basis for the unit test, that is, the entity that should be inserted, selected, updated and finally deleted.

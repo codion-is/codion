@@ -51,8 +51,8 @@ public class RemoteEntityConnectionProviderTest {
     EntityServerAdmin admin = server.serverAdmin(User.parse("scott:tiger"));
 
     RemoteEntityConnectionProvider provider = RemoteEntityConnectionProvider.builder()
-            .serverHostName(Clients.SERVER_HOSTNAME.get())
-            .serverPort(configuration.serverPort())
+            .hostName(Clients.SERVER_HOSTNAME.get())
+            .port(configuration.port())
             .registryPort(configuration.registryPort())
             .clientTypeId("RemoteEntityConnectionProviderTest")
             .domainClassName("is.codion.framework.db.rmi.TestDomain")

@@ -73,22 +73,22 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   /**
    * Instantiates a new {@link JsonHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
-   * @param serverHostName the http server host name
+   * @param hostName the http server host name
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
    * @param contentType the content type string
    * @param path the path
-   * @param serverPort the http server port
+   * @param port the http server port
    * @param httpsEnabled if true then https is used
    */
-  AbstractHttpEntityConnection(String domainTypeName, String serverHostName, User user, String clientTypeId, UUID clientId,
-                               String contentType, String path, int serverPort, boolean httpsEnabled) {
+  AbstractHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
+                               String contentType, String path, int port, boolean httpsEnabled) {
     this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
-    this.baseurl = requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
+    this.baseurl = requireNonNull(hostName, "hostName") + ":" + port + path;
     this.user = requireNonNull(user, "user");
     this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId).toString(), requireNonNull(contentType));
-    this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
+    this.targetHost = new HttpHost(hostName, port, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.entities = initializeEntities();
     this.httpsEnabled = httpsEnabled;

@@ -32,16 +32,16 @@ public interface HttpEntityConnection extends EntityConnection {
     Builder domainTypeName(String domainTypeName);
 
     /**
-     * @param serverHostName the http server host name
+     * @param hostName the http server host name
      * @return this builder instance
      */
-    Builder serverHostName(String serverHostName);
+    Builder hostName(String hostName);
 
     /**
-     * @param serverPort the http server port
+     * @param port the http server port
      * @return this builder instance
      */
-    Builder serverPort(int serverPort);
+    Builder port(int port);
 
     /**
      * @param https true if https should be used

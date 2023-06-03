@@ -123,16 +123,16 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
     interface Builder {
 
       /**
-       * @param serverHostName the name of the host
+       * @param hostName the name of the host
        * @return this builder instance
        */
-      Builder serverHostName(String serverHostName);
+      Builder hostName(String hostName);
 
       /**
-       * @param serverNamePrefix the server name prefix to use when looking up, an empty string results in all servers being returned
+       * @param namePrefix the server name prefix to use when looking up, an empty string results in all servers being returned
        * @return this builder instance
        */
-      Builder serverNamePrefix(String serverNamePrefix);
+      Builder namePrefix(String namePrefix);
 
       /**
        * @param registryPort the port on which to lookup/configure the registry
@@ -141,10 +141,10 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
       Builder registryPort(int registryPort);
 
       /**
-       * @param serverPort the required server port, -1 for a server on any port
+       * @param port the required server port, -1 for a server on any port
        * @return this builder instance
        */
-      Builder serverPort(int serverPort);
+      Builder port(int port);
 
       /**
        * @return a new {@link Locator} instance based on this builder

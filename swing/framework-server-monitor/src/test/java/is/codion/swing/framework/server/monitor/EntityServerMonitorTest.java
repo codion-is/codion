@@ -53,7 +53,9 @@ public class EntityServerMonitorTest {
     String clientTypeId = EntityServerMonitorTest.class.getName();
     RemoteEntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
-                    .serverHostName("localhost").serverPort(CONFIGURATION.serverPort()).registryPort(CONFIGURATION.registryPort())
+                    .hostName("localhost")
+                    .port(CONFIGURATION.port())
+                    .registryPort(CONFIGURATION.registryPort())
                     .domainClassName("TestDomain")
                     .clientTypeId(clientTypeId)
                     .user(UNIT_TEST_USER)

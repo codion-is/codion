@@ -150,14 +150,14 @@ public interface ServerConfiguration {
 
   /**
    * @return the server name
-   * @see Builder#serverNameProvider(Supplier)
+   * @see Builder#serverNameSupplier(Supplier)
    */
   String serverName();
 
   /**
    * @return the server port
    */
-  int serverPort();
+  int port();
 
   /**
    * @return the registry port to use
@@ -167,7 +167,7 @@ public interface ServerConfiguration {
   /**
    * @return the port on which to make the server admin interface accessible
    */
-  int serverAdminPort();
+  int adminPort();
 
   /**
    * @return the class names of auxiliary server factories, providing the servers to run alongside this server
@@ -217,10 +217,10 @@ public interface ServerConfiguration {
     B adminPort(int adminPort);
 
     /**
-     * @param serverNameProvider the server name provider
+     * @param serverNameSupplier the server name supplier
      * @return this builder instance
      */
-    B serverNameProvider(Supplier<String> serverNameProvider);
+    B serverNameSupplier(Supplier<String> serverNameSupplier);
 
     /**
      * @param serverName the server name
