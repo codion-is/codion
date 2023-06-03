@@ -9123,3 +9123,4 @@
   EntityResultIterator.hasNext() now idempotent
   ResultIterator.iterator() added, wrapping the ResultIterator in a Iterator
   EntityResultIterator.next() bug fixed, now throws NoSuchElementException correctly
+  AbstractHttpEntityConnection.execute() workaround replaced with a HttpRequestRetryHandler implementation
