@@ -11,7 +11,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A repository specifying the {@link EntityDefinition}s for a given domain.
+ * A repository containing the {@link EntityDefinition}s for a given domain.
  * Factory for {@link Entity} and {@link Key} instances.
  * @see #entity(EntityType)
  * @see #builder(EntityType)
@@ -23,7 +23,7 @@ public interface Entities {
 
   /**
    * Specifies whether legacy serialization should be used.<br>
-   * There is nothing gained from using it, so don't.<br>
+   * There is nothing gained from using it, so don't, it's here for backwards compatibility only.<br>
    * Value type: Boolean<br>
    * Default value: false
    * @deprecated for removal
@@ -70,7 +70,7 @@ public interface Entities {
   boolean contains(EntityType entityType);
 
   /**
-   * Returns all {@link EntityDefinition}s available
+   * Returns all {@link EntityDefinition}s found in this Entities instance
    * @return all entity definitions
    */
   Collection<EntityDefinition> definitions();
@@ -83,7 +83,7 @@ public interface Entities {
   Entity entity(EntityType entityType);
 
   /**
-   * Creates a new {@link Entity.Builder} instance.
+   * Creates a new {@link Entity.Builder} instance for the given entityType
    * @param entityType the entityType
    * @return a new {@link Entity.Builder}
    */
@@ -114,7 +114,7 @@ public interface Entities {
   <T> List<Key> primaryKeys(EntityType entityType, T... values);
 
   /**
-   * Creates a new {@link Key.Builder} instance for the given entity type.
+   * Creates a new {@link Key.Builder} instance for the given entity type
    * @param entityType the entity type
    * @return a new builder
    */

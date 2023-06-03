@@ -84,7 +84,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     }
     key.attributes = unmodifiableList(key.attributes);
     key.values = unmodifiableMap(key.values);
-    key.singleIntegerKey = valueCount == 1 && isIntegerKey(key);
+    key.singleIntegerKey = valueCount == 1 && isSingleIntegerKey(key);
     key.hashCodeDirty = true;
   }
 
@@ -124,7 +124,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     }
   }
 
-  private static boolean isIntegerKey(DefaultKey key) {
+  private static boolean isSingleIntegerKey(DefaultKey key) {
     return key.attributes.size() == 1 && key.attributes.get(0).isInteger();
   }
 }
