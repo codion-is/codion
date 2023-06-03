@@ -21,9 +21,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 
 import org.apache.http.HttpEntity;
-import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -60,10 +58,9 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientId the client id
    */
   DefaultHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                              boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
-                              HttpClientConnectionManager connectionManager) {
+                              boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
     super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
-            "application/octet-stream", "/entities/ser", connectionManager);
+            "application/octet-stream", "/entities/ser");
   }
 
   @Override
@@ -523,10 +520,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());
+        return new JsonHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId);
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId, new BasicHttpClientConnectionManager());
+      return new DefaultHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId);
     }
   }
 }

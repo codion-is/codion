@@ -29,6 +29,7 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,16 +80,15 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * @param clientId the client id
    * @param contentType the content type string
    * @param path the path
-   * @param connectionManager the connection manager
    */
   AbstractHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
                                boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
-                               String contentType, String path, HttpClientConnectionManager connectionManager) {
+                               String contentType, String path) {
     this.domainTypeName = Objects.requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.user = Objects.requireNonNull(user, "user");
     this.httpsEnabled = httpsEnabled;
     this.baseurl = Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
-    this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
+    this.connectionManager = new BasicHttpClientConnectionManager();
     this.httpClient = createHttpClient(clientTypeId, clientId, contentType);
     this.targetHost = new HttpHost(serverHostName, serverPort, this.httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);

@@ -21,7 +21,6 @@ import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
 import is.codion.framework.servlet.EntityServiceFactory;
 
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -250,10 +249,6 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void rollbackWithNoOpenTransaction() {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
-  }
-
-  static BasicHttpClientConnectionManager createConnectionManager() {
-    return new BasicHttpClientConnectionManager();
   }
 
   private static EntityServerConfiguration configure() {
