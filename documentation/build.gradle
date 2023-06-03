@@ -48,7 +48,6 @@ asciidoctor {
             'comma': '-',
             'common-core': '',
             'common-db': '',
-            'common-http': '',
             'common-model': '',
             'common-rmi': '',
             'framework-db-core': '',

@@ -60,19 +60,6 @@ RMI related classes.
 image::modules/common/rmi/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
-[discrete]
-=== codion-common-http
-
-HTTP related classes.
-
-* {url-javadoc}{common-http}/is/codion/common/http/server/package-summary.html[is.codion.common.http.server]
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/common/http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
 == DBMS
 
 Database specific implementation classes.
