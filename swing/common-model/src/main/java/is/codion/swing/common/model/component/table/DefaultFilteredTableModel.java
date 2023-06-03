@@ -550,7 +550,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format) {
       Class<?> columnClass = getColumnClass(columnIdentifier);
       if (Number.class.isAssignableFrom(columnClass)) {
-        return Optional.of(new DefaultSummaryValueProvider<T, C>(columnIdentifier, DefaultFilteredTableModel.this, format));
+        return Optional.of(new DefaultSummaryValueProvider<>(columnIdentifier, DefaultFilteredTableModel.this, format));
       }
 
       return Optional.empty();

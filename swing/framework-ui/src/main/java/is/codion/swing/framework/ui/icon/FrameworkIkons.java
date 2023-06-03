@@ -20,7 +20,7 @@ enum FrameworkIkons implements Ikon {
   DETAIL("fr-detail", '\uf18a'),
   PRINT("fr-print", '\uf19f'),
   EDIT("fr-edit", '\uf184'),
-  SUMMARY("fr-summary", '\u03a3'),
+  SUMMARY("fr-summary", 'Σ'),
   EDIT_PANEL("fr-edit-panel", '\uf168'),
   DEPENDENCIES("fr-dependencies", '\uf1ad'),
   SETTINGS("fr-settings", '\uf214'),

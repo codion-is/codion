@@ -65,9 +65,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
   /**
    * Provides a EntityConnection object, is responsible for returning a healthy EntityConnection object,
    * that is, it must reconnect an invalid connection whether remotely or locally
+   * @param <T> the expected EntityConnection type
    * @return a EntityConnection instance
    */
-  EntityConnection connection();
+  <T extends EntityConnection> T connection();
 
   /**
    * Returns a String specifying the type of connection provided by this connection provider

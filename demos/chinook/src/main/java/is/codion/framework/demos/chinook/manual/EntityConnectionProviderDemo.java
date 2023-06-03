@@ -33,7 +33,7 @@ public final class EntityConnectionProviderDemo {
                     .build();
 
     LocalEntityConnection entityConnection =
-            (LocalEntityConnection) connectionProvider.connection();
+            connectionProvider.connection();
 
     DatabaseConnection databaseConnection =
             entityConnection.databaseConnection();
