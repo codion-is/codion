@@ -25,30 +25,20 @@ public class DatabaseConnectionTest {
 
   @Test
   void createConnection() throws Exception {
-    Connection connection = null;
-    try {
-      connection = DATABASE.createConnection(UNIT_TEST_USER);
+    try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
       DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
       assertNotNull(databaseConnection.user());
       assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
-    }
-    finally {
-      Database.closeSilently(connection);
     }
   }
 
   @Test
   void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
     assertThrows(DatabaseException.class, () -> {
-      Connection connection = null;
-      try {
-        connection = DATABASE.createConnection(UNIT_TEST_USER);
+      try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
         connection.close();
         databaseConnection(DATABASE, connection);
-      }
-      finally {
-        Database.closeSilently(connection);
       }
     });
   }

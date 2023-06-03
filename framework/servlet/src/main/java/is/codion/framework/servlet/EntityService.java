@@ -806,11 +806,10 @@ public final class EntityService implements AuxiliaryServer {
       throw new IllegalStateException("EntityServer has not been set for EntityService");
     }
 
-    Map<String, String> headers = ctx.headerMap();
-    String domainTypeName = domainTypeName(headers);
-    String clientTypeId = clientTypeId(headers);
-    UUID clientId = clientId(headers, ctx.req().getSession());
-    User user = user(headers);
+    String domainTypeName = domainTypeName(ctx);
+    String clientTypeId = clientTypeId(ctx);
+    UUID clientId = clientId(ctx);
+    User user = user(ctx);
 
     return server.connect(ConnectionRequest.builder()
             .user(user)
@@ -840,17 +839,17 @@ public final class EntityService implements AuxiliaryServer {
     return forwardHeader.split(",")[0];
   }
 
-  private static String domainTypeName(Map<String, String> headers) throws ServerAuthenticationException {
-    return checkHeaderParameter(headers.get(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
+  private static String domainTypeName(Context ctx) throws ServerAuthenticationException {
+    return checkHeaderParameter(ctx.header(DOMAIN_TYPE_NAME), DOMAIN_TYPE_NAME);
   }
 
-  private static String clientTypeId(Map<String, String> headers) throws ServerAuthenticationException {
-    return checkHeaderParameter(headers.get(CLIENT_TYPE_ID), CLIENT_TYPE_ID);
+  private static String clientTypeId(Context ctx) throws ServerAuthenticationException {
+    return checkHeaderParameter(ctx.header(CLIENT_TYPE_ID), CLIENT_TYPE_ID);
   }
 
-  private static UUID clientId(Map<String, String> headers, HttpSession session)
-          throws ServerAuthenticationException {
-    UUID headerClientId = UUID.fromString(checkHeaderParameter(headers.get(CLIENT_ID), CLIENT_ID));
+  private static UUID clientId(Context ctx) throws ServerAuthenticationException {
+    UUID headerClientId = UUID.fromString(checkHeaderParameter(ctx.header(CLIENT_ID), CLIENT_ID));
+    HttpSession session = ctx.req().getSession();
     if (session.isNew()) {
       session.setAttribute(CLIENT_ID, headerClientId);
     }
@@ -866,8 +865,8 @@ public final class EntityService implements AuxiliaryServer {
     return headerClientId;
   }
 
-  private static User user(Map<String, String> headers) throws ServerAuthenticationException {
-    String basicAuth = headers.get(AUTHORIZATION);
+  private static User user(Context ctx) throws ServerAuthenticationException {
+    String basicAuth = ctx.header(AUTHORIZATION);
     if (nullOrEmpty(basicAuth)) {
       throw new ServerAuthenticationException("Authorization information missing");
     }

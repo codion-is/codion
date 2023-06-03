@@ -12,9 +12,7 @@ import is.codion.common.properties.PropertyValue;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collection;
 
 /**
@@ -275,42 +273,16 @@ public interface Database extends ConnectionFactory {
   }
 
   /**
-   * Closes the given ResultSet instance, suppressing any SQLExceptions that may occur.
-   * @param resultSet the result set to close
+   * Closes the given {@link AutoCloseable} instance, suppressing any Exceptions that may occur.
+   * @param closeable the closeable to close
    */
-  static void closeSilently(ResultSet resultSet) {
+  static void closeSilently(AutoCloseable closeable) {
     try {
-      if (resultSet != null) {
-        resultSet.close();
+      if (closeable != null) {
+        closeable.close();
       }
     }
-    catch (SQLException ignored) {/*ignored*/}
-  }
-
-  /**
-   * Closes the given Statement instance, suppressing any SQLExceptions that may occur.
-   * @param statement the statement to close
-   */
-  static void closeSilently(Statement statement) {
-    try {
-      if (statement != null) {
-        statement.close();
-      }
-    }
-    catch (SQLException ignored) {/*ignored*/}
-  }
-
-  /**
-   * Closes the given Connection instance, suppressing any SQLExceptions that may occur.
-   * @param connection the connection to close
-   */
-  static void closeSilently(Connection connection) {
-    try {
-      if (connection != null) {
-        connection.close();
-      }
-    }
-    catch (SQLException ignored) {/*ignored*/}
+    catch (Exception ignored) {/*ignored*/}
   }
 
   /**

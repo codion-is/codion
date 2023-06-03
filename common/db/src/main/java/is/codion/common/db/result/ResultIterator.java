@@ -4,22 +4,17 @@
 package is.codion.common.db.result;
 
 import java.sql.SQLException;
+import java.util.Iterator;
 
 /**
  * Iterates through a ResultSet fetching instances of T.
  * Closes the ResultSet when iteration is finished or in case of an exception.
- * NOTA BENE: the {@link #hasNext()} method is not idempotent, calling it moves
- * the cursor in the underlying result set so {@link #next()} must be called
- * before {@link #hasNext()} is called again, or you will miss rows.
  * @param <T> the type to fetch from the result set
  */
 public interface ResultIterator<T> extends AutoCloseable {
 
   /**
    * Returns true if a row is available in the underlying result set.
-   * NOTA BENE: This method is not idempotent, calling this method moves
-   * the cursor in the underlying result set so {@link #next()} must be called
-   * before this method is called again, or you will miss rows.
    * Calls {@link #close()} before returning false when iteration has been completed.
    * @return true if a row is available in the underlying result set
    * @throws SQLException in case of an exception
@@ -29,6 +24,7 @@ public interface ResultIterator<T> extends AutoCloseable {
   /**
    * @return an instance of T fetched from the result set
    * @throws SQLException in case of an exception
+   * @throws java.util.NoSuchElementException in case no more rows are available
    */
   T next() throws SQLException;
 
@@ -36,4 +32,33 @@ public interface ResultIterator<T> extends AutoCloseable {
    * Closes the underlying result set and other resources held by this iterator
    */
   void close();
+
+  /**
+   * Wraps this {@link ResultIterator} in a {@link Iterator}. Any SQLExceptions
+   * that occur are rethrown as RuntimeExceptions.
+   * @return a {@link Iterator} instance based on this {@link ResultIterator}
+   */
+  default Iterator<T> iterator() {
+    return new Iterator<T>() {
+      @Override
+      public boolean hasNext() {
+        try {
+          return ResultIterator.this.hasNext();
+        }
+        catch (SQLException e) {
+          throw new RuntimeException(e);
+        }
+      }
+
+      @Override
+      public T next() {
+        try {
+          return ResultIterator.this.next();
+        }
+        catch (SQLException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    };
+  }
 }

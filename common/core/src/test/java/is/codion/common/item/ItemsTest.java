@@ -9,6 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.util.Locale;
+import java.util.MissingResourceException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -54,5 +55,8 @@ public class ItemsTest {
     assertEquals("Item", item.caption());
     //repeat for some coverage
     assertEquals("Item", item.caption());
+
+    assertThrows(MissingResourceException.class, () -> Item.itemI18n("value", ItemsTest.class.getName(), "nonexisting"));
+    assertThrows(MissingResourceException.class, () -> Item.itemI18n("value", String.class.getName(), "item"));
   }
 }
