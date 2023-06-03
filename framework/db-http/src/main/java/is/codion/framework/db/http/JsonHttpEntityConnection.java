@@ -67,16 +67,16 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
    * Instantiates a new {@link JsonHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
-   * @param serverPort the http server port
-   * @param httpsEnabled if true then https is used
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
+   * @param serverPort the http server port
+   * @param httpsEnabled if true then https is used
    */
-  JsonHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
-    super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
-            "application/json", "/entities/json");
+  JsonHttpEntityConnection(String domainTypeName, String serverHostName, User user, String clientTypeId, UUID clientId,
+                           int serverPort, boolean httpsEnabled) {
+    super(domainTypeName, serverHostName, user, clientTypeId, clientId,
+            "application/json", "/entities/json", serverPort, httpsEnabled);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
     this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
   }

@@ -9125,3 +9125,4 @@
   EntityResultIterator.next() bug fixed, now throws NoSuchElementException correctly
   AbstractHttpEntityConnection.execute() workaround replaced with a HttpRequestRetryHandler implementation
   AbstractHttpEntityConnection, connectionManager constructor parameter removed
+  AbstractHttpEntityConnection, minor refactoring

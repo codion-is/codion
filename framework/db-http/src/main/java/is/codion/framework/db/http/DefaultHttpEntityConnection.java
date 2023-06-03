@@ -51,16 +51,16 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
    * Instantiates a new {@link DefaultHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
-   * @param serverPort the http server port
-   * @param httpsEnabled if true then https is used
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
+   * @param serverPort the http server port
+   * @param httpsEnabled if true then https is used
    */
-  DefaultHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                              boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
-    super(domainTypeName, serverHostName, serverPort, httpsEnabled, user, clientTypeId, clientId,
-            "application/octet-stream", "/entities/ser");
+  DefaultHttpEntityConnection(String domainTypeName, String serverHostName, User user, String clientTypeId,
+                              UUID clientId, int serverPort, boolean httpsEnabled) {
+    super(domainTypeName, serverHostName, user, clientTypeId, clientId,
+            "application/octet-stream", "/entities/ser", serverPort, httpsEnabled);
   }
 
   @Override
@@ -520,10 +520,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId);
+        return new JsonHttpEntityConnection(domainTypeName, serverHostName, user, clientTypeId, clientId, serverPort, https);
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, serverHostName, serverPort, https, user, clientTypeId, clientId);
+      return new DefaultHttpEntityConnection(domainTypeName, serverHostName, user, clientTypeId, clientId, serverPort, https);
     }
   }
 }
