@@ -5,6 +5,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.db.result.ResultIterator;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
@@ -22,7 +23,6 @@ import org.junit.jupiter.api.Test;
 
 import java.sql.SQLException;
 import java.util.Collections;
-import java.util.List;
 
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
@@ -95,19 +95,18 @@ public class EntityConnectionTest {
 
   @Test
   void insertEntities() throws SQLException, DatabaseException {
-    EntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
+    LocalEntityConnection sourceConnection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
+    try (ResultIterator<Entity> iterator = sourceConnection.iterator(condition(Department.TYPE))) {
+      assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
+              .batchSize(-10));
 
-    List<Entity> source = sourceConnection.select(condition(Department.TYPE));
-
-    assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
-            .batchSize(-10));
-
-    EventDataListener<Integer> progressReporter = currentProgress -> {};
-    EntityConnection.insertEntities(DESTINATION_CONNECTION, source.iterator())
-            .batchSize(2)
-            .progressReporter(progressReporter)
-            .onInsert(keys -> {})
-            .execute();
+      EventDataListener<Integer> progressReporter = currentProgress -> {};
+      EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
+              .batchSize(2)
+              .progressReporter(progressReporter)
+              .onInsert(keys -> {})
+              .execute();
+    }
     assertEquals(sourceConnection.rowCount(condition(Department.TYPE)),
             DESTINATION_CONNECTION.rowCount(condition(Department.TYPE)));
 

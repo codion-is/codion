@@ -41,8 +41,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
 
@@ -831,6 +833,26 @@ public class DefaultLocalEntityConnectionTest {
     finally {
       baseConnection.close();
       optimisticConnection.close();
+    }
+  }
+
+  @Test
+  void iterator() throws Exception {
+    try (LocalEntityConnection connection = createConnection()) {
+      Condition condition = condition(Employee.TYPE);
+      Iterator<Entity> iterator = connection.iterator(condition).iterator();
+      //calling hasNext() should be idempotent and not lose rows
+      assertTrue(iterator.hasNext());
+      assertTrue(iterator.hasNext());
+      assertTrue(iterator.hasNext());
+      int counter = 0;
+      while (iterator.hasNext()) {
+        iterator.next();
+        iterator.hasNext();
+        counter++;
+      }
+      assertThrows(NoSuchElementException.class, iterator::next);
+      assertEquals(connection.rowCount(condition), counter);
     }
   }
 

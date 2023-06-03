@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.Entity;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.NoSuchElementException;
 
 import static is.codion.common.db.database.Database.closeSilently;
 
@@ -18,6 +19,9 @@ final class EntityResultIterator implements ResultIterator<Entity> {
   private final Statement statement;
   private final ResultSet resultSet;
   private final ResultPacker<Entity> resultPacker;
+
+  private boolean hasNext;
+  private boolean hasNextCalled;
 
   /**
    * @param statement the Statement, closed on exception or exhaustion
@@ -32,8 +36,13 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 
   @Override
   public boolean hasNext() throws SQLException {
+    if (hasNextCalled) {
+      return hasNext;
+    }
     try {
-      if (resultSet.next()) {
+      hasNext = resultSet.next();
+      hasNextCalled = true;
+      if (hasNext) {
         return true;
       }
       close();
@@ -48,6 +57,10 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 
   @Override
   public Entity next() throws SQLException {
+    if (hasNextCalled && !hasNext) {
+      throw new NoSuchElementException();
+    }
+    hasNextCalled = false;
     try {
       return resultPacker.fetch(resultSet);
     }
