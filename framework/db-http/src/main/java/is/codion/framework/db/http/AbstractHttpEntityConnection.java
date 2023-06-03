@@ -87,7 +87,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.baseurl = requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
     this.user = requireNonNull(user, "user");
-    this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId), requireNonNull(contentType));
+    this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId).toString(), requireNonNull(contentType));
     this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.entities = initializeEntities();
@@ -175,9 +175,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     }
   }
 
-  private CloseableHttpClient createHttpClient(String clientTypeId, UUID clientId, String contentType) {
-    String clientIdString = clientId.toString();
-
+  private CloseableHttpClient createHttpClient(String clientTypeId, String clientId, String contentType) {
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(connectionManager)
@@ -185,7 +183,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
               request.setHeader(DOMAIN_TYPE_NAME, domainTypeName);
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(CLIENT_ID, clientIdString);
+              request.setHeader(CLIENT_ID, clientId);
               request.setHeader(CONTENT_TYPE, contentType);
             })
             .build();

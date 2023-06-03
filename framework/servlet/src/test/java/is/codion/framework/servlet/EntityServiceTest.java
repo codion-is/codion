@@ -8,7 +8,6 @@ import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.common.value.Value;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -108,12 +107,14 @@ public class EntityServiceTest {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
           Entities entities = (Entities) in.readObject();
+          assertNotNull(entities);
         }
       }
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("entities")), context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
           Entities entities = (Entities) in.readObject();
+          assertNotNull(entities);
         }
       }
     }
@@ -139,7 +140,7 @@ public class EntityServiceTest {
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createSerURI("isTransactionOpen")), context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         try (ObjectInputStream in = new ObjectInputStream(response.getEntity().getContent())) {
-          boolean result = (Boolean) in.readObject();
+          assertFalse((Boolean) in.readObject());
         }
       }
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, new HttpPost(createJsonURI("isTransactionOpen")), context)) {
@@ -528,26 +529,21 @@ public class EntityServiceTest {
   }
 
   private static CloseableHttpClient createClient() {
-    RequestConfig requestConfig = RequestConfig.custom()
-            .setSocketTimeout(2000)
-            .setConnectTimeout(2000)
-            .build();
+    String clientIdString = UUID.randomUUID().toString();
 
-    String domainName = new TestDomain().type().name();
-    String clientTypeId = "EntityJavalinTest";
-    Value<UUID> clientIdValue = Value.value(UUID.randomUUID());
-
-    CloseableHttpClient client = HttpClientBuilder.create()
-            .setDefaultRequestConfig(requestConfig)
+    return HttpClientBuilder.create()
+            .setDefaultRequestConfig(RequestConfig.custom()
+                    .setSocketTimeout(2000)
+                    .setConnectTimeout(2000)
+                    .build())
             .setConnectionManager(createConnectionManager())
             .addInterceptorFirst((HttpRequestInterceptor) (request, httpContext) -> {
-              request.setHeader(EntityService.DOMAIN_TYPE_NAME, domainName);
-              request.setHeader(EntityService.CLIENT_TYPE_ID, clientTypeId);
-              request.setHeader(EntityService.CLIENT_ID, clientIdValue.get().toString());
+              request.setHeader(EntityService.DOMAIN_TYPE_NAME, TestDomain.DOMAIN.name());
+              request.setHeader(EntityService.CLIENT_TYPE_ID, "EntityJavalinTest");
+              request.setHeader(EntityService.CLIENT_ID, clientIdString);
               request.setHeader("Content-Type", ContentType.APPLICATION_JSON.toString());
             })
             .build();
-    return client;
   }
 
   private static URI createSerURI(String path) throws URISyntaxException {
