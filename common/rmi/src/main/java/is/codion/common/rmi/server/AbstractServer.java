@@ -362,7 +362,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private ClientConnection<T> createConnection(ConnectionRequest connectionRequest) throws LoginException, RemoteException {
     RemoteClient remoteClient = RemoteClient.remoteClient(connectionRequest);
-    setClientHost(remoteClient, (String) connectionRequest.parameters().get(CLIENT_HOST_KEY));
+    setClientHost(remoteClient, (String) connectionRequest.parameters().get(CLIENT_HOST));
     for (LoginProxy loginProxy : sharedLoginProxies) {
       remoteClient = loginProxy.login(remoteClient);
     }
