@@ -57,7 +57,7 @@ final class EntityResultIterator implements ResultIterator<Entity> {
 
   @Override
   public Entity next() throws SQLException {
-    if (hasNextCalled && !hasNext) {
+    if (!hasNext()) {
       throw new NoSuchElementException();
     }
     hasNextCalled = false;

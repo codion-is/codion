@@ -852,7 +852,19 @@ public class DefaultLocalEntityConnectionTest {
         counter++;
       }
       assertThrows(NoSuchElementException.class, iterator::next);
-      assertEquals(connection.rowCount(condition), counter);
+      int rowCount = connection.rowCount(condition);
+      assertEquals(rowCount, counter);
+      iterator = connection.iterator(condition).iterator();
+      counter = 0;
+      try {
+        while (true) {
+          iterator.next();
+          counter++;
+        }
+      }
+      catch (NoSuchElementException e) {
+        assertEquals(rowCount, counter);
+      }
     }
   }
 

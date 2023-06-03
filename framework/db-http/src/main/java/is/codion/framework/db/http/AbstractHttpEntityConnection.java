@@ -16,6 +16,7 @@ import org.apache.http.auth.AuthScope;
 import org.apache.http.auth.UsernamePasswordCredentials;
 import org.apache.http.client.AuthCache;
 import org.apache.http.client.CredentialsProvider;
+import org.apache.http.client.HttpRequestRetryHandler;
 import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
@@ -28,14 +29,17 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
+import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Objects;
 import java.util.UUID;
+
+import static java.util.Objects.requireNonNull;
 
 abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
@@ -52,12 +56,12 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
           .setSocketTimeout(2000)
           .setConnectTimeout(2000)
           .build();
+  private final HttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
 
   private final String domainTypeName;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
-  private final HttpClientConnectionManager connectionManager;
   private final CloseableHttpClient httpClient;
   private final HttpHost targetHost;
   private final HttpClientContext httpContext;
@@ -70,27 +74,24 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * Instantiates a new {@link JsonHttpEntityConnection} instance
    * @param domainTypeName the name of the domain model type
    * @param serverHostName the http server host name
-   * @param serverPort the http server port
-   * @param httpsEnabled if true then https is used
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
    * @param contentType the content type string
    * @param path the path
-   * @param connectionManager the connection manager
+   * @param serverPort the http server port
+   * @param httpsEnabled if true then https is used
    */
-  AbstractHttpEntityConnection(String domainTypeName, String serverHostName, int serverPort,
-                               boolean httpsEnabled, User user, String clientTypeId, UUID clientId,
-                               String contentType, String path, HttpClientConnectionManager connectionManager) {
-    this.domainTypeName = Objects.requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
-    this.user = Objects.requireNonNull(user, "user");
-    this.httpsEnabled = httpsEnabled;
-    this.baseurl = Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
-    this.connectionManager = Objects.requireNonNull(connectionManager, "connectionManager");
-    this.httpClient = createHttpClient(clientTypeId, clientId, contentType);
-    this.targetHost = new HttpHost(serverHostName, serverPort, this.httpsEnabled ? HTTPS : HTTP);
+  AbstractHttpEntityConnection(String domainTypeName, String serverHostName, User user, String clientTypeId, UUID clientId,
+                               String contentType, String path, int serverPort, boolean httpsEnabled) {
+    this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
+    this.baseurl = requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + path;
+    this.user = requireNonNull(user, "user");
+    this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId), requireNonNull(contentType));
+    this.targetHost = new HttpHost(serverHostName, serverPort, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
     this.entities = initializeEntities();
+    this.httpsEnabled = httpsEnabled;
   }
 
   @Override
@@ -123,14 +124,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   }
 
   protected final CloseableHttpResponse execute(HttpUriRequest operation) throws IOException {
-    try {
-      return httpClient.execute(targetHost, operation, httpContext);
-    }
-    catch (NoHttpResponseException e) {
-      LOG.debug(e.getMessage(), e);
-      //retry once, todo fix server side if possible
-      return httpClient.execute(targetHost, operation, httpContext);
-    }
+    return httpClient.execute(targetHost, operation, httpContext);
   }
 
   protected final HttpPost createHttpPost(String path) throws URISyntaxException {
@@ -187,6 +181,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     return HttpClientBuilder.create()
             .setDefaultRequestConfig(requestConfig)
             .setConnectionManager(connectionManager)
+            .setRetryHandler(new RetryHandler())
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
               request.setHeader(DOMAIN_TYPE_NAME, domainTypeName);
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
@@ -210,5 +205,16 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
     context.setAuthCache(authCache);
 
     return context;
+  }
+
+  /**
+   * A single automatic retry for a NoHttpResponseException.
+   */
+  private static final class RetryHandler implements HttpRequestRetryHandler {
+
+    @Override
+    public boolean retryRequest(IOException exception, int executionCount, HttpContext context) {
+      return executionCount < 2 && exception instanceof NoHttpResponseException;
+    }
   }
 }
