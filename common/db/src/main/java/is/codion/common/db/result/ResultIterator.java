@@ -5,6 +5,7 @@ package is.codion.common.db.result;
 
 import java.sql.SQLException;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 
 /**
  * Iterates through a ResultSet fetching instances of T.
@@ -52,6 +53,9 @@ public interface ResultIterator<T> extends AutoCloseable {
 
       @Override
       public T next() {
+        if (!hasNext()) {
+          throw new NoSuchElementException();
+        }
         try {
           return ResultIterator.this.next();
         }
