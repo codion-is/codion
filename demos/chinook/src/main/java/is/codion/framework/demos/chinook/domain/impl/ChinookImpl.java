@@ -460,7 +460,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     @Override
     public Collection<Entity> execute(EntityConnection entityConnection,
-                                RaisePriceParameters parameters) throws DatabaseException {
+                                      RaisePriceParameters parameters) throws DatabaseException {
       SelectCondition selectCondition = where(Track.ID)
               .equalTo(parameters.trackIds())
               .selectBuilder()

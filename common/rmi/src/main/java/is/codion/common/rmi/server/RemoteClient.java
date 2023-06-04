@@ -24,12 +24,7 @@ public interface RemoteClient extends ConnectionRequest {
   /**
    * @return the client hostname
    */
-  String getClientHost();
-
-  /**
-   * @param clientHost the client hostname
-   */
-  void setClientHost(String clientHost);
+  String clientHost();
 
   /**
    * Instantiates a new RemoteClient based on this instance
@@ -56,10 +51,31 @@ public interface RemoteClient extends ConnectionRequest {
   /**
    * Instantiates a new RemoteClient
    * @param connectionRequest the connection request
+   * @param clientHost the client hostname
+   * @return a new RemoteClient instance
+   */
+  static RemoteClient remoteClient(ConnectionRequest connectionRequest, String clientHost) {
+    return remoteClient(connectionRequest, connectionRequest.user(), clientHost);
+  }
+
+  /**
+   * Instantiates a new RemoteClient
+   * @param connectionRequest the connection request
    * @param databaseUser the user to use when connecting to the underlying database
    * @return a new RemoteClient instance
    */
   static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser) {
-    return new DefaultRemoteClient(connectionRequest, databaseUser);
+    return remoteClient(connectionRequest, databaseUser, null);
+  }
+
+  /**
+   * Instantiates a new RemoteClient
+   * @param connectionRequest the connection request
+   * @param databaseUser the user to use when connecting to the underlying database
+   * @param clientHost the client hostname
+   * @return a new RemoteClient instance
+   */
+  static RemoteClient remoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost) {
+    return new DefaultRemoteClient(connectionRequest, databaseUser, clientHost);
   }
 }

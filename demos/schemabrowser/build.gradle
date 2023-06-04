@@ -18,10 +18,10 @@ dependencies {
     testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-swing-framework-ui-test')
 
-    implementation (libs.jfreechart)
+    implementation(libs.jfreechart)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext {
@@ -56,10 +56,10 @@ test {
     }
     systemProperty "codion.db.initScripts",
             "../chinook/src/main/sql/create_schema.sql," +
-            "../empdept/src/main/sql/create_schema.sql," +
-            "../petclinic/src/main/sql/create_schema.sql," +
-            "../petstore/src/main/sql/create_schema.sql," +
-            "../world/src/main/sql/create_schema.sql"
+                    "../empdept/src/main/sql/create_schema.sql," +
+                    "../petclinic/src/main/sql/create_schema.sql," +
+                    "../petstore/src/main/sql/create_schema.sql," +
+                    "../world/src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 

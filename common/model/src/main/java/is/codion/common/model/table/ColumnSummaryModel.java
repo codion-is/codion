@@ -108,8 +108,8 @@ public interface ColumnSummaryModel {
       /**
        * @param columnIdentifier the column identifier
        * @param format the format to use
-       * @return a summary value provider or an empty Optional, if no summary is available for the column
        * @param <T> the column type
+       * @return a summary value provider or an empty Optional, if no summary is available for the column
        */
       <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(C columnIdentifier, Format format);
     }

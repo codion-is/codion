@@ -13,7 +13,7 @@ dependencies {
     api project(':codion-swing-framework-tools')
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 
 //    runtimeOnly project(':codion-dbms-postgresql')
 //    runtimeOnly 'org.postgresql:postgresql:42.5.4'
@@ -81,10 +81,10 @@ tasks.register('runDatabaseExplorerH2', ModularJavaExec) {
             'codion.db.url'        : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts':
                     '../../demos/chinook/src/main/sql/create_schema.sql,' +
-                    '../../demos/empdept/src/main/sql/create_schema.sql,' +
-                    '../../demos/petclinic/src/main/sql/create_schema.sql,' +
-                    '../../demos/petstore/src/main/sql/create_schema.sql,' +
-                    '../../demos/world/src/main/sql/create_schema.sql'
+                            '../../demos/empdept/src/main/sql/create_schema.sql,' +
+                            '../../demos/petclinic/src/main/sql/create_schema.sql,' +
+                            '../../demos/petstore/src/main/sql/create_schema.sql,' +
+                            '../../demos/world/src/main/sql/create_schema.sql'
     ]
 }
 

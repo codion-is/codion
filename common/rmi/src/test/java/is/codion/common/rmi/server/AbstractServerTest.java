@@ -91,7 +91,7 @@ public class AbstractServerTest {
 
     RemoteClient client = server.clients(UNIT_TEST_USER).iterator().next();
     client.connectionRequest();
-    client.getClientHost();
+    client.clientHost();
     client.clientVersion();
     client.frameworkVersion();
     client.databaseUser();

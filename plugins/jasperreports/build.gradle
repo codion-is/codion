@@ -6,23 +6,23 @@ dependencies {
 
     testImplementation project(':codion-framework-db-local')
 
-    implementation (libs.jasperreports) {
+    implementation(libs.jasperreports) {
         transitive = false
     }
 
-    implementation (libs.commons.logging)
-    implementation (libs.commons.digester) {
+    implementation(libs.commons.logging)
+    implementation(libs.commons.digester) {
         transitive = false
     }
-    implementation (libs.commons.collections4)
-    implementation (libs.commons.beanutils) {
+    implementation(libs.commons.collections4)
+    implementation(libs.commons.beanutils) {
         transitive = false
     }
-    implementation (libs.jdt.core.compiler)
+    implementation(libs.jdt.core.compiler)
 
     testImplementation project(':codion-dbms-h2database')
-    testImplementation (libs.jetty)
-    testRuntimeOnly (libs.h2)
+    testImplementation(libs.jetty)
+    testRuntimeOnly(libs.h2)
 }
 
 ext {

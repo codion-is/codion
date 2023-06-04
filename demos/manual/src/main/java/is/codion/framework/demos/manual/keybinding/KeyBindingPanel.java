@@ -45,9 +45,9 @@ public final class KeyBindingPanel extends JPanel {
     this.keyBindingModel = new KeyBindingModel(lookAndFeelComboBox.getModel());
     this.table = FilteredTable.builder(keyBindingModel.tableModel()).build();
     this.componentComboBox = comboBox(keyBindingModel.componentComboBoxModel())
-          .preferredHeight(preferredTextFieldHeight())
-          .preferredWidth(200)
-          .build();
+            .preferredHeight(preferredTextFieldHeight())
+            .preferredWidth(200)
+            .build();
     setBorder(createEmptyBorder(10, 10, 10, 10));
     add(panel(flexibleGridLayout(1, 4))
             .add(label("Look & Feel")

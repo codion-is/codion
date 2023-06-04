@@ -12,13 +12,13 @@ dependencies {
     runtimeOnly project(':codion-framework-db-rmi')
     runtimeOnly project(':codion-framework-db-http')
 
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf.intellij.themes)
 
     testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-swing-framework-ui-test')
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext {

@@ -262,8 +262,8 @@ public final class ClientUserMonitor {
         List<UserInfo> items = new ArrayList<>(userHistoryTableModel.items());
         for (RemoteClient remoteClient : server.clients()) {
           UserInfo newUserInfo = new UserInfo(remoteClient.user(), remoteClient.clientTypeId(),
-                  remoteClient.getClientHost(), LocalDateTime.now(), remoteClient.clientId(), remoteClient.clientVersion(),
-                  remoteClient.frameworkVersion());
+                  remoteClient.clientHost(), LocalDateTime.now(), remoteClient.clientId(),
+                  remoteClient.clientVersion(), remoteClient.frameworkVersion());
           int index = items.indexOf(newUserInfo);
           if (index == -1) {
             items.add(newUserInfo);
@@ -291,14 +291,22 @@ public final class ClientUserMonitor {
     @Override
     public Object value(UserInfo row, Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case USERNAME_COLUMN: return row.user().username();
-        case CLIENT_TYPE_COLUMN: return row.clientTypeId();
-        case CLIENT_VERSION_COLUMN: return row.clientVersion();
-        case FRAMEWORK_VERSION_COLUMN: return row.frameworkVersion();
-        case CLIENT_HOST_COLUMN: return row.clientHost();
-        case LAST_SEEN_COLUMN: return row.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return row.connectionCount();
-        default: throw new IllegalArgumentException(columnIdentifier.toString());
+        case USERNAME_COLUMN:
+          return row.user().username();
+        case CLIENT_TYPE_COLUMN:
+          return row.clientTypeId();
+        case CLIENT_VERSION_COLUMN:
+          return row.clientVersion();
+        case FRAMEWORK_VERSION_COLUMN:
+          return row.frameworkVersion();
+        case CLIENT_HOST_COLUMN:
+          return row.clientHost();
+        case LAST_SEEN_COLUMN:
+          return row.getLastSeen();
+        case CONNECTION_COUNT_COLUMN:
+          return row.connectionCount();
+        default:
+          throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }
   }

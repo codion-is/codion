@@ -29,7 +29,7 @@ dependencies {
 
     testImplementation project(':codion-swing-framework-ui-test')
 
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf.intellij.themes)
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
@@ -37,14 +37,14 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly (libs.commons.logging)
-    runtimeOnly (libs.commons.digester)
-    runtimeOnly (libs.commons.collections4)
-    runtimeOnly (libs.commons.beanutils)
-    runtimeOnly (libs.jdt.core.compiler)
+    runtimeOnly(libs.commons.logging)
+    runtimeOnly(libs.commons.digester)
+    runtimeOnly(libs.commons.collections4)
+    runtimeOnly(libs.commons.beanutils)
+    runtimeOnly(libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext {

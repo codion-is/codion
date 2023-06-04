@@ -193,9 +193,12 @@ final class DefaultStateCombination implements State.Combination {
 
   private static String toString(Conjunction conjunction) {
     switch (conjunction) {
-      case AND: return " and ";
-      case OR: return " or ";
-      default: throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
+      case AND:
+        return " and ";
+      case OR:
+        return " or ";
+      default:
+        throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
     }
   }
 }

@@ -338,16 +338,26 @@ public interface ColumnConditionModel<C, T> {
    */
   static String caption(Operator operator) {
     switch (requireNonNull(operator)) {
-      case EQUAL: return "α =";
-      case NOT_EQUAL: return "α ≠";
-      case LESS_THAN: return "α <";
-      case LESS_THAN_OR_EQUAL: return "α ≤";
-      case GREATER_THAN: return "α >";
-      case GREATER_THAN_OR_EQUAL: return "α ≥";
-      case BETWEEN_EXCLUSIVE: return "< α <";
-      case BETWEEN: return "≤ α ≤";
-      case NOT_BETWEEN_EXCLUSIVE: return "≥ α ≥";
-      case NOT_BETWEEN: return "> α >";
+      case EQUAL:
+        return "α =";
+      case NOT_EQUAL:
+        return "α ≠";
+      case LESS_THAN:
+        return "α <";
+      case LESS_THAN_OR_EQUAL:
+        return "α ≤";
+      case GREATER_THAN:
+        return "α >";
+      case GREATER_THAN_OR_EQUAL:
+        return "α ≥";
+      case BETWEEN_EXCLUSIVE:
+        return "< α <";
+      case BETWEEN:
+        return "≤ α ≤";
+      case NOT_BETWEEN_EXCLUSIVE:
+        return "≥ α ≥";
+      case NOT_BETWEEN:
+        return "> α >";
       default:
         throw new IllegalArgumentException("Unknown operator: " + operator);
     }

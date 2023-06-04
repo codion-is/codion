@@ -6,17 +6,17 @@ dependencies {
     api project(':codion-swing-common-tools')
     api project(':codion-swing-framework-model')
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testImplementation project(':codion-common-rmi')
     testImplementation project(':codion-framework-server')
     testRuntimeOnly project(':codion-framework-db-rmi')
 
-    implementation (libs.jfreechart)
+    implementation(libs.jfreechart)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }
 
 ext {

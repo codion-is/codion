@@ -18,7 +18,8 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 
 /**
- * Provides configuration values which sync with system properties when set. Note that setting the value via {@link System#setProperty(String, String)} does not affect the property store value, so the value should only be modified via the property store value instance.
+ * Provides configuration values which sync with system properties when set. Note that setting the value via {@link System#setProperty(String, String)}
+ * does not affect the property store value, so the value should only be modified via the property store value instance.
  * If no value is found in a configuration file or in a system property, the default property value is used as the inital value.
  * When the value is set to null via {@link is.codion.common.value.Value#set(Object)} the default value is used, if one has been specified.
  * <pre>

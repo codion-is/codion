@@ -2,10 +2,10 @@ dependencies {
     api project(':codion-common-core')
     api project(':codion-common-db')
 
-    implementation (libs.hikari)
+    implementation(libs.hikari)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }
 
 ext {

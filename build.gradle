@@ -23,8 +23,8 @@ configure(project.frameworkModules) {
     apply plugin: 'com.diffplug.spotless'
 
     dependencies {
-        testImplementation (libs.junit.api)
-        testImplementation (libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
+        testImplementation(libs.junit.api)
+        testImplementation(libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
     }
 
     clean {
@@ -59,7 +59,7 @@ configure(project.frameworkModules) {
 
     spotless {
         java {
-            licenseHeader ('/*\n' + ' * Copyright (c) $YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n' + ' */').yearSeparator(' - ')
+            licenseHeader('/*\n' + ' * Copyright (c) $YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n' + ' */').yearSeparator(' - ')
         }
     }
 
@@ -130,7 +130,7 @@ configure(project.frameworkModules) {
         def certificate = keystoreDir + 'certificate.cer'
         def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
 
-        onlyIf {!file(keystore).exists()}
+        onlyIf { !file(keystore).exists() }
 
         doLast {
             exec {

@@ -44,7 +44,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
 
     EntityPanel employeePanelBuilder = new EntityPanel(employeeModel,
-            new EmployeeEditPanel(employeeModel.editModel())); ;
+            new EmployeeEditPanel(employeeModel.editModel()));
 
     EntityPanel departmentPanel = new EntityPanel(departmentModel,
             new DepartmentEditPanel(departmentModel.editModel()),

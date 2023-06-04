@@ -60,11 +60,16 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     public Object apply(Entity entity, JRField field) {
       Country country = entity.castTo(Country.class);
       switch (field.getName()) {
-        case NAME: return country.name();
-        case CONTINENT: return country.continent();
-        case REGION: return country.region();
-        case SURFACEAREA: return country.surfacearea();
-        case POPULATION: return country.population();
+        case NAME:
+          return country.name();
+        case CONTINENT:
+          return country.continent();
+        case REGION:
+          return country.region();
+        case SURFACEAREA:
+          return country.surfacearea();
+        case POPULATION:
+          return country.population();
         default:
           throw new IllegalArgumentException("Unknown field: " + field.getName());
       }
@@ -80,8 +85,10 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     public Object apply(Entity entity, JRField field) {
       City city = entity.castTo(City.class);
       switch (field.getName()) {
-        case NAME: return city.name();
-        case POPULATION: return city.population();
+        case NAME:
+          return city.name();
+        case POPULATION:
+          return city.population();
         default:
           throw new IllegalArgumentException("Unknown field: " + field.getName());
       }

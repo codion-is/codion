@@ -304,9 +304,12 @@ final class SelectQueries {
 
     private String nullOrderString(OrderBy.NullOrder nullOrder) {
       switch (nullOrder) {
-        case NULLS_FIRST: return NULL_FIRST;
-        case NULLS_LAST: return NULL_LAST;
-        default: return "";
+        case NULLS_FIRST:
+          return NULL_FIRST;
+        case NULLS_LAST:
+          return NULL_LAST;
+        default:
+          return "";
       }
     }
   }

@@ -5,7 +5,7 @@ dependencies {
     api project(':codion-swing-common-tools')
     implementation project(':codion-swing-common-ui')
 
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf.intellij.themes)
 }
 
 ext {

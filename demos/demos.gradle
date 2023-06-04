@@ -33,9 +33,9 @@ sonarqube {
 }
 
 dependencies {
-    implementation (libs.slf4j.api)
-    testImplementation (libs.junit.api)
-    testRuntimeOnly (libs.junit.engine)
+    implementation(libs.slf4j.api)
+    testImplementation(libs.junit.api)
+    testRuntimeOnly(libs.junit.engine)
 }
 
 configurations {
@@ -54,7 +54,7 @@ tasks.register('domainJar', Jar) {
     include '**/services/**/*'
     includeEmptyDirs false
     manifest {
-        attributes 'Automatic-Module-Name' : "is." + project.name.replace('-', '.') + ".domain"
+        attributes 'Automatic-Module-Name': "is." + project.name.replace('-', '.') + ".domain"
     }
 }
 
