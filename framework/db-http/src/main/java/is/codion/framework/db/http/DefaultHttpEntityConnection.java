@@ -56,11 +56,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientId the client id
    * @param port the http server port
    * @param httpsEnabled if true then https is used
+   * @param socketTimeout the socket timeout
+   * @param connectTimeout the connect timeout
    */
-  DefaultHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId,
-                              UUID clientId, int port, boolean httpsEnabled) {
-    super(domainTypeName, hostName, user, clientTypeId, clientId,
-            "application/octet-stream", "/entities/ser", port, httpsEnabled);
+  DefaultHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
+                              int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
+    super(domainTypeName, hostName, user, clientTypeId, clientId, "application/octet-stream", "/entities/ser",
+            port, httpsEnabled, socketTimeout, connectTimeout);
   }
 
   @Override
@@ -461,10 +463,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   static final class DefaultBuilder implements Builder {
 
     private String domainTypeName;
-    private String hostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get();
-    private int port = HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get();
-    private boolean https = HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get();
-    private boolean json = HttpEntityConnectionProvider.HTTP_CLIENT_JSON.get();
+    private String hostName = HttpEntityConnection.HOSTNAME.get();
+    private int port = HttpEntityConnection.PORT.get();
+    private boolean https = HttpEntityConnection.SECURE.get();
+    private boolean json = HttpEntityConnection.JSON.get();
+    private int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
+    private int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
     private User user;
     private String clientTypeId;
     private UUID clientId;
@@ -500,6 +504,18 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     }
 
     @Override
+    public Builder socketTimeout(int socketTimeout) {
+      this.socketTimeout = socketTimeout;
+      return null;
+    }
+
+    @Override
+    public Builder connectTimeout(int connectTimeout) {
+      this.connectTimeout = connectTimeout;
+      return this;
+    }
+
+    @Override
     public Builder user(User user) {
       this.user = requireNonNull(user);
       return this;
@@ -520,10 +536,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https);
+        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https, socketTimeout, connectTimeout);
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https);
+      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https, socketTimeout, connectTimeout);
     }
   }
 }

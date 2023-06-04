@@ -254,8 +254,8 @@ abstract class AbstractHttpEntityConnectionTest {
   private static EntityServerConfiguration configure() {
     Report.REPORT_PATH.set("report/path");
     EntityService.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
-    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(WEB_SERVER_PORT_NUMBER);
+    HttpEntityConnection.SECURE.set(false);
+    HttpEntityConnection.PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)
@@ -270,8 +270,8 @@ abstract class AbstractHttpEntityConnectionTest {
   private static void deconfigure() {
     Report.REPORT_PATH.set(null);
     EntityService.HTTP_SERVER_PORT.set(null);
-    HttpEntityConnectionProvider.HTTP_CLIENT_PORT.set(null);
-    HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.set(false);
+    HttpEntityConnection.PORT.set(null);
+    HttpEntityConnection.SECURE.set(false);
     System.clearProperty("java.security.policy");
   }
 }

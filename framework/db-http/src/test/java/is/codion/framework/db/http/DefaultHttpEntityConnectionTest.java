@@ -14,9 +14,11 @@ public final class DefaultHttpEntityConnectionTest extends AbstractHttpEntityCon
 
   public DefaultHttpEntityConnectionTest() {
     super(new DefaultHttpEntityConnection(TestDomain.DOMAIN.name(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get(),
+            HttpEntityConnection.HOSTNAME.get(),
             UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get(),
-            HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get()));
+            HttpEntityConnection.PORT.get(),
+            HttpEntityConnection.SECURE.get(),
+            HttpEntityConnection.SOCKET_TIMEOUT.get(),
+            HttpEntityConnection.CONNECT_TIMEOUT.get()));
   }
 }

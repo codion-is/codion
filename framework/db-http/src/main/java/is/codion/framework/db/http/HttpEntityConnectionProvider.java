@@ -3,47 +3,19 @@
  */
 package is.codion.framework.db.http;
 
-import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 
 /**
  * A class responsible for managing a HttpEntityConnection.
  * @see HttpEntityConnectionProvider#builder()
- * @see HttpEntityConnectionProvider#HTTP_CLIENT_HOSTNAME
- * @see HttpEntityConnectionProvider#HTTP_CLIENT_PORT
- * @see HttpEntityConnectionProvider#HTTP_CLIENT_SECURE
- * @see HttpEntityConnectionProvider#HTTP_CLIENT_JSON
+ * @see HttpEntityConnection#HOSTNAME
+ * @see HttpEntityConnection#PORT
+ * @see HttpEntityConnection#SECURE
+ * @see HttpEntityConnection#JSON
+ * @see HttpEntityConnection#SOCKET_TIMEOUT
+ * @see HttpEntityConnection#CONNECT_TIMEOUT
  */
 public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
-
-  /**
-   * The host on which to locate the http server<br>
-   * Value type: String<br>
-   * Default value: localhost
-   */
-  PropertyValue<String> HTTP_CLIENT_HOSTNAME = Configuration.stringValue("codion.client.http.hostname", "localhost");
-
-  /**
-   * The port which the http client should use.<br>
-   * Value type: Integer<br>
-   * Default value: 8080
-   */
-  PropertyValue<Integer> HTTP_CLIENT_PORT = Configuration.integerValue("codion.client.http.port", 8080);
-
-  /**
-   * Specifies whether https should be used.<br>
-   * Value type: boolean<br>
-   * Default value: true
-   */
-  PropertyValue<Boolean> HTTP_CLIENT_SECURE = Configuration.booleanValue("codion.client.http.secure", true);
-
-  /**
-   * Specifies whether json serialization should be used.<br>
-   * Value types: Boolean<br>
-   * Default value: true
-   */
-  PropertyValue<Boolean> HTTP_CLIENT_JSON = Configuration.booleanValue("codion.client.http.json", true);
 
   /**
    * Instantiates a new builder instance.
@@ -81,5 +53,17 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
      * @return this builder instance
      */
     Builder json(boolean json);
+
+    /**
+     * @param socketTimeout the socket timeout
+     * @return this builder instance
+     */
+    Builder socketTimeout(int socketTimeout);
+
+    /**
+     * @param connectTimeout the connect timeout
+     * @return this builder instance
+     */
+    Builder connectTimeout(int connectTimeout);
   }
 }

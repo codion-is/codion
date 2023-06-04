@@ -24,6 +24,8 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
   private final int port;
   private final boolean https;
   private final boolean json;
+  private final int socketTimeout;
+  private final int connectTimeout;
 
   DefaultHttpEntityConnectionProvider(DefaultHttpEntityConnectionProviderBuilder builder) {
     super(builder);
@@ -31,6 +33,8 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
     this.port = builder.port;
     this.https = builder.https;
     this.json = builder.json;
+    this.socketTimeout = builder.socketTimeout;
+    this.connectTimeout = builder.connectTimeout;
   }
 
   @Override
@@ -56,6 +60,8 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
               .clientId(clientId())
               .json(json)
               .https(https)
+              .socketTimeout(socketTimeout)
+              .connectTimeout(connectTimeout)
               .build();
     }
     catch (Exception e) {

@@ -52,10 +52,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   private static final String HTTP = "http";
   private static final String HTTPS = "https";
 
-  private final RequestConfig requestConfig = RequestConfig.custom()
-          .setSocketTimeout(2000)
-          .setConnectTimeout(2000)
-          .build();
+  private final RequestConfig requestConfig;
   private final HttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
 
   private final String domainTypeName;
@@ -81,12 +78,18 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * @param path the path
    * @param port the http server port
    * @param httpsEnabled if true then https is used
+   * @param socketTimeout the socket timeout
+   * @param connectTimeout the connect timeout
    */
-  AbstractHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
-                               String contentType, String path, int port, boolean httpsEnabled) {
+  AbstractHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId, String contentType,
+                               String path, int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
     this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
     this.baseurl = requireNonNull(hostName, "hostName") + ":" + port + path;
     this.user = requireNonNull(user, "user");
+    this.requestConfig = RequestConfig.custom()
+          .setSocketTimeout(socketTimeout)
+          .setConnectTimeout(connectTimeout)
+          .build();
     this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId).toString(), requireNonNull(contentType));
     this.targetHost = new HttpHost(hostName, port, httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);

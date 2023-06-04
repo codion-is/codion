@@ -9131,3 +9131,4 @@
   HttpEntityConnectionProvider.Builder, RemoteEntityConnectionProvider.Builder, serverHostName() and serverPort() renamed to hostName() and port(), related renaming
   ServerConfiguration.Builder.serverNameProvider() renamed serverNameSupplier()
   RemoteClient.setClientHost() removed, factory methods overloaded with clientHost parameter, getClientHost() renamed clientHost()
+  HttpEntityConnection.SOCKET_TIMEOUT and CONNECT_TIMEOUT configuration parameters added, related refactoring and renaming
