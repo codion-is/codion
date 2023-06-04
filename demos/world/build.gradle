@@ -14,7 +14,7 @@ dependencies {
     implementation(libs.jfreechart)
     implementation(libs.json)
     implementation 'org.jxmapviewer:jxmapviewer2:2.6'
-    implementation "org.kordamp.ikonli:ikonli-foundation-pack:12.3.1"
+    implementation 'org.kordamp.ikonli:ikonli-foundation-pack:12.3.1'
 
     testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-swing-framework-ui-test')
@@ -43,7 +43,7 @@ extraJavaModuleInfo {
 }
 
 application {
-    mainClass = "is.codion.framework.demos.world.ui.WorldAppPanel"
+    mainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'
 }
 
 buildReports {

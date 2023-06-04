@@ -36,6 +36,8 @@ distributions {
     }
 }
 
+applicationName = 'database_explorer'
+
 application {
     mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
 }

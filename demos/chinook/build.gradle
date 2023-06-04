@@ -50,11 +50,11 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
-
 application {
     mainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
 }
+
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 javafx {
     version = '18'

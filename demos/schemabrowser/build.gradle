@@ -22,7 +22,7 @@ dependencies {
 }
 
 application {
-    mainClass = "is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"
+    mainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
 }
 
 test {
