@@ -41,8 +41,9 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.chinook.ui.ChinookAppPanel'
-ext.execLoadTestMainClass = 'is.codion.framework.demos.chinook.testing.ChinookLoadTest'
+application {
+    mainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
+}
 
 buildReports {
     sourceDir = file('src/main/reports')
@@ -55,41 +56,41 @@ test {
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 loadTestRMIScript {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
 loadTestHttpScript {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runLoadTestRMI {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
 runLoadTestHttp {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }

@@ -37,7 +37,9 @@ distributions {
 
 applicationName = 'database_explorer'
 
-mainClassName = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+application {
+    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
+}
 
 applicationDefaultJvmArgs = [
         '-Dcodion.configurationFile=../config/database_explorer.config',

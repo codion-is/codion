@@ -38,7 +38,9 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'
+application {
+    mainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'
+}
 
 buildReports {
     sourceDir = file('src/main/reports')
@@ -51,25 +53,25 @@ test {
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }

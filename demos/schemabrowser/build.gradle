@@ -21,7 +21,9 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+application {
+    mainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
+}
 
 test {
     systemProperty "codion.db.initScripts",
@@ -34,7 +36,7 @@ test {
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
     //overwrite the defaults to leave out initScript
     defaultJvmOpts = [
             '-Dcodion.client.connectionType=local',
@@ -43,15 +45,15 @@ startScripts {
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
     //overwrite the defaults to leave out initScript
     systemProperties = [
             'codion.client.connectionType': 'local',
@@ -65,9 +67,9 @@ runClientLocal {
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }

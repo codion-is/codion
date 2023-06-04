@@ -26,28 +26,30 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.manual.store.ui.StoreAppPanel'
+application {
+    mainClass = "is.codion.framework.demos.manual.store.ui.StoreAppPanel"
+}
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }

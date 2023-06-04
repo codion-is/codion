@@ -18,7 +18,9 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.petclinic.ui.PetclinicAppPanel'
+application {
+    mainClass = "is.codion.framework.demos.petclinic.ui.PetclinicAppPanel"
+}
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
@@ -26,25 +28,25 @@ test {
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }

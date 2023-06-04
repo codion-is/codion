@@ -40,8 +40,9 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = 'is.codion.framework.demos.empdept.ui.EmpDeptAppPanel'
-ext.execLoadTestMainClass = 'is.codion.framework.demos.empdept.testing.EmpDeptLoadTest'
+application {
+    mainClass = "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
+}
 
 buildReports {
     sourceDir = file('src/main/reports')
@@ -54,27 +55,27 @@ test {
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientRMIScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 clientHttpScript {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 loadTestRMIScript {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
 
 loadTestHttpScript {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
 
 runClientLocal {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 tasks.register('runClientLocalFX', JavaExec) {
@@ -89,17 +90,17 @@ tasks.register('runClientLocalFX', JavaExec) {
 }
 
 runClientRMI {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runClientHttp {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
 runLoadTestRMI {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
 
 runLoadTestHttp {
-    mainClass.set(execLoadTestMainClass)
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
