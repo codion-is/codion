@@ -7,9 +7,9 @@ dependencies {
 
     implementation project(':codion-framework-json')
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
-    implementation (libs.http.client)
+    implementation(libs.http.client)
 
     testImplementation project(':codion-common-rmi')
     testImplementation project(':codion-framework-server')
@@ -17,5 +17,5 @@ dependencies {
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }

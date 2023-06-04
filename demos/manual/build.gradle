@@ -14,8 +14,8 @@ dependencies {
     implementation project(':codion-framework-servlet')
     implementation project(':codion-dbms-h2database')
 
-    implementation (libs.flatlaf)
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf)
+    implementation(libs.flatlaf.intellij.themes)
 
     implementation(libs.jasperreports) {
         transitive = false
@@ -23,7 +23,7 @@ dependencies {
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.manual.store.ui.StoreAppPanel'

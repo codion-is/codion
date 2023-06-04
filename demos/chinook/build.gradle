@@ -22,8 +22,8 @@ dependencies {
     implementation project(':codion-framework-db-http')
     implementation project(':codion-framework-db-rmi')
 
-    implementation (libs.flatlaf)
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf)
+    implementation(libs.flatlaf.intellij.themes)
 
     testImplementation project(':codion-framework-domain-test')
 
@@ -31,14 +31,14 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly (libs.commons.logging)
-    runtimeOnly (libs.commons.digester)
-    runtimeOnly (libs.commons.collections4)
-    runtimeOnly (libs.commons.beanutils)
-    runtimeOnly (libs.jdt.core.compiler)
+    runtimeOnly(libs.commons.logging)
+    runtimeOnly(libs.commons.digester)
+    runtimeOnly(libs.commons.collections4)
+    runtimeOnly(libs.commons.beanutils)
+    runtimeOnly(libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.chinook.ui.ChinookAppPanel'

@@ -8,13 +8,13 @@ dependencies {
 
     api project(':codion-swing-common-model')
 
-    implementation (libs.json)
+    implementation(libs.json)
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
 
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }

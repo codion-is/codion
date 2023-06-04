@@ -4,8 +4,8 @@ dependencies {
 
     api project(':codion-swing-common-model')
 
-    api (libs.ikonli.core)
-    implementation (libs.ikonli.swing)
+    api(libs.ikonli.core)
+    implementation(libs.ikonli.swing)
 
-    testImplementation (libs.ikonli.foundation.pack)
+    testImplementation(libs.ikonli.foundation.pack)
 }

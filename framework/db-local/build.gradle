@@ -5,8 +5,8 @@ dependencies {
     api project(':codion-framework-domain')
     api project(':codion-framework-db-core')
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }

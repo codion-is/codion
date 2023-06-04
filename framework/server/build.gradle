@@ -16,11 +16,11 @@ dependencies {
     api project(':codion-framework-db-local')
     api project(':codion-framework-db-rmi')
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 
     serverRuntime project(':codion-framework-server')
     serverRuntime project(':codion-framework-servlet')
@@ -36,7 +36,7 @@ dependencies {
     serverRuntime project(path: ':codion-demos-world', configuration: 'domain')
 
     serverRuntime project(':codion-dbms-h2database')
-    serverRuntime (libs.h2)
+    serverRuntime(libs.h2)
 }
 
 mainClassName = 'is.codion.framework.server.EntityServer'
@@ -98,20 +98,20 @@ tasks.register('runServer', JavaExec) {
     mainClass.set(mainClassName)
     maxHeapSize = '256m'
     systemProperties = [
-            'codion.db.url'                             : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'                     : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'codion.server.connectionPoolUsers'         : 'scott:tiger',
-            'codion.server.port'                        : '2222',
-            'codion.server.admin.port'                  : '2223',
-            'codion.server.admin.user'                  : 'scott:tiger',
-            'codion.server.http.secure'                 : 'false',
-            'codion.server.pooling.poolFactoryClass'    : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
-            'codion.server.auxiliaryServerFactoryClassNames'   : 'is.codion.framework.servlet.EntityServiceFactory',
-            'codion.server.serializationFilterWhitelist': 'src/main/config/serialization-whitelist.txt',
-            'codion.server.serializationFilterDryRun'   : 'false',
-            'javax.net.ssl.keyStore'                    : 'src/main/config/keystore.jks',
-            'javax.net.ssl.keyStorePassword'            : 'crappypass',
-            'java.rmi.server.hostname'                  : "${serverHostName}",
-            'logback.configurationFile'                 : 'src/main/config/logback.xml'
+            'codion.db.url'                                 : 'jdbc:h2:mem:h2db',
+            'codion.db.initScripts'                         : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
+            'codion.server.connectionPoolUsers'             : 'scott:tiger',
+            'codion.server.port'                            : '2222',
+            'codion.server.admin.port'                      : '2223',
+            'codion.server.admin.user'                      : 'scott:tiger',
+            'codion.server.http.secure'                     : 'false',
+            'codion.server.pooling.poolFactoryClass'        : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
+            'codion.server.auxiliaryServerFactoryClassNames': 'is.codion.framework.servlet.EntityServiceFactory',
+            'codion.server.serializationFilterWhitelist'    : 'src/main/config/serialization-whitelist.txt',
+            'codion.server.serializationFilterDryRun'       : 'false',
+            'javax.net.ssl.keyStore'                        : 'src/main/config/keystore.jks',
+            'javax.net.ssl.keyStorePassword'                : 'crappypass',
+            'java.rmi.server.hostname'                      : "${serverHostName}",
+            'logback.configurationFile'                     : 'src/main/config/logback.xml'
     ]
 }

@@ -16,7 +16,7 @@ dependencies {
     testImplementation project(':codion-swing-framework-ui-test')
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.petstore.ui.PetstoreAppPanel'

@@ -4,5 +4,5 @@ dependencies {
     testImplementation project(':codion-dbms-h2database')
 
     testRuntimeOnly project(':codion-plugin-hikari-pool')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }

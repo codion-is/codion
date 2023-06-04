@@ -7,8 +7,8 @@ dependencies {
     implementation project(':codion-framework-json')
     implementation project(':codion-plugin-jasperreports')
 
-    implementation (libs.jfreechart)
-    implementation (libs.json)
+    implementation(libs.jfreechart)
+    implementation(libs.json)
     implementation 'org.jxmapviewer:jxmapviewer2:2.6'
     implementation "org.kordamp.ikonli:ikonli-foundation-pack:2.6.0"
 
@@ -21,21 +21,21 @@ dependencies {
     runtimeOnly project(':codion-framework-db-rmi')
     runtimeOnly project(':codion-framework-db-http')
 
-    implementation (libs.flatlaf)
-    implementation (libs.flatlaf.intellij.themes)
+    implementation(libs.flatlaf)
+    implementation(libs.flatlaf.intellij.themes)
 
     implementation(libs.jasperreports) {
         transitive = false
     }
 
-    runtimeOnly (libs.commons.logging)
-    runtimeOnly (libs.commons.digester)
-    runtimeOnly (libs.commons.collections4)
-    runtimeOnly (libs.commons.beanutils)
-    runtimeOnly (libs.jdt.core.compiler)
+    runtimeOnly(libs.commons.logging)
+    runtimeOnly(libs.commons.digester)
+    runtimeOnly(libs.commons.collections4)
+    runtimeOnly(libs.commons.beanutils)
+    runtimeOnly(libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
-    runtimeOnly (libs.h2)
+    runtimeOnly(libs.h2)
 }
 
 ext.execMainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'

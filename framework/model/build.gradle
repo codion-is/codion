@@ -9,10 +9,10 @@ dependencies {
     testImplementation project(':codion-framework-db-local')
     testImplementation project(':codion-framework-model-test')
 
-    implementation (libs.json)
+    implementation(libs.json)
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 
     testRuntimeOnly project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }

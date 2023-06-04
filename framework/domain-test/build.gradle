@@ -5,7 +5,7 @@ dependencies {
     api project(':codion-framework-domain')
     api project(':codion-framework-db-core')
 
-    api (libs.junit.api)
+    api(libs.junit.api)
 
-    implementation (libs.slf4j.api)
+    implementation(libs.slf4j.api)
 }

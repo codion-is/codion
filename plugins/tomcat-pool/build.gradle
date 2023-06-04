@@ -2,9 +2,9 @@ dependencies {
     api project(':codion-common-core')
     api project(':codion-common-db')
 
-    implementation (libs.tomcat.jdbc)
-    implementation (libs.tomcat.juli)
+    implementation(libs.tomcat.jdbc)
+    implementation(libs.tomcat.juli)
 
     testImplementation project(':codion-dbms-h2database')
-    testRuntimeOnly (libs.h2)
+    testRuntimeOnly(libs.h2)
 }
