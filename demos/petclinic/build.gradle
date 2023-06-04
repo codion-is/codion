@@ -1,6 +1,3 @@
-import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
-
 apply from: '../demos.gradle'
 
 dependencies {
@@ -21,113 +18,35 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext {
-    execMainClass = "is.codion.framework.demos.petclinic.ui.PetclinicAppPanel"
-    testAddModules = ['is.codion.framework.domain.test', 'is.codion.swing.framework.ui.test']
-    testAddReads = ['is.codion.framework.demos.petclinic': 'is.codion.framework.domain.test,is.codion.swing.framework.ui.test']
-    testAddExports = [
-            'is.codion.framework.demos.petclinic/is.codion.framework.demos.petclinic.ui': 'is.codion.swing.framework.ui.test',
-            'is.codion.framework.demos.petclinic/is.codion.framework.demos.petclinic.domain': 'is.codion.framework.db.local',
-            'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
-            'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
-    ]
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+application {
+    mainClass = "is.codion.framework.demos.petclinic.ui.PetclinicAppPanel"
 }
 
 test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-        addExports = testAddExports;
-    }
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petclinic.domain.PetClinic"
+    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.PetClinic"
 }
 
-application {
-    mainClass = execMainClass
-    mainModule = moduleName
+startScripts {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientLocal', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
-    ]
+clientRMIScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
+clientHttpScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
+runClientLocal {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientLocalScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientLocal
-    applicationName = project.name + '-local'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql'
-    ]
+runClientRMI {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientRMI
-    applicationName = project.name + '-remote'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
-}
-
-tasks.register('clientHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientHttp
-    applicationName = project.name + '-http'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
-}
-
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('../../framework/server/src/main/config/truststore.jks'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientLocalScript)
-    from(clientRMIScript)
-    from(clientHttpScript)
+runClientHttp {
+    mainClass.set(application.mainClass)
 }

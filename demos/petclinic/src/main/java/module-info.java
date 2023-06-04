@@ -6,7 +6,7 @@ module is.codion.framework.demos.petclinic {
   requires com.formdev.flatlaf.intellijthemes;
 
   exports is.codion.framework.demos.petclinic.model
-          to is.codion.swing.framework.ui;
+          to is.codion.swing.framework.model, is.codion.swing.framework.ui;
   exports is.codion.framework.demos.petclinic.ui
           to is.codion.swing.framework.ui;
 

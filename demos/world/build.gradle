@@ -1,5 +1,6 @@
-import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+plugins {
+    id 'org.gradlex.extra-java-module-info'
+}
 
 apply from: '../demos.gradle'
 
@@ -31,41 +32,18 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly(libs.commons.logging)
-    runtimeOnly(libs.commons.digester)
-    runtimeOnly(libs.commons.collections4)
-    runtimeOnly(libs.commons.beanutils)
-    runtimeOnly(libs.jdt.core.compiler)
-
     runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly(libs.h2)
 }
 
-ext {
-    execMainClass = "is.codion.framework.demos.world.ui.WorldAppPanel"
-    testAddModules = ['is.codion.framework.domain.test', 'is.codion.swing.framework.ui.test']
-    testAddReads = [
-            'is.codion.framework.demos.world': 'is.codion.framework.domain.test,is.codion.swing.framework.ui.test',
-            'is.codion.framework.domain': 'is.codion.framework.demos.world'
-    ]
-    testAddExports = [
-            'is.codion.framework.demos.world/is.codion.framework.demos.world.ui': 'is.codion.swing.framework.ui.test',
-            'is.codion.framework.demos.world/is.codion.framework.demos.world.domain': 'is.codion.framework.db.local',
-            'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
-            'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
-    ]
-}
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+extraJavaModuleInfo {
+    automaticModule("org.jxmapviewer:jxmapviewer2", "jxmapviewer2")
 }
 
 application {
-    mainClass = execMainClass
-    mainModule = moduleName
+    mainClass = "is.codion.framework.demos.world.ui.WorldAppPanel"
 }
 
 buildReports {
@@ -74,94 +52,30 @@ buildReports {
 }
 
 test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-        addExports = testAddExports;
-    }
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
 }
 
-tasks.register('runClientLocal', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
-    systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
-    ]
+startScripts {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
+clientRMIScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world']
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
+clientHttpScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientLocalScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientLocal
-    applicationName = project.name + '-local'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql'
-    ]
+runClientLocal {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientRMI
-    applicationName = project.name + '-remote'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
+runClientRMI {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientHttp
-    applicationName = project.name + '-http'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.world',
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
-}
-
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('../../framework/server/src/main/config/truststore.jks'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientLocalScript)
-    from(clientRMIScript)
-    from(clientHttpScript)
+runClientHttp {
+    mainClass.set(application.mainClass)
 }

@@ -1,3 +1,7 @@
+plugins {
+    id 'org.gradlex.extra-java-module-info'
+}
+
 dependencies {
     implementation project(':codion-common-core')
     implementation project(':codion-common-db')
@@ -22,21 +26,5 @@ dependencies {
     testRuntimeOnly(libs.h2)
 }
 
-ext {
-    testAddModules = ['java.sql,java.net.http,is.codion.framework.server']
-    testAddReads = ['is.codion.framework.servlet': 'java.sql,java.net.http,is.codion.framework.server']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
+apply from: "extra-module-info-javalin.gradle"
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"

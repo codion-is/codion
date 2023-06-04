@@ -1,0 +1,4 @@
+extraJavaModuleInfo {
+    automaticModule("org.jetbrains.kotlin:kotlin-stdlib-common", "kotlin.stdlib.common")
+    automaticModule("org.jetbrains:annotations", "jetbrains.annotations")
+}

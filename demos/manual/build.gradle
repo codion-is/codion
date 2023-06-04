@@ -1,4 +1,6 @@
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+plugins {
+    id 'org.gradlex.extra-java-module-info'
+}
 
 apply from: '../demos.gradle'
 
@@ -28,23 +30,33 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-ext.execMainClass = "is.codion.framework.demos.manual.store.ui.StoreAppPanel"
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
 application {
-    mainClass.set(execMainClass)
+    mainClass = "is.codion.framework.demos.manual.store.ui.StoreAppPanel"
 }
 
 startScripts {
-    mainClass.set(execMainClass)
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientLocal', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
-    ]
+clientRMIScript {
+    mainClass.set(application.mainClass)
+}
+
+clientHttpScript {
+    mainClass.set(application.mainClass)
+}
+
+runClientLocal {
+    mainClass.set(application.mainClass)
+}
+
+runClientRMI {
+    mainClass.set(application.mainClass)
+}
+
+runClientHttp {
+    mainClass.set(application.mainClass)
 }

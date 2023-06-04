@@ -1,8 +1,6 @@
-import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
-
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.14'
+    id 'org.gradlex.extra-java-module-info'
 }
 
 apply from: '../demos.gradle'
@@ -38,24 +36,24 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly(libs.commons.logging)
-    runtimeOnly(libs.commons.digester)
-    runtimeOnly(libs.commons.collections4)
-    runtimeOnly(libs.commons.beanutils)
-    runtimeOnly(libs.jdt.core.compiler)
+    implementation(libs.commons.logging)
+    implementation(libs.commons.digester) {
+        transitive = false
+    }
+    implementation(libs.commons.collections4)
+    implementation(libs.commons.beanutils) {
+        transitive = false
+    }
+    implementation(libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly(libs.h2)
 }
 
-ext {
-    execMainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
-    execLoadTestMainClass = "is.codion.framework.demos.chinook.testing.ChinookLoadTest"
-    testAddModules = ['is.codion.framework.domain.test']
-    testAddReads = [
-            'is.codion.framework.demos.chinook': 'is.codion.framework.domain.test',
-            'is.codion.framework.domain': 'is.codion.framework.demos.chinook'
-    ]
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
+
+application {
+    mainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
 }
 
 javafx {
@@ -64,15 +62,10 @@ javafx {
 }
 
 compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-application {
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
+    options.compilerArgs = [
+            '--add-modules', 'is.codion.framework.domain.test',
+            '--add-reads', "$moduleName=is.codion.framework.domain.test",
+    ]
 }
 
 buildReports {
@@ -81,143 +74,50 @@ buildReports {
 }
 
 test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.chinook.domain.impl.ChinookImpl"
-}
-
-tasks.register('runClientLocal', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
-    systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
+    jvmArgs = [
+            '--add-reads', "$moduleName=is.codion.framework.domain.test",
+            '--add-reads', "is.codion.framework.domain=is.codion.framework.demos.chinook"
     ]
 }
 
-tasks.register('runClientRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
+startScripts {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
+clientRMIScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runLoadTestRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execLoadTestMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
+clientHttpScript {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runLoadTestHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execLoadTestMainClass)
-    mainModule.set(moduleName)
-    jvmArgs = ['--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook']
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
+loadTestRMIScript {
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
-tasks.register('clientLocalScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientLocal
-    applicationName = project.name + '-local'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql'
-    ]
+loadTestHttpScript {
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
-tasks.register('clientRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientRMI
-    applicationName = project.name + '-remote'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
+runClientLocal {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('clientHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientHttp
-    applicationName = project.name + '-http'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
+runClientRMI {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('loadTestRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runLoadTestRMI
-    applicationName = project.name + '-loadtest-remote'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
+runClientHttp {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('loadTestHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runLoadTestHttp
-    applicationName = project.name + '-loadtest-http'
-    defaultJvmOpts = [
-            '--add-reads', 'is.codion.framework.domain=is.codion.framework.demos.chinook',
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
+runLoadTestRMI {
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }
 
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('../../framework/server/src/main/config/truststore.jks'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientLocalScript)
-    from(clientRMIScript)
-    from(clientHttpScript)
-    from(loadTestHttpScript)
-    from(loadTestRMIScript)
+runLoadTestHttp {
+    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
 }

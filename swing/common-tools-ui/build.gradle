@@ -7,22 +7,3 @@ dependencies {
 
     implementation(libs.flatlaf.intellij.themes)
 }
-
-ext {
-    testAddModules = ['is.codion.common.core,is.codion.common.model']
-    testAddReads = ['is.codion.swing.common.tools.ui': 'is.codion.common.core,is.codion.common.model']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}

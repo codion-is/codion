@@ -11,7 +11,7 @@ dependencies {
     api project(':codion-framework-db-core')
     api project(':codion-framework-model')
 
-    testImplementation project(':codion-framework-db-local')
+    testImplementation project(':codion-framework-domain-test')
     testImplementation project(':codion-framework-model-test')
 
     implementation(libs.json)
@@ -25,29 +25,21 @@ dependencies {
     testRuntimeOnly(libs.h2)
 }
 
-ext {
-    testAddModules = ['is.codion.framework.db.local,is.codion.framework.model,is.codion.framework.model.test']
-    testAddReads = [
-            'is.codion.javafx.framework': 'is.codion.framework.db.local,is.codion.framework.model,is.codion.framework.model.test',
-            'is.codion.framework.model': 'is.codion.framework.db.local,org.junit.jupiter.api'
-    ]
-}
-
 javafx {
     version = '18'
     modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.swing']
 }
 
 compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+    options.compilerArgs = [
+            '--add-modules', 'is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local',
+            '--add-reads', "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
+    ]
 }
 
 test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+    jvmArgs = [
+            '--add-modules', 'is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local',
+            '--add-reads', "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
+    ]
 }

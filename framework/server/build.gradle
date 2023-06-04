@@ -1,4 +1,6 @@
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
+plugins {
+    id 'org.gradlex.extra-java-module-info'
+}
 
 apply plugin: 'application'
 
@@ -40,6 +42,8 @@ dependencies {
     serverRuntime project(':codion-dbms-h2database')
     serverRuntime(libs.h2)
 }
+
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 mainClassName = "is.codion.framework.server.EntityServer"
 
@@ -89,23 +93,16 @@ distributions {
 }
 applicationDefaultJvmArgs = [
         '-Xmx256m',
-        '--add-modules', 'is.codion.plugin.jasperreports',
-        '--add-reads', 'is.codion.framework.domain=is.codion.demos.chinook.domain,is.codion.demos.world.domain',
         '-Dcodion.configurationFile=../config/h2_embedded.config',
         '-Dlogback.configurationFile=../config/logback.xml'
 ]
 
-tasks.register('runServer', ModularJavaExec) {
+tasks.register('runServer', JavaExec) {
     dependsOn createServerKeystore
     group 'application'
     classpath = configurations.serverRuntime
     mainClass.set(mainClassName)
-    mainModule.set(moduleName)
     maxHeapSize = '256m'
-    jvmArgs = [
-            '--add-modules', 'is.codion.plugin.jasperreports',
-            '--add-reads', 'is.codion.framework.domain=is.codion.demos.chinook.domain,is.codion.demos.world.domain'
-    ]
     systemProperties = [
             'codion.db.url'                                 : 'jdbc:h2:mem:h2db',
             'codion.db.initScripts'                         : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',

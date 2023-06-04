@@ -1,3 +1,7 @@
+plugins {
+    id 'org.gradlex.extra-java-module-info'
+}
+
 apply plugin: BuildReportsPlugin
 
 dependencies {
@@ -25,24 +29,7 @@ dependencies {
     testRuntimeOnly(libs.h2)
 }
 
-ext {
-    testAddModules = ['org.eclipse.jetty.server,is.codion.dbms.h2database,is.codion.framework.db.local']
-    testAddReads = ['is.codion.plugin.jasperreports': 'org.eclipse.jetty.server,is.codion.dbms.h2database,is.codion.framework.domain,is.codion.framework.db.core,is.codion.framework.db.local']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
+apply from: "extra-module-info-jasperreports.gradle"
 
 buildReports {
     sourceDir = file('src/test/reports')

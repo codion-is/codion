@@ -11,22 +11,3 @@ dependencies {
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly(libs.h2)
 }
-
-ext {
-    testAddModules = ['is.codion.common.model']
-    testAddReads = ['is.codion.swing.common.tools': 'is.codion.common.model']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}

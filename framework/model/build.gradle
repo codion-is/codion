@@ -16,22 +16,3 @@ dependencies {
     testRuntimeOnly project(':codion-dbms-h2database')
     testRuntimeOnly(libs.h2)
 }
-
-ext {
-    testAddModules = ['java.sql,is.codion.framework.db.local,is.codion.framework.model.test']
-    testAddReads = ['is.codion.framework.model': 'java.sql,is.codion.framework.db.local,is.codion.framework.model.test']
-}
-
-compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}
-
-test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
-}

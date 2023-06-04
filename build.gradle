@@ -1,9 +1,9 @@
 plugins {
-    id 'org.javamodularity.moduleplugin' version '1.8.12' apply false
     id "org.sonarqube" version "3.3"
     id "com.github.ben-manes.versions" version "0.46.0"
     id "com.vanniktech.dependency.graph.generator" version "0.8.0"
     id "com.diffplug.spotless" version "6.17.0"
+    id "org.gradlex.extra-java-module-info" version "1.4"
 }
 
 ext {
@@ -17,14 +17,13 @@ configure(project.frameworkModules) {
     apply plugin: 'jacoco'
     apply plugin: 'maven-publish'
     apply plugin: 'com.github.ben-manes.versions'
-    apply plugin: 'org.javamodularity.moduleplugin'
     apply plugin: 'project-report'
     apply plugin: 'com.vanniktech.dependency.graph.generator'
     apply plugin: 'com.diffplug.spotless'
 
     dependencies {
         testImplementation(libs.junit.api)
-        testImplementation(libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
+        testRuntimeOnly(libs.junit.engine)
     }
 
     clean {
@@ -53,9 +52,6 @@ configure(project.frameworkModules) {
         options.links 'https://docs.oracle.com/en/java/javase/11/docs/api/'
         options.encoding = 'UTF-8'
     }
-
-    //https://github.com/java9-modularity/gradle-modules-plugin/issues/165
-    modularity.disableEffectiveArgumentsAdjustment()
 
     spotless {
         java {
@@ -163,12 +159,6 @@ configure(project.frameworkModules) {
     }
 
     test {
-        moduleOptions {
-            addExports = [
-                    'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
-                    'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
-            ]
-        }
         useJUnitPlatform()
         systemProperty "codion.db.url", "jdbc:h2:mem:h2db"
         systemProperty "codion.db.initScripts", "src/test/sql/create_h2_db.sql"

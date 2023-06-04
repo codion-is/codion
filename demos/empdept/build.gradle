@@ -1,8 +1,6 @@
-import org.javamodularity.moduleplugin.tasks.ModularCreateStartScripts
-import org.javamodularity.moduleplugin.tasks.ModularJavaExec
-
 plugins {
     id 'org.openjfx.javafxplugin' version '0.0.14'
+    id 'org.gradlex.extra-java-module-info'
 }
 
 apply from: '../demos.gradle'
@@ -37,28 +35,22 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly(libs.commons.logging)
-    runtimeOnly(libs.commons.digester)
-    runtimeOnly(libs.commons.collections4)
-    runtimeOnly(libs.commons.beanutils)
-    runtimeOnly(libs.jdt.core.compiler)
+    implementation(libs.commons.logging)
+    implementation(libs.commons.digester) {
+        transitive = false
+    }
+    implementation(libs.commons.collections4)
+    implementation(libs.commons.beanutils) {
+        transitive = false
+    }
+    implementation(libs.jdt.core.compiler)
 
     runtimeOnly project(':codion-dbms-h2database')
     runtimeOnly(libs.h2)
 }
 
-ext {
-    execMainClass = "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
-    fxMainClass = "is.codion.framework.demos.empdept.javafx.EmpDeptFX"
-    execLoadTestMainClass = "is.codion.framework.demos.empdept.testing.EmpDeptLoadTest"
-    testAddModules = ['is.codion.swing.framework.ui.test']
-    testAddReads = ['is.codion.framework.demos.empdept': 'is.codion.swing.framework.ui.test']
-    testAddExports = [
-            'is.codion.framework.demos.empdept/is.codion.framework.demos.empdept.ui': 'is.codion.swing.framework.ui,is.codion.swing.framework.ui.test',
-            'org.junit.platform.commons/org.junit.platform.commons.util': 'ALL-UNNAMED',
-            'org.junit.platform.commons/org.junit.platform.commons.logging': 'ALL-UNNAMED'
-    ]
-}
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 javafx {
     version = '18'
@@ -66,15 +58,14 @@ javafx {
 }
 
 compileTestJava {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-    }
+    options.compilerArgs = [
+            '--add-modules', 'is.codion.swing.framework.ui.test',
+            '--add-reads', "$moduleName=is.codion.swing.framework.ui.test",
+    ]
 }
 
 application {
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
+    mainClass = "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
 }
 
 buildReports {
@@ -83,19 +74,42 @@ buildReports {
 }
 
 test {
-    moduleOptions {
-        addModules = testAddModules
-        addReads = testAddReads
-        addExports = testAddExports
-    }
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
+    jvmArgs = [
+            '--add-reads', "$moduleName=is.codion.swing.framework.ui.test",
+            '--add-exports', "$moduleName/is.codion.framework.demos.empdept.ui=is.codion.swing.framework.ui,is.codion.swing.framework.ui.test"
+    ]
 }
 
-tasks.register('runClientLocal', ModularJavaExec) {
+startScripts {
+    mainClass.set(application.mainClass)
+}
+
+clientRMIScript {
+    mainClass.set(application.mainClass)
+}
+
+clientHttpScript {
+    mainClass.set(application.mainClass)
+}
+
+loadTestRMIScript {
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
+}
+
+loadTestHttpScript {
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
+}
+
+runClientLocal {
+    mainClass.set(application.mainClass)
+}
+
+tasks.register('runClientLocalFX', JavaExec) {
     group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
+    mainClass.set('is.codion.framework.demos.empdept.javafx.EmpDeptFX')
+    classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -103,125 +117,18 @@ tasks.register('runClientLocal', ModularJavaExec) {
     ]
 }
 
-tasks.register('runClientLocalFX', ModularJavaExec) {
-    group 'application'
-    mainClass.set(fxMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
-    ]
+runClientRMI {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
+runClientHttp {
+    mainClass.set(application.mainClass)
 }
 
-tasks.register('runClientHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
+runLoadTestRMI {
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
 
-tasks.register('runLoadTestRMI', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execLoadTestMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType'    : 'remote',
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass'
-    ]
-}
-
-tasks.register('runLoadTestHttp', ModularJavaExec) {
-    group 'application'
-    mainClass.set(execLoadTestMainClass)
-    mainModule.set(moduleName)
-    systemProperties = [
-            'codion.client.connectionType': 'http',
-            'codion.client.http.secure'   : 'false',
-            'codion.client.http.hostname' : "${serverHostName}"
-    ]
-}
-
-tasks.register('clientLocalScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientLocal
-    applicationName = project.name + '-local'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql'
-    ]
-}
-
-tasks.register('clientRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientRMI
-    applicationName = project.name + '-remote'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
-}
-
-tasks.register('clientHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runClientHttp
-    applicationName = project.name + '-http'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
-}
-
-tasks.register('loadTestRMIScript', ModularCreateStartScripts) {
-    runTask = tasks.runLoadTestRMI
-    applicationName = project.name + '-loadtest-remote'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=" + "${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
-}
-
-tasks.register('loadTestHttpScript', ModularCreateStartScripts) {
-    runTask = tasks.runLoadTestHttp
-    applicationName = project.name + '-loadtest-http'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=" + "${serverHostName}",
-    ]
-}
-
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('../../framework/server/src/main/config/truststore.jks'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientLocalScript)
-    from(clientRMIScript)
-    from(clientHttpScript)
-    from(loadTestHttpScript)
-    from(loadTestRMIScript)
+runLoadTestHttp {
+    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
 }
