@@ -238,7 +238,7 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * {@inheritDoc}
-   *<br><br>
+   * <br><br>
    * Respects the selection, filtering as well as sorting states.
    * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
    * before it is repopulated, during which the selection is cleared as well. Using merge on insert
@@ -250,10 +250,10 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * {@inheritDoc}
    * <br><br>
-   *  Respects the selection, filtering as well as sorting states.
-   *  Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
-   *  before it is repopulated, during which the selection is cleared as well. Using merge on insert
-   *  ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
+   * Respects the selection, filtering as well as sorting states.
+   * Note that an empty selection event will be triggered during a normal refresh, since the model is cleared
+   * before it is repopulated, during which the selection is cleared as well. Using merge on insert
+   * ({@link #setMergeOnRefresh(boolean)}) will prevent that at a considerable performance cost.
    * @param afterRefresh called after a successful refresh, may be null
    */
   @Override

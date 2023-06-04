@@ -207,15 +207,19 @@ public final class PropertyConditionView<T> extends BorderPane {
   private Pane createInputPane() {
     switch (model.getOperator()) {
       case EQUAL:
-      case NOT_EQUAL: return singleValuePane(equalsValueControl);
+      case NOT_EQUAL:
+        return singleValuePane(equalsValueControl);
       case GREATER_THAN:
-      case GREATER_THAN_OR_EQUAL: return singleValuePane(lowerBoundControl);
+      case GREATER_THAN_OR_EQUAL:
+        return singleValuePane(lowerBoundControl);
       case LESS_THAN:
-      case LESS_THAN_OR_EQUAL: return singleValuePane(upperBoundControl);
+      case LESS_THAN_OR_EQUAL:
+        return singleValuePane(upperBoundControl);
       case BETWEEN_EXCLUSIVE:
       case BETWEEN:
       case NOT_BETWEEN_EXCLUSIVE:
-      case NOT_BETWEEN: return rangePane();
+      case NOT_BETWEEN:
+        return rangePane();
       default:
         throw new IllegalArgumentException("Unknown operator: " + model.getOperator());
     }

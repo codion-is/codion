@@ -97,9 +97,9 @@ public final class SearchHighlighter {
             .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(control(() -> searchStringValue.set(null))))
             .popupMenu(menu(Controls.builder()
-                            .control(ToggleControl.builder(caseSensitiveState)
-                                    .caption(MESSAGES.getString("case_sensitive")))
-                            .build())
+                    .control(ToggleControl.builder(caseSensitiveState)
+                            .caption(MESSAGES.getString("case_sensitive")))
+                    .build())
                     .createPopupMenu())
             .hintText(Messages.find() + "...")
             .build();

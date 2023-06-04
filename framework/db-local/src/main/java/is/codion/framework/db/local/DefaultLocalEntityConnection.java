@@ -1468,7 +1468,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     private DatabaseConfiguration(Domain domain, Database database) {
       this.domain = domain;
-      this.database= database;
+      this.database = database;
       this.hashCode = Objects.hash(domain.type(), database);
     }
 

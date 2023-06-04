@@ -34,7 +34,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
   private JPanel createPanel() {
     return addEmptyBorder(new JPanel(orientation() == SwingConstants.HORIZONTAL ?
-          new GridLayout(1, 0) : new GridLayout(0, 1)));
+            new GridLayout(1, 0) : new GridLayout(0, 1)));
   }
 
   private static JPanel addEmptyBorder(JPanel panel) {

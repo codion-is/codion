@@ -749,8 +749,8 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a builder for a list spinner
    * @param attribute the attribute
    * @param spinnerListModel the spinner model
-   * @return a spinner builder
    * @param <T> the value type
+   * @return a spinner builder
    */
   protected final <T> ListSpinnerBuilder<T> createListSpinner(Attribute<T> attribute, SpinnerListModel spinnerListModel) {
     return setComponentBuilder(attribute, entityComponents.listSpinner(attribute, spinnerListModel));
@@ -759,8 +759,8 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a builder for a list spinner
    * @param attribute the attribute
-   * @return a spinner builder
    * @param <T> the value type
+   * @return a spinner builder
    */
   protected final <T> ItemSpinnerBuilder<T> createItemSpinner(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.itemSpinner(attribute));

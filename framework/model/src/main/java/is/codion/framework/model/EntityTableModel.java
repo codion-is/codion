@@ -446,10 +446,10 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      */
     static Map<Attribute<?>, ColumnPreferences> fromJSONObject(Collection<Attribute<?>> attributes, JSONObject jsonObject) {
       return requireNonNull(attributes).stream()
-            .map(attribute -> DefaultColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
-            .filter(Optional::isPresent)
-            .map(Optional::get)
-            .collect(toMap(ColumnPreferences::attribute, Function.identity()));
+              .map(attribute -> DefaultColumnPreferences.columnPreferences(attribute, requireNonNull(jsonObject)))
+              .filter(Optional::isPresent)
+              .map(Optional::get)
+              .collect(toMap(ColumnPreferences::attribute, Function.identity()));
     }
 
     /**
