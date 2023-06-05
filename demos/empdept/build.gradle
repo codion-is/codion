@@ -17,7 +17,7 @@ dependencies {
     implementation project(':codion-javafx-framework')
 
     implementation project(':codion-plugin-jasperreports')
-    implementation project(':codion-framework-json')
+    implementation project(':codion-framework-json-domain')
 
     testImplementation project(':codion-swing-framework-ui-test')
 

@@ -63,11 +63,11 @@ include::{dir-source}/is/codion/framework/demos/world/domain/api/WorldObjectMapp
 
 Exposing the WorldObjectMapperFactory for the ServiceLoader.
 
-_src/main/resources/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory_
+_src/main/resources/META-INF/services/is.codion.framework.json.domain.EntityObjectMapperFactory_
 
 [source]
 ----
-include::{dir-resources}/META-INF/services/is.codion.plugin.jackson.json.domain.EntityObjectMapperFactory[]
+include::{dir-resources}/META-INF/services/is.codion.framework.json.domain.EntityObjectMapperFactory[]
 ----
 
 === Implementation

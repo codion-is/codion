@@ -4,7 +4,7 @@ apply plugin: BuildReportsPlugin
 
 dependencies {
     implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-framework-json')
+    implementation project(':codion-framework-json-domain')
     implementation project(':codion-plugin-jasperreports')
 
     implementation(libs.jfreechart)

@@ -63,8 +63,11 @@ project(':codion-framework-db-rmi').projectDir = file('framework/db-rmi')
 include 'codion-framework-db-http'
 project(':codion-framework-db-http').projectDir = file('framework/db-http')
 
-include 'codion-framework-json'
-project(':codion-framework-json').projectDir = file('framework/json')
+include 'codion-framework-json-domain'
+project(':codion-framework-json-domain').projectDir = file('framework/json-domain')
+
+include 'codion-framework-json-db'
+project(':codion-framework-json-db').projectDir = file('framework/json-db')
 
 include 'codion-framework-model'
 project(':codion-framework-model').projectDir = file('framework/model')

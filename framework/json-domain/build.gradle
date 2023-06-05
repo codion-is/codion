@@ -1,0 +1,6 @@
+dependencies {
+    api project(':codion-framework-domain')
+
+    api(libs.jackson.databind)
+    api(libs.jackson.datatype.jsr310)
+}
