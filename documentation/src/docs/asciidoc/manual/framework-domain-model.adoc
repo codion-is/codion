@@ -442,7 +442,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 This custom type must be serializable for use in an application using the RMI connection.
 
-When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] containing a serializer/deserializer for the custom types.
+When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] containing a serializer/deserializer for the custom types.
 
 [source,java,indent=0]
 ----

@@ -239,15 +239,22 @@ HTTP connection related classes.
 image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
-=== codion-framework-json
-
 [discrete]
-==== codion-framework-json
+=== codion-framework-json-domain
 
 .Dependency graph
 [%collapsible]
 ====
-image::modules/framework/json/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+image::modules/framework/json-domain/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
+=== codion-framework-json-db
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/framework/json-db/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 [discrete]
