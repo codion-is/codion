@@ -5,13 +5,13 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.AbstractComponentValue;
 
-import javax.swing.JToggleButton;
+import javax.swing.AbstractButton;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
-final class BooleanToggleButtonValue extends AbstractComponentValue<Boolean, JToggleButton> {
+final class BooleanToggleButtonValue<C extends AbstractButton> extends AbstractComponentValue<Boolean, C> {
 
-  BooleanToggleButtonValue(JToggleButton button) {
+  BooleanToggleButtonValue(C button) {
     super(button, false);
     button.getModel().addItemListener(new NotifyOnItemEvent());
   }

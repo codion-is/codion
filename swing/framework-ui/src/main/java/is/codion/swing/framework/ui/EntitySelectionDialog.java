@@ -31,6 +31,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -80,11 +81,11 @@ public final class EntitySelectionDialog extends JDialog {
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(cancelControl)
             .enable(getRootPane());
-    JButton okButton = okControl.createButton();
+    JButton okButton = button(okControl).build();
     JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.RIGHT))
             .add(okButton)
-            .add(cancelControl.createButton())
-            .add(searchControl.createButton())
+            .add(button(cancelControl).build())
+            .add(button(searchControl).build())
             .build();
     getRootPane().setDefaultButton(okButton);
     setLayout(new BorderLayout());

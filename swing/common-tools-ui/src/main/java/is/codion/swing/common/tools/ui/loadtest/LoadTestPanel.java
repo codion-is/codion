@@ -209,20 +209,20 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createAddRemoveApplicationPanel() {
     return panel(new BorderLayout())
-            .add(Control.builder(loadTestModel::removeApplicationBatch)
+            .add(button(Control.builder(loadTestModel::removeApplicationBatch)
                     .caption("-")
                     .description("Remove application batch")
-                    .build().createButton(), BorderLayout.WEST)
+                    .build()).build(), BorderLayout.WEST)
             .add(integerField()
                     .editable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
                     .linkedValueObserver(loadTestModel.applicationCountObserver())
                     .build(), BorderLayout.CENTER)
-            .add(Control.builder(loadTestModel::addApplicationBatch)
+            .add(button(Control.builder(loadTestModel::addApplicationBatch)
                     .caption("+")
                     .description("Add application batch")
-                    .build().createButton(), BorderLayout.EAST)
+                    .build()).build(), BorderLayout.EAST)
             .build();
   }
 
@@ -232,9 +232,9 @@ public final class LoadTestPanel<T> extends JPanel {
             .add(checkBox(loadTestModel.collectChartDataState())
                     .caption("Collect chart data")
                     .build())
-            .add(Control.builder(loadTestModel::clearChartData)
+            .add(button(Control.builder(loadTestModel::clearChartData)
                     .caption("Clear")
-                    .build().createButton())
+                    .build()).build())
             .build();
   }
 
@@ -359,16 +359,14 @@ public final class LoadTestPanel<T> extends JPanel {
     JTextArea exceptionsArea = textArea()
             .editable(false)
             .build();
-    JButton refreshButton = Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
+    JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
             .caption("Refresh")
-            .build()
-            .createButton();
+            .build()).build();
     refreshButton.doClick();
 
-    JButton clearButton = Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
+    JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
             .caption("Clear")
-            .build()
-            .createButton();
+            .build()).build();
 
     return panel(borderLayout())
             .add(new JScrollPane(exceptionsArea), BorderLayout.CENTER)

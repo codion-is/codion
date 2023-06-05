@@ -5,13 +5,18 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,6 +92,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     C button = createButton();
     if (action != null) {
       button.setAction(action);
+      action.addPropertyChangeListener(new ButtonPropertyChangeListener(button));
     }
     actionListeners.forEach(button::addActionListener);
     if (!includeCaption) {
@@ -110,4 +116,33 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   protected abstract C createButton();
+
+  protected static final class ButtonPropertyChangeListener implements PropertyChangeListener {
+
+    private final AbstractButton button;
+
+    ButtonPropertyChangeListener(AbstractButton button) {
+      this.button = requireNonNull(button);
+    }
+
+    @Override
+    public void propertyChange(PropertyChangeEvent evt) {
+      switch (evt.getPropertyName()) {
+        case Control.BACKGROUND: {
+          button.setBackground((Color) evt.getNewValue());
+          break;
+        }
+        case Control.FOREGROUND: {
+          button.setForeground((Color) evt.getNewValue());
+          break;
+        }
+        case Control.FONT: {
+          button.setFont((Font) evt.getNewValue());
+          break;
+        }
+        default:
+          break;
+      }
+    }
+  }
 }

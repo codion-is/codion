@@ -17,6 +17,9 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 
+import static is.codion.swing.common.ui.component.Components.checkBox;
+import static is.codion.swing.common.ui.component.Components.toggleButton;
+
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
@@ -64,8 +67,8 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
       if (control instanceof ToggleControl) {
         ToggleControl toggleControl = (ToggleControl) control;
         panel.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-                toggleControl.createCheckBox() :
-                toggleControl.createToggleButton());
+                checkBox(toggleControl).build() :
+                toggleButton(toggleControl).build());
       }
       else {
         onAction(control);

@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 
+import static is.codion.swing.common.ui.component.Components.button;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultControlTest {
@@ -40,7 +41,7 @@ public final class DefaultControlTest {
   void test() throws Exception {
     State enabledState = State.state();
     Control control = Control.builder(this::method).enabledState(enabledState).build();
-    JButton button = control.createButton();
+    JButton button = button(control).build();
     assertFalse(button.isEnabled());
     enabledState.set(true);
     assertTrue(button.isEnabled());

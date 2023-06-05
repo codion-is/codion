@@ -72,11 +72,13 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientId the client id
    * @param port the http server port
    * @param httpsEnabled if true then https is used
+   * @param socketTimeout the socket timeout
+   * @param connectTimeout the connect timeout
    */
   JsonHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
-                           int port, boolean httpsEnabled) {
-    super(domainTypeName, hostName, user, clientTypeId, clientId,
-            "application/json", "/entities/json", port, httpsEnabled);
+                           int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
+    super(domainTypeName, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
+            port, httpsEnabled, socketTimeout, connectTimeout);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
     this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
   }

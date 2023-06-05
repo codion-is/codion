@@ -16,10 +16,12 @@ public final class DefaultHttpEntityConnectionProviderBuilder
         extends AbstractBuilder<HttpEntityConnectionProvider, HttpEntityConnectionProvider.Builder>
         implements HttpEntityConnectionProvider.Builder {
 
-  String hostName = HttpEntityConnectionProvider.HTTP_CLIENT_HOSTNAME.get();
-  int port = HttpEntityConnectionProvider.HTTP_CLIENT_PORT.get();
-  boolean https = HttpEntityConnectionProvider.HTTP_CLIENT_SECURE.get();
-  boolean json = HttpEntityConnectionProvider.HTTP_CLIENT_JSON.get();
+  String hostName = HttpEntityConnection.HOSTNAME.get();
+  int port = HttpEntityConnection.PORT.get();
+  boolean https = HttpEntityConnection.SECURE.get();
+  boolean json = HttpEntityConnection.JSON.get();
+  int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
+  int connectTimeout = HttpEntityConnection.CONNECT_TIMEOUT.get();
 
   public DefaultHttpEntityConnectionProviderBuilder() {
     super(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
@@ -46,6 +48,18 @@ public final class DefaultHttpEntityConnectionProviderBuilder
   @Override
   public HttpEntityConnectionProvider.Builder json(boolean json) {
     this.json = json;
+    return this;
+  }
+
+  @Override
+  public HttpEntityConnectionProvider.Builder socketTimeout(int socketTimeout) {
+    this.socketTimeout = socketTimeout;
+    return this;
+  }
+
+  @Override
+  public HttpEntityConnectionProvider.Builder connectTimeout(int connectTimeout) {
+    this.connectTimeout = connectTimeout;
     return this;
   }
 

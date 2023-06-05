@@ -8,8 +8,6 @@ import is.codion.common.state.StateObserver;
 
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -140,18 +138,6 @@ public interface Control extends Action {
    * @return the font
    */
   Font getFont();
-
-  /**
-   * Creates a button based on this Control
-   * @return a button based on this Control
-   */
-  JButton createButton();
-
-  /**
-   * Creates a menu item based on this Control
-   * @return a menu item based on this Control
-   */
-  JMenuItem createMenuItem();
 
   /**
    * Unsupported, the enabled state of Controls is based on their {@code enabledState}

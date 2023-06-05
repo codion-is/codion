@@ -33,6 +33,7 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
 
+import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -83,10 +84,9 @@ public final class DatabaseExplorerPanel extends JPanel {
     JPanel textAreaCopyPanel = Components.panel(borderLayout())
             .add(new JScrollPane(textArea), BorderLayout.CENTER)
             .add(Components.panel(flowLayout(FlowLayout.RIGHT))
-                    .add(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
+                    .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
                             .caption(Messages.copy())
-                            .build()
-                            .createButton())
+                            .build()).build())
                     .build(), BorderLayout.SOUTH)
             .build();
 
