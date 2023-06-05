@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
+import is.codion.swing.common.ui.component.button.MenuItemBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -89,10 +91,10 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
     @Override
     public void onControl(Control control) {
       if (control instanceof ToggleControl) {
-        menu.add(((ToggleControl) control).createCheckBoxMenuItem());
+        menu.add(CheckBoxMenuItemBuilder.builder((ToggleControl) control).build());
       }
       else {
-        menu.add(control.createMenuItem());
+        menu.add(MenuItemBuilder.builder(control).build());
       }
     }
 

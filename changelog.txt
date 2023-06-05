@@ -9132,3 +9132,4 @@
   ServerConfiguration.Builder.serverNameProvider() renamed serverNameSupplier()
   RemoteClient.setClientHost() removed, factory methods overloaded with clientHost parameter, getClientHost() renamed clientHost()
   HttpEntityConnection.SOCKET_TIMEOUT and CONNECT_TIMEOUT configuration parameters added, related refactoring and renaming
+  Control.createButton(), ToggleControl.create...() functionality moved to Components, related refactoring, a bit messy

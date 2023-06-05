@@ -7,12 +7,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 
-import javax.swing.ButtonModel;
 import javax.swing.Icon;
-import javax.swing.JCheckBox;
-import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JRadioButtonMenuItem;
-import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 
 /**
@@ -24,37 +19,6 @@ public interface ToggleControl extends Control {
    * @return the value being toggled by this toggle control
    */
   Value<Boolean> value();
-
-  /**
-   * @return a check-box menu item based on this control
-   * @throws IllegalArgumentException in case this toggle control value is nullable
-   */
-  JCheckBoxMenuItem createCheckBoxMenuItem();
-
-  /**
-   * @return a radio button menu item based on this control
-   * @throws IllegalArgumentException in case this toggle control value is nullable
-   */
-  JRadioButtonMenuItem createRadioButtonMenuItem();
-
-  /**
-   * Creates a ButtonModel based on this {@link ToggleControl}.
-   * If the underlying value is nullable then a NullableButtonModel is returned.
-   * @return a button model
-   */
-  ButtonModel createButtonModel();
-
-  /**
-   * Creates a JCheckBox based on this toggle control
-   * @return a check-box
-   */
-  JCheckBox createCheckBox();
-
-  /**
-   * Creates a JToggleButton based on this toggle control
-   * @return a toggle button
-   */
-  JToggleButton createToggleButton();
 
   /**
    * Creates a new ToggleControl based on the given value

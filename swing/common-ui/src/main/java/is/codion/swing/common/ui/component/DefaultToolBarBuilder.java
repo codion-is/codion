@@ -11,6 +11,9 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.Action;
 import javax.swing.JToolBar;
 
+import static is.codion.swing.common.ui.component.Components.checkBox;
+import static is.codion.swing.common.ui.component.Components.toggleButton;
+
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
   private boolean floatable = true;
@@ -69,8 +72,8 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
       if (control instanceof ToggleControl) {
         ToggleControl toggleControl = (ToggleControl) control;
         toolBar.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-                toggleControl.createCheckBox() :
-                toggleControl.createToggleButton());
+                checkBox(toggleControl).build() :
+                toggleButton(toggleControl).build());
       }
       else {
         toolBar.add(control);

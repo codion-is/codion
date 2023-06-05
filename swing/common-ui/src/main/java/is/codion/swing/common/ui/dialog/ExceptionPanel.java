@@ -37,6 +37,8 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.component.Components.button;
+import static is.codion.swing.common.ui.component.Components.checkBox;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
@@ -93,21 +95,21 @@ final class ExceptionPanel extends JPanel {
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
     Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
     descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
-    printButton = Control.builder(detailsArea::print)
+    printButton = button(Control.builder(detailsArea::print)
             .caption(Messages.print())
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
-            .build().createButton();
-    saveButton = Control.builder(this::saveDetails)
+            .build()).build();
+    saveButton = button(Control.builder(this::saveDetails)
             .caption(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
-            .build().createButton();
-    copyButton = Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
+            .build()).build();
+    copyButton = button(Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
             .caption(Messages.copy())
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
-            .build().createButton();
+            .build()).build();
     centerPanel = createCenterPanel();
     detailPanel = new JPanel(FlexibleGridLayout.builder()
             .rowsColumns(2, 2)
@@ -188,12 +190,12 @@ final class ExceptionPanel extends JPanel {
             .enable(this);
 
     JPanel westPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    westPanel.add(detailsControl.createCheckBox());
+    westPanel.add(checkBox(detailsControl).build());
     JPanel centerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
     centerButtonPanel.add(copyButton);
     centerButtonPanel.add(printButton);
     centerButtonPanel.add(saveButton);
-    centerButtonPanel.add(closeControl.createButton());
+    centerButtonPanel.add(button(closeControl).build());
     JPanel panel = new JPanel(new BorderLayout());
 
     panel.add(westPanel, BorderLayout.WEST);

@@ -7,18 +7,11 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import javax.swing.AbstractAction;
-import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.Icon;
-import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 import java.awt.Color;
 import java.awt.Font;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * An abstrct Control implementation, implementing everything except actionPerformed().
@@ -154,50 +147,5 @@ abstract class AbstractControl extends AbstractAction implements Control {
   @Override
   public final Font getFont() {
     return (Font) getValue(FONT);
-  }
-
-  @Override
-  public final JButton createButton() {
-    JButton button = new JButton(this);
-    addPropertyChangeListener(new ButtonPropertyChangeListener(button));
-
-    return button;
-  }
-
-  @Override
-  public final JMenuItem createMenuItem() {
-    JMenuItem menuItem = new JMenuItem(this);
-    addPropertyChangeListener(new ButtonPropertyChangeListener(menuItem));
-
-    return menuItem;
-  }
-
-  static final class ButtonPropertyChangeListener implements PropertyChangeListener {
-
-    private final AbstractButton button;
-
-    ButtonPropertyChangeListener(AbstractButton button) {
-      this.button = requireNonNull(button);
-    }
-
-    @Override
-    public void propertyChange(PropertyChangeEvent evt) {
-      switch (evt.getPropertyName()) {
-        case BACKGROUND: {
-          button.setBackground((Color) evt.getNewValue());
-          break;
-        }
-        case FOREGROUND: {
-          button.setForeground((Color) evt.getNewValue());
-          break;
-        }
-        case FONT: {
-          button.setFont((Font) evt.getNewValue());
-          break;
-        }
-        default:
-          break;
-      }
-    }
   }
 }

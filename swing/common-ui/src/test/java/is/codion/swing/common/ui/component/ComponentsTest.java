@@ -30,6 +30,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
@@ -37,6 +38,7 @@ import javax.swing.JList;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
+import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JSlider;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
@@ -277,7 +279,7 @@ public final class ComponentsTest {
     Components.button()
             .action(Control.control(() -> {}))
             .preferredSize(new Dimension(10, 10))
-            .build();
+            .buildValue();
   }
 
   @Test
@@ -300,6 +302,14 @@ public final class ComponentsTest {
 
     value.set(true);
     assertTrue(box.isSelected());
+
+    State state = State.state();
+    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    box = Components.checkBox(toggleControl).build();
+    state.set(true);
+    assertTrue(toggleControl.value().get());
+    toggleControl.value().set(false);
+    assertFalse(state.get());
   }
 
   @Test
@@ -310,17 +320,25 @@ public final class ComponentsTest {
             .includeCaption(true)
             .transferFocusOnEnter(true)
             .buildValue();
-    JToggleButton box = componentValue.component();
-    assertTrue(box.isSelected());
+    JToggleButton button = componentValue.component();
+    assertTrue(button.isSelected());
     assertTrue(value.get());
 
-    box.doClick();
+    button.doClick();
 
-    assertFalse(box.isSelected());
+    assertFalse(button.isSelected());
     assertFalse(value.get());
 
     value.set(true);
-    assertTrue(box.isSelected());
+    assertTrue(button.isSelected());
+
+    State state = State.state();
+    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    button = Components.toggleButton(toggleControl).buildValue().component();
+    state.set(true);
+    assertTrue(toggleControl.value().get());
+    toggleControl.value().set(false);
+    assertFalse(state.get());
   }
 
   @Test
@@ -342,6 +360,48 @@ public final class ComponentsTest {
 
     value.set(true);
     assertTrue(button.isSelected());
+
+    State state = State.state();
+    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    button = Components.radioButton(toggleControl).buildValue().component();
+    state.set(true);
+    assertTrue(toggleControl.value().get());
+    toggleControl.value().set(false);
+    assertFalse(state.get());
+  }
+
+  @Test
+  void menuItem() {
+    Components.menuItem();
+    Control control = Control.control(() -> {});
+    Components.menuItem(control).buildValue();
+  }
+
+  @Test
+  void checkBoxMenuItem() {
+    State state = State.state();
+    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem(toggleControl)
+            .initialValue(true)
+            .buildValue().component();
+    assertTrue(toggleControl.value().get());
+    toggleControl.value().set(false);
+    assertFalse(state.get());
+    checkBox.setSelected(true);
+    assertTrue(state.get());
+  }
+
+  @Test
+  void radioButtonMenuItem() {
+    State state = State.state();
+    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    JRadioButtonMenuItem button = Components.radioButtonMenuItem(toggleControl).buildValue().component();
+    state.set(true);
+    assertTrue(toggleControl.value().get());
+    toggleControl.value().set(false);
+    assertFalse(state.get());
+    button.setSelected(true);
+    assertTrue(state.get());
   }
 
   @Test
@@ -731,7 +791,19 @@ public final class ComponentsTest {
   @Test
   void buttonPanel() {
     JPanel base = new JPanel();
-    base.add(Components.buttonPanel(controls)
+    base.add(Components.buttonPanel(Controls.builder()
+            .caption("SubMenu")
+            .controls(Control.builder(() -> {})
+                            .caption("one"),
+                    Control.builder(() -> {})
+                            .caption("two"),
+                    ToggleControl.builder(State.state())
+                            .caption("three"))
+            .controls(Controls.builder()
+                    .control(Control.builder(() -> {})
+                            .caption("four"))
+                    .build())
+            .build())
             .orientation(SwingConstants.VERTICAL)
             .build());
   }

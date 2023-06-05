@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.component.Components.button;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
 
@@ -63,7 +64,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
       KeyEvents.builder(VK_INSERT)
               .action(displayCalendarControl)
               .enable(temporalField);
-      calendarButton = displayCalendarControl.createButton();
+      calendarButton = button(displayCalendarControl).build();
       calendarButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
       add(calendarButton, BorderLayout.EAST);
     }
