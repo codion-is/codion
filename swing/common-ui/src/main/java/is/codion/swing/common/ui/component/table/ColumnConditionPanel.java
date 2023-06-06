@@ -92,7 +92,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .horizontalAlignment(CENTER)
             .popupMenu(menu(Controls.builder()
                     .control(ToggleControl.builder(conditionModel.autoEnableState())
-                            .caption(MESSAGES.getString("auto_enable"))).build())
+                            .name(MESSAGES.getString("auto_enable"))).build())
                     .createPopupMenu())
             .build();
     conditionModel.setLocked(modelLocked);
@@ -570,7 +570,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     if (conditionModel.columnClass().equals(String.class)) {
       JPopupMenu popupMenu = menu(Controls.builder()
               .control(ToggleControl.builder(conditionModel.caseSensitiveState())
-                      .caption(MESSAGES.getString("case_sensitive"))
+                      .name(MESSAGES.getString("case_sensitive"))
                       .build())
               .controls(createAutomaticWildcardControls())
               .build())
@@ -618,15 +618,15 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     });
 
     return Controls.builder()
-            .caption(MESSAGES.getString("automatic_wildcard"))
+            .name(MESSAGES.getString("automatic_wildcard"))
             .control(ToggleControl.builder(automaticWildcardNoneState)
-                    .caption(AutomaticWildcard.NONE.description()))
+                    .name(AutomaticWildcard.NONE.description()))
             .control(ToggleControl.builder(automaticWildcardPostfixState)
-                    .caption(AutomaticWildcard.POSTFIX.description()))
+                    .name(AutomaticWildcard.POSTFIX.description()))
             .control(ToggleControl.builder(automaticWildcardPrefixState)
-                    .caption(AutomaticWildcard.PREFIX.description()))
+                    .name(AutomaticWildcard.PREFIX.description()))
             .control(ToggleControl.builder(automaticWildcardPrefixAndPostfixState)
-                    .caption(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
+                    .name(AutomaticWildcard.PREFIX_AND_POSTFIX.description()))
             .build();
   }
 

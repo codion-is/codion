@@ -44,7 +44,7 @@ public final class InputControls {
     State somethingEnabledState = State.state(true);
 
     Control control = Control.builder(() -> System.out.println("Doing something"))
-            .caption("Do something")
+            .name("Do something")
             .mnemonic('D')
             .enabledState(somethingEnabledState)
             .build();
@@ -57,7 +57,7 @@ public final class InputControls {
       }
     };
     Control actionControl = Control.actionControlBuilder(actionCommand)
-            .caption("Do something else")
+            .name("Do something else")
             .mnemonic('S')
             .build();
 
@@ -85,29 +85,29 @@ public final class InputControls {
     // tag::controls[]
     Controls controls = Controls.builder()
             .control(Control.builder(this::doFirst)
-                    .caption("First")
+                    .name("First")
                     .mnemonic('F'))
             .control(Control.builder(this::doSecond)
-                    .caption("Second")
+                    .name("Second")
                     .mnemonic('S'))
             .control(Controls.builder()
-                    .caption("Submenu")
+                    .name("Submenu")
                     .control(Control.builder(this::doSubFirst)
-                            .caption("Sub-first")
+                            .name("Sub-first")
                             .mnemonic('b'))
                     .control(Control.builder(this::doSubSecond)
-                            .caption("Sub-second")
+                            .name("Sub-second")
                             .mnemonic('u')))
             .build();
 
     JMenu menu = Components.menu(controls).build();
 
     Control firstControl = Control.builder(this::doFirst)
-            .caption("First")
+            .name("First")
             .mnemonic('F')
             .build();
     Control secondControl = Control.builder(this::doSecond)
-            .caption("Second")
+            .name("Second")
             .mnemonic('S')
             .build();
 

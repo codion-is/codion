@@ -48,12 +48,12 @@ final class LookupTablePanel extends EntityTablePanel {
     return super.createPopupMenuControls(additionalPopupMenuControls)
             .addSeparatorAt(2)
             .addAt(3, Control.builder(this::exportCSV)
-                    .caption("Export CSV...")
+                    .name("Export CSV...")
                     .smallIcon(FrameworkIcons.instance().icon(Foundation.PAGE_EXPORT_CSV))
                     .build())
             .addSeparatorAt(6)
             .addAt(7, ToggleControl.builder(columnSelectionPaneVisibleState)
-                    .caption("Select columns")
+                    .name("Select columns")
                     .build());
   }
 
@@ -95,7 +95,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   private void setupControls() {
     setControl(ControlCode.CLEAR, Control.builder(this::clearTableAndConditions)
-            .caption("Clear")
+            .name("Clear")
             .mnemonic('C')
             .smallIcon(FrameworkIcons.instance().clear())
             .build());
@@ -113,7 +113,7 @@ final class LookupTablePanel extends EntityTablePanel {
     return Control.builder(() -> toggleColumnsControls.actions().stream()
                     .map(ToggleControl.class::cast)
                     .forEach(toggleControl -> toggleControl.value().set(true)))
-            .caption("Select all")
+            .name("Select all")
             .build();
   }
 }

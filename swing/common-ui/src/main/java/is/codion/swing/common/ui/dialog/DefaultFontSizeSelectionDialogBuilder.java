@@ -55,7 +55,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
                       UserPreferences.setUserPreference(userPreferencePropertyName, Integer.toString(fontSize));
                       JOptionPane.showMessageDialog(owner, resourceBundle.getString("font_size_selected_message"));
                     }))
-            .caption(caption)
+            .name(caption)
             .build();
   }
 

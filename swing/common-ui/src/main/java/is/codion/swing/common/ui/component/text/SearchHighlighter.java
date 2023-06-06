@@ -98,7 +98,7 @@ public final class SearchHighlighter {
                     .action(control(() -> searchStringValue.set(null))))
             .popupMenu(menu(Controls.builder()
                     .control(ToggleControl.builder(caseSensitiveState)
-                            .caption(MESSAGES.getString("case_sensitive")))
+                            .name(MESSAGES.getString("case_sensitive")))
                     .build())
                     .createPopupMenu())
             .hintText(Messages.find() + "...")

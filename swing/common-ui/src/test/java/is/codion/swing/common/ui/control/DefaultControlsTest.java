@@ -24,29 +24,29 @@ public class DefaultControlsTest {
   }
 
   private final Controls controls = Controls.builder().controls(
-          Control.builder(() -> {}).caption("one"),
-          Control.builder(() -> {}).caption("two"),
+          Control.builder(() -> {}).name("one"),
+          Control.builder(() -> {}).name("two"),
           ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-                  .caption("three")).build();
+                  .name("three")).build();
 
   @Test
   void test() {
     Control one = Control.control(() -> {});
     Control two = Control.control(() -> {});
-    Controls list = Controls.builder().caption("list").controls(one, two).build();
+    Controls list = Controls.builder().name("list").controls(one, two).build();
     assertThrows(NullPointerException.class, () -> list.add(null));
     assertThrows(NullPointerException.class, () -> list.addAt(0, null));
     list.remove(null);
-    assertFalse(nullOrEmpty(list.getCaption()));
+    assertFalse(nullOrEmpty(list.getName()));
     assertNull(list.getSmallIcon());
-    assertEquals("list", list.getCaption());
+    assertEquals("list", list.getName());
     Controls list1 = Controls.controls();
-    assertTrue(nullOrEmpty(list1.getCaption()));
-    assertEquals("", list1.getCaption());
+    assertTrue(nullOrEmpty(list1.getName()));
+    assertEquals("", list1.getName());
     Controls list2 = Controls.builder().control(two).build();
-    list2.setCaption("list");
-    assertFalse(nullOrEmpty(list2.getCaption()));
-    assertEquals("list", list2.getCaption());
+    list2.setName("list");
+    assertFalse(nullOrEmpty(list2.getName()));
+    assertEquals("list", list2.getName());
     list2.addAt(0, one);
     list2.addSeparatorAt(1);
 

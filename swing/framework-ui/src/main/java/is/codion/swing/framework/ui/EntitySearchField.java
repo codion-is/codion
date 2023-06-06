@@ -332,7 +332,7 @@ public final class EntitySearchField extends HintTextField {
                     .title(FrameworkMessages.settings())
                     .icon(FrameworkIcons.instance().settings())
                     .show())
-            .caption(FrameworkMessages.settings())
+            .name(FrameworkMessages.settings())
             .smallIcon(FrameworkIcons.instance().settings())
             .build()))
             .createPopupMenu();
@@ -494,7 +494,7 @@ public final class EntitySearchField extends HintTextField {
      */
     public ListSelectionProvider(EntitySearchModel searchModel) {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
-              .caption(Messages.ok())
+              .name(Messages.ok())
               .build();
       list.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
               ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
@@ -577,7 +577,7 @@ public final class EntitySearchField extends HintTextField {
         }
       };
       selectControl = Control.builder(createSelectCommand(searchModel, tableModel))
-              .caption(Messages.ok())
+              .name(Messages.ok())
               .build();
       table = FilteredTable.builder(tableModel)
               .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)

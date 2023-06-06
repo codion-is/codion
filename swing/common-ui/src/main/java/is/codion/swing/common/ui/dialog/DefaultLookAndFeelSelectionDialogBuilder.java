@@ -56,7 +56,7 @@ final class DefaultLookAndFeelSelectionDialogBuilder implements LookAndFeelSelec
                         UserPreferences.setUserPreference(userPreferencePropertyName, provider.lookAndFeelInfo().getClassName());
                       }
                     }))
-            .caption(caption)
+            .name(caption)
             .build();
   }
 

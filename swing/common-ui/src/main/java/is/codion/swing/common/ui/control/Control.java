@@ -47,15 +47,15 @@ public interface Control extends Action {
   String getDescription();
 
   /**
-   * @return the caption
+   * @return the name
    */
-  String getCaption();
+  String getName();
 
   /**
-   * @param caption the caption for this Control instance
+   * @param name the name of this Control instance
    * @return this Control instance
    */
-  Control setCaption(String caption);
+  Control setName(String name);
 
   /**
    * @return the state which controls whether this Control instance is enabled
@@ -234,10 +234,10 @@ public interface Control extends Action {
   interface Builder {
 
     /**
-     * @param caption the caption of the control
+     * @param name the name of the control
      * @return this Builder instance
      */
-    Builder caption(String caption);
+    Builder name(String name);
 
     /**
      * @param enabledState the state which controls the enabled state of the control

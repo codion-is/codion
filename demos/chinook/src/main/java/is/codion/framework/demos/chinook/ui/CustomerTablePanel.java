@@ -29,7 +29,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
   public CustomerTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setControl(ControlCode.PRINT, Control.builder(this::viewCustomerReport)
-            .caption(BUNDLE.getString("customer_report"))
+            .name(BUNDLE.getString("customer_report"))
             .smallIcon(FrameworkIcons.instance().print())
             .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
             .build());

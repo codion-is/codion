@@ -9143,3 +9143,4 @@
   DefaultRadioButtonBuilder bug fixed, NullPointerException averted
   ButtonBuilder.selected() added
   ButtonBuilder.caption() renamed text()
+  Control.getCaption() renamed getName()

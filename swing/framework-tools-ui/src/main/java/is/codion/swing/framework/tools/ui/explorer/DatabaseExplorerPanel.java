@@ -85,7 +85,7 @@ public final class DatabaseExplorerPanel extends JPanel {
             .add(new JScrollPane(textArea), BorderLayout.CENTER)
             .add(Components.panel(flowLayout(FlowLayout.RIGHT))
                     .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
-                            .caption(Messages.copy())
+                            .name(Messages.copy())
                             .build()).build())
                     .build(), BorderLayout.SOUTH)
             .build();

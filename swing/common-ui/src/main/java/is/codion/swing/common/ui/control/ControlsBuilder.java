@@ -20,7 +20,7 @@ final class ControlsBuilder implements Controls.Builder {
 
   private final List<Action> controls = new ArrayList<>();
 
-  private String caption;
+  private String name;
   private String description;
   private char mnemonic = 0;
   private StateObserver enabledState;
@@ -29,8 +29,8 @@ final class ControlsBuilder implements Controls.Builder {
   private KeyStroke keyStroke;
 
   @Override
-  public Controls.Builder caption(String caption) {
-    this.caption = caption;
+  public Controls.Builder name(String name) {
+    this.name = name;
     return this;
   }
 
@@ -116,7 +116,7 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls build() {
-    return (Controls) new DefaultControls(caption, mnemonic, enabledState, controls)
+    return (Controls) new DefaultControls(name, mnemonic, enabledState, controls)
             .setSmallIcon(smallIcon)
             .setLargeIcon(largeIcon)
             .setDescription(description)

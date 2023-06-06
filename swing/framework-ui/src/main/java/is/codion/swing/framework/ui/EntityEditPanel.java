@@ -667,7 +667,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private Control createRefreshControl() {
     return Control.builder(editModel()::refresh)
-            .caption(FrameworkMessages.refresh())
+            .name(FrameworkMessages.refresh())
             .enabledState(State.and(activeState, editModel().refreshingObserver().reversedObserver()))
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
@@ -677,7 +677,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private Control createDeleteControl() {
     return Control.builder(this::deleteWithConfirmation)
-            .caption(FrameworkMessages.delete())
+            .name(FrameworkMessages.delete())
             .enabledState(State.and(activeState,
                     editModel().deleteEnabledObserver(),
                     editModel().entityNewObserver().reversedObserver()))
@@ -689,7 +689,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private Control createClearControl() {
     return Control.builder(this::clearAndRequestFocus)
-            .caption(Messages.clear())
+            .name(Messages.clear())
             .enabledState(activeState)
             .description(Messages.clearTip() + ALT_PREFIX + Messages.clearMnemonic() + ")")
             .mnemonic(Messages.clearMnemonic())
@@ -699,7 +699,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private Control createUpdateControl() {
     return Control.builder(this::updateWithConfirmation)
-            .caption(FrameworkMessages.update())
+            .name(FrameworkMessages.update())
             .enabledState(State.and(activeState,
                     editModel().updateEnabledObserver(),
                     editModel().entityNewObserver().reversedObserver(),
@@ -715,7 +715,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     char mnemonic = useSaveCaption ? FrameworkMessages.saveMnemonic() : FrameworkMessages.addMnemonic();
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insertWithConfirmation)
-            .caption(caption)
+            .name(caption)
             .enabledState(State.and(activeState, editModel().insertEnabledObserver()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)

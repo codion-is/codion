@@ -1395,11 +1395,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     Controls.Builder controls = Controls.builder()
-            .caption(MESSAGES.getString(DETAIL_TABLES))
+            .name(MESSAGES.getString(DETAIL_TABLES))
             .smallIcon(FrameworkIcons.instance().detail());
     detailEntityPanels.forEach(detailPanel ->
             controls.control(Control.builder(new DetailPanelStateCommand(detailPanel, panelState))
-                    .caption(detailPanel.getCaption())));
+                    .name(detailPanel.getCaption())));
 
     return controls.build();
   }

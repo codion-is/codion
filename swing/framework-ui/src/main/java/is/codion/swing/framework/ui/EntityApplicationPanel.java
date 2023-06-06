@@ -473,7 +473,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls createFileMenuControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.file())
+            .name(FrameworkMessages.file())
             .mnemonic(FrameworkMessages.fileMnemonic())
             .control(createExitControl())
             .build();
@@ -484,7 +484,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls createToolsMenuControls() {
     Controls.Builder toolsControlsBuilder = Controls.builder()
-            .caption(resourceBundle.getString("tools"))
+            .name(resourceBundle.getString("tools"))
             .mnemonic(resourceBundle.getString("tools_mnemonic").charAt(0));
     if (!logLevelStates.isEmpty()) {
       toolsControlsBuilder.control(createLogLevelControl());
@@ -498,7 +498,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls createViewMenuControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.view())
+            .name(FrameworkMessages.view())
             .mnemonic(FrameworkMessages.viewMnemonic())
             .control(createSelectLookAndFeelControl())
             .control(createSelectFontSizeControl())
@@ -512,7 +512,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls createHelpMenuControls() {
     return Controls.builder()
-            .caption(resourceBundle.getString(HELP))
+            .name(resourceBundle.getString(HELP))
             .mnemonic(resourceBundle.getString("help_mnemonic").charAt(0))
             .control(createHelpControl())
             .control(createViewKeyboardShortcutsControl())
@@ -526,7 +526,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Controls createSupportTableMenuControls() {
     return Controls.builder()
-            .caption(FrameworkMessages.supportTables())
+            .name(FrameworkMessages.supportTables())
             .mnemonic(FrameworkMessages.supportTablesMnemonic())
             .controls(supportPanelBuilders.stream()
                     .sorted(new SupportPanelBuilderComparator(applicationModel.entities()))
@@ -540,7 +540,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createExitControl() {
     return Control.builder(this::exit)
-            .caption(FrameworkMessages.exit())
+            .name(FrameworkMessages.exit())
             .description(FrameworkMessages.exitTip())
             .mnemonic(FrameworkMessages.exitMnemonic())
             .build();
@@ -551,11 +551,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createLogLevelControl() {
     Controls logLevelControls = Controls.builder()
-            .caption(resourceBundle.getString(LOG_LEVEL))
+            .name(resourceBundle.getString(LOG_LEVEL))
             .description(resourceBundle.getString(LOG_LEVEL_DESC))
             .build();
     logLevelStates.forEach((logLevel, state) -> logLevelControls.add(ToggleControl.builder(state)
-            .caption(logLevel.toString())
+            .name(logLevel.toString())
             .build()));
 
     return logLevelControls;
@@ -566,7 +566,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createRefreshAllControl() {
     return Control.builder(applicationModel::refresh)
-            .caption(FrameworkMessages.refreshAll())
+            .name(FrameworkMessages.refreshAll())
             .build();
   }
 
@@ -575,7 +575,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewApplicationTreeControl() {
     return Control.builder(this::viewApplicationTree)
-            .caption(resourceBundle.getString("view_application_tree"))
+            .name(resourceBundle.getString("view_application_tree"))
             .build();
   }
 
@@ -584,7 +584,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewDependencyTree() {
     return Control.builder(this::viewDependencyTree)
-            .caption(FrameworkMessages.dependencies())
+            .name(FrameworkMessages.dependencies())
             .build();
   }
 
@@ -617,7 +617,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final ToggleControl createAlwaysOnTopControl() {
     return ToggleControl.builder(alwaysOnTopState)
-            .caption(resourceBundle.getString(ALWAYS_ON_TOP))
+            .name(resourceBundle.getString(ALWAYS_ON_TOP))
             .build();
   }
 
@@ -626,7 +626,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createAboutControl() {
     return Control.builder(this::displayAbout)
-            .caption(resourceBundle.getString(ABOUT) + "...")
+            .name(resourceBundle.getString(ABOUT) + "...")
             .build();
   }
 
@@ -635,7 +635,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createHelpControl() {
     return Control.builder(this::displayHelp)
-            .caption(resourceBundle.getString(HELP) + "...")
+            .name(resourceBundle.getString(HELP) + "...")
             .build();
   }
 
@@ -644,7 +644,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected final Control createViewKeyboardShortcutsControl() {
     return Control.builder(this::displayKeyboardShortcuts)
-            .caption(resourceBundle.getString(KEYBOARD_SHORTCUTS) + "...")
+            .name(resourceBundle.getString(KEYBOARD_SHORTCUTS) + "...")
             .build();
   }
 
@@ -894,7 +894,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private Control createSupportPanelControl(EntityPanel.Builder panelBuilder) {
     return Control.builder(() -> displayEntityPanel(panelBuilder))
-            .caption(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+            .name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
             .build();
   }
 

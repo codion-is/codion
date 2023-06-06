@@ -372,7 +372,7 @@ public final class FilteredTable<R, C> extends JTable {
    */
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
-            .caption(MESSAGES.getString(SELECT) + "...")
+            .name(MESSAGES.getString(SELECT) + "...")
             .enabledState(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
@@ -383,7 +383,7 @@ public final class FilteredTable<R, C> extends JTable {
    */
   public Controls createToggleColumnsControls() {
     return Controls.builder()
-            .caption(MESSAGES.getString(SELECT))
+            .name(MESSAGES.getString(SELECT))
             .enabledState(tableModel.columnModel().lockedState().reversedObserver())
             .controls(tableModel.columnModel().columns().stream()
                     .sorted(new ColumnComparator())
@@ -397,7 +397,7 @@ public final class FilteredTable<R, C> extends JTable {
    */
   public Control createResetColumnsControl() {
     return Control.builder(getModel().columnModel()::resetColumns)
-            .caption(MESSAGES.getString(RESET))
+            .name(MESSAGES.getString(RESET))
             .enabledState(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
@@ -408,7 +408,7 @@ public final class FilteredTable<R, C> extends JTable {
    */
   public ToggleControl createSingleSelectionModeControl() {
     return ToggleControl.builder(tableModel.selectionModel().singleSelectionModeState())
-            .caption(MESSAGES.getString(SINGLE_SELECTION_MODE))
+            .name(MESSAGES.getString(SINGLE_SELECTION_MODE))
             .build();
   }
 
@@ -529,9 +529,9 @@ public final class FilteredTable<R, C> extends JTable {
   private Controls searchFieldPopupMenuControls() {
     return Controls.builder()
             .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveState())
-                    .caption(MESSAGES.getString("case_sensitive_search")))
+                    .name(MESSAGES.getString("case_sensitive_search")))
             .controls(ToggleControl.builder(tableModel.searchModel().regularExpressionState())
-                    .caption(MESSAGES.getString("regular_expression_search")))
+                    .name(MESSAGES.getString("regular_expression_search")))
             .build();
   }
 
@@ -569,7 +569,7 @@ public final class FilteredTable<R, C> extends JTable {
 
   private ToggleControl createToggleColumnControl(FilteredTableColumn<C> column) {
     return ToggleControl.builder(tableModel.columnModel().visibleState(column.getIdentifier()))
-            .caption(column.getHeaderValue().toString())
+            .name(column.getHeaderValue().toString())
             .build();
   }
 

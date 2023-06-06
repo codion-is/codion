@@ -38,7 +38,7 @@ public final class TrackTablePanel extends EntityTablePanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     return super.createPopupMenuControls(additionalPopupMenuControls)
             .addAt(0, Control.builder(this::raisePriceOfSelected)
-                    .caption(BUNDLE.getString("raise_price") + "...")
+                    .name(BUNDLE.getString("raise_price") + "...")
                     .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
                     .build())
             .addSeparatorAt(1);

@@ -20,7 +20,7 @@ final class CountryTablePanel extends EntityTablePanel {
   CountryTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
     setControl(ControlCode.PRINT, Control.builder(this::viewCountryReport)
-            .caption("Country report")
+            .name("Country report")
             .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
             .smallIcon(FrameworkIcons.instance().print())
             .build());

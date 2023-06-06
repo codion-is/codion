@@ -15,7 +15,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   private final Value<Boolean> value;
 
-  private String caption;
+  private String name;
   private StateObserver enabledState;
   private char mnemonic;
   private Icon smallIcon;
@@ -28,14 +28,14 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   }
 
   @Override
-  public ToggleControl.Builder caption(String caption) {
-    this.caption = requireNonNull(caption);
+  public ToggleControl.Builder name(String name) {
+    this.name = name;
     return this;
   }
 
   @Override
   public ToggleControl.Builder enabledState(StateObserver enabledState) {
-    this.enabledState = requireNonNull(enabledState);
+    this.enabledState = enabledState;
     return this;
   }
 
@@ -59,19 +59,19 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl.Builder description(String description) {
-    this.description = requireNonNull(description);
+    this.description = description;
     return this;
   }
 
   @Override
   public ToggleControl.Builder keyStroke(KeyStroke keyStroke) {
-    this.keyStroke = requireNonNull(keyStroke);
+    this.keyStroke = keyStroke;
     return this;
   }
 
   @Override
   public ToggleControl build() {
-    DefaultToggleControl toggleControl = new DefaultToggleControl(value, caption, enabledState);
+    DefaultToggleControl toggleControl = new DefaultToggleControl(value, name, enabledState);
     toggleControl.setMnemonic(mnemonic);
     toggleControl.setSmallIcon(smallIcon);
     toggleControl.setLargeIcon(largeIcon);

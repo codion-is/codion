@@ -28,7 +28,7 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
   DefaultToggleButtonBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(linkedValue);
     this.toggleControl = toggleControl;
-    text(toggleControl.getCaption());
+    text(toggleControl.getName());
     mnemonic(toggleControl.getMnemonic());
   }
 

@@ -19,7 +19,7 @@ public class KeyEventsTest {
   void addRemoveKeyEvent() {
     JTextField textField = new JTextField();
     final String actionName = "testing";
-    Control control = Control.builder(() -> {}).caption(actionName).build();
+    Control control = Control.builder(() -> {}).name(actionName).build();
     assertNull(textField.getActionMap().get(actionName));
     KeyEvents.Builder builder = KeyEvents.builder(VK_ENTER).action(control);
     builder.enable(textField);
