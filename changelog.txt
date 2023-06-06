@@ -9138,3 +9138,4 @@
   DefaultHttpEntityConnection.DefaultBuilder.socketTimeout() bug fixed, returned null
   AbstractServer.startAuxiliaryServers() bug fixed, newSingleThreadScheduledExecutor() replaced with the correct newSingleThreadExecutor() for running auxiliary servers
   AbstractEntityEditModel.defaultEntity() refactored with streams
+  EntityEditModel, insert(), update() and delete() now take Collection instead of List, related changes

@@ -114,7 +114,7 @@ public final class EntityEditEvents {
    * Notifies delete
    * @param deletedEntities the deleted entities
    */
-  public static void notifyDeleted(List<Entity> deletedEntities) {
+  public static void notifyDeleted(Collection<Entity> deletedEntities) {
     EDIT_LISTENER.notifyDeleted(requireNonNull(deletedEntities));
   }
 
@@ -174,7 +174,7 @@ public final class EntityEditEvents {
       }
     }
 
-    private void notifyDeleted(List<Entity> deleted) {
+    private void notifyDeleted(Collection<Entity> deleted) {
       mapToType(deleted).forEach(this::notifyDeleted);
     }
 
