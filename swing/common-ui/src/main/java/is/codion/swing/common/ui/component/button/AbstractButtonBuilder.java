@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -33,6 +34,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
   private Insets insets;
+  private ButtonGroup buttonGroup;
   private Action action;
 
   protected AbstractButtonBuilder(Value<T> linkedValue) {
@@ -76,6 +78,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B buttonGroup(ButtonGroup buttonGroup) {
+    this.buttonGroup = requireNonNull(buttonGroup);
+    return (B) this;
+  }
+
+  @Override
   public final B action(Action action) {
     this.action = action;
     return (B) this;
@@ -110,6 +118,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (insets != null) {
       button.setMargin(insets);
+    }
+    if (buttonGroup != null) {
+      buttonGroup.add(button);
     }
 
     return button;

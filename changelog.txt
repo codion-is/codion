@@ -9139,3 +9139,5 @@
   AbstractServer.startAuxiliaryServers() bug fixed, newSingleThreadScheduledExecutor() replaced with the correct newSingleThreadExecutor() for running auxiliary servers
   AbstractEntityEditModel.defaultEntity() refactored with streams
   EntityEditModel, insert(), update() and delete() now take Collection instead of List, related changes
+  ButtonBuilder.buttonGroup() added
+  DefaultRadioButtonBuilder bug fixed, NullPointerException averted

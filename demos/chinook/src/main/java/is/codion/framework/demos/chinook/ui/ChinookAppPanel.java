@@ -8,6 +8,7 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -15,6 +16,7 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -30,7 +32,6 @@ import javax.swing.JRadioButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import java.awt.Dimension;
-import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
@@ -114,15 +115,19 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
   private void selectLanguage() {
     String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
-    JRadioButton enButton = new JRadioButton("English", language.equals(LANGUAGE_EN));
-    JRadioButton isButton = new JRadioButton("Íslenska", language.equals(LANGUAGE_IS));
     ButtonGroup langButtonGroup = new ButtonGroup();
-    langButtonGroup.add(enButton);
-    langButtonGroup.add(isButton);
-    JPanel buttonPanel = new JPanel(new GridLayout(2, 1, 5, 5));
-    buttonPanel.add(enButton);
-    buttonPanel.add(isButton);
-    showMessageDialog(this, buttonPanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
+    JPanel selectLanguagePanel = new JPanel(Layouts.gridLayout(2, 1));
+    Components.radioButton()
+            .caption("English")
+            .initialValue(language.equals(LANGUAGE_EN))
+            .buttonGroup(langButtonGroup)
+            .build(selectLanguagePanel::add);
+    JRadioButton isButton = Components.radioButton()
+            .caption("Íslenska")
+            .initialValue(language.equals(LANGUAGE_IS))
+            .buttonGroup(langButtonGroup)
+            .build(selectLanguagePanel::add);
+    showMessageDialog(this, selectLanguagePanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
     String newLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
     if (!language.equals(newLanguage)) {
       UserPreferences.setUserPreference(LANGUAGE_PREFERENCES_KEY, newLanguage);

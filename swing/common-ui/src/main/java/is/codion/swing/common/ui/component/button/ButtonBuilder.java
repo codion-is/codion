@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.component.ComponentBuilder;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.JButton;
 import java.awt.Insets;
@@ -62,6 +63,12 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * @see JButton#setMargin(Insets)
    */
   B margin(Insets insets);
+
+  /**
+   * @param buttonGroup the group to add the button to
+   * @return this builder instance
+   */
+  B buttonGroup(ButtonGroup buttonGroup);
 
   /**
    * @param action the button action
