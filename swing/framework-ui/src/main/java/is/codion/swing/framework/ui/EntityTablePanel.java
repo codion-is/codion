@@ -245,6 +245,7 @@ public class EntityTablePanel extends JPanel {
 
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
   private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
+  private static final Control NULL_CONTROL = Control.control(() -> {});
 
   private final State conditionPanelVisibleState = State.state();
   private final State filterPanelVisibleState = State.state();
@@ -621,10 +622,12 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * @param controlCode the control code
-   * @return the control associated with {@code controlCode} or an empty Optional if the control is not available
+   * @return the control associated with {@code controlCode} or an empty Optional if no control is available
    */
   public final Optional<Control> control(ControlCode controlCode) {
-    return Optional.ofNullable(controls.get(controlCode));
+    Control control = controls.get(requireNonNull(controlCode));
+
+    return control == NULL_CONTROL ? Optional.empty() : Optional.ofNullable(control);
   }
 
   /**
@@ -903,13 +906,7 @@ public class EntityTablePanel extends JPanel {
    */
   protected final void setControl(ControlCode controlCode, Control control) {
     checkIfInitialized();
-    requireNonNull(controlCode);
-    if (control == null) {
-      controls.remove(controlCode);
-    }
-    else {
-      controls.put(controlCode, control);
-    }
+    controls.put(requireNonNull(controlCode), control == null ? NULL_CONTROL : control);
   }
 
   protected Controls createToolBarControls(List<Controls> additionalToolBarControls) {

@@ -42,7 +42,7 @@ import static is.codion.common.rmi.server.SerializationWhitelist.isSerialization
 import static is.codion.common.rmi.server.SerializationWhitelist.writeDryRunWhitelist;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
-import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
+import static java.util.concurrent.Executors.newSingleThreadExecutor;
 import static java.util.stream.Collectors.*;
 
 /**
@@ -384,7 +384,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
         AuxiliaryServer auxiliaryServer = auxiliaryServerFactory.createServer(this);
         auxiliaryServers.add(auxiliaryServer);
         Callable<?> starter = () -> startAuxiliaryServer(auxiliaryServer);
-        newSingleThreadScheduledExecutor(new DaemonThreadFactory()).submit(starter).get();
+        newSingleThreadExecutor(new DaemonThreadFactory()).submit(starter).get();
       }
     }
     catch (InterruptedException e) {

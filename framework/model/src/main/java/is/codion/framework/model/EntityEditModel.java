@@ -24,7 +24,6 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -340,7 +339,7 @@ public interface EntityEditModel {
   Entity insert() throws DatabaseException, ValidationException;
 
   /**
-   * Performs an insert on the given entities, returns silently on receiving an empty list.
+   * Performs an insert on the given entities, returns silently on receiving an empty collection.
    * @param entities the entities to insert
    * @return a list containing the inserted entities
    * @throws DatabaseException in case of a database exception
@@ -350,7 +349,7 @@ public interface EntityEditModel {
    * @see #addAfterInsertListener(EventDataListener)
    * @see EntityValidator#validate(Entity)
    */
-  Collection<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException;
+  Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs an update on the active entity
@@ -365,7 +364,7 @@ public interface EntityEditModel {
   Entity update() throws DatabaseException, ValidationException;
 
   /**
-   * Updates the given entities. If the entities are unmodified or the list is empty this method returns silently.
+   * Updates the given entities. If the entities are unmodified or the collection is empty this method returns silently.
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
@@ -376,7 +375,7 @@ public interface EntityEditModel {
    * @see #addAfterUpdateListener(EventDataListener)
    * @see EntityValidator#validate(Entity)
    */
-  List<Entity> update(List<? extends Entity> entities) throws DatabaseException, ValidationException;
+  Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Deletes the active entity
@@ -388,14 +387,14 @@ public interface EntityEditModel {
   void delete() throws DatabaseException;
 
   /**
-   * Deletes the given entities, returns silently on receiving an empty list
+   * Deletes the given entities, returns silently on receiving an empty collection
    * @param entities the entities to delete
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
    * @see #addBeforeDeleteListener(EventDataListener)
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  void delete(List<? extends Entity> entities) throws DatabaseException;
+  void delete(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Refreshes all data models used by this edit model, combo box models f.ex.

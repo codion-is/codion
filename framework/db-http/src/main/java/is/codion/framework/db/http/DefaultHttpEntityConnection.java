@@ -506,7 +506,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public Builder socketTimeout(int socketTimeout) {
       this.socketTimeout = socketTimeout;
-      return null;
+      return this;
     }
 
     @Override

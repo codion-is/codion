@@ -477,7 +477,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final Collection<Entity> insert(List<? extends Entity> entities) throws DatabaseException, ValidationException {
+  public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (!isInsertEnabled()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
@@ -494,16 +494,16 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity update() throws DatabaseException, ValidationException {
-    List<Entity> updated = update(singletonList(entity()));
+    Collection<Entity> updated = update(singletonList(entity.copy()));
     if (updated.isEmpty()) {
       throw new UpdateException("Active entity is not modified");
     }
 
-    return updated.get(0);
+    return updated.iterator().next();
   }
 
   @Override
-  public final List<Entity> update(List<? extends Entity> entities) throws DatabaseException, ValidationException {
+  public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
@@ -543,7 +543,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void delete(List<? extends Entity> entities) throws DatabaseException {
+  public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
     if (!isDeleteEnabled()) {
       throw new IllegalStateException("Delete is not enabled!");
@@ -553,14 +553,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     }
     LOG.debug("{} - delete {}", this, entities);
 
-    notifyBeforeDelete(unmodifiableList(entities));
+    notifyBeforeDelete(unmodifiableCollection(entities));
 
     doDelete(entities);
     if (entities.contains(entity)) {
       doSetEntity(null);
     }
 
-    notifyAfterDelete(unmodifiableList(entities));
+    notifyAfterDelete(unmodifiableCollection(entities));
   }
 
   @Override
@@ -781,7 +781,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected Collection<Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().insert(new ArrayList<>(entities));
+    return connectionProvider.connection().insert(entities);
   }
 
   /**
@@ -811,7 +811,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entities the entities
    * @return the entities requiring update
    * @see #update()
-   * @see #update(java.util.List)
+   * @see #update(Collection)
    */
   protected Collection<Entity> modified(Collection<? extends Entity> entities) {
     return Entity.modified(entities);
@@ -853,7 +853,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesToInsert the entities about to be inserted
    * @see #addBeforeInsertListener(EventDataListener)
    */
-  protected final void notifyBeforeInsert(List<Entity> entitiesToInsert) {
+  protected final void notifyBeforeInsert(Collection<Entity> entitiesToInsert) {
     beforeInsertEvent.onEvent(entitiesToInsert);
   }
 
@@ -895,7 +895,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesToDelete the entities about to be deleted
    * @see #addBeforeDeleteListener(EventDataListener)
    */
-  protected final void notifyBeforeDelete(List<Entity> entitiesToDelete) {
+  protected final void notifyBeforeDelete(Collection<Entity> entitiesToDelete) {
     beforeDeleteEvent.onEvent(entitiesToDelete);
   }
 
@@ -904,15 +904,15 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param deletedEntities the deleted entities
    * @see #addAfterDeleteListener(EventDataListener)
    */
-  protected final void notifyAfterDelete(List<Entity> deletedEntities) {
+  protected final void notifyAfterDelete(Collection<Entity> deletedEntities) {
     afterDeleteEvent.onEvent(deletedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyDeleted(deletedEntities);
     }
   }
 
-  private Collection<Entity> insertEntities(List<? extends Entity> entities) throws DatabaseException, ValidationException {
-    notifyBeforeInsert(unmodifiableList(entities));
+  private Collection<Entity> insertEntities(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
+    notifyBeforeInsert(unmodifiableCollection(entities));
     validate(entities);
     //entity.toString() could potentially cause NullPointerException if null-validation
     //has not been performed, hence why this logging is performed after validation
@@ -984,20 +984,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    for (ColumnProperty<?> property : definition.columnProperties()) {
-      if (!definition.isForeignKeyAttribute(property.attribute())//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        newEntity.put((Attribute<Object>) property.attribute(), valueSupplier.get(property));
-      }
-    }
-    for (TransientProperty<?> transientProperty : definition.transientProperties()) {
-      if (!transientProperty.isDerived()) {
-        newEntity.put((Attribute<Object>) transientProperty.attribute(), valueSupplier.get(transientProperty));
-      }
-    }
-    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties()) {
-      newEntity.put(foreignKeyProperty.attribute(), valueSupplier.get(foreignKeyProperty));
-    }
+    definition.columnProperties().stream()
+            .filter(property -> !definition.isForeignKeyAttribute(property.attribute()))//these are set via their respective parent fk properties
+            .filter(property -> !property.columnHasDefaultValue() || property.hasDefaultValue())
+            .map(property -> (Property<Object>) property)
+            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
+    definition.transientProperties().stream()
+            .filter(property -> !property.isDerived())
+            .map(property -> (Property<Object>) property)
+            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
+    definition.foreignKeyProperties().forEach(property ->
+            newEntity.put(property.attribute(), valueSupplier.get(property)));
+
     newEntity.saveAll();
 
     return newEntity;

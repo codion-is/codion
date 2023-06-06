@@ -425,7 +425,7 @@ public final class AbstractEntityEditModelTest {
     try {
       employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
       List<Entity> toDelete = singletonList(employeeEditModel.entity());
-      employeeEditModel.addAfterDeleteListener(deletedEntities -> assertEquals(toDelete, deletedEntities));
+      employeeEditModel.addAfterDeleteListener(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
       employeeEditModel.setDeleteEnabled(false);
       assertFalse(employeeEditModel.isDeleteEnabled());
       assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
