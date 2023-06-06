@@ -9135,3 +9135,4 @@
   Control.createButton(), ToggleControl.create...() functionality moved to Components, related refactoring, a bit messy
   json module split into json-db and json-domain
   EntityTablePanel, EntityEditPanel bug fixed, setControl() with a null control parameter removed the entry from the controls map, which didn't prevent adding the default control, NULL_CONTROL added
+  DefaultHttpEntityConnection.DefaultBuilder.socketTimeout() bug fixed, returned null
