@@ -9,7 +9,8 @@ module is.codion.framework.servlet {
   requires org.eclipse.jetty.servlet;
   requires org.eclipse.jetty.websocket.jetty.server;
   requires is.codion.framework.db.rmi;
-  requires is.codion.framework.json;
+  requires is.codion.framework.json.domain;
+  requires is.codion.framework.json.db;
 
   exports is.codion.framework.servlet;
 
