@@ -167,8 +167,8 @@ public class EntityComponents {
     return Components.checkBox()
             .toolTipText(property.description())
             .nullable(property.isNullable())
-            .caption(property.caption())
-            .includeCaption(false);
+            .text(property.caption())
+            .includeText(false);
   }
 
   /**
@@ -182,8 +182,8 @@ public class EntityComponents {
 
     return (ButtonBuilder<Boolean, JToggleButton, B>) Components.toggleButton()
             .toolTipText(property.description())
-            .caption(property.caption())
-            .includeCaption(false);
+            .text(property.caption())
+            .includeText(false);
   }
 
   /**

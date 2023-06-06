@@ -24,11 +24,11 @@ import static java.util.Objects.requireNonNull;
 public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuilder<T, C, B>> extends ComponentBuilder<T, C, B> {
 
   /**
-   * @param caption the caption
+   * @param text the button caption text
    * @return this builder instance
    * @see JButton#setText(String)
    */
-  B caption(String caption);
+  B text(String text);
 
   /**
    * @param mnemonic the mnemonic
@@ -38,11 +38,11 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B mnemonic(int mnemonic);
 
   /**
-   * Note that setting this to false overrides caption from the action, if one is specified.
-   * @param includeCaption specifies whether a caption should be included
+   * Note that setting this to false overrides the caption text from the action, if one is specified.
+   * @param includeText specifies whether a caption text should be included
    * @return this builder instance
    */
-  B includeCaption(boolean includeCaption);
+  B includeText(boolean includeText);
 
   /**
    * @param horizontalAlignment the horizontal alignment

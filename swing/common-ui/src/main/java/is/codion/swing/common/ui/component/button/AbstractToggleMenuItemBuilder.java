@@ -21,7 +21,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   AbstractToggleMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(linkedValue);
     this.toggleControl = requireNonNull(toggleControl);
-    caption(toggleControl.getCaption());
+    text(toggleControl.getCaption());
     mnemonic(toggleControl.getMnemonic());
     horizontalAlignment(SwingConstants.LEADING);
   }

@@ -286,9 +286,9 @@ public final class ComponentsTest {
   void checkBox() {
     Value<Boolean> value = Value.value(true, false);
     ComponentValue<Boolean, JCheckBox> componentValue = Components.checkBox(value)
-            .caption("caption")
+            .text("caption")
             .horizontalAlignment(SwingConstants.CENTER)
-            .includeCaption(true)
+            .includeText(true)
             .transferFocusOnEnter(true)
             .buildValue();
     JCheckBox box = componentValue.component();
@@ -316,8 +316,8 @@ public final class ComponentsTest {
   void toggleButton() {
     Value<Boolean> value = Value.value(true, false);
     ComponentValue<Boolean, JToggleButton> componentValue = Components.toggleButton(value)
-            .caption("caption")
-            .includeCaption(true)
+            .text("caption")
+            .includeText(true)
             .transferFocusOnEnter(true)
             .buildValue();
     JToggleButton button = componentValue.component();
@@ -345,8 +345,8 @@ public final class ComponentsTest {
   void radioButton() {
     Value<Boolean> value = Value.value(true, false);
     ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
-            .caption("caption")
-            .includeCaption(true)
+            .text("caption")
+            .includeText(true)
             .transferFocusOnEnter(true)
             .buildValue();
     JRadioButton button = componentValue.component();

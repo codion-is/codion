@@ -65,7 +65,7 @@ public final class DatabaseMonitorPanel extends JPanel {
                     .editable(false)
                     .build())
             .add(button(control(model::clearStatistics))
-                    .caption("Clear")
+                    .text("Clear")
                     .build())
             .build();
 

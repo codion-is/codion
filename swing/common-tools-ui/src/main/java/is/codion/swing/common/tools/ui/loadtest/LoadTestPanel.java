@@ -230,11 +230,11 @@ public final class LoadTestPanel<T> extends JPanel {
     return panel(flexibleGridLayout(1, 2))
             .border(createTitledBorder("Charts"))
             .add(checkBox(loadTestModel.collectChartDataState())
-                    .caption("Collect chart data")
+                    .text("Collect chart data")
                     .build())
-            .add(button(Control.builder(loadTestModel::clearChartData)
-                    .caption("Clear")
-                    .build()).build())
+            .add(button(Control.control(loadTestModel::clearChartData))
+                    .text("Clear")
+                    .build())
             .build();
   }
 
@@ -318,7 +318,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                     .build())
             .add(toggleButton(loadTestModel.pausedState())
-                    .caption("Pause")
+                    .text("Pause")
                     .mnemonic('P')
                     .build())
             .border(createTitledBorder("Activity"))

@@ -68,14 +68,14 @@ public final class InputControls {
     State state = State.state();
 
     JToggleButton toggleButton = Components.toggleButton(state)
-            .caption("Change state")
+            .text("Change state")
             .mnemonic('C')
             .build();
 
     Value<Boolean> booleanValue = Value.value();
 
     JCheckBox checkBox = Components.checkBox(booleanValue)
-            .caption("Change value")
+            .text("Change value")
             .mnemonic('V')
             .build();
     // end::toggleControl[]
@@ -157,7 +157,7 @@ public final class InputControls {
 
     JCheckBox checkBox =
             Components.checkBox(booleanValue)
-                    .caption("Check")
+                    .text("Check")
                     .horizontalAlignment(SwingConstants.CENTER)
                     .build();
 
@@ -171,7 +171,7 @@ public final class InputControls {
 
     NullableCheckBox checkBox =
             (NullableCheckBox) Components.checkBox(booleanValue)
-                    .caption("Check")
+                    .text("Check")
                     .nullable(true)
                     .build();
     // end::nullableCheckBox[]

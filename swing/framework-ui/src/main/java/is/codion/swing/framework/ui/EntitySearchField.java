@@ -345,7 +345,7 @@ public final class EntitySearchField extends HintTextField {
   private void showEmptyResultMessage() {
     Event<?> closeEvent = Event.event();
     JButton okButton = Components.button(control(closeEvent::onEvent))
-            .caption(Messages.ok())
+            .text(Messages.ok())
             .build();
     KeyEvents.builder(VK_ENTER)
             .action(control(okButton::doClick))
@@ -416,7 +416,7 @@ public final class EntitySearchField extends HintTextField {
       JPanel generalSettingsPanel = Components.panel(gridLayout(2, 1))
               .border(BorderFactory.createTitledBorder(""))
               .add(Components.checkBox(searchModel.multipleSelectionEnabledState())
-                      .caption(MESSAGES.getString("enable_multiple_search_values"))
+                      .text(MESSAGES.getString("enable_multiple_search_values"))
                       .build())
               .build();
 
@@ -441,13 +441,13 @@ public final class EntitySearchField extends HintTextField {
     private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
       return Components.panel(gridLayout(3, 1))
               .add(Components.checkBox(settings.caseSensitiveState())
-                      .caption(MESSAGES.getString("case_sensitive"))
+                      .text(MESSAGES.getString("case_sensitive"))
                       .build())
               .add(Components.checkBox(settings.wildcardPrefixState())
-                      .caption(MESSAGES.getString("prefix_wildcard"))
+                      .text(MESSAGES.getString("prefix_wildcard"))
                       .build())
               .add(Components.checkBox(settings.wildcardPostfixState())
-                      .caption(MESSAGES.getString("postfix_wildcard"))
+                      .text(MESSAGES.getString("postfix_wildcard"))
                       .build())
               .build();
     }

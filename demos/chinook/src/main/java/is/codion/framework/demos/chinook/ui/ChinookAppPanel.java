@@ -118,12 +118,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     JPanel languagePanel = new JPanel(Layouts.gridLayout(2, 1));
     ButtonGroup buttonGroup = new ButtonGroup();
     Components.radioButton()
-            .caption("English")
+            .text("English")
             .selected(currentLanguage.equals(LANGUAGE_EN))
             .buttonGroup(buttonGroup)
             .build(languagePanel::add);
     JRadioButton isButton = Components.radioButton()
-            .caption("Íslenska")
+            .text("Íslenska")
             .selected(currentLanguage.equals(LANGUAGE_IS))
             .buttonGroup(buttonGroup)
             .build(languagePanel::add);

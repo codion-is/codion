@@ -28,9 +28,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
   private final List<ActionListener> actionListeners = new ArrayList<>();
 
-  private String caption;
+  private String text;
   private int mnemonic;
-  private boolean includeCaption = true;
+  private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
   private Insets insets;
@@ -43,8 +43,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B caption(String caption) {
-    this.caption = caption;
+  public final B text(String text) {
+    this.text = text;
     return (B) this;
   }
 
@@ -55,8 +55,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B includeCaption(boolean includeCaption) {
-    this.includeCaption = includeCaption;
+  public final B includeText(boolean includeText) {
+    this.includeText = includeText;
     return (B) this;
   }
 
@@ -110,11 +110,11 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
       action.addPropertyChangeListener(new ButtonPropertyChangeListener(button));
     }
     actionListeners.forEach(button::addActionListener);
-    if (!includeCaption) {
+    if (!includeText) {
       button.setText(null);
     }
-    else if (caption != null) {
-      button.setText(caption);
+    else if (text != null) {
+      button.setText(text);
     }
     button.setHorizontalAlignment(horizontalAlignment);
     if (mnemonic != 0) {

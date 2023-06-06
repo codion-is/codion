@@ -93,7 +93,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     JPanel clientTypeBase = panel(borderLayout())
             .add(clientUserBase, BorderLayout.CENTER)
             .add(button(control(model::refresh))
-                    .caption("Refresh")
+                    .text("Refresh")
                     .build(), BorderLayout.SOUTH)
             .build();
 
@@ -106,11 +106,11 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .columns(7)
                     .build())
             .add(button(control(model::disconnectTimedOut))
-                    .caption("Disconnect idle")
+                    .text("Disconnect idle")
                     .toolTipText("Disconnect those that have exceeded the allowed idle time")
                     .build())
             .add(button(control(this::disconnectAll))
-                    .caption("Disconnect all")
+                    .text("Disconnect all")
                     .toolTipText("Disconnect all clients")
                     .build())
             .build();
@@ -142,7 +142,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     JPanel configBase = panel(borderLayout())
             .add(configPanel, BorderLayout.CENTER)
             .add(button(control(model::resetHistory))
-                    .caption("Reset")
+                    .text("Reset")
                     .build(), BorderLayout.EAST)
             .build();
 

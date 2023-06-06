@@ -213,15 +213,15 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .editable(false)
                     .build())
             .add(checkBox(model.collectSnapshotStatisticsState())
-                    .caption("Snapshot")
+                    .text("Snapshot")
                     .maximumSize(preferredTextFieldSize())
                     .build())
             .add(checkBox(model.collectCheckOutTimesState())
-                    .caption("Check out times")
+                    .text("Check out times")
                     .maximumSize(preferredTextFieldSize())
                     .build())
             .add(button(control(model::clearStatistics))
-                    .caption("Clear")
+                    .text("Clear")
                     .maximumSize(preferredTextFieldSize())
                     .build())
             .build();
@@ -244,7 +244,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .add(createWestCenterPanel(new JLabel("Since"), resetTimeField))
                     .build(), BorderLayout.CENTER)
             .add(button(control(model::resetStatistics))
-                    .caption("Reset")
+                    .text("Reset")
                     .build(), BorderLayout.EAST)
             .build();
   }

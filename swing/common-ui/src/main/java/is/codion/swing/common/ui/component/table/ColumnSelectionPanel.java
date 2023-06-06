@@ -54,7 +54,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
     this.columnVisibleStates = createColumnVisibleStates();
     this.checkBoxes = columnVisibleStates.entrySet().stream()
             .map(entry -> Components.checkBox(entry.getValue())
-                    .caption(Objects.toString(entry.getKey().getHeaderValue()))
+                    .text(Objects.toString(entry.getKey().getHeaderValue()))
                     .build())
             .collect(Collectors.toList());
     JScrollPane checkBoxPanel = createCheckBoxPanel();
@@ -94,14 +94,14 @@ final class ColumnSelectionPanel<C> extends JPanel {
   private JPanel createNorthPanel(Insets insets) {
     JCheckBox selectAllBox = Components.checkBox()
             .linkedValueObserver(State.and(columnVisibleStates.values()))
-            .caption(MESSAGES.getString("select_all"))
+            .text(MESSAGES.getString("select_all"))
             .mnemonic(MESSAGES.getString("select_all_mnemonic").charAt(0))
             .build();
     JCheckBox selectNoneBox = Components.checkBox()
             .linkedValueObserver(State.and(columnVisibleStates.values().stream()
                     .map(StateObserver::reversedObserver)
                     .collect(Collectors.toList())))
-            .caption(MESSAGES.getString("select_none"))
+            .text(MESSAGES.getString("select_none"))
             .mnemonic(MESSAGES.getString("select_none_mnemonic").charAt(0))
             .build();
     selectAllBox.addActionListener(new SelectAll(selectAllBox, selectNoneBox));
