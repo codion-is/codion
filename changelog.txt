@@ -9141,3 +9141,4 @@
   EntityEditModel, insert(), update() and delete() now take Collection instead of List, related changes
   ButtonBuilder.buttonGroup() added
   DefaultRadioButtonBuilder bug fixed, NullPointerException averted
+  ButtonBuilder.selected() added

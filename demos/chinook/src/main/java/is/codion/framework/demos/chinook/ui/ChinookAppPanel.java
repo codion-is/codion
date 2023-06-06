@@ -114,23 +114,23 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
   }
 
   private void selectLanguage() {
-    String language = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
-    ButtonGroup langButtonGroup = new ButtonGroup();
-    JPanel selectLanguagePanel = new JPanel(Layouts.gridLayout(2, 1));
+    String currentLanguage = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
+    JPanel languagePanel = new JPanel(Layouts.gridLayout(2, 1));
+    ButtonGroup buttonGroup = new ButtonGroup();
     Components.radioButton()
             .caption("English")
-            .initialValue(language.equals(LANGUAGE_EN))
-            .buttonGroup(langButtonGroup)
-            .build(selectLanguagePanel::add);
+            .selected(currentLanguage.equals(LANGUAGE_EN))
+            .buttonGroup(buttonGroup)
+            .build(languagePanel::add);
     JRadioButton isButton = Components.radioButton()
             .caption("Íslenska")
-            .initialValue(language.equals(LANGUAGE_IS))
-            .buttonGroup(langButtonGroup)
-            .build(selectLanguagePanel::add);
-    showMessageDialog(this, selectLanguagePanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
-    String newLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
-    if (!language.equals(newLanguage)) {
-      UserPreferences.setUserPreference(LANGUAGE_PREFERENCES_KEY, newLanguage);
+            .selected(currentLanguage.equals(LANGUAGE_IS))
+            .buttonGroup(buttonGroup)
+            .build(languagePanel::add);
+    showMessageDialog(this, languagePanel, "Language/Tungumál", JOptionPane.QUESTION_MESSAGE);
+    String selectedLanguage = isButton.isSelected() ? LANGUAGE_IS : LANGUAGE_EN;
+    if (!currentLanguage.equals(selectedLanguage)) {
+      UserPreferences.setUserPreference(LANGUAGE_PREFERENCES_KEY, selectedLanguage);
       showMessageDialog(this,
               "Language has been changed, restart the application to apply the changes.\n\n" +
                       "Tungumáli hefur verið breytt, endurræstu kerfið til að virkja breytingarnar.");

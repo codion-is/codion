@@ -71,6 +71,13 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B buttonGroup(ButtonGroup buttonGroup);
 
   /**
+   * Sets the inital selected status of the button, overridden by initial value.
+   * @param selected the initial selected status of the button
+   * @return this builder instance
+   */
+  B selected(boolean selected);
+
+  /**
    * @param action the button action
    * @return this builder instance
    * @see JButton#setAction(Action)

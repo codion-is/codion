@@ -35,6 +35,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private Icon icon;
   private Insets insets;
   private ButtonGroup buttonGroup;
+  private boolean selected = false;
   private Action action;
 
   protected AbstractButtonBuilder(Value<T> linkedValue) {
@@ -84,6 +85,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B selected(boolean selected) {
+    this.selected = selected;
+    return (B) this;
+  }
+
+  @Override
   public final B action(Action action) {
     this.action = action;
     return (B) this;
@@ -121,6 +128,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (buttonGroup != null) {
       buttonGroup.add(button);
+    }
+    if (selected) {
+      button.setSelected(true);
     }
 
     return button;
