@@ -60,7 +60,7 @@ public final class ClientMonitorPanel extends JPanel {
     JPanel clientInstanceBase = panel(borderLayout())
             .add(clientInstanceScroller, BorderLayout.CENTER)
             .add(button(control(this::refresh))
-                    .caption("Refresh")
+                    .text("Refresh")
                     .build(), BorderLayout.SOUTH)
             .build();
 
@@ -95,7 +95,7 @@ public final class ClientMonitorPanel extends JPanel {
   private JPopupMenu createPopupMenu() {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
-                    .caption("Disconnect"))
+                    .name("Disconnect"))
             .build())
             .createPopupMenu();
   }

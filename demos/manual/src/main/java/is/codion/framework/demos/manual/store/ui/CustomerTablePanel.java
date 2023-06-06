@@ -29,7 +29,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     // which calls the viewCustomerReport method in this class,
     // enabled only when the selection is not empty
     setControl(ControlCode.PRINT, Control.builder(this::viewCustomerReport)
-            .caption("Customer report")
+            .name("Customer report")
             .smallIcon(FrameworkIcons.instance().print())
             .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
             .build());

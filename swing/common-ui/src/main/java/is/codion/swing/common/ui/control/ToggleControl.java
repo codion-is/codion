@@ -60,10 +60,10 @@ public interface ToggleControl extends Control {
   interface Builder extends Control.Builder {
 
     /**
-     * @param caption the caption of the control
+     * @param name the name of the control
      * @return this Builder instance
      */
-    Builder caption(String caption);
+    Builder name(String name);
 
     /**
      * @param enabledState the state which controls the enabled state of the control

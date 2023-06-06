@@ -64,7 +64,7 @@ public final class ApplicationPanel extends JPanel {
     State inputEnabledState = State.state(true);
 
     checkBox(inputEnabledState)
-            .caption("Enabled")
+            .text("Enabled")
             .mnemonic('N')
             .transferFocusOnEnter(true)
             .build(checkBox -> settingsPanel.add(checkBox, BorderLayout.WEST));
@@ -72,7 +72,7 @@ public final class ApplicationPanel extends JPanel {
     button(Control.builder(model::clear)
             .enabledState(inputEnabledState)
             .build())
-            .caption("Clear")
+            .text("Clear")
             .mnemonic('L')
             .transferFocusOnEnter(true)
             .build(button -> settingsPanel.add(button, BorderLayout.EAST));
@@ -371,7 +371,7 @@ public final class ApplicationPanel extends JPanel {
     Random random = new Random();
     return Control.builder(() ->
                     integerItemComboBoxModel.setSelectedItem(random.nextInt(integerItemComboBoxModel.getSize()) + 1))
-            .caption("Select Random Item")
+            .name("Select Random Item")
             .build();
   }
 

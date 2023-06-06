@@ -87,9 +87,9 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   public Controls controls() {
     return Controls.builder()
             .control(ToggleControl.builder(advancedViewState)
-                    .caption(Messages.advanced()))
+                    .name(Messages.advanced()))
             .control(Control.builder(this::clearConditions)
-                    .caption(Messages.clear()))
+                    .name(Messages.clear()))
             .build();
   }
 

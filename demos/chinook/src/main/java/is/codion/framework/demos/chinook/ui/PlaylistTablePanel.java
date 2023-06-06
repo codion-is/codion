@@ -30,7 +30,7 @@ public final class PlaylistTablePanel extends EntityTablePanel {
   protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
     return super.createPopupMenuControls(additionalPopupMenuControls)
             .addAt(0, Control.builder(this::createRandomPlaylist)
-                    .caption(BUNDLE.getString("create_random_playlist"))
+                    .name(BUNDLE.getString("create_random_playlist"))
                     .smallIcon(FrameworkIcons.instance().add())
                     .build())
             .addSeparatorAt(1);

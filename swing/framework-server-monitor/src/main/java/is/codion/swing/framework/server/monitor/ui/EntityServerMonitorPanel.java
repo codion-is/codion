@@ -154,11 +154,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   private Controls createMainMenuControls() {
     return Controls.builder()
             .control(Controls.builder()
-                    .caption("File")
+                    .name("File")
                     .mnemonic('F')
                     .control(createExitControl()))
             .control(Controls.builder()
-                    .caption("View")
+                    .name("View")
                     .mnemonic('V')
                     .control(createRefreshControl())
                     .control(createUpateIntervalControl())
@@ -170,7 +170,7 @@ public final class EntityServerMonitorPanel extends JPanel {
                             .createControl())
                     .control(createAlwaysOnTopControl()))
             .control(Controls.builder()
-                    .caption("Tools")
+                    .name("Tools")
                     .mnemonic('T')
                     .control(createSetJDKDirControl())
                     .control(createJConsoleControl()))
@@ -179,40 +179,40 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private Control createRefreshControl() {
     return Control.builder(model::refresh)
-            .caption("Refresh")
+            .name("Refresh")
             .mnemonic('R')
             .build();
   }
 
   private Control createAlwaysOnTopControl() {
     return ToggleControl.builder(alwaysOnTopState)
-            .caption("Always on Top")
+            .name("Always on Top")
             .mnemonic('A')
             .build();
   }
 
   private Control createUpateIntervalControl() {
     return Control.builder(this::setUpdateInterval)
-            .caption("Chart update interval...")
+            .name("Chart update interval...")
             .build();
   }
 
   private Control createClearChartsControl() {
     return Control.builder(model::clearCharts)
-            .caption("Clear charts")
+            .name("Clear charts")
             .build();
   }
 
   private Control createSetJDKDirControl() {
     return Control.builder(this::setJDKDir)
-            .caption("Set JDK home...")
+            .name("Set JDK home...")
             .mnemonic('S')
             .build();
   }
 
   private Control createJConsoleControl() {
     return Control.builder(this::runJConsole)
-            .caption("Run JConsole")
+            .name("Run JConsole")
             .mnemonic('J')
             .build();
   }
@@ -245,7 +245,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private static Control createExitControl() {
     return Control.builder(() -> System.exit(0))
-            .caption("Exit")
+            .name("Exit")
             .mnemonic('X')
             .build();
   }

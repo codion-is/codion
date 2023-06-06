@@ -52,20 +52,20 @@ public class NullableCheckBox extends JCheckBox {
   /**
    * Instantiates a new NullableCheckBox.
    * @param model the model
-   * @param caption the caption, if any
+   * @param text the caption text, if any
    */
-  public NullableCheckBox(NullableToggleButtonModel model, String caption) {
-    this(model, caption, null);
+  public NullableCheckBox(NullableToggleButtonModel model, String text) {
+    this(model, text, null);
   }
 
   /**
    * Instantiates a new NullableCheckBox.
    * @param model the model
-   * @param caption the caption, if any
+   * @param text the caption text, if any
    * @param icon the icon, if any
    */
-  public NullableCheckBox(NullableToggleButtonModel model, String caption, Icon icon) {
-    super(caption, icon);
+  public NullableCheckBox(NullableToggleButtonModel model, String text, Icon icon) {
+    super(text, icon);
     super.setModel(requireNonNull(model, "model"));
     setIcon(new NullableIcon());
     addMouseListener(new NullableMouseListener());

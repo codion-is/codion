@@ -81,10 +81,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
     JPanel settingsPanel = panel(flowLayout(FlowLayout.LEFT))
             .add(checkBox(model.loggingEnabledState())
-                    .caption("Logging enabled")
+                    .text("Logging enabled")
                     .build())
             .add(button(control(this::updateView))
-                    .caption("Refresh log")
+                    .text("Refresh log")
                     .build())
             .build();
 
@@ -129,10 +129,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     lineWrapState.addDataListener(textArea::setLineWrap);
     textArea.setComponentPopupMenu(menu(Controls.builder()
             .control(Control.builder(() -> saveLogToFile(textArea))
-                    .caption("Save to file..."))
+                    .name("Save to file..."))
             .separator()
             .control(ToggleControl.builder(lineWrapState)
-                    .caption("Line wrap"))
+                    .name("Line wrap"))
             .build())
             .createPopupMenu());
 

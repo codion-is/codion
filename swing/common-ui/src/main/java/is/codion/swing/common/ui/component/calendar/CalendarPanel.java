@@ -314,7 +314,7 @@ public final class CalendarPanel extends JPanel {
   private Map<Integer, JToggleButton> createDayButtons() {
     return dayStates.entrySet().stream()
             .collect(Collectors.toMap(Map.Entry::getKey, entry -> toggleButton(entry.getValue())
-                    .caption(Integer.toString(entry.getKey()))
+                    .text(Integer.toString(entry.getKey()))
                     .build()));
   }
 
@@ -358,7 +358,7 @@ public final class CalendarPanel extends JPanel {
 
   private JButton createSelectTodayButton() {
     return button(control(this::selectToday))
-            .caption(MESSAGES.getString("today"))
+            .text(MESSAGES.getString("today"))
             .mnemonic(MESSAGES.getString("today_mnemonic").charAt(0))
             .enabledState(todaySelectedState.reversedObserver())
             .build();

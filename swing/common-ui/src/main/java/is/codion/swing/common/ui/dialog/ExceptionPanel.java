@@ -96,17 +96,17 @@ final class ExceptionPanel extends JPanel {
     Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
     descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
     printButton = button(Control.builder(detailsArea::print)
-            .caption(Messages.print())
+            .name(Messages.print())
             .description(MESSAGES.getString("print_error_report"))
             .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
             .build()).build();
     saveButton = button(Control.builder(this::saveDetails)
-            .caption(MESSAGES.getString("save"))
+            .name(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
             .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
             .build()).build();
     copyButton = button(Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
-            .caption(Messages.copy())
+            .name(Messages.copy())
             .description(MESSAGES.getString("copy_to_clipboard"))
             .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
             .build()).build();
@@ -173,11 +173,11 @@ final class ExceptionPanel extends JPanel {
 
   private JPanel createButtonPanel() {
     Control closeControl = Control.builder(closeEvent::onEvent)
-            .caption(MESSAGES.getString("close"))
+            .name(MESSAGES.getString("close"))
             .description(MESSAGES.getString("close_dialog"))
             .build();
     ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
-            .caption(MESSAGES.getString("details"))
+            .name(MESSAGES.getString("details"))
             .description(MESSAGES.getString("show_details"))
             .build();
     KeyEvents.builder(VK_ESCAPE)

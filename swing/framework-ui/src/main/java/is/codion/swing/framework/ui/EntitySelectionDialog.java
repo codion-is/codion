@@ -52,15 +52,15 @@ public final class EntitySelectionDialog extends JDialog {
   private final EntityTablePanel entityTablePanel;
 
   private final Control okControl = Control.builder(this::ok)
-          .caption(Messages.ok())
+          .name(Messages.ok())
           .mnemonic(Messages.okMnemonic())
           .build();
   private final Control cancelControl = Control.builder(this::dispose)
-          .caption(Messages.cancel())
+          .name(Messages.cancel())
           .mnemonic(Messages.cancelMnemonic())
           .build();
   private final Control searchControl = Control.builder(this::search)
-          .caption(FrameworkMessages.search())
+          .name(FrameworkMessages.search())
           .mnemonic(FrameworkMessages.searchMnemonic())
           .build();
 

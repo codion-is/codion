@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.Icon;
 import javax.swing.SwingConstants;
 import java.awt.Color;
@@ -27,12 +28,14 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
   private final List<ActionListener> actionListeners = new ArrayList<>();
 
-  private String caption;
+  private String text;
   private int mnemonic;
-  private boolean includeCaption = true;
+  private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
   private Insets insets;
+  private ButtonGroup buttonGroup;
+  private boolean selected = false;
   private Action action;
 
   protected AbstractButtonBuilder(Value<T> linkedValue) {
@@ -40,8 +43,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B caption(String caption) {
-    this.caption = caption;
+  public final B text(String text) {
+    this.text = text;
     return (B) this;
   }
 
@@ -52,8 +55,8 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
-  public final B includeCaption(boolean includeCaption) {
-    this.includeCaption = includeCaption;
+  public final B includeText(boolean includeText) {
+    this.includeText = includeText;
     return (B) this;
   }
 
@@ -72,6 +75,18 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B margin(Insets insets) {
     this.insets = requireNonNull(insets);
+    return (B) this;
+  }
+
+  @Override
+  public final B buttonGroup(ButtonGroup buttonGroup) {
+    this.buttonGroup = requireNonNull(buttonGroup);
+    return (B) this;
+  }
+
+  @Override
+  public final B selected(boolean selected) {
+    this.selected = selected;
     return (B) this;
   }
 
@@ -95,11 +110,11 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
       action.addPropertyChangeListener(new ButtonPropertyChangeListener(button));
     }
     actionListeners.forEach(button::addActionListener);
-    if (!includeCaption) {
+    if (!includeText) {
       button.setText(null);
     }
-    else if (caption != null) {
-      button.setText(caption);
+    else if (text != null) {
+      button.setText(text);
     }
     button.setHorizontalAlignment(horizontalAlignment);
     if (mnemonic != 0) {
@@ -110,6 +125,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (insets != null) {
       button.setMargin(insets);
+    }
+    if (buttonGroup != null) {
+      buttonGroup.add(button);
+    }
+    if (selected) {
+      button.setSelected(true);
     }
 
     return button;

@@ -125,7 +125,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     JPanel shutdownBasePanel = panel(flowLayout(FlowLayout.CENTER))
             .add(button(control(this::shutdownServer))
-                    .caption("Shutdown")
+                    .text("Shutdown")
                     .build(), BorderLayout.EAST)
             .build();
 
@@ -160,16 +160,16 @@ public final class ServerMonitorPanel extends JPanel {
     JPanel chartsPanel = panel(borderLayout())
             .add(intervalPanel, BorderLayout.CENTER)
             .add(button(control(model::clearStatistics))
-                    .caption("Clear")
+                    .text("Clear")
                     .build(), BorderLayout.EAST)
             .build();
 
     JPanel zoomPanel = panel(borderLayout())
             .add(checkBox(synchronizedZoomState)
-                    .caption("Synchronize zoom")
+                    .text("Synchronize zoom")
                     .build(), BorderLayout.CENTER)
             .add(button(control(this::resetZoom))
-                    .caption("Reset zoom")
+                    .text("Reset zoom")
                     .build(), BorderLayout.EAST)
             .build();
 
@@ -224,7 +224,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     JPanel refreshPanel = panel(flowLayout(FlowLayout.RIGHT))
             .add(button(control(model::refreshOperationList))
-                    .caption("Refresh")
+                    .text("Refresh")
                     .build())
             .build();
 
@@ -240,10 +240,10 @@ public final class ServerMonitorPanel extends JPanel {
 
     JPanel clearCacheAndRefreshPanel = panel(flowLayout(FlowLayout.RIGHT))
             .add(button(control(model::clearReportCache))
-                    .caption("Clear Cache")
+                    .text("Clear Cache")
                     .build())
             .add(button(control(model::refreshReportList))
-                    .caption("Refresh")
+                    .text("Refresh")
                     .build())
             .build();
 
@@ -259,7 +259,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     JPanel refreshPanel = panel(flowLayout(FlowLayout.RIGHT))
             .add(button(control(model::refreshDomainList))
-                    .caption("Refresh")
+                    .text("Refresh")
                     .build())
             .build();
 

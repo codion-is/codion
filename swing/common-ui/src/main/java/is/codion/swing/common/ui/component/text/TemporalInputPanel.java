@@ -57,7 +57,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
     add(temporalField, BorderLayout.CENTER);
     if (supportsCalendar(temporalField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
-              .caption(buttonIcon == null ? "..." : null)
+              .name(buttonIcon == null ? "..." : null)
               .smallIcon(buttonIcon)
               .description(MESSAGES.getString("display_calendar"))
               .build();

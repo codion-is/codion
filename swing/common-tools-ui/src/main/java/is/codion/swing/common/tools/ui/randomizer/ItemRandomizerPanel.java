@@ -106,7 +106,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     return Components.panel(Layouts.borderLayout())
             .add(new JLabel(item.item().toString()), BorderLayout.NORTH)
             .add(Components.checkBox(new EnabledModelValue(item.item()))
-                    .caption("Enabled")
+                    .text("Enabled")
                     .build(), BorderLayout.WEST)
             .add(Components.label("Weight")
                     .horizontalAlignment(SwingConstants.RIGHT)

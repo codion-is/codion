@@ -108,14 +108,14 @@ public class DefaultToggleControlTest {
   @Test
   void stateToggleControl() {
     State enabledState = State.state(false);
-    ToggleControl control = ToggleControl.builder(state).caption("stateToggleControl").enabledState(enabledState).build();
+    ToggleControl control = ToggleControl.builder(state).name("stateToggleControl").enabledState(enabledState).build();
     ButtonModel buttonModel = toggleButton(control).build().getModel();
     assertFalse(control.isEnabled());
     assertFalse(buttonModel.isEnabled());
     enabledState.set(true);
     assertTrue(control.isEnabled());
     assertTrue(buttonModel.isEnabled());
-    assertEquals(control.getCaption(), "stateToggleControl");
+    assertEquals(control.getName(), "stateToggleControl");
     assertFalse(control.value().get());
     state.set(true);
     assertTrue(control.value().get());
@@ -159,7 +159,7 @@ public class DefaultToggleControlTest {
   @Test
   void checkBox() {
     JCheckBox box = CheckBoxBuilder.builder(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-            .caption("Test")
+            .name("Test")
             .build()).build();
     assertEquals("Test", box.getText());
   }
@@ -167,7 +167,7 @@ public class DefaultToggleControlTest {
   @Test
   void checkBoxMenuItem() {
     JMenuItem item = CheckBoxMenuItemBuilder.builder(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-            .caption("Test")
+            .name("Test")
             .build()).build();
     assertEquals("Test", item.getText());
   }

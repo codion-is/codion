@@ -79,7 +79,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
   protected Controls createToolsMenuControls() {
     return super.createToolsMenuControls()
             .add(Control.builder(this::importJSON)
-                    .caption("Import JSON")
+                    .name("Import JSON")
                     .build());
   }
   // end::createToolsMenuControls[]

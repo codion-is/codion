@@ -48,7 +48,7 @@ public final class HostMonitorPanel extends JPanel {
   private Controls controls() {
     return Controls.builder()
             .control(Control.builder(model::refresh)
-                    .caption("Refresh"))
+                    .name("Refresh"))
             .build();
   }
 

@@ -128,7 +128,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private Controls createMainMenuControls() {
     return Controls.builder()
             .control(Controls.builder()
-                    .caption("View")
+                    .name("View")
                     .mnemonic('V')
                     .control(lookAndFeelSelectionDialog()
                             .owner(this)
@@ -210,7 +210,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel createAddRemoveApplicationPanel() {
     return panel(new BorderLayout())
             .add(button(Control.builder(loadTestModel::removeApplicationBatch)
-                    .caption("-")
+                    .name("-")
                     .description("Remove application batch")
                     .build()).build(), BorderLayout.WEST)
             .add(integerField()
@@ -220,7 +220,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .linkedValueObserver(loadTestModel.applicationCountObserver())
                     .build(), BorderLayout.CENTER)
             .add(button(Control.builder(loadTestModel::addApplicationBatch)
-                    .caption("+")
+                    .name("+")
                     .description("Add application batch")
                     .build()).build(), BorderLayout.EAST)
             .build();
@@ -230,11 +230,11 @@ public final class LoadTestPanel<T> extends JPanel {
     return panel(flexibleGridLayout(1, 2))
             .border(createTitledBorder("Charts"))
             .add(checkBox(loadTestModel.collectChartDataState())
-                    .caption("Collect chart data")
+                    .text("Collect chart data")
                     .build())
-            .add(button(Control.builder(loadTestModel::clearChartData)
-                    .caption("Clear")
-                    .build()).build())
+            .add(button(Control.control(loadTestModel::clearChartData))
+                    .text("Clear")
+                    .build())
             .build();
   }
 
@@ -318,7 +318,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                     .build())
             .add(toggleButton(loadTestModel.pausedState())
-                    .caption("Pause")
+                    .text("Pause")
                     .mnemonic('P')
                     .build())
             .border(createTitledBorder("Activity"))
@@ -360,12 +360,12 @@ public final class LoadTestPanel<T> extends JPanel {
             .editable(false)
             .build();
     JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
-            .caption("Refresh")
+            .name("Refresh")
             .build()).build();
     refreshButton.doClick();
 
     JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
-            .caption("Clear")
+            .name("Clear")
             .build()).build();
 
     return panel(borderLayout())
