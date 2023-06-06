@@ -100,6 +100,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
           ControlCode.INSERT, ControlCode.UPDATE, ControlCode.DELETE, ControlCode.CLEAR, ControlCode.REFRESH
   };
 
+  private static final Control NULL_CONTROL = Control.control(() -> {});
+
   private static final String ALT_PREFIX = " (ALT-";
 
   /**
@@ -294,16 +296,18 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * @param controlCode the control code
-   * @return true if this edit panel contains the given control
+   * @return true if this edit panel contains a control assocated with the given {@code controlCode}
    */
   public final boolean containsControl(ControlCode controlCode) {
-    return controls.containsKey(requireNonNull(controlCode));
+    Control control = controls.get(requireNonNull(controlCode));
+
+    return control != null && control != NULL_CONTROL;
   }
 
   /**
    * @param controlCode the control code
    * @return the control associated with {@code controlCode}
-   * @throws IllegalArgumentException in case no control is associated with the given control code
+   * @throws IllegalArgumentException in case no control is associated with the given {@code controlCode}
    * @see #containsControl(EntityEditPanel.ControlCode)
    */
   public final Control control(ControlCode controlCode) {
@@ -578,16 +582,11 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   protected final void setControl(ControlCode controlCode, Control control) {
+    requireNonNull(controlCode);
     if (panelInitialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
-    requireNonNull(controlCode);
-    if (control == null) {
-      controls.remove(controlCode);
-    }
-    else {
-      controls.put(controlCode, control);
-    }
+    controls.put(controlCode, control == null ? NULL_CONTROL : control);
   }
 
   /**
@@ -638,8 +637,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Initializes the controls available to this EntityEditPanel by mapping them to their respective
    * control codes ({@link ControlCode#INSERT}, {@link ControlCode#UPDATE} etc.)
    * via the {@link #setControl(ControlCode, Control)}) method, these can then be retrieved via the {@link #control(ControlCode)} method.
-   * @see is.codion.swing.common.ui.control.Control
-   * @see #setControl(ControlCode, is.codion.swing.common.ui.control.Control)
+   * @see Control
+   * @see #setControl(ControlCode, Control)
    * @see #control(ControlCode)
    */
   private void setupControls() {
