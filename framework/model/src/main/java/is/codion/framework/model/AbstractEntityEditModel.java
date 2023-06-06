@@ -984,20 +984,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    for (ColumnProperty<?> property : definition.columnProperties()) {
-      if (!definition.isForeignKeyAttribute(property.attribute())//these are set via their respective parent properties
-              && (!property.columnHasDefaultValue() || property.hasDefaultValue())) {
-        newEntity.put((Attribute<Object>) property.attribute(), valueSupplier.get(property));
-      }
-    }
-    for (TransientProperty<?> transientProperty : definition.transientProperties()) {
-      if (!transientProperty.isDerived()) {
-        newEntity.put((Attribute<Object>) transientProperty.attribute(), valueSupplier.get(transientProperty));
-      }
-    }
-    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties()) {
-      newEntity.put(foreignKeyProperty.attribute(), valueSupplier.get(foreignKeyProperty));
-    }
+    definition.columnProperties().stream()
+            .filter(property -> !definition.isForeignKeyAttribute(property.attribute()))//these are set via their respective parent fk properties
+            .filter(property -> !property.columnHasDefaultValue() || property.hasDefaultValue())
+            .map(property -> (Property<Object>) property)
+            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
+    definition.transientProperties().stream()
+            .filter(property -> !property.isDerived())
+            .map(property -> (Property<Object>) property)
+            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
+    definition.foreignKeyProperties().forEach(property ->
+            newEntity.put(property.attribute(), valueSupplier.get(property)));
+
     newEntity.saveAll();
 
     return newEntity;

@@ -9137,3 +9137,4 @@
   EntityTablePanel, EntityEditPanel bug fixed, setControl() with a null control parameter removed the entry from the controls map, which didn't prevent adding the default control, NULL_CONTROL added
   DefaultHttpEntityConnection.DefaultBuilder.socketTimeout() bug fixed, returned null
   AbstractServer.startAuxiliaryServers() bug fixed, newSingleThreadScheduledExecutor() replaced with the correct newSingleThreadExecutor() for running auxiliary servers
+  AbstractEntityEditModel.defaultEntity() refactored with streams
