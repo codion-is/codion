@@ -10,10 +10,10 @@
  * {@link is.codion.swing.framework.ui.EntityEditPanel#INCLUDE_ENTITY_MENU}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_KEYBOARD_NAVIGATION}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#DISPOSE_EDIT_DIALOG_ON_ESCAPE}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_TOGGLE_EDIT_PANEL_CONTROL}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#SHOW_DETAIL_PANEL_CONTROLS}<br>
+ * {@link is.codion.swing.framework.ui.EntityPanel#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL}<br>
+ * {@link is.codion.swing.framework.ui.EntityPanel#INCLUDE_DETAIL_PANEL_CONTROLS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#SPLIT_PANE_DIVIDER_SIZE}<br>
- * {@link is.codion.swing.framework.ui.EntityPanel#TOOLBAR_BUTTONS}<br>
+ * {@link is.codion.swing.framework.ui.EntityPanel#TOOLBAR_CONTROLS}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel#USE_FRAME_PANEL_DISPLAY}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#CONDITION_PANEL_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_ENTITY_MENU}<br>
