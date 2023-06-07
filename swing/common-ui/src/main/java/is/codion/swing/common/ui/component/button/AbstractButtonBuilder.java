@@ -138,11 +138,11 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
 
   protected abstract C createButton();
 
-  protected static final class ButtonPropertyChangeListener implements PropertyChangeListener {
+  private static final class ButtonPropertyChangeListener implements PropertyChangeListener {
 
     private final AbstractButton button;
 
-    ButtonPropertyChangeListener(AbstractButton button) {
+    private ButtonPropertyChangeListener(AbstractButton button) {
       this.button = requireNonNull(button);
     }
 
@@ -160,6 +160,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
         case Control.FONT: {
           button.setFont((Font) evt.getNewValue());
           break;
+        }
+        case Control.MNEMONIC_KEY: {
+          button.setMnemonic((Integer) evt.getNewValue());
         }
         default:
           break;

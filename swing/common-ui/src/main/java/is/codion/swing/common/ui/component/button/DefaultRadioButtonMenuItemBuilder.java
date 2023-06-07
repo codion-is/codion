@@ -16,9 +16,6 @@ final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuild
 
   DefaultRadioButtonMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(toggleControl, linkedValue);
-    if (toggleControl().value().isNullable()) {
-      throw new IllegalArgumentException("A radio button menu item does not support a nullable value");
-    }
   }
 
   @Override

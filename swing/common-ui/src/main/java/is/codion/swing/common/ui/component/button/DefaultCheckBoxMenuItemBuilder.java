@@ -15,9 +15,6 @@ final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>>
 
   DefaultCheckBoxMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(toggleControl, linkedValue);
-    if (toggleControl().value().isNullable()) {
-      throw new IllegalArgumentException("A check box menu item does not support a nullable value");
-    }
   }
 
   @Override

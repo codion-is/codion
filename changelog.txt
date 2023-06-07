@@ -9188,3 +9188,5 @@
   EntityPanel.createEditControlPanel() now handles creating the control panel
   EntityEditPanel, EntityTablePanel, javadoc improvements plus some minor fixes
   EntitySearchModel.multipleSelectionEnabledState() replaced with singleSelectionState()
+  DefaultToggleButtonBuilder bug fixed, bunch of properties from the ToggleControl were not set, related refactoring
+  Button builders based on ToggleControl refactored, now set the ToggleControl as the action

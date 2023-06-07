@@ -17,6 +17,7 @@ final class DefaultRadioButtonBuilder extends DefaultToggleButtonBuilder<JRadioB
     if (toggleControl.value().isNullable()) {
       throw new IllegalArgumentException("A radio button does not support a nullable value");
     }
+    horizontalAlignment(SwingConstants.LEADING);
   }
 
   DefaultRadioButtonBuilder(Value<Boolean> value) {

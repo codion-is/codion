@@ -7,10 +7,10 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import javax.swing.ButtonModel;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
+import static is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.createButtonModel;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends AbstractButtonBuilder<Boolean, C, B>
@@ -21,9 +21,11 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   AbstractToggleMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(linkedValue);
     this.toggleControl = requireNonNull(toggleControl);
-    text(toggleControl.getName());
-    mnemonic(toggleControl.getMnemonic());
+    if (toggleControl.value().isNullable()) {
+      throw new IllegalArgumentException("A radio button or check box menu item does not support a nullable value");
+    }
     horizontalAlignment(SwingConstants.LEADING);
+    action(toggleControl);
   }
 
   protected abstract JMenuItem createMenuItem();
@@ -31,8 +33,7 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   @Override
   protected final C createButton() {
     JMenuItem menuItem = createMenuItem();
-    menuItem.setModel(createButtonModel());
-    toggleControl().addPropertyChangeListener(new ButtonPropertyChangeListener(menuItem));
+    menuItem.setModel(createButtonModel(toggleControl));
 
     return (C) menuItem;
   }
@@ -45,13 +46,5 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   @Override
   protected final void setInitialValue(C component, Boolean initialValue) {
     component.setSelected(initialValue);
-  }
-
-  protected final ToggleControl toggleControl() {
-    return toggleControl;
-  }
-
-  private ButtonModel createButtonModel() {
-    return DefaultToggleButtonBuilder.createButtonModel(toggleControl);
   }
 }
