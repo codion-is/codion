@@ -86,7 +86,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
 
   // tag::main[]
   public static void main(String[] args) {
-    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityPanel.TOOLBAR_CONTROLS.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);

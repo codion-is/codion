@@ -28,11 +28,11 @@ public class EntityEditPanelTestUnit {
   }
 
   /**
-   * Initializes the edit panel and calls {@link EntityEditPanel#createHorizontalControlPanel()}
+   * Initializes the edit panel.
    * @throws Exception in case of an exception
    */
   protected final void testInitializePanel() throws Exception {
-    createEditPanel().initializePanel().createHorizontalControlPanel();
+    createEditPanel().initializePanel();
   }
 
   /**

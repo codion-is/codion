@@ -163,7 +163,7 @@ public final class ClientTutorial {
     Database.DATABASE_URL.set("jdbc:h2:mem:h2db");
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
     UIManager.put("Table.alternateRowColor", new Color(215, 215, 215));
-    EntityPanel.TOOLBAR_BUTTONS.set(true);
+    EntityPanel.TOOLBAR_CONTROLS.set(true);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")

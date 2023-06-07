@@ -54,6 +54,7 @@ import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -125,12 +126,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
-   * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
+   * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> TOOLBAR_BUTTONS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
+  public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
 
   /**
    * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
@@ -230,7 +231,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * indicates where the control panel should be placed in a BorderLayout
    */
-  private String controlPanelConstraints = TOOLBAR_BUTTONS.get() ? BorderLayout.WEST : BorderLayout.EAST;
+  private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? BorderLayout.WEST : BorderLayout.EAST;
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or WINDOW)
@@ -1053,26 +1054,35 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Creates the control panel or component to place next to the edit panel, containing controls for managing
-   * records, such as insert, update and delete.
+   * Creates the control panel or component to place next to the edit panel,
+   * containing the edit controls, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
-   * By default, the control panel provided by the edit panel is returned.
-   * @return the control panel for managing records
-   * @see EntityEditPanel#createHorizontalControlPanel()
-   * @see EntityEditPanel#createVerticalControlPanel()
-   * @see EntityPanel#TOOLBAR_BUTTONS
+   * @return the panel containing the edit panel controls
+   * @see EntityEditPanel#createControlPanelControls()
+   * @see EntityPanel#TOOLBAR_CONTROLS
    */
   protected JComponent createEditControlPanel() {
-    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
-            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    if (TOOLBAR_BUTTONS.get()) {
-      return editPanel.createControlToolBar(SwingConstants.VERTICAL);
+    Controls controls = editPanel.createControlPanelControls();
+    if (controls.isEmpty()) {
+      return null;
     }
-    if (alignment == FlowLayout.CENTER) {
-      return editPanel.createHorizontalControlPanel();
+    if (TOOLBAR_CONTROLS.get()) {
+      return toolBar(controls)
+              .orientation(SwingConstants.VERTICAL)
+              .build();
     }
 
-    return editPanel.createVerticalControlPanel();
+    if (controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH)) {
+      return panel(flowLayout(FlowLayout.CENTER))
+              .add(buttonPanel(controls).build())
+              .build();
+    }
+
+    return panel(borderLayout())
+            .add(buttonPanel(controls)
+                    .orientation(SwingConstants.VERTICAL)
+                    .build(), BorderLayout.NORTH)
+            .build();
   }
 
   /**

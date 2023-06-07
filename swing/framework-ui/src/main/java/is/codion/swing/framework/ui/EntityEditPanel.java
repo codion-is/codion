@@ -28,11 +28,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.JComponent;
 import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.util.Arrays;
 import java.util.EnumMap;
 import java.util.HashSet;
@@ -40,9 +35,6 @@ import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
 
-import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -351,47 +343,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Creates a horizontally laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
-   * @return the control panel, null if no controls are defined
-   * @see #createControlPanelControls()
-   */
-  public final JPanel createHorizontalControlPanel() {
-    return createControlPanel(true);
-  }
-
-  /**
-   * Creates a vertically laid out control panel, that is, the panel containing buttons for editing entities (Insert, Update...)
-   * @return the control panel, null if no controls are defined
-   * @see #createControlPanelControls()
-   */
-  public final JPanel createVerticalControlPanel() {
-    return createControlPanel(false);
-  }
-
-  /**
-   * Creates the control toolbar, that is, the toolbar containing buttons for editing entities (Insert, Update...)
-   * @param orientation the orientation
-   * @return the control toolbar, null if no controls are defined
-   * @see #createControlPanelControls()
-   * @see SwingConstants#VERTICAL
-   * @see SwingConstants#HORIZONTAL
-   */
-  public final JToolBar createControlToolBar(int orientation) {
-    if (orientation != SwingConstants.VERTICAL && orientation != SwingConstants.HORIZONTAL) {
-      throw new IllegalArgumentException("Unknown orientation value: " + orientation);
-    }
-
-    Controls controlPanelControls = createControlPanelControls();
-    if (controlPanelControls.isEmpty()) {
-      return null;
-    }
-
-    return toolBar(controlPanelControls)
-            .orientation(orientation)
-            .build();
-  }
-
-  /**
    * Initializes this EntityEditPanel UI.
    * This method marks this panel as initialized which prevents it from running again,
    * whether an exception occurs or not.
@@ -595,20 +546,20 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected Controls createControlPanelControls() {
     Controls controlPanelControls = Controls.controls();
-    if (this.controls.containsKey(ControlCode.INSERT)) {
-      controlPanelControls.add(this.controls.get(ControlCode.INSERT));
+    if (controls.containsKey(ControlCode.INSERT)) {
+      controlPanelControls.add(controls.get(ControlCode.INSERT));
     }
-    if (this.controls.containsKey(ControlCode.UPDATE)) {
-      controlPanelControls.add(this.controls.get(ControlCode.UPDATE));
+    if (controls.containsKey(ControlCode.UPDATE)) {
+      controlPanelControls.add(controls.get(ControlCode.UPDATE));
     }
-    if (this.controls.containsKey(ControlCode.DELETE)) {
-      controlPanelControls.add(this.controls.get(ControlCode.DELETE));
+    if (controls.containsKey(ControlCode.DELETE)) {
+      controlPanelControls.add(controls.get(ControlCode.DELETE));
     }
-    if (this.controls.containsKey(ControlCode.CLEAR)) {
-      controlPanelControls.add(this.controls.get(ControlCode.CLEAR));
+    if (controls.containsKey(ControlCode.CLEAR)) {
+      controlPanelControls.add(controls.get(ControlCode.CLEAR));
     }
-    if (this.controls.containsKey(ControlCode.REFRESH)) {
-      controlPanelControls.add(this.controls.get(ControlCode.REFRESH));
+    if (controls.containsKey(ControlCode.REFRESH)) {
+      controlPanelControls.add(controls.get(ControlCode.REFRESH));
     }
 
     return controlPanelControls;
@@ -720,23 +671,6 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
             .smallIcon(FrameworkIcons.instance().add())
-            .build();
-  }
-
-  private JPanel createControlPanel(boolean horizontal) {
-    Controls controlPanelControls = createControlPanelControls();
-    if (controlPanelControls == null || controlPanelControls.isEmpty()) {
-      return null;
-    }
-    if (horizontal) {
-      return panel(flowLayout(FlowLayout.CENTER))
-              .add(buttonPanel(controlPanelControls).build())
-              .build();
-    }
-    return panel(borderLayout())
-            .add(buttonPanel(controlPanelControls)
-                    .orientation(SwingConstants.VERTICAL)
-                    .build(), BorderLayout.NORTH)
             .build();
   }
 
