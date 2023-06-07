@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.text;
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.SelectionProvider;
 
 import javax.swing.Action;
 import javax.swing.JTextField;

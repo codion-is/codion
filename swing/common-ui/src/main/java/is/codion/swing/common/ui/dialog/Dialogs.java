@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.component.ComponentValue;
-import is.codion.swing.common.ui.component.SelectionProvider;
+import is.codion.swing.common.ui.component.text.SelectionProvider;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;

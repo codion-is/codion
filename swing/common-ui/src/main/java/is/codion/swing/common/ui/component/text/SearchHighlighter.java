@@ -8,9 +8,9 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
+import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultHighlighter;
@@ -25,7 +25,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -96,11 +95,9 @@ public final class SearchHighlighter {
                     .action(control(this::previousSearchPosition)))
             .keyEvent(KeyEvents.builder(VK_ESCAPE)
                     .action(control(() -> searchStringValue.set(null))))
-            .popupMenu(menu(Controls.builder()
-                    .control(ToggleControl.builder(caseSensitiveState)
-                            .name(MESSAGES.getString("case_sensitive")))
-                    .build())
-                    .createPopupMenu())
+            .popupMenu(createPopupMenu(ToggleControl.builder(caseSensitiveState)
+                    .name(MESSAGES.getString("case_sensitive"))
+                    .build()))
             .hintText(Messages.find() + "...")
             .build();
   }
@@ -215,6 +212,13 @@ public final class SearchHighlighter {
         }
       }
     });
+  }
+
+  private static JPopupMenu createPopupMenu(ToggleControl caseSensitiveControl) {
+    JPopupMenu popupMenu = new JPopupMenu();
+    popupMenu.add(caseSensitiveControl);
+
+    return popupMenu;
   }
 
   private static final class MatchPosition {
