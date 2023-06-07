@@ -37,6 +37,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -341,7 +342,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void insert() throws Exception {
-    assertTrue(employeeEditModel.insert(new ArrayList<>()).isEmpty());
+    assertTrue(employeeEditModel.insert(emptyList()).isEmpty());
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
@@ -392,7 +393,7 @@ public final class AbstractEntityEditModelTest {
   @Test
   void update() throws Exception {
     assertThrows(UpdateException.class, () -> employeeEditModel.update());
-    assertTrue(employeeEditModel.update(new ArrayList<>()).isEmpty());
+    assertTrue(employeeEditModel.update(emptyList()).isEmpty());
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
@@ -419,7 +420,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void delete() throws Exception {
-    employeeEditModel.delete(new ArrayList<>());
+    employeeEditModel.delete(emptyList());
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {

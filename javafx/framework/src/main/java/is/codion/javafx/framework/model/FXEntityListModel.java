@@ -311,7 +311,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not allowed!");
     }
-    editModel.update(new ArrayList<>(entities));
+    editModel.update(entities);
   }
 
   @Override

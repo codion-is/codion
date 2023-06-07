@@ -468,7 +468,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     if (entities.size() > 1 && !batchUpdateEnabled) {
       throw new IllegalStateException("Batch update of entities is not enabled!");
     }
-    editModel.update(new ArrayList<>(entities));
+    editModel.update(entities);
   }
 
   @Override
