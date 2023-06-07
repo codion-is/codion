@@ -366,8 +366,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Performs insert on the active entity after asking for confirmation via {@link #confirmInsert()}.
-   * Note that {@link #confirmInsert()} returns true by default, so it needs to be overridden to ask for confirmation.
+   * Performs insert on the active entity after asking for confirmation using the {@link Confirmer}
+   * associated with the {@link Confirmer.Action#INSERT} action.
+   * Note that the default insert {@link Confirmer} simply returns true, so in order to implement
+   * a insert confirmation you must set the {@link Confirmer} via {@link #setConfirmer(Confirmer.Action, Confirmer)}.
    * @return true in case of successful insert, false otherwise
    * @see #beforeInsert()
    * @see #setConfirmer(Confirmer.Action, Confirmer)
@@ -417,7 +419,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Performs delete on the active entity after asking for confirmation via {@link #confirmDelete()}.
+   * Performs delete on the active entity after asking for confirmation using the {@link Confirmer}
+   * associated with the {@link Confirmer.Action#DELETE} action.
    * @return true if the delete operation was successful
    * @see #beforeDelete()
    * @see #setConfirmer(Confirmer.Action, Confirmer)
@@ -462,7 +465,8 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Performs update on the active entity after asking for confirmation via {@link #confirmUpdate()}.
+   * Performs update on the active entity after asking for confirmation using the {@link Confirmer}
+   * associated with the {@link Confirmer.Action#UPDATE} action.
    * @return true if the update operation was successful
    * @see #beforeUpdate()
    * @see #setConfirmer(Confirmer.Action, Confirmer)

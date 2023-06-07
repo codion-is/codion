@@ -84,8 +84,8 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void setMultipleSelectionNotEnabled() {
-    searchModel.multipleSelectionEnabledState().set(false);
+  void setSingleSelectionEnabled() {
+    searchModel.singleSelectionState().set(true);
     List<Entity> entities = asList(ENTITIES.entity(Employee.TYPE), ENTITIES.entity(Employee.TYPE));
     assertThrows(IllegalArgumentException.class, () -> searchModel.setSelectedEntities(entities));
   }
@@ -107,7 +107,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void searchModel() throws Exception {
-    searchModel.multipleSelectionEnabledState().set(true);
+    searchModel.singleSelectionState().set(false);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("joh");
     assertTrue(searchModel.selectionEmptyObserver().get());
@@ -202,7 +202,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void setAdditionalConditionProvider() {
-    searchModel.multipleSelectionEnabledState().set(false);
+    searchModel.singleSelectionState().set(true);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("johnson");
     List<Entity> result = searchModel.performQuery();

@@ -120,11 +120,11 @@ public final class EntitySearchField extends TextField {
 
   private void selectEntities(List<Entity> queryResult) {
     FXUiUtil.SingleSelection singleSelection;
-    if (model.multipleSelectionEnabledState().get()) {
-      singleSelection = FXUiUtil.SingleSelection.NO;
+    if (model.singleSelectionState().get()) {
+      singleSelection = FXUiUtil.SingleSelection.YES;
     }
     else {
-      singleSelection = FXUiUtil.SingleSelection.YES;
+      singleSelection = FXUiUtil.SingleSelection.NO;
     }
 
     Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult, singleSelection)));

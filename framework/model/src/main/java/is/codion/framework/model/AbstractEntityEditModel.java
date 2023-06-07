@@ -600,7 +600,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
     return EntitySearchModel.builder(property.referencedType(), connectionProvider)
             .searchAttributes(searchAttributes)
-            .multipleSelectionEnabled(false)
+            .singleSelection(true)
             .build();
   }
 

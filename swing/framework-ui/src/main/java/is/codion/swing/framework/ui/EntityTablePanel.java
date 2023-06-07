@@ -674,7 +674,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Deletes the entities selected in the underlying table model
+   * Deletes the entities selected in the underlying table model after asking for confirmation using
+   * the {@link Confirmer} associated with the {@link Confirmer.Action#DELETE} action.
    * @see #setDeleteConfirmer(EntityEditPanel.Confirmer)
    */
   public final void deleteWithConfirmation() {
