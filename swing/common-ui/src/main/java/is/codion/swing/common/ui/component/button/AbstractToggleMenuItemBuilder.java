@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.ButtonModel;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 
 import static java.util.Objects.requireNonNull;
 
@@ -23,7 +22,8 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
     this.toggleControl = requireNonNull(toggleControl);
     text(toggleControl.getName());
     mnemonic(toggleControl.getMnemonic());
-    horizontalAlignment(SwingConstants.LEADING);
+    icon(toggleControl.getSmallIcon());
+    toolTipText(toggleControl.getDescription());
   }
 
   protected abstract JMenuItem createMenuItem();

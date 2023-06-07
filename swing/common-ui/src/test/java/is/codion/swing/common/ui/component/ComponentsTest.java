@@ -291,25 +291,33 @@ public final class ComponentsTest {
             .includeText(true)
             .transferFocusOnEnter(true)
             .buildValue();
-    JCheckBox box = componentValue.component();
-    assertTrue(box.isSelected());
+    JCheckBox button = componentValue.component();
+    assertTrue(button.isSelected());
     assertTrue(value.get());
 
-    box.doClick();
+    button.doClick();
 
-    assertFalse(box.isSelected());
+    assertFalse(button.isSelected());
     assertFalse(value.get());
 
     value.set(true);
-    assertTrue(box.isSelected());
+    assertTrue(button.isSelected());
 
+    State enabledState = State.state(true);
     State state = State.state();
-    ToggleControl toggleControl = ToggleControl.toggleControl(state);
-    box = Components.checkBox(toggleControl).build();
+    ToggleControl toggleControl = ToggleControl.builder(state)
+            .enabledState(enabledState)
+            .build();
+    button = Components.checkBox(toggleControl).build();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
+
+    enabledState.set(false);
+    assertFalse(button.isEnabled());
+    enabledState.set(true);
+    assertTrue(button.isEnabled());
   }
 
   @Test
@@ -332,13 +340,21 @@ public final class ComponentsTest {
     value.set(true);
     assertTrue(button.isSelected());
 
+    State enabledState = State.state(true);
     State state = State.state();
-    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    ToggleControl toggleControl = ToggleControl.builder(state)
+            .enabledState(enabledState)
+            .build();
     button = Components.toggleButton(toggleControl).buildValue().component();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
+
+    enabledState.set(false);
+    assertFalse(button.isEnabled());
+    enabledState.set(true);
+    assertTrue(button.isEnabled());
   }
 
   @Test
@@ -361,13 +377,21 @@ public final class ComponentsTest {
     value.set(true);
     assertTrue(button.isSelected());
 
+    State enabledState = State.state(true);
     State state = State.state();
-    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    ToggleControl toggleControl = ToggleControl.builder(state)
+            .enabledState(enabledState)
+            .build();
     button = Components.radioButton(toggleControl).buildValue().component();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
+
+    enabledState.set(false);
+    assertFalse(button.isEnabled());
+    enabledState.set(true);
+    assertTrue(button.isEnabled());
   }
 
   @Test
@@ -379,8 +403,11 @@ public final class ComponentsTest {
 
   @Test
   void checkBoxMenuItem() {
+    State enabledState = State.state(true);
     State state = State.state();
-    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    ToggleControl toggleControl = ToggleControl.builder(state)
+            .enabledState(enabledState)
+            .build();
     JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem(toggleControl)
             .initialValue(true)
             .buildValue().component();
@@ -389,12 +416,20 @@ public final class ComponentsTest {
     assertFalse(state.get());
     checkBox.setSelected(true);
     assertTrue(state.get());
+
+    enabledState.set(false);
+    assertFalse(checkBox.isEnabled());
+    enabledState.set(true);
+    assertTrue(checkBox.isEnabled());
   }
 
   @Test
   void radioButtonMenuItem() {
+    State enabledState = State.state(true);
     State state = State.state();
-    ToggleControl toggleControl = ToggleControl.toggleControl(state);
+    ToggleControl toggleControl = ToggleControl.builder(state)
+            .enabledState(enabledState)
+            .build();
     JRadioButtonMenuItem button = Components.radioButtonMenuItem(toggleControl).buildValue().component();
     state.set(true);
     assertTrue(toggleControl.value().get());
@@ -402,6 +437,11 @@ public final class ComponentsTest {
     assertFalse(state.get());
     button.setSelected(true);
     assertTrue(state.get());
+
+    enabledState.set(false);
+    assertFalse(button.isEnabled());
+    enabledState.set(true);
+    assertTrue(button.isEnabled());
   }
 
   @Test

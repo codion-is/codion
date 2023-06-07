@@ -30,6 +30,8 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
     this.toggleControl = toggleControl;
     text(toggleControl.getName());
     mnemonic(toggleControl.getMnemonic());
+    icon(toggleControl.getSmallIcon());
+    toolTipText(toggleControl.getDescription());
   }
 
   protected JToggleButton createToggleButton() {

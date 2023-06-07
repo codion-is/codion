@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
+import javax.swing.SwingConstants;
 import java.awt.event.MouseEvent;
 
 final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JRadioButtonMenuItem, B>
@@ -19,6 +20,7 @@ final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuild
     if (toggleControl().value().isNullable()) {
       throw new IllegalArgumentException("A radio button menu item does not support a nullable value");
     }
+    horizontalAlignment(SwingConstants.LEADING);
   }
 
   @Override
