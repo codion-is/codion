@@ -53,6 +53,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
     controls.actions().stream()
             .filter(Controls.class::isInstance)
             .map(Controls.class::cast)
+            .filter(controls -> !controls.isEmpty())
             .forEach(subControls -> menuBar.add(new DefaultMenuBuilder(subControls).createComponent()));
 
     return menuBar;
@@ -84,29 +85,31 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
     }
 
     @Override
-    public void onSeparator() {
+    void onSeparator() {
       menu.addSeparator();
     }
 
     @Override
-    public void onControl(Control control) {
-      if (control instanceof ToggleControl) {
-        menu.add(CheckBoxMenuItemBuilder.builder((ToggleControl) control).build());
-      }
-      else {
-        menu.add(MenuItemBuilder.builder(control).build());
+    void onControl(Control control) {
+      menu.add(MenuItemBuilder.builder(control).build());
+    }
+
+    @Override
+    void onToggleControl(ToggleControl toggleControl) {
+      menu.add(CheckBoxMenuItemBuilder.builder(toggleControl).build());
+    }
+
+    @Override
+    void onControls(Controls controls) {
+      if (!controls.isEmpty()) {
+        JMenu subMenu = new JMenu(controls);
+        new MenuControlHandler(subMenu, controls);
+        this.menu.add(subMenu);
       }
     }
 
     @Override
-    public void onControls(Controls controls) {
-      JMenu subMenu = new JMenu(controls);
-      new MenuControlHandler(subMenu, controls);
-      this.menu.add(subMenu);
-    }
-
-    @Override
-    public void onAction(Action action) {
+    void onAction(Action action) {
       menu.add(action);
     }
   }
