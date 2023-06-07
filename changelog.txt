@@ -9145,3 +9145,4 @@
   ButtonBuilder.caption() renamed text()
   Control.getCaption() renamed getName()
   DefaultMenuBuilder, no longer creates menus from empty Controls instances
+  ControlHandler.onToggleControl() added, related refactoring

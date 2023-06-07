@@ -30,7 +30,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    controls().actions().forEach(new ButtonControlHandler(panel));
+    new ButtonControlHandler(panel, controls());
 
     return panel;
   }
@@ -53,37 +53,39 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
     private final JPanel panel;
 
-    private ButtonControlHandler(JPanel panel) {
+    private ButtonControlHandler(JPanel panel, Controls controls) {
       this.panel = panel;
+      controls.actions().forEach(this);
     }
 
     @Override
-    public void onSeparator() {
+    void onSeparator() {
       panel.add(new JLabel());
     }
 
     @Override
-    public void onControl(Control control) {
-      if (control instanceof ToggleControl) {
-        ToggleControl toggleControl = (ToggleControl) control;
-        panel.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-                checkBox(toggleControl).build() :
-                toggleButton(toggleControl).build());
-      }
-      else {
-        onAction(control);
+    void onControl(Control control) {
+      onAction(control);
+    }
+
+    @Override
+    void onToggleControl(ToggleControl toggleControl) {
+      panel.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
+              checkBox(toggleControl).build() :
+              toggleButton(toggleControl).build());
+    }
+
+    @Override
+    void onControls(Controls controls) {
+      if (!controls.isEmpty()) {
+        JPanel controlPanel = createPanel();
+        new ButtonControlHandler(controlPanel, controls);
+        panel.add(controlPanel);
       }
     }
 
     @Override
-    public void onControls(Controls controls) {
-      JPanel controlPanel = createPanel();
-      controls.actions().forEach(new ButtonControlHandler(controlPanel));
-      panel.add(controlPanel);
-    }
-
-    @Override
-    public void onAction(Action action) {
+    void onAction(Action action) {
       panel.add(new JButton(action));
     }
   }

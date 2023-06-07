@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import java.util.function.Consumer;
@@ -19,6 +20,9 @@ abstract class ControlHandler implements Consumer<Action> {
     else if (action instanceof Controls) {
       onControls((Controls) action);
     }
+    else if (action instanceof ToggleControl) {
+      onToggleControl((ToggleControl) action);
+    }
     else if (action instanceof Control) {
       onControl((Control) action);
     }
@@ -30,6 +34,8 @@ abstract class ControlHandler implements Consumer<Action> {
   abstract void onSeparator();
 
   abstract void onControl(Control control);
+
+  abstract void onToggleControl(ToggleControl toggleControl);
 
   abstract void onControls(Controls controls);
 
