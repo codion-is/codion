@@ -49,7 +49,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
     toolBar.setOrientation(orientation());
     toolBar.setRollover(rollover);
     toolBar.setBorderPainted(borderPainted);
-    controls().actions().forEach(new ToolBarControlHandler(toolBar));
+    new ToolBarControlHandler(toolBar, controls());
 
     return toolBar;
   }
@@ -58,35 +58,37 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     private final JToolBar toolBar;
 
-    private ToolBarControlHandler(JToolBar toolBar) {
+    private ToolBarControlHandler(JToolBar toolBar, Controls controls) {
       this.toolBar = toolBar;
+      controls.actions().forEach(this);
     }
 
     @Override
-    public void onSeparator() {
+    void onSeparator() {
       toolBar.addSeparator();
     }
 
     @Override
-    public void onControl(Control control) {
-      if (control instanceof ToggleControl) {
-        ToggleControl toggleControl = (ToggleControl) control;
-        toolBar.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-                checkBox(toggleControl).build() :
-                toggleButton(toggleControl).build());
-      }
-      else {
-        toolBar.add(control);
+    void onControl(Control control) {
+      toolBar.add(control);
+    }
+
+    @Override
+    void onToggleControl(ToggleControl toggleControl) {
+      toolBar.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
+              checkBox(toggleControl).build() :
+              toggleButton(toggleControl).build());
+    }
+
+    @Override
+    void onControls(Controls controls) {
+      if (!controls.isEmpty()) {
+        new ToolBarControlHandler(toolBar, controls);
       }
     }
 
     @Override
-    public void onControls(Controls controls) {
-      controls.actions().forEach(new ToolBarControlHandler(toolBar));
-    }
-
-    @Override
-    public void onAction(Action action) {
+    void onAction(Action action) {
       toolBar.add(action);
     }
   }

@@ -67,7 +67,7 @@ public class DefaultLocalEntityConnectionTest {
   private static final Entities ENTITIES = DOMAIN.entities();
 
   @BeforeEach
-  void setup() throws ClassNotFoundException, DatabaseException {
+  void setup() throws DatabaseException {
     connection = createConnection();
   }
 
@@ -77,7 +77,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void configuraDatabase() throws DatabaseException {
+  void configureDatabase() throws DatabaseException {
     try (LocalEntityConnection connection = new DefaultLocalEntityConnection(Database.instance(), new ConfigureDb(), UNIT_TEST_USER)) {
       //throws exception if table does not exist, which is created during connection configuration
       connection.select(condition(Configured.TYPE));

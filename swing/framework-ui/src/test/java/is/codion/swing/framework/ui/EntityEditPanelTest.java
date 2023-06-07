@@ -14,7 +14,6 @@ import is.codion.swing.framework.ui.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static javax.swing.SwingConstants.HORIZONTAL;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntityEditPanelTest {
@@ -32,9 +31,7 @@ public final class EntityEditPanelTest {
     SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
     TestEditPanel editPanel = new TestEditPanel(editModel);
     assertEquals(7, editPanel.componentAttributes().size());
-    editPanel.createHorizontalControlPanel();
-    editPanel.createVerticalControlPanel();
-    editPanel.createControlToolBar(HORIZONTAL);
+    editPanel.createControlPanelControls();
     editPanel.initializePanel();
 
     assertEquals(editModel, editPanel.editModel());

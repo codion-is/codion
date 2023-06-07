@@ -54,6 +54,7 @@ import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -105,16 +106,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> SHOW_TOGGLE_EDIT_PANEL_CONTROL =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showToggleEditPanelControl", true);
+  public static final PropertyValue<Boolean> INCLUDE_TOGGLE_EDIT_PANEL_CONTROL =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeToggleEditPanelControl", true);
 
   /**
    * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> SHOW_DETAIL_PANEL_CONTROLS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.showDetailPanelControls", true);
+  public static final PropertyValue<Boolean> INCLUDE_DETAIL_PANEL_CONTROLS =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeDetailPanelControls", true);
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
@@ -125,12 +126,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
-   * Specifies whether the action buttons (Save, update, delete, clear, refresh) should be on a toolbar<br>
+   * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> TOOLBAR_BUTTONS =
-          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarButtons", false);
+  public static final PropertyValue<Boolean> TOOLBAR_CONTROLS =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.toolbarControls", false);
 
   /**
    * Specifies whether detail and edit panels should be displayed in a frame instead of the default dialog<br>
@@ -230,7 +231,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * indicates where the control panel should be placed in a BorderLayout
    */
-  private String controlPanelConstraints = TOOLBAR_BUTTONS.get() ? BorderLayout.WEST : BorderLayout.EAST;
+  private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? BorderLayout.WEST : BorderLayout.EAST;
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or WINDOW)
@@ -255,12 +256,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * if true and detail panels are available the controls to hide and show detail panels are included
    */
-  private boolean showDetailPanelControls = SHOW_DETAIL_PANEL_CONTROLS.get();
+  private boolean includeDetailPanelControls = INCLUDE_DETAIL_PANEL_CONTROLS.get();
 
   /**
    * if true and an edit panel is available the actions to toggle it is included
    */
-  private boolean showToggleEditPanelControl = SHOW_TOGGLE_EDIT_PANEL_CONTROL.get();
+  private boolean includeToggleEditPanelControl = INCLUDE_TOGGLE_EDIT_PANEL_CONTROL.get();
 
   /**
    * if true then the ESC key disposes the edit dialog
@@ -389,7 +390,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public final void setControlPanelConstraints(String controlPanelConstraints) {
     checkIfInitialized();
-    switch (controlPanelConstraints) {
+    switch (requireNonNull(controlPanelConstraints)) {
       case BorderLayout.SOUTH:
       case BorderLayout.NORTH:
       case BorderLayout.EAST:
@@ -501,6 +502,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @throws IllegalArgumentException in case the panel was not found
    */
   public final EntityPanel detailPanel(EntityType entityType) {
+    requireNonNull(entityType);
     for (EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.entityType().equals(entityType)) {
         return detailPanel;
@@ -524,6 +526,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return true if a detail panel for the given entityType is found
    */
   public final boolean containsDetailPanel(EntityType entityType) {
+    requireNonNull(entityType);
     return detailEntityPanels.stream()
             .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
   }
@@ -599,6 +602,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   @Override
   public final void selectChildPanel(HierarchyPanel childPanel) {
+    requireNonNull(childPanel);
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
       for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
@@ -705,36 +709,36 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * @return true if the edit panel control should be shown
-   * @see EntityPanel#SHOW_TOGGLE_EDIT_PANEL_CONTROL
+   * @see EntityPanel#INCLUDE_TOGGLE_EDIT_PANEL_CONTROL
    */
-  public final boolean isShowToggleEditPanelControl() {
-    return showToggleEditPanelControl;
+  public final boolean isIncludeToggleEditPanelControl() {
+    return includeToggleEditPanelControl;
   }
 
   /**
-   * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
+   * @param includeToggleEditPanelControl true if a control for toggling the edit panel should be included
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setShowToggleEditPanelControl(boolean showToggleEditPanelControl) {
+  public final void setIncludeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
     checkIfInitialized();
-    this.showToggleEditPanelControl = showToggleEditPanelControl;
+    this.includeToggleEditPanelControl = includeToggleEditPanelControl;
   }
 
   /**
-   * @return true if detail panel controls should be shown
-   * @see EntityPanel#SHOW_DETAIL_PANEL_CONTROLS
+   * @return true if detail panel controls should be included
+   * @see EntityPanel#INCLUDE_DETAIL_PANEL_CONTROLS
    */
-  public final boolean isShowDetailPanelControls() {
-    return showDetailPanelControls;
+  public final boolean isIncludeDetailPanelControls() {
+    return includeDetailPanelControls;
   }
 
   /**
-   * @param showDetailPanelControls true if detail panel controls should be shown
+   * @param includeDetailPanelControls true if detail panel controls should be shown
    * @throws IllegalStateException if the panel has been initialized
    */
-  public final void setShowDetailPanelControls(boolean showDetailPanelControls) {
+  public final void setIncludeDetailPanelControls(boolean includeDetailPanelControls) {
     checkIfInitialized();
-    this.showDetailPanelControls = showDetailPanelControls;
+    this.includeDetailPanelControls = includeDetailPanelControls;
   }
 
   /**
@@ -832,6 +836,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param state the detail panel state (HIDDEN, EMBEDDED or WINDOW)
    */
   public final void setDetailPanelState(PanelState state) {
+    requireNonNull(state);
     if (detailPanelTabbedPane == null) {
       this.detailPanelState = state;
       return;
@@ -876,6 +881,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public final void setEditPanelState(PanelState state) {
+    requireNonNull(state);
     if (!containsEditPanel() || (editPanelState == state)) {
       return;
     }
@@ -890,7 +896,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @param pixelAmount the resize amount
    */
   public final void resizePanel(Direction direction, int pixelAmount) {
-    switch (direction) {
+    switch (requireNonNull(direction)) {
       case UP:
         setEditPanelState(HIDDEN);
         break;
@@ -1048,26 +1054,35 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Creates the control panel or component to place next to the edit panel, containing controls for managing
-   * records, such as insert, update and delete.
+   * Creates the control panel or component to place next to the edit panel,
+   * containing the edit controls, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
-   * By default, the control panel provided by the edit panel is returned.
-   * @return the control panel for managing records
-   * @see EntityEditPanel#createHorizontalControlPanel()
-   * @see EntityEditPanel#createVerticalControlPanel()
-   * @see EntityPanel#TOOLBAR_BUTTONS
+   * @return the panel containing the edit panel controls
+   * @see EntityEditPanel#createControlPanelControls()
+   * @see EntityPanel#TOOLBAR_CONTROLS
    */
   protected JComponent createEditControlPanel() {
-    int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
-            controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    if (TOOLBAR_BUTTONS.get()) {
-      return editPanel.createControlToolBar(SwingConstants.VERTICAL);
+    Controls controls = editPanel.createControlPanelControls();
+    if (controls.isEmpty()) {
+      return null;
     }
-    if (alignment == FlowLayout.CENTER) {
-      return editPanel.createHorizontalControlPanel();
+    if (TOOLBAR_CONTROLS.get()) {
+      return toolBar(controls)
+              .orientation(SwingConstants.VERTICAL)
+              .build();
     }
 
-    return editPanel.createVerticalControlPanel();
+    if (controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH)) {
+      return panel(flowLayout(FlowLayout.CENTER))
+              .add(buttonPanel(controls).build())
+              .build();
+    }
+
+    return panel(borderLayout())
+            .add(buttonPanel(controls)
+                    .orientation(SwingConstants.VERTICAL)
+                    .build(), BorderLayout.NORTH)
+            .build();
   }
 
   /**
@@ -1298,17 +1313,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private void initializeTablePanel() {
     Controls toolbarControls = Controls.controls();
-    if (showToggleEditPanelControl && editPanel != null) {
+    if (includeToggleEditPanelControl && editPanel != null) {
       toolbarControls.add(createToggleEditPanelControl());
     }
-    if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
+    if (includeDetailPanelControls && !detailEntityPanels.isEmpty()) {
       toolbarControls.add(createToggleDetailPanelControl());
     }
     if (!toolbarControls.isEmpty()) {
       tablePanel.addToolBarControls(toolbarControls);
     }
-    if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      tablePanel.addPopupMenuControls(createDetailPanelControls(EMBEDDED));
+    if (includeDetailPanelControls && !detailEntityPanels.isEmpty()) {
+      tablePanel.addPopupMenuControls(createSelectDetailPanelControls());
     }
     if (tablePanel.table().getDoubleClickAction() == null) {
       tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());
@@ -1347,7 +1362,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .toolTipText(detailPanel.description)
               .add();
     }
-    if (showDetailPanelControls) {
+    if (includeDetailPanelControls) {
       builder.mouseListener(new TabbedPaneMouseReleasesListener());
     }
 
@@ -1384,12 +1399,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             .build();
   }
 
-  /**
-   * Creates Controls containing a control for setting the state to {@code panelState} on each detail panel.
-   * @param panelState the panel state
-   * @return Controls for controlling the state of the detail panels
-   */
-  private Controls createDetailPanelControls(PanelState panelState) {
+  private Controls createSelectDetailPanelControls() {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
@@ -1398,7 +1408,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             .name(MESSAGES.getString(DETAIL_TABLES))
             .smallIcon(FrameworkIcons.instance().detail());
     detailEntityPanels.forEach(detailPanel ->
-            controls.control(Control.builder(new DetailPanelStateCommand(detailPanel, panelState))
+            controls.control(Control.builder(new SelectDetailPanelCommand(detailPanel))
                     .name(detailPanel.getCaption())));
 
     return controls.build();
@@ -1586,19 +1596,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private final class DetailPanelStateCommand implements Control.Command {
+  private final class SelectDetailPanelCommand implements Control.Command {
 
     private final EntityPanel detailPanel;
-    private final PanelState panelState;
 
-    private DetailPanelStateCommand(EntityPanel detailPanel, PanelState panelState) {
+    private SelectDetailPanelCommand(EntityPanel detailPanel) {
       this.detailPanel = detailPanel;
-      this.panelState = panelState;
     }
 
     @Override
     public void perform() throws Exception {
-      setDetailPanelState(panelState);
+      setDetailPanelState(EMBEDDED);
       detailPanel.activatePanel();
     }
   }
