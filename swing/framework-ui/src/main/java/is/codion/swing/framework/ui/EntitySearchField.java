@@ -415,13 +415,13 @@ public final class EntitySearchField extends HintTextField {
 
       JPanel generalSettingsPanel = Components.panel(gridLayout(2, 1))
               .border(BorderFactory.createTitledBorder(""))
-              .add(Components.checkBox(searchModel.multipleSelectionEnabledState())
-                      .text(MESSAGES.getString("enable_multiple_search_values"))
+              .add(Components.checkBox(searchModel.singleSelectionState())
+                      .text(MESSAGES.getString("single_selection"))
                       .build())
               .build();
 
       JPanel valueSeparatorPanel = Components.panel(borderLayout())
-              .add(new JLabel(MESSAGES.getString("multiple_search_value_separator")), BorderLayout.CENTER)
+              .add(new JLabel(MESSAGES.getString("multiple_item_separator")), BorderLayout.CENTER)
               .add(Components.textField(searchModel.multipleItemSeparatorValue())
                       .columns(1)
                       .maximumLength(1)
@@ -496,8 +496,8 @@ public final class EntitySearchField extends HintTextField {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
-      list.setSelectionMode(searchModel.multipleSelectionEnabledState().get() ?
-              ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
+      list.setSelectionMode(searchModel.singleSelectionState().get() ?
+              ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
       list.addMouseListener(new MouseAdapter() {
@@ -581,8 +581,8 @@ public final class EntitySearchField extends HintTextField {
               .build();
       table = FilteredTable.builder(tableModel)
               .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-              .selectionMode(searchModel.multipleSelectionEnabledState().get() ?
-                      ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION)
+              .selectionMode(searchModel.singleSelectionState().get() ?
+                      ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
               .doubleClickAction(selectControl)
               .build();
       KeyEvents.builder(VK_ENTER)

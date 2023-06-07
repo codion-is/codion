@@ -9149,3 +9149,4 @@
   EntityEditPanel.createHorizontalControlPanel(), createVerticalControlPanel() and createControlToolBar() removed
   EntityPanel.createEditControlPanel() now handles creating the control panel
   EntityEditPanel, EntityTablePanel, javadoc improvements plus some minor fixes
+  EntitySearchModel.multipleSelectionEnabledState() replaced with singleSelectionState()

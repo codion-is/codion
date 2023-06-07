@@ -67,11 +67,11 @@ public final class PropertyValues {
 
   /**
    * @param searchModel the search model
-   * @return a {@link Value} based on the entities selected in the given search model
+   * @return a {@link Value} based on the entity selected in the given search model
    * @throws IllegalArgumentException in case the search model has multiple selection enabled
    */
-  public static Value<Entity> singleSearchValue(EntitySearchModel searchModel) {
-    if (searchModel.multipleSelectionEnabledState().get()) {
+  public static Value<Entity> singleSelectionValue(EntitySearchModel searchModel) {
+    if (!searchModel.singleSelectionState().get()) {
       throw new IllegalArgumentException("Multiple item selection is enabled for search model");
     }
 
@@ -81,8 +81,13 @@ public final class PropertyValues {
   /**
    * @param searchModel the search model
    * @return a {@link Value} based on the entities selected in the given search model
+   * @throws IllegalArgumentException in case the search model has single selection enabled
    */
-  public static Value<List<Entity>> multipleSearchValue(EntitySearchModel searchModel) {
+  public static Value<List<Entity>> multiSelectionValue(EntitySearchModel searchModel) {
+    if (searchModel.singleSelectionState().get()) {
+      throw new IllegalArgumentException("Multiple item selection is not enabled for search model");
+    }
+
     return new EntitySearchMultiValue(searchModel);
   }
 

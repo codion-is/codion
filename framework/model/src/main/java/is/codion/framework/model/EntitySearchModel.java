@@ -170,9 +170,9 @@ public interface EntitySearchModel {
   Value<String> multipleItemSeparatorValue();
 
   /**
-   * @return the State representing the multiple selection enabled setting
+   * @return the State representing the single selection enabled setting
    */
-  State multipleSelectionEnabledState();
+  State singleSelectionState();
 
   /**
    * Attribute search settings
@@ -227,11 +227,11 @@ public interface EntitySearchModel {
     Builder description(String description);
 
     /**
-     * Default true
-     * @param multiSelectionEnabled true if multiple selection should be enabled
+     * Default false
+     * @param singleSelection true if single selection should be enabled
      * @return this builder
      */
-    Builder multipleSelectionEnabled(boolean multiSelectionEnabled);
+    Builder singleSelection(boolean singleSelection);
 
     /**
      * Default ','

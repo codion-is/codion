@@ -241,7 +241,7 @@ public final class FXUiUtil {
         return (Value<T>) entityValue;
       }
       else if (control instanceof EntitySearchField) {
-        Value<List<Entity>> entityValue = PropertyValues.multipleSearchValue(((EntitySearchField) control).model());
+        Value<List<Entity>> entityValue = PropertyValues.multiSelectionValue(((EntitySearchField) control).model());
         entityValue.set(defaultValue == null ? emptyList() : singletonList((Entity) defaultValue));
 
         return (Value<T>) entityValue;
@@ -687,7 +687,7 @@ public final class FXUiUtil {
   public static EntitySearchField createSearchField(ForeignKey foreignKey, FXEntityEditModel editModel) {
     EntitySearchModel searchModel = requireNonNull(editModel).foreignKeySearchModel(requireNonNull(foreignKey));
     EntitySearchField searchField = new EntitySearchField(searchModel);
-    PropertyValues.singleSearchValue(searchModel).link(editModel.value(foreignKey));
+    PropertyValues.singleSelectionValue(searchModel).link(editModel.value(foreignKey));
 
     return searchField;
   }

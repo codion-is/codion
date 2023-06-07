@@ -73,7 +73,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private final Value<String> searchStringValue = Value.value("");
   private final Value<String> multipleItemSeparatorValue;
-  private final State multipleSelectionEnabledState = State.state(true);
+  private final State singleSelectionState = State.state(false);
   private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
   private final State selectionEmptyState = State.state(true);
 
@@ -91,7 +91,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     this.toStringProvider = builder.toStringProvider;
     this.resultSorter = builder.resultSorter;
     this.description = builder.description == null ? createDescription() : builder.description;
-    this.multipleSelectionEnabledState.set(builder.multiSelectionEnabled);
+    this.singleSelectionState.set(builder.singleSelection);
     bindEventsInternal();
   }
 
@@ -141,7 +141,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       return;//no change
     }
     if (entities != null) {
-      if (entities.size() > 1 && !multipleSelectionEnabledState.get()) {
+      if (entities.size() > 1 && singleSelectionState.get()) {
         throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
       }
       entities.forEach(this::validateType);
@@ -236,8 +236,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public State multipleSelectionEnabledState() {
-    return multipleSelectionEnabledState;
+  public State singleSelectionState() {
+    return singleSelectionState;
   }
 
   @Override
@@ -270,8 +270,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
-    String[] searchStrings = multipleSelectionEnabledState.get() ?
-            searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
+    String[] searchStrings = singleSelectionState.get() ?
+            new String[] {searchStringValue.get()} : searchStringValue.get().split(multipleItemSeparatorValue.get());
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchString : searchStrings) {
@@ -365,7 +365,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
     private Comparator<Entity> resultSorter = new EntityComparator();
     private String description;
-    private boolean multiSelectionEnabled = true;
+    private boolean singleSelection = false;
     private String multipleItemSeparator = DEFAULT_SEPARATOR;
 
     DefaultBuilder(EntityType entityType, EntityConnectionProvider connectionProvider) {
@@ -403,8 +403,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder multipleSelectionEnabled(boolean multiSelectionEnabled) {
-      this.multiSelectionEnabled = multiSelectionEnabled;
+    public Builder singleSelection(boolean singleSelection) {
+      this.singleSelection = singleSelection;
       return this;
     }
 
