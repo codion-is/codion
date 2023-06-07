@@ -8,7 +8,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
-import javax.swing.SwingConstants;
 import java.awt.event.MouseEvent;
 
 final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JCheckBoxMenuItem, B>
@@ -16,10 +15,6 @@ final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>>
 
   DefaultCheckBoxMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(toggleControl, linkedValue);
-    if (toggleControl().value().isNullable()) {
-      throw new IllegalArgumentException("A check box menu item does not support a nullable value");
-    }
-    horizontalAlignment(SwingConstants.LEADING);
   }
 
   @Override

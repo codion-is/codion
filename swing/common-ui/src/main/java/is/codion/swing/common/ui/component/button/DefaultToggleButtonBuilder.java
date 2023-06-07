@@ -9,11 +9,13 @@ import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
-import javax.swing.Action;
 import javax.swing.ButtonModel;
 import javax.swing.JToggleButton;
+import javax.swing.JToggleButton.ToggleButtonModel;
 import javax.swing.SwingUtilities;
 import java.lang.reflect.InvocationTargetException;
+
+import static java.util.Objects.requireNonNull;
 
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
         extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
@@ -27,11 +29,8 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
 
   DefaultToggleButtonBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
     super(linkedValue);
-    this.toggleControl = toggleControl;
-    text(toggleControl.getName());
-    mnemonic(toggleControl.getMnemonic());
-    icon(toggleControl.getSmallIcon());
-    toolTipText(toggleControl.getDescription());
+    this.toggleControl = requireNonNull(toggleControl);
+    action(toggleControl);
   }
 
   protected JToggleButton createToggleButton() {
@@ -43,7 +42,6 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
     JToggleButton toggleButton = createToggleButton();
     if (toggleControl != null) {
       toggleButton.setModel(createButtonModel(toggleControl));
-      toggleControl.addPropertyChangeListener(new ButtonPropertyChangeListener(toggleButton));
     }
 
     return (C) toggleButton;
@@ -64,21 +62,18 @@ class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButton
   }
 
   static ButtonModel createButtonModel(ToggleControl toggleControl) {
-    ButtonModel buttonModel;
-    if (toggleControl.value().isNullable()) {
-      buttonModel = new NullableToggleButtonModel(toggleControl.value().get());
-    }
-    else {
-      buttonModel = new JToggleButton.ToggleButtonModel();
-    }
+    ButtonModel buttonModel = toggleControl.value().isNullable() ?
+            new NullableToggleButtonModel(toggleControl.value().get()) : createToggleButtonModel(toggleControl.value().get());
     buttonModel.setEnabled(toggleControl.enabledObserver().get());
     toggleControl.enabledObserver().addDataListener(buttonModel::setEnabled);
     new BooleanButtonModelValue(buttonModel).link(toggleControl.value());
-    toggleControl.addPropertyChangeListener(changeEvent -> {
-      if (Action.MNEMONIC_KEY.equals(changeEvent.getPropertyName())) {
-        buttonModel.setMnemonic((Integer) changeEvent.getNewValue());
-      }
-    });
+
+    return buttonModel;
+  }
+
+  private static ToggleButtonModel createToggleButtonModel(boolean selected) {
+    ToggleButtonModel buttonModel = new ToggleButtonModel();
+    buttonModel.setSelected(selected);
 
     return buttonModel;
   }

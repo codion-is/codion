@@ -404,13 +404,11 @@ public final class ComponentsTest {
   @Test
   void checkBoxMenuItem() {
     State enabledState = State.state(true);
-    State state = State.state();
+    State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem(toggleControl)
-            .initialValue(true)
-            .buildValue().component();
+    JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem(toggleControl).build();
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
@@ -426,12 +424,11 @@ public final class ComponentsTest {
   @Test
   void radioButtonMenuItem() {
     State enabledState = State.state(true);
-    State state = State.state();
+    State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
     JRadioButtonMenuItem button = Components.radioButtonMenuItem(toggleControl).buildValue().component();
-    state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
