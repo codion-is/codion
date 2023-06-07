@@ -66,7 +66,7 @@ image::documentation/src/docs/asciidoc/images/tutorials/petclinic/owners.png[Pet
 
 Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
-Includes a server and server monitor modules and jlink/jpackage configurations.
+Includes server and server monitor modules and jlink/jpackage configurations.
 
 image::documentation/src/docs/asciidoc/images/tutorials/world/country_cities_table.png[World client]
 
@@ -74,7 +74,7 @@ image::documentation/src/docs/asciidoc/images/tutorials/world/country_cities_tab
 
 Fully configured multi-module project, with separate client modules configured for JDBC, RMI and HTTP connection options.
 
-Includes a load-test, server, and server monitor modules and jlink/jpackage configurations.
+Includes load-test, server, and server monitor modules and jlink/jpackage configurations.
 
 image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 
@@ -90,11 +90,11 @@ Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object 
 
 An *Entity* represents a row in a table (or query), an *Attribute* identifies a column and its type, allowing for type safe access to the associated value, whereas a *Property* encapsulates the metadata required for the framework to present and persist the value.
 
-In the below example, we define a domain model with two entities, a customer and an address, with a master/detail retionship, using the following steps:
+In the below example, we define a domain model with two entities, *Customer* and *Address*, with a master/detail retionship, using the following steps:
 
 . Extend the *DefaultDomain* class and create a *DomainType* constant identifying the domain model.
 . Create a namespace interface for each *Entity* and use the *DomainType* to create *EntityType* constants.
-. Use the *EntityType* to create *Attribute* constants for each column and the *ForeignKey*.
+. Use the *EntityType* to create *Attribute* constants for each column and a *ForeignKey* constant for the foreign key relationship.
 . Create two *Entity* definitions using properties based on the *Attribute* constants, and add them to the domain model.
 
 NOTE: The *EntityType* and *Attribute* constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the *Entity* and its values
