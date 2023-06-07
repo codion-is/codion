@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component.panel;
 
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
@@ -35,10 +34,11 @@ public final class Panels {
     requireNonNull(northComponent, "northComponent");
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
-    return Components.panel(Layouts.borderLayout())
-            .add(northComponent, BorderLayout.NORTH)
-            .add(centerComponent, BorderLayout.CENTER)
-            .build();
+    JPanel panel = new JPanel(Layouts.borderLayout());
+    panel.add(northComponent, BorderLayout.NORTH);
+    panel.add(centerComponent, BorderLayout.CENTER);
+
+    return panel;
   }
 
   /**
@@ -51,10 +51,11 @@ public final class Panels {
     requireNonNull(westComponent, "westComponent");
     requireNonNull(centerComponent, CENTER_COMPONENT);
 
-    return Components.panel(Layouts.borderLayout())
-            .add(westComponent, BorderLayout.WEST)
-            .add(centerComponent, BorderLayout.CENTER)
-            .build();
+    JPanel panel = new JPanel(Layouts.borderLayout());
+    panel.add(westComponent, BorderLayout.WEST);
+    panel.add(centerComponent, BorderLayout.CENTER);
+
+    return panel;
   }
 
   /**
@@ -85,17 +86,18 @@ public final class Panels {
     requireNonNull(buttonActions, "buttonActions");
 
     Dimension preferredSize = new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height);
-    PanelBuilder buttonPanelBuilder = Components.panel(new GridLayout(1, buttonActions.length));
+    JPanel buttonPanel = new JPanel(new GridLayout(1, buttonActions.length));
     for (Action buttonAction : buttonActions) {
       JButton button = new JButton(buttonAction);
       button.setPreferredSize(preferredSize);
       button.setFocusable(buttonFocusable);
-      buttonPanelBuilder.add(button);
+      buttonPanel.add(button);
     }
 
-    return Components.panel(new BorderLayout())
-            .add(centerComponent, BorderLayout.CENTER)
-            .add(buttonPanelBuilder.build(), BorderLayout.EAST)
-            .build();
+    JPanel panel = new JPanel(new BorderLayout());
+    panel.add(centerComponent, BorderLayout.CENTER);
+    panel.add(buttonPanel, BorderLayout.EAST);
+
+    return panel;
   }
 }
