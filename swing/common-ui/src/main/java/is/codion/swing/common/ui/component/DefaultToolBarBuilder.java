@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -11,8 +10,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.Action;
 import javax.swing.JToolBar;
 
-import static is.codion.swing.common.ui.component.Components.checkBox;
-import static is.codion.swing.common.ui.component.Components.toggleButton;
+import static is.codion.swing.common.ui.component.DefaultButtonPanelBuilder.createToggleButton;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
@@ -75,9 +73,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
-      toolBar.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-              checkBox(toggleControl).build() :
-              toggleButton(toggleControl).build());
+      toolBar.add(createToggleButton(toggleControl, toggleButtonType()));
     }
 
     @Override

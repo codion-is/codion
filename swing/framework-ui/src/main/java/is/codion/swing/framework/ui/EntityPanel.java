@@ -30,7 +30,6 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -55,6 +54,7 @@ import java.util.function.Consumer;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
@@ -64,6 +64,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.SwingConstants.VERTICAL;
 
 /**
  * A panel representing an Entity via a EntityModel, which facilitates browsing and editing of records.
@@ -1068,19 +1069,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     if (TOOLBAR_CONTROLS.get()) {
       return toolBar(controls)
-              .orientation(SwingConstants.VERTICAL)
+              .orientation(VERTICAL)
               .build();
     }
 
     if (controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH)) {
       return panel(flowLayout(FlowLayout.CENTER))
-              .add(buttonPanel(controls).build())
+              .add(buttonPanel(controls)
+                      .toggleButtonType(CHECKBOX)
+                      .build())
               .build();
     }
 
     return panel(borderLayout())
             .add(buttonPanel(controls)
-                    .orientation(SwingConstants.VERTICAL)
+                    .orientation(VERTICAL)
+                    .toggleButtonType(CHECKBOX)
                     .build(), BorderLayout.NORTH)
             .build();
   }

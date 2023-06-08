@@ -89,6 +89,13 @@ final class DefaultFilteredTableCellRenderer<R, C> extends DefaultTableCellRende
     super.setValue(displayValueProvider.apply(value));
   }
 
+  /**
+   * @return the Settings instance
+   */
+  Settings<C> settings() {
+    return settings;
+  }
+
   private static boolean isSearchResult(FilteredTableModel<?, ?> tableModel, int row, int column) {
     return tableModel.searchModel().currentResult().equals(row, column);
   }
