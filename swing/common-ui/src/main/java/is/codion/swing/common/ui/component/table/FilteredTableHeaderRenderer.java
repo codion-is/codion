@@ -5,18 +5,20 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
+import javax.swing.border.Border;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 import java.awt.Graphics;
+
+import static javax.swing.BorderFactory.createCompoundBorder;
 
 final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
 
@@ -36,19 +38,24 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
   public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                  boolean hasFocus, int row, int column) {
     Component component = wrappedRenderer == null ?
-            table.getTableHeader().getDefaultRenderer()
-                    .getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column) :
-            wrappedRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+            filteredTable.getTableHeader().getDefaultRenderer()
+                    .getTableCellRendererComponent(filteredTable, value, isSelected, hasFocus, row, column) :
+            wrappedRenderer.getTableCellRendererComponent(filteredTable, value, isSelected, hasFocus, row, column);
     Font defaultFont = component.getFont();
     if (component instanceof JLabel) {
       JLabel label = (JLabel) component;
-      FilteredTableColumn<C> tableColumn = ((FilteredTableColumnModel<C>) table.getColumnModel()).getColumn(column);
+      FilteredTableColumn<C> tableColumn = filteredTable.getColumnModel().getColumn(column);
       ColumnConditionModel<?, ?> filterModel = filteredTable.getModel().filterModel().conditionModels().get(tableColumn.getIdentifier());
       label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
+      label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+      label.setIconTextGap(0);
       if (columnCellRenderer instanceof DefaultTableCellRenderer) {
         label.setHorizontalAlignment(((DefaultTableCellRenderer) columnCellRenderer).getHorizontalAlignment());
       }
-      label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
+      if (columnCellRenderer instanceof DefaultFilteredTableCellRenderer) {
+        Border tableCellBorder = ((DefaultFilteredTableCellRenderer<?, ?>) columnCellRenderer).settings().defaultCellBorder();
+        label.setBorder(label.getBorder() == null ? tableCellBorder : createCompoundBorder(label.getBorder(), tableCellBorder));
+      }
     }
 
     return component;

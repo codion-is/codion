@@ -192,6 +192,11 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   @Override
+  public FilteredTableColumnModel<C> getColumnModel() {
+    return (FilteredTableColumnModel<C>) super.getColumnModel();
+  }
+
+  @Override
   public void setModel(TableModel dataModel) {
     if (this.tableModel != null) {
       throw new IllegalStateException("Table model has already been set");
