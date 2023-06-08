@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
+import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -14,11 +17,9 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
-
-import static is.codion.swing.common.ui.component.Components.checkBox;
-import static is.codion.swing.common.ui.component.Components.toggleButton;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
@@ -49,6 +50,19 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
     return panel;
   }
 
+  static JToggleButton createToggleButton(ToggleControl toggleControl, ToggleButtonType toggleButtonType) {
+    switch (toggleButtonType) {
+      case CHECKBOX:
+        return CheckBoxBuilder.builder(toggleControl).build();
+      case BUTTON:
+        return ToggleButtonBuilder.builder(toggleControl).build();
+      case RADIO_BUTTON:
+        return RadioButtonBuilder.builder(toggleControl).build();
+      default:
+        throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
+    }
+  }
+
   private final class ButtonControlHandler extends ControlHandler {
 
     private final JPanel panel;
@@ -70,9 +84,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
-      panel.add(toggleButtonType() == ToggleButtonType.CHECKBOX ?
-              checkBox(toggleControl).build() :
-              toggleButton(toggleControl).build());
+      panel.add(createToggleButton(toggleControl, toggleButtonType()));
     }
 
     @Override
