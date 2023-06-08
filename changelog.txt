@@ -9154,3 +9154,4 @@
   Button builders based on ToggleControl refactored, now set the ToggleControl as the action
   FilteredTableHeaderRenderer bug fixed, now uses the same left/right padding as the table cell renderer
   FilteredTable.getColumnModel() overridden with a FilteredTableColumnModel return type
+  EntityPanel.createEditControlPanel() now uses ToggleButtonType.CHECKBOX
