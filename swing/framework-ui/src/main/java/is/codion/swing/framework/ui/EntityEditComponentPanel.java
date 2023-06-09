@@ -192,10 +192,11 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
+   * @param <T> the edit model type
    * @return the edit model this panel is based on
    */
-  public final SwingEntityEditModel editModel() {
-    return editModel;
+  public final <T extends SwingEntityEditModel> T editModel() {
+    return (T) editModel;
   }
 
   /**

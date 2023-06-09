@@ -45,15 +45,17 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   Entities entities();
 
   /**
+   * @param <C> the edit model type
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
    */
-  E editModel();
+  <C extends E> C editModel();
 
   /**
+   * @param <C> the table model type
    * @return the {@link EntityTableModel}
    * @throws IllegalStateException in case no table model is available
    */
-  T tableModel();
+  <C extends T> C tableModel();
 
   /**
    * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
@@ -105,6 +107,7 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @param detailModelLink the {@link DetailModelLink} to add
    * @param <L> the {@link DetailModelLink} type
    * @return the {@link DetailModelLink}
+   * @throws IllegalArgumentException in case the model has already been added
    */
   <L extends DetailModelLink<M, E, T>> L addDetailModel(L detailModelLink);
 
@@ -128,20 +131,21 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
 
   /**
    * Returns the first detail model of the given type
-   * @param <T> the model type
+   * @param <C> the model type
    * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case this model does not contain a detail model of the given type
    */
-  <T extends M> T detailModel(Class<? extends M> modelClass);
+  <C extends M> C detailModel(Class<C> modelClass);
 
   /**
    * Returns a detail model of the given type
+   * @param <C> the detail model type
    * @param entityType the entityType of the required EntityModel
    * @return the detail model of type {@code entityModelClass}
    * @throws IllegalArgumentException in case this model does not contain a detail model for the entityType
    */
-  M detailModel(EntityType entityType);
+  <C extends M> C detailModel(EntityType entityType);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains

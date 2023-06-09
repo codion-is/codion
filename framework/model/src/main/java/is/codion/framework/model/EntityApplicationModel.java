@@ -83,15 +83,16 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   /**
    * Adds the given entity models to this model.
    * @param entityModels the entity models to add
+   * @throws IllegalArgumentException in case any of the models has already been added
    */
   void addEntityModels(M... entityModels);
 
   /**
    * Adds the given entity model to this model
    * @param entityModel the detail model
-   * @return the EntityModel model just added
+   * @throws IllegalArgumentException in case the model has already been added
    */
-  M addEntityModel(M entityModel);
+  void addEntityModel(M entityModel);
 
   /**
    * @param modelClass the application model class
@@ -142,17 +143,18 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   List<M> entityModels();
 
   /**
-   * @param <T> the model type
+   * @param <C> the model type
    * @param modelClass the model class
    * @return the EntityModel of the given type
    */
-  <T extends M> T entityModel(Class<? extends M> modelClass);
+  <C extends M> C entityModel(Class<C> modelClass);
 
   /**
+   * @param <C> the model type
    * @param entityType the entityType
    * @return the EntityModel based on the given entityType
    */
-  M entityModel(EntityType entityType);
+  <C extends M> C entityModel(EntityType entityType);
 
   /**
    * Refreshes all data models contained in this application model

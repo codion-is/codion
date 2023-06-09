@@ -336,10 +336,11 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
+   * @param <T> the table model type
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final SwingEntityTableModel tableModel() {
-    return tableModel;
+  public final <T extends SwingEntityTableModel> T tableModel() {
+    return (T) tableModel;
   }
 
   /**

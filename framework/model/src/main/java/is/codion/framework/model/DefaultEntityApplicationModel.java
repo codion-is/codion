@@ -106,10 +106,11 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M addEntityModel(M detailModel) {
-    this.entityModels.add(detailModel);
-
-    return detailModel;
+  public final void addEntityModel(M entityModel) {
+    if (this.entityModels.contains(requireNonNull(entityModel))) {
+      throw new IllegalArgumentException("Entity model " + entityModel + " has already been added");
+    }
+    this.entityModels.add(entityModel);
   }
 
   @Override
@@ -144,10 +145,10 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final <T extends M> T entityModel(Class<? extends M> modelClass) {
+  public final <C extends M> C entityModel(Class<C> modelClass) {
     for (M model : entityModels) {
       if (model.getClass().equals(modelClass)) {
-        return (T) model;
+        return (C) model;
       }
     }
 
@@ -155,10 +156,10 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final M entityModel(EntityType entityType) {
+  public final <C extends M> C entityModel(EntityType entityType) {
     for (M entityModel : entityModels) {
       if (entityModel.entityType().equals(entityType)) {
-        return entityModel;
+        return (C) entityModel;
       }
     }
 

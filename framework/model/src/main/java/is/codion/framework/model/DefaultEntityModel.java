@@ -102,17 +102,17 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final E editModel() {
-    return editModel;
+  public final <C extends E> C editModel() {
+    return (C) editModel;
   }
 
   @Override
-  public final T tableModel() {
+  public final <C extends T> C tableModel() {
     if (tableModel == null) {
       throw new IllegalStateException("Entity model " + this + " does not contain a table model");
     }
 
-    return tableModel;
+    return (C) tableModel;
   }
 
   @Override
@@ -216,18 +216,18 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final <T extends M> T detailModel(Class<? extends M> modelClass) {
+  public final <C extends M> C detailModel(Class<C> modelClass) {
     requireNonNull(modelClass, "modelClass");
-    return (T) detailModels.keySet().stream()
+    return (C) detailModels.keySet().stream()
             .filter(detailModel -> detailModel.getClass().equals(modelClass))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("Detail model of type " + modelClass.getName() + " not found in model: " + this));
   }
 
   @Override
-  public final M detailModel(EntityType entityType) {
+  public final <C extends M> C detailModel(EntityType entityType) {
     requireNonNull(entityType, "entityType");
-    return detailModels.keySet().stream()
+    return (C) detailModels.keySet().stream()
             .filter(detailModel -> detailModel.entityType().equals(entityType))
             .findFirst()
             .orElseThrow(() -> new IllegalArgumentException("No detail model for entity " + entityType + " found in model: " + this));

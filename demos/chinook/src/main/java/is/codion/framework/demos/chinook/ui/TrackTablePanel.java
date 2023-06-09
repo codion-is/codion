@@ -45,8 +45,7 @@ public final class TrackTablePanel extends EntityTablePanel {
   }
 
   private void raisePriceOfSelected() throws DatabaseException {
-    TrackTableModel tableModel = (TrackTableModel) tableModel();
-
+    TrackTableModel tableModel = tableModel();
     tableModel.raisePriceOfSelected(getAmountFromUser());
   }
 

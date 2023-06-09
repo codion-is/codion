@@ -278,8 +278,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final SwingEntityEditModel editModel() {
-    return editModel;
+  public final <C extends SwingEntityEditModel> C editModel() {
+    return (C) editModel;
   }
 
   @Override

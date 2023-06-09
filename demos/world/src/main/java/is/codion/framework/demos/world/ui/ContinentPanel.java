@@ -34,7 +34,7 @@ final class ContinentPanel extends EntityPanel {
 
   @Override
   protected void initializeUI() {
-    ContinentModel model = (ContinentModel) model();
+    ContinentModel model = model();
 
     EntityTablePanel tablePanel = tablePanel();
     tablePanel.initializePanel();

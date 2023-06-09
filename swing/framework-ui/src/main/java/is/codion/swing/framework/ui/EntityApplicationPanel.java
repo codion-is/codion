@@ -216,13 +216,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
+   * @param <T> the entity panel type
    * @param entityType the entityType
-   * @return the first entity panel found based on the given entity type, an empty Optional if none is found
+   * @return the first entity panel found based on the given entity type
+   * @throws IllegalArgumentException in case this application panel does not contain a panel for the given entity type
    */
-  public final Optional<EntityPanel> entityPanel(EntityType entityType) {
-    return entityPanels.stream()
+  public final <T extends EntityPanel> T entityPanel(EntityType entityType) {
+    requireNonNull(entityType);
+    return (T) entityPanels.stream()
             .filter(entityPanel -> entityPanel.model().entityType().equals(entityType))
-            .findFirst();
+            .findFirst()
+            .orElseThrow(() -> new IllegalArgumentException("EntityPanel for entity: " + entityType + " not found in application panel: " + getClass()));
   }
 
   /**
