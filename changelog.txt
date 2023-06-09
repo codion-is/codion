@@ -9156,3 +9156,4 @@
   FilteredTable.getColumnModel() overridden with a FilteredTableColumnModel return type
   EntityPanel.createEditControlPanel() now uses ToggleButtonType.CHECKBOX
   ToggleButtonType.RADIO_BUTTON added, related refactoring
+  AbstractProperty.NullDefaultValueProvider renaming reverted due to serialization incompatibility
