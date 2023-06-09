@@ -105,10 +105,11 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   EntityDefinition entityDefinition();
 
   /**
+   * @param <C> the edit model type
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    */
-  E editModel();
+  <C extends E> C editModel();
 
   /**
    * Sets {@code foreignKeyValues} as the search condition values for the given foreign key.

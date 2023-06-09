@@ -32,7 +32,7 @@ public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookApp
   @Override
   protected void perform(ChinookAppModel application) throws Exception {
     SwingEntityModel playlistModel = application.entityModel(Playlist.TYPE);
-    PlaylistTableModel playlistTableModel = (PlaylistTableModel) playlistModel.tableModel();
+    PlaylistTableModel playlistTableModel = playlistModel.tableModel();
     playlistTableModel.refresh();
     List<Entity> playlistGenres = application.connectionProvider().connection()
             .select(where(Genre.NAME).equalTo(GENRES));

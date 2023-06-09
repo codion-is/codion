@@ -48,6 +48,7 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     EntityApplicationModel<Model, EditModel, TableModel> model = new DefaultEntityApplicationModel<>(connectionProvider);
     Model deptModel = createDepartmentModel();
     model.addEntityModel(deptModel);
+    assertThrows(IllegalArgumentException.class, () -> model.addEntityModel(deptModel));
     assertNotNull(model.entityModel(Department.TYPE));
     assertEquals(1, model.entityModels().size());
     assertEquals(UNIT_TEST_USER, model.user());
@@ -100,7 +101,8 @@ public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEn
     assertTrue(model.containsEntityModel(departmentModel));
 
     assertFalse(model.containsEntityModel(Employee.TYPE));
-    assertFalse(model.containsEntityModel(departmentModel.detailModel(Employee.TYPE)));
+    Model detailModel = departmentModel.detailModel(Employee.TYPE);
+    assertFalse(model.containsEntityModel(detailModel));
   }
 
   @Test

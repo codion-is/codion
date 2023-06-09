@@ -145,7 +145,8 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
   public void detailModel() throws Exception {
     departmentModel.detailModel((Class<? extends Model>) departmentModel.detailModel(Employee.TYPE).getClass());
     assertTrue(departmentModel.containsDetailModel(Employee.TYPE));
-    assertTrue(departmentModel.containsDetailModel(departmentModel.detailModel(Employee.TYPE)));
+    Model detailModel = departmentModel.detailModel(Employee.TYPE);
+    assertTrue(departmentModel.containsDetailModel(detailModel));
     assertTrue(departmentModel.containsDetailModel((Class<? extends Model>) departmentModel.detailModel(Employee.TYPE).getClass()));
     assertEquals(1, departmentModel.detailModels().size(), "Only one detail model should be in DepartmentModel");
     assertEquals(1, departmentModel.activeDetailModels().size());

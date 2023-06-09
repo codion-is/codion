@@ -36,7 +36,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private static final Comparator<?> LEXICAL_COMPARATOR = Text.spaceAwareCollator();
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new DefaultComparator();
   private static final Comparator<Object> TO_STRING_COMPARATOR = new ToStringComparator();
-  private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NoDefaultValueSupplier();
+  private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
    * The attribute this property is based on, should be unique within an Entity.
@@ -197,7 +197,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final boolean hasDefaultValue() {
-    return !(defaultValueSupplier instanceof NoDefaultValueSupplier);
+    return !(defaultValueSupplier instanceof AbstractProperty.NullDefaultValueSupplier);
   }
 
   @Override
@@ -380,11 +380,11 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  private static final class NoDefaultValueSupplier extends DefaultValueSupplier<Object> {
+  private static final class NullDefaultValueSupplier extends DefaultValueSupplier<Object> {
 
     private static final long serialVersionUID = 1;
 
-    private NoDefaultValueSupplier() {
+    private NullDefaultValueSupplier() {
       super(null);
     }
   }

@@ -25,7 +25,7 @@ public final class RaisePrices extends AbstractEntityUsageScenario<ChinookAppMod
     SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     selectRandomRows(albumModel.tableModel(), 0.5);
     TrackTableModel trackTableModel =
-            (TrackTableModel) albumModel.detailModel(Track.TYPE).tableModel();
+            albumModel.detailModel(Track.TYPE).tableModel();
     selectRandomRows(trackTableModel, 4);
     trackTableModel.raisePriceOfSelected(BigDecimal.valueOf(0.01));
   }

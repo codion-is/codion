@@ -28,15 +28,17 @@ final class CityTablePanel extends ChartTablePanel {
   }
 
   private Control createFetchLocationControl() {
+    CityTableModel cityTableModel = tableModel();
+
     return Control.builder(this::fetchLocation)
             .name("Fetch location")
-            .enabledState(((CityTableModel) tableModel()).citiesWithoutLocationSelectedObserver())
+            .enabledState(cityTableModel.citiesWithoutLocationSelectedObserver())
             .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
             .build();
   }
 
   private void fetchLocation() {
-    FetchLocationTask fetchLocationTask = new FetchLocationTask(((CityTableModel) tableModel()));
+    FetchLocationTask fetchLocationTask = new FetchLocationTask(tableModel());
 
     Dialogs.progressWorkerDialog(fetchLocationTask)
             .owner(this)

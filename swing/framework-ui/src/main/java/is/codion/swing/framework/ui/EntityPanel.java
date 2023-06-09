@@ -339,23 +339,27 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * @param <T> the model type
    * @return the EntityModel
    */
-  public final SwingEntityModel model() {
-    return entityModel;
+  public final <T extends SwingEntityModel> T model() {
+    return (T) entityModel;
   }
 
   /**
+   * @param <T> the edit model type
    * @return the EntityEditModel
    */
-  public final SwingEntityEditModel editModel() {
+  public final <T extends SwingEntityEditModel> T editModel() {
     return entityModel.editModel();
   }
 
   /**
-   * @return the EntityTableModel, null if none is available
+   * @param <T> the table model type
+   * @return the EntityTableModel
+   * @throws IllegalStateException in case no table model is available
    */
-  public final SwingEntityTableModel tableModel() {
+  public final <T extends SwingEntityTableModel> T tableModel() {
     return entityModel.tableModel();
   }
 
@@ -450,10 +454,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * @param <T> the edit panel type
    * @return the edit panel
    */
-  public final EntityEditPanel editPanel() {
-    return editPanel;
+  public final <T extends EntityEditPanel> T editPanel() {
+    return (T) editPanel;
   }
 
   /**
@@ -464,10 +469,11 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * @param <T> the table panel type
    * @return the EntityTablePanel used by this EntityPanel
    */
-  public final EntityTablePanel tablePanel() {
-    return tablePanel;
+  public final <T extends EntityTablePanel> T tablePanel() {
+    return (T) tablePanel;
   }
 
   /**
@@ -498,15 +504,16 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Returns the detail panel for the given {@code entityType}, if one is available
+   * @param <T> the entity panel type
    * @param entityType the entityType of the detail panel to retrieve
    * @return the detail panel of the given type
    * @throws IllegalArgumentException in case the panel was not found
    */
-  public final EntityPanel detailPanel(EntityType entityType) {
+  public final <T extends EntityPanel> T detailPanel(EntityType entityType) {
     requireNonNull(entityType);
     for (EntityPanel detailPanel : detailEntityPanels) {
       if (detailPanel.entityModel.entityType().equals(entityType)) {
-        return detailPanel;
+        return (T) detailPanel;
       }
     }
 

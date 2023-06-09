@@ -56,7 +56,7 @@ public final class CityTableModel extends SwingEntityTableModel {
             .filter(city -> city.isNull(City.LOCATION))
             .map(city -> city.castTo(City.class))
             .collect(toList());
-    CityEditModel editModel = (CityEditModel) editModel();
+    CityEditModel editModel = editModel();
     Iterator<City> citiesWithoutLocation = selectedCitiesWithoutLocation.iterator();
     while (citiesWithoutLocation.hasNext() && !cancelFetchLocationObserver.get()) {
       City city = citiesWithoutLocation.next();
