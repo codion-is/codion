@@ -203,7 +203,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B popupMenuControls(Controls popupMenuControls) {
-    return popupMenu(new DefaultMenuBuilder(popupMenuControls).createPopupMenu());
+    return popupMenu(new DefaultMenuBuilder(requireNonNull(popupMenuControls)).createPopupMenu());
   }
 
   @Override

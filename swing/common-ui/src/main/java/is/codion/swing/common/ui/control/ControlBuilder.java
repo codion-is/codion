@@ -85,10 +85,12 @@ final class ControlBuilder implements Control.Builder {
       control = new DefaultActionControl(actionCommand, name, enabledState);
     }
 
-    return control.setMnemonic(mnemonic)
-            .setSmallIcon(smallIcon)
-            .setLargeIcon(largeIcon)
-            .setDescription(description)
-            .setKeyStroke(keyStroke);
+    control.setMnemonic(mnemonic);
+    control.setSmallIcon(smallIcon);
+    control.setLargeIcon(largeIcon);
+    control.setDescription(description);
+    control.setKeyStroke(keyStroke);
+
+    return control;
   }
 }

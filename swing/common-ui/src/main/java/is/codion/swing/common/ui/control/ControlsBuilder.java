@@ -116,11 +116,14 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls build() {
-    return (Controls) new DefaultControls(name, mnemonic, enabledState, controls)
-            .setSmallIcon(smallIcon)
-            .setLargeIcon(largeIcon)
-            .setDescription(description)
-            .setKeyStroke(keyStroke);
+    Controls defaultControls = new DefaultControls(name, enabledState, controls);
+    defaultControls.setMnemonic(mnemonic);
+    defaultControls.setSmallIcon(smallIcon);
+    defaultControls.setLargeIcon(largeIcon);
+    defaultControls.setDescription(description);
+    defaultControls.setKeyStroke(keyStroke);;
+
+    return defaultControls;
   }
 
   private static final class BuildControl implements Function<Control.Builder, Control> {

@@ -37,9 +37,8 @@ public interface Control extends Action {
 
   /**
    * @param description the description string
-   * @return this control instance
    */
-  Control setDescription(String description);
+  void setDescription(String description);
 
   /**
    * @return the description
@@ -53,9 +52,8 @@ public interface Control extends Action {
 
   /**
    * @param name the name of this Control instance
-   * @return this Control instance
    */
-  Control setName(String name);
+  void setName(String name);
 
   /**
    * @return the state which controls whether this Control instance is enabled
@@ -64,9 +62,8 @@ public interface Control extends Action {
 
   /**
    * @param mnemonic the mnemonic to associate with this Control instance
-   * @return this Control instance
    */
-  Control setMnemonic(int mnemonic);
+  void setMnemonic(int mnemonic);
 
   /**
    * @return the mnemonic, 0 if none is specified
@@ -75,9 +72,8 @@ public interface Control extends Action {
 
   /**
    * @param keyStroke the KeyStroke to associate with this Control
-   * @return this Control instance
    */
-  Control setKeyStroke(KeyStroke keyStroke);
+  void setKeyStroke(KeyStroke keyStroke);
 
   /**
    * @return the KeyStroke associated with this Control, if any
@@ -86,9 +82,8 @@ public interface Control extends Action {
 
   /**
    * @param smallIcon the small icon to associate with this Control
-   * @return this Control instance
    */
-  Control setSmallIcon(Icon smallIcon);
+  void setSmallIcon(Icon smallIcon);
 
   /**
    * @return the icon
@@ -97,9 +92,8 @@ public interface Control extends Action {
 
   /**
    * @param largeIcon the large icon to associate with this Control
-   * @return this Control instance
    */
-  Control setLargeIcon(Icon largeIcon);
+  void setLargeIcon(Icon largeIcon);
 
   /**
    * @return the icon
@@ -108,9 +102,8 @@ public interface Control extends Action {
 
   /**
    * @param background the background color
-   * @return this Control instance
    */
-  Control setBackground(Color background);
+  void setBackground(Color background);
 
   /**
    * @return the background color
@@ -119,9 +112,8 @@ public interface Control extends Action {
 
   /**
    * @param foreground the foreground color
-   * @return this Control instance
    */
-  Control setForeground(Color foreground);
+  void setForeground(Color foreground);
 
   /**
    * @return the foreground color
@@ -130,9 +122,8 @@ public interface Control extends Action {
 
   /**
    * @param font the font
-   * @return this Control instance
    */
-  Control setFont(Font font);
+  void setFont(Font font);
 
   /**
    * @return the font

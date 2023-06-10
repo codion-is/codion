@@ -10,7 +10,6 @@ import is.codion.swing.common.ui.control.ToggleControl;
 import javax.swing.JMenuItem;
 import javax.swing.SwingConstants;
 
-import static is.codion.swing.common.ui.component.button.DefaultToggleButtonBuilder.createButtonModel;
 import static java.util.Objects.requireNonNull;
 
 abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends AbstractButtonBuilder<Boolean, C, B>

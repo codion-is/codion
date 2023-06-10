@@ -48,9 +48,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setDescription(String description) {
+  public final void setDescription(String description) {
     putValue(Action.SHORT_DESCRIPTION, description);
-    return this;
   }
 
   @Override
@@ -61,9 +60,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setName(String name) {
+  public final void setName(String name) {
     putValue(NAME, name);
-    return this;
   }
 
   @Override
@@ -72,9 +70,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setMnemonic(int key) {
+  public final void setMnemonic(int key) {
     putValue(MNEMONIC_KEY, key);
-    return this;
   }
 
   @Override
@@ -84,9 +81,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setKeyStroke(KeyStroke keyStroke) {
+  public final void setKeyStroke(KeyStroke keyStroke) {
     putValue(ACCELERATOR_KEY, keyStroke);
-    return this;
   }
 
   @Override
@@ -95,9 +91,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setSmallIcon(Icon smallIcon) {
+  public final void setSmallIcon(Icon smallIcon) {
     putValue(SMALL_ICON, smallIcon);
-    return this;
   }
 
   @Override
@@ -106,9 +101,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setLargeIcon(Icon largeIcon) {
+  public final void setLargeIcon(Icon largeIcon) {
     putValue(LARGE_ICON_KEY, largeIcon);
-    return this;
   }
 
   @Override
@@ -117,9 +111,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setBackground(Color background) {
+  public final void setBackground(Color background) {
     putValue(BACKGROUND, background);
-    return this;
   }
 
   @Override
@@ -128,9 +121,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setForeground(Color foreground) {
+  public final void setForeground(Color foreground) {
     putValue(FOREGROUND, foreground);
-    return this;
   }
 
   @Override
@@ -139,9 +131,8 @@ abstract class AbstractControl extends AbstractAction implements Control {
   }
 
   @Override
-  public final Control setFont(Font font) {
+  public final void setFont(Font font) {
     putValue(FONT, font);
-    return this;
   }
 
   @Override
