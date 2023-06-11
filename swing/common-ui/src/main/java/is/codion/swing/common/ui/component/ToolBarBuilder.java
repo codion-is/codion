@@ -7,6 +7,8 @@ import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JToolBar;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A builder for a {@link JToolBar}.
  */
@@ -42,6 +44,14 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
    * @return a new {@link ToolBarBuilder}
    */
   static ToolBarBuilder builder(Controls controls) {
-    return new DefaultToolBarBuilder(controls);
+    return new DefaultToolBarBuilder(requireNonNull(controls));
+  }
+
+  /**
+   * @param controlsBuilder the controls builder
+   * @return a new {@link ToolBarBuilder}
+   */
+  static ToolBarBuilder builder(Controls.Builder controlsBuilder) {
+    return new DefaultToolBarBuilder(requireNonNull(controlsBuilder).build());
   }
 }

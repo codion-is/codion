@@ -9160,3 +9160,4 @@
   Added return type parameter to a bunch of model and panel accessors, reducing the need for casting
   Control, setters no longer return the instance, some unrelated refactoring
   ButtonBuilder.control(Control.Builder), ToggleButtonBuilder.toggleControl() and ToggleMenuItem.toggleControl() added, related refactoring
+  MenuBuilder, ToolBarBuilder and ButtonPanelBuilder, overloaded for Controls.Builder

@@ -10,6 +10,8 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * A builder for menus.
  */
@@ -56,6 +58,14 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
    * @return a new MenuBuilder based on the given controls
    */
   static MenuBuilder builder(Controls controls) {
-    return new DefaultMenuBuilder(controls);
+    return new DefaultMenuBuilder(requireNonNull(controls));
+  }
+
+  /**
+   * @param controlsBuilder the controls builder to base the menu on
+   * @return a new MenuBuilder based on the given controls
+   */
+  static MenuBuilder builder(Controls.Builder controlsBuilder) {
+    return new DefaultMenuBuilder(requireNonNull(controlsBuilder).build());
   }
 }

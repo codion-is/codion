@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.swing.common.ui.control.Control;
+
 import javax.swing.Action;
 import javax.swing.JMenuItem;
 
@@ -30,5 +32,25 @@ public interface MenuItemBuilder<C extends JMenuItem, B extends MenuItemBuilder<
    */
   static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder(Action action) {
     return new DefaultMenuItemBuilder<>(requireNonNull(action));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param <C> the component type
+   * @param control the button control
+   * @return a builder for a JButton
+   */
+  static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder(Control control) {
+    return new DefaultMenuItemBuilder<>(requireNonNull(control));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param <C> the component type
+   * @param controlBuilder the button control builder
+   * @return a builder for a JButton
+   */
+  static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> builder(Control.Builder controlBuilder) {
+    return new DefaultMenuItemBuilder<>(requireNonNull(controlBuilder).build());
   }
 }
