@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
@@ -14,8 +13,8 @@ import java.awt.event.MouseEvent;
 final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JRadioButtonMenuItem, B>
         implements RadioButtonMenuItemBuilder<B> {
 
-  DefaultRadioButtonMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    super(toggleControl, linkedValue);
+  DefaultRadioButtonMenuItemBuilder(Value<Boolean> linkedValue) {
+    super(linkedValue);
   }
 
   @Override

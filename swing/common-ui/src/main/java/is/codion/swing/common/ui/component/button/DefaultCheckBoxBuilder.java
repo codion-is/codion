@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JCheckBox;
 import javax.swing.JToggleButton;
@@ -15,14 +14,10 @@ final class DefaultCheckBoxBuilder extends DefaultToggleButtonBuilder<JCheckBox,
 
   private boolean nullable = false;
 
-  DefaultCheckBoxBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    super(toggleControl, linkedValue);
-  }
-
   DefaultCheckBoxBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);
-    if (linkedValue != null) {
-      nullable = linkedValue.isNullable();
+    if (linkedValue != null && linkedValue.isNullable()) {
+      nullable = true;
     }
     horizontalAlignment(SwingConstants.LEADING);
   }

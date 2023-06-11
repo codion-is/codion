@@ -75,7 +75,10 @@ public class DefaultToggleControlTest {
 
     Value<Boolean> nullableValue = Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent.observer());
     ToggleControl nullableControl = ToggleControl.builder(nullableValue).build();
-    NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) toggleButton(nullableControl).build().getModel();
+    NullableToggleButtonModel toggleButtonModel = (NullableToggleButtonModel) toggleButton()
+            .toggleControl(nullableControl)
+            .build()
+            .getModel();
     assertTrue(toggleButtonModel.isSelected());
     assertTrue(nullableControl.value().get());
     toggleButtonModel.setSelected(false);
@@ -90,7 +93,10 @@ public class DefaultToggleControlTest {
 
     Value<Boolean> nonNullableValue = Value.value(true, false);
     ToggleControl nonNullableControl = ToggleControl.builder(nonNullableValue).build();
-    ButtonModel buttonModel = toggleButton(nonNullableControl).build().getModel();
+    ButtonModel buttonModel = toggleButton()
+            .toggleControl(nonNullableControl)
+            .build()
+            .getModel();
     assertFalse(buttonModel instanceof NullableToggleButtonModel);
     assertTrue(nonNullableControl.value().get());
     nonNullableValue.set(false);
@@ -101,7 +107,9 @@ public class DefaultToggleControlTest {
     State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.toggleControl(state);
     assertTrue(toggleControl.value().get());
-    JToggleButton toggleButton = ToggleButtonBuilder.builder(toggleControl).build();
+    JToggleButton toggleButton = ToggleButtonBuilder.builder()
+            .toggleControl(toggleControl)
+            .build();
     assertTrue(toggleButton.isSelected());
   }
 
@@ -109,7 +117,10 @@ public class DefaultToggleControlTest {
   void stateToggleControl() {
     State enabledState = State.state(false);
     ToggleControl control = ToggleControl.builder(state).name("stateToggleControl").enabledState(enabledState).build();
-    ButtonModel buttonModel = toggleButton(control).build().getModel();
+    ButtonModel buttonModel = toggleButton()
+            .toggleControl(control)
+            .build()
+            .getModel();
     assertFalse(control.isEnabled());
     assertFalse(buttonModel.isEnabled());
     enabledState.set(true);
@@ -135,7 +146,10 @@ public class DefaultToggleControlTest {
   @Test
   void nullableToggleControl() {
     ToggleControl toggleControl = ToggleControl.builder(Value.propertyValue(this, "nullableValue", Boolean.class, valueChangeEvent)).build();
-    NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleButton(toggleControl).build().getModel();
+    NullableToggleButtonModel buttonModel = (NullableToggleButtonModel) toggleButton()
+            .toggleControl(toggleControl)
+            .build()
+            .getModel();
     buttonModel.setState(null);
     assertNull(value);
     buttonModel.setSelected(false);
@@ -158,17 +172,19 @@ public class DefaultToggleControlTest {
 
   @Test
   void checkBox() {
-    JCheckBox box = CheckBoxBuilder.builder(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-            .name("Test")
-            .build()).build();
+    JCheckBox box = CheckBoxBuilder.builder()
+            .toggleControl(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
+            .name("Test"))
+            .build();
     assertEquals("Test", box.getText());
   }
 
   @Test
   void checkBoxMenuItem() {
-    JMenuItem item = CheckBoxMenuItemBuilder.builder(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
-            .name("Test")
-            .build()).build();
+    JMenuItem item = CheckBoxMenuItemBuilder.builder()
+            .toggleControl(ToggleControl.builder(Value.propertyValue(this, "booleanValue", boolean.class, Event.event()))
+            .name("Test"))
+            .build();
     assertEquals("Test", item.getText());
   }
 }

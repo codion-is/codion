@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JCheckBoxMenuItem;
 import javax.swing.JMenuItem;
@@ -13,8 +12,8 @@ import java.awt.event.MouseEvent;
 final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JCheckBoxMenuItem, B>
         implements CheckBoxMenuItemBuilder<B> {
 
-  DefaultCheckBoxMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    super(toggleControl, linkedValue);
+  DefaultCheckBoxMenuItemBuilder(Value<Boolean> linkedValue) {
+    super(linkedValue);
   }
 
   @Override

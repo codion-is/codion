@@ -16,6 +16,18 @@ import static java.util.Objects.requireNonNull;
 public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> extends ButtonBuilder<Boolean, C, B> {
 
   /**
+   * @param toggleControl the toggle control to base this toggle button on
+   * @return this builder instance
+   */
+  B toggleControl(ToggleControl toggleControl);
+
+  /**
+   * @param toggleControlBuilder the builder for the toggle control to base this toggle button on
+   * @return this builder instance
+   */
+  B toggleControl(ToggleControl.Builder toggleControlBuilder);
+
+  /**
    * @param <C> the component type
    * @param <B> the builder type
    * @return a builder for a component
@@ -32,26 +44,5 @@ public interface ToggleButtonBuilder<C extends JToggleButton, B extends ToggleBu
    */
   static <C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> ToggleButtonBuilder<C, B> builder(Value<Boolean> linkedValue) {
     return new DefaultToggleButtonBuilder<>(requireNonNull(linkedValue));
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @param <C> the component type
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  static <C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> ToggleButtonBuilder<C, B> builder(ToggleControl toggleControl) {
-    return new DefaultToggleButtonBuilder<>(requireNonNull(toggleControl), null);
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @param linkedValue the value to link to the button
-   * @param <C> the component type
-   * @param <B> the builder type
-   * @return a builder for a component
-   */
-  static <C extends JToggleButton, B extends ToggleButtonBuilder<C, B>> ToggleButtonBuilder<C, B> builder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return new DefaultToggleButtonBuilder<>(requireNonNull(toggleControl), requireNonNull(linkedValue));
   }
 }

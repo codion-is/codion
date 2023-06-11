@@ -99,7 +99,9 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    * @param linkedValue the linked value, may be null
    */
   protected AbstractComponentBuilder(Value<T> linkedValue) {
-    this.linkedValue = linkedValue;
+    if (linkedValue != null) {
+      linkedValue(linkedValue);
+    }
     this.linkedValueLocked = linkedValue != null;
   }
 
@@ -203,7 +205,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B popupMenuControls(Controls popupMenuControls) {
-    return popupMenu(new DefaultMenuBuilder(popupMenuControls).createPopupMenu());
+    return popupMenu(new DefaultMenuBuilder(requireNonNull(popupMenuControls)).createPopupMenu());
   }
 
   @Override
@@ -322,25 +324,31 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B linkedValue(Value<T> linkedValue) {
+    if (requireNonNull(linkedValue).isNullable() && !supportsNull()) {
+      throw new IllegalArgumentException("Component does not support a nullable value");
+    }
     if (linkedValueLocked) {
       throw new IllegalStateException("The value for this component builder has already been set");
     }
     if (linkedValueObserver != null) {
       throw new IllegalStateException("linkeValueObserver has already been set");
     }
-    this.linkedValue = requireNonNull(linkedValue);
+    this.linkedValue = linkedValue;
     return (B) this;
   }
 
   @Override
   public final B linkedValueObserver(ValueObserver<T> linkedValueObserver) {
+    if (requireNonNull(linkedValueObserver).isNullable() && !supportsNull()) {
+      throw new IllegalArgumentException("Component does not support a nullable value");
+    }
     if (linkedValueLocked) {
       throw new IllegalStateException("The value for this component builder has already been set");
     }
     if (linkedValue != null) {
       throw new IllegalStateException("linkedValue has already been set");
     }
-    this.linkedValueObserver = requireNonNull(linkedValueObserver);
+    this.linkedValueObserver = linkedValueObserver;
     return (B) this;
   }
 
@@ -484,6 +492,13 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
    * @param initialValue the initial value, not null
    */
   protected abstract void setInitialValue(C component, T initialValue);
+
+  /**
+   * @return true if this component can be linked with a nullable value
+   */
+  protected boolean supportsNull() {
+    return true;
+  }
 
   /**
    * Enables focus transfer on Enter, override for special handling

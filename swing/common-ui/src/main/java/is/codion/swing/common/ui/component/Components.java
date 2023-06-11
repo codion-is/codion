@@ -33,8 +33,8 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -87,6 +87,24 @@ public final class Components {
   }
 
   /**
+   * @param <B> the builder type
+   * @param control the button control
+   * @return a JButton builder
+   */
+  public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control control) {
+    return ButtonBuilder.builder(control);
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param controlBuilder the button control builder
+   * @return a JButton builder
+   */
+  public static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> button(Control.Builder controlBuilder) {
+    return ButtonBuilder.builder(controlBuilder);
+  }
+
+  /**
    * @return a JCheckBox builder
    */
   public static CheckBoxBuilder checkBox() {
@@ -99,23 +117,6 @@ public final class Components {
    */
   public static CheckBoxBuilder checkBox(Value<Boolean> linkedValue) {
     return CheckBoxBuilder.builder(linkedValue);
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @return a JCheckBox builder
-   */
-  public static CheckBoxBuilder checkBox(ToggleControl toggleControl) {
-    return CheckBoxBuilder.builder(toggleControl);
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @param linkedValue the value to link to the check-box
-   * @return a JCheckBox builder
-   */
-  public static CheckBoxBuilder checkBox(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return CheckBoxBuilder.builder(toggleControl, linkedValue);
   }
 
   /**
@@ -134,23 +135,6 @@ public final class Components {
   }
 
   /**
-   * @param toggleControl the toggle control
-   * @return a JRadioButton builder
-   */
-  public static RadioButtonBuilder radioButton(ToggleControl toggleControl) {
-    return RadioButtonBuilder.builder(toggleControl);
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @param linkedValue the value to link to the check-box
-   * @return a JRadioButton builder
-   */
-  public static RadioButtonBuilder radioButton(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return RadioButtonBuilder.builder(toggleControl, linkedValue);
-  }
-
-  /**
    * @param <B> the builder type
    * @return a JToggleButton builder
    */
@@ -165,15 +149,6 @@ public final class Components {
    */
   public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(Value<Boolean> linkedValue) {
     return ToggleButtonBuilder.builder(linkedValue);
-  }
-
-  /**
-   * @param toggleControl the toggle control
-   * @param <B> the builder type
-   * @return a JToggleButton builder
-   */
-  public static <B extends ToggleButtonBuilder<JToggleButton, B>> ToggleButtonBuilder<JToggleButton, B> toggleButton(ToggleControl toggleControl) {
-    return ToggleButtonBuilder.builder(toggleControl);
   }
 
   /**
@@ -196,41 +171,37 @@ public final class Components {
   }
 
   /**
-   * @param toggleControl the toggle control
    * @param <B> the builder type
    * @return a new JCheckBoxMenuItem builder
    */
-  public static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> checkBoxMenuItem(ToggleControl toggleControl) {
-    return CheckBoxMenuItemBuilder.builder(toggleControl);
+  public static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> checkBoxMenuItem() {
+    return CheckBoxMenuItemBuilder.builder();
   }
 
   /**
-   * @param toggleControl the toggle control
    * @param linkedValue the value to link to the component
    * @param <B> the builder type
    * @return a new JCheckBoxMenuItem builder
    */
-  public static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> checkBoxMenuItem(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return CheckBoxMenuItemBuilder.builder(toggleControl, linkedValue);
+  public static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> checkBoxMenuItem(Value<Boolean> linkedValue) {
+    return CheckBoxMenuItemBuilder.builder(linkedValue);
   }
 
   /**
-   * @param toggleControl the toggle control
    * @param <B> the builder type
    * @return a new JRadioButtonMenuItem builder
    */
-  public static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> radioButtonMenuItem(ToggleControl toggleControl) {
-    return RadioButtonMenuItemBuilder.builder(toggleControl);
+  public static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> radioButtonMenuItem() {
+    return RadioButtonMenuItemBuilder.builder();
   }
 
   /**
-   * @param toggleControl the toggle control
    * @param linkedValue the value to link to the component
    * @param <B> the builder type
    * @return a new JRadioButtonMenuItem builder
    */
-  public static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> radioButtonMenuItem(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return RadioButtonMenuItemBuilder.builder(toggleControl, linkedValue);
+  public static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> radioButtonMenuItem(Value<Boolean> linkedValue) {
+    return RadioButtonMenuItemBuilder.builder(linkedValue);
   }
 
   /**

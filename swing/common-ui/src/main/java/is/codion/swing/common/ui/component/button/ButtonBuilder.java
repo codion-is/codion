@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
@@ -85,6 +86,18 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B action(Action action);
 
   /**
+   * @param control the control to base the button on
+   * @return this builder instance
+   */
+  B control(Control control);
+
+  /**
+   * @param controlBuilder the builder for the control to base the button on
+   * @return this builder instance
+   */
+  B control(Control.Builder controlBuilder);
+
+  /**
    * @param actionListener the action listener
    * @return this builder instance
    * @see JButton#addActionListener(ActionListener)
@@ -106,5 +119,23 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    */
   static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Action action) {
     return new DefaultButtonBuilder<>(requireNonNull(action));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param control the button control
+   * @return a builder for a JButton
+   */
+  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control control) {
+    return new DefaultButtonBuilder<>(requireNonNull(control));
+  }
+
+  /**
+   * @param <B> the builder type
+   * @param controlBuilder the button control builder
+   * @return a builder for a JButton
+   */
+  static <B extends ButtonBuilder<Void, JButton, B>> ButtonBuilder<Void, JButton, B> builder(Control.Builder controlBuilder) {
+    return new DefaultButtonBuilder<>(requireNonNull(controlBuilder).build());
   }
 }

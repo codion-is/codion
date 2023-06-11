@@ -71,9 +71,8 @@ public final class ApplicationPanel extends JPanel {
 
     button(Control.builder(model::clear)
             .enabledState(inputEnabledState)
-            .build())
-            .text("Clear")
-            .mnemonic('L')
+            .name("Clear")
+            .mnemonic('L'))
             .transferFocusOnEnter(true)
             .build(button -> settingsPanel.add(button, BorderLayout.EAST));
 

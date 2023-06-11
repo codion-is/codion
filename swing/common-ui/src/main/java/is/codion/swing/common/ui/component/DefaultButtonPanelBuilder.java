@@ -53,11 +53,17 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   static JToggleButton createToggleButton(ToggleControl toggleControl, ToggleButtonType toggleButtonType) {
     switch (toggleButtonType) {
       case CHECKBOX:
-        return CheckBoxBuilder.builder(toggleControl).build();
+        return CheckBoxBuilder.builder()
+                .toggleControl(toggleControl)
+                .build();
       case BUTTON:
-        return ToggleButtonBuilder.builder(toggleControl).build();
+        return ToggleButtonBuilder.builder()
+                .toggleControl(toggleControl)
+                .build();
       case RADIO_BUTTON:
-        return RadioButtonBuilder.builder(toggleControl).build();
+        return RadioButtonBuilder.builder()
+                .toggleControl(toggleControl)
+                .build();
       default:
         throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
     }

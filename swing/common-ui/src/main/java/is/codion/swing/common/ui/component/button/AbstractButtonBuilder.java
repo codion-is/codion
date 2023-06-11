@@ -3,21 +3,28 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
+import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.ui.component.AbstractComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
+import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.AbstractButton;
 import javax.swing.Action;
 import javax.swing.ButtonGroup;
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
+import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -97,6 +104,16 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B control(Control control) {
+    return action(control);
+  }
+
+  @Override
+  public final B control(Control.Builder controlBuilder) {
+    return control(requireNonNull(controlBuilder).build());
+  }
+
+  @Override
   public final B actionListener(ActionListener actionListener) {
     this.actionListeners.add(requireNonNull(actionListener));
     return (B) this;
@@ -137,6 +154,81 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   protected abstract C createButton();
+
+  static ButtonModel createButtonModel(ToggleControl toggleControl) {
+    ButtonModel buttonModel = toggleControl.value().isNullable() ?
+            new NullableToggleButtonModel(toggleControl.value().get()) : createToggleButtonModel(toggleControl.value().get());
+    buttonModel.setEnabled(toggleControl.enabledObserver().get());
+    toggleControl.enabledObserver().addDataListener(buttonModel::setEnabled);
+    new BooleanButtonModelValue(buttonModel).link(toggleControl.value());
+
+    return buttonModel;
+  }
+
+  private static JToggleButton.ToggleButtonModel createToggleButtonModel(boolean selected) {
+    JToggleButton.ToggleButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    buttonModel.setSelected(selected);
+
+    return buttonModel;
+  }
+
+  private static final class BooleanButtonModelValue extends AbstractValue<Boolean> {
+
+    private final ButtonModel buttonModel;
+
+    private BooleanButtonModelValue(ButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+      buttonModel.addItemListener(itemEvent -> notifyValueChange());
+    }
+
+    @Override
+    public Boolean get() {
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        return ((NullableToggleButtonModel) buttonModel).getState();
+      }
+
+      return buttonModel.isSelected();
+    }
+
+    @Override
+    protected void setValue(Boolean value) {
+      if (SwingUtilities.isEventDispatchThread()) {
+        setModelValue(value);
+      }
+      else {
+        try {
+          SwingUtilities.invokeAndWait(() -> setModelValue(value));
+        }
+        catch (InterruptedException ex) {
+          Thread.currentThread().interrupt();
+          throw new RuntimeException(ex);
+        }
+        catch (InvocationTargetException e) {
+          Throwable cause = e.getCause();
+          if (cause instanceof RuntimeException) {
+            throw (RuntimeException) cause;
+          }
+
+          throw new RuntimeException(cause);
+        }
+        catch (RuntimeException e) {
+          throw e;
+        }
+        catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+
+    private void setModelValue(Boolean value) {
+      if (buttonModel instanceof NullableToggleButtonModel) {
+        ((NullableToggleButtonModel) buttonModel).setState(value);
+      }
+      else {
+        buttonModel.setSelected(value != null && value);
+      }
+    }
+  }
 
   private static final class ButtonPropertyChangeListener implements PropertyChangeListener {
 
