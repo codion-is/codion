@@ -171,6 +171,26 @@ public final class Components {
   }
 
   /**
+   * @param control the item control
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return a new JMenuItem builder
+   */
+  public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control control) {
+    return MenuItemBuilder.builder(control);
+  }
+
+  /**
+   * @param controlBuilder the item control builder
+   * @param <C> the component type
+   * @param <B> the builder type
+   * @return a new JMenuItem builder
+   */
+  public static <C extends JMenuItem, B extends MenuItemBuilder<C, B>> MenuItemBuilder<C, B> menuItem(Control.Builder controlBuilder) {
+    return MenuItemBuilder.builder(controlBuilder);
+  }
+
+  /**
    * @param <B> the builder type
    * @return a new JCheckBoxMenuItem builder
    */
@@ -916,7 +936,7 @@ public final class Components {
    * @return a {@link javax.swing.JToolBar} builder
    */
   public static ToolBarBuilder toolBar() {
-    return ToolBarBuilder.builder(null);
+    return ToolBarBuilder.builder();
   }
 
   /**
@@ -925,6 +945,14 @@ public final class Components {
    */
   public static ToolBarBuilder toolBar(Controls controls) {
     return ToolBarBuilder.builder(controls);
+  }
+
+  /**
+   * @param controlsBuilder the Controls.Builder
+   * @return a {@link javax.swing.JToolBar} builder
+   */
+  public static ToolBarBuilder toolBar(Controls.Builder controlsBuilder) {
+    return ToolBarBuilder.builder(controlsBuilder);
   }
 
   /**
@@ -943,10 +971,18 @@ public final class Components {
   }
 
   /**
+   * @param controlsBuilder the Controls.Builder
+   * @return a button panel builder
+   */
+  public static ButtonPanelBuilder buttonPanel(Controls.Builder controlsBuilder) {
+    return ButtonPanelBuilder.builder(controlsBuilder);
+  }
+
+  /**
    * @return a new menu builder
    */
   public static MenuBuilder menu() {
-    return MenuBuilder.builder(null);
+    return MenuBuilder.builder();
   }
 
   /**
@@ -955,5 +991,13 @@ public final class Components {
    */
   public static MenuBuilder menu(Controls controls) {
     return MenuBuilder.builder(controls);
+  }
+
+  /**
+   * @param controlsBuilder the Controls.Builder to base the menu on
+   * @return a new menu builder
+   */
+  public static MenuBuilder menu(Controls.Builder controlsBuilder) {
+    return MenuBuilder.builder(controlsBuilder);
   }
 }
