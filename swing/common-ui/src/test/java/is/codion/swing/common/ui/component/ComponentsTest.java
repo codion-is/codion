@@ -308,7 +308,9 @@ public final class ComponentsTest {
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    button = Components.checkBox(toggleControl).build();
+    button = Components.checkBox()
+            .toggleControl(toggleControl)
+            .build();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
@@ -345,7 +347,10 @@ public final class ComponentsTest {
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    button = Components.toggleButton(toggleControl).buildValue().component();
+    button = Components.toggleButton()
+            .toggleControl(toggleControl)
+            .buildValue()
+            .component();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
@@ -359,6 +364,8 @@ public final class ComponentsTest {
 
   @Test
   void radioButton() {
+    assertThrows(IllegalArgumentException.class, () -> Components.radioButton(Value.value()));
+
     Value<Boolean> value = Value.value(true, false);
     ComponentValue<Boolean, JRadioButton> componentValue = Components.radioButton(value)
             .text("caption")
@@ -382,7 +389,10 @@ public final class ComponentsTest {
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    button = Components.radioButton(toggleControl).buildValue().component();
+    button = Components.radioButton()
+            .toggleControl(toggleControl)
+            .buildValue()
+            .component();
     state.set(true);
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
@@ -403,12 +413,16 @@ public final class ComponentsTest {
 
   @Test
   void checkBoxMenuItem() {
+    assertThrows(IllegalArgumentException.class, () -> Components.checkBoxMenuItem(Value.value()));
+
     State enabledState = State.state(true);
     State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem(toggleControl).build();
+    JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem()
+            .toggleControl(toggleControl)
+            .build();
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());
@@ -423,12 +437,17 @@ public final class ComponentsTest {
 
   @Test
   void radioButtonMenuItem() {
+    assertThrows(IllegalArgumentException.class, () -> Components.radioButtonMenuItem(Value.value()));
+
     State enabledState = State.state(true);
     State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
             .enabledState(enabledState)
             .build();
-    JRadioButtonMenuItem button = Components.radioButtonMenuItem(toggleControl).buildValue().component();
+    JRadioButtonMenuItem button = Components.radioButtonMenuItem()
+            .toggleControl(toggleControl)
+            .buildValue()
+            .component();
     assertTrue(toggleControl.value().get());
     toggleControl.value().set(false);
     assertFalse(state.get());

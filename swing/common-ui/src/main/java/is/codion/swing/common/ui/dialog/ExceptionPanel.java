@@ -98,18 +98,18 @@ final class ExceptionPanel extends JPanel {
     printButton = button(Control.builder(detailsArea::print)
             .name(Messages.print())
             .description(MESSAGES.getString("print_error_report"))
-            .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0))
-            .build()).build();
+            .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0)))
+            .build();
     saveButton = button(Control.builder(this::saveDetails)
             .name(MESSAGES.getString("save"))
             .description(MESSAGES.getString("save_error_log"))
-            .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0))
-            .build()).build();
+            .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0)))
+            .build();
     copyButton = button(Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
             .name(Messages.copy())
             .description(MESSAGES.getString("copy_to_clipboard"))
-            .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0))
-            .build()).build();
+            .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0)))
+            .build();
     centerPanel = createCenterPanel();
     detailPanel = new JPanel(FlexibleGridLayout.builder()
             .rowsColumns(2, 2)
@@ -190,7 +190,9 @@ final class ExceptionPanel extends JPanel {
             .enable(this);
 
     JPanel westPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    westPanel.add(checkBox(detailsControl).build());
+    westPanel.add(checkBox()
+            .toggleControl(detailsControl)
+            .build());
     JPanel centerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
     centerButtonPanel.add(copyButton);
     centerButtonPanel.add(printButton);

@@ -104,6 +104,16 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B control(Control control) {
+    return action(control);
+  }
+
+  @Override
+  public final B control(Control.Builder controlBuilder) {
+    return control(requireNonNull(controlBuilder).build());
+  }
+
+  @Override
   public final B actionListener(ActionListener actionListener) {
     this.actionListeners.add(requireNonNull(actionListener));
     return (B) this;

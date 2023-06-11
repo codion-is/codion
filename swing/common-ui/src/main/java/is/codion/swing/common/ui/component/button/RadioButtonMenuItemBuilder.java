@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JRadioButtonMenuItem;
 
@@ -17,20 +16,18 @@ public interface RadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuilder
 
   /**
    * @param <B> the builder type
-   * @param toggleControl the button action
    * @return a builder for a JButton
    */
-  static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> builder(ToggleControl toggleControl) {
-    return new DefaultRadioButtonMenuItemBuilder<>(requireNonNull(toggleControl), null);
+  static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> builder() {
+    return new DefaultRadioButtonMenuItemBuilder<>(null);
   }
 
   /**
    * @param <B> the builder type
-   * @param toggleControl the button action
    * @param linkedValue the value to link to the button
    * @return a builder for a JButton
    */
-  static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> builder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return new DefaultRadioButtonMenuItemBuilder<>(requireNonNull(toggleControl), requireNonNull(linkedValue));
+  static <B extends RadioButtonMenuItemBuilder<B>> RadioButtonMenuItemBuilder<B> builder(Value<Boolean> linkedValue) {
+    return new DefaultRadioButtonMenuItemBuilder<>(requireNonNull(linkedValue));
   }
 }

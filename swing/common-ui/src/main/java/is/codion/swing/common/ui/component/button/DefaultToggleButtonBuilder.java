@@ -14,17 +14,25 @@ import static java.util.Objects.requireNonNull;
 class DefaultToggleButtonBuilder<C extends JToggleButton, B extends ToggleButtonBuilder<C, B>>
         extends AbstractButtonBuilder<Boolean, C, B> implements ToggleButtonBuilder<C, B> {
 
-  private final ToggleControl toggleControl;
+  private ToggleControl toggleControl;
 
   DefaultToggleButtonBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);
-    this.toggleControl = null;
   }
 
-  DefaultToggleButtonBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    super(linkedValue);
-    this.toggleControl = requireNonNull(toggleControl);
+  @Override
+  public final B toggleControl(ToggleControl toggleControl) {
+    if (requireNonNull(toggleControl).value().isNullable() && !supportsNull()) {
+      throw new IllegalArgumentException("This toggle button builder does not support a nullable value");
+    }
+    this.toggleControl = toggleControl;
     action(toggleControl);
+    return (B) this;
+  }
+
+  @Override
+  public final B toggleControl(ToggleControl.Builder toggleControlBuilder) {
+    return toggleControl(requireNonNull(toggleControlBuilder).build());
   }
 
   protected JToggleButton createToggleButton() {

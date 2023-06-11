@@ -211,8 +211,8 @@ public final class LoadTestPanel<T> extends JPanel {
     return panel(new BorderLayout())
             .add(button(Control.builder(loadTestModel::removeApplicationBatch)
                     .name("-")
-                    .description("Remove application batch")
-                    .build()).build(), BorderLayout.WEST)
+                    .description("Remove application batch"))
+                    .build(), BorderLayout.WEST)
             .add(integerField()
                     .editable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
@@ -221,8 +221,8 @@ public final class LoadTestPanel<T> extends JPanel {
                     .build(), BorderLayout.CENTER)
             .add(button(Control.builder(loadTestModel::addApplicationBatch)
                     .name("+")
-                    .description("Add application batch")
-                    .build()).build(), BorderLayout.EAST)
+                    .description("Add application batch"))
+                    .build(), BorderLayout.EAST)
             .build();
   }
 
@@ -360,13 +360,13 @@ public final class LoadTestPanel<T> extends JPanel {
             .editable(false)
             .build();
     JButton refreshButton = button(Control.builder(new RefreshExceptionsCommand(exceptionsArea, scenario))
-            .name("Refresh")
-            .build()).build();
+            .name("Refresh"))
+            .build();
     refreshButton.doClick();
 
     JButton clearButton = button(Control.builder(new ClearExceptionsCommand(exceptionsArea, scenario))
-            .name("Clear")
-            .build()).build();
+            .name("Clear"))
+            .build();
 
     return panel(borderLayout())
             .add(new JScrollPane(exceptionsArea), BorderLayout.CENTER)

@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JCheckBoxMenuItem;
 
@@ -17,20 +16,18 @@ public interface CheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>> e
 
   /**
    * @param <B> the builder type
-   * @param toggleControl the button action
-   * @return a builder for a JButton
+   * @return a builder for a JCheckBoxMenuItem
    */
-  static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> builder(ToggleControl toggleControl) {
-    return new DefaultCheckBoxMenuItemBuilder<>(requireNonNull(toggleControl), null);
+  static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> builder() {
+    return new DefaultCheckBoxMenuItemBuilder<>(null);
   }
 
   /**
    * @param <B> the builder type
-   * @param toggleControl the button action
    * @param linkedValue the value to link to the menu item
-   * @return a builder for a JButton
+   * @return a builder for a JCheckBoxMenuItem
    */
-  static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> builder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
-    return new DefaultCheckBoxMenuItemBuilder<>(requireNonNull(toggleControl), requireNonNull(linkedValue));
+  static <B extends CheckBoxMenuItemBuilder<B>> CheckBoxMenuItemBuilder<B> builder(Value<Boolean> linkedValue) {
+    return new DefaultCheckBoxMenuItemBuilder<>(requireNonNull(linkedValue));
   }
 }

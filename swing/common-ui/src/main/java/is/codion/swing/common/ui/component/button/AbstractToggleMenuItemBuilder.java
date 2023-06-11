@@ -15,16 +15,26 @@ import static java.util.Objects.requireNonNull;
 abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends ToggleMenuItemBuilder<C, B>> extends AbstractButtonBuilder<Boolean, C, B>
         implements ToggleMenuItemBuilder<C, B> {
 
-  private final ToggleControl toggleControl;
+  private ToggleControl toggleControl;
 
-  AbstractToggleMenuItemBuilder(ToggleControl toggleControl, Value<Boolean> linkedValue) {
+  AbstractToggleMenuItemBuilder(Value<Boolean> linkedValue) {
     super(linkedValue);
-    this.toggleControl = requireNonNull(toggleControl);
-    if (toggleControl.value().isNullable()) {
-      throw new IllegalArgumentException("A radio button or check box menu item does not support a nullable value");
-    }
     horizontalAlignment(SwingConstants.LEADING);
+  }
+
+  @Override
+  public final B toggleControl(ToggleControl toggleControl) {
+    if (requireNonNull(toggleControl).value().isNullable()) {
+      throw new IllegalArgumentException("A toggle menu item does not support a nullable value");
+    }
+    this.toggleControl = toggleControl;
     action(toggleControl);
+    return (B) this;
+  }
+
+  @Override
+  public final B toggleControl(ToggleControl.Builder toggleControlBuilder) {
+    return toggleControl(requireNonNull(toggleControlBuilder).build());
   }
 
   protected abstract JMenuItem createMenuItem();
@@ -32,7 +42,9 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   @Override
   protected final C createButton() {
     JMenuItem menuItem = createMenuItem();
-    menuItem.setModel(createButtonModel(toggleControl));
+    if (toggleControl != null) {
+      menuItem.setModel(createButtonModel(toggleControl));
+    }
 
     return (C) menuItem;
   }
@@ -45,5 +57,10 @@ abstract class AbstractToggleMenuItemBuilder<C extends JMenuItem, B extends Togg
   @Override
   protected final void setInitialValue(C component, Boolean initialValue) {
     component.setSelected(initialValue);
+  }
+
+  @Override
+  protected final boolean supportsNull() {
+    return false;
   }
 }
