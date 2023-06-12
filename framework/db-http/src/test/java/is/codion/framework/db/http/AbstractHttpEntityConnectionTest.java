@@ -22,12 +22,18 @@ import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
 import is.codion.framework.servlet.EntityServiceFactory;
 
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -252,7 +258,6 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   static BasicHttpClientConnectionManager createConnectionManager() {
-    return new BasicHttpClientConnectionManager();/*
     try {
       SSLContext sslContext = SSLContext.getDefault();
 
@@ -262,7 +267,7 @@ abstract class AbstractHttpEntityConnectionTest {
     }
     catch (NoSuchAlgorithmException e) {
       throw new RuntimeException(e);
-    }*/
+    }
   }
 
   private static EntityServerConfiguration configure() {
@@ -271,9 +276,10 @@ abstract class AbstractHttpEntityConnectionTest {
     Clients.TRUSTSTORE_PASSWORD.set("crappypass");
     Clients.resolveTrustStore();
     Report.REPORT_PATH.set("report/path");
+    HttpEntityConnection.SECURE.set(true);
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    HttpEntityConnection.SECURE.set(false);
+    HttpEntityConnection.SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)

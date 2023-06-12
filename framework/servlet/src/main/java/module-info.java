@@ -5,6 +5,7 @@
 module is.codion.framework.servlet {
   requires org.slf4j;
   requires io.javalin;
+  requires io.javalin.community.ssl;
   requires kotlin.stdlib;
   requires org.eclipse.jetty.servlet;
   requires org.eclipse.jetty.websocket.jetty.server;

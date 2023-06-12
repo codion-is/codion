@@ -16,6 +16,7 @@ public final class HttpEntityConnectionJdkTest extends AbstractHttpEntityConnect
     super(new HttpEntityConnectionJdk(TestDomain.DOMAIN.name(),
           HttpEntityConnection.HOSTNAME.get(),
           HttpEntityConnection.PORT.get(),
+          HttpEntityConnection.SECURE_PORT.get(),
           HttpEntityConnection.SECURE.get(),
           UNIT_TEST_USER, "HttpEntityConnectionJdkTest", UUID.randomUUID()));
   }

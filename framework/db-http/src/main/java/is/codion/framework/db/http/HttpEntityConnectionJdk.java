@@ -85,16 +85,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
    * Instantiates a new {@link HttpEntityConnectionJdk} instance
    * @param domain the entities entities
    * @param serverHostName the http server host name
-   * @param serverPort the http server port
+   * @param port the http server port
+   * @param securePort the https server port
    * @param httpsEnabled if true then https is used
    * @param user the user
    * @param clientTypeId the client type id
    * @param clientId the client id
    */
-  HttpEntityConnectionJdk(String domainName, String serverHostName, int serverPort,
+  HttpEntityConnectionJdk(String domainName, String serverHostName, int port, int securePort,
                           boolean httpsEnabled, User user, String clientTypeId, UUID clientId) {
     this.user = Objects.requireNonNull(user, "user");
-    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + serverPort + "/entities/ser/";
+    this.baseurl = (httpsEnabled ? HTTPS : HTTP) + Objects.requireNonNull(serverHostName, "serverHostName") + ":" + (httpsEnabled ? securePort : port) + "/entities/ser/";
     this.httpClient = createHttpClient();
     this.headers = new String[] {
             DOMAIN_TYPE_NAME, Objects.requireNonNull(domainName, DOMAIN_TYPE_NAME),

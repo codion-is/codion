@@ -34,6 +34,8 @@ import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.javalin.Javalin;
+import io.javalin.community.ssl.SSLConfig;
+import io.javalin.community.ssl.SSLPlugin;
 import io.javalin.config.JavalinConfig;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
@@ -884,12 +886,12 @@ public final class EntityService implements AuxiliaryServer {
 
     @Override
     public void accept(JavalinConfig config) {
-//      if (sslEnabled) {
-//        config.plugins.register(new SSLPlugin(new SSLPLuginConfigurer()));
-//      }
+      if (sslEnabled) {
+        config.plugins.register(new SSLPlugin(new SSLPLuginConfigurer()));
+      }
     }
   }
-/*
+
   private final class SSLPLuginConfigurer implements Consumer<SSLConfig> {
 
     @Override
@@ -899,7 +901,7 @@ public final class EntityService implements AuxiliaryServer {
       ssl.insecurePort = port;
     }
   }
-*/
+
   private EntityObjectMapper entityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
             EntityObjectMapperFactory.instance(domainType).entityObjectMapper(entities));
