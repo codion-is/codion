@@ -121,7 +121,7 @@ final class ControlsBuilder implements Controls.Builder {
     defaultControls.setSmallIcon(smallIcon);
     defaultControls.setLargeIcon(largeIcon);
     defaultControls.setDescription(description);
-    defaultControls.setKeyStroke(keyStroke);;
+    defaultControls.setKeyStroke(keyStroke);
 
     return defaultControls;
   }

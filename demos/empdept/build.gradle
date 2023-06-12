@@ -64,10 +64,6 @@ compileTestJava {
     ]
 }
 
-application {
-    mainClass = "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel"
-}
-
 buildReports {
     sourceDir = file('src/main/reports')
     targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/empdept/domain')
@@ -82,28 +78,8 @@ test {
     ]
 }
 
-startScripts {
-    mainClass.set(application.mainClass)
-}
-
-clientRMIScript {
-    mainClass.set(application.mainClass)
-}
-
-clientHttpScript {
-    mainClass.set(application.mainClass)
-}
-
-loadTestRMIScript {
-    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
-}
-
-loadTestHttpScript {
-    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
-}
-
 runClientLocal {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
 }
 
 tasks.register('runClientLocalFX', JavaExec) {
@@ -118,17 +94,17 @@ tasks.register('runClientLocalFX', JavaExec) {
 }
 
 runClientRMI {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
 }
 
 runClientHttp {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
 }
 
 runLoadTestRMI {
-    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
+    mainClass.set("is.codion.framework.demos.empdept.testing.EmpDeptLoadTest")
 }
 
 runLoadTestHttp {
-    mainClass.set('is.codion.framework.demos.empdept.testing.EmpDeptLoadTest')
+    mainClass.set("is.codion.framework.demos.empdept.testing.EmpDeptLoadTest")
 }

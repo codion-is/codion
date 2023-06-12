@@ -50,10 +50,6 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-application {
-    mainClass = "is.codion.framework.demos.chinook.ui.ChinookAppPanel"
-}
-
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 javafx {
@@ -82,42 +78,22 @@ test {
     ]
 }
 
-startScripts {
-    mainClass.set(application.mainClass)
-}
-
-clientRMIScript {
-    mainClass.set(application.mainClass)
-}
-
-clientHttpScript {
-    mainClass.set(application.mainClass)
-}
-
-loadTestRMIScript {
-    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
-}
-
-loadTestHttpScript {
-    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
-}
-
 runClientLocal {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.chinook.ui.ChinookAppPanel")
 }
 
 runClientRMI {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.chinook.ui.ChinookAppPanel")
 }
 
 runClientHttp {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.chinook.ui.ChinookAppPanel")
 }
 
 runLoadTestRMI {
-    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
+    mainClass.set("is.codion.framework.demos.chinook.testing.ChinookLoadTest")
 }
 
 runLoadTestHttp {
-    mainClass.set('is.codion.framework.demos.chinook.testing.ChinookLoadTest')
+    mainClass.set("is.codion.framework.demos.chinook.testing.ChinookLoadTest")
 }

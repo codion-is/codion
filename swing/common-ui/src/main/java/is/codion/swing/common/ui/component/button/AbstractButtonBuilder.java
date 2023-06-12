@@ -241,21 +241,18 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     @Override
     public void propertyChange(PropertyChangeEvent evt) {
       switch (evt.getPropertyName()) {
-        case Control.BACKGROUND: {
+        case Control.BACKGROUND:
           button.setBackground((Color) evt.getNewValue());
           break;
-        }
-        case Control.FOREGROUND: {
+        case Control.FOREGROUND:
           button.setForeground((Color) evt.getNewValue());
           break;
-        }
-        case Control.FONT: {
+        case Control.FONT:
           button.setFont((Font) evt.getNewValue());
           break;
-        }
-        case Control.MNEMONIC_KEY: {
+        case Action.MNEMONIC_KEY:
           button.setMnemonic((Integer) evt.getNewValue());
-        }
+          break;
         default:
           break;
       }

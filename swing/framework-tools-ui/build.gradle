@@ -1,5 +1,3 @@
-apply plugin: 'application'
-
 dependencies {
     implementation project(':codion-common-core')
     implementation project(':codion-common-db')
@@ -28,29 +26,6 @@ dependencies {
     testRuntimeOnly project(':codion-framework-db-local')
     testRuntimeOnly project(':codion-framework-db-rmi')
     testRuntimeOnly project(':codion-framework-server')
-}
-
-distributions {
-    main {
-        distributionBaseName = "codion.database.explorer"
-    }
-}
-
-applicationName = 'database_explorer'
-
-application {
-    mainClass = 'is.codion.swing.framework.tools.ui.explorer.DatabaseExplorerPanel'
-}
-
-applicationDefaultJvmArgs = [
-        '-Dcodion.configurationFile=../config/database_explorer.config',
-        '-Dlogback.configurationFile=../config/logback.xml'
-]
-
-applicationDistribution.into('config') {
-    from(files('src/main/config/database_explorer.config'))
-    from(files('src/main/config/create_schema.sql'))
-    from(files('src/main/config/logback.xml'))
 }
 
 tasks.register('runDatabaseExplorerH2', JavaExec) {

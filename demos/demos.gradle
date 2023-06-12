@@ -1,4 +1,4 @@
-apply plugin: 'application'
+apply plugin: 'java'
 apply plugin: 'jacoco'
 
 java {
@@ -74,80 +74,6 @@ tasks.register('writeVersion') {
 }
 
 classes.dependsOn writeVersion
-
-startScripts {
-    applicationName = project.name + '-local'
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db',
-            '-Dcodion.db.initScripts=../config/create_schema.sql'
-    ]
-}
-
-tasks.register('clientRMIScript', CreateStartScripts) {
-    applicationName = project.name + '-remote'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
-}
-
-tasks.register('clientHttpScript', CreateStartScripts) {
-    applicationName = project.name + '-http'
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=${serverHostName}"
-    ]
-}
-
-tasks.register('loadTestRMIScript', CreateStartScripts) {
-    applicationName = project.name + '-loadtest-remote'
-    mainClass.set('is.codion.framework.demos.DummyLoadTest')
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=remote',
-            "-Dcodion.server.hostname=${serverHostName}",
-            '-Dcodion.client.trustStore=../config/truststore.jks',
-            '-Dcodion.client.trustStorePassword=crappypass'
-    ]
-}
-
-tasks.register('loadTestHttpScript', CreateStartScripts) {
-    applicationName = project.name + '-loadtest-http'
-    mainClass.set('is.codion.framework.demos.DummyLoadTest')
-    classpath = startScripts.classpath
-    outputDir = startScripts.outputDir
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=http',
-            '-Dcodion.client.http.secure=false',
-            "-Dcodion.client.http.hostname=${serverHostName}"
-    ]
-}
-
-applicationDistribution.into('config') {
-    from(files('src/main/sql/create_schema.sql'))
-    from(files('../../framework/server/src/main/config/truststore.jks'))
-}
-
-applicationDistribution.into('reports') {
-    from(fileTree(dir: 'build/classes/reports', include: '*.jasper'))
-}
-
-applicationDistribution.into('bin') {
-    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-    from(clientRMIScript)
-    from(clientHttpScript)
-    from(loadTestHttpScript)
-    from(loadTestRMIScript)
-}
 
 tasks.register('runClientLocal', JavaExec) {
     group 'application'

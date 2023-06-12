@@ -21,10 +21,6 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-application {
-    mainClass = 'is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel'
-}
-
 test {
     systemProperty "codion.db.initScripts",
             "../chinook/src/main/sql/create_schema.sql," +
@@ -35,26 +31,9 @@ test {
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
 }
 
-startScripts {
-    mainClass.set(application.mainClass)
-    //overwrite the defaults to leave out initScript
-    defaultJvmOpts = [
-            '-Dcodion.client.connectionType=local',
-            '-Dcodion.db.url=jdbc:h2:mem:h2db'
-    ]
-}
-
-clientRMIScript {
-    mainClass.set(application.mainClass)
-}
-
-clientHttpScript {
-    mainClass.set(application.mainClass)
-}
-
 runClientLocal {
-    mainClass.set(application.mainClass)
-    //overwrite the defaults to leave out initScript
+    mainClass.set("is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
+    //overwrite the default initScripts value
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -67,9 +46,9 @@ runClientLocal {
 }
 
 runClientRMI {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
 }
 
 runClientHttp {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
 }
