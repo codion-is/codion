@@ -21,7 +21,9 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
 
 import org.apache.http.HttpEntity;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 
 import java.io.IOException;
 import java.util.Collection;
@@ -55,14 +57,17 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    * @param port the http server port
+   * @param securePort the https server port
    * @param httpsEnabled if true then https is used
    * @param socketTimeout the socket timeout
    * @param connectTimeout the connect timeout
+   * @param connectionManager the connection manager
    */
   DefaultHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
-                              int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
+                              int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
+                              HttpClientConnectionManager connectionManager) {
     super(domainTypeName, hostName, user, clientTypeId, clientId, "application/octet-stream", "/entities/ser",
-            port, httpsEnabled, socketTimeout, connectTimeout);
+            port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
   }
 
   @Override
@@ -465,6 +470,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     private String domainTypeName;
     private String hostName = HttpEntityConnection.HOSTNAME.get();
     private int port = HttpEntityConnection.PORT.get();
+    private int securePort = HttpEntityConnection.SECURE_PORT.get();
     private boolean https = HttpEntityConnection.SECURE.get();
     private boolean json = HttpEntityConnection.JSON.get();
     private int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
@@ -488,6 +494,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public Builder port(int port) {
       this.port = port;
+      return this;
+    }
+
+    @Override
+    public Builder securePort(int securePort) {
+      this.securePort = securePort;
       return this;
     }
 
@@ -536,10 +548,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https, socketTimeout, connectTimeout);
+        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, securePort,
+                https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, https, socketTimeout, connectTimeout);
+      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, securePort,
+              https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
     }
   }
 }

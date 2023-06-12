@@ -34,6 +34,7 @@ import is.codion.framework.json.domain.EntityObjectMapperFactory;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.javalin.Javalin;
+import io.javalin.core.JavalinConfig;
 import io.javalin.http.ContentType;
 import io.javalin.http.Context;
 import io.javalin.http.Handler;
@@ -43,8 +44,12 @@ import org.slf4j.LoggerFactory;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.ObjectInputStream;
+import java.nio.file.Files;
 import java.rmi.RemoteException;
 import java.util.Base64;
 import java.util.Collection;
@@ -52,6 +57,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
@@ -60,7 +66,49 @@ public final class EntityService implements AuxiliaryServer {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityService.class);
 
+  /**
+   * The port on which the http server is made available to clients.<br>
+   * Value type: Integer<br>
+   * Default value: 8080
+   */
   public static final PropertyValue<Integer> HTTP_SERVER_PORT = Configuration.integerValue("codion.server.http.port", 8080);
+
+  /**
+   * The port on which the http server is made available to clients.<br>
+   * Value type: Integer<br>
+   * Default value: 8080
+   */
+  public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = Configuration.integerValue("codion.server.http.securePort", 4443);
+
+  /**
+   * Specifies whether https should be used.<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final PropertyValue<Boolean> HTTP_SERVER_SECURE = Configuration.booleanValue("codion.server.http.secure", true);
+
+  /**
+   * The https keystore to use on the classpath, this will be resolved to a temporary file and set
+   * as the codion.server.http.keyStore system property on server start<br>
+   * Value type: String
+   * Default value: null
+   */
+  public static final PropertyValue<String> HTTP_SERVER_CLASSPATH_KEYSTORE = Configuration.stringValue("codion.server.http.classpathKeyStore");
+
+  /**
+   * Specifies the keystore to use for securing http connections.<br>
+   * Value type: String<br>
+   * Default value: null
+   * @see #HTTP_SERVER_CLASSPATH_KEYSTORE
+   */
+  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PATH = Configuration.stringValue("codion.server.http.keyStore");
+
+  /**
+   * Specifies the password for the keystore used for securing http connections.<br>
+   * Value type: String<br>
+   * Default value: null
+   */
+  public static final PropertyValue<String> HTTP_SERVER_KEYSTORE_PASSWORD = Configuration.stringValue("codion.server.http.keyStorePassword");
 
   static final String DOMAIN_TYPE_NAME = "domainTypeName";
   static final String CLIENT_TYPE_ID = "clientTypeId";
@@ -76,39 +124,51 @@ public final class EntityService implements AuxiliaryServer {
 
   private final Server<RemoteEntityConnection, ? extends ServerAdmin> server;
   private final int port;
+  private final int securePort;
+  private final boolean sslEnabled;
 
   private final Map<DomainType, EntityObjectMapper> entityObjectMappers = new ConcurrentHashMap<>();
   private final Map<DomainType, ConditionObjectMapper> conditionObjectMappers = new ConcurrentHashMap<>();
 
   private Javalin javalin;
 
+  static {
+    resolveClasspathKeyStore();
+  }
+
   /**
    * Instantiates a new EntityServletServer, the port specified by {@link #HTTP_SERVER_PORT}.
    * @param server the parent server
    */
   EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server) {
-    this(server, HTTP_SERVER_PORT.getOrThrow());
+    this(server, HTTP_SERVER_PORT.getOrThrow(), HTTP_SERVER_SECURE_PORT.getOrThrow(), HTTP_SERVER_SECURE.getOrThrow());
   }
 
   /**
    * Instantiates a new EntityServletServer.
    * @param server the parent server
    * @param port the server port
+   * @param securePort the server secure port (https)
+   * @param sslEnabled true if ssl should be enabled
    */
-  EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server, int port) {
+  EntityService(Server<RemoteEntityConnection, ? extends ServerAdmin> server, int port, int securePort, boolean sslEnabled) {
     this.server = requireNonNull(server);
     this.port = port;
+    this.securePort = securePort;
+    this.sslEnabled = sslEnabled;
   }
 
   @Override
   public void startServer() throws Exception {
-    javalin = Javalin.create().start(port);
+    javalin = Javalin.create(new JavalinConfigurer()).start();
     setupHandlers();
   }
 
   @Override
   public void stopServer() throws Exception {
-    javalin.close();
+    if (javalin != null) {
+      javalin.close();
+    }
   }
 
   private void setupHandlers() {
@@ -820,6 +880,26 @@ public final class EntityService implements AuxiliaryServer {
             .build());
   }
 
+  private final class JavalinConfigurer implements Consumer<JavalinConfig> {
+
+    @Override
+    public void accept(JavalinConfig config) {
+//      if (sslEnabled) {
+//        config.plugins.register(new SSLPlugin(new SSLPLuginConfigurer()));
+//      }
+    }
+  }
+/*
+  private final class SSLPLuginConfigurer implements Consumer<SSLConfig> {
+
+    @Override
+    public void accept(SSLConfig ssl) {
+      ssl.keystoreFromPath(HTTP_SERVER_KEYSTORE_PATH.getOrThrow(), HTTP_SERVER_KEYSTORE_PASSWORD.getOrThrow());
+      ssl.securePort = securePort;
+      ssl.insecurePort = port;
+    }
+  }
+*/
   private EntityObjectMapper entityObjectMapper(Entities entities) {
     return entityObjectMappers.computeIfAbsent(entities.domainType(), domainType ->
             EntityObjectMapperFactory.instance(domainType).entityObjectMapper(entities));
@@ -919,5 +999,45 @@ public final class EntityService implements AuxiliaryServer {
 
   private static <T> T deserialize(HttpServletRequest request) throws IOException, ClassNotFoundException {
     return (T) new ObjectInputStream(request.getInputStream()).readObject();
+  }
+
+  private static synchronized void resolveClasspathKeyStore() {
+    String keystore = HTTP_SERVER_CLASSPATH_KEYSTORE.get();
+    if (nullOrEmpty(keystore)) {
+      LOG.debug("No classpath key store specified via {}", HTTP_SERVER_CLASSPATH_KEYSTORE.propertyName());
+      return;
+    }
+    if (HTTP_SERVER_KEYSTORE_PATH.isNotNull()) {
+      throw new IllegalStateException("Classpath keystore (" + keystore + ") can not be specified when "
+              + HTTP_SERVER_KEYSTORE_PATH.propertyName() + " is already set to " + HTTP_SERVER_KEYSTORE_PATH.get());
+    }
+    try (InputStream inputStream = EntityService.class.getClassLoader().getResourceAsStream(keystore)) {
+      if (inputStream == null) {
+        LOG.debug("Specified key store not found on classpath: {}", keystore);
+        return;
+      }
+      File file = File.createTempFile("serverKeyStore", "tmp");
+      Files.write(file.toPath(), readBytes(inputStream));
+      file.deleteOnExit();
+
+      HTTP_SERVER_KEYSTORE_PATH.set(file.getPath());
+      LOG.debug("Classpath key store {} written to file {} and set as {}",
+              HTTP_SERVER_CLASSPATH_KEYSTORE.propertyName(), file, HTTP_SERVER_KEYSTORE_PATH.propertyName());
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static byte[] readBytes(InputStream stream) throws IOException {
+    ByteArrayOutputStream os = new ByteArrayOutputStream();
+    byte[] buffer = new byte[8192];
+    int line;
+    while ((line = stream.read(buffer)) != -1) {
+      os.write(buffer, 0, line);
+    }
+    os.flush();
+
+    return os.toByteArray();
   }
 }
