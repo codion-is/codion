@@ -661,6 +661,8 @@ public class EntityComponents {
 
   private static final class EntityReadOnlyFormat extends Format {
 
+    private static final long serialVersionUID = 1;
+
     @Override
     public StringBuffer format(Object obj, StringBuffer toAppendTo, FieldPosition pos) {
       toAppendTo.append(obj == null ? "" : obj.toString());
