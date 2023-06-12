@@ -343,6 +343,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return exception;
   }
 
+  protected final Collection<AuxiliaryServer> auxiliaryServers() {
+    return unmodifiableCollection(auxiliaryServers);
+  }
+
   /**
    * Validates the given user credentials
    * @param userToCheck the credentials to check

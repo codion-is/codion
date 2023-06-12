@@ -11,6 +11,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
+import is.codion.common.rmi.server.AuxiliaryServer;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.rmi.server.Server;
@@ -351,9 +352,16 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     registry().rebind(serverInformation().serverName(), this);
     String connectInfo = serverInformation().serverName()
             + " bound to registry on port: " + registryPort
-            + ", host: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get();
+            + ", host: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
+            + auxiliaryServerInfo();
     LOG.info(connectInfo);
     System.out.println(connectInfo);
+  }
+
+  private String auxiliaryServerInfo() {
+    return auxiliaryServers().stream()
+            .map(AuxiliaryServer::serverInformation)
+            .collect(Collectors.joining("\n", "\n", ""));
   }
 
   private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {

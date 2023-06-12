@@ -171,6 +171,11 @@ public final class EntityService implements AuxiliaryServer {
     }
   }
 
+  @Override
+  public String serverInformation() {
+    return "Entity Service bound to port: " + port + ", secure port: " + securePort + ", ssl enabled: " + sslEnabled;
+  }
+
   private void setupHandlers() {
     EntitiesHandler entitiesHandler = new EntitiesHandler();
     javalin.post(URL_JAVA_SERIALIZATION + "entities", entitiesHandler);
