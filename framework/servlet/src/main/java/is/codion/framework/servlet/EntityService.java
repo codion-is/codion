@@ -78,7 +78,7 @@ public final class EntityService implements AuxiliaryServer {
   /**
    * The port on which the http server is made available to clients.<br>
    * Value type: Integer<br>
-   * Default value: 8080
+   * Default value: 4443
    */
   public static final PropertyValue<Integer> HTTP_SERVER_SECURE_PORT = Configuration.integerValue("codion.server.http.securePort", 4443);
 
@@ -162,7 +162,7 @@ public final class EntityService implements AuxiliaryServer {
 
   @Override
   public void startServer() throws Exception {
-    javalin = Javalin.create(new JavalinConfigurer()).start();
+    javalin = Javalin.create(new JavalinConfigurer()).start(sslEnabled ? securePort : port);
     setupHandlers();
   }
 
@@ -171,6 +171,11 @@ public final class EntityService implements AuxiliaryServer {
     if (javalin != null) {
       javalin.close();
     }
+  }
+
+  @Override
+  public String serverInformation() {
+    return "Entity Service bound to port: " + port + ", secure port: " + securePort + ", ssl enabled: " + sslEnabled;
   }
 
   private void setupHandlers() {

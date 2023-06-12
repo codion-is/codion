@@ -9,14 +9,19 @@ package is.codion.common.rmi.server;
 public interface AuxiliaryServer {
 
   /**
-   * Starts the server, returns when the server has completed the startup
+   * Starts this server
    * @throws Exception in case of an exception
    */
   void startServer() throws Exception;
 
   /**
-   * Stops the server, returns when the server has completed shutdown.
+   * Stops this server
    * @throws Exception in case of an exception
    */
   void stopServer() throws Exception;
+
+  /**
+   * @return a String describing the server and its configuration, for logging purposes
+   */
+  String serverInformation();
 }
