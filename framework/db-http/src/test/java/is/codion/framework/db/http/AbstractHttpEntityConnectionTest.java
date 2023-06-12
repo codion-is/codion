@@ -274,7 +274,6 @@ abstract class AbstractHttpEntityConnectionTest {
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpEntityConnection.SECURE.set(false);
-    System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)
             .adminPort(3223)
@@ -295,6 +294,5 @@ abstract class AbstractHttpEntityConnectionTest {
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set(null);
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpEntityConnection.SECURE.set(false);
-    System.clearProperty("java.security.policy");
   }
 }
