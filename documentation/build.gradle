@@ -99,7 +99,7 @@ tasks.register('combinedJavadoc') {
     doLast {
         //combine the framework source, with each module in a separate directory, named after the module
         frameworkModules.each { module ->
-            ant.copy(todir: "${combinedSrcDir}/${module.moduleName}") {
+            ant.copy(todir: "${combinedSrcDir}/" + "is." + module.name.replace('-', '.')) {
                 fileset(dir: "${module.projectDir}/src/main/java")
             }
         }
