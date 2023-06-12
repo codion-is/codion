@@ -38,10 +38,6 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-application {
-    mainClass = 'is.codion.framework.demos.world.ui.WorldAppPanel'
-}
-
 buildReports {
     sourceDir = file('src/main/reports')
     targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/model')
@@ -52,26 +48,14 @@ test {
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.world.domain.WorldImpl"
 }
 
-startScripts {
-    mainClass.set(application.mainClass)
-}
-
-clientRMIScript {
-    mainClass.set(application.mainClass)
-}
-
-clientHttpScript {
-    mainClass.set(application.mainClass)
-}
-
 runClientLocal {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.world.ui.WorldAppPanel")
 }
 
 runClientRMI {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.world.ui.WorldAppPanel")
 }
 
 runClientHttp {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.world.ui.WorldAppPanel")
 }

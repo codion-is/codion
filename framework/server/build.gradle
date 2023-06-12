@@ -1,5 +1,3 @@
-apply plugin: 'application'
-
 configurations {
     serverRuntime {
         extendsFrom runtimeClasspath
@@ -39,63 +37,11 @@ dependencies {
     serverRuntime(libs.h2)
 }
 
-mainClassName = 'is.codion.framework.server.EntityServer'
-
-distTar {
-    dependsOn(':codion-demos-empdept:domainJar')
-    dependsOn(':codion-demos-chinook:domainJar')
-    dependsOn(':codion-demos-petstore:domainJar')
-    dependsOn(':codion-demos-schemabrowser:domainJar')
-    dependsOn(':codion-demos-world:domainJar')
-}
-
-distZip {
-    dependsOn(':codion-demos-empdept:domainJar')
-    dependsOn(':codion-demos-chinook:domainJar')
-    dependsOn(':codion-demos-petstore:domainJar')
-    dependsOn(':codion-demos-schemabrowser:domainJar')
-    dependsOn(':codion-demos-world:domainJar')
-}
-
-startScripts {
-    classpath = configurations.serverRuntime
-}
-distributions {
-    main {
-        contents {
-            from(configurations.serverRuntime) {
-                duplicatesStrategy = DuplicatesStrategy.EXCLUDE
-                into("lib")
-            }
-            from(fileTree(dir: 'src/main/config', include: '**/*')) {
-                into("config")
-            }
-            from(files('../../demos/empdept/src/main/sql/create_schema.sql')) {
-                into("config/empdept")
-            }
-            from(files('../../demos/chinook/src/main/sql/create_schema.sql')) {
-                into("config/chinook")
-            }
-            from(files('../../demos/petstore/src/main/sql/create_schema.sql')) {
-                into("config/petstore")
-            }
-            from(files('../../demos/world/src/main/sql/create_schema.sql')) {
-                into("config/world")
-            }
-        }
-    }
-}
-applicationDefaultJvmArgs = [
-        '-Xmx256m',
-        '-Dcodion.configurationFile=../config/h2_embedded.config',
-        '-Dlogback.configurationFile=../config/logback.xml'
-]
-
 tasks.register('runServer', JavaExec) {
     dependsOn createServerKeystore
     group 'application'
     classpath = configurations.serverRuntime
-    mainClass.set(mainClassName)
+    mainClass.set('is.codion.framework.server.EntityServer')
     maxHeapSize = '256m'
     systemProperties = [
             'codion.db.url'                                 : 'jdbc:h2:mem:h2db',

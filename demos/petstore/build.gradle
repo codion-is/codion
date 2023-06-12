@@ -19,35 +19,19 @@ dependencies {
     runtimeOnly(libs.h2)
 }
 
-application {
-    mainClass = "is.codion.framework.demos.petstore.ui.PetstoreAppPanel"
-}
-
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.Petstore"
 }
 
-startScripts {
-    mainClass.set(application.mainClass)
-}
-
-clientRMIScript {
-    mainClass.set(application.mainClass)
-}
-
-clientHttpScript {
-    mainClass.set(application.mainClass)
-}
-
 runClientLocal {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
 }
 
 runClientRMI {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
 }
 
 runClientHttp {
-    mainClass.set(application.mainClass)
+    mainClass.set("is.codion.framework.demos.petstore.ui.PetstoreAppPanel")
 }
