@@ -36,6 +36,13 @@ public interface HttpEntityConnection extends EntityConnection {
   PropertyValue<Integer> PORT = Configuration.integerValue("codion.client.http.port", 8080);
 
   /**
+   * The port which the https client should use.<br>
+   * Value type: Integer<br>
+   * Default value: 4443
+   */
+  PropertyValue<Integer> SECURE_PORT = Configuration.integerValue("codion.client.http.securePort", 4443);
+
+  /**
    * Specifies whether https should be used.<br>
    * Value type: boolean<br>
    * Default value: true
@@ -92,6 +99,12 @@ public interface HttpEntityConnection extends EntityConnection {
      * @return this builder instance
      */
     Builder port(int port);
+
+    /**
+     * @param securePort the https server port
+     * @return this builder instance
+     */
+    Builder securePort(int securePort);
 
     /**
      * @param https true if https should be used

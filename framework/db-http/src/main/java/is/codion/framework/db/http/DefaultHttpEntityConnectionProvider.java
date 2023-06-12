@@ -22,6 +22,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
 
   private final String hostName;
   private final int port;
+  private final int securePort;
   private final boolean https;
   private final boolean json;
   private final int socketTimeout;
@@ -31,6 +32,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
     super(builder);
     this.hostName = requireNonNull(builder.hostName, "hostName");
     this.port = builder.port;
+    this.securePort = builder.securePort;
     this.https = builder.https;
     this.json = builder.json;
     this.socketTimeout = builder.socketTimeout;
@@ -55,6 +57,7 @@ final class DefaultHttpEntityConnectionProvider extends AbstractEntityConnection
               .domainTypeName(domainTypeName(domainClassName()))
               .hostName(hostName)
               .port(port)
+              .securePort(securePort)
               .user(user())
               .clientTypeId(clientTypeId())
               .clientId(clientId())

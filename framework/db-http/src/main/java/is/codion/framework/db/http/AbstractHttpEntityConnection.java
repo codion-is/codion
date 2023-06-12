@@ -29,7 +29,6 @@ import org.apache.http.impl.client.BasicAuthCache;
 import org.apache.http.impl.client.BasicCredentialsProvider;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,7 +52,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   private static final String HTTPS = "https";
 
   private final RequestConfig requestConfig;
-  private final HttpClientConnectionManager connectionManager = new BasicHttpClientConnectionManager();
+  private final HttpClientConnectionManager connectionManager;
 
   private final String domainTypeName;
   private final User user;
@@ -77,24 +76,28 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * @param contentType the content type string
    * @param path the path
    * @param port the http server port
+   * @param securePort the https server port
    * @param httpsEnabled if true then https is used
    * @param socketTimeout the socket timeout
    * @param connectTimeout the connect timeout
+   * @param connectionManager the connection manager
    */
   AbstractHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId, String contentType,
-                               String path, int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
+                               String path, int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
+                               HttpClientConnectionManager connectionManager) {
     this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
-    this.baseurl = requireNonNull(hostName, "hostName") + ":" + port + path;
+    this.baseurl = requireNonNull(hostName, "hostName") + ":" + (httpsEnabled ? securePort : port) + path;
+    this.connectionManager = requireNonNull(connectionManager);
     this.user = requireNonNull(user, "user");
     this.requestConfig = RequestConfig.custom()
           .setSocketTimeout(socketTimeout)
           .setConnectTimeout(connectTimeout)
           .build();
     this.httpClient = createHttpClient(requireNonNull(clientTypeId), requireNonNull(clientId).toString(), requireNonNull(contentType));
-    this.targetHost = new HttpHost(hostName, port, httpsEnabled ? HTTPS : HTTP);
+    this.targetHost = new HttpHost(hostName, (httpsEnabled ? securePort : port), httpsEnabled ? HTTPS : HTTP);
     this.httpContext = createHttpContext(user, targetHost);
-    this.entities = initializeEntities();
     this.httpsEnabled = httpsEnabled;
+    this.entities = initializeEntities();
   }
 
   @Override

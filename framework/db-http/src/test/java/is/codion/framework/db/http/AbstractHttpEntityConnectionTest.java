@@ -8,6 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.ReferentialIntegrityException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
+import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
@@ -21,6 +22,7 @@ import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
 import is.codion.framework.servlet.EntityServiceFactory;
 
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -38,8 +40,6 @@ import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 
 abstract class AbstractHttpEntityConnectionTest {
-
-  private static final Integer WEB_SERVER_PORT_NUMBER = 8089;
 
   private static EntityServer server;
 
@@ -251,11 +251,29 @@ abstract class AbstractHttpEntityConnectionTest {
     assertThrows(IllegalStateException.class, connection::rollbackTransaction);
   }
 
+  static BasicHttpClientConnectionManager createConnectionManager() {
+    return new BasicHttpClientConnectionManager();/*
+    try {
+      SSLContext sslContext = SSLContext.getDefault();
+
+      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
+                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+              .build());
+    }
+    catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }*/
+  }
+
   private static EntityServerConfiguration configure() {
+    Clients.SERVER_HOSTNAME.set("localhost");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     Report.REPORT_PATH.set("report/path");
-    EntityService.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
+    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
     HttpEntityConnection.SECURE.set(false);
-    HttpEntityConnection.PORT.set(WEB_SERVER_PORT_NUMBER);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)
@@ -268,9 +286,14 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   private static void deconfigure() {
+    Clients.SERVER_HOSTNAME.set(null);
+    Clients.TRUSTSTORE.set(null);
+    Clients.TRUSTSTORE_PASSWORD.set(null);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     Report.REPORT_PATH.set(null);
-    EntityService.HTTP_SERVER_PORT.set(null);
-    HttpEntityConnection.PORT.set(null);
+    EntityService.HTTP_SERVER_KEYSTORE_PATH.set(null);
+    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
     HttpEntityConnection.SECURE.set(false);
     System.clearProperty("java.security.policy");
   }

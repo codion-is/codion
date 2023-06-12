@@ -67,8 +67,6 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class EntityServiceTest {
 
-  private static final int WEB_SERVER_PORT_NUMBER = 8089;
-
   private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final EntityObjectMapper ENTITY_OBJECT_MAPPER = EntityObjectMapper.entityObjectMapper(ENTITIES);
@@ -87,15 +85,17 @@ public class EntityServiceTest {
   public static void setUp() throws Exception {
     EntityServerConfiguration configuration = configure();
     HOSTNAME = Clients.SERVER_HOSTNAME.get();
-    TARGET_HOST = new HttpHost(HOSTNAME, WEB_SERVER_PORT_NUMBER, "http");
-    SERVER_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/ser";
-    SERVER_JSON_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/json";
+    TARGET_HOST = new HttpHost(HOSTNAME, EntityService.HTTP_SERVER_PORT.get(), "http");
+    SERVER_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/ser";
+    SERVER_JSON_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/json";
     server = EntityServer.startServer(configuration);
   }
 
   @AfterAll
   public static void tearDown() throws Exception {
-    server.shutdown();
+    if (server != null) {
+      server.shutdown();
+    }
     deconfigure();
   }
 
@@ -572,11 +572,27 @@ public class EntityServiceTest {
 
   private static BasicHttpClientConnectionManager createConnectionManager() {
     return new BasicHttpClientConnectionManager();
+//    try {
+//      SSLContext sslContext = SSLContext.getDefault();
+//
+//      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
+//                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+//              .build());
+//    }
+//    catch (NoSuchAlgorithmException e) {
+//      throw new RuntimeException(e);
+//    }
   }
 
   private static EntityServerConfiguration configure() {
+    Clients.SERVER_HOSTNAME.set("localhost");
+    Clients.TRUSTSTORE.set("../../framework/server/src/main/config/truststore.jks");
+    Clients.TRUSTSTORE_PASSWORD.set("crappypass");
+    Clients.resolveTrustStore();
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
-    EntityService.HTTP_SERVER_PORT.set(WEB_SERVER_PORT_NUMBER);
+    EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
+    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
+    EntityService.HTTP_SERVER_SECURE.set(false);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)
@@ -590,9 +606,16 @@ public class EntityServiceTest {
   }
 
   private static void deconfigure() {
+    Clients.SERVER_HOSTNAME.set(null);
+    Clients.TRUSTSTORE.set(null);
+    Clients.TRUSTSTORE_PASSWORD.set(null);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE);
+    System.clearProperty(Clients.JAVAX_NET_TRUSTSTORE_PASSWORD);
     ServerConfiguration.RMI_SERVER_HOSTNAME.set(null);
     ServerConfiguration.AUXILIARY_SERVER_FACTORY_CLASS_NAMES.set(null);
-    EntityService.HTTP_SERVER_PORT.set(null);
+    EntityService.HTTP_SERVER_KEYSTORE_PATH.set(null);
+    EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set(null);
+    EntityService.HTTP_SERVER_SECURE.set(false);
     System.clearProperty("java.security.policy");
   }
 

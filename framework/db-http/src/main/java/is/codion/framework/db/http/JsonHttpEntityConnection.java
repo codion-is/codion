@@ -30,6 +30,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpStatus;
 import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.conn.HttpClientConnectionManager;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 
@@ -71,14 +72,17 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param clientTypeId the client type id
    * @param clientId the client id
    * @param port the http server port
+   * @param securePort the https server port
    * @param httpsEnabled if true then https is used
    * @param socketTimeout the socket timeout
    * @param connectTimeout the connect timeout
+   * @param connectionManager the connection manager
    */
   JsonHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
-                           int port, boolean httpsEnabled, int socketTimeout, int connectTimeout) {
+                           int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
+                           HttpClientConnectionManager connectionManager) {
     super(domainTypeName, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
-            port, httpsEnabled, socketTimeout, connectTimeout);
+            port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
     this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);
   }

@@ -18,6 +18,7 @@ public final class DefaultHttpEntityConnectionProviderBuilder
 
   String hostName = HttpEntityConnection.HOSTNAME.get();
   int port = HttpEntityConnection.PORT.get();
+  int securePort = HttpEntityConnection.SECURE_PORT.get();
   boolean https = HttpEntityConnection.SECURE.get();
   boolean json = HttpEntityConnection.JSON.get();
   int socketTimeout = HttpEntityConnection.SOCKET_TIMEOUT.get();
