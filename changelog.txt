@@ -9200,3 +9200,4 @@
   ButtonBuilder.control(Control.Builder), ToggleButtonBuilder.toggleControl() and ToggleMenuItem.toggleControl() added, related refactoring
   MenuBuilder, ToolBarBuilder and ButtonPanelBuilder, overloaded for Controls.Builder
   EntityService, HttpEntityConnection, https functionality reintroduced, but disabled in jdk8, due to missing javalin ssl plugin
+  EntityService, redundant module dependencies removed
