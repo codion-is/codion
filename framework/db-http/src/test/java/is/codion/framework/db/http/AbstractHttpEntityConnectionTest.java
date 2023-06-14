@@ -273,6 +273,7 @@ abstract class AbstractHttpEntityConnectionTest {
     Report.REPORT_PATH.set("report/path");
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
+    EntityService.HTTP_SERVER_SECURE.set(false);
     HttpEntityConnection.SECURE.set(false);
 
     return EntityServerConfiguration.builder(3223, 3221)

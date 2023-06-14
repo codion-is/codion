@@ -87,8 +87,8 @@ public final class CityEditPanel extends EntityEditPanel {
   }
 
   @Override
-  protected Controls createControlPanelControls() {
-    return super.createControlPanelControls()
+  protected Controls createControls() {
+    return super.createControls()
             .addAt(4, Control.builder(this::setLocation)
                     .enabledState(State.and(activeObserver(),
                             editModel().nullObserver(City.LOCATION),
