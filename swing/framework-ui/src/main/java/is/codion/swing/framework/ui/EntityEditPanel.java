@@ -481,7 +481,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Performs update on the active entity without asking for confirmation.
-   * @return true if the update operation was successful or if no update was required
+   * @return true if the update operation was successful
    * @see #beforeUpdate()
    */
   public final boolean update() {
