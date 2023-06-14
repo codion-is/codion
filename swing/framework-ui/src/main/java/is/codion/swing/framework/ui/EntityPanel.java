@@ -1066,12 +1066,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * containing the edit controls, such as insert, update and delete.
    * Only called if {@link #isIncludeControlPanel()} returns true.
    * @return the panel containing the edit panel controls
-   * @see EntityEditPanel#createControlPanelControls()
+   * @see EntityEditPanel#createControls()
    * @see EntityPanel#TOOLBAR_CONTROLS
    */
   protected JComponent createEditControlPanel() {
-    Controls controls = editPanel.createControlPanelControls();
-    if (controls.isEmpty()) {
+    Controls controls = editPanel.createControls();
+    if (controls == null || controls.isEmpty()) {
       return null;
     }
     if (TOOLBAR_CONTROLS.get()) {

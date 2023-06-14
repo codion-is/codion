@@ -261,7 +261,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public Map<Attribute<?>, Object> setAs(Entity entity) {
+  public Map<Attribute<?>, Object> set(Entity entity) {
     if (entity == this) {
       return emptyMap();
     }
@@ -292,7 +292,7 @@ class DefaultEntity implements Entity, Serializable {
   @Override
   public final Entity copy() {
     Entity entity = new DefaultEntity(definition, null, null);
-    entity.setAs(this);
+    entity.set(this);
 
     return entity;
   }

@@ -1028,7 +1028,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         Map.Entry<Key, Entity> entry = iterator.next();
         if (entity.primaryKey().equals(entry.getKey())) {
           iterator.remove();
-          entity.setAs(entry.getValue());
+          entity.set(entry.getValue());
           int index = indexOf(entity);
           if (index >= 0) {
             fireTableRowsUpdated(index, index);

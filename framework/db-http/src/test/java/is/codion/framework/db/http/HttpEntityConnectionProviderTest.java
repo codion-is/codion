@@ -15,16 +15,18 @@ public class HttpEntityConnectionProviderTest {
 
   @Test
   void entityConnectionProviderBuilder() {
-    String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
-    HttpEntityConnection.PORT.set(8089);
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
-            .clientTypeId("test")
-            .user(User.parse("scott:tiger"))
-            .build();
-    assertTrue(connectionProvider instanceof HttpEntityConnectionProvider);
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.connectionType());
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
+    try {
+      EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+              .domainClassName(TestDomain.class.getName())
+              .clientTypeId("test")
+              .user(User.parse("scott:tiger"))
+              .build();
+      assertTrue(connectionProvider instanceof HttpEntityConnectionProvider);
+      assertEquals(EntityConnectionProvider.CONNECTION_TYPE_HTTP, connectionProvider.connectionType());
+    }
+    finally {
+      EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
+    }
   }
 }

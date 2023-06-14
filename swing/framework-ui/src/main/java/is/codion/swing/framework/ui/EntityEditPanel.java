@@ -30,7 +30,7 @@ import javax.swing.JComponent;
 import javax.swing.JOptionPane;
 import java.util.Arrays;
 import java.util.EnumMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
@@ -182,7 +182,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.add(activeState);
     }
-    this.controlCodes = controlCodes == null ? emptySet() : new HashSet<>(Arrays.asList(controlCodes));
+    this.controlCodes = controlCodes == null ? emptySet() : new LinkedHashSet<>(Arrays.asList(controlCodes));
     if (editModel.isEntityNew()) {
       editModel.setDefaultValues();
     }
@@ -481,7 +481,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * Performs update on the active entity without asking for confirmation.
-   * @return true if the update operation was successful or if no update was required
+   * @return true if the update operation was successful
    * @see #beforeUpdate()
    */
   public final boolean update() {
@@ -508,6 +508,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     }
 
     return false;
+  }
+
+  /**
+   * @return true if this panel has been initialized
+   * @see #initializePanel()
+   */
+  public final boolean isPanelInitialized() {
+    return panelInitialized;
   }
 
   /**
@@ -538,35 +546,27 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected final void setControl(ControlCode controlCode, Control control) {
     requireNonNull(controlCode);
-    if (panelInitialized) {
+    if (isPanelInitialized()) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
     controls.put(controlCode, control == null ? NULL_CONTROL : control);
   }
 
   /**
-   * Creates a Controls instance on which to base the control panel
-   * @return the Controls on which to base the control panel
+   * Creates a Controls instance containing all the controls available in this edit panel
+   * @return the Controls available in this edit panel
+   * @throws IllegalStateException in case the panel has not been initialized
+   * @see #isPanelInitialized()
    */
-  protected Controls createControlPanelControls() {
-    Controls controlPanelControls = Controls.controls();
-    if (controls.containsKey(ControlCode.INSERT)) {
-      controlPanelControls.add(controls.get(ControlCode.INSERT));
-    }
-    if (controls.containsKey(ControlCode.UPDATE)) {
-      controlPanelControls.add(controls.get(ControlCode.UPDATE));
-    }
-    if (controls.containsKey(ControlCode.DELETE)) {
-      controlPanelControls.add(controls.get(ControlCode.DELETE));
-    }
-    if (controls.containsKey(ControlCode.CLEAR)) {
-      controlPanelControls.add(controls.get(ControlCode.CLEAR));
-    }
-    if (controls.containsKey(ControlCode.REFRESH)) {
-      controlPanelControls.add(controls.get(ControlCode.REFRESH));
+  protected Controls createControls() {
+    if (!isPanelInitialized()) {
+      throw new IllegalStateException("Method must be called after the panel is initialized");
     }
 
-    return controlPanelControls;
+    return Controls.controls(controlCodes.stream()
+            .filter(this::containsControl)
+            .map(controls::get)
+            .toArray(Control[]::new));
   }
 
   /**

@@ -65,7 +65,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   }
 
   @Override
-  public Map<Attribute<?>, Object> setAs(Entity entity) {
+  public Map<Attribute<?>, Object> set(Entity entity) {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
   }
 

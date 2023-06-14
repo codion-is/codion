@@ -31,8 +31,9 @@ public final class EntityEditPanelTest {
     SwingEntityEditModel editModel = new SwingEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
     TestEditPanel editPanel = new TestEditPanel(editModel);
     assertEquals(7, editPanel.componentAttributes().size());
-    editPanel.createControlPanelControls();
+    assertThrows(IllegalStateException.class, editPanel::createControls);
     editPanel.initializePanel();
+    editPanel.createControls();
 
     assertEquals(editModel, editPanel.editModel());
     assertFalse(editPanel.isActive());

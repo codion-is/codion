@@ -77,16 +77,19 @@ public class RemoteEntityConnectionProviderTest {
 
   @Test
   void entityConnectionProviderBuilder() {
-    String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
-    EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainClassName(Domain.class.getName())
-            .clientTypeId("test")
-            .user(UNIT_TEST_USER)
-            .build();
-    assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
-    assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
-    EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(previousValue);
+    try {
+      EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
+              .domainClassName(Domain.class.getName())
+              .clientTypeId("test")
+              .user(UNIT_TEST_USER)
+              .build();
+      assertTrue(connectionProvider instanceof RemoteEntityConnectionProvider);
+      assertEquals(EntityConnectionProvider.CONNECTION_TYPE_REMOTE, connectionProvider.connectionType());
+    }
+    finally {
+      EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(null);
+    }
   }
 
   private static EntityServerConfiguration configure() {

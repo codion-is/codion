@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.BorderFactory;
@@ -176,10 +175,6 @@ final class ExceptionPanel extends JPanel {
             .name(MESSAGES.getString("close"))
             .description(MESSAGES.getString("close_dialog"))
             .build();
-    ToggleControl detailsControl = ToggleControl.builder(showDetailsState)
-            .name(MESSAGES.getString("details"))
-            .description(MESSAGES.getString("show_details"))
-            .build();
     KeyEvents.builder(VK_ESCAPE)
             .condition(WHEN_IN_FOCUSED_WINDOW)
             .action(closeControl)
@@ -190,8 +185,9 @@ final class ExceptionPanel extends JPanel {
             .enable(this);
 
     JPanel westPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    westPanel.add(checkBox()
-            .toggleControl(detailsControl)
+    westPanel.add(checkBox(showDetailsState)
+            .text(MESSAGES.getString("details"))
+            .toolTipText(MESSAGES.getString("show_details"))
             .build());
     JPanel centerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
     centerButtonPanel.add(copyButton);
