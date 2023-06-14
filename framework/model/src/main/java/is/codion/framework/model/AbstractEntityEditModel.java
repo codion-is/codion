@@ -933,7 +933,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void doSetEntity(Entity entity) {
-    Map<Attribute<?>, Object> affectedAttributes = this.entity.setAs(entity == null ? defaultEntity(this::defaultValue) : entity);
+    Map<Attribute<?>, Object> affectedAttributes = this.entity.set(entity == null ? defaultEntity(this::defaultValue) : entity);
     for (Map.Entry<Attribute<?>, Object> entry : affectedAttributes.entrySet()) {
       Attribute<Object> objectAttribute = (Attribute<Object>) entry.getKey();
       onValueChange(objectAttribute, this.entity.get(objectAttribute));

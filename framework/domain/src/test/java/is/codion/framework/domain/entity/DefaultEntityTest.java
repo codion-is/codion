@@ -125,7 +125,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void setAs() {
+  void set() {
     Entity referencedEntityValue = ENTITIES.builder(Master.TYPE)
             .with(Master.ID, 2L)
             .with(Master.NAME, masterName)
@@ -135,19 +135,19 @@ public class DefaultEntityTest {
     Entity test = ENTITIES.entity(Detail.TYPE);
     Entity testEntity = detailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
-    test.setAs(testEntity);
-    assertEquals(test, testEntity, "Entities should be equal after .setAs()");
-    assertTrue(test.columnValuesEqual(testEntity), "Entity property values should be equal after .setAs()");
+    test.set(testEntity);
+    assertEquals(test, testEntity, "Entities should be equal after a calling set()");
+    assertTrue(test.columnValuesEqual(testEntity), "Entity values should be equal after a calling set()");
 
-    assertTrue(test.setAs(test).isEmpty());
+    assertTrue(test.set(test).isEmpty());
 
     //assure that no cached foreign key values linger
     test.put(Detail.MASTER_FK, null);
-    testEntity.setAs(test);
+    testEntity.set(test);
     assertNull(testEntity.get(Detail.MASTER_ID));
     assertNull(testEntity.get(Detail.MASTER_FK));
 
-    assertThrows(IllegalArgumentException.class, () -> testEntity.setAs(referencedEntityValue));
+    assertThrows(IllegalArgumentException.class, () -> testEntity.set(referencedEntityValue));
 
     Entity entity = ENTITIES.builder(Master.TYPE)
             .with(Master.ID, 2L)
@@ -159,13 +159,13 @@ public class DefaultEntityTest {
     entity.put(Master.READ_ONLY, 1);
 
     Entity setAsEntity = ENTITIES.entity(Master.TYPE);
-    setAsEntity.setAs(entity);
+    setAsEntity.set(entity);
 
     assertTrue(setAsEntity.isModified(Master.READ_ONLY));
   }
 
   @Test
-  void setAsAffectedAttributes() {
+  void setAffectedAttributes() {
     Entity original = ENTITIES.builder(Detail.TYPE)
             .with(Detail.ID, 1L)
             .build();
@@ -174,20 +174,20 @@ public class DefaultEntityTest {
             .with(Detail.ID, 1L)
             .build();
 
-    assertEquals(0, original.setAs(entity).size());
+    assertEquals(0, original.set(entity).size());
     assertTrue(Entity.valuesEqual(original, entity));
 
     original.put(Detail.BOOLEAN, true);
     entity.put(Detail.BOOLEAN, false);
 
-    assertEquals(1, original.setAs(entity).size());
+    assertEquals(1, original.set(entity).size());
     assertTrue(Entity.valuesEqual(original, entity));
 
     original.put(Detail.INT, 1);
     entity.put(Detail.INT, 2);
     entity.put(Detail.INT, 3);//modified
 
-    assertEquals(2, original.setAs(entity).size());//int + int_derived
+    assertEquals(2, original.set(entity).size());//int + int_derived
     assertTrue(Entity.valuesEqual(original, entity));
     assertTrue(original.isModified());
     assertTrue(entity.isModified());
@@ -197,11 +197,11 @@ public class DefaultEntityTest {
     entity.put(Detail.DOUBLE, 1.3);
     entity.put(Detail.STRING, "strng");
 
-    assertEquals(2, original.setAs(entity).size());
+    assertEquals(2, original.set(entity).size());
     assertTrue(Entity.valuesEqual(original, entity));
 
-    assertEquals(0, original.setAs(entity).size());
-    assertEquals(0, entity.setAs(original).size());
+    assertEquals(0, original.set(entity).size());
+    assertEquals(0, entity.set(original).size());
 
     entity.remove(Detail.STRING);
     assertFalse(Entity.valuesEqual(entity, original));
@@ -499,7 +499,7 @@ public class DefaultEntityTest {
     testEntity.put(Detail.STRING, "TestString");
     assertTrue(testEntity.isModified());
 
-    testEntity.setAs(null);
+    testEntity.set(null);
     assertTrue(testEntity.primaryKey().isNull());
     assertFalse(testEntity.contains(Detail.DATE));
     assertFalse(testEntity.contains(Detail.STRING));
@@ -914,7 +914,7 @@ public class DefaultEntityTest {
     assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.NO));
     assertThrows(UnsupportedOperationException.class, emp::revertAll);
     assertThrows(UnsupportedOperationException.class, () -> emp.remove(Department.NO));
-    assertThrows(UnsupportedOperationException.class, () -> emp.setAs(emp));
+    assertThrows(UnsupportedOperationException.class, () -> emp.set(emp));
 
     Entity dept = emp.get(Employee.DEPARTMENT_FK);
     assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
@@ -924,7 +924,7 @@ public class DefaultEntityTest {
     assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.NO));
     assertThrows(UnsupportedOperationException.class, dept::revertAll);
     assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.NO));
-    assertThrows(UnsupportedOperationException.class, () -> dept.setAs(dept));
+    assertThrows(UnsupportedOperationException.class, () -> dept.set(dept));
   }
 
   @Test

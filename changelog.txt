@@ -9165,3 +9165,4 @@
   EntityService bug fixed, did not supply the port to javalin when started
   AuxiliaryServer.serverInformation() added, used for startup logging in EntityServer
   EntityEditPanel.createControlPanelControls() renamed createControls(), bug fixed, did not take NULL_CONTROL into account, now throws exception if the panel has not been initialized, isPanelInitialized() added
+  Entity.setAs() renamed set()
