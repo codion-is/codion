@@ -1045,7 +1045,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private boolean smallDataset;
     private boolean staticData;
     private boolean readOnly;
-    private KeyGenerator keyGenerator = new KeyGenerator() {};
+    private KeyGenerator keyGenerator = DefaultEntity.DEFAULT_KEY_GENERATOR;
     private boolean keyGenerated;
     private boolean optimisticLockingEnabled = true;
     private OrderBy orderBy;
