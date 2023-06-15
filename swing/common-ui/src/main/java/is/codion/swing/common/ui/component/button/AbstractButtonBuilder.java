@@ -39,6 +39,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int mnemonic;
   private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
+  private int verticalAlignment = SwingConstants.CENTER;
   private Icon icon;
   private Icon pressedIcon;
   private Icon selectedIcon;
@@ -77,6 +78,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B horizontalAlignment(int horizontalAlignment) {
     this.horizontalAlignment = horizontalAlignment;
+    return (B) this;
+  }
+
+  @Override
+  public final B verticalAlignment(int verticalAlignment) {
+    this.verticalAlignment = verticalAlignment;
     return (B) this;
   }
 
@@ -183,6 +190,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
       button.setText(text);
     }
     button.setHorizontalAlignment(horizontalAlignment);
+    button.setVerticalAlignment(verticalAlignment);
     if (mnemonic != 0) {
       button.setMnemonic(mnemonic);
     }
