@@ -58,6 +58,18 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B verticalAlignment(int verticalAlignment);
 
   /**
+   * @param horizontalTextPosition the horizontal text position
+   * @return this builder instance
+   */
+  B horizontalTextPosition(int horizontalTextPosition);
+
+  /**
+   * @param verticalTextPosition the vertical text position
+   * @return this builder instance
+   */
+  B verticalTextPosition(int verticalTextPosition);
+
+  /**
    * @param icon the icon
    * @return this builder instance
    * @see JButton#setIcon(Icon)

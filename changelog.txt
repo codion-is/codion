@@ -9171,3 +9171,4 @@
   ButtonBuilder.iconTextGap() added
   ButtonBuilder, remaining icons implemented (disabled, rollover etc.)
   ButtonBuilder.verticalAlignment() added
+  ButtonBuilder.horizontalTextPosition() and verticalTextPosition() added
