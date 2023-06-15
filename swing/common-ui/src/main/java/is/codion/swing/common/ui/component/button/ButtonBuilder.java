@@ -52,6 +52,24 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B horizontalAlignment(int horizontalAlignment);
 
   /**
+   * @param verticalAlignment the vertical alignment
+   * @return this builder instance
+   */
+  B verticalAlignment(int verticalAlignment);
+
+  /**
+   * @param horizontalTextPosition the horizontal text position
+   * @return this builder instance
+   */
+  B horizontalTextPosition(int horizontalTextPosition);
+
+  /**
+   * @param verticalTextPosition the vertical text position
+   * @return this builder instance
+   */
+  B verticalTextPosition(int verticalTextPosition);
+
+  /**
    * @param icon the icon
    * @return this builder instance
    * @see JButton#setIcon(Icon)
@@ -59,11 +77,94 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B icon(Icon icon);
 
   /**
+   * @param pressedIcon the icon
+   * @return this builder instance
+   * @see JButton#setPressedIcon(Icon)
+   */
+  B pressedIcon(Icon pressedIcon);
+
+  /**
+   * @param selectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setSelectedIcon(Icon)
+   */
+  B selectedIcon(Icon selectedIcon);
+
+  /**
+   * @param rolloverIcon the icon
+   * @return this builder instance
+   * @see JButton#setRolloverIcon(Icon)
+   */
+  B rolloverIcon(Icon rolloverIcon);
+
+  /**
+   * @param rolloverSelectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setRolloverSelectedIcon(Icon)
+   */
+  B rolloverSelectedIcon(Icon rolloverSelectedIcon);
+
+  /**
+   * @param disabledIcon the icon
+   * @return this builder instance
+   * @see JButton#setDisabledIcon(Icon)
+   */
+  B disabledIcon(Icon disabledIcon);
+
+  /**
+   * @param disabledSelectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setIcon(Icon)
+   */
+  B disabledSelectedIcon(Icon disabledSelectedIcon);
+
+  /**
+   * @param iconTextGap the icon text gap
+   * @return this builder instance
+   */
+  B iconTextGap(int iconTextGap);
+
+  /**
    * @param insets the margin insets
    * @return this builder instance
    * @see JButton#setMargin(Insets)
    */
   B margin(Insets insets);
+
+  /**
+   * @param borderPainted true if the border should be painted
+   * @return this builder instance
+   * @see AbstractButton#setBorderPainted(boolean)
+   */
+  B borderPainted(boolean borderPainted);
+
+  /**
+   * @param contentAreaFilled true if content area should be filled
+   * @return this builder instance
+   * @see AbstractButton#setContentAreaFilled(boolean)
+   */
+  B contentAreaFilled(boolean contentAreaFilled);
+
+  /**
+   * @param focusPainted true if focus should be painted
+   * @return this builder instance
+   * @see AbstractButton#setFocusPainted(boolean)
+   */
+  B focusPainted(boolean focusPainted);
+
+  /**
+   * @param rolloverEnabled true if rollover should be enabled
+   * @return this builder instance
+   * @see AbstractButton#setRolloverEnabled(boolean)
+   */
+  B rolloverEnabled(boolean rolloverEnabled);
+
+  /**
+   * @param multiClickThreshold the multi click threshold
+   * @return this builder instance
+   * @see AbstractButton#setMultiClickThreshhold(long)
+   */
+  B multiClickThreshold(long multiClickThreshold);
 
   /**
    * @param buttonGroup the group to add the button to

@@ -9205,3 +9205,10 @@
   AuxiliaryServer.serverInformation() added, used for startup logging in EntityServer
   EntityEditPanel.createControlPanelControls() renamed createControls(), bug fixed, did not take NULL_CONTROL into account, now throws exception if the panel has not been initialized, isPanelInitialized() added
   Entity.setAs() renamed set()
+  DefaultKeyGenerator added
+  DomainToString, KeyGenerator removed, not enough information available
+  ButtonBuilder.iconTextGap() added
+  ButtonBuilder, remaining icons implemented (disabled, rollover etc.)
+  ButtonBuilder.verticalAlignment() added
+  ButtonBuilder.horizontalTextPosition() and verticalTextPosition() added
+  ButtonBuilder, missing property setters added

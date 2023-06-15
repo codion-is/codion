@@ -39,7 +39,22 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int mnemonic;
   private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
+  private int verticalAlignment = SwingConstants.CENTER;
+  private int horizontalTextPosition = SwingConstants.TRAILING;
+  private int verticalTextPosition = SwingConstants.CENTER;
+  private boolean borderPainted = true;
+  private boolean contentAreaFilled = true;
+  private boolean focusPainted = true;
+  private boolean rolloverEnabled = false;
+  private Long multiClickThreshold;
   private Icon icon;
+  private Icon pressedIcon;
+  private Icon selectedIcon;
+  private Icon rolloverIcon;
+  private Icon rolloverSelectedIcon;
+  private Icon disabledIcon;
+  private Icon disabledSelectedIcon;
+  private Integer iconTextGap;
   private Insets insets;
   private ButtonGroup buttonGroup;
   private boolean selected = false;
@@ -74,8 +89,98 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   }
 
   @Override
+  public final B verticalAlignment(int verticalAlignment) {
+    this.verticalAlignment = verticalAlignment;
+    return (B) this;
+  }
+
+  @Override
+  public final B horizontalTextPosition(int horizontalTextPosition) {
+    this.horizontalTextPosition = horizontalTextPosition;
+    return (B) this;
+  }
+
+  @Override
+  public final B verticalTextPosition(int verticalTextPosition) {
+    this.verticalTextPosition = verticalTextPosition;
+    return (B) this;
+  }
+
+  @Override
+  public final B borderPainted(boolean borderPainted) {
+    this.borderPainted = borderPainted;
+    return (B) this;
+  }
+
+  @Override
+  public final B contentAreaFilled(boolean contentAreaFilled) {
+    this.contentAreaFilled = contentAreaFilled;
+    return (B) this;
+  }
+
+  @Override
+  public final B focusPainted(boolean focusPainted) {
+    this.focusPainted = focusPainted;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverEnabled(boolean rolloverEnabled) {
+    this.rolloverEnabled = rolloverEnabled;
+    return (B) this;
+  }
+
+  @Override
+  public final B multiClickThreshold(long multiClickThreshold) {
+    this.multiClickThreshold = multiClickThreshold;
+    return (B) this;
+  }
+
+  @Override
   public final B icon(Icon icon) {
     this.icon = icon;
+    return (B) this;
+  }
+
+  @Override
+  public final B pressedIcon(Icon pressedIcon) {
+    this.pressedIcon = pressedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B selectedIcon(Icon selectedIcon) {
+    this.selectedIcon = selectedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverIcon(Icon rolloverIcon) {
+    this.rolloverIcon = rolloverIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverSelectedIcon(Icon rolloverSelectedIcon) {
+    this.rolloverSelectedIcon = rolloverSelectedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B disabledIcon(Icon disabledIcon) {
+    this.disabledIcon = disabledIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B disabledSelectedIcon(Icon disabledSelectedIcon) {
+    this.disabledSelectedIcon = disabledSelectedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B iconTextGap(int iconTextGap) {
+    this.iconTextGap = iconTextGap;
     return (B) this;
   }
 
@@ -134,11 +239,50 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
       button.setText(text);
     }
     button.setHorizontalAlignment(horizontalAlignment);
+    button.setVerticalAlignment(verticalAlignment);
+    button.setVerticalTextPosition(verticalTextPosition);
+    button.setHorizontalTextPosition(horizontalTextPosition);
+    if (!borderPainted) {
+      button.setBorderPainted(false);
+    }
+    if (!contentAreaFilled) {
+      button.setContentAreaFilled(false);
+    }
+    if (!focusPainted) {
+      button.setFocusPainted(false);
+    }
+    if (rolloverEnabled) {
+      button.setRolloverEnabled(true);
+    }
+    if (multiClickThreshold != null) {
+      button.setMultiClickThreshhold(multiClickThreshold);
+    }
     if (mnemonic != 0) {
       button.setMnemonic(mnemonic);
     }
     if (icon != null) {
       button.setIcon(icon);
+    }
+    if (pressedIcon != null) {
+      button.setPressedIcon(pressedIcon);
+    }
+    if (selectedIcon != null) {
+      button.setSelectedIcon(selectedIcon);
+    }
+    if (rolloverIcon != null) {
+      button.setRolloverIcon(rolloverIcon);
+    }
+    if (rolloverSelectedIcon != null) {
+      button.setRolloverSelectedIcon(rolloverSelectedIcon);
+    }
+    if (disabledIcon != null) {
+      button.setDisabledIcon(disabledIcon);
+    }
+    if (disabledSelectedIcon != null) {
+      button.setDisabledSelectedIcon(disabledSelectedIcon);
+    }
+    if (iconTextGap != null) {
+      button.setIconTextGap(iconTextGap);
     }
     if (insets != null) {
       button.setMargin(insets);
