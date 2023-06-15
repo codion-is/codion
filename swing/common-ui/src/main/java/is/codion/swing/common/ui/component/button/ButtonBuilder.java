@@ -132,6 +132,41 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B margin(Insets insets);
 
   /**
+   * @param borderPainted true if the border should be painted
+   * @return this builder instance
+   * @see AbstractButton#setBorderPainted(boolean)
+   */
+  B borderPainted(boolean borderPainted);
+
+  /**
+   * @param contentAreaFilled true if content area should be filled
+   * @return this builder instance
+   * @see AbstractButton#setContentAreaFilled(boolean)
+   */
+  B contentAreaFilled(boolean contentAreaFilled);
+
+  /**
+   * @param focusPainted true if focus should be painted
+   * @return this builder instance
+   * @see AbstractButton#setFocusPainted(boolean)
+   */
+  B focusPainted(boolean focusPainted);
+
+  /**
+   * @param rolloverEnabled true if rollover should be enabled
+   * @return this builder instance
+   * @see AbstractButton#setRolloverEnabled(boolean)
+   */
+  B rolloverEnabled(boolean rolloverEnabled);
+
+  /**
+   * @param multiClickThreshold the multi click threshold
+   * @return this builder instance
+   * @see AbstractButton#setMultiClickThreshhold(long)
+   */
+  B multiClickThreshold(long multiClickThreshold);
+
+  /**
    * @param buttonGroup the group to add the button to
    * @return this builder instance
    */

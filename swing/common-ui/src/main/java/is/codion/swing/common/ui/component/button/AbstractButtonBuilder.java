@@ -42,6 +42,11 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private int verticalAlignment = SwingConstants.CENTER;
   private int horizontalTextPosition = SwingConstants.TRAILING;
   private int verticalTextPosition = SwingConstants.CENTER;
+  private boolean borderPainted = true;
+  private boolean contentAreaFilled = true;
+  private boolean focusPainted = true;
+  private boolean rolloverEnabled = false;
+  private Long multiClickThreshold;
   private Icon icon;
   private Icon pressedIcon;
   private Icon selectedIcon;
@@ -98,6 +103,36 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B verticalTextPosition(int verticalTextPosition) {
     this.verticalTextPosition = verticalTextPosition;
+    return (B) this;
+  }
+
+  @Override
+  public final B borderPainted(boolean borderPainted) {
+    this.borderPainted = borderPainted;
+    return (B) this;
+  }
+
+  @Override
+  public final B contentAreaFilled(boolean contentAreaFilled) {
+    this.contentAreaFilled = contentAreaFilled;
+    return (B) this;
+  }
+
+  @Override
+  public final B focusPainted(boolean focusPainted) {
+    this.focusPainted = focusPainted;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverEnabled(boolean rolloverEnabled) {
+    this.rolloverEnabled = rolloverEnabled;
+    return (B) this;
+  }
+
+  @Override
+  public final B multiClickThreshold(long multiClickThreshold) {
+    this.multiClickThreshold = multiClickThreshold;
     return (B) this;
   }
 
@@ -207,6 +242,21 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     button.setVerticalAlignment(verticalAlignment);
     button.setVerticalTextPosition(verticalTextPosition);
     button.setHorizontalTextPosition(horizontalTextPosition);
+    if (!borderPainted) {
+      button.setBorderPainted(false);
+    }
+    if (!contentAreaFilled) {
+      button.setContentAreaFilled(false);
+    }
+    if (!focusPainted) {
+      button.setFocusPainted(false);
+    }
+    if (rolloverEnabled) {
+      button.setRolloverEnabled(true);
+    }
+    if (multiClickThreshold != null) {
+      button.setMultiClickThreshhold(multiClickThreshold);
+    }
     if (mnemonic != 0) {
       button.setMnemonic(mnemonic);
     }

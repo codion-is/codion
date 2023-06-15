@@ -280,6 +280,11 @@ public final class ComponentsTest {
             .iconTextGap(5)
             .action(Control.control(() -> {}))
             .preferredSize(new Dimension(10, 10))
+            .borderPainted(false)
+            .focusPainted(false)
+            .rolloverEnabled(true)
+            .multiClickThreshold(10)
+            .contentAreaFilled(false)
             .buildValue();
   }
 
