@@ -9167,3 +9167,4 @@
   EntityEditPanel.createControlPanelControls() renamed createControls(), bug fixed, did not take NULL_CONTROL into account, now throws exception if the panel has not been initialized, isPanelInitialized() added
   Entity.setAs() renamed set()
   DefaultKeyGenerator added
+  DomainToString, KeyGenerator removed, not enough information available

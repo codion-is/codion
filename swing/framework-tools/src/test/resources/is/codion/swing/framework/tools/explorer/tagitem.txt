@@ -15,6 +15,5 @@ void tagItem() {
 		foreignKeyProperty(TagItem.TAGID_FK, "Tag"),
 		columnProperty(TagItem.ITEMID)
 			.primaryKeyIndex(1),
-		foreignKeyProperty(TagItem.ITEMID_FK, "Item"))
-		.keyGenerator(KeyGenerator.identity()));
+		foreignKeyProperty(TagItem.ITEMID_FK, "Item")));
 }

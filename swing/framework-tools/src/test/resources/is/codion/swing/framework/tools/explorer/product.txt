@@ -23,6 +23,5 @@ void product() {
 			.nullable(false)
 			.maximumLength(255),
 		columnProperty(Product.IMAGEURL, "Imageurl")
-			.maximumLength(55))
-		.keyGenerator(KeyGenerator.identity()));
+			.maximumLength(55)));
 }

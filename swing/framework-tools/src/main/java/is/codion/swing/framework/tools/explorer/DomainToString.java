@@ -46,11 +46,7 @@ final class DomainToString {
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("add(definition(").append(LINE_SEPARATOR);
-    builder.append(String.join("," + LINE_SEPARATOR, propertyStrings(definition.properties(), interfaceName, definition))).append(")").append(LINE_SEPARATOR);
-    if (definition.keyGenerator() != null) {
-      builder.append(DOUBLE_INDENT).append(".keyGenerator(KeyGenerator.identity())");
-    }
-    builder.append(");").append(LINE_SEPARATOR);
+    builder.append(String.join("," + LINE_SEPARATOR, propertyStrings(definition.properties(), interfaceName, definition))).append("));").append(LINE_SEPARATOR);
     builder.append("}");
 
     return builder.toString();
