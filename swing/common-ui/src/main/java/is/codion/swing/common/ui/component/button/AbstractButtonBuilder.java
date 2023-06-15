@@ -40,6 +40,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
+  private Icon pressedIcon;
+  private Icon selectedIcon;
+  private Icon rolloverIcon;
+  private Icon rolloverSelectedIcon;
+  private Icon disabledIcon;
+  private Icon disabledSelectedIcon;
   private Integer iconTextGap;
   private Insets insets;
   private ButtonGroup buttonGroup;
@@ -77,6 +83,42 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B icon(Icon icon) {
     this.icon = icon;
+    return (B) this;
+  }
+
+  @Override
+  public final B pressedIcon(Icon pressedIcon) {
+    this.pressedIcon = pressedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B selectedIcon(Icon selectedIcon) {
+    this.selectedIcon = selectedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverIcon(Icon rolloverIcon) {
+    this.rolloverIcon = rolloverIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B rolloverSelectedIcon(Icon rolloverSelectedIcon) {
+    this.rolloverSelectedIcon = rolloverSelectedIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B disabledIcon(Icon disabledIcon) {
+    this.disabledIcon = disabledIcon;
+    return (B) this;
+  }
+
+  @Override
+  public final B disabledSelectedIcon(Icon disabledSelectedIcon) {
+    this.disabledSelectedIcon = disabledSelectedIcon;
     return (B) this;
   }
 
@@ -146,6 +188,24 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (icon != null) {
       button.setIcon(icon);
+    }
+    if (pressedIcon != null) {
+      button.setPressedIcon(pressedIcon);
+    }
+    if (selectedIcon != null) {
+      button.setSelectedIcon(selectedIcon);
+    }
+    if (rolloverIcon != null) {
+      button.setRolloverIcon(rolloverIcon);
+    }
+    if (rolloverSelectedIcon != null) {
+      button.setRolloverSelectedIcon(rolloverSelectedIcon);
+    }
+    if (disabledIcon != null) {
+      button.setDisabledIcon(disabledIcon);
+    }
+    if (disabledSelectedIcon != null) {
+      button.setDisabledSelectedIcon(disabledSelectedIcon);
     }
     if (iconTextGap != null) {
       button.setIconTextGap(iconTextGap);

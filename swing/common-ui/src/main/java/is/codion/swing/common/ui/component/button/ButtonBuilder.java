@@ -59,6 +59,48 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B icon(Icon icon);
 
   /**
+   * @param pressedIcon the icon
+   * @return this builder instance
+   * @see JButton#setPressedIcon(Icon)
+   */
+  B pressedIcon(Icon pressedIcon);
+
+  /**
+   * @param selectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setSelectedIcon(Icon)
+   */
+  B selectedIcon(Icon selectedIcon);
+
+  /**
+   * @param rolloverIcon the icon
+   * @return this builder instance
+   * @see JButton#setRolloverIcon(Icon)
+   */
+  B rolloverIcon(Icon rolloverIcon);
+
+  /**
+   * @param rolloverSelectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setRolloverSelectedIcon(Icon)
+   */
+  B rolloverSelectedIcon(Icon rolloverSelectedIcon);
+
+  /**
+   * @param disabledIcon the icon
+   * @return this builder instance
+   * @see JButton#setDisabledIcon(Icon)
+   */
+  B disabledIcon(Icon disabledIcon);
+
+  /**
+   * @param disabledSelectedIcon the icon
+   * @return this builder instance
+   * @see JButton#setIcon(Icon)
+   */
+  B disabledSelectedIcon(Icon disabledSelectedIcon);
+
+  /**
    * @param iconTextGap the icon text gap
    * @return this builder instance
    */

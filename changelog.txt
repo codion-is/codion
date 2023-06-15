@@ -9169,3 +9169,4 @@
   DefaultKeyGenerator added
   DomainToString, KeyGenerator removed, not enough information available
   ButtonBuilder.iconTextGap() added
+  ButtonBuilder, remaining icons implemented (disabled, rollover etc.)
