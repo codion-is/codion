@@ -59,6 +59,12 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   B icon(Icon icon);
 
   /**
+   * @param iconTextGap the icon text gap
+   * @return this builder instance
+   */
+  B iconTextGap(int iconTextGap);
+
+  /**
    * @param insets the margin insets
    * @return this builder instance
    * @see JButton#setMargin(Insets)

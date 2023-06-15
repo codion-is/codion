@@ -9168,3 +9168,4 @@
   Entity.setAs() renamed set()
   DefaultKeyGenerator added
   DomainToString, KeyGenerator removed, not enough information available
+  ButtonBuilder.iconTextGap() added

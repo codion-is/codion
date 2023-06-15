@@ -277,6 +277,7 @@ public final class ComponentsTest {
   @Test
   void button() {
     Components.button()
+            .iconTextGap(5)
             .action(Control.control(() -> {}))
             .preferredSize(new Dimension(10, 10))
             .buildValue();
@@ -738,6 +739,7 @@ public final class ComponentsTest {
     Value<String> textValue = Value.value("label");
     ComponentValue<String, JLabel> componentValue = Components.label(textValue)
             .icon(Logos.logoTransparent())
+            .iconTextGap(5)
             .displayedMnemonic('l')
             .labelFor(new JButton())
             .buildValue();

@@ -40,6 +40,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   private boolean includeText = true;
   private int horizontalAlignment = SwingConstants.CENTER;
   private Icon icon;
+  private Integer iconTextGap;
   private Insets insets;
   private ButtonGroup buttonGroup;
   private boolean selected = false;
@@ -76,6 +77,12 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
   @Override
   public final B icon(Icon icon) {
     this.icon = icon;
+    return (B) this;
+  }
+
+  @Override
+  public final B iconTextGap(int iconTextGap) {
+    this.iconTextGap = iconTextGap;
     return (B) this;
   }
 
@@ -139,6 +146,9 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     }
     if (icon != null) {
       button.setIcon(icon);
+    }
+    if (iconTextGap != null) {
+      button.setIconTextGap(iconTextGap);
     }
     if (insets != null) {
       button.setMargin(insets);
