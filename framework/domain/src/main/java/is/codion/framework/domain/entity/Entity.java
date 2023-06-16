@@ -49,6 +49,7 @@ public interface Entity extends Comparable<Entity> {
    * @param value the value
    * @param <T> the value type
    * @return the previous value
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   <T> T put(Attribute<T> attribute, T value);
 
@@ -90,6 +91,7 @@ public interface Entity extends Comparable<Entity> {
    * Reverts the value associated with the given attribute to its original value.
    * If the value has not been modified then calling this method has no effect.
    * @param attribute the attribute for which to revert the value
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   void revert(Attribute<?> attribute);
 
@@ -97,19 +99,22 @@ public interface Entity extends Comparable<Entity> {
    * Reverts all value modifications that have been made.
    * This entity will be unmodified after a call to this method.
    * If no modifications have been made then calling this method has no effect.
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   void revertAll();
 
   /**
    * Saves the value associated with the given attribute, that is, removes the original value.
-   * If no original value exists calling this method has no effect.
+   * If the value has not been modified calling this method has no effect.
    * @param attribute the attribute for which to save the value
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   void save(Attribute<?> attribute);
 
   /**
    * Saves all the value modifications that have been made.
    * This entity will be unmodified after a call to this method.
+   * @throws UnsupportedOperationException in case this entity is immutable
    * @see #isModified()
    */
   void saveAll();
@@ -120,6 +125,7 @@ public interface Entity extends Comparable<Entity> {
    * @param attribute the attribute to remove
    * @param <T> the value type
    * @return the previous value mapped to the given attribute
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   <T> T remove(Attribute<T> attribute);
 
@@ -194,6 +200,7 @@ public interface Entity extends Comparable<Entity> {
    * Clears the primary key values from this entity,
    * current as well as original values if any
    * @return this Entity instance
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   Entity clearPrimaryKey();
 
@@ -212,11 +219,12 @@ public interface Entity extends Comparable<Entity> {
    * @param entity the entity to copy or null for clearing all values in this instance
    * @return the affected attributes and their previous values, that is, attributes which values changed
    * @throws IllegalArgumentException in case the entity is not of the same type
+   * @throws UnsupportedOperationException in case this entity is immutable
    */
   Map<Attribute<?>, Object> set(Entity entity);
 
   /**
-   * Copies this entity.
+   * Returns a mutable copy of this entity.
    * @return a copy of this entity
    */
   Entity copy();
@@ -228,7 +236,7 @@ public interface Entity extends Comparable<Entity> {
   Builder copyBuilder();
 
   /**
-   * Copies this entity, with new copied instances of all foreign key value entities.
+   * Returns a mutable copy of this entity, with new copied instances of all foreign key value entities.
    * @return a deep copy of this entity
    */
   Entity deepCopy();
