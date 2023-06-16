@@ -9175,3 +9175,4 @@
   ButtonBuilder, missing property setters added
   TextFieldBuilder.selectAllOnFocusGained() moved to TextComponentBuilder
   DefaultTextFieldBuilder.setInitialValue() moved to AbstractTextComponentBuilder
+  InputDialogBuilder.inputValidPredicate() added
