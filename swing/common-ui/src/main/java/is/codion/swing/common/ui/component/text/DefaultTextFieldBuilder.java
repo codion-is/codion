@@ -133,19 +133,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     return new DefaultTextComponentValue<>(component, format, updateOn);
   }
 
-  @Override
-  protected void setInitialValue(C component, T initialValue) {
-    if (initialValue instanceof String) {
-      component.setText((String) initialValue);
-    }
-    else if (initialValue instanceof Character) {
-      component.setText(String.valueOf(initialValue));
-    }
-    else if (initialValue != null) {
-      throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
-    }
-  }
-
   protected final Format format() {
     return format;
   }
