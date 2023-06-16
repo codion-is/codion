@@ -9216,3 +9216,4 @@
   DefaultTextFieldBuilder.setInitialValue() moved to AbstractTextComponentBuilder
   InputDialogBuilder.inputValidPredicate() added
   EntityTablePanel.updateSelectedEntities(), InputValidPredicate added, now also uses the component value validators
+  EntityPopupMenu bug fixed, now copies the entity in order to populate any missing foreign key values, which failed when it was immutable
