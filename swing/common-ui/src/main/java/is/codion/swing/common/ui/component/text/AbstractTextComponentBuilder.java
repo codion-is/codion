@@ -30,6 +30,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   private Insets margin;
   private boolean controlDeleteWord = true;
   private Color disabledTextColor;
+  private boolean selectAllOnFocusGained;
   private boolean moveCaretToEndOnFocusGained;
   private boolean moveCaretToStartOnFocusGained;
   private Consumer<String> onTextChanged;
@@ -91,6 +92,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   @Override
   public final B disabledTextColor(Color disabledTextColor) {
     this.disabledTextColor = requireNonNull(disabledTextColor);
+    return (B) this;
+  }
+
+  @Override
+  public final B selectAllOnFocusGained(boolean selectAllOnFocusGained) {
+    this.selectAllOnFocusGained = selectAllOnFocusGained;
     return (B) this;
   }
 
@@ -160,6 +167,9 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     }
     if (disabledTextColor != null) {
       textComponent.setDisabledTextColor(disabledTextColor);
+    }
+    if (selectAllOnFocusGained) {
+      textComponent.addFocusListener(new SelectAllFocusListener(textComponent));
     }
     if (moveCaretToStartOnFocusGained) {
       textComponent.addFocusListener(new MoveCaretToStartListener(textComponent));

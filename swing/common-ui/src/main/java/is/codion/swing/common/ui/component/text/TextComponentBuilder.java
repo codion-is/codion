@@ -68,6 +68,13 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   B disabledTextColor(Color disabledTextColor);
 
   /**
+   * Makes the text component select all when it gains focus
+   * @param selectAllOnFocusGained if true the component will select contents on focus gained
+   * @return this builder instance
+   */
+  B selectAllOnFocusGained(boolean selectAllOnFocusGained);
+
+  /**
    * @param moveCaretToEndOnFocusGained true if the caret should be moved to the end on focus gained
    * @return this builder instance
    */

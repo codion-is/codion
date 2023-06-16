@@ -29,7 +29,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
   private int columns = -1;
   private Action action;
   private ActionListener actionListener;
-  private boolean selectAllOnFocusGained;
   private SelectionProvider<T> selectionProvider;
   private Format format;
   private int horizontalAlignment = SwingConstants.LEADING;
@@ -65,12 +64,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     this.actionListener = actionListener;
 
     return transferFocusOnEnter(false);
-  }
-
-  @Override
-  public final B selectAllOnFocusGained(boolean selectAllOnFocusGained) {
-    this.selectAllOnFocusGained = selectAllOnFocusGained;
-    return (B) this;
   }
 
   @Override
@@ -112,9 +105,6 @@ class DefaultTextFieldBuilder<T, C extends JTextField, B extends TextFieldBuilde
     }
     if (actionListener != null) {
       textField.addActionListener(actionListener);
-    }
-    if (selectAllOnFocusGained) {
-      textField.addFocusListener(new SelectAllFocusListener(textField));
     }
     if (selectionProvider != null) {
       addSelectionProvider(textField, selectionProvider);

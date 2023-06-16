@@ -9173,3 +9173,4 @@
   ButtonBuilder.verticalAlignment() added
   ButtonBuilder.horizontalTextPosition() and verticalTextPosition() added
   ButtonBuilder, missing property setters added
+  TextFieldBuilder.selectAllOnFocusGained() moved to TextComponentBuilder
