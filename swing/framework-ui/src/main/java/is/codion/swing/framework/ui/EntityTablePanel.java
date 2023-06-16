@@ -84,6 +84,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Utilities.*;
@@ -649,15 +650,14 @@ public class EntityTablePanel extends JPanel {
     Collection<T> values = Entity.distinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
-    State validValueState = State.state(initialValue != null || property.isNullable());
-    componentValue.addDataListener(value -> validValueState.set(value != null || property.isNullable()));
+    InputValidPredicate<T> inputValidPredicate = new InputValidPredicate<>(property, componentValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(MESSAGES.getString("update"))
               .caption(property.caption())
-              .inputValidState(validValueState)
+              .inputValidPredicate(inputValidPredicate)
               .show();
       Entity.put(attributeToUpdate, newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
@@ -1891,6 +1891,32 @@ public class EntityTablePanel extends JPanel {
       }
 
       return super.createComponentValue(attribute, editModel, initialValue);
+    }
+  }
+
+  private static final class InputValidPredicate<T> implements Predicate<T> {
+
+    private final Property<T> property;
+    private final ComponentValue<T, ?> componentValue;
+
+    private InputValidPredicate(Property<T> property, ComponentValue<T, ?> componentValue) {
+      this.property = property;
+      this.componentValue = componentValue;
+    }
+
+    @Override
+    public boolean test(T value) {
+      if (value == null && !property.isNullable()) {
+        return false;
+      }
+      try {
+        componentValue.validators().forEach(validator -> validator.validate(value));
+      }
+      catch (IllegalArgumentException e) {
+        return false;
+      }
+
+      return true;
     }
   }
 

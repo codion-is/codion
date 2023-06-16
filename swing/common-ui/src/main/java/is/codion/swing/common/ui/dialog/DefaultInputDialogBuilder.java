@@ -19,6 +19,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.function.Predicate;
 
 import static java.util.Objects.requireNonNull;
 
@@ -91,18 +92,29 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   }
 
   @Override
+  public InputDialogBuilder<T> inputValidPredicate(Predicate<T> inputValidPredicate) {
+    return inputValidState(createInputValidState(requireNonNull(inputValidPredicate)));
+  }
+
+  @Override
   public T show() {
     State okPressed = State.state();
     if (caption != null) {
       basePanel.add(new JLabel(caption), BorderLayout.NORTH);
     }
-    okCancelDialogBuilder.onOk(new OnOk(okPressed))
-            .show();
+    okCancelDialogBuilder.onOk(new OnOk(okPressed)).show();
     if (okPressed.get()) {
       return componentValue.get();
     }
 
     throw new CancelException();
+  }
+
+  private StateObserver createInputValidState(Predicate<T> predicate) {
+    State validValueState = State.state(predicate.test(componentValue.get()));
+    componentValue.addDataListener(value -> validValueState.set(predicate.test(componentValue.get())));
+
+    return validValueState;
   }
 
   private final class OnOk implements Runnable {

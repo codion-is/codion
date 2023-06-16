@@ -54,13 +54,6 @@ public interface TextFieldBuilder<T, C extends JTextField, B extends TextFieldBu
   B actionListener(ActionListener actionListener);
 
   /**
-   * Makes the text field select all when it gains focus
-   * @param selectAllOnFocusGained if true the component will select contents on focus gained
-   * @return this builder instance
-   */
-  B selectAllOnFocusGained(boolean selectAllOnFocusGained);
-
-  /**
    * Adds a CTRL-SPACE action the given text field allowing the user to select a value to display in the field
    * @param selectionProvider the selection provider
    * @return this builder instance
