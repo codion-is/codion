@@ -9176,3 +9176,4 @@
   TextFieldBuilder.selectAllOnFocusGained() moved to TextComponentBuilder
   DefaultTextFieldBuilder.setInitialValue() moved to AbstractTextComponentBuilder
   InputDialogBuilder.inputValidPredicate() added
+  EntityTablePanel.updateSelectedEntities(), InputValidPredicate added, now also uses the component value validators
