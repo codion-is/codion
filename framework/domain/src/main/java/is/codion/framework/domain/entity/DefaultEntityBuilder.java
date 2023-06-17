@@ -48,6 +48,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
   public Entity.Builder withDefaultValues() {
     definition.properties().stream()
             .filter(property -> !property.isDerived())
+            .filter(Property::hasDefaultValue)
             .forEach(property -> builderValues.put(property.attribute(), property.defaultValue()));
 
     return this;
