@@ -6,7 +6,7 @@ apply plugin: 'maven-publish'
 
 def documentationVersion = project.version.replace('-SNAPSHOT', '')
 
-def documentationDir = "${documentationVersion}/${project.targetJdk}"
+def documentationDir = "${documentationVersion}"
 
 tasks.register('copyModuleDependencyGraphs') {
     doLast {
@@ -40,7 +40,7 @@ asciidoctor {
     sources {
         include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'help/**/*.adoc'
     }
-    attributes 'codion-version': documentationVersion, 'codion-jdk': project.targetJdk,
+    attributes 'codion-version': documentationVersion,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
             'diagram-cachedir': "${buildDir}/asciidoc/images/diagram-cache",
@@ -131,7 +131,7 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'is.codion.' + project.targetJdk
+            groupId 'is.codion.jdk8'
             artifact documentationZip
         }
     }

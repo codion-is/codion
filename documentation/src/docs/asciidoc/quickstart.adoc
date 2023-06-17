@@ -11,8 +11,8 @@ Codion is primarily a Swing based framework, the Swing client is mature and stab
 |===
 |Client|Artifact
 
-|Swing|is.codion.{codion-jdk}:codion-swing-framework.ui:{codion-version}
-|JavaFX|is.codion.{codion-jdk}:codion-javafx-framework:{codion-version}
+|Swing|is.codion:codion-swing-framework.ui:{codion-version}
+|JavaFX|is.codion:codion-javafx-framework:{codion-version}
 |===
 
 == Database connectivity
@@ -22,9 +22,9 @@ A Codion client has three ways of connecting to a database, directly via a local
 |===
 |DB Connection|Artifact
 
-|Local|is.codion.{codion-jdk}:codion-framework-db-local:{codion-version}
-|RMI|is.codion.{codion-jdk}:codion-framework-db-rmi:{codion-version}
-|HTTP|is.codion.{codion-jdk}:codion-framework-db-http:{codion-version}
+|Local|is.codion:codion-framework-db-local:{codion-version}
+|RMI|is.codion:codion-framework-db-rmi:{codion-version}
+|HTTP|is.codion:codion-framework-db-http:{codion-version}
 |===
 
 == DBMS
@@ -40,16 +40,16 @@ The most used and tested DBMS modules are:
 |===
 |DBMS|Artifact
 
-|Db2|is.codion.{codion-jdk}:codion-dbms-db2database:{codion-version}
-|Derby|is.codion.{codion-jdk}:codion-dbms-derby:{codion-version}
-|H2 Database|is.codion.{codion-jdk}:codion-dbms-h2database:{codion-version}
-|HSQL|is.codion.{codion-jdk}:codion-dbms-hsql:{codion-version}
-|MariaDB|is.codion.{codion-jdk}:codion-dbms-mariadb:{codion-version}
-|MySQL|is.codion.{codion-jdk}:codion-dbms-mysql:{codion-version}
-|Oracle|is.codion.{codion-jdk}:codion-dbms-oracle:{codion-version}
-|PostgreSQL|is.codion.{codion-jdk}:codion-dbms-postgresql:{codion-version}
-|SQLite|is.codion.{codion-jdk}:codion-dbms-sqlite:{codion-version}
-|SQL Server|is.codion.{codion-jdk}:codion-dbms-sqlserver:{codion-version}
+|Db2|is.codion:codion-dbms-db2database:{codion-version}
+|Derby|is.codion:codion-dbms-derby:{codion-version}
+|H2 Database|is.codion:codion-dbms-h2database:{codion-version}
+|HSQL|is.codion:codion-dbms-hsql:{codion-version}
+|MariaDB|is.codion:codion-dbms-mariadb:{codion-version}
+|MySQL|is.codion:codion-dbms-mysql:{codion-version}
+|Oracle|is.codion:codion-dbms-oracle:{codion-version}
+|PostgreSQL|is.codion:codion-dbms-postgresql:{codion-version}
+|SQLite|is.codion:codion-dbms-sqlite:{codion-version}
+|SQL Server|is.codion:codion-dbms-sqlserver:{codion-version}
 |===
 
 == Logging
@@ -59,9 +59,9 @@ Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 |Logging|Artifact
 
-|Logback|is.codion.{codion-jdk}:codion-plugin-logback-proxy:{codion-version}
-|Log4j|is.codion.{codion-jdk}:codion-plugin-log4j-proxy:{codion-version}
-|Java Util Logging|is.codion.{codion-jdk}:codion-plugin-jul-proxy:{codion-version}
+|Logback|is.codion:codion-plugin-logback-proxy:{codion-version}
+|Log4j|is.codion:codion-plugin-log4j-proxy:{codion-version}
+|Java Util Logging|is.codion:codion-plugin-jul-proxy:{codion-version}
 |===
 
 == Gradle
@@ -69,19 +69,19 @@ Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 ----
 dependencies {
     //Swing client UI module
-    implementation 'is.codion.{codion-jdk}:codion-swing-framework-ui:{codion-version}'
+    implementation 'is.codion:codion-swing-framework-ui:{codion-version}'
 
     //Local JDBC connection module
-    runtimeOnly 'is.codion.{codion-jdk}:codion-framework-db-local:{codion-version}'
+    runtimeOnly 'is.codion:codion-framework-db-local:{codion-version}'
     //H2 DBMS module
-    runtimeOnly 'is.codion.{codion-jdk}:codion-dbms-h2database:{codion-version}'
+    runtimeOnly 'is.codion:codion-dbms-h2database:{codion-version}'
     //H2 JDBC driver
     runtimeOnly 'com.h2database:h2:2.1.212'
     //Logging with Logback
-    runtimeOnly 'is.codion.{codion-jdk}:codion-plugin-logback-proxy:{codion-version}'
+    runtimeOnly 'is.codion:codion-plugin-logback-proxy:{codion-version}'
 
     //Domain model unit testing module
-    testImplementation 'is.codion.{codion-jdk}:codion-framework-domain-test:{codion-version}'
+    testImplementation 'is.codion:codion-framework-domain-test:{codion-version}'
     //JUnit 5
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
@@ -102,7 +102,7 @@ The Codion framework is based around the *Entity* class, a map-like structure, r
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.framework.domain|is.codion.{codion-jdk}:codion-framework-domain:{codion-version}
+|is.codion.framework.domain|is.codion:codion-framework-domain:{codion-version}
 |===
 
 ==== Defining entities
@@ -151,7 +151,7 @@ The *EntityPanel* class provides a Swing UI for viewing and editing entities. It
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.swing.framework.ui|is.codion.{codion-jdk}:codion-swing-framework-ui:{codion-version}
+|is.codion.swing.framework.ui|is.codion:codion-swing-framework-ui:{codion-version}
 |===
 
 ==== Master
@@ -179,7 +179,7 @@ The *EntityTestUnit* class provides a way to unit test the domain model. The *te
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.framework.domain.test|is.codion.{codion-jdk}:codion-framework-domain-test:{codion-version}
+|is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{codion-version}
 |===
 
 [source,java,indent=0]
@@ -194,8 +194,8 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|is.codion.framework.db.core|is.codion.{codion-jdk}:codion-framework-db-core:{codion-version}|Database API
-|is.codion.framework.db.local|is.codion.{codion-jdk}:codion-framework-db-local:{codion-version}|Local JDBC
+|is.codion.framework.db.core|is.codion:codion-framework-db-core:{codion-version}|Database API
+|is.codion.framework.db.local|is.codion:codion-framework-db-local:{codion-version}|Local JDBC
 |===
 
 ==== Selecting
