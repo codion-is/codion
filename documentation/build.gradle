@@ -43,6 +43,7 @@ asciidoctor {
     attributes 'codion-version': documentationVersion, 'codion-jdk': project.targetJdk,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
+            'diagram-cachedir': "${buildDir}/asciidoc/images/diagram-cache",
             'opar': '-',
             'cpar': '-',
             'comma': '-',
