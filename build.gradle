@@ -79,7 +79,7 @@ configure(project.frameworkModules) {
         publishing {
             publications {
                 mavenJava(MavenPublication) {
-                    groupId 'is.codion.' + project.targetJdk
+                    groupId 'is.codion.jdk8'
                     from components.java
                 }
             }
@@ -172,7 +172,7 @@ tasks.register('tagRelease') {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Thou shalt not tag a snapshot release")
         }
-        def tagName = 'v' + project.version + '-' + project.targetJdk
+        def tagName = 'v' + project.version + '-jdk8'
         exec { commandLine 'git', 'push' }
         exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
         exec { commandLine 'git', 'push', 'origin', tagName }
