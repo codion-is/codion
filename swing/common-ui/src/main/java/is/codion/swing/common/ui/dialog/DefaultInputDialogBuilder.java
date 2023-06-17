@@ -86,14 +86,14 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   }
 
   @Override
-  public InputDialogBuilder<T> inputValidState(StateObserver inputValidState) {
-    okCancelDialogBuilder.okEnabledState(inputValidState);
+  public InputDialogBuilder<T> validInputState(StateObserver validInputState) {
+    okCancelDialogBuilder.okEnabledState(validInputState);
     return this;
   }
 
   @Override
-  public InputDialogBuilder<T> inputValidPredicate(Predicate<T> inputValidPredicate) {
-    return inputValidState(createInputValidState(requireNonNull(inputValidPredicate)));
+  public InputDialogBuilder<T> validInputPredicate(Predicate<T> validInputPredicate) {
+    return validInputState(createValidInputState(requireNonNull(validInputPredicate)));
   }
 
   @Override
@@ -110,11 +110,11 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     throw new CancelException();
   }
 
-  private StateObserver createInputValidState(Predicate<T> predicate) {
-    State validValueState = State.state(predicate.test(componentValue.get()));
-    componentValue.addDataListener(value -> validValueState.set(predicate.test(componentValue.get())));
+  private StateObserver createValidInputState(Predicate<T> validInputPredicate) {
+    State validInputState = State.state(validInputPredicate.test(componentValue.get()));
+    componentValue.addDataListener(value -> validInputState.set(validInputPredicate.test(componentValue.get())));
 
-    return validValueState;
+    return validInputState;
   }
 
   private final class OnOk implements Runnable {

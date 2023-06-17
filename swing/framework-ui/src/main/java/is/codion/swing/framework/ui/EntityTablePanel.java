@@ -650,14 +650,14 @@ public class EntityTablePanel extends JPanel {
     Collection<T> values = Entity.distinct(attributeToUpdate, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
-    InputValidPredicate<T> inputValidPredicate = new InputValidPredicate<>(property, componentValue);
+    ValidInputPredicate<T> validInputPredicate = new ValidInputPredicate<>(property, componentValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(MESSAGES.getString("update"))
               .caption(property.caption())
-              .inputValidPredicate(inputValidPredicate)
+              .validInputPredicate(validInputPredicate)
               .show();
       Entity.put(attributeToUpdate, newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
@@ -1894,12 +1894,12 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final class InputValidPredicate<T> implements Predicate<T> {
+  private static final class ValidInputPredicate<T> implements Predicate<T> {
 
     private final Property<T> property;
     private final ComponentValue<T, ?> componentValue;
 
-    private InputValidPredicate(Property<T> property, ComponentValue<T, ?> componentValue) {
+    private ValidInputPredicate(Property<T> property, ComponentValue<T, ?> componentValue) {
       this.property = property;
       this.componentValue = componentValue;
     }
