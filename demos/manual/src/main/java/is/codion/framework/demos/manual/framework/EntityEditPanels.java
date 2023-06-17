@@ -14,7 +14,7 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
-import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.EntityEditComponentPanel;
 import is.codion.swing.framework.ui.EntitySearchField;
 
 import javax.swing.DefaultComboBoxModel;
@@ -54,7 +54,7 @@ public final class EntityEditPanels {
     Attribute<String> ITEM_LIST = TYPE.stringAttribute("item_list");
   }
 
-  private static final class EditPanelDemo extends EntityEditPanel {
+  private static final class EditPanelDemo extends EntityEditComponentPanel {
 
     public EditPanelDemo(SwingEntityEditModel editModel) {
       super(editModel);
@@ -197,8 +197,5 @@ public final class EntityEditPanels {
       JPanel inputPanel = createInputPanel(Demo.TEXT);
       // end::panelLabel[]
     }
-
-    @Override
-    protected void initializeUI() {}
   }
 }

@@ -112,7 +112,7 @@ public final class EntitySearchField extends HintTextField {
   private final Action transferFocusBackwardAction = TransferFocusOnEnter.backwardAction();
 
   private SingleSelectionValue singleSelectionValue;
-  private MultiSelectionValues multiSelectionValue;
+  private MultiSelectionValue multiSelectionValue;
   private SelectionProvider selectionProvider;
 
   private Color backgroundColor;
@@ -195,7 +195,7 @@ public final class EntitySearchField extends HintTextField {
    */
   public ComponentValue<List<Entity>, EntitySearchField> multiSelectionValue() {
     if (multiSelectionValue == null) {
-      multiSelectionValue = new MultiSelectionValues(this);
+      multiSelectionValue = new MultiSelectionValue(this);
     }
 
     return multiSelectionValue;
@@ -670,9 +670,9 @@ public final class EntitySearchField extends HintTextField {
     }
   }
 
-  private static final class MultiSelectionValues extends AbstractComponentValue<List<Entity>, EntitySearchField> {
+  private static final class MultiSelectionValue extends AbstractComponentValue<List<Entity>, EntitySearchField> {
 
-    private MultiSelectionValues(EntitySearchField searchField) {
+    private MultiSelectionValue(EntitySearchField searchField) {
       super(searchField);
       searchField.model().addSelectedEntitiesListener(entities -> notifyValueChange());
     }
