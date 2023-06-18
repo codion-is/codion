@@ -21,7 +21,9 @@ public interface EntityObjectMapperFactory {
    * @param entities the domain entities
    * @return a new {@link EntityObjectMapper} instance.
    */
-  EntityObjectMapper entityObjectMapper(Entities entities);
+  default EntityObjectMapper entityObjectMapper(Entities entities) {
+    return EntityObjectMapper.entityObjectMapper(entities);
+  }
 
   /**
    * Returns true if this mapper factory is compatible with the given domain type.
@@ -32,7 +34,7 @@ public interface EntityObjectMapperFactory {
 
   /**
    * Returns the first available {@link EntityObjectMapperFactory} instance compatible with the given domain type,
-   * if no such mapper factory is available a default one is returned.
+   * if no such mapper factory is available a default one, compatible with all domain models, is returned.
    * @param domainType the domain type for which to find a mapper factory
    * @return a {@link EntityObjectMapperFactory} instance compatible with the given domain type.
    */
@@ -45,16 +47,7 @@ public interface EntityObjectMapperFactory {
       }
     }
 
-    return new EntityObjectMapperFactory() {
-      @Override
-      public EntityObjectMapper entityObjectMapper(Entities entities) {
-        return EntityObjectMapper.entityObjectMapper(entities);
-      }
-
-      @Override
-      public boolean isCompatibleWith(DomainType domainType) {
-        return true;
-      }
-    };
+    //compatible with all domain models
+    return mapperDomainType -> true;
   }
 }

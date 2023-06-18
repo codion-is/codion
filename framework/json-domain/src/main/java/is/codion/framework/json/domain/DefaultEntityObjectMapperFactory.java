@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
  * A default {@link EntityObjectMapperFactory} implementation, extend to add custom serialisers/deserializers.<br><br>
  * Subclasses should be exposed as a service.
  */
-public abstract class DefaultEntityObjectMapperFactory implements EntityObjectMapperFactory {
+public class DefaultEntityObjectMapperFactory implements EntityObjectMapperFactory {
 
   private final DomainType domainType;
 

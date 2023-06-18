@@ -28,7 +28,7 @@ public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFac
 
   @Override
   public EntityObjectMapper entityObjectMapper(Entities entities) {
-    EntityObjectMapper objectMapper = EntityObjectMapper.entityObjectMapper(entities);
+    EntityObjectMapper objectMapper = super.entityObjectMapper(entities);
     objectMapper.addSerializer(Location.class, new LocationSerializer());
     objectMapper.addDeserializer(Location.class, new LocationDeserializer());
 
