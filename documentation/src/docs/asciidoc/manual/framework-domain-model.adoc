@@ -133,11 +133,11 @@ include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[t
 
 == Properties
 
-Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
+Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses, which encapsulates the metadata required for the framework to present and persist the associated value. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
 
 === Property
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] and its subclasses are used to represent entity properties, these can be transient or based on table columns.
+A {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] can be transient or based on table columns.
 
 === Primary key
 
@@ -145,7 +145,7 @@ It is recommended that entities have a primary key defined, that is, one or more
 
 The only requirement is that the primary key properties represent a unique column combination for the underlying table, it does not have to correspond to an actual table primary (or unique) key, although that is of course preferable.
 
-If no primary key properties are specified, equals() will not work (since it is based on the primary key). You can still use the *Entity.valuesEqual()* method to check if all values are equal in two entities.
+If no primary key properties are specified, equals() will not work (since it is based on the primary key). You can still use the *Entity.columnValuesEqual()* method to check if all column based values are equal in two entities.
 
 [source,java,indent=0]
 ----
@@ -260,7 +260,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 === DerivedProperty
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a transient property which value is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a value which is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
 
 [source,java,indent=0]
 ----
@@ -430,6 +430,8 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=customTypeClass]
 ----
 
+NOTE: The custom type must be serializable for use in an application using the RMI connection.
+
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnClass]
@@ -440,9 +442,7 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=converter]
 ----
 
-This custom type must be serializable for use in an application using the RMI connection.
-
-When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] containing a serializer/deserializer for the custom types.
+When using the HTTP connection in an application using a custom data type, you must implement a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapperFactory.html[EntityObjectMapperFactory], providing a {url-javadoc}{framework-json-domain}/is/codion/framework/json/domain/EntityObjectMapper.html[EntityObjectMapper] instance containing a serializer/deserializer for the custom types.
 
 [source,java,indent=0]
 ----
