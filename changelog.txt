@@ -9187,3 +9187,4 @@
   TemporalField, TemporalInputPanel.getOptional() renamed optional()
   EntityObjectMapperFactory.entityObjectMapper() now has a default implementation, subclasses now use super.entityObjectMapper()
   ControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() added
+  MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() added

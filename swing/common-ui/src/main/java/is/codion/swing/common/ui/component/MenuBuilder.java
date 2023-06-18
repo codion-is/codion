@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.MenuItemBuilder;
+import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
@@ -35,6 +37,18 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
    * @return this builder instance
    */
   MenuBuilder separator();
+
+  /**
+   * @param menuItemBuilder the menu item builder to use when creating menu items
+   * @return this builder instance
+   */
+  MenuBuilder menuItemBuilder(MenuItemBuilder<?, ?> menuItemBuilder);
+
+  /**
+   * @param toggleMenuItemBuilder the toggle menu item builder to use when creating toggle menu items
+   * @return this builder instance
+   */
+  MenuBuilder toggleMenuItemBuilder(ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder);
 
   /**
    * @return a new JPopupMenu based on this menu builder
