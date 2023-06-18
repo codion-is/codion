@@ -550,7 +550,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition referencedEntityDefinition(ForeignKey foreignKey) {
+  public EntityDefinition referencedDefinition(ForeignKey foreignKey) {
     EntityDefinition definition = foreignEntityDefinitions.get(requireNonNull(foreignKey, FOREIGN_KEY));
     if (definition == null) {
       throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);

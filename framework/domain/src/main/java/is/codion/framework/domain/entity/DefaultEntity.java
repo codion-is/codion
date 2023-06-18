@@ -499,7 +499,7 @@ class DefaultEntity implements Entity, Serializable {
     if (references.size() == 1) {
       return isNull(references.get(0).attribute());
     }
-    EntityDefinition referencedDefinition = definition.referencedEntityDefinition(foreignKey);
+    EntityDefinition referencedDefinition = definition.referencedDefinition(foreignKey);
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
       ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedAttribute());
@@ -591,13 +591,13 @@ class DefaultEntity implements Entity, Serializable {
    * @return the referenced key or null if a valid key can not be created (null values for non-nullable properties)
    */
   private Key createAndCacheReferencedKey(ForeignKey foreignKey) {
-    EntityDefinition referencedEntityDefinition = definition.referencedEntityDefinition(foreignKey);
+    EntityDefinition referencedDefinition = definition.referencedDefinition(foreignKey);
     List<ForeignKey.Reference<?>> references = foreignKey.references();
     if (references.size() > 1) {
-      return createAndCacheCompositeReferenceKey(foreignKey, references, referencedEntityDefinition);
+      return createAndCacheCompositeReferenceKey(foreignKey, references, referencedDefinition);
     }
 
-    return createAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedEntityDefinition);
+    return createAndCacheSingleReferenceKey(foreignKey, references.get(0), referencedDefinition);
   }
 
   private Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
@@ -631,7 +631,7 @@ class DefaultEntity implements Entity, Serializable {
     boolean isPrimaryKey = reference.referencedAttribute().equals(referencedEntityDefinition.primaryKeyAttributes().get(0));
 
     return cacheReferencedKey(foreignKey,
-            new DefaultKey(definition.referencedEntityDefinition(foreignKey),
+            new DefaultKey(definition.referencedDefinition(foreignKey),
                     reference.referencedAttribute(), value, isPrimaryKey));
   }
 

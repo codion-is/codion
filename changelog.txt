@@ -9182,3 +9182,4 @@
   DefaultEntityBuilder.withDefaultValues() now only sets the values for attributes which have a default value
   DefaultDerivedPropertyBuilder, now prevents the setting of nullable, min/max length and value range
   Property.denormalizedViewProperty() renamed denormalizedProperty()
+  EntityDefinition.referencedEntityDefinition() renamed referencedDefinition()
