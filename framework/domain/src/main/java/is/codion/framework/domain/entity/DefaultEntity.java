@@ -745,7 +745,7 @@ class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private boolean valueEqual(Entity entity, ColumnProperty<?> property) {
+  private boolean valueEqual(Entity entity, Property<?> property) {
     Attribute<?> attribute = property.attribute();
     if (contains(attribute) != entity.contains(attribute)) {
       return false;
