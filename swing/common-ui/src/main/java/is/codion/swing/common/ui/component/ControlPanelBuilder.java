@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
+import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Controls;
 
@@ -41,10 +43,23 @@ public interface ControlPanelBuilder<C extends JComponent, B extends ControlPane
   B separator();
 
   /**
-   * Specifies how toggle controls are presented on this tool bar.
+   * Specifies how toggle controls are presented on this control panel.
    * The default is {@link ToggleButtonType#BUTTON}.
    * @param toggleButtonType the toggle button type
    * @return this builder instance
    */
   B toggleButtonType(ToggleButtonType toggleButtonType);
+
+  /**
+   * @param buttonBuilder the button builder to use when creating buttons
+   * @return this builder instance
+   */
+  B buttonBuilder(ButtonBuilder<?, ?, ?> buttonBuilder);
+
+  /**
+   * Overrides {@link #toggleButtonType(ToggleButtonType)}.
+   * @param toggleButtonBuilder the toggle button builder to use when creating toggle buttons
+   * @return this builder instance
+   */
+  B toggleButtonBuilder(ToggleButtonBuilder<?, ?> toggleButtonBuilder);
 }

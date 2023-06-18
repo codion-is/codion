@@ -41,11 +41,11 @@ public class TemporalInputPanelTest {
   void getTemporal() {
     TemporalField<LocalDate> field = TemporalField.builder(LocalDate.class, "dd.MM.yyyy").build();
     TemporalInputPanel<LocalDate> panel = new TemporalInputPanel<>(field);
-    assertFalse(panel.getOptional().isPresent());
+    assertFalse(panel.optional().isPresent());
     panel.inputField().setText("03");
-    assertFalse(panel.getOptional().isPresent());
+    assertFalse(panel.optional().isPresent());
     panel.inputField().setText("03.04");
-    assertFalse(panel.getOptional().isPresent());
+    assertFalse(panel.optional().isPresent());
     panel.inputField().setText("03.04.2010");
     assertNotNull(panel.getTemporal());
   }

@@ -324,9 +324,10 @@ public interface Entity extends Comparable<Entity> {
     <T> Builder with(Attribute<T> attribute, T value);
 
     /**
-     * Sets the default value for all attributes.
+     * Sets the default value for all attributes which have a default value.
      * @return this builder instance
      * @see Property#defaultValue()
+     * @see Property#hasDefaultValue()
      */
     Builder withDefaultValues();
 

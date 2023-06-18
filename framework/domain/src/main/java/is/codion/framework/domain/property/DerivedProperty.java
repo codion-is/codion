@@ -44,7 +44,7 @@ public interface DerivedProperty<T> extends Property<T> {
      * @param <T> the value type
      * @return the value associated with attribute, an empty Optional in case of null
      */
-    default <T> Optional<T> getOptional(Attribute<T> attribute) {
+    default <T> Optional<T> optional(Attribute<T> attribute) {
       return Optional.ofNullable(get(attribute));
     }
   }

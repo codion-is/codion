@@ -171,7 +171,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
             columnProperty(Employee.HIRETIME, Employee.HIRETIME.name()),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
             columnProperty(Employee.DATA_LAZY),
             blobProperty(Employee.DATA)
                     .eagerlyLoaded(true))

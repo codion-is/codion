@@ -48,24 +48,28 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   /**
    * @param horizontalAlignment the horizontal alignment
    * @return this builder instance
+   * @see AbstractButton#setHorizontalAlignment(int)
    */
   B horizontalAlignment(int horizontalAlignment);
 
   /**
    * @param verticalAlignment the vertical alignment
    * @return this builder instance
+   * @see AbstractButton#setVerticalAlignment(int)
    */
   B verticalAlignment(int verticalAlignment);
 
   /**
    * @param horizontalTextPosition the horizontal text position
    * @return this builder instance
+   * @see AbstractButton#setHorizontalTextPosition(int)
    */
   B horizontalTextPosition(int horizontalTextPosition);
 
   /**
    * @param verticalTextPosition the vertical text position
    * @return this builder instance
+   * @see AbstractButton#setVerticalTextPosition(int)
    */
   B verticalTextPosition(int verticalTextPosition);
 
@@ -121,6 +125,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   /**
    * @param iconTextGap the icon text gap
    * @return this builder instance
+   * @see AbstractButton#setIconTextGap(int)
    */
   B iconTextGap(int iconTextGap);
 

@@ -31,8 +31,25 @@ public final class PropertyTest {
   private static final EntityType ENTITY_TYPE2 = DOMAIN_TYPE.entityType("entityType2");
 
   @Test
-  void derivedPropertyWithoutLinkedProperties() {
-    assertThrows(IllegalArgumentException.class, () -> derivedProperty(ENTITY_TYPE.integerAttribute("attribute"), "caption", linkedValues -> null));
+  void derivedProperties() {
+    Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
+    assertThrows(IllegalArgumentException.class, () -> derivedProperty(derived, "caption", linkedValues -> null));
+    Attribute<Integer> source = ENTITY_TYPE.integerAttribute("source");
+    assertThrows(UnsupportedOperationException.class, () -> derivedProperty(derived,
+            "caption", linkedValues -> null, source)
+            .nullable(false));
+    assertThrows(UnsupportedOperationException.class, () -> derivedProperty(derived,
+            "caption", linkedValues -> null, source)
+            .defaultValue(10));
+    assertThrows(UnsupportedOperationException.class, () -> derivedProperty(derived,
+            "caption", linkedValues -> null, source)
+            .maximumLength(10));
+    assertThrows(UnsupportedOperationException.class, () -> derivedProperty(derived,
+            "caption", linkedValues -> null, source)
+            .minimumValue(10));
+    assertThrows(UnsupportedOperationException.class, () -> derivedProperty(derived,
+            "caption", linkedValues -> null, source)
+            .valueRange(10, 20));
   }
 
   @Test

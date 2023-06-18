@@ -9218,3 +9218,12 @@
   EntityTablePanel.updateSelectedEntities(), InputValidPredicate added, now also uses the component value validators
   EntityPopupMenu bug fixed, now copies the entity in order to populate any missing foreign key values, which failed when it was immutable
   InputDialogBuilder.inputValidPredicate() and inputValidState() renamed validInputPredicate() and validInputState() respectively
+  DefaultEntityBuilder.withDefaultValues() now only sets the values for attributes which have a default value
+  DefaultDerivedPropertyBuilder, now prevents the setting of nullable, min/max length and value range
+  Property.denormalizedViewProperty() renamed denormalizedProperty()
+  EntityDefinition.referencedEntityDefinition() renamed referencedDefinition()
+  DerivedProperty.SourceValues.getOptional() renamed optional()
+  TemporalField, TemporalInputPanel.getOptional() renamed optional()
+  EntityObjectMapperFactory.entityObjectMapper() now has a default implementation, subclasses now use super.entityObjectMapper()
+  ControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() added
+  MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() added

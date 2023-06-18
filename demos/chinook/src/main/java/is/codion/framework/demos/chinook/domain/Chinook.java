@@ -306,7 +306,7 @@ public interface Chinook {
 
     @Override
     public String get(SourceValues sourceValues) {
-      return sourceValues.getOptional(Track.MILLISECONDS)
+      return sourceValues.optional(Track.MILLISECONDS)
               .map(TrackMinSecProvider::toMinutesSecondsString)
               .orElse(null);
     }
@@ -324,7 +324,7 @@ public interface Chinook {
 
     @Override
     public Image get(SourceValues sourceValues) {
-      return sourceValues.getOptional(Album.COVER)
+      return sourceValues.optional(Album.COVER)
               .map(CoverArtImageProvider::fromBytes)
               .orElse(null);
     }

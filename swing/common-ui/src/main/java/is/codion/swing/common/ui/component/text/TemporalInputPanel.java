@@ -90,8 +90,8 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   /**
    * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
-  public Optional<T> getOptional() {
-    return inputField.getOptional();
+  public Optional<T> optional() {
+    return inputField.optional();
   }
 
   /**

@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component;
 
 import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.component.button.MenuItemBuilder;
+import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -19,6 +20,9 @@ import static java.util.Objects.requireNonNull;
 final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
 
   private final Controls controls;
+
+  private MenuItemBuilder<?, ?> menuItemBuilder;
+  private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
   DefaultMenuBuilder(Controls controls) {
     this.controls = controls == null ? Controls.controls() : controls;
@@ -43,6 +47,18 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   }
 
   @Override
+  public MenuBuilder menuItemBuilder(MenuItemBuilder<?, ?> menuItemBuilder) {
+    this.menuItemBuilder = requireNonNull(menuItemBuilder);
+    return this;
+  }
+
+  @Override
+  public MenuBuilder toggleMenuItemBuilder(ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
+    this.toggleMenuItemBuilder = requireNonNull(toggleMenuItemBuilder);
+    return this;
+  }
+
+  @Override
   public JPopupMenu createPopupMenu() {
     return createComponent().getPopupMenu();
   }
@@ -62,7 +78,9 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   @Override
   protected JMenu createComponent() {
     JMenu menu = new JMenu(controls);
-    new MenuControlHandler(menu, controls);
+    new MenuControlHandler(menu, controls,
+            menuItemBuilder == null ? MenuItemBuilder.builder() : menuItemBuilder,
+            toggleMenuItemBuilder == null ? CheckBoxMenuItemBuilder.builder() : toggleMenuItemBuilder);
 
     return menu;
   }
@@ -78,9 +96,15 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   private static final class MenuControlHandler extends ControlHandler {
 
     private final JMenu menu;
+    private final MenuItemBuilder<?, ?> menuItemBuilder;
+    private final ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
-    MenuControlHandler(JMenu menu, Controls controls) {
+    MenuControlHandler(JMenu menu, Controls controls,
+                       MenuItemBuilder<?, ?> menuItemBuilder,
+                       ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
       this.menu = menu;
+      this.menuItemBuilder = menuItemBuilder.clear();
+      this.toggleMenuItemBuilder = toggleMenuItemBuilder.clear();
       controls.actions().forEach(this);
     }
 
@@ -91,21 +115,21 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
     @Override
     void onControl(Control control) {
-      menu.add(MenuItemBuilder.builder(control).build());
+      menu.add(menuItemBuilder.control(control).build());
+      menuItemBuilder.clear();
     }
 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
-      menu.add(CheckBoxMenuItemBuilder.builder()
-              .toggleControl(toggleControl)
-              .build());
+      menu.add(toggleMenuItemBuilder.toggleControl(toggleControl).build());
+      toggleMenuItemBuilder.clear();
     }
 
     @Override
     void onControls(Controls controls) {
       if (!controls.isEmpty()) {
         JMenu subMenu = new JMenu(controls);
-        new MenuControlHandler(subMenu, controls);
+        new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
         this.menu.add(subMenu);
       }
     }

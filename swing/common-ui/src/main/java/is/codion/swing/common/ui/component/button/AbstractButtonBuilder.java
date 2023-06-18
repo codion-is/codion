@@ -234,6 +234,7 @@ abstract class AbstractButtonBuilder<T, C extends AbstractButton, B extends Butt
     actionListeners.forEach(button::addActionListener);
     if (!includeText) {
       button.setText(null);
+      button.setHideActionText(true);
     }
     else if (text != null) {
       button.setText(text);
