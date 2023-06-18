@@ -195,7 +195,7 @@ public final class EmpDept extends DefaultDomain {
                             .delimiterDash()
                             .yearTwoDigits()
                             .build()),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, "Location",
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, "Location",
                     Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
             .keyGenerator(increment("scott.emp", Employee.ID.name()))

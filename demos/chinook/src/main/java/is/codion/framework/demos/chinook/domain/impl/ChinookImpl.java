@@ -225,7 +225,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
   void track() {
     add(definition(
             primaryKeyProperty(Track.ID),
-            denormalizedViewProperty(Track.ARTIST_DENORM,
+            denormalizedProperty(Track.ARTIST_DENORM,
                     Track.ALBUM_FK, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
             columnProperty(Track.ALBUM_ID),
@@ -359,7 +359,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false),
             foreignKeyProperty(PlaylistTrack.PLAYLIST_FK)
                     .preferredColumnWidth(120),
-            denormalizedViewProperty(PlaylistTrack.ARTIST_DENORM,
+            denormalizedProperty(PlaylistTrack.ARTIST_DENORM,
                     PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
                     .preferredColumnWidth(160),
             columnProperty(PlaylistTrack.TRACK_ID)
@@ -367,7 +367,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             foreignKeyProperty(PlaylistTrack.TRACK_FK)
                     .fetchDepth(3)
                     .preferredColumnWidth(160),
-            denormalizedViewProperty(PlaylistTrack.ALBUM_DENORM,
+            denormalizedProperty(PlaylistTrack.ALBUM_DENORM,
                     PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
                     .preferredColumnWidth(160))
             .tableName("chinook.playlisttrack")

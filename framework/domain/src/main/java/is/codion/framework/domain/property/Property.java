@@ -527,13 +527,13 @@ public interface Property<T> {
    * @param <B> the builder type
    * @param attribute the attribute
    * @param entityAttribute the entity attribute from which this property gets its value
-   * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
+   * @param denormalizedAttribute the attribute from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(Attribute<T> attribute,
-                                                                                                                 Attribute<Entity> entityAttribute,
-                                                                                                                 Attribute<T> denormalizedAttribute) {
-    return denormalizedViewProperty(attribute, null, entityAttribute, denormalizedAttribute);
+  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute,
+                                                                                                             Attribute<Entity> entityAttribute,
+                                                                                                             Attribute<T> denormalizedAttribute) {
+    return denormalizedProperty(attribute, null, entityAttribute, denormalizedAttribute);
   }
 
   /**
@@ -543,12 +543,12 @@ public interface Property<T> {
    * @param attribute the attribute
    * @param caption the caption of this property
    * @param entityAttribute the entity attribute from which this property gets its value
-   * @param denormalizedAttribute the property from the referenced entity, from which this property gets its value
+   * @param denormalizedAttribute the attribute from the referenced entity, from which this property gets its value
    * @return a new {@link TransientProperty.Builder}
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedViewProperty(Attribute<T> attribute, String caption,
-                                                                                                                 Attribute<Entity> entityAttribute,
-                                                                                                                 Attribute<T> denormalizedAttribute) {
+  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
+                                                                                                             Attribute<Entity> entityAttribute,
+                                                                                                             Attribute<T> denormalizedAttribute) {
     //for serialization backwards compatibility
     return Properties.denormalizedViewProperty(attribute, caption, entityAttribute, denormalizedAttribute);
   }

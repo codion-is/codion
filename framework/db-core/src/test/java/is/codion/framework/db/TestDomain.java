@@ -116,7 +116,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Detail.MASTER_ID_2),
             foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.name()),
             foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.name()),
-            denormalizedViewProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
+            denormalizedProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
             columnProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.name()),
             itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.name(), ITEMS),
             derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.name(), linkedValues -> {
@@ -213,7 +213,7 @@ public final class TestDomain extends DefaultDomain {
             foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name()),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
-            denormalizedViewProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
                     .preferredColumnWidth(100))
             .tableName("scott.emp")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

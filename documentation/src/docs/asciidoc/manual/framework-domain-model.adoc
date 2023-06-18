@@ -245,13 +245,13 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=item]
 ----
 
-=== DenormalizedViewProperty
+=== DenormalizedProperty
 
-An entity can include a read-only property value from an entity referenced via foreign key, by defining a denormalized view property.
+An entity can include a read-only property value from an entity referenced via foreign key, by defining a denormalized property.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedViewProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedProperty]
 ----
 
 === TransientProperty

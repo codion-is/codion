@@ -135,11 +135,11 @@ public final class WorldImpl extends DefaultDomain implements World {
             // tag::foreignKeyPropertyCapital[]
             foreignKeyProperty(Country.CAPITAL_FK, "Capital"),
             // end::foreignKeyPropertyCapital[]
-            // tag::denormalizedViewProperty[]
-            denormalizedViewProperty(Country.CAPITAL_POPULATION, "Capital pop.",
+            // tag::denormalizedProperty[]
+            denormalizedProperty(Country.CAPITAL_POPULATION, "Capital pop.",
                     Country.CAPITAL_FK, City.POPULATION)
                     .numberFormatGrouping(true),
-            // end::denormalizedViewProperty[]
+            // end::denormalizedProperty[]
             // tag::subqueryProperty[]
             subqueryProperty(Country.NO_OF_CITIES, "No. of cities",
                     "select count(*) from world.city " +
