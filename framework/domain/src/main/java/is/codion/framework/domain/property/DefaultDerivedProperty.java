@@ -64,6 +64,26 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     }
 
     @Override
+    public B defaultValueSupplier(ValueSupplier<T> supplier) {
+      throw new UnsupportedOperationException("A derived property can not have a default value");
+    }
+
+    @Override
+    public B nullable(boolean nullable) {
+      throw new UnsupportedOperationException("Can not set the nullable state of a derived property");
+    }
+
+    @Override
+    public B maximumLength(int maximumLength) {
+      throw new UnsupportedOperationException("Can not set the maximum length of a derived property");
+    }
+
+    @Override
+    public B valueRange(Number minimumValue, Number maximumValue) {
+      throw new UnsupportedOperationException("Can not set minimum or maximum value of a derived property");
+    }
+
+    @Override
     public Property<T> build() {
       return new DefaultDerivedProperty<>(this);
     }

@@ -501,7 +501,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B defaultValueSupplier(ValueSupplier<T> supplier) {
+    public B defaultValueSupplier(ValueSupplier<T> supplier) {
       if (supplier != null) {
         attribute.validateType(supplier.get());
       }
@@ -510,13 +510,13 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B nullable(boolean nullable) {
+    public B nullable(boolean nullable) {
       this.nullable = nullable;
       return (B) this;
     }
 
     @Override
-    public final B maximumLength(int maximumLength) {
+    public B maximumLength(int maximumLength) {
       if (!attribute.isString()) {
         throw new IllegalStateException("maximumLength is only applicable to string properties: " + attribute);
       }
@@ -538,7 +538,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
 
     @Override
-    public final B valueRange(Number minimumValue, Number maximumValue) {
+    public B valueRange(Number minimumValue, Number maximumValue) {
       if (!attribute.isNumerical()) {
         throw new IllegalStateException("valueRange is only applicable to numerical properties");
       }

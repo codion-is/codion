@@ -9180,3 +9180,4 @@
   EntityPopupMenu bug fixed, now copies the entity in order to populate any missing foreign key values, which failed when it was immutable
   InputDialogBuilder.inputValidPredicate() and inputValidState() renamed validInputPredicate() and validInputState() respectively
   DefaultEntityBuilder.withDefaultValues() now only sets the values for attributes which have a default value
+  DefaultDerivedPropertyBuilder, now prevents the setting of nullable, min/max length and value range
