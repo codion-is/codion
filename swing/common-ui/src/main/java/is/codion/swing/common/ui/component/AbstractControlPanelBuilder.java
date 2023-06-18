@@ -3,6 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
+import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
+import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Controls;
 
@@ -19,6 +23,8 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
   private int orientation = SwingConstants.HORIZONTAL;
   private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
+  private ButtonBuilder<?, ?, ?> buttonBuilder;
+  private ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
   protected AbstractControlPanelBuilder(Controls controls) {
     if (controls != null) {
@@ -60,6 +66,18 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
   }
 
   @Override
+  public final B buttonBuilder(ButtonBuilder<?, ?, ?> buttonBuilder) {
+    this.buttonBuilder = requireNonNull(buttonBuilder);
+    return (B) this;
+  }
+
+  @Override
+  public final B toggleButtonBuilder(ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
+    this.toggleButtonBuilder = requireNonNull(toggleButtonBuilder);
+    return (B) this;
+  }
+
+  @Override
   protected final ComponentValue<Void, C> createComponentValue(C component) {
     throw new UnsupportedOperationException("A ComponentValue can not be based on this component type");
   }
@@ -75,7 +93,24 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
     return orientation;
   }
 
-  protected final ToggleButtonType toggleButtonType() {
-    return toggleButtonType;
+  protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
+    return buttonBuilder;
+  }
+
+  protected final ToggleButtonBuilder<?, ?> toggleButtonBuilder() {
+    return toggleButtonBuilder;
+  }
+
+  protected final ToggleButtonBuilder<?, ?> createToggleButtonBuilder() {
+    switch (toggleButtonType) {
+      case CHECKBOX:
+        return CheckBoxBuilder.builder();
+      case BUTTON:
+        return ToggleButtonBuilder.builder();
+      case RADIO_BUTTON:
+        return RadioButtonBuilder.builder();
+      default:
+        throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
+    }
   }
 }

@@ -3,10 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
-import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
-import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
-import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -14,10 +12,8 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JToggleButton;
 import javax.swing.SwingConstants;
 import java.awt.GridLayout;
 
@@ -31,7 +27,9 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    new ButtonControlHandler(panel, controls());
+    new ButtonControlHandler(panel, controls(),
+            buttonBuilder() == null ? ButtonBuilder.builder() : buttonBuilder(),
+            toggleButtonBuilder() == null ? createToggleButtonBuilder() : toggleButtonBuilder());
 
     return panel;
   }
@@ -50,31 +48,18 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
     return panel;
   }
 
-  static JToggleButton createToggleButton(ToggleControl toggleControl, ToggleButtonType toggleButtonType) {
-    switch (toggleButtonType) {
-      case CHECKBOX:
-        return CheckBoxBuilder.builder()
-                .toggleControl(toggleControl)
-                .build();
-      case BUTTON:
-        return ToggleButtonBuilder.builder()
-                .toggleControl(toggleControl)
-                .build();
-      case RADIO_BUTTON:
-        return RadioButtonBuilder.builder()
-                .toggleControl(toggleControl)
-                .build();
-      default:
-        throw new IllegalArgumentException("Unknown toggle button type: " + toggleButtonType);
-    }
-  }
-
   private final class ButtonControlHandler extends ControlHandler {
 
     private final JPanel panel;
+    private final ButtonBuilder<?, ?, ?> buttonBuilder;
+    private final ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
-    private ButtonControlHandler(JPanel panel, Controls controls) {
+    private ButtonControlHandler(JPanel panel, Controls controls,
+                                 ButtonBuilder<?, ?, ?> buttonBuilder,
+                                 ToggleButtonBuilder<?, ?> toggleButtonBuilder) {
       this.panel = panel;
+      this.buttonBuilder = buttonBuilder.clear();
+      this.toggleButtonBuilder = toggleButtonBuilder.clear();
       controls.actions().forEach(this);
     }
 
@@ -90,21 +75,23 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
-      panel.add(createToggleButton(toggleControl, toggleButtonType()));
+      panel.add(toggleButtonBuilder.toggleControl(toggleControl).build());
+      toggleButtonBuilder.clear();
     }
 
     @Override
     void onControls(Controls controls) {
       if (!controls.isEmpty()) {
         JPanel controlPanel = createPanel();
-        new ButtonControlHandler(controlPanel, controls);
+        new ButtonControlHandler(controlPanel, controls, buttonBuilder, toggleButtonBuilder);
         panel.add(controlPanel);
       }
     }
 
     @Override
     void onAction(Action action) {
-      panel.add(new JButton(action));
+      panel.add(buttonBuilder.action(action).build());
+      buttonBuilder.clear();
     }
   }
 }
