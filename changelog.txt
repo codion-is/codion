@@ -9184,3 +9184,4 @@
   Property.denormalizedViewProperty() renamed denormalizedProperty()
   EntityDefinition.referencedEntityDefinition() renamed referencedDefinition()
   DerivedProperty.SourceValues.getOptional() renamed optional()
+  TemporalField, TemporalInputPanel.getOptional() renamed optional()

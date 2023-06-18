@@ -85,7 +85,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   /**
    * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
-  public Optional<T> getOptional() {
+  public Optional<T> optional() {
     return Optional.ofNullable(getTemporal());
   }
 
