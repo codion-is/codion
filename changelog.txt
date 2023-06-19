@@ -9191,3 +9191,4 @@
   DefaultFilteredTableModel.DefaultSummaryValueProvider no longer public (wasn't accessible due to parent class not being public)
   FilteredTableModel.summaryValueProvider() factory method added
   SwingEntityTableModel bug fixed, summary model was created for item properties, which are now excluded
+  EntityServer, EntityService, info printed on startup improved
