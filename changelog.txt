@@ -9227,3 +9227,8 @@
   EntityObjectMapperFactory.entityObjectMapper() now has a default implementation, subclasses now use super.entityObjectMapper()
   ControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() added
   MenuBuilder.menuItemBuilder() and toggleMenuItemBuilder() added
+  DefaultFilteredTableModel.DefaultSummaryValueProvider no longer public (wasn't accessible due to parent class not being public)
+  FilteredTableModel.summaryValueProvider() factory method added
+  SwingEntityTableModel bug fixed, summary model was created for item properties, which are now excluded
+  EntityServer, EntityService, info printed on startup improved
+  DefaultToolBarBuilder bug fixed, no longer configures button text position and now only sets includeText() in case the default button builder is being used

@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
+import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 import is.codion.common.state.State;
@@ -26,6 +27,7 @@ import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
@@ -48,6 +50,7 @@ import org.slf4j.LoggerFactory;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.awt.Color;
+import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,6 +60,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -65,6 +69,7 @@ import java.util.function.Predicate;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;
+import static is.codion.swing.common.model.component.table.FilteredTableModel.summaryValueProvider;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -1180,9 +1185,23 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return FilteredTableModel.builder(new EntityColumnValueProvider())
             .columns(createColumns(entityType, entities))
             .filterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
+            .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
             .itemValidator(row -> row.type().equals(entityType))
             .build();
+  }
+
+  private final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+
+    @Override
+    public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
+      Property<?> property = entityDefinition().property(attribute);
+      if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
+        return Optional.of(summaryValueProvider(attribute, tableModel, format));
+      }
+
+      return Optional.empty();
+    }
   }
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {

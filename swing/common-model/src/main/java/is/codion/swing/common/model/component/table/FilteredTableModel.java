@@ -12,6 +12,7 @@ import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
 
 import javax.swing.table.TableModel;
+import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
@@ -288,6 +289,19 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    */
   static <R, C> Builder<R, C> builder(ColumnValueProvider<R, C> columnValueProvider) {
     return new DefaultFilteredTableModel.DefaultBuilder<>(columnValueProvider);
+  }
+
+  /**
+   * Instantiates a new {@link SummaryValueProvider} instance.
+   * @param columnIdentifier the column identifier
+   * @param tableModel the table model
+   * @param format the format, may be null
+   * @return a new {@link SummaryValueProvider} instance
+   * @param <T> the column value type
+   * @param <C> the column identifier type
+   */
+  static <T extends Number, C> SummaryValueProvider<T> summaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+    return new DefaultFilteredTableModel.DefaultSummaryValueProvider<>(columnIdentifier, tableModel, format);
   }
 
   /**

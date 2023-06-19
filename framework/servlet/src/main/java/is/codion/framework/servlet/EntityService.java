@@ -16,6 +16,7 @@ import is.codion.common.rmi.server.ServerAdmin;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
+import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
@@ -175,7 +176,10 @@ public final class EntityService implements AuxiliaryServer {
 
   @Override
   public String serverInformation() {
-    return "Entity Service bound to port: " + port + ", secure port: " + securePort + ", ssl enabled: " + sslEnabled;
+    return "Entity Service " + Version.version()
+            + " started on port: " + port
+            + ", securePort: " + securePort
+            + ", sslEnabled: " + sslEnabled;
   }
 
   private void setupHandlers() {

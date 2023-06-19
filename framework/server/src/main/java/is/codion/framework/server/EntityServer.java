@@ -94,7 +94,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
       createConnectionPools(configuration.database(), configuration.connectionPoolProvider(), configuration.connectionPoolUsers());
       setConnectionLimit(configuration.connectionLimit());
-      bindToRegistry(configuration.registryPort());
+      bindToRegistry(configuration.registryPort(), configuration.adminPort());
     }
     catch (Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t));
@@ -343,19 +343,16 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return null;
   }
 
-  /**
-   * Binds this server instance to the registry
-   * @param registryPort the registry port
-   * @throws RemoteException in case of an exception
-   */
-  private void bindToRegistry(int registryPort) throws RemoteException {
+  private void bindToRegistry(int registryPort, int adminPort) throws RemoteException {
     registry().rebind(serverInformation().serverName(), this);
-    String connectInfo = serverInformation().serverName()
-            + " bound to registry on port: " + registryPort
-            + ", host: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
+    String startupInfo = serverInformation().serverName()
+            + " started on port: " + serverInformation().serverPort()
+            + ", registryPort: " + registryPort
+            + ", adminPort: " + adminPort
+            + ", hostname: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
             + auxiliaryServerInfo();
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
+    LOG.info(startupInfo);
+    System.out.println(startupInfo);
   }
 
   private String auxiliaryServerInfo() {
