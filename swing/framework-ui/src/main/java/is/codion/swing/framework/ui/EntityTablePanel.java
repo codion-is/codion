@@ -59,6 +59,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -1535,7 +1538,9 @@ public class EntityTablePanel extends JPanel {
       return;
     }
 
-    JPopupMenu popupMenu = menu(popupControls).createPopupMenu();
+    JPopupMenu popupMenu = menu(popupControls)
+            .popupMenuListener(new EntityTablePopupMenuListener())
+            .createPopupMenu();
     table.setComponentPopupMenu(popupMenu);
     if (table.getParent() != null) {
       ((JComponent) table.getParent()).setComponentPopupMenu(popupMenu);
@@ -1837,6 +1842,21 @@ public class EntityTablePanel extends JPanel {
 
       return component;
     }
+  }
+
+  private final class EntityTablePopupMenuListener implements PopupMenuListener {
+
+    @Override
+    public void popupMenuWillBecomeVisible(PopupMenuEvent e) {}
+
+    @Override
+    public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {
+      //otherwise the JRootPane can get the focus, and key events stop working
+      SwingUtilities.invokeLater(table::requestFocusInWindow);
+    }
+
+    @Override
+    public void popupMenuCanceled(PopupMenuEvent e) {}
   }
 
   private static final class StaticSwingEntityTableModel extends SwingEntityTableModel {
