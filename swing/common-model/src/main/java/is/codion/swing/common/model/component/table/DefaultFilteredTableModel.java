@@ -604,7 +604,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   /**
    * A default SummaryValueProvider implementation
    */
-  public static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
+  static final class DefaultSummaryValueProvider<T extends Number, C> implements SummaryValueProvider<T> {
 
     private final C columnIdentifier;
     private final FilteredTableModel<?, C> tableModel;
@@ -615,7 +615,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
      * @param tableModel the table model
      * @param format the format to use for presenting the summary value
      */
-    public DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
+    DefaultSummaryValueProvider(C columnIdentifier, FilteredTableModel<?, C> tableModel, Format format) {
       this.columnIdentifier = requireNonNull(columnIdentifier);
       this.tableModel = requireNonNull(tableModel);
       this.format = format;
