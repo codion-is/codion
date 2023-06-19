@@ -11,6 +11,10 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -18,6 +22,8 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
   private final Controls controls;
 
+  private final List<MenuListener> menuListeners = new ArrayList<>();
+  private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
   private MenuItemBuilder<?, ?> menuItemBuilder;
   private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
@@ -39,6 +45,18 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
   }
 
   @Override
+  public MenuBuilder menuListener(MenuListener menuListener) {
+    menuListeners.add(requireNonNull(menuListener));
+    return this;
+  }
+
+  @Override
+  public MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener) {
+    popupMenuListeners.add(requireNonNull(popupMenuListener));
+    return this;
+  }
+
+  @Override
   public MenuBuilder menuItemBuilder(MenuItemBuilder<?, ?> menuItemBuilder) {
     this.menuItemBuilder = requireNonNull(menuItemBuilder);
     return this;
@@ -52,7 +70,10 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
   @Override
   public JPopupMenu createPopupMenu() {
-    return createComponent().getPopupMenu();
+    JPopupMenu popupMenu = createComponent().getPopupMenu();
+    popupMenuListeners.forEach(popupMenu::addPopupMenuListener);
+
+    return popupMenu;
   }
 
   @Override
@@ -70,6 +91,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
   @Override
   protected JMenu createButton() {
     JMenu menu = new JMenu(controls);
+    menuListeners.forEach(menu::addMenuListener);
     new MenuControlHandler(menu, controls,
             menuItemBuilder == null ? MenuItemBuilder.builder() : menuItemBuilder,
             toggleMenuItemBuilder == null ? CheckBoxMenuItemBuilder.builder() : toggleMenuItemBuilder);

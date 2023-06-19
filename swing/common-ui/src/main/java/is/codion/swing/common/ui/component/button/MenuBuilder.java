@@ -9,6 +9,8 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuListener;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,6 +31,20 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
    * @return this builder instance
    */
   MenuBuilder separator();
+
+  /**
+   * @param menuListener the menu listener
+   * @return this builder instance
+   */
+  MenuBuilder menuListener(MenuListener menuListener);
+
+  /**
+   * Has no effect if a popup menu is not created.
+   * @param popupMenuListener the popup menu listener
+   * @return this builder instance
+   * @see #createPopupMenu()
+   */
+  MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener);
 
   /**
    * @param menuItemBuilder the menu item builder to use when creating menu items
