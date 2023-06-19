@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
 import is.codion.swing.common.ui.control.Controls;
 

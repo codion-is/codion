@@ -1,11 +1,8 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
-import is.codion.swing.common.ui.component.button.MenuItemBuilder;
-import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -17,7 +14,7 @@ import javax.swing.JPopupMenu;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
+final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder> implements MenuBuilder {
 
   private final Controls controls;
 
@@ -25,13 +22,8 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
   DefaultMenuBuilder(Controls controls) {
+    super(controls);
     this.controls = controls == null ? Controls.controls() : controls;
-  }
-
-  @Override
-  public MenuBuilder action(Action action) {
-    this.controls.add(requireNonNull(action));
-    return this;
   }
 
   @Override
@@ -76,7 +68,7 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   }
 
   @Override
-  protected JMenu createComponent() {
+  protected JMenu createButton() {
     JMenu menu = new JMenu(controls);
     new MenuControlHandler(menu, controls,
             menuItemBuilder == null ? MenuItemBuilder.builder() : menuItemBuilder,
@@ -84,14 +76,6 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
     return menu;
   }
-
-  @Override
-  protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
-    throw new UnsupportedOperationException("A ComponentValue can not be based on a JMenu");
-  }
-
-  @Override
-  protected void setInitialValue(JMenu component, Void initialValue) {}
 
   private static final class MenuControlHandler extends ControlHandler {
 

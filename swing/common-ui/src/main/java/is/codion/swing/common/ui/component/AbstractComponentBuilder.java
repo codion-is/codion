@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.component.button.MenuBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
@@ -205,7 +206,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B popupMenuControls(Controls popupMenuControls) {
-    return popupMenu(new DefaultMenuBuilder(requireNonNull(popupMenuControls)).createPopupMenu());
+    return popupMenu(MenuBuilder.builder(requireNonNull(popupMenuControls)).createPopupMenu());
   }
 
   @Override
