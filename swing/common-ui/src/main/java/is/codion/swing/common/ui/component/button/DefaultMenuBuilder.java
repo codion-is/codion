@@ -1,11 +1,8 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
-import is.codion.swing.common.ui.component.button.MenuItemBuilder;
-import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -14,24 +11,25 @@ import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, MenuBuilder> implements MenuBuilder {
+final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder> implements MenuBuilder {
 
   private final Controls controls;
 
+  private final List<MenuListener> menuListeners = new ArrayList<>();
+  private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
   private MenuItemBuilder<?, ?> menuItemBuilder;
   private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
   DefaultMenuBuilder(Controls controls) {
+    super(controls);
     this.controls = controls == null ? Controls.controls() : controls;
-  }
-
-  @Override
-  public MenuBuilder action(Action action) {
-    this.controls.add(requireNonNull(action));
-    return this;
   }
 
   @Override
@@ -43,6 +41,18 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   @Override
   public MenuBuilder separator() {
     this.controls.addSeparator();
+    return this;
+  }
+
+  @Override
+  public MenuBuilder menuListener(MenuListener menuListener) {
+    menuListeners.add(requireNonNull(menuListener));
+    return this;
+  }
+
+  @Override
+  public MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener) {
+    popupMenuListeners.add(requireNonNull(popupMenuListener));
     return this;
   }
 
@@ -60,7 +70,10 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
 
   @Override
   public JPopupMenu createPopupMenu() {
-    return createComponent().getPopupMenu();
+    JPopupMenu popupMenu = createComponent().getPopupMenu();
+    popupMenuListeners.forEach(popupMenu::addPopupMenuListener);
+
+    return popupMenu;
   }
 
   @Override
@@ -76,22 +89,15 @@ final class DefaultMenuBuilder extends AbstractComponentBuilder<Void, JMenu, Men
   }
 
   @Override
-  protected JMenu createComponent() {
+  protected JMenu createButton() {
     JMenu menu = new JMenu(controls);
+    menuListeners.forEach(menu::addMenuListener);
     new MenuControlHandler(menu, controls,
             menuItemBuilder == null ? MenuItemBuilder.builder() : menuItemBuilder,
             toggleMenuItemBuilder == null ? CheckBoxMenuItemBuilder.builder() : toggleMenuItemBuilder);
 
     return menu;
   }
-
-  @Override
-  protected ComponentValue<Void, JMenu> createComponentValue(JMenu component) {
-    throw new UnsupportedOperationException("A ComponentValue can not be based on a JMenu");
-  }
-
-  @Override
-  protected void setInitialValue(JMenu component, Void initialValue) {}
 
   private static final class MenuControlHandler extends ControlHandler {
 

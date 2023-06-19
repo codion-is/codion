@@ -9232,3 +9232,7 @@
   SwingEntityTableModel bug fixed, summary model was created for item properties, which are now excluded
   EntityServer, EntityService, info printed on startup improved
   DefaultToolBarBuilder bug fixed, no longer configures button text position and now only sets includeText() in case the default button builder is being used
+  ControlPanelBuilder, MenuBuilder and descendants moved to button package
+  MenuBuilder.menuListener() and popupMenuListener() added
+  EntityTablePanel, popup menu listener added to prevent the JRootPane stealing the focus when toggle buttons are engaged, thereby rendering all key events inaccessible
+  TextInputPanel, text field no longer requests focus once the input dialog is closed

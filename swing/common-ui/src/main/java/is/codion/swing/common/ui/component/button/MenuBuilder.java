@@ -1,29 +1,23 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.button.MenuItemBuilder;
-import is.codion.swing.common.ui.component.button.ToggleMenuItemBuilder;
+import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.control.Controls;
 
-import javax.swing.Action;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPopupMenu;
+import javax.swing.event.MenuListener;
+import javax.swing.event.PopupMenuListener;
 
 import static java.util.Objects.requireNonNull;
 
 /**
  * A builder for menus.
  */
-public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> {
-
-  /**
-   * @param action the action to add
-   * @return this builder instance
-   */
-  MenuBuilder action(Action action);
+public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>, MenuItemBuilder<JMenu, MenuBuilder> {
 
   /**
    * Adds all actions from the given {@link Controls} instance
@@ -37,6 +31,20 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder> 
    * @return this builder instance
    */
   MenuBuilder separator();
+
+  /**
+   * @param menuListener the menu listener
+   * @return this builder instance
+   */
+  MenuBuilder menuListener(MenuListener menuListener);
+
+  /**
+   * Has no effect if a popup menu is not created.
+   * @param popupMenuListener the popup menu listener
+   * @return this builder instance
+   * @see #createPopupMenu()
+   */
+  MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener);
 
   /**
    * @param menuItemBuilder the menu item builder to use when creating menu items

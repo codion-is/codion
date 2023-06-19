@@ -1,13 +1,10 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.button.ButtonBuilder;
-import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
-import is.codion.swing.common.ui.component.button.RadioButtonBuilder;
-import is.codion.swing.common.ui.component.button.ToggleButtonBuilder;
-import is.codion.swing.common.ui.component.button.ToggleButtonType;
+import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.Action;
