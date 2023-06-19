@@ -2,6 +2,7 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.model.LookupTableModel;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ToggleButtonType;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -85,6 +86,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .addAll(toggleColumnsControls))
             .orientation(SwingConstants.VERTICAL)
             .toggleButtonType(ToggleButtonType.CHECKBOX)
+            .buttonBuilder(ButtonBuilder.builder().includeText(true))
             .border(createTitledBorder("Columns"))
             .build();
   }
@@ -115,6 +117,7 @@ final class LookupTablePanel extends EntityTablePanel {
                     .map(ToggleControl.class::cast)
                     .forEach(toggleControl -> toggleControl.value().set(true)))
             .name("Select all")
+            .smallIcon(FrameworkIcons.instance().icon(Foundation.CHECK))
             .build();
   }
 }
