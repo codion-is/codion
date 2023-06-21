@@ -8,6 +8,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.common.value.ValueSet;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
@@ -884,14 +885,14 @@ public final class Components {
    * @return a JTabbedPane builder
    */
   public static TabbedPaneBuilder tabbedPane() {
-    return new DefaultTabbedPaneBuilder();
+    return TabbedPaneBuilder.builder();
   }
 
   /**
    * @return a JSplitPane builder
    */
   public static SplitPaneBuilder splitPane() {
-    return new DefaultSplitPaneBuilder();
+    return SplitPaneBuilder.builder();
   }
 
   /**
@@ -899,7 +900,7 @@ public final class Components {
    * @return a JScrollPane builder
    */
   public static ScrollPaneBuilder scrollPane(JComponent view) {
-    return new DefaultScrollPaneBuilder(view);
+    return ScrollPaneBuilder.builder(view);
   }
 
   /**
@@ -914,7 +915,7 @@ public final class Components {
    * @return a JProgressBar builder
    */
   public static ProgressBarBuilder progressBar(BoundedRangeModel boundedRangeModel) {
-    return new DefaultProgressBarBuilder(boundedRangeModel);
+    return ProgressBarBuilder.builder(boundedRangeModel);
   }
 
   /**

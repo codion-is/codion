@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 
 import javax.swing.text.JTextComponent;

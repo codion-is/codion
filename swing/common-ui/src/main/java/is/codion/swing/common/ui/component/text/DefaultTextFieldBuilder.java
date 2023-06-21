@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

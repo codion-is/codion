@@ -6,7 +6,7 @@ package is.codion.swing.common.ui.component.label;
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.ValueObserver;
-import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;

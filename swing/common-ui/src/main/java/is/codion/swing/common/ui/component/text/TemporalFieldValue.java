@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;

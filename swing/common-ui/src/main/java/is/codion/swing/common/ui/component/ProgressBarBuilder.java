@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+
+import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 
 /**
@@ -44,4 +47,12 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
    * @return a new JProgressBar
    */
   JProgressBar build();
+
+  /**
+   * @param boundedRangeModel the progress bar model
+   * @return a new {@link ProgressBarBuilder} instance
+   */
+  static ProgressBarBuilder builder(BoundedRangeModel boundedRangeModel) {
+    return new DefaultProgressBarBuilder(boundedRangeModel);
+  }
 }

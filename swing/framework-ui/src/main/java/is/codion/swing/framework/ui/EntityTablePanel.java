@@ -25,7 +25,6 @@ import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.FilteredTable;
@@ -34,6 +33,7 @@ import is.codion.swing.common.ui.component.table.FilteredTableCellRendererFactor
 import is.codion.swing.common.ui.component.table.FilteredTableColumnComponentPanel;
 import is.codion.swing.common.ui.component.table.FilteredTableConditionPanel;
 import is.codion.swing.common.ui.component.text.TemporalField;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;

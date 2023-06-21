@@ -8,7 +8,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.BorderFactory;

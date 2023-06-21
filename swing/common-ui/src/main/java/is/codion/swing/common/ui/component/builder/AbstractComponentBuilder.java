@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.event.Event;
 import is.codion.common.state.StateObserver;
@@ -9,7 +9,9 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
+import is.codion.swing.common.ui.component.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.button.MenuBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
@@ -361,7 +363,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final ScrollPaneBuilder scrollPane() {
-    return new DefaultScrollPaneBuilder(build());
+    return ScrollPaneBuilder.builder(build());
   }
 
   @Override

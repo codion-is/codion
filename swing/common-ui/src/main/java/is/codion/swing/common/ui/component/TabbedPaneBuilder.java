@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+
 import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
@@ -113,5 +115,12 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
      * @return the {@link TabbedPaneBuilder} instance
      */
     TabbedPaneBuilder add();
+  }
+
+  /**
+   * @return a new {@link TabbedPaneBuilder} instance
+   */
+  static TabbedPaneBuilder builder() {
+    return new DefaultTabbedPaneBuilder();
   }
 }

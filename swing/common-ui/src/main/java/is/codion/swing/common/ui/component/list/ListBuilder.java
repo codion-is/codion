@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.ValueSet;
-import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;

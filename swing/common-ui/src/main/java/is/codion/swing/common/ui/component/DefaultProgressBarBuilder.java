@@ -3,6 +3,10 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
+
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;
 

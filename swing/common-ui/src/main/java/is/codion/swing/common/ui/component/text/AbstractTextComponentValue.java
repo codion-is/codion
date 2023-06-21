@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.AbstractDocument;

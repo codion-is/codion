@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+
+import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import java.awt.LayoutManager;
 
@@ -58,4 +61,12 @@ public interface ScrollPaneBuilder extends ComponentBuilder<Void, JScrollPane, S
    * @return this builder instance
    */
   ScrollPaneBuilder layout(LayoutManager layout);
+
+  /**
+   * @param view the view component
+   * @return a new {@link ScrollPaneBuilder} instance
+   */
+  static ScrollPaneBuilder builder(JComponent view) {
+    return new DefaultScrollPaneBuilder(view);
+  }
 }

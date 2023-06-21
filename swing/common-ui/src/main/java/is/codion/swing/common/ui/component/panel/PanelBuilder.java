@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.panel;
 
-import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

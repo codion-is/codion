@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component.spinner;
 
 import is.codion.common.value.Value;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JSpinner;

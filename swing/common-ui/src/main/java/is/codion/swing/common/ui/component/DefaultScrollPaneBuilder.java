@@ -3,6 +3,9 @@
  */
 package is.codion.swing.common.ui.component;
 
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
+
 import javax.swing.JComponent;
 import javax.swing.JScrollPane;
 import javax.swing.ScrollPaneConstants;
