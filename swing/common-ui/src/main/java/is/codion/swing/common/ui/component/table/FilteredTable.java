@@ -165,7 +165,7 @@ public final class FilteredTable<R, C> extends JTable {
   private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
 
   private FilteredTable(DefaultBuilder<R, C> builder) {
-    super(requireNonNull(builder.tableModel, "tableModel"), builder.tableModel.columnModel(), builder.tableModel.selectionModel());
+    super(builder.tableModel, builder.tableModel.columnModel(), builder.tableModel.selectionModel());
     this.tableModel = builder.tableModel;
     this.conditionPanelFactory = builder.conditionPanelFactory;
     this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, builder.cellRendererFactory));
