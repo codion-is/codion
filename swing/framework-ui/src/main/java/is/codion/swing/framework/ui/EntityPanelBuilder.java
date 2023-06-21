@@ -25,7 +25,6 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -487,9 +486,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     @Override
     public void perform() throws Exception {
-      if (component instanceof JComboBox && ((JComboBox<?>) component).isPopupVisible()) {
-        ((JComboBox<?>) component).hidePopup();
-      }
       EntityEditPanel editPanel = createEditPanel();
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
