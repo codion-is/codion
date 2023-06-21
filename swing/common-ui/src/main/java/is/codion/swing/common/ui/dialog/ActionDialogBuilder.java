@@ -11,7 +11,7 @@ import java.awt.FlowLayout;
 import java.util.function.Consumer;
 
 /**
- * Builds a dialog with a button panel based on a actions.
+ * Builds a dialog with a button panel based on actions.
  */
 public interface ActionDialogBuilder<B extends ActionDialogBuilder<B>> extends DialogBuilder<B> {
 
