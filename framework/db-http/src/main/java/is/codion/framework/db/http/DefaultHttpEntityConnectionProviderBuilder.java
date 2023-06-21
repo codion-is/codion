@@ -41,6 +41,12 @@ public final class DefaultHttpEntityConnectionProviderBuilder
   }
 
   @Override
+  public HttpEntityConnectionProvider.Builder securePort(int securePort) {
+    this.securePort = securePort;
+    return this;
+  }
+
+  @Override
   public HttpEntityConnectionProvider.Builder https(boolean https) {
     this.https = https;
     return this;

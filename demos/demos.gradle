@@ -78,6 +78,7 @@ classes.dependsOn writeVersion
 tasks.register('runClientLocal', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
+    maxHeapSize = '512m'
     systemProperties = [
             'codion.client.connectionType': 'local',
             'codion.db.url'               : 'jdbc:h2:mem:h2db',
@@ -89,6 +90,7 @@ tasks.register('runClientLocal', JavaExec) {
 tasks.register('runClientRMI', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
+    maxHeapSize = '512m'
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
@@ -101,6 +103,7 @@ tasks.register('runClientRMI', JavaExec) {
 tasks.register('runClientHttp', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
+    maxHeapSize = '512m'
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
@@ -112,6 +115,7 @@ tasks.register('runClientHttp', JavaExec) {
 tasks.register('runLoadTestRMI', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
+    maxHeapSize = '1024m'
     systemProperties = [
             'codion.client.connectionType'    : 'remote',
             'codion.server.hostname'          : "${serverHostName}",
@@ -123,6 +127,7 @@ tasks.register('runLoadTestRMI', JavaExec) {
 tasks.register('runLoadTestHttp', JavaExec) {
     group 'application'
     classpath = sourceSets.main.runtimeClasspath
+    maxHeapSize = '1024m'
     systemProperties = [
             'codion.client.connectionType': 'http',
             'codion.client.http.secure'   : 'false',
