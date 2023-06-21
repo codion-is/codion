@@ -122,6 +122,15 @@ public final class Dialogs {
   }
 
   /**
+   * @param component the component to display
+   * @param <B> the builder type
+   * @return a new ActionDialogBuilder
+   */
+  public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> actionDialog(JComponent component) {
+    return new DefaultActionDialogBuilder<>(component);
+  }
+
+  /**
    * @return a new CalendarDialogBuilder
    */
   public static CalendarDialogBuilder calendarDialog() {
