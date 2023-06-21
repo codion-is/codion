@@ -29,12 +29,14 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
   /**
    * Adds a separator
    * @return this builder instance
+   * @see JMenu#addSeparator()
    */
   MenuBuilder separator();
 
   /**
    * @param menuListener the menu listener
    * @return this builder instance
+   * @see JMenu#addMenuListener(MenuListener)
    */
   MenuBuilder menuListener(MenuListener menuListener);
 
@@ -43,6 +45,7 @@ public interface MenuBuilder extends ComponentBuilder<Void, JMenu, MenuBuilder>,
    * @param popupMenuListener the popup menu listener
    * @return this builder instance
    * @see #createPopupMenu()
+   * @see JPopupMenu#addPopupMenuListener(PopupMenuListener)
    */
   MenuBuilder popupMenuListener(PopupMenuListener popupMenuListener);
 

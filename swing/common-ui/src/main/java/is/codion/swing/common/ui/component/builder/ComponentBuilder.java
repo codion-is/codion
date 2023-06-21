@@ -209,6 +209,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param visible the initial component visibility, default true
    * @return this builder instance
+   * @see JComponent#setVisible(boolean)
    */
   B visible(boolean visible);
 

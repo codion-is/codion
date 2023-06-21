@@ -78,18 +78,21 @@ public interface ItemComboBoxBuilder<T> extends ComponentBuilder<T, JComboBox<It
   /**
    * @param renderer the renderer for the combo box
    * @return this builder instance
+   * @see JComboBox#setRenderer(ListCellRenderer)
    */
   ItemComboBoxBuilder<T> renderer(ListCellRenderer<Item<T>> renderer);
 
   /**
    * @param editor the editor for the combo box
    * @return this builder instance
+   * @see JComboBox#setEditor(ComboBoxEditor)
    */
   ItemComboBoxBuilder<T> editor(ComboBoxEditor editor);
 
   /**
    * @param itemListener the item listener
    * @return this builder instance
+   * @see JComboBox#addItemListener(ItemListener)
    */
   ItemComboBoxBuilder<T> itemListener(ItemListener itemListener);
 

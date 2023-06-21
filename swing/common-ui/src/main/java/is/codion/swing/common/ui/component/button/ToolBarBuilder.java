@@ -17,18 +17,21 @@ public interface ToolBarBuilder extends ControlPanelBuilder<JToolBar, ToolBarBui
   /**
    * @param floatable true if the toolbar should be floatable
    * @return this builder instance
+   * @see JToolBar#setFloatable(boolean)
    */
   ToolBarBuilder floatable(boolean floatable);
 
   /**
    * @param rollover true if rollover should be enabled
    * @return this builder instance
+   * @see JToolBar#setRollover(boolean)
    */
   ToolBarBuilder rollover(boolean rollover);
 
   /**
    * @param borderPainted true if the border should be painted
    * @return this builder instance
+   * @see JToolBar#setBorderPainted(boolean)
    */
   ToolBarBuilder borderPainted(boolean borderPainted);
 

@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.Component;
 import java.awt.LayoutManager;
 import java.util.Collection;
 
@@ -20,12 +21,14 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
   /**
    * @param layoutManager the layout manager
    * @return this builder instance
+   * @see JPanel#setLayout(LayoutManager)
    */
   PanelBuilder layout(LayoutManager layoutManager);
 
   /**
    * @param component the component to add
    * @return this builder instance
+   * @see JPanel#add(Component)
    */
   PanelBuilder add(JComponent component);
 
@@ -33,18 +36,21 @@ public interface PanelBuilder extends ComponentBuilder<Void, JPanel, PanelBuilde
    * @param component the component to add
    * @param constraints the layout constraints
    * @return this builder instance
+   * @see JPanel#add(Component, Object)
    */
   PanelBuilder add(JComponent component, Object constraints);
 
   /**
    * @param components the components to add
    * @return this builder instance
+   * @see JPanel#add(Component)
    */
   PanelBuilder addAll(JComponent... components);
 
   /**
    * @param components the components to add
    * @return this builder instance
+   * @see JPanel#add(Component)
    */
   PanelBuilder addAll(Collection<? extends JComponent> components);
 

@@ -26,6 +26,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
   /**
    * @param editable specifies whether the combo box should be editable
    * @return this builder instance
+   * @see JComboBox#setEditable(boolean)
    */
   B editable(boolean editable);
 
@@ -38,12 +39,14 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
   /**
    * @param renderer the renderer for the combo box
    * @return this builder instance
+   * @see JComboBox#setRenderer(ListCellRenderer)
    */
   B renderer(ListCellRenderer<T> renderer);
 
   /**
    * @param editor the editor for the combo box
    * @return this builder instance
+   * @see JComboBox#setEditor(ComboBoxEditor)
    */
   B editor(ComboBoxEditor editor);
 
@@ -64,6 +67,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
   /**
    * @param maximumRowCount the maximum row count before a scroll bar is shown
    * @return this builder instance
+   * @see JComboBox#setMaximumRowCount(int)
    */
   B maximumRowCount(int maximumRowCount);
 
@@ -89,6 +93,7 @@ public interface ComboBoxBuilder<T, C extends JComboBox<T>, B extends ComboBoxBu
   /**
    * @param itemListener the item listener
    * @return this builder instance
+   * @see JComboBox#addItemListener(ItemListener)
    */
   B itemListener(ItemListener itemListener);
 

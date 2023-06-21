@@ -12,6 +12,7 @@ import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import java.awt.Component;
 
 /**
  * A builder for JLabel.
@@ -30,6 +31,7 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
   /**
    * @param horizontalAlignment the horizontal text alignment
    * @return this builder instance
+   * @see JLabel#setHorizontalAlignment(int)
    */
   LabelBuilder<T> horizontalAlignment(int horizontalAlignment);
 
@@ -51,18 +53,21 @@ public interface LabelBuilder<T> extends ComponentBuilder<T, JLabel, LabelBuilde
   /**
    * @param component the component to associate with this label
    * @return this builder instance
+   * @see JLabel#setLabelFor(Component)
    */
   LabelBuilder<T> labelFor(JComponent component);
 
   /**
    * @param icon the label icon
    * @return this builder instance
+   * @see JLabel#setIcon(Icon)
    */
   LabelBuilder<T> icon(Icon icon);
 
   /**
    * @param iconTextGap the icon text gap
    * @return this builder instance
+   * @see JLabel#setIconTextGap(int)
    */
   LabelBuilder<T> iconTextGap(int iconTextGap);
 
