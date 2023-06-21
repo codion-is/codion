@@ -61,18 +61,18 @@ final class KeyBindingModel {
     return tableModel;
   }
 
-  private String className(String componentName) {
+  private void bindEvents(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
+    componentComboBoxModel.refresher().addRefreshListener(tableModel::refresh);
+    componentComboBoxModel.addSelectionListener(component -> tableModel.refresh());
+    lookAndFeelComboBoxModel.addSelectionListener(lookAndFeelProvider -> componentComboBoxModel.refresh());
+  }
+
+  private static String className(String componentName) {
     if (componentName.equals("JTableHeader")) {
       return PACKAGE + "table." + componentName;
     }
 
     return PACKAGE + componentName;
-  }
-
-  private void bindEvents(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
-    componentComboBoxModel.refresher().addRefreshListener(tableModel::refresh);
-    componentComboBoxModel.addSelectionListener(component -> tableModel.refresh());
-    lookAndFeelComboBoxModel.addSelectionListener(lookAndFeelProvider -> componentComboBoxModel.refresh());
   }
 
   private static List<FilteredTableColumn<Integer>> createColumns() {
@@ -216,7 +216,7 @@ final class KeyBindingModel {
       try {
         return lookAndFeelProvider.lookAndFeel().getDefaults().keySet().stream()
                 .map(Object::toString)
-                .map(this::componentName)
+                .map(ComponentItemSupplier::componentName)
                 .filter(Optional::isPresent)
                 .map(Optional::get)
                 .sorted()
@@ -227,7 +227,7 @@ final class KeyBindingModel {
       }
     }
 
-    private Optional<String> componentName(String key) {
+    private static Optional<String> componentName(String key) {
       if (key.endsWith("UI") && key.indexOf(".") == -1) {
         String componentName = key.substring(0, key.length() - 2);
         if (!EXCLUDED_COMPONENTS.contains(componentName)) {
