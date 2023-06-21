@@ -8,7 +8,6 @@ import is.codion.common.state.StateObserver;
 import javax.swing.Action;
 import javax.swing.JDialog;
 import javax.swing.border.Border;
-import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.util.function.Consumer;
@@ -93,12 +92,6 @@ public interface OkCancelDialogBuilder extends DialogBuilder<OkCancelDialogBuild
    * @return this builder instance
    */
   OkCancelDialogBuilder cancelAction(Action cancelAction);
-
-  /**
-   * @param component the component for the relative location
-   * @return this builder instance
-   */
-  OkCancelDialogBuilder locationRelativeTo(Component component);
 
   /**
    * @param onShown called each time the dialog is shown
