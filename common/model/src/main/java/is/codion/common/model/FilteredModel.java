@@ -161,17 +161,18 @@ public interface FilteredModel<T> {
 
     /**
      * Refreshes the items in the associated filtered model.
-     * If run on the Event Dispatch Thread and {@link #isAsyncRefresh()} returns true, the refresh happens asynchronously.
-     * @throws RuntimeException in case of an exception when running refresh synchronously, as in, not on the user interface thread.
+     * Note that this method only throws exceptions when run synchronously.
+     * @throws RuntimeException in case of an exception when running synchronously.
      * @see #addRefreshFailedListener(EventDataListener)
      * @see #setAsyncRefresh(boolean)
      */
     void refresh();
 
     /**
-     * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously off the user interface thread.
+     * Refreshes the data in this model. Note that this method only throws exceptions when run synchronously.
      * Use {@link #addRefreshFailedListener(EventDataListener)} to listen for exceptions that happen during asynchronous refresh.
      * @param afterRefresh called after a successful refresh, may be null
+     * @throws RuntimeException in case of an exception when running synchronously.
      * @see #refreshingObserver()
      * @see #addRefreshListener(EventListener)
      * @see #addRefreshFailedListener(EventDataListener)
