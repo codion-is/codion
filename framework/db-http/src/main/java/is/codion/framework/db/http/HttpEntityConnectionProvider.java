@@ -43,6 +43,12 @@ public interface HttpEntityConnectionProvider extends EntityConnectionProvider {
     Builder port(int port);
 
     /**
+     * @param securePort the server https port
+     * @return this builder instance
+     */
+    Builder securePort(int securePort);
+
+    /**
      * @param https true if https should be enabled
      * @return this builder instance
      */
