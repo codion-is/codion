@@ -9199,3 +9199,4 @@
   TextInputPanel, text field no longer requests focus once the input dialog is closed
   ComponentBuilder moved to builder package and ComponentValue to value package
   ScrollPaneBuilder, TabbedPaneBuilder, ProgressBarBuilder and SplitPaneBuilder moved to their own packages
+  DefaultButtonPanelBuilder no longer initializes a default ButtonBuilder, messes up the ToolBarBuilder button text configuration, regression
