@@ -62,11 +62,11 @@ public interface ListBuilder<T> extends ComponentBuilder<Set<T>, JList<T>, ListB
   ListBuilder<T> selectionMode(int selectionMode);
 
   /**
-   * @param listSelectionModel the list selection model
+   * @param selectionModel the list selection model
    * @return this builder instance
    * @see JList#setSelectionModel(ListSelectionModel)
    */
-  ListBuilder<T> listSelectionModel(ListSelectionModel listSelectionModel);
+  ListBuilder<T> selectionModel(ListSelectionModel selectionModel);
 
   /**
    * @param listSelectionListener the list selection listener

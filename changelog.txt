@@ -9201,3 +9201,4 @@
   ScrollPaneBuilder, TabbedPaneBuilder, ProgressBarBuilder and SplitPaneBuilder moved to their own packages
   DefaultButtonPanelBuilder no longer initializes a default ButtonBuilder, messes up the ToolBarBuilder button text configuration, regression
   ActionDialogBuilder added, OkCancelDialogBuilder extends it
+  ListBuilder.listSelectionModel() renamed selectionModel()
