@@ -25,8 +25,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    new ButtonControlHandler(panel, controls(),
-            buttonBuilder() == null ? ButtonBuilder.builder() : buttonBuilder(),
+    new ButtonControlHandler(panel, controls(), buttonBuilder(),
             toggleButtonBuilder() == null ? createToggleButtonBuilder() : toggleButtonBuilder());
 
     return panel;

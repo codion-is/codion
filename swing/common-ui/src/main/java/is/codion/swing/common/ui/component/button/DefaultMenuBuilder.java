@@ -24,8 +24,8 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
   private final List<MenuListener> menuListeners = new ArrayList<>();
   private final List<PopupMenuListener> popupMenuListeners = new ArrayList<>();
-  private MenuItemBuilder<?, ?> menuItemBuilder;
-  private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
+  private MenuItemBuilder<?, ?> menuItemBuilder = MenuItemBuilder.builder();
+  private ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder = CheckBoxMenuItemBuilder.builder();
 
   DefaultMenuBuilder(Controls controls) {
     super(controls);
@@ -92,9 +92,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
   protected JMenu createButton() {
     JMenu menu = new JMenu(controls);
     menuListeners.forEach(menu::addMenuListener);
-    new MenuControlHandler(menu, controls,
-            menuItemBuilder == null ? MenuItemBuilder.builder() : menuItemBuilder,
-            toggleMenuItemBuilder == null ? CheckBoxMenuItemBuilder.builder() : toggleMenuItemBuilder);
+    new MenuControlHandler(menu, controls, menuItemBuilder, toggleMenuItemBuilder);
 
     return menu;
   }
@@ -105,9 +103,9 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
     private final MenuItemBuilder<?, ?> menuItemBuilder;
     private final ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder;
 
-    MenuControlHandler(JMenu menu, Controls controls,
-                       MenuItemBuilder<?, ?> menuItemBuilder,
-                       ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
+    private MenuControlHandler(JMenu menu, Controls controls,
+                               MenuItemBuilder<?, ?> menuItemBuilder,
+                               ToggleMenuItemBuilder<?, ?> toggleMenuItemBuilder) {
       this.menu = menu;
       this.menuItemBuilder = menuItemBuilder.clear();
       this.toggleMenuItemBuilder = toggleMenuItemBuilder.clear();

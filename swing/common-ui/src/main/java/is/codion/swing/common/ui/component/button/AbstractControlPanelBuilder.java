@@ -20,7 +20,7 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
 
   private int orientation = SwingConstants.HORIZONTAL;
   private ToggleButtonType toggleButtonType = ToggleButtonType.BUTTON;
-  private ButtonBuilder<?, ?, ?> buttonBuilder;
+  private ButtonBuilder<?, ?, ?> buttonBuilder = ButtonBuilder.builder();
   private ToggleButtonBuilder<?, ?> toggleButtonBuilder;
 
   protected AbstractControlPanelBuilder(Controls controls) {
