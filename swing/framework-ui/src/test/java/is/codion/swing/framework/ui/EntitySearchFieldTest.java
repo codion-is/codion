@@ -8,7 +8,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.ui.TestDomain.Department;
 
 import org.junit.jupiter.api.Test;

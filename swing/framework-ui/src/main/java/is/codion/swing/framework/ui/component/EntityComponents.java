@@ -11,8 +11,8 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
-import is.codion.swing.common.ui.component.ComponentBuilder;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
@@ -56,7 +56,7 @@ import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.
 import static java.util.Objects.requireNonNull;
 
 /**
- * A factory for {@link is.codion.swing.common.ui.component.ComponentBuilder} instances
+ * A factory for {@link ComponentBuilder} instances
  * based on attributes from a given entity definition.
  */
 public class EntityComponents {

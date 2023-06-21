@@ -7,10 +7,10 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.TransferFocusOnEnter;
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.AbstractComponentValue;
-import is.codion.swing.common.ui.component.ComponentBuilder;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.swing.AbstractAction;

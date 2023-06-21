@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.label;
 
-import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import javax.swing.JLabel;
 

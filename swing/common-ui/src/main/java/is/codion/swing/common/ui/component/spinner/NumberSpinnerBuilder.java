@@ -47,17 +47,30 @@ public interface NumberSpinnerBuilder<T extends Number> extends SpinnerBuilder<T
   /**
    * @param commitOnValidEdit true if the spinner should commit on a valid edit
    * @return this builder instance
+   * @see javax.swing.text.DefaultFormatter#setCommitsOnValidEdit(boolean)
    */
   NumberSpinnerBuilder<T> commitOnValidEdit(boolean commitOnValidEdit);
 
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @param valueClass the value class
+   * @return a new {@link NumberSpinnerBuilder} instance
+   * @param <T> the number type
+   */
   static <T extends Number> NumberSpinnerBuilder<T> builder(SpinnerNumberModel spinnerNumberModel,
                                                             Class<T> valueClass) {
     return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, valueClass, null);
   }
 
+  /**
+   * @param spinnerNumberModel the spinner model
+   * @param valueClass the value class
+   * @param linkedValue the value to link to
+   * @return a new {@link NumberSpinnerBuilder} instance
+   * @param <T> the number type
+   */
   static <T extends Number> NumberSpinnerBuilder<T> builder(SpinnerNumberModel spinnerNumberModel,
-                                                            Class<T> valueClass,
-                                                            Value<T> linkedValue) {
+                                                            Class<T> valueClass, Value<T> linkedValue) {
     return new DefaultNumberSpinnerBuilder<>(spinnerNumberModel, valueClass, requireNonNull(linkedValue));
   }
 }

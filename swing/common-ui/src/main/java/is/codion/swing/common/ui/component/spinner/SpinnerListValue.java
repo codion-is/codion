@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.spinner;
 
-import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import javax.swing.JSpinner;
 import javax.swing.SpinnerListModel;

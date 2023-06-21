@@ -3,8 +3,8 @@
  */
 package is.codion.swing.common.ui.component.panel;
 
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

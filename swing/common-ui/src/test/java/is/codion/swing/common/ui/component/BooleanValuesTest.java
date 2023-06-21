@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.button.NullableToggleButtonModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import org.junit.jupiter.api.Test;
 

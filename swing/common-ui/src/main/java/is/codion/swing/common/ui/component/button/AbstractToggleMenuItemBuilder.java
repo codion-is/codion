@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JMenuItem;

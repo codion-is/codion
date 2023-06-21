@@ -6,8 +6,8 @@ package is.codion.swing.common.ui.component.combobox;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.ComboBoxEditor;
 import javax.swing.ComboBoxModel;

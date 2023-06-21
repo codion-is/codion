@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2022 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.progressbar;
+
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JProgressBar;

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractButton;
@@ -181,13 +181,14 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
    * Sets the inital selected status of the button, overridden by initial value.
    * @param selected the initial selected status of the button
    * @return this builder instance
+   * @see AbstractButton#setSelected(boolean)
    */
   B selected(boolean selected);
 
   /**
    * @param action the button action
    * @return this builder instance
-   * @see JButton#setAction(Action)
+   * @see AbstractButton#setAction(Action)
    */
   B action(Action action);
 
@@ -206,7 +207,7 @@ public interface ButtonBuilder<T, C extends AbstractButton, B extends ButtonBuil
   /**
    * @param actionListener the action listener
    * @return this builder instance
-   * @see JButton#addActionListener(ActionListener)
+   * @see AbstractButton#addActionListener(ActionListener)
    */
   B actionListener(ActionListener actionListener);
 

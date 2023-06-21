@@ -5,8 +5,8 @@ package is.codion.framework.demos.manual.store.ui;
 
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.AbstractTextComponentValue;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;

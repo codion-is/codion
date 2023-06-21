@@ -9236,3 +9236,8 @@
   MenuBuilder.menuListener() and popupMenuListener() added
   EntityTablePanel, popup menu listener added to prevent the JRootPane stealing the focus when toggle buttons are engaged, thereby rendering all key events inaccessible
   TextInputPanel, text field no longer requests focus once the input dialog is closed
+  ComponentBuilder moved to builder package and ComponentValue to value package
+  ScrollPaneBuilder, TabbedPaneBuilder, ProgressBarBuilder and SplitPaneBuilder moved to their own packages
+  DefaultButtonPanelBuilder no longer initializes a default ButtonBuilder, messes up the ToolBarBuilder button text configuration, regression
+  ActionDialogBuilder added, OkCancelDialogBuilder extends it
+  ListBuilder.listSelectionModel() renamed selectionModel()

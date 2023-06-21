@@ -5,80 +5,41 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.StateObserver;
-import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
-import javax.swing.JPanel;
-import javax.swing.WindowConstants;
-import javax.swing.border.Border;
-import java.awt.BorderLayout;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
-import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
-import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.JComponent.WHEN_IN_FOCUSED_WINDOW;
 
-final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
+final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
-  private final JComponent component;
-
-  private boolean modal = true;
-  private boolean resizable = true;
-  private Dimension size;
-  private Consumer<JDialog> onShown;
   private StateObserver okEnabledState;
   private StateObserver cancelEnabledState;
   private Runnable onOk;
   private Runnable onCancel;
   private Action okAction;
   private Action cancelAction;
-  private int buttonPanelConstraints = FlowLayout.RIGHT;
-  private Border buttonPanelBorder = BorderFactory.createEmptyBorder(10, 10, 10, 10);
 
   DefaultOkCancelDialogBuilder(JComponent component) {
-    this.component = requireNonNull(component);
+    super(component);
   }
 
   @Override
-  public OkCancelDialogBuilder modal(boolean modal) {
-    this.modal = modal;
-    return this;
+  public OkCancelDialogBuilder action(Action action) {
+    throw new UnsupportedOperationException("Adding an action directly is not supported");
   }
 
   @Override
-  public OkCancelDialogBuilder resizable(boolean resizable) {
-    this.resizable = resizable;
-    return this;
+  public OkCancelDialogBuilder defaultAction(Action defaultAction) {
+    throw new UnsupportedOperationException("Adding a default action is not supported");
   }
 
   @Override
-  public OkCancelDialogBuilder size(Dimension size) {
-    this.size = requireNonNull(size);
-    return this;
-  }
-
-  @Override
-  public OkCancelDialogBuilder buttonPanelConstraints(int buttonPanelConstraints) {
-    this.buttonPanelConstraints = buttonPanelConstraints;
-    return this;
-  }
-
-  @Override
-  public OkCancelDialogBuilder buttonPanelBorder(Border buttonPanelBorder) {
-    this.buttonPanelBorder = buttonPanelBorder;
-    return this;
+  public OkCancelDialogBuilder escapeAction(Action escapeAction) {
+    throw new UnsupportedOperationException("Adding an escape action is not supported");
   }
 
   @Override
@@ -140,76 +101,26 @@ final class DefaultOkCancelDialogBuilder extends AbstractDialogBuilder<OkCancelD
   }
 
   @Override
-  public OkCancelDialogBuilder onShown(Consumer<JDialog> onShown) {
-    this.onShown = onShown;
-    return this;
-  }
-
-  @Override
-  public JDialog show() {
-    JDialog dialog = build();
-    dialog.setVisible(true);
-
-    return dialog;
-  }
-
-  @Override
   public JDialog build() {
+    controls().removeAll();
     if (okAction == null) {
-      okAction = createControl(onOk == null ? new DefaultOkCommand(component) : new PerformAndCloseCommand(onOk, component), okEnabledState);
+      okAction = Control.builder(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
+            .name(Messages.ok())
+            .mnemonic(Messages.okMnemonic())
+            .enabledState(okEnabledState)
+            .build();
     }
     if (cancelAction == null) {
-      cancelAction = createControl(onCancel == null ? new DefaultCancelCommand(component) : new PerformAndCloseCommand(onCancel, component), cancelEnabledState);
+      cancelAction = Control.builder(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
+            .name(Messages.cancel())
+            .mnemonic(Messages.cancelMnemonic())
+            .enabledState(cancelEnabledState)
+            .build();
     }
-    JButton okButton = new JButton(okAction);
-    okButton.setText(Messages.ok());
-    okButton.setMnemonic(Messages.okMnemonic());
-    JButton cancelButton = new JButton(cancelAction);
-    cancelButton.setText(Messages.cancel());
-    cancelButton.setMnemonic(Messages.cancelMnemonic());
-    JPanel buttonPanel = new JPanel(Layouts.gridLayout(1, 2));
-    buttonPanel.add(okButton);
-    buttonPanel.add(cancelButton);
-    JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(buttonPanelConstraints));
-    buttonBasePanel.add(buttonPanel, BorderLayout.SOUTH);
-    buttonBasePanel.setBorder(buttonPanelBorder);
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(component, BorderLayout.CENTER);
-    panel.add(buttonBasePanel, BorderLayout.SOUTH);
+    super.defaultAction(okAction);
+    super.escapeAction(cancelAction);
 
-    JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo, location, modal, resizable, onShown);
-    dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    dialog.addWindowListener(new CancelOnWindowClosingListener(cancelAction));
-    dialog.getRootPane().setDefaultButton(okButton);
-    KeyEvents.builder(VK_ESCAPE)
-            .condition(WHEN_IN_FOCUSED_WINDOW)
-            .action(cancelAction)
-            .enable(dialog.getRootPane());
-
-    return dialog;
-  }
-
-  private static Control createControl(Control.Command command, StateObserver enabledState) {
-    Control.Builder builder = Control.builder(command);
-    if (enabledState != null) {
-      builder.enabledState(enabledState);
-    }
-
-    return builder.build();
-  }
-
-  private static final class CancelOnWindowClosingListener extends WindowAdapter {
-
-    private final Action cancelAction;
-
-    private CancelOnWindowClosingListener(Action cancelAction) {
-      this.cancelAction = cancelAction;
-    }
-
-    @Override
-    public void windowClosing(WindowEvent e) {
-      cancelAction.actionPerformed(null);
-    }
+    return super.build();
   }
 
   private static final class PerformAndCloseCommand implements Control.Command {

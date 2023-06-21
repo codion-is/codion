@@ -3,7 +3,7 @@
  */
 package is.codion.swing.common.ui.component.button;
 
-import is.codion.swing.common.ui.component.AbstractComponentValue;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 final class BooleanNullableCheckBoxValue extends AbstractComponentValue<Boolean, NullableCheckBox> {
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.Configuration;
 import is.codion.common.properties.PropertyValue;
@@ -10,6 +10,8 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 
@@ -207,6 +209,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
   /**
    * @param visible the initial component visibility, default true
    * @return this builder instance
+   * @see JComponent#setVisible(boolean)
    */
   B visible(boolean visible);
 

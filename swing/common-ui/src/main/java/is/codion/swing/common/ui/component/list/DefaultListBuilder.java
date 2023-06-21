@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.component.list;
 
 import is.codion.common.value.ValueSet;
-import is.codion.swing.common.ui.component.AbstractComponentBuilder;
-import is.codion.swing.common.ui.component.ComponentValue;
+import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.JList;
 import javax.swing.ListCellRenderer;
@@ -24,7 +24,7 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
   private final List<ListSelectionListener> listSelectionListeners = new ArrayList<>();
 
   private ListCellRenderer<T> cellRenderer;
-  private ListSelectionModel listSelectionModel;
+  private ListSelectionModel selectionModel;
 
   private int visibleRowCount;
   private int layoutOrientation = JList.VERTICAL;
@@ -74,8 +74,8 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
   }
 
   @Override
-  public ListBuilder<T> listSelectionModel(ListSelectionModel listSelectionModel) {
-    this.listSelectionModel = requireNonNull(listSelectionModel);
+  public ListBuilder<T> selectionModel(ListSelectionModel selectionModel) {
+    this.selectionModel = requireNonNull(selectionModel);
     return this;
   }
 
@@ -91,8 +91,8 @@ final class DefaultListBuilder<T> extends AbstractComponentBuilder<Set<T>, JList
     if (cellRenderer != null) {
       list.setCellRenderer(cellRenderer);
     }
-    if (listSelectionModel != null) {
-      list.setSelectionModel(listSelectionModel);
+    if (selectionModel != null) {
+      list.setSelectionModel(selectionModel);
     }
     listSelectionListeners.forEach(list::addListSelectionListener);
     list.setVisibleRowCount(visibleRowCount);

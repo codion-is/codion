@@ -5,8 +5,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.model.worker.ProgressWorker;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.SelectionProvider;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.AbstractAction;
@@ -119,6 +119,15 @@ public final class Dialogs {
    */
   public static OkCancelDialogBuilder okCancelDialog(JComponent component) {
     return new DefaultOkCancelDialogBuilder(component);
+  }
+
+  /**
+   * @param component the component to display
+   * @param <B> the builder type
+   * @return a new ActionDialogBuilder
+   */
+  public static <B extends ActionDialogBuilder<B>> ActionDialogBuilder<B> actionDialog(JComponent component) {
+    return new DefaultActionDialogBuilder<>(component);
   }
 
   /**

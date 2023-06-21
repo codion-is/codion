@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.swing.common.ui.component.AbstractComponentValue;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

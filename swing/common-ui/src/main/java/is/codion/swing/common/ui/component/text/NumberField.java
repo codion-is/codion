@@ -9,8 +9,8 @@ import is.codion.common.formats.Formats;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
-import is.codion.swing.common.ui.component.ComponentValue;
 import is.codion.swing.common.ui.component.text.NumberDocument.DecimalDocument;
+import is.codion.swing.common.ui.component.value.ComponentValue;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;

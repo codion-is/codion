@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.slider;
 
 import is.codion.common.value.Value;
-import is.codion.swing.common.ui.component.ComponentBuilder;
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.BoundedRangeModel;
 import javax.swing.JSlider;
@@ -19,48 +19,56 @@ public interface SliderBuilder extends ComponentBuilder<Integer, JSlider, Slider
   /**
    * @param minorTickSpacing the minor tick spacing
    * @return this builder instance
+   * @see JSlider#setMinorTickSpacing(int)
    */
   SliderBuilder minorTickSpacing(int minorTickSpacing);
 
   /**
    * @param majorTickSpacing the major tick spacing
    * @return this builder instance
+   * @see JSlider#setMajorTickSpacing(int)
    */
   SliderBuilder majorTickSpacing(int majorTickSpacing);
 
   /**
    * @param snapToTicks snap to ticks
    * @return this builder instance
+   * @see JSlider#setSnapToTicks(boolean)
    */
   SliderBuilder snapToTicks(boolean snapToTicks);
 
   /**
    * @param paintTicks paint ticks
    * @return this builder instance
+   * @see JSlider#setPaintTicks(boolean)
    */
   SliderBuilder paintTicks(boolean paintTicks);
 
   /**
    * @param paintTrack paint track
    * @return this builder instance
+   * @see JSlider#setPaintTrack(boolean)
    */
   SliderBuilder paintTrack(boolean paintTrack);
 
   /**
    * @param paintLabels paint labels
    * @return this builder instance
+   * @see JSlider#setPaintLabels(boolean)
    */
   SliderBuilder paintLabels(boolean paintLabels);
 
   /**
    * @param inverted should the track be inverted
    * @return this builder instance
+   * @see JSlider#setInverted(boolean)
    */
   SliderBuilder inverted(boolean inverted);
 
   /**
    * @param orientation the orientation, SwingConstants.HORIZONTAL or SwingConstants.VERTICAL
    * @return this builder instance
+   * @see JSlider#setOrientation(int)
    */
   SliderBuilder orientation(int orientation);
 

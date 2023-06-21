@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2022 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.common.ui.component;
+package is.codion.swing.common.ui.component.tabbedpane;
+
+import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
 import javax.swing.Icon;
 import javax.swing.JComponent;
@@ -38,6 +40,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
   /**
    * @param tabPlacement the tab placement
    * @return this builder instance
+   * @see JTabbedPane#setTabPlacement(int)
    */
   TabbedPaneBuilder tabPlacement(int tabPlacement);
 
@@ -51,6 +54,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
   /**
    * @param changeListener the change listener
    * @return this builder instance
+   * @see JTabbedPane#addChangeListener(ChangeListener)
    */
   TabbedPaneBuilder changeListener(ChangeListener changeListener);
 
@@ -60,6 +64,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
    * @param title the tab title
    * @param component the component to display in the tab
    * @return this builder instance
+   * @see JTabbedPane#addTab(String, Component)
    */
   TabbedPaneBuilder tab(String title, JComponent component);
 
@@ -67,6 +72,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
    * Returns a new {@link TabBuilder} for adding a tab
    * @param component the component to display in the tab
    * @return a new {@link TabBuilder} instance
+   * @see JTabbedPane#addTab(String, Component)
    */
   TabBuilder tabBuilder(JComponent component);
 
@@ -75,6 +81,7 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
    * @param title the tab title
    * @param component the component to display in the tab
    * @return a new {@link TabBuilder} instance
+   * @see JTabbedPane#addTab(String, Component)
    */
   TabBuilder tabBuilder(String title, JComponent component);
 
@@ -113,5 +120,12 @@ public interface TabbedPaneBuilder extends ComponentBuilder<Void, JTabbedPane, T
      * @return the {@link TabbedPaneBuilder} instance
      */
     TabbedPaneBuilder add();
+  }
+
+  /**
+   * @return a new {@link TabbedPaneBuilder} instance
+   */
+  static TabbedPaneBuilder builder() {
+    return new DefaultTabbedPaneBuilder();
   }
 }
