@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.swing.common.ui.component.TabbedPaneBuilder;
+import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 import is.codion.swing.framework.server.monitor.PoolMonitor;
 

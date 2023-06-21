@@ -10,7 +10,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.ScrollPaneBuilder;
+import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
