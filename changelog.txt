@@ -9204,3 +9204,4 @@
   ListBuilder.listSelectionModel() renamed selectionModel()
   HttpEntityConnectionProvider.Builder.securePort() added
   ProgressDialog.Builder.eastPanel() added, related refactoring
+  EntityPanel.setDetailPanelState() bug fixed, setting to embedded has no effect if already embedded, no longer resets the detail panel size
