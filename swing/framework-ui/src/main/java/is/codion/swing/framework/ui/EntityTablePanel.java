@@ -901,6 +901,12 @@ public class EntityTablePanel extends JPanel {
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
+    control(EntityTablePanel.ControlCode.PRINT).ifPresent(control ->
+            KeyEvents.builder(VK_P)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
   }
 
   /**
