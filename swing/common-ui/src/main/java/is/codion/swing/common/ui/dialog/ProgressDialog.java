@@ -4,8 +4,8 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.Sizes;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Controls;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -18,6 +18,8 @@ import java.awt.FlowLayout;
 import java.awt.Window;
 
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 
 /**
  * A dialog containing a progress bar.
@@ -29,7 +31,7 @@ public final class ProgressDialog extends JDialog {
 
   private final JProgressBar progressBar;
 
-  private ProgressDialog(DefaultProgressDialogBuilder builder, Window dialogOwner) {
+  private ProgressDialog(DefaultBuilder builder, Window dialogOwner) {
     super(dialogOwner, dialogOwner == null ? ModalityType.MODELESS : ModalityType.APPLICATION_MODAL);
     if (builder.titleProvider != null) {
       setTitle(builder.titleProvider.get());
@@ -39,8 +41,8 @@ public final class ProgressDialog extends JDialog {
       setIconImage(builder.icon.getImage());
     }
     setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    progressBar = createProgressBar(builder.indeterminate, builder.stringPainted, builder.progressBarSize);
-    initializeUI(builder.northPanel, builder.westPanel, builder.controls, builder.border);
+    progressBar = createProgressBar(builder);
+    initializeUI(builder);
     setLocationRelativeTo(dialogOwner);
   }
 
@@ -60,50 +62,46 @@ public final class ProgressDialog extends JDialog {
     progressBar.setString(message);
   }
 
-  /**
-   * Initalizes the UI, override for a custom look
-   * @param northPanel a panel to display at the {@link BorderLayout#NORTH} position
-   * @param westPanel a panel to display at the {@link BorderLayout#WEST} position
-   * @param controls if specified buttons based on these controls are added to this dialog
-   * @param border
-   */
-  private void initializeUI(JPanel northPanel, JPanel westPanel, Controls controls, Border border) {
-    setLayout(Layouts.borderLayout());
-    add(createCenterPanel(northPanel, westPanel, controls, border), BorderLayout.CENTER);
+  private void initializeUI(DefaultBuilder builder) {
+    setLayout(borderLayout());
+    add(createCenterPanel(builder), BorderLayout.CENTER);
     pack();
   }
 
-  private JPanel createCenterPanel(JPanel northPanel, JPanel westPanel, Controls controls, Border border) {
-    JPanel basePanel = new JPanel(Layouts.borderLayout());
-    if (border != null) {
-      basePanel.setBorder(border);
+  private JPanel createCenterPanel(DefaultBuilder builder) {
+    JPanel basePanel = new JPanel(borderLayout());
+    if (builder.border != null) {
+      basePanel.setBorder(builder.border);
     }
-    if (northPanel != null) {
-      basePanel.add(northPanel, BorderLayout.NORTH);
+    if (builder.northPanel != null) {
+      basePanel.add(builder.northPanel, BorderLayout.NORTH);
     }
-    if (westPanel != null) {
-      basePanel.add(westPanel, BorderLayout.WEST);
+    if (builder.westPanel != null) {
+      basePanel.add(builder.westPanel, BorderLayout.WEST);
+    }
+    if (builder.eastPanel != null) {
+      basePanel.add(builder.eastPanel, BorderLayout.EAST);
     }
     basePanel.add(progressBar, BorderLayout.CENTER);
-    if (controls != null) {
-      JPanel southPanel = new JPanel(Layouts.flowLayout(FlowLayout.TRAILING));
-      southPanel.add(buttonPanel(controls).build());
-      basePanel.add(southPanel, BorderLayout.SOUTH);
+    if (builder.controls != null) {
+      basePanel.add(Components.panel(flowLayout(FlowLayout.TRAILING))
+              .add(buttonPanel(builder.controls).build())
+              .build(), BorderLayout.SOUTH);
     }
+
     return basePanel;
   }
 
-  private static JProgressBar createProgressBar(boolean indeterminate, boolean stringPainted,
-                                                Dimension size) {
+  private static JProgressBar createProgressBar(DefaultBuilder builder) {
     JProgressBar progressBar = new JProgressBar();
-    progressBar.setStringPainted(stringPainted);
-    if (size != null) {
-      progressBar.setPreferredSize(size);
+    progressBar.setStringPainted(builder.stringPainted);
+    if (builder.progressBarSize != null) {
+      progressBar.setPreferredSize(builder.progressBarSize);
     }
     else {
       Sizes.setPreferredWidth(progressBar, DEFAULT_PROGRESS_BAR_WIDTH);
     }
-    if (indeterminate) {
+    if (builder.indeterminate) {
       progressBar.setIndeterminate(true);
     }
     else {
@@ -143,6 +141,12 @@ public final class ProgressDialog extends JDialog {
     Builder westPanel(JPanel westPanel);
 
     /**
+     * @param eastPanel if specified this panel is added to the {@link BorderLayout#EAST} position
+     * @return this ProgressDialogBuilder instance
+     */
+    Builder eastPanel(JPanel eastPanel);
+
+    /**
      * @param controls if specified buttons based on these controls are added to the {@link BorderLayout#SOUTH} position
      * @return this ProgressDialogBuilder instance
      */
@@ -166,12 +170,13 @@ public final class ProgressDialog extends JDialog {
     ProgressDialog build();
   }
 
-  static class DefaultProgressDialogBuilder extends AbstractDialogBuilder<Builder> implements Builder {
+  static class DefaultBuilder extends AbstractDialogBuilder<Builder> implements Builder {
 
     private boolean indeterminate = true;
     private boolean stringPainted = false;
     private JPanel northPanel;
     private JPanel westPanel;
+    private JPanel eastPanel;
     private Controls controls;
     private Dimension progressBarSize;
     private Border border;
@@ -197,6 +202,12 @@ public final class ProgressDialog extends JDialog {
     @Override
     public Builder westPanel(JPanel westPanel) {
       this.westPanel = westPanel;
+      return this;
+    }
+
+    @Override
+    public Builder eastPanel(JPanel eastPanel) {
+      this.eastPanel = eastPanel;
       return this;
     }
 

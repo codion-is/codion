@@ -9203,3 +9203,4 @@
   ActionDialogBuilder added, OkCancelDialogBuilder extends it
   ListBuilder.listSelectionModel() renamed selectionModel()
   HttpEntityConnectionProvider.Builder.securePort() added
+  ProgressDialog.Builder.eastPanel() added, related refactoring

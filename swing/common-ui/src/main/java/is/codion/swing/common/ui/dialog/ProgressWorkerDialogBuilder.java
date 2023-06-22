@@ -52,6 +52,12 @@ public interface ProgressWorkerDialogBuilder<T, V> extends DialogBuilder<Progres
   ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel);
 
   /**
+   * @param eastPanel if specified this panel will be added to the BorderLayout.EAST position of the dialog
+   * @return this Builder instance
+   */
+  ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel);
+
+  /**
    * @param controls if specified these controls will be displayed as buttons, useful for adding a cancel action
    * @return this Builder instance
    */
