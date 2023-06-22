@@ -66,5 +66,6 @@ public class DefaultControlsTest {
     list2.removeAll();
     assertFalse(list2.actions().contains(one));
     assertTrue(list2.isEmpty());
+    assertFalse(list2.isNotEmpty());
   }
 }

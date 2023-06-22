@@ -133,7 +133,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (defaultAction != null) {
       Arrays.stream(buttonPanel.getComponents())
-              .filter(comp -> comp instanceof JButton)
+              .filter(JButton.class::isInstance)
               .map(JButton.class::cast)
               .filter(button -> button.getAction() == defaultAction)
               .findFirst()

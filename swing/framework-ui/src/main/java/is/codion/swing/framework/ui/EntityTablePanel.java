@@ -901,6 +901,12 @@ public class EntityTablePanel extends JPanel {
                     .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
                     .action(control)
                     .enable(this));
+    control(EntityTablePanel.ControlCode.PRINT).ifPresent(control ->
+            KeyEvents.builder(VK_P)
+                    .modifiers(CTRL_DOWN_MASK)
+                    .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+                    .action(control)
+                    .enable(this));
   }
 
   /**
@@ -957,7 +963,7 @@ public class EntityTablePanel extends JPanel {
     Controls popupControls = Controls.controls();
     control(ControlCode.REFRESH).ifPresent(popupControls::add);
     control(ControlCode.CLEAR).ifPresent(popupControls::add);
-    if (!popupControls.isEmpty()) {
+    if (popupControls.isNotEmpty()) {
       popupControls.addSeparator();
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
@@ -983,12 +989,12 @@ public class EntityTablePanel extends JPanel {
       separatorRequired.set(false);
     }
     Controls printControls = createPrintMenuControls();
-    if (printControls != null && !printControls.isEmpty()) {
+    if (printControls != null && printControls.isNotEmpty()) {
       popupControls.add(printControls);
       separatorRequired.set(true);
     }
     Controls columnControls = createColumnControls();
-    if (!columnControls.isEmpty()) {
+    if (columnControls.isNotEmpty()) {
       if (separatorRequired.get()) {
         popupControls.addSeparator();
       }
@@ -1567,7 +1573,7 @@ public class EntityTablePanel extends JPanel {
             .build();
     control(ControlCode.CONDITION_PANEL_VISIBLE).ifPresent(conditionControls::add);
     Controls conditionPanelControls = conditionPanel.controls();
-    if (!conditionPanelControls.isEmpty()) {
+    if (conditionPanelControls.isNotEmpty()) {
       conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
@@ -1575,7 +1581,7 @@ public class EntityTablePanel extends JPanel {
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());
-    if (!conditionControls.isEmpty()) {
+    if (conditionControls.isNotEmpty()) {
       popupControls.add(conditionControls);
     }
   }
@@ -1587,10 +1593,10 @@ public class EntityTablePanel extends JPanel {
             .build();
     control(ControlCode.FILTER_PANEL_VISIBLE).ifPresent(filterControls::add);
     Controls filterPanelControls = filterPanel.controls();
-    if (!filterPanelControls.isEmpty()) {
+    if (filterPanelControls.isNotEmpty()) {
       filterControls.addAll(filterPanelControls);
     }
-    if (!filterControls.isEmpty()) {
+    if (filterControls.isNotEmpty()) {
       popupControls.add(filterControls);
     }
   }
@@ -1886,7 +1892,7 @@ public class EntityTablePanel extends JPanel {
       Controls popupMenuControls = Controls.controls();
       control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
       control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
-      if (!popupMenuControls.isEmpty()) {
+      if (popupMenuControls.isNotEmpty()) {
         popupMenuControls.addSeparator();
       }
       control(ControlCode.VIEW_DEPENDENCIES).ifPresent(popupMenuControls::add);

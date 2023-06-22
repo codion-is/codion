@@ -30,7 +30,7 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
 
   DefaultProgressWorkerDialogBuilder(ProgressTask<T, V> progressTask) {
     this.progressTask = requireNonNull(progressTask);
-    this.progressDialogBuilder = new ProgressDialog.DefaultProgressDialogBuilder();
+    this.progressDialogBuilder = new ProgressDialog.DefaultBuilder();
   }
 
   @Override
@@ -60,6 +60,12 @@ final class DefaultProgressWorkerDialogBuilder<T, V> extends AbstractDialogBuild
   @Override
   public ProgressWorkerDialogBuilder<T, V> westPanel(JPanel westPanel) {
     progressDialogBuilder.westPanel(westPanel);
+    return this;
+  }
+
+  @Override
+  public ProgressWorkerDialogBuilder<T, V> eastPanel(JPanel eastPanel) {
+    progressDialogBuilder.eastPanel(eastPanel);
     return this;
   }
 

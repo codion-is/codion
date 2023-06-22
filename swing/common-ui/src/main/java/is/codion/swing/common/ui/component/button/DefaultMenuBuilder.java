@@ -82,7 +82,7 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
     controls.actions().stream()
             .filter(Controls.class::isInstance)
             .map(Controls.class::cast)
-            .filter(controls -> !controls.isEmpty())
+            .filter(Controls::isNotEmpty)
             .forEach(subControls -> menuBar.add(new DefaultMenuBuilder(subControls).createComponent()));
 
     return menuBar;
@@ -131,11 +131,9 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
     @Override
     void onControls(Controls controls) {
-      if (!controls.isEmpty()) {
-        JMenu subMenu = new JMenu(controls);
-        new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
-        this.menu.add(subMenu);
-      }
+      JMenu subMenu = new JMenu(controls);
+      new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
+      this.menu.add(subMenu);
     }
 
     @Override
