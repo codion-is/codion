@@ -55,9 +55,14 @@ public interface Controls extends Control {
   int size();
 
   /**
-   * @return true if this controls instance contains no controls
+   * @return true if this controls instance contains no controls (or separators)
    */
   boolean isEmpty();
+
+  /**
+   * @return true if this controls instance contains controls (or separators)
+   */
+  boolean isNotEmpty();
 
   /**
    * @param index the index

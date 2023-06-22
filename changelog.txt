@@ -9206,3 +9206,4 @@
   ProgressDialog.Builder.eastPanel() added, related refactoring
   EntityPanel.setDetailPanelState() bug fixed, setting to embedded has no effect if already embedded, no longer resets the detail panel size
   EntityTablePanel, keyboard shortcut ctrl-p added for printing, if a print action is available
+  Controls.isNotEmpty() added, related refactoring

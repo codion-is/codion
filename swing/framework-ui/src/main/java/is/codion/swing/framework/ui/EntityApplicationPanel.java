@@ -448,23 +448,23 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   protected Controls createMainMenuControls() {
     Controls menuControls = Controls.controls();
     Controls fileMenuControls = createFileMenuControls();
-    if (fileMenuControls != null && !fileMenuControls.isEmpty()) {
+    if (fileMenuControls != null && fileMenuControls.isNotEmpty()) {
       menuControls.add(fileMenuControls);
     }
     Controls viewMenuControls = createViewMenuControls();
-    if (viewMenuControls != null && !viewMenuControls.isEmpty()) {
+    if (viewMenuControls != null && viewMenuControls.isNotEmpty()) {
       menuControls.add(viewMenuControls);
     }
     Controls toolsMenuControls = createToolsMenuControls();
-    if (toolsMenuControls != null && !toolsMenuControls.isEmpty()) {
+    if (toolsMenuControls != null && toolsMenuControls.isNotEmpty()) {
       menuControls.add(toolsMenuControls);
     }
     Controls supportTableMenuControls = createSupportTableMenuControls();
-    if (supportTableMenuControls != null && !supportTableMenuControls.isEmpty()) {
+    if (supportTableMenuControls != null && supportTableMenuControls.isNotEmpty()) {
       menuControls.add(supportTableMenuControls);
     }
     Controls helpMenuControls = createHelpMenuControls();
-    if (helpMenuControls != null && !helpMenuControls.isEmpty()) {
+    if (helpMenuControls != null && helpMenuControls.isNotEmpty()) {
       menuControls.add(helpMenuControls);
     }
 

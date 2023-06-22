@@ -79,7 +79,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
     @Override
     void onControls(Controls controls) {
-      if (!controls.isEmpty()) {
+      if (controls.isNotEmpty()) {
         JPanel controlPanel = createPanel();
         new ButtonControlHandler(controlPanel, controls, buttonBuilder, toggleButtonBuilder);
         panel.add(controlPanel);
