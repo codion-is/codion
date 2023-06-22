@@ -131,11 +131,9 @@ final class DefaultMenuBuilder extends DefaultMenuItemBuilder<JMenu, MenuBuilder
 
     @Override
     void onControls(Controls controls) {
-      if (controls.isNotEmpty()) {
-        JMenu subMenu = new JMenu(controls);
-        new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
-        this.menu.add(subMenu);
-      }
+      JMenu subMenu = new JMenu(controls);
+      new MenuControlHandler(subMenu, controls, menuItemBuilder, toggleMenuItemBuilder);
+      this.menu.add(subMenu);
     }
 
     @Override

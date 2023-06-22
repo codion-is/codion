@@ -18,7 +18,9 @@ abstract class ControlHandler implements Consumer<Action> {
       onSeparator();
     }
     else if (action instanceof Controls) {
-      onControls((Controls) action);
+      if (((Controls) action).isNotEmpty()) {
+        onControls((Controls) action);
+      }
     }
     else if (action instanceof ToggleControl) {
       onToggleControl((ToggleControl) action);

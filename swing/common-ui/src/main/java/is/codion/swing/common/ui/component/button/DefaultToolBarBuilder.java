@@ -99,9 +99,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
 
     @Override
     void onControls(Controls controls) {
-      if (controls.isNotEmpty()) {
-        new ToolBarControlHandler(toolBar, controls, buttonBuilder, defaultButtonBuilder, toggleButtonBuilder, defaultToggleButtonBuilder);
-      }
+      new ToolBarControlHandler(toolBar, controls, buttonBuilder, defaultButtonBuilder, toggleButtonBuilder, defaultToggleButtonBuilder);
     }
 
     @Override
