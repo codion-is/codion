@@ -6,7 +6,7 @@ module is.codion.swing.framework.tools {
   requires transitive is.codion.swing.common.tools;
   requires transitive is.codion.swing.framework.model;
 
-  exports is.codion.swing.framework.tools.explorer;
-  exports is.codion.swing.framework.tools.loadtest;
-  exports is.codion.swing.framework.tools.metadata;
+  exports is.codion.swing.framework.model.tools.explorer;
+  exports is.codion.swing.framework.model.tools.loadtest;
+  exports is.codion.swing.framework.model.tools.metadata;
 }

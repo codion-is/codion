@@ -3,7 +3,6 @@ dependencies {
     implementation project(':codion-common-db')
     implementation project(':codion-common-model')
 
-    implementation project(':codion-swing-common-tools')
     implementation project(':codion-swing-common-model')
     implementation project(':codion-swing-common-ui')
     api project(':codion-swing-framework-model-tools')

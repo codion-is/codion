@@ -9,6 +9,6 @@ module is.codion.swing.common.tools {
   requires transitive is.codion.common.db;
   requires transitive is.codion.common.model;
 
-  exports is.codion.swing.common.tools.loadtest;
-  exports is.codion.swing.common.tools.randomizer;
+  exports is.codion.swing.common.model.tools.loadtest;
+  exports is.codion.swing.common.model.tools.randomizer;
 }
