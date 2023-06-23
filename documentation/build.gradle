@@ -67,7 +67,7 @@ asciidoctor {
             'swing-common-model': '/is.codion.swing.common.model',
             'swing-common-ui': '/is.codion.swing.common.ui',
             'swing-framework-model': '/is.codion.swing.framework.model',
-            'swing-framework-tools': '/is.codion.swing.framework.tools',
+            'swing-framework-model-tools': '/is.codion.swing.framework.model.tools',
             'swing-framework-ui': '/is.codion.swing.framework.ui'
     asciidoctorj {
         version = '2.5.7'
