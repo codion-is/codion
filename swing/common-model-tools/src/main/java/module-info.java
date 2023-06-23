@@ -1,7 +1,7 @@
 /**
  * Common Swing tools model classes.
  */
-module is.codion.swing.common.tools {
+module is.codion.swing.common.model.tools {
   requires org.slf4j;
   requires org.jfree.jfreechart;
   requires jdk.management;

@@ -6,8 +6,8 @@ module is.codion.framework.demos.chinook {
   requires is.codion.framework.db.local;
   requires is.codion.framework.db.http;
   requires is.codion.framework.db.rmi;
-  requires is.codion.swing.common.tools.ui;
-  requires is.codion.swing.framework.tools;
+  requires is.codion.swing.common.ui.tools;
+  requires is.codion.swing.framework.model.tools;
   requires is.codion.swing.framework.ui;
   requires is.codion.javafx.framework;
   requires is.codion.plugin.jasperreports;
