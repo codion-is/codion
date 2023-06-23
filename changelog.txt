@@ -9247,3 +9247,13 @@
   EntityTablePanel, keyboard shortcut ctrl-p added for printing, if a print action is available
   Controls.isNotEmpty() added, related refactoring
   ControlHandler.onControls() now only called for non-empty Controls instances, related refactoring
+  Controls.controls() overloaded with Actions... argument
+  ButtonPanelBuilder.builder() overloaded with Actions... argument
+  ButtonPanelBuilder.buttonsFocusable() added
+  BorderLayoutPanelBuilder added, Panels removed
+  TextInputPanel, TemporalInputPanel no longer set the preferred button size
+  BorderLayoutPanel.builder() and Components.borderLayoutPanel() overloaded with BorderLayout parameter
+  BorderLayoutPanelBuilder used where applicable
+  Direct usage of Components class removed from dialogs package
+  ProgressBarBuilder.builder() overloaded with no parameters
+  CalendarPanel bug fixed, focus flicker reduced when setting the date to today

@@ -5,6 +5,8 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
+import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -122,12 +124,13 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     }
 
     JPanel buttonPanel = ButtonPanelBuilder.builder(controls).build();
-    JPanel buttonBasePanel = new JPanel(Layouts.flowLayout(buttonPanelConstraints));
-    buttonBasePanel.add(buttonPanel, BorderLayout.SOUTH);
-    buttonBasePanel.setBorder(buttonPanelBorder);
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(component, BorderLayout.CENTER);
-    panel.add(buttonBasePanel, BorderLayout.SOUTH);
+    JPanel panel = BorderLayoutPanelBuilder.builder(new BorderLayout())
+            .centerComponent(component)
+            .southComponent(PanelBuilder.builder(Layouts.flowLayout(buttonPanelConstraints))
+                    .add(buttonPanel)
+                    .border(buttonPanelBorder)
+                    .build())
+            .build();
 
     JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo, location, modal, resizable, onShown);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);

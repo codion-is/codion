@@ -36,11 +36,13 @@ java.util.Collections$SingletonMap
 java.util.Collections$UnmodifiableCollection
 java.util.Collections$UnmodifiableList
 java.util.Collections$UnmodifiableMap
+java.util.Collections$UnmodifiableSet
 java.util.Collections$UnmodifiableRandomAccessList
 java.util.Date
 java.util.HashMap
 java.util.HashSet
 java.util.LinkedHashMap
+java.util.LinkedHashSet
 java.util.UUID
 net.sf.jasperreports.compilers.ConstantExpressionEvaluation
 net.sf.jasperreports.compilers.FieldEvaluation

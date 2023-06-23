@@ -7,7 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
-import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.Layouts;
 
@@ -85,7 +85,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
       super(Layouts.borderLayout());
       List<Item<Integer>> values = initializeValues();
       this.fontSizeComboBoxModel = itemComboBoxModel(values);
-      add(Components.itemComboBox(fontSizeComboBoxModel)
+      add(ItemComboBoxBuilder.builder(fontSizeComboBoxModel)
               .initialValue(currentFontSize)
               .renderer(new FontSizeCellRenderer(values, currentFontSize))
               .build(), BorderLayout.CENTER);

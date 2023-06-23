@@ -70,16 +70,16 @@ final class CoverArtPanel extends JPanel {
   }
 
   private JPanel createPanel() {
-    return Components.panel(borderLayout())
+    return Components.borderLayoutPanel(borderLayout())
             .border(BorderFactory.createEmptyBorder(5, 5, 5, 5))
             .preferredSize(EMBEDDED_SIZE)
-            .add(imagePanel, BorderLayout.CENTER)
-            .add(buttonPanel(Controls.builder()
+            .centerComponent(imagePanel)
+            .southComponent(buttonPanel(Controls.builder()
                     .control(Control.builder(this::selectCover)
                             .name(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
                             .name(BUNDLE.getString(REMOVE_COVER))))
-                    .build(), BorderLayout.SOUTH)
+                    .build())
             .build();
   }
 

@@ -328,15 +328,15 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JPanel createNorthPanel() {
-    return panel(borderLayout())
-            .add(panel(borderLayout())
-                    .add(formattedDateLabel, BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .northComponent(borderLayoutPanel(borderLayout())
+                    .centerComponent(formattedDateLabel)
                     .border(createTitledBorder(""))
-                    .build(), BorderLayout.NORTH)
-            .add(panel(flowLayout(FlowLayout.CENTER))
+                    .build())
+            .centerComponent(panel(flowLayout(FlowLayout.CENTER))
                     .add(createYearMonthHourMinutePanel())
                     .border(createTitledBorder(""))
-                    .build(), BorderLayout.CENTER)
+                    .build())
             .build();
   }
 
@@ -365,9 +365,9 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JPanel createDayPanel() {
-    return panel(borderLayout())
-            .add(createDayHeaderPanel(), BorderLayout.NORTH)
-            .add(dayGridPanel, BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .northComponent(createDayHeaderPanel())
+            .centerComponent(dayGridPanel)
             .border(createTitledBorder(""))
             .build();
   }
@@ -441,6 +441,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private void selectToday() {
+    dayGridPanel.requestFocusInWindow();//prevent focus flickering
     LocalDate now = LocalDate.now();
     setLocalDateTime(getLocalDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
     requestCurrentDayButtonFocus();

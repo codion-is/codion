@@ -90,11 +90,11 @@ public final class ClientUserMonitorPanel extends JPanel {
             .add(userScroller)
             .build();
 
-    JPanel clientTypeBase = panel(borderLayout())
-            .add(clientUserBase, BorderLayout.CENTER)
-            .add(button(control(model::refresh))
+    JPanel clientTypeBase = borderLayoutPanel(borderLayout())
+            .centerComponent(clientUserBase)
+            .southComponent(button(control(model::refresh))
                     .text("Refresh")
-                    .build(), BorderLayout.SOUTH)
+                    .build())
             .build();
 
     JPanel actionBase = panel(flowLayout(FlowLayout.LEFT))
@@ -115,9 +115,9 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel currentConnectionsPanel = panel(borderLayout())
-            .add(actionBase, BorderLayout.NORTH)
-            .add(clientTypeMonitorPanel, BorderLayout.CENTER)
+    JPanel currentConnectionsPanel = borderLayoutPanel(borderLayout())
+            .northComponent(actionBase)
+            .centerComponent(clientTypeMonitorPanel)
             .build();
 
     return splitPane()
@@ -139,18 +139,18 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel configBase = panel(borderLayout())
-            .add(configPanel, BorderLayout.CENTER)
-            .add(button(control(model::resetHistory))
+    JPanel configBase = borderLayoutPanel(borderLayout())
+            .centerComponent(configPanel)
+            .eastComponent(button(control(model::resetHistory))
                     .text("Reset")
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
 
     FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel()).build();
 
-    return panel(borderLayout())
-            .add(new JScrollPane(userHistoryTable), BorderLayout.CENTER)
-            .add(configBase, BorderLayout.SOUTH)
+    return borderLayoutPanel(borderLayout())
+            .centerComponent(new JScrollPane(userHistoryTable))
+            .southComponent(configBase)
             .build();
   }
 

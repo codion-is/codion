@@ -10,7 +10,10 @@ import is.codion.common.value.Value;
 import is.codion.swing.common.model.worker.ProgressWorker;
 import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
+import is.codion.swing.common.ui.component.text.PasswordFieldBuilder;
+import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.layout.Layouts;
@@ -59,12 +62,12 @@ final class LoginPanel extends JPanel {
     this.usernameValue.set(defaultUser == null ? null : defaultUser.username());
     this.usernameSpecifiedState = State.state(usernameValue.isNotNull());
     this.usernameValue.addDataListener(username -> usernameSpecifiedState.set(username != null));
-    this.usernameField = Components.textField(usernameValue)
+    this.usernameField = TextFieldBuilder.builder(String.class, usernameValue)
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
             .enabledState(validatingState.reversedObserver())
             .build();
-    this.passwordField = Components.passwordField()
+    this.passwordField = PasswordFieldBuilder.builder()
             .initialValue(defaultUser == null ? "" : String.valueOf(defaultUser.password()))
             .columns(inputFieldColumns)
             .selectAllOnFocusGained(true)
@@ -127,7 +130,7 @@ final class LoginPanel extends JPanel {
   }
 
   private JPanel createCredentialsPanel() {
-    return Components.panel(Layouts.flexibleGridLayout(2, 2))
+    return PanelBuilder.builder(Layouts.flexibleGridLayout(2, 2))
             .add(new JLabel(Messages.username(), SwingConstants.RIGHT))
             .add(usernameField)
             .add(new JLabel(Messages.password(), SwingConstants.RIGHT))
@@ -137,11 +140,10 @@ final class LoginPanel extends JPanel {
 
   private JPanel createPasswordProgressPanel() {
     CardLayout passwordProgressLayout = new CardLayout();
-    JPanel passwordProgressPanel = Components.panel(passwordProgressLayout)
+    JPanel passwordProgressPanel = PanelBuilder.builder(passwordProgressLayout)
             .add(passwordField, PASSWORD_CARD)
-            .add(Components.progressBar()
+            .add(ProgressBarBuilder.builder()
                     .preferredSize(passwordField.getPreferredSize())
-                    .indeterminate(true)
                     .build(), PROGRESS_CARD)
             .build();
     validatingState.addDataListener(validating ->

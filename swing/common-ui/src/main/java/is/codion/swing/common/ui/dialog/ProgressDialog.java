@@ -4,7 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
+import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JDialog;
@@ -17,7 +19,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 
@@ -69,27 +70,27 @@ public final class ProgressDialog extends JDialog {
   }
 
   private JPanel createCenterPanel(DefaultBuilder builder) {
-    JPanel basePanel = new JPanel(borderLayout());
+    BorderLayoutPanelBuilder basePanelBuilder = BorderLayoutPanelBuilder.builder(borderLayout());
     if (builder.border != null) {
-      basePanel.setBorder(builder.border);
+      basePanelBuilder.border(builder.border);
     }
     if (builder.northPanel != null) {
-      basePanel.add(builder.northPanel, BorderLayout.NORTH);
+      basePanelBuilder.northComponent(builder.northPanel);
     }
     if (builder.westPanel != null) {
-      basePanel.add(builder.westPanel, BorderLayout.WEST);
+      basePanelBuilder.westComponent(builder.westPanel);
     }
     if (builder.eastPanel != null) {
-      basePanel.add(builder.eastPanel, BorderLayout.EAST);
+      basePanelBuilder.eastComponent(builder.eastPanel);
     }
-    basePanel.add(progressBar, BorderLayout.CENTER);
+    basePanelBuilder.centerComponent(progressBar);
     if (builder.controls != null) {
-      basePanel.add(Components.panel(flowLayout(FlowLayout.TRAILING))
-              .add(buttonPanel(builder.controls).build())
-              .build(), BorderLayout.SOUTH);
+      basePanelBuilder.southComponent(PanelBuilder.builder(flowLayout(FlowLayout.TRAILING))
+              .add(ButtonPanelBuilder.builder(builder.controls).build())
+              .build());
     }
 
-    return basePanel;
+    return basePanelBuilder.build();
   }
 
   private static JProgressBar createProgressBar(DefaultBuilder builder) {

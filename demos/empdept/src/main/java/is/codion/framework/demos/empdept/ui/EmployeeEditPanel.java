@@ -13,7 +13,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
@@ -72,9 +71,9 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     setComponent(Employee.DEPARTMENT_FK, departmentIdField);
 
-    return Components.panel(borderLayout())
-            .add(departmentIdField, BorderLayout.WEST)
-            .add(departmentBox, BorderLayout.CENTER)
+    return Components.borderLayoutPanel(borderLayout())
+            .westComponent(departmentIdField)
+            .centerComponent(departmentBox)
             .build();
   }
 }
