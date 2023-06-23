@@ -15,12 +15,6 @@ import java.awt.BorderLayout;
 public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel, BorderLayoutPanelBuilder> {
 
   /**
-   * @param layout the layout
-   * @return this builder instance
-   */
-  BorderLayoutPanelBuilder layout(BorderLayout layout);
-
-  /**
    * @param centerComponent the {@link BorderLayout#CENTER} component
    * @return this builder instance
    */
@@ -54,6 +48,14 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
    * @return a border layout panel builder
    */
   static BorderLayoutPanelBuilder builder() {
-    return new DefaultBorderLayoutPanelBuilder();
+    return new DefaultBorderLayoutPanelBuilder(new BorderLayout());
+  }
+
+  /**
+   * @param layout the BorderLayout to use
+   * @return a border layout panel builder
+   */
+  static BorderLayoutPanelBuilder builder(BorderLayout layout) {
+    return new DefaultBorderLayoutPanelBuilder(layout);
   }
 }

@@ -59,6 +59,7 @@ import javax.swing.JToggleButton;
 import javax.swing.ListModel;
 import javax.swing.SpinnerListModel;
 import javax.swing.SpinnerNumberModel;
+import java.awt.BorderLayout;
 import java.awt.LayoutManager;
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -1000,6 +1001,14 @@ public final class Components {
    */
   public static BorderLayoutPanelBuilder borderLayoutPanel() {
     return BorderLayoutPanelBuilder.builder();
+  }
+
+  /**
+   * @param layout the layout to use
+   * @return a new border layout panel builder
+   */
+  public static BorderLayoutPanelBuilder borderLayoutPanel(BorderLayout layout) {
+    return BorderLayoutPanelBuilder.builder(layout);
   }
 
   /**

@@ -240,16 +240,16 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return panel(borderLayout())
-            .add(chartConfig, BorderLayout.WEST)
-            .add(statisticsPanel(), BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .westComponent(chartConfig)
+            .centerComponent(statisticsPanel())
             .build();
   }
 
   private JPanel statisticsPanel() {
-    return panel(borderLayout())
+    return borderLayoutPanel(borderLayout())
             .border(createTitledBorder("Statistics"))
-            .add(panel(flexibleGridLayout(1, 0))
+            .centerComponent(panel(flexibleGridLayout(1, 0))
                     .add(borderLayoutPanel()
                             .westComponent(new JLabel("Connections"))
                             .centerComponent(poolSizeField)
@@ -274,10 +274,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                             .westComponent(new JLabel("Since"))
                             .centerComponent(resetTimeField)
                             .build())
-                    .build(), BorderLayout.CENTER)
-            .add(button(control(model::resetStatistics))
+                    .build())
+            .eastComponent(button(control(model::resetStatistics))
                     .text("Reset")
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
   }
 }

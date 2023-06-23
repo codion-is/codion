@@ -12,7 +12,6 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.*;
@@ -77,8 +76,8 @@ public final class TrackEditPanel extends EntityEditPanel {
             .add(minutesSecondsValue.component())
             .build();
 
-    JPanel unitPricePanel = panel(borderLayout())
-            .add(createInputPanel(Track.UNITPRICE), BorderLayout.EAST)
+    JPanel unitPricePanel = borderLayoutPanel(borderLayout())
+            .eastComponent(createInputPanel(Track.UNITPRICE))
             .build();
 
     setLayout(flexibleGridLayout(4, 2));

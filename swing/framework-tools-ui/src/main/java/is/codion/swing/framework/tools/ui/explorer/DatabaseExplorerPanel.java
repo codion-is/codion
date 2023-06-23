@@ -81,13 +81,13 @@ public final class DatabaseExplorerPanel extends JPanel {
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 
-    JPanel textAreaCopyPanel = Components.panel(borderLayout())
-            .add(new JScrollPane(textArea), BorderLayout.CENTER)
-            .add(Components.panel(flowLayout(FlowLayout.RIGHT))
+    JPanel textAreaCopyPanel = Components.borderLayoutPanel(borderLayout())
+            .centerComponent(new JScrollPane(textArea))
+            .southComponent(Components.panel(flowLayout(FlowLayout.RIGHT))
                     .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
                             .name(Messages.copy()))
                             .build())
-                    .build(), BorderLayout.SOUTH)
+                    .build())
             .build();
 
     JSplitPane splitPane = Components.splitPane()
@@ -114,8 +114,8 @@ public final class DatabaseExplorerPanel extends JPanel {
 
   private void populateSchema() {
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-    JPanel northPanel = Components.panel(borderLayout())
-            .add(schemaLabel, BorderLayout.CENTER)
+    JPanel northPanel = Components.borderLayoutPanel(borderLayout())
+            .centerComponent(schemaLabel)
             .build();
     EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
     Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))

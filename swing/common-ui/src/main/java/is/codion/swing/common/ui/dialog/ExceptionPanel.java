@@ -14,14 +14,13 @@ import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
-import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ScrollPaneConstants;
@@ -39,9 +38,9 @@ import java.util.ResourceBundle;
 import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.component.Components.checkBox;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
+import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -129,12 +128,12 @@ final class ExceptionPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(borderLayout());
-    JPanel panel = new JPanel(borderLayout());
-    panel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
-    panel.add(createNorthPanel(), BorderLayout.NORTH);
-    panel.add(centerPanel, BorderLayout.CENTER);
-    panel.add(createButtonPanel(), BorderLayout.SOUTH);
-    add(panel, BorderLayout.CENTER);
+    add(Components.borderLayoutPanel(borderLayout())
+            .border(createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE))
+            .northComponent(createNorthPanel())
+            .centerComponent(centerPanel)
+            .southComponent(createButtonPanel())
+            .build(), BorderLayout.CENTER);
   }
 
   private void initializeDetailView(boolean showDetails) {
@@ -148,26 +147,22 @@ final class ExceptionPanel extends JPanel {
 
   private JPanel createNorthPanel() {
     detailPanel.add(exceptionField);
-    detailPanel.add(new JScrollPane(messageArea,
-            ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED,
-            ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER));
+    detailPanel.add(Components.scrollPane(messageArea)
+            .horizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER)
+            .verticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED)
+            .build());
 
-    JPanel northPanel = new JPanel(flowLayout(FlowLayout.LEFT));
-    JPanel panel = new JPanel(borderLayout());
-    panel.add(northPanel, BorderLayout.NORTH);
-    panel.add(descriptionLabel, BorderLayout.CENTER);
-
-    return panel;
+    return Components.borderLayoutPanel(borderLayout())
+            .centerComponent(descriptionLabel)
+            .build();
   }
 
   private JPanel createCenterPanel() {
-    JScrollPane scrollPane = new JScrollPane(detailsArea);
-    scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
-
-    JPanel panel = new JPanel(new BorderLayout());
-    panel.add(scrollPane, BorderLayout.CENTER);
-
-    return panel;
+    return Components.borderLayoutPanel(new BorderLayout())
+            .centerComponent(Components.scrollPane(detailsArea)
+                    .preferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT))
+                    .build())
+            .build();
   }
 
   private JPanel createButtonPanel() {
@@ -194,12 +189,11 @@ final class ExceptionPanel extends JPanel {
     centerButtonPanel.add(printButton);
     centerButtonPanel.add(saveButton);
     centerButtonPanel.add(button(closeControl).build());
-    JPanel panel = new JPanel(new BorderLayout());
 
-    panel.add(westPanel, BorderLayout.WEST);
-    panel.add(centerButtonPanel, BorderLayout.CENTER);
-
-    return panel;
+    return Components.borderLayoutPanel(new BorderLayout())
+            .westComponent(westPanel)
+            .centerComponent(centerButtonPanel)
+            .build();
   }
 
   void setException(Throwable throwable, String message) {

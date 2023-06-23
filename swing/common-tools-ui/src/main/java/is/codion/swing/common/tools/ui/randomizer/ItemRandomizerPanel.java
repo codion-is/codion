@@ -103,19 +103,19 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a control panel for the item weight
    */
   private JPanel createWeightPanel(ItemRandomizer.RandomItem<T> item) {
-    return Components.panel(Layouts.borderLayout())
-            .add(new JLabel(item.item().toString()), BorderLayout.NORTH)
-            .add(Components.checkBox(new EnabledModelValue(item.item()))
+    return Components.borderLayoutPanel(Layouts.borderLayout())
+            .northComponent(new JLabel(item.item().toString()))
+            .westComponent(Components.checkBox(new EnabledModelValue(item.item()))
                     .text("Enabled")
-                    .build(), BorderLayout.WEST)
-            .add(Components.label("Weight")
+                    .build())
+            .centerComponent(Components.label("Weight")
                     .horizontalAlignment(SwingConstants.RIGHT)
-                    .build(), BorderLayout.CENTER)
-            .add(Components.integerSpinner(new WeightModelValue(item.item()))
+                    .build())
+            .eastComponent(Components.integerSpinner(new WeightModelValue(item.item()))
                     .minimum(0)
                     .columns(SPINNER_COLUMNS)
                     .toolTipText(item.item().toString())
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
   }
 

@@ -139,14 +139,14 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private void initializeUI() {
     setLayout(borderLayout());
-    add(panel(new BorderLayout())
-            .add(panel(flexibleGridLayout(5, 1))
+    add(borderLayoutPanel()
+            .northComponent(panel(flexibleGridLayout(5, 1))
                     .add(createApplicationPanel())
                     .add(createActivityPanel())
                     .add(scenarioPanel)
                     .add(createUserPanel())
                     .add(createChartControlPanel())
-                    .build(), BorderLayout.NORTH)
+                    .build())
             .build(), BorderLayout.WEST);
     add(createChartPanel(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
@@ -191,38 +191,38 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createApplicationPanel() {
-    return panel(borderLayout())
+    return borderLayoutPanel(borderLayout())
             .border(createTitledBorder("Applications"))
-            .add(panel(borderLayout())
-                    .add(panel(flexibleGridLayout(1, 2))
+            .northComponent(borderLayoutPanel(borderLayout())
+                    .westComponent(panel(flexibleGridLayout(1, 2))
                             .add(new JLabel("Batch size"))
                             .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
                                     .editable(false)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .toolTipText("Application batch size")
                                     .build())
-                            .build(), BorderLayout.WEST)
-                    .add(createAddRemoveApplicationPanel(), BorderLayout.CENTER)
-                    .build(), BorderLayout.NORTH)
+                            .build())
+                    .centerComponent(createAddRemoveApplicationPanel())
+                    .build())
             .build();
   }
 
   private JPanel createAddRemoveApplicationPanel() {
-    return panel(new BorderLayout())
-            .add(button(Control.builder(loadTestModel::removeApplicationBatch)
+    return borderLayoutPanel()
+            .westComponent(button(Control.builder(loadTestModel::removeApplicationBatch)
                     .name("-")
                     .description("Remove application batch"))
-                    .build(), BorderLayout.WEST)
-            .add(integerField()
+                    .build())
+            .centerComponent(integerField()
                     .editable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
                     .linkedValueObserver(loadTestModel.applicationCountObserver())
-                    .build(), BorderLayout.CENTER)
-            .add(button(Control.builder(loadTestModel::addApplicationBatch)
+                    .build())
+            .eastComponent(button(Control.builder(loadTestModel::addApplicationBatch)
                     .name("+")
                     .description("Add application batch"))
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
   }
 
@@ -333,11 +333,11 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createScenarioPanel(UsageScenario<T> item) {
-    return panel(borderLayout())
-            .add(tabbedPane()
+    return borderLayoutPanel(borderLayout())
+            .centerComponent(tabbedPane()
                     .tab("Duration", createScenarioDurationChartPanel(item))
                     .tab("Exceptions", createScenarioExceptionsPanel(item))
-                    .build(), BorderLayout.CENTER)
+                    .build())
             .build();
   }
 
@@ -368,12 +368,12 @@ public final class LoadTestPanel<T> extends JPanel {
             .name("Clear"))
             .build();
 
-    return panel(borderLayout())
-            .add(new JScrollPane(exceptionsArea), BorderLayout.CENTER)
-            .add(panel(borderLayout())
-                    .add(refreshButton, BorderLayout.NORTH)
-                    .add(clearButton, BorderLayout.SOUTH)
-                    .build(), BorderLayout.EAST)
+    return borderLayoutPanel(borderLayout())
+            .centerComponent(new JScrollPane(exceptionsArea))
+            .eastComponent(borderLayoutPanel(borderLayout())
+                    .northComponent(refreshButton)
+                    .southComponent(clearButton)
+                    .build())
             .build();
   }
 

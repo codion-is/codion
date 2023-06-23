@@ -85,8 +85,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
-import static is.codion.swing.common.ui.component.Components.menu;
-import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
@@ -666,10 +665,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .add(new JLabel(resourceBundle.getString(MEMORY_USAGE) + ":"))
             .add(new JLabel(Memory.memoryUsage()));
 
-    return panel(borderLayout())
+    return borderLayoutPanel(borderLayout())
             .border(createEmptyBorder(5, 5, 5, 5))
-            .add(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)), BorderLayout.WEST)
-            .add(versionMemoryPanel.build(), BorderLayout.CENTER)
+            .westComponent(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
+            .centerComponent(versionMemoryPanel.build())
             .build();
   }
 
@@ -774,8 +773,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     applicationTabPane = createApplicationTabPane();
     setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
-    add(panel(borderLayout())
-            .add(applicationTabPane, BorderLayout.CENTER)
+    add(borderLayoutPanel(borderLayout())
+            .centerComponent(applicationTabPane)
             .build(), BorderLayout.CENTER);
     JPanel northPanel = createNorthPanel();
     if (northPanel != null) {

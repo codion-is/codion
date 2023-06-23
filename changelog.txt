@@ -9213,3 +9213,5 @@
   ButtonPanelBuilder.buttonsFocusable() added
   BorderLayoutPanelBuilder added, Panels removed
   TextInputPanel, TemporalInputPanel no longer set the preferred button size
+  BorderLayoutPanel.builder() and Components.borderLayoutPanel() overloaded with BorderLayout parameter
+  BorderLayoutPanelBuilder used where applicable

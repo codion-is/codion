@@ -14,17 +14,16 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultBorderLayoutPanelBuilder extends AbstractComponentBuilder<Void, JPanel, BorderLayoutPanelBuilder> implements BorderLayoutPanelBuilder {
 
-  private BorderLayout layout = new BorderLayout();
+  private final BorderLayout layout;
+
   private JComponent centerComponent;
   private JComponent northComponent;
   private JComponent southComponent;
   private JComponent eastComponent;
   private JComponent westComponent;
 
-  @Override
-  public BorderLayoutPanelBuilder layout(BorderLayout layout) {
+  DefaultBorderLayoutPanelBuilder(BorderLayout layout) {
     this.layout = requireNonNull(layout);
-    return this;
   }
 
   @Override

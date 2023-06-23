@@ -123,16 +123,12 @@ public final class ServerMonitorPanel extends JPanel {
             .add(createLogLevelField())
             .build();
 
-    JPanel shutdownBasePanel = panel(flowLayout(FlowLayout.CENTER))
-            .add(button(control(this::shutdownServer))
-                    .text("Shutdown")
-                    .build(), BorderLayout.EAST)
-            .build();
-
-    JPanel northPanel = panel(borderLayout())
+    JPanel northPanel = borderLayoutPanel(borderLayout())
             .border(createTitledBorder("Server"))
-            .add(serverPanel, BorderLayout.CENTER)
-            .add(shutdownBasePanel, BorderLayout.EAST)
+            .centerComponent(serverPanel)
+            .eastComponent(button(control(this::shutdownServer))
+                    .text("Shutdown")
+                    .build())
             .build();
 
     JTabbedPane tabbedPane = tabbedPane()
@@ -148,29 +144,29 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel createPerformancePanel() {
-    JPanel intervalPanel = panel(borderLayout())
-            .add(new JLabel("Update interval (s)"), BorderLayout.WEST)
-            .add(integerSpinner(model.updateIntervalValue())
+    JPanel intervalPanel = borderLayoutPanel(borderLayout())
+            .westComponent(new JLabel("Update interval (s)"))
+            .centerComponent(integerSpinner(model.updateIntervalValue())
                     .minimum(1)
                     .columns(SPINNER_COLUMNS)
                     .editable(false)
-                    .build(), BorderLayout.CENTER)
+                    .build())
             .build();
 
-    JPanel chartsPanel = panel(borderLayout())
-            .add(intervalPanel, BorderLayout.CENTER)
-            .add(button(control(model::clearStatistics))
+    JPanel chartsPanel = borderLayoutPanel(borderLayout())
+            .centerComponent(intervalPanel)
+            .eastComponent(button(control(model::clearStatistics))
                     .text("Clear")
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
 
-    JPanel zoomPanel = panel(borderLayout())
-            .add(checkBox(synchronizedZoomState)
+    JPanel zoomPanel = borderLayoutPanel(borderLayout())
+            .centerComponent(checkBox(synchronizedZoomState)
                     .text("Synchronize zoom")
-                    .build(), BorderLayout.CENTER)
-            .add(button(control(this::resetZoom))
+                    .build())
+            .eastComponent(button(control(this::resetZoom))
                     .text("Reset zoom")
-                    .build(), BorderLayout.EAST)
+                    .build())
             .build();
 
     JPanel controlPanel = panel(flexibleGridLayout(1, 2))
@@ -195,17 +191,17 @@ public final class ServerMonitorPanel extends JPanel {
             .add(chartPanelRight)
             .build();
 
-    JPanel controlPanelBase = panel(borderLayout())
-            .add(controlPanel, BorderLayout.WEST)
+    JPanel controlPanelBase = borderLayoutPanel(borderLayout())
+            .westComponent(controlPanel)
             .build();
 
-    JPanel overviewPanel = panel(borderLayout())
-            .add(controlPanelBase, BorderLayout.SOUTH)
-            .add(chartPanel, BorderLayout.CENTER)
+    JPanel overviewPanel = borderLayoutPanel(borderLayout())
+            .southComponent(controlPanelBase)
+            .centerComponent(chartPanel)
             .build();
 
-    return panel(borderLayout())
-            .add(overviewPanel, BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .centerComponent(overviewPanel)
             .build();
   }
 
@@ -228,9 +224,9 @@ public final class ServerMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return panel(borderLayout())
-            .add(refreshPanel, BorderLayout.NORTH)
-            .add(new JScrollPane(table), BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .northComponent(refreshPanel)
+            .centerComponent(new JScrollPane(table))
             .build();
   }
 
@@ -247,9 +243,9 @@ public final class ServerMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return panel(borderLayout())
-            .add(clearCacheAndRefreshPanel, BorderLayout.NORTH)
-            .add(new JScrollPane(table), BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .northComponent(clearCacheAndRefreshPanel)
+            .centerComponent(new JScrollPane(table))
             .build();
   }
 
@@ -263,9 +259,9 @@ public final class ServerMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return panel(borderLayout())
-            .add(refreshPanel, BorderLayout.NORTH)
-            .add(new JScrollPane(table), BorderLayout.CENTER)
+    return borderLayoutPanel(borderLayout())
+            .northComponent(refreshPanel)
+            .centerComponent(new JScrollPane(table))
             .build();
   }
 

@@ -219,9 +219,9 @@ public final class ApplicationPanel extends JPanel {
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build();
-    panel(borderLayout())
-            .add(integerItemSelectorField, BorderLayout.WEST)
-            .add(integerItemComboBox, BorderLayout.CENTER)
+    borderLayoutPanel(borderLayout())
+            .westComponent(integerItemSelectorField)
+            .centerComponent(integerItemComboBox)
             .build(inputPanel::add);
 
     slider(model.createIntegerSliderModel(), model.integerSlideValue())

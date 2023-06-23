@@ -154,8 +154,8 @@ final class ColumnSelectionPanel<C> extends JPanel {
       });
     });
 
-    return Components.panel(borderLayout())
-            .add(northPanel, BorderLayout.NORTH)
+    return Components.borderLayoutPanel(borderLayout())
+            .northComponent(northPanel)
             .scrollPane()
             .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)
             .verticalUnitIncrement(COLUMN_SCROLL_BAR_UNIT_INCREMENT)
