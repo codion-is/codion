@@ -9,11 +9,11 @@ import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.TrackTableModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.math.BigDecimal;
 
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRows;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRows;
 
 public final class RaisePrices extends AbstractEntityUsageScenario<ChinookAppModel> {
 

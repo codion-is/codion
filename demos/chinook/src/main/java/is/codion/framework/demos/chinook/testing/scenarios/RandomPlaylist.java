@@ -12,7 +12,7 @@ import is.codion.framework.demos.chinook.model.PlaylistTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.Collection;
 import java.util.List;

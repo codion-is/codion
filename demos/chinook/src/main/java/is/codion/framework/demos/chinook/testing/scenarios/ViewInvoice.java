@@ -7,9 +7,9 @@ import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookAppModel> {
 

@@ -9,12 +9,12 @@ import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.Random;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.randomize;
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
 public final class UpdateEmployee extends AbstractEntityUsageScenario<EmpDeptAppModel> {

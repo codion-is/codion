@@ -8,10 +8,10 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.petstore.domain.Petstore;
 import is.codion.framework.demos.petstore.model.PetstoreAppModel;
-import is.codion.swing.common.tools.loadtest.AbstractUsageScenario;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import static java.util.Collections.singletonList;
 

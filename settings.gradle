@@ -94,23 +94,23 @@ project(':codion-swing-common-model').projectDir = file('swing/common-model')
 include 'codion-swing-common-ui'
 project(':codion-swing-common-ui').projectDir = file('swing/common-ui')
 
-include 'codion-swing-common-tools'
-project(':codion-swing-common-tools').projectDir = file('swing/common-tools')
+include 'codion-swing-common-model-tools'
+project(':codion-swing-common-model-tools').projectDir = file('swing/common-model-tools')
 
-include 'codion-swing-common-tools-ui'
-project(':codion-swing-common-tools-ui').projectDir = file('swing/common-tools-ui')
+include 'codion-swing-common-ui-tools'
+project(':codion-swing-common-ui-tools').projectDir = file('swing/common-ui-tools')
 
 include 'codion-swing-framework-model'
 project(':codion-swing-framework-model').projectDir = file('swing/framework-model')
 
-include 'codion-swing-framework-tools'
-project(':codion-swing-framework-tools').projectDir = file('swing/framework-tools')
+include 'codion-swing-framework-model-tools'
+project(':codion-swing-framework-model-tools').projectDir = file('swing/framework-model-tools')
 
 include 'codion-swing-framework-ui'
 project(':codion-swing-framework-ui').projectDir = file('swing/framework-ui')
 
-include 'codion-swing-framework-tools-ui'
-project(':codion-swing-framework-tools-ui').projectDir = file('swing/framework-tools-ui')
+include 'codion-swing-framework-ui-tools'
+project(':codion-swing-framework-ui-tools').projectDir = file('swing/framework-ui-tools')
 
 include 'codion-swing-framework-ui-test'
 project(':codion-swing-framework-ui-test').projectDir = file('swing/framework-ui-test')

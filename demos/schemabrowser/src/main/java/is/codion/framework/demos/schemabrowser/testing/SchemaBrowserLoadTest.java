@@ -13,11 +13,11 @@ import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Schema;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Table;
-import is.codion.swing.common.tools.loadtest.UsageScenario;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.model.tools.loadtest.UsageScenario;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import static java.util.Collections.singletonList;
 

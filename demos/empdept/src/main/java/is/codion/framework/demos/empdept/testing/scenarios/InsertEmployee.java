@@ -9,13 +9,13 @@ import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import static is.codion.framework.domain.entity.test.EntityTestUtil.createRandomEntity;
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 
 // tag::loadTest[]
 public final class InsertEmployee extends AbstractEntityUsageScenario<EmpDeptAppModel> {

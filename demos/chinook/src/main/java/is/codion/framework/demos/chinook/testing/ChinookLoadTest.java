@@ -23,9 +23,9 @@ import is.codion.framework.demos.chinook.testing.scenarios.ViewCustomerReport;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewGenre;
 import is.codion.framework.demos.chinook.testing.scenarios.ViewInvoice;
 import is.codion.framework.demos.chinook.ui.ChinookAppPanel;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Genre;
 import static is.codion.framework.demos.chinook.domain.Chinook.Track;

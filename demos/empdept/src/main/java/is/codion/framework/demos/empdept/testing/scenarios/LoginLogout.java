@@ -4,7 +4,7 @@
 package is.codion.framework.demos.empdept.testing.scenarios;
 
 import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.util.Random;
 

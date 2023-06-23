@@ -12,9 +12,9 @@ import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.tools.loadtest.AbstractUsageScenario;
-import is.codion.swing.common.tools.loadtest.LoadTestModel;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario;
+import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
