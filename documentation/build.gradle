@@ -67,7 +67,7 @@ asciidoctor {
             'swing-common-model': '',
             'swing-common-ui': '',
             'swing-framework-model': '',
-            'swing-framework-tools': '',
+            'swing-framework-model-tools': '',
             'swing-framework-ui': ''
     asciidoctorj {
         version = '2.5.7'
