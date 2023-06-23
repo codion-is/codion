@@ -441,6 +441,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private void selectToday() {
+    dayGridPanel.requestFocusInWindow();//prevent focus flickering
     LocalDate now = LocalDate.now();
     setLocalDateTime(getLocalDateTime().withYear(now.getYear()).withMonth(now.getMonthValue()).withDayOfMonth(now.getDayOfMonth()));
     requestCurrentDayButtonFocus();

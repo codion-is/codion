@@ -9217,3 +9217,4 @@
   BorderLayoutPanelBuilder used where applicable
   Direct usage of Components class removed from dialogs package
   ProgressBarBuilder.builder() overloaded with no parameters
+  CalendarPanel bug fixed, focus flicker reduced when setting the date to today
