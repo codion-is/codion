@@ -10,7 +10,7 @@ import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 
 import java.math.BigDecimal;
 import java.util.Collection;
@@ -18,8 +18,8 @@ import java.util.List;
 import java.util.Random;
 
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomItem;
-import static is.codion.swing.framework.tools.loadtest.EntityLoadTestModel.selectRandomRow;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomItem;
+import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 import static java.util.Arrays.asList;
 
 public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<ChinookAppModel> {

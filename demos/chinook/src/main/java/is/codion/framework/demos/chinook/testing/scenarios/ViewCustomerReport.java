@@ -7,8 +7,8 @@ import is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import java.util.Collection;
 import java.util.HashMap;

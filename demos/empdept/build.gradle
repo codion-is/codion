@@ -15,10 +15,10 @@ dependencies {
     implementation project(':codion-framework-server')
     implementation project(':codion-framework-servlet')
 
-    implementation project(':codion-swing-common-tools')
-    implementation project(':codion-swing-common-tools-ui')
+    implementation project(':codion-swing-common-model-tools')
+    implementation project(':codion-swing-common-ui-tools')
     implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-tools')
+    implementation project(':codion-swing-framework-model-tools')
 
     implementation project(':codion-javafx-framework')
 

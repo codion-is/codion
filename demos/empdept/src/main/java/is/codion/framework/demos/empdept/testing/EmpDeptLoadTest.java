@@ -15,9 +15,9 @@ import is.codion.framework.demos.empdept.testing.scenarios.InsertEmployee;
 import is.codion.framework.demos.empdept.testing.scenarios.LoginLogout;
 import is.codion.framework.demos.empdept.testing.scenarios.SelectDepartment;
 import is.codion.framework.demos.empdept.testing.scenarios.UpdateEmployee;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import static java.util.Arrays.asList;
 

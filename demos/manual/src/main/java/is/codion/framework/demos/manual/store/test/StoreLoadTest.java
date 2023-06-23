@@ -9,10 +9,10 @@ import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.demos.manual.store.domain.Store;
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.model.StoreApplicationModel;
-import is.codion.swing.common.tools.ui.loadtest.LoadTestPanel;
+import is.codion.swing.common.ui.tools.loadtest.LoadTestPanel;
 import is.codion.swing.framework.model.SwingEntityModel;
-import is.codion.swing.framework.tools.loadtest.AbstractEntityUsageScenario;
-import is.codion.swing.framework.tools.loadtest.EntityLoadTestModel;
+import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
+import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
 import java.util.UUID;
 

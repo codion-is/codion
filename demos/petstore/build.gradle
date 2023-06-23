@@ -1,10 +1,10 @@
 apply from: '../demos.gradle'
 
 dependencies {
-    implementation project(':codion-swing-common-tools')
-    implementation project(':codion-swing-common-tools-ui')
+    implementation project(':codion-swing-common-model-tools')
+    implementation project(':codion-swing-common-ui-tools')
     implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-tools')
+    implementation project(':codion-swing-framework-model-tools')
 
     runtimeOnly project(':codion-plugin-logback-proxy')
 
