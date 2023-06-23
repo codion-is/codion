@@ -4,8 +4,9 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.swing.common.ui.Sizes;
-import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonPanelBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
+import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Controls;
 
 import javax.swing.JDialog;
@@ -18,8 +19,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Window;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 
@@ -71,7 +70,7 @@ public final class ProgressDialog extends JDialog {
   }
 
   private JPanel createCenterPanel(DefaultBuilder builder) {
-    BorderLayoutPanelBuilder basePanelBuilder = borderLayoutPanel(borderLayout());
+    BorderLayoutPanelBuilder basePanelBuilder = BorderLayoutPanelBuilder.builder(borderLayout());
     if (builder.border != null) {
       basePanelBuilder.border(builder.border);
     }
@@ -86,8 +85,8 @@ public final class ProgressDialog extends JDialog {
     }
     basePanelBuilder.centerComponent(progressBar);
     if (builder.controls != null) {
-      basePanelBuilder.southComponent(Components.panel(flowLayout(FlowLayout.TRAILING))
-              .add(buttonPanel(builder.controls).build())
+      basePanelBuilder.southComponent(PanelBuilder.builder(flowLayout(FlowLayout.TRAILING))
+              .add(ButtonPanelBuilder.builder(builder.controls).build())
               .build());
     }
 

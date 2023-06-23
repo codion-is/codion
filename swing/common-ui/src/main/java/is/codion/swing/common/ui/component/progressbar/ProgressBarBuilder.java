@@ -54,6 +54,13 @@ public interface ProgressBarBuilder extends ComponentBuilder<Integer, JProgressB
   JProgressBar build();
 
   /**
+   * @return a new indeterminate {@link ProgressBarBuilder} instance
+   */
+  static ProgressBarBuilder builder() {
+    return new DefaultProgressBarBuilder(null);
+  }
+
+  /**
    * @param boundedRangeModel the progress bar model
    * @return a new {@link ProgressBarBuilder} instance
    */

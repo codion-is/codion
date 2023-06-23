@@ -9215,3 +9215,5 @@
   TextInputPanel, TemporalInputPanel no longer set the preferred button size
   BorderLayoutPanel.builder() and Components.borderLayoutPanel() overloaded with BorderLayout parameter
   BorderLayoutPanelBuilder used where applicable
+  Direct usage of Components class removed from dialogs package
+  ProgressBarBuilder.builder() overloaded with no parameters

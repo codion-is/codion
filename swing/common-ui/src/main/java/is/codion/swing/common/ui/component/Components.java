@@ -913,7 +913,7 @@ public final class Components {
    * @return an indeterminate JProgressBar builder
    */
   public static ProgressBarBuilder progressBar() {
-    return progressBar(null);
+    return ProgressBarBuilder.builder(null);
   }
 
   /**
