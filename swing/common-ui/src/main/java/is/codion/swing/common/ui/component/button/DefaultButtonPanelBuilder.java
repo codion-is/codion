@@ -6,10 +6,8 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
-import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -18,32 +16,42 @@ import java.awt.GridLayout;
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
+  private boolean buttonsFocusable = false;
+
+  DefaultButtonPanelBuilder(Action... actions) {
+    this(Controls.controls(actions));
+  }
+
   DefaultButtonPanelBuilder(Controls controls) {
     super(controls);
   }
 
   @Override
+  public ButtonPanelBuilder buttonsFocusable(boolean buttonsFocusable) {
+    this.buttonsFocusable = buttonsFocusable;
+    return this;
+  }
+
+  @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    new ButtonControlHandler(panel, controls(),
-            buttonBuilder() == null ? ButtonBuilder.builder() : buttonBuilder(),
-            toggleButtonBuilder() == null ? createToggleButtonBuilder() : toggleButtonBuilder());
+    ButtonBuilder<?, ?, ?> buttonBuilder = buttonBuilder();
+    if (buttonBuilder == null) {
+      buttonBuilder = ButtonBuilder.builder()
+              .focusable(buttonsFocusable);
+    }
+    ToggleButtonBuilder<?, ?> toggleButtonBuilder = toggleButtonBuilder();
+    if (toggleButtonBuilder == null) {
+      toggleButtonBuilder = createToggleButtonBuilder()
+              .focusable(buttonsFocusable);
+    }
+    new ButtonControlHandler(panel, controls(), buttonBuilder, toggleButtonBuilder);
 
     return panel;
   }
 
   private JPanel createPanel() {
-    return addEmptyBorder(new JPanel(orientation() == SwingConstants.HORIZONTAL ?
-            new GridLayout(1, 0) : new GridLayout(0, 1)));
-  }
-
-  private static JPanel addEmptyBorder(JPanel panel) {
-    Integer gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    if (gap != null) {
-      panel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
-    }
-
-    return panel;
+    return new JPanel(orientation() == SwingConstants.HORIZONTAL ? new GridLayout(1, 0) : new GridLayout(0, 1));
   }
 
   private final class ButtonControlHandler extends ControlHandler {

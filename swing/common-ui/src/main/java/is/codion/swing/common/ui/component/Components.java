@@ -23,6 +23,7 @@ import is.codion.swing.common.ui.component.combobox.ComboBoxBuilder;
 import is.codion.swing.common.ui.component.combobox.ItemComboBoxBuilder;
 import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.list.ListBuilder;
+import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.progressbar.ProgressBarBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
@@ -971,6 +972,14 @@ public final class Components {
   }
 
   /**
+   * @param actions the actions
+   * @return a button panel builder
+   */
+  public static ButtonPanelBuilder buttonPanel(Action... actions) {
+    return ButtonPanelBuilder.builder(actions);
+  }
+
+  /**
    * @param controls the Controls
    * @return a button panel builder
    */
@@ -984,6 +993,13 @@ public final class Components {
    */
   public static ButtonPanelBuilder buttonPanel(Controls.Builder controlsBuilder) {
     return ButtonPanelBuilder.builder(controlsBuilder);
+  }
+
+  /**
+   * @return a new border layout panel builder
+   */
+  public static BorderLayoutPanelBuilder borderLayoutPanel() {
+    return BorderLayoutPanelBuilder.builder();
   }
 
   /**

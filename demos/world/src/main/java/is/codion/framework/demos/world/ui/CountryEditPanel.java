@@ -15,9 +15,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import static is.codion.swing.common.ui.component.Components.label;
-import static is.codion.swing.common.ui.component.Components.panel;
-import static is.codion.swing.common.ui.component.panel.Panels.createEastButtonPanel;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class CountryEditPanel extends EntityEditPanel {
@@ -62,10 +60,14 @@ final class CountryEditPanel extends EntityEditPanel {
             .preferredWidth(120)
             .build();
     //create a panel with a button for adding a new city
-    JPanel capitalPanel = createEastButtonPanel(capitalComboBox, EntityPanel.builder(City.TYPE)
-            .editPanelClass(CityEditPanel.class)
-            .onBuildEditPanel(this::initializeCapitalEditPanel)
-            .createInsertControl(capitalComboBox));
+    JPanel capitalPanel = Components.borderLayoutPanel()
+            .centerComponent(capitalComboBox)
+            .eastComponent(buttonPanel(EntityPanel.builder(City.TYPE)
+                    .editPanelClass(CityEditPanel.class)
+                    .onBuildEditPanel(this::initializeCapitalEditPanel)
+                    .createInsertControl(capitalComboBox))
+                    .build())
+            .build();
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = editModel();
     NumberField<Double> averageCityPopulationField = Components.doubleField()

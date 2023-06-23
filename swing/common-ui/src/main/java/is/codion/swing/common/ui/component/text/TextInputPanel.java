@@ -11,9 +11,9 @@ import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.value.AbstractComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
+import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
-import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -23,7 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.util.ResourceBundle;
@@ -223,19 +222,16 @@ public final class TextInputPanel extends JPanel {
   }
 
   private JButton createButton(boolean buttonFocusable, ImageIcon buttonIcon) {
-    AbstractAction buttonAction = new AbstractAction(buttonIcon == null ? "..." : "", buttonIcon) {
-      @Override
-      public void actionPerformed(ActionEvent e) {
-        inputFromUser();
-      }
-    };
+    Control buttonControl = Control.builder(this::inputFromUser)
+            .name(buttonIcon == null ? "..." : "")
+            .smallIcon(buttonIcon)
+            .build();
     KeyEvents.builder(VK_INSERT)
-            .action(buttonAction)
+            .action(buttonControl)
             .enable(textField);
-    JButton actionButton = new JButton(buttonAction);
+    JButton actionButton = new JButton(buttonControl);
     actionButton.setFocusable(buttonFocusable);
     actionButton.setToolTipText(MESSAGES.getString("show_input_dialog"));
-    actionButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
 
     return actionButton;
   }

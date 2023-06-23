@@ -113,6 +113,15 @@ public interface Controls extends Control {
 
   /**
    * Constructs a new Controls instance.
+   * @param actions the actions
+   * @return a new Controls instance.
+   */
+  static Controls controls(Action... actions) {
+    return builder().actions(actions).build();
+  }
+
+  /**
+   * Constructs a new Controls instance.
    * @param controls the controls
    * @return a new Controls instance.
    */
