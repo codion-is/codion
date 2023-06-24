@@ -189,34 +189,38 @@ Here's one entity definition from above, pulled apart, with the ingredients visi
 [source,java]
 ----
 ColumnProperty.Builder<Long, ?> id =
-      Property.primaryKeyProperty(Address.ID);
+        Property.primaryKeyProperty(Address.ID);
 
 ColumnProperty.Builder<Long, ?> customerId =
-      Property.columnProperty(Address.CUSTOMER_ID)
-              .nullable(false);
+        Property.columnProperty(Address.CUSTOMER_ID)
+                .nullable(false);
 
 ForeignKeyProperty.Builder customerFk =
-      Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+        Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
 
 ColumnProperty.Builder<String, ?> street =
-      Property.columnProperty(Address.STREET, "Street")
-              .nullable(false)
-              .maximumLength(100);
+        Property.columnProperty(Address.STREET, "Street")
+                .nullable(false)
+                .maximumLength(100);
 
 ColumnProperty.Builder<String, ?> city =
-      Property.columnProperty(Address.CITY, "City")
-              .nullable(false)
-              .maximumLength(50);
+        Property.columnProperty(Address.CITY, "City")
+                .nullable(false)
+                .maximumLength(50);
+
+KeyGenerator keyGenerator = KeyGenerator.identity();
+
+Function<Entity, String> stringFactory = StringFactory.builder()
+        .value(Address.STREET)
+        .text(", ")
+        .value(Address.CITY)
+        .build();
 
 EntityDefinition.Builder address =
-      EntityDefinition.definition(id, customerId, customerFk, street, city)
-              .keyGenerator(KeyGenerator.identity())
-              .stringFactory(StringFactory.builder()
-                      .value(Address.STREET)
-                      .text(", ")
-                      .value(Address.CITY)
-                      .build())
-              .caption("Address");
+        EntityDefinition.definition(id, customerId, customerFk, street, city)
+                .keyGenerator(keyGenerator)
+                .stringFactory(stringFactory)
+                .caption("Address");
 
 add(address);
 ----

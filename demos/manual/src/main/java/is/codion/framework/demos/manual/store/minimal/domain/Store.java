@@ -6,6 +6,7 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -14,6 +15,8 @@ import is.codion.framework.domain.entity.StringFactory;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.Property;
+
+import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -110,14 +113,18 @@ public class Store extends DefaultDomain {
                     .nullable(false)
                     .maximumLength(50);
 
+    KeyGenerator keyGenerator = KeyGenerator.identity();
+
+    Function<Entity, String> stringFactory = StringFactory.builder()
+            .value(Address.STREET)
+            .text(", ")
+            .value(Address.CITY)
+            .build();
+
     EntityDefinition.Builder address =
             EntityDefinition.definition(id, customerId, customerFk, street, city)
-                    .keyGenerator(KeyGenerator.identity())
-                    .stringFactory(StringFactory.builder()
-                            .value(Address.STREET)
-                            .text(", ")
-                            .value(Address.CITY)
-                            .build())
+                    .keyGenerator(keyGenerator)
+                    .stringFactory(stringFactory)
                     .caption("Address");
 
     add(address);
