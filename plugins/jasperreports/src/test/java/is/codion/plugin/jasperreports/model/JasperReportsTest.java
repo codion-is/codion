@@ -58,7 +58,7 @@ public class JasperReportsTest {
     Report.REPORT_PATH.set(REPORT_PATH);
     HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
-    LocalEntityConnection connection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
+    LocalEntityConnection connection = CONNECTION_PROVIDER.connection();
     JasperPrint print = Employee.CLASS_PATH_REPORT.fillReport(connection.databaseConnection().getConnection(), reportParameters);
     assertNotNull(print);
   }

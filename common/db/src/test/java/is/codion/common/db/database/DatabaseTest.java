@@ -9,9 +9,7 @@ import is.codion.common.user.User;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,9 +18,9 @@ public class DatabaseTest {
 
   @Test
   void closeSilently() {
-    Database.closeSilently((Statement) null);
-    Database.closeSilently((ResultSet) null);
-    Database.closeSilently((Connection) null);
+    Database.closeSilently(null);
+    Database.closeSilently(null);
+    Database.closeSilently(null);
   }
 
   @Test

@@ -28,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -267,7 +269,7 @@ public final class EntitiesTest {
     assertTrue(master.contains(TestDomain.Master.ID));
     assertEquals(10L, master.get(TestDomain.Master.ID));
 
-    assertThrows(NullPointerException.class, () -> entities.entity((EntityType) null));
+    assertThrows(NullPointerException.class, () -> entities.entity(null));
   }
 
   @Test
@@ -637,14 +639,13 @@ public final class EntitiesTest {
 
   @Test
   void serialize() throws IOException, ClassNotFoundException {
-    List<Entity> entitiesToSer = new ArrayList<>();
-    for (int i = 0; i < 10; i++) {
-      entitiesToSer.add(entities.builder(TestDomain.Master.TYPE)
-              .with(TestDomain.Master.ID, (long) i)
-              .with(TestDomain.Master.NAME, Integer.toString(i))
-              .with(TestDomain.Master.CODE, 1)
-              .build());
-    }
+    List<Entity> entitiesToSer = IntStream.range(0, 10)
+            .mapToObj(i -> entities.builder(TestDomain.Master.TYPE)
+                    .with(TestDomain.Master.ID, (long) i)
+                    .with(TestDomain.Master.NAME, Integer.toString(i))
+                    .with(TestDomain.Master.CODE, 1)
+                    .build())
+            .collect(Collectors.toList());
 
     Serializer.deserialize(Serializer.serialize(Entity.castTo(TestDomain.Master.class, entitiesToSer)));
   }

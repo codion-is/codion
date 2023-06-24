@@ -95,7 +95,7 @@ public class EntityConnectionTest {
 
   @Test
   void insertEntities() throws SQLException, DatabaseException {
-    LocalEntityConnection sourceConnection = (LocalEntityConnection) CONNECTION_PROVIDER.connection();
+    LocalEntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
     try (ResultIterator<Entity> iterator = sourceConnection.iterator(condition(Department.TYPE))) {
       assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
               .batchSize(-10));
