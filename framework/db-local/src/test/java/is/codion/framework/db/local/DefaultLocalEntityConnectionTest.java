@@ -1209,6 +1209,31 @@ public class DefaultLocalEntityConnectionTest {
     }
   }
 
+  @Test
+  void foreignKeyFetchDepth() throws DatabaseException {
+    try (LocalEntityConnection connection = createConnection()) {
+      connection.setLimitForeignKeyFetchDepth(false);
+      assertFalse(connection.isLimitForeignKeyFetchDepth());
+      Entity employee = connection.selectSingle(Employee.ID, 10);
+      Entity manager = employee.get(Employee.MGR_FK);
+      assertNotNull(manager);
+      Entity managersManager = manager.get(Employee.MGR_FK);
+      assertNotNull(managersManager);
+      connection.setLimitForeignKeyFetchDepth(true);
+      assertTrue(connection.isLimitForeignKeyFetchDepth());
+      employee = connection.selectSingle(Employee.ID, 10);
+      manager = employee.get(Employee.MGR_FK);
+      assertNotNull(manager);
+      managersManager = manager.get(Employee.MGR_FK);
+      assertNull(managersManager);
+    }
+  }
+
+  @Test
+  void domain() {
+    assertInstanceOf(TestDomain.class, connection.domain());
+  }
+
   private static LocalEntityConnection createConnection() throws DatabaseException {
     return createConnection(false);
   }
