@@ -864,7 +864,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void setLimitFetchDepth(boolean limitForeignKeyFetchDepth) {
+  public void setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
@@ -956,7 +956,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
-   * @see #setLimitFetchDepth(boolean)
+   * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see SelectCondition.Builder#fetchDepth(int)
    */
   private void setForeignKeys(List<Entity> entities, SelectCondition condition,

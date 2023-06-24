@@ -9221,3 +9221,4 @@
   common.swing.tools, common.swing.tools.ui, framework.swing.tools and framework.swing.tools.ui modules renamed common.swing.model.tools, common.swing.ui.tools, framework.swing.model.tools and framework.swing.ui.tools respectively
   jetty library removed, accessible via javalin
   EntityConnection.update() now throws UpdateException instead of IllegalArgumentException in case of non-updatable attributes, test improvements
+  LocalEntityConnection.setLimitFetchDepth() renamed setLimitForeignKeyFetchDepth()
