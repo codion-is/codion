@@ -354,7 +354,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
           ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) attributeValue.getKey());
           if (!columnProperty.isUpdatable()) {
-            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
+            throw new UpdateException("Attribute is not updatable: " + columnProperty.attribute());
           }
           statementProperties.add(columnProperty);
           statementValues.add(columnProperty.attribute().validateType(attributeValue.getValue()));

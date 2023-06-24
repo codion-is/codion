@@ -350,6 +350,10 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(0, connection.rowCount(where(Employee.DEPARTMENT_FK).isNull()));
     assertEquals(1, connection.rowCount(where(Employee.MGR).isNull()));
     assertEquals(1, connection.rowCount(where(Employee.MGR_FK).isNull()));
+
+    assertFalse(connection.select(Employee.DEPARTMENT_FK, connection.select(where(Department.DEPTNO).equalTo(20))).isEmpty());
+
+    assertThrows(UnsupportedOperationException.class, () -> connection.select(Job.JOB, where(Job.JOB).equalTo("CLERK")));
   }
 
   @Test
@@ -623,6 +627,14 @@ public class DefaultLocalEntityConnectionTest {
   void update() throws DatabaseException {
     Collection<Entity> updated = connection.update(new ArrayList<>());
     assertTrue(updated.isEmpty());
+  }
+
+  @Test
+  void updateNonUpdatable() throws DatabaseException {
+    assertThrows(UpdateException.class, () -> connection.update(where(Employee.ID).equalTo(1)
+            .updateBuilder()
+            .set(Employee.ID, 999)
+            .build()));
   }
 
   @Test
@@ -1166,6 +1178,35 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void singleGeneratedColumnInsert() throws DatabaseException {
     connection.delete(connection.insert(ENTITIES.builder(Master.TYPE).build()));
+  }
+
+  @Test
+  void transactions() throws DatabaseException {
+    try (LocalEntityConnection connection1 = createConnection();
+         LocalEntityConnection connection2 = createConnection()) {
+      Entity department = ENTITIES.builder(Department.TYPE)
+              .with(Department.DEPTNO, -42)
+              .with(Department.DNAME, "hello")
+              .build();
+      connection1.beginTransaction();
+      assertThrows(IllegalStateException.class, connection1::beginTransaction);
+      assertTrue(connection1.isTransactionOpen());
+      assertFalse(connection2.isTransactionOpen());
+      connection1.insert(department);
+      assertTrue(connection2.select(Department.DEPTNO, -42).isEmpty());
+      connection1.commitTransaction();
+      assertThrows(IllegalStateException.class, connection1::rollbackTransaction);
+      assertThrows(IllegalStateException.class, connection1::commitTransaction);
+      assertFalse(connection1.isTransactionOpen());
+      assertFalse(connection2.select(Department.DEPTNO, -42).isEmpty());
+      connection2.beginTransaction();
+      assertTrue(connection2.isTransactionOpen());
+      assertFalse(connection1.isTransactionOpen());
+      connection2.delete(department.primaryKey());
+      assertFalse(connection1.select(Department.DEPTNO, -42).isEmpty());
+      connection2.commitTransaction();
+      assertTrue(connection1.select(Department.DEPTNO, -42).isEmpty());
+    }
   }
 
   private static LocalEntityConnection createConnection() throws DatabaseException {
