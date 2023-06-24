@@ -176,7 +176,6 @@ dependencyResolutionManagement {
             //jfreechart
             version('jfreechart', '1.5.4')
             version('jcommon', '1.0.24')
-            version('jetty', '9.4.15.v20190215')
             version('http.client', '4.5.14')
             version('junit', '5.9.3')
             version('sslcontext.kickstart', '8.1.2')
@@ -206,7 +205,6 @@ dependencyResolutionManagement {
             library('jcommon', 'org.jfree', 'jcommon').versionRef('jcommon')
 
             library('javalin', 'io.javalin', 'javalin').versionRef('javalin')
-            library('jetty', 'org.eclipse.jetty', 'jetty-server').versionRef('jetty')
             library('http-client', 'org.apache.httpcomponents', 'httpclient').versionRef('http.client')
 
             library('junit-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')
