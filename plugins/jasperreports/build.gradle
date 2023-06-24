@@ -30,6 +30,7 @@ dependencies {
 }
 
 apply from: "extra-module-info-jasperreports.gradle"
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
 buildReports {
     sourceDir = file('src/test/reports')
