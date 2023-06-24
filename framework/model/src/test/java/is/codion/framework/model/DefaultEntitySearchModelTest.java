@@ -232,13 +232,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   private static boolean contains(List<Entity> result, String employeeName) {
-    for (Entity entity : result) {
-      if (entity.get(Employee.NAME).equals(employeeName)) {
-        return true;
-      }
-    }
-
-    return false;
+    return result.stream().anyMatch(entity -> entity.get(Employee.NAME).equals(employeeName));
   }
 
   private static void setupData() throws Exception {

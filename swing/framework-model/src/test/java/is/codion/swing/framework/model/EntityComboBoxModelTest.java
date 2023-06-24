@@ -164,12 +164,10 @@ public final class EntityComboBoxModelTest {
       assertEquals(item.referencedEntity(Employee.DEPARTMENT_FK), accounting);
       assertEquals(item.referencedEntity(Employee.MGR_FK), blake);
     }
-    for (Entity employee : comboBoxModel.items()) {
-      if (employee.referencedEntity(Employee.DEPARTMENT_FK).equals(accounting)) {
-        comboBoxModel.setSelectedItem(employee);
-        break;
-      }
-    }
+    comboBoxModel.items().stream()
+            .filter(employee -> employee.referencedEntity(Employee.DEPARTMENT_FK).equals(accounting))
+            .findFirst()
+            .ifPresent(comboBoxModel::setSelectedItem);
     assertEquals(accounting, deptComboBoxModel.selectedValue());
 
     //non strict filtering

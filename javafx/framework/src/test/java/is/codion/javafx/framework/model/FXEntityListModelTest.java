@@ -101,7 +101,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
     sortOrder.clear();
     EntityTableColumn<?> column = tableModel.tableColumn(Employee.NAME);
     column.setSortType(TableColumn.SortType.ASCENDING);
-    sortOrder.add((TableColumn<Entity, ?>) column);
+    sortOrder.add(column);
     orderBy = tableModel.orderBy();
     //still default order by for entity
     assertEquals(2, orderBy.orderByAttributes().size());
@@ -180,10 +180,10 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
             .with(Department.ID, 1)
             .with(Department.NAME, "dept")
             .build();
-    assertThrows(IllegalArgumentException.class, () -> tableModel.addAll(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> tableModel.add(dept));
     assertThrows(IllegalArgumentException.class, () -> tableModel.addAll(0, singletonList(dept)));
 
-    assertThrows(NullPointerException.class, () -> tableModel.addAll(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> tableModel.add(null));
     assertThrows(NullPointerException.class, () -> tableModel.addAll(0, singletonList(null)));
   }
 }

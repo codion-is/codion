@@ -71,10 +71,10 @@ public class ItemComboBoxModelTest {
     ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
 
     model.setSelectedItem(false);
-    assertEquals(false, ((Item<Boolean>) model.getSelectedItem()).value());
+    assertEquals(false, model.getSelectedItem().value());
     model.setSelectedItem(true);
-    assertEquals(true, ((Item<Boolean>) model.getSelectedItem()).value());
+    assertEquals(true, model.getSelectedItem().value());
     model.setSelectedItem(null);
-    assertNull(((Item<Boolean>) model.getSelectedItem()).value());
+    assertNull(model.getSelectedItem().value());
   }
 }

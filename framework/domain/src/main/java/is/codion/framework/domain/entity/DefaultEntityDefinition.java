@@ -190,7 +190,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
    */
-  private final Map<Attribute<?>, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
+  private final Map<ForeignKey, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
 
   /**
    * The properties associated with this entity.

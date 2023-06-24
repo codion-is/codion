@@ -354,7 +354,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
           ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) attributeValue.getKey());
           if (!columnProperty.isUpdatable()) {
-            throw new IllegalArgumentException("Property is not updatable: " + columnProperty.attribute());
+            throw new UpdateException("Attribute is not updatable: " + columnProperty.attribute());
           }
           statementProperties.add(columnProperty);
           statementValues.add(columnProperty.attribute().validateType(attributeValue.getValue()));
@@ -864,7 +864,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void setLimitFetchDepth(boolean limitForeignKeyFetchDepth) {
+  public void setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth) {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
@@ -956,7 +956,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    * @param condition the condition
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
    * @throws SQLException in case of a database exception
-   * @see #setLimitFetchDepth(boolean)
+   * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see SelectCondition.Builder#fetchDepth(int)
    */
   private void setForeignKeys(List<Entity> entities, SelectCondition condition,

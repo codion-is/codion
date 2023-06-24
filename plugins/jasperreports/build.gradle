@@ -25,7 +25,7 @@ dependencies {
     implementation(libs.jdt.core.compiler)
 
     testImplementation project(':codion-dbms-h2database')
-    testImplementation(libs.jetty)
+    testImplementation(libs.javalin)
     testRuntimeOnly(libs.h2)
 }
 

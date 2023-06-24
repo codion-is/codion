@@ -115,7 +115,7 @@ public final class EntityObservableListTest {
     assertThrows(IllegalArgumentException.class, () -> entityList.add(dept));
     assertThrows(IllegalArgumentException.class, () -> entityList.add(0, dept));
     assertThrows(IllegalArgumentException.class, () -> entityList.addAll(dept));
-    assertThrows(IllegalArgumentException.class, () -> entityList.addAll(singletonList(dept)));
+    assertThrows(IllegalArgumentException.class, () -> entityList.add(dept));
     assertThrows(IllegalArgumentException.class, () -> entityList.addAll(0, singletonList(dept)));
 
     assertThrows(IllegalArgumentException.class, () -> entityList.setAll(singletonList(dept)));
@@ -123,7 +123,7 @@ public final class EntityObservableListTest {
 
     assertThrows(NullPointerException.class, () -> entityList.add(null));
     assertThrows(NullPointerException.class, () -> entityList.add(0, null));
-    assertThrows(NullPointerException.class, () -> entityList.addAll(singletonList(null)));
+    assertThrows(NullPointerException.class, () -> entityList.add(null));
     assertThrows(NullPointerException.class, () -> entityList.addAll(0, singletonList(null)));
   }
 }

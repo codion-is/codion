@@ -96,10 +96,10 @@ public interface LocalEntityConnection extends EntityConnection {
   boolean isLimitForeignKeyFetchDepth();
 
   /**
-   * @param limitFetchDepth false to override the fetch depth limit provided by condition
+   * @param limitForeignKeyFetchDepth false to override the fetch depth limit specified by conditions or entities
    * @see SelectCondition.Builder#fetchDepth(int)
    */
-  void setLimitFetchDepth(boolean limitFetchDepth);
+  void setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
 
   /**
    * @return the default query timeout being used
