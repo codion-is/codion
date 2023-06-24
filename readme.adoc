@@ -1,8 +1,8 @@
 = Codion Application Framework
 :version: 0.17.16
-:url-help: https://codion.is/doc/{version}/jdk11/help
-:url-manual: https://codion.is/doc/{version}/jdk11/manual
-:url-technical: https://codion.is/doc/{version}/jdk11/technical
+:url-help: https://codion.is/doc/{version}/help
+:url-manual: https://codion.is/doc/{version}/manual
+:url-technical: https://codion.is/doc/{version}/technical
 
 image::documentation/src/docs/asciidoc/images/codion-logo.png[Codion logo,350]
 
@@ -46,7 +46,7 @@ Codion uses a limited set of third-party libraries, a Swing client with local JD
 * *JDBC driver*
 * *Logging framework*
 
-A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Pet Clinic demo client, with RMI and local connection capabilities, is around 2MB (excluding the JDBC driver and logging framework).
+A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Petclinic demo client, with RMI and local connection capabilities, is around 2MB (excluding the JDBC driver and logging framework).
 
 == Demo application projects
 
@@ -83,7 +83,7 @@ image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.framework.domain|is.codion.jdk11:codion-framework-domain:{version}
+|is.codion.framework.domain|is.codion:codion-framework-domain:{version}
 |===
 
 Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object Relational Mapping] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities*, *attributes* and *properties*, eliminating most of the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
@@ -189,34 +189,38 @@ Here's one entity definition from above, pulled apart, with the ingredients visi
 [source,java]
 ----
 ColumnProperty.Builder<Long, ?> id =
-      Property.primaryKeyProperty(Address.ID);
+        Property.primaryKeyProperty(Address.ID);
 
 ColumnProperty.Builder<Long, ?> customerId =
-      Property.columnProperty(Address.CUSTOMER_ID)
-              .nullable(false);
+        Property.columnProperty(Address.CUSTOMER_ID)
+                .nullable(false);
 
 ForeignKeyProperty.Builder customerFk =
-      Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+        Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
 
 ColumnProperty.Builder<String, ?> street =
-      Property.columnProperty(Address.STREET, "Street")
-              .nullable(false)
-              .maximumLength(100);
+        Property.columnProperty(Address.STREET, "Street")
+                .nullable(false)
+                .maximumLength(100);
 
 ColumnProperty.Builder<String, ?> city =
-      Property.columnProperty(Address.CITY, "City")
-              .nullable(false)
-              .maximumLength(50);
+        Property.columnProperty(Address.CITY, "City")
+                .nullable(false)
+                .maximumLength(50);
+
+KeyGenerator keyGenerator = KeyGenerator.identity();
+
+Function<Entity, String> stringFactory = StringFactory.builder()
+        .value(Address.STREET)
+        .text(", ")
+        .value(Address.CITY)
+        .build();
 
 EntityDefinition.Builder address =
-      EntityDefinition.definition(id, customerId, customerFk, street, city)
-              .keyGenerator(KeyGenerator.identity())
-              .stringFactory(StringFactory.builder()
-                      .value(Address.STREET)
-                      .text(", ")
-                      .value(Address.CITY)
-                      .build())
-              .caption("Address");
+        EntityDefinition.definition(id, customerId, customerFk, street, city)
+                .keyGenerator(keyGenerator)
+                .stringFactory(stringFactory)
+                .caption("Address");
 
 add(address);
 ----
@@ -263,7 +267,7 @@ System.out.println(customer.isModified()); //false
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.framework.domain.test|is.codion.jdk11:codion-framework-domain-test:{version}
+|is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{version}
 |===
 
 The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityType)* method runs insert, select, update and delete on a randomly generated entity instance, verifying the results.
@@ -293,7 +297,7 @@ public class StoreTest extends EntityTestUnit {
 [cols="2,4"]
 |===
 |Module|Artifact
-|is.codion.swing.framework.ui|is.codion.jdk11:codion-swing-framework-ui:{version}
+|is.codion.swing.framework.ui|is.codion:codion-swing-framework-ui:{version}
 |===
 
 In the following example, we use the domain model from above and implement a *CustomerEditPanel* and *AddressEditPanel* by extending *EntityEditPanel*. These edit panels, as their names suggest, provide the UI for editing entity instances. In the *main* method we use these building blocks to assemble and display a client.
@@ -394,10 +398,10 @@ image::documentation/src/docs/asciidoc/images/customers.png[align="center"]
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|is.codion.framework.db.core|is.codion.jdk11:codion-framework-db-core:{version}|Core
-|is.codion.framework.db.local|is.codion.jdk11:codion-framework-db-local:{version}|JDBC
-|is.codion.framework.db.rmi|is.codion.jdk11:codion-framework-db-rmi:{version}|RMI
-|is.codion.framework.db.http|is.codion.jdk11:codion-framework-db-http:{version}|HTTP
+|is.codion.framework.db.core|is.codion:codion-framework-db-core:{version}|Core
+|is.codion.framework.db.local|is.codion:codion-framework-db-local:{version}|JDBC
+|is.codion.framework.db.rmi|is.codion:codion-framework-db-rmi:{version}|RMI
+|is.codion.framework.db.http|is.codion:codion-framework-db-http:{version}|HTTP
 |===
 
 The *EntityConnection* interface defines the database layer. There are three implementations available; local, which is based on a direct JDBC connection (used below), RMI and HTTP which are both served by the Codion Server.
