@@ -9229,3 +9229,6 @@
   DefaultButtonPanelBuilder, buttonsFocusable now defaults to true
   ButtonPanelBuilder.buttonGap() added
   ButtonPanelBuilder.createEastButtonPanel() now uses button gap 0
+  EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS and CONTROL_PANEL_CONSTRAINTS configuration values added, related refactoring
+  EntityEditPanel.controlPanelConstraints() renamed getControlPanelConstraints() since there is a setter available
+  EntityPanel.toolbarControls plus getter/setter added
