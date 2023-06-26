@@ -85,7 +85,8 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
     ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
             .buttonsFocusable(buttonFocusable)
-            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
+            .buttonGap(0);
 
     return Components.panel(new BorderLayout())
             .add(centerComponent, BorderLayout.CENTER)

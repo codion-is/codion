@@ -9228,3 +9228,4 @@
   ButtonPanelBuilder.createEastButtonPanel() reintroduced, turns out to be quite useful, related refactoring
   DefaultButtonPanelBuilder, buttonsFocusable now defaults to true
   ButtonPanelBuilder.buttonGap() added
+  ButtonPanelBuilder.createEastButtonPanel() now uses button gap 0
