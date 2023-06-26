@@ -31,6 +31,8 @@ public interface ButtonPanelBuilder extends ControlPanelBuilder<JPanel, ButtonPa
    */
   ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize);
 
+  ButtonPanelBuilder buttonGap(int buttonGap);
+
   /**
    * @return a new button panel builder
    */

@@ -7,6 +7,7 @@ import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -24,6 +25,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
   private boolean buttonsFocusable = true;
   private Dimension preferredButtonSize;
+  private int buttonGap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
 
   DefaultButtonPanelBuilder(Action... actions) {
     this(Controls.controls(actions));
@@ -42,6 +44,12 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   public ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize) {
     this.preferredButtonSize = requireNonNull(preferredButtonSize);
+    return this;
+  }
+
+  @Override
+  public ButtonPanelBuilder buttonGap(int buttonGap) {
+    this.buttonGap = buttonGap;
     return this;
   }
 
@@ -66,7 +74,9 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   }
 
   private JPanel createPanel() {
-    return new JPanel(orientation() == SwingConstants.HORIZONTAL ? new GridLayout(1, 0) : new GridLayout(0, 1));
+    return new JPanel(orientation() == SwingConstants.HORIZONTAL ?
+            new GridLayout(1, 0, buttonGap, 0) :
+            new GridLayout(0, 1, 0, buttonGap));
   }
 
   static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
