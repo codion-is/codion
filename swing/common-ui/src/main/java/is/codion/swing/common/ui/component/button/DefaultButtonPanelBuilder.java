@@ -22,7 +22,7 @@ import static java.util.Objects.requireNonNull;
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
-  private boolean buttonsFocusable = false;
+  private boolean buttonsFocusable = true;
   private Dimension preferredButtonSize;
 
   DefaultButtonPanelBuilder(Action... actions) {
