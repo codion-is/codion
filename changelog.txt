@@ -9223,3 +9223,4 @@
   EntityConnection.update() now throws UpdateException instead of IllegalArgumentException in case of non-updatable attributes, test improvements
   LocalEntityConnection.setLimitFetchDepth() renamed setLimitForeignKeyFetchDepth()
   FilteredComboBoxModel.setIncludeNull() bug fixed, kept adding nulls on subsequent calls
+  FilteredComboBoxModel.setAllowSelectionPredicate() now throws exception in case the currently selected item does not match the predicate, added a couple of tests

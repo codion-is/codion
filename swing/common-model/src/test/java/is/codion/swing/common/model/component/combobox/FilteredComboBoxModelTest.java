@@ -14,7 +14,6 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -314,11 +313,39 @@ public class FilteredComboBoxModelTest {
   @Test
   void setIncludeNull() {
     FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
-    model.setItems(Arrays.asList(1, 2, 3, 4, 5));
+    model.setItems(asList(1, 2, 3, 4, 5));
     model.setIncludeNull(true);
     model.setIncludeNull(true);
     assertTrue(model.isIncludeNull());
     model.refresh();
+  }
+
+  @Test
+  void setItemValidator() {
+    FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+    model.setItemValidator(item -> item > 0);
+    assertThrows(IllegalArgumentException.class, () -> model.setItems(asList(1, 2, 3, 4, 5, 0)));
+  }
+
+  @Test
+  void setItemSupplier() {
+    List<Integer> values = asList(0, 1, 2);
+    FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+    model.setItemSupplier(() -> values);
+    model.refresher().refresh();
+    assertEquals(values, model.items());
+  }
+
+  @Test
+  void setAllowSelectionPredicate() {
+    FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+    model.setItems(asList(0, 1, 2));
+    model.setSelectedItem(0);
+    assertThrows(IllegalArgumentException.class, () -> model.setAllowSelectionPredicate(item -> item > 0));
+    model.setSelectedItem(1);
+    model.setAllowSelectionPredicate(item -> item > 0);
+    model.setSelectedItem(0);
+    assertEquals(1, model.getSelectedItem());
   }
 
   @BeforeEach
