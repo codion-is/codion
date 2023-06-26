@@ -363,7 +363,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void setIncludeNull(boolean includeNull) {
     this.includeNull = includeNull;
-    if (includeNull) {
+    if (includeNull && !visibleItems.contains(null)) {
       visibleItems.add(0, null);
     }
     else {
@@ -639,6 +639,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
     @Override
     public Collection<T> get() {
+//      return items();
       List<T> items = new ArrayList<>(visibleItems);
       if (includeNull) {
         items.remove(null);

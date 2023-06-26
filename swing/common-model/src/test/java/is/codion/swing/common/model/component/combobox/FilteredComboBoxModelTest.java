@@ -14,6 +14,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -308,6 +309,16 @@ public class FilteredComboBoxModelTest {
 
     model.setItems(items);
     assertEquals("22", model.selectedValue().data);
+  }
+
+  @Test
+  void setIncludeNull() {
+    FilteredComboBoxModel<Integer> model = new FilteredComboBoxModel<>();
+    model.setItems(Arrays.asList(1, 2, 3, 4, 5));
+    model.setIncludeNull(true);
+    model.setIncludeNull(true);
+    assertTrue(model.isIncludeNull());
+    model.refresh();
   }
 
   @BeforeEach
