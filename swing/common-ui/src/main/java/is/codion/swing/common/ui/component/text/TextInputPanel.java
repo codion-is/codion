@@ -232,6 +232,7 @@ public final class TextInputPanel extends JPanel {
     JButton actionButton = new JButton(buttonControl);
     actionButton.setFocusable(buttonFocusable);
     actionButton.setToolTipText(MESSAGES.getString("show_input_dialog"));
+    actionButton.setPreferredSize(new Dimension(textField.getPreferredSize().height, textField.getPreferredSize().height));
 
     return actionButton;
   }

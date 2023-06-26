@@ -18,6 +18,7 @@ import javax.swing.JButton;
 import javax.swing.JFormattedTextField;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.time.LocalDate;
@@ -64,6 +65,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .action(displayCalendarControl)
               .enable(temporalField);
       calendarButton = new JButton(displayCalendarControl);
+      calendarButton.setPreferredSize(new Dimension(inputField.getPreferredSize().height, inputField.getPreferredSize().height));
       add(calendarButton, BorderLayout.EAST);
     }
     else {

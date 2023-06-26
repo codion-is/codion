@@ -3,20 +3,27 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
   private boolean buttonsFocusable = false;
+  private Dimension preferredButtonSize;
 
   DefaultButtonPanelBuilder(Action... actions) {
     this(Controls.controls(actions));
@@ -33,17 +40,25 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   }
 
   @Override
+  public ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize) {
+    this.preferredButtonSize = requireNonNull(preferredButtonSize);
+    return this;
+  }
+
+  @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
     ButtonBuilder<?, ?, ?> buttonBuilder = buttonBuilder();
     if (buttonBuilder == null) {
       buttonBuilder = ButtonBuilder.builder()
-              .focusable(buttonsFocusable);
+              .focusable(buttonsFocusable)
+              .preferredSize(preferredButtonSize);
     }
     ToggleButtonBuilder<?, ?> toggleButtonBuilder = toggleButtonBuilder();
     if (toggleButtonBuilder == null) {
       toggleButtonBuilder = createToggleButtonBuilder()
-              .focusable(buttonsFocusable);
+              .focusable(buttonsFocusable)
+              .preferredSize(preferredButtonSize);
     }
     new ButtonControlHandler(panel, controls(), buttonBuilder, toggleButtonBuilder);
 
@@ -52,6 +67,20 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
 
   private JPanel createPanel() {
     return new JPanel(orientation() == SwingConstants.HORIZONTAL ? new GridLayout(1, 0) : new GridLayout(0, 1));
+  }
+
+  static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
+    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(buttonActions, "buttonActions");
+
+    ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
+            .buttonsFocusable(buttonFocusable)
+            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height));
+
+    return Components.panel(new BorderLayout())
+            .add(centerComponent, BorderLayout.CENTER)
+            .add(buttonPanelBuilder.build(), BorderLayout.EAST)
+            .build();
   }
 
   private final class ButtonControlHandler extends ControlHandler {

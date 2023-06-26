@@ -14,7 +14,9 @@ import is.codion.swing.framework.ui.EntityPanel;
 import javax.swing.JPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
-import static is.codion.swing.common.ui.component.Components.*;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
@@ -57,14 +59,8 @@ public final class TrackEditPanel extends EntityEditPanel {
     createTextField(Track.UNITPRICE)
             .columns(4);
 
-    JPanel mediaTypePanel = borderLayoutPanel()
-            .centerComponent(mediaTypeBox)
-            .eastComponent(buttonPanel(newMediaTypeControl, editMediaTypeControl).build())
-            .build();
-    JPanel genrePanel = borderLayoutPanel()
-            .centerComponent(genreBox)
-            .eastComponent(buttonPanel(newGenreControl, editGenreControl).build())
-            .build();
+    JPanel mediaTypePanel = createEastButtonPanel(mediaTypeBox, newMediaTypeControl, editMediaTypeControl);
+    JPanel genrePanel = createEastButtonPanel(genreBox, newGenreControl, editGenreControl);
     JPanel genreMediaTypePanel = panel(flexibleGridLayout(1, 2))
             .add(createInputPanel(Track.GENRE_FK, genrePanel))
             .add(createInputPanel(Track.MEDIATYPE_FK, mediaTypePanel))

@@ -9224,3 +9224,5 @@
   LocalEntityConnection.setLimitFetchDepth() renamed setLimitForeignKeyFetchDepth()
   FilteredComboBoxModel.setIncludeNull() bug fixed, kept adding nulls on subsequent calls
   FilteredComboBoxModel.setAllowSelectionPredicate() now throws exception in case the currently selected item does not match the predicate, added a couple of tests
+  ButtonPanelBuilder.preferredButtonSize() added
+  ButtonPanelBuilder.createEastButtonPanel() reintroduced, turns out to be quite useful, related refactoring
