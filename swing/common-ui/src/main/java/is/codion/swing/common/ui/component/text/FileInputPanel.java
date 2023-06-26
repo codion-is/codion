@@ -17,6 +17,7 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.io.File;
 import java.io.IOException;
@@ -42,7 +43,7 @@ public final class FileInputPanel extends JPanel {
         browseFile();
       }
     });
-    browseButton.setPreferredSize(TextComponents.DIMENSION_TEXT_FIELD_SQUARE);
+    browseButton.setPreferredSize(new Dimension(filePathField.getPreferredSize().height, filePathField.getPreferredSize().height));
     add(browseButton, BorderLayout.EAST);
   }
 

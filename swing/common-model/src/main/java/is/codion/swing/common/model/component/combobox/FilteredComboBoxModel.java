@@ -351,10 +351,15 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   /**
+   * Provides a way for the combo box model to prevent the selection of certain items.
    * @param allowSelectionPredicate the allow selection predicate
+   * @throws IllegalArgumentException in case the current selected item does not satisfy the allow selection predicate
    */
   public final void setAllowSelectionPredicate(Predicate<T> allowSelectionPredicate) {
-    this.allowSelectionPredicate = requireNonNull(allowSelectionPredicate);
+    if (!requireNonNull(allowSelectionPredicate).test(selectedItem)) {
+      throw new IllegalArgumentException("The current selected item does not satisfy the allow selection predicate");
+    }
+    this.allowSelectionPredicate = allowSelectionPredicate;
   }
 
   /**
@@ -363,7 +368,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void setIncludeNull(boolean includeNull) {
     this.includeNull = includeNull;
-    if (includeNull) {
+    if (includeNull && !visibleItems.contains(null)) {
       visibleItems.add(0, null);
     }
     else {
@@ -639,6 +644,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
     @Override
     public Collection<T> get() {
+//      return items();
       List<T> items = new ArrayList<>(visibleItems);
       if (includeNull) {
         items.remove(null);

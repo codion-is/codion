@@ -64,6 +64,7 @@ import static java.awt.event.KeyEvent.*;
 import static java.util.Collections.unmodifiableCollection;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static javax.swing.SwingConstants.HORIZONTAL;
 import static javax.swing.SwingConstants.VERTICAL;
 
 /**
@@ -141,6 +142,24 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public static final PropertyValue<Boolean> USE_FRAME_PANEL_DISPLAY =
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.useFramePanelDisplay", false);
+
+  /**
+   * Specifies where the control panel should be placed in a BorderLayout<br>
+   * Value type: Boolean<br>
+   * Default value: BorderLayout.EAST
+   * @see #TOOLBAR_CONTROLS
+   */
+  public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
+          Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlPanelConstraints", BorderLayout.EAST);
+
+  /**
+   * Specifies where the control toolbar should be placed in a BorderLayout<br>
+   * Value type: Boolean<br>
+   * Default value: BorderLayout.WEST
+   * @see #TOOLBAR_CONTROLS
+   */
+  public static final PropertyValue<String> CONTROL_TOOLBAR_CONSTRAINTS =
+          Configuration.stringValue("is.codion.swing.framework.ui.EntityPanel.controlToolbarConstraints", BorderLayout.WEST);
 
   /**
    * The possible states of a detail or edit panel.
@@ -230,9 +249,14 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private Window editPanelWindow;
 
   /**
+   * Specifies whether the edit controls buttons are on a toolbar instead of a button panel
+   */
+  private boolean toolbarControls = TOOLBAR_CONTROLS.get();
+
+  /**
    * indicates where the control panel should be placed in a BorderLayout
    */
-  private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? BorderLayout.WEST : BorderLayout.EAST;
+  private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
 
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or WINDOW)
@@ -364,9 +388,26 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
+   * @return true if the edit controls should be on a toolbar instead of a button panel
+   */
+  public final boolean isToolbarControls() {
+    return toolbarControls;
+  }
+
+  /**
+   * @param toolbarControls true if the edit controls should be on a toolbar instead of a button panel
+   * @throws IllegalStateException if the panel has been initialized
+   * @see #TOOLBAR_CONTROLS
+   */
+  public final void setToolbarControls(boolean toolbarControls) {
+    checkIfInitialized();
+    this.toolbarControls = toolbarControls;
+  }
+
+  /**
    * @return the control panel layout constraints (BorderLayout constraints)
    */
-  public final String controlPanelConstraints() {
+  public final String getControlPanelConstraints() {
     return controlPanelConstraints;
   }
 
@@ -1049,7 +1090,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   /**
    * Creates a base panel for the edit panel.
-   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #controlPanelConstraints()}.
+   * The default layout is a {@link FlowLayout} with the alignment depending on the {@link #getControlPanelConstraints()}.
    * The resulting panel is added at {@link BorderLayout#CENTER} on the {@link #editControlPanel()}
    * @param editPanel the initialized edit panel
    * @return a base panel for the edit panel
@@ -1070,19 +1111,22 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the panel containing the edit panel controls
    * @see EntityEditPanel#createControls()
    * @see EntityPanel#TOOLBAR_CONTROLS
+   * @see EntityPanel#CONTROL_PANEL_CONSTRAINTS
+   * @see EntityPanel#CONTROL_TOOLBAR_CONSTRAINTS
    */
   protected JComponent createEditControlPanel() {
     Controls controls = editPanel.createControls();
     if (controls == null || controls.isEmpty()) {
       return null;
     }
-    if (TOOLBAR_CONTROLS.get()) {
+    boolean horizontalLayout = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH);
+    if (toolbarControls) {
       return toolBar(controls)
-              .orientation(VERTICAL)
+              .orientation(horizontalLayout ? HORIZONTAL : VERTICAL)
               .build();
     }
 
-    if (controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH)) {
+    if (horizontalLayout) {
       return panel(flowLayout(FlowLayout.CENTER))
               .add(buttonPanel(controls)
                       .toggleButtonType(CHECKBOX)

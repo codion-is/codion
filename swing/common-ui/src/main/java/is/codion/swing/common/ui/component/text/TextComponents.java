@@ -17,12 +17,6 @@ import static java.util.Objects.requireNonNull;
  */
 public final class TextComponents {
 
-  /**
-   * A square dimension which sides are the same as the preferred height of a JTextField.
-   * This comes in handy for example when adding "..." lookup buttons next to text fields.
-   */
-  public static final Dimension DIMENSION_TEXT_FIELD_SQUARE = new Dimension(preferredTextFieldHeight(), preferredTextFieldHeight());
-
   private static final String TEXT_COMPONENT = "textComponent";
 
   private static Dimension preferredTextFieldSize;

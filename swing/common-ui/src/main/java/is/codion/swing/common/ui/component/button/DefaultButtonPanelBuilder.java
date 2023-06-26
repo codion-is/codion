@@ -3,20 +3,29 @@
  */
 package is.codion.swing.common.ui.component.button;
 
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.GridLayout;
+
+import static java.util.Objects.requireNonNull;
 
 final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel, ButtonPanelBuilder>
         implements ButtonPanelBuilder {
 
-  private boolean buttonsFocusable = false;
+  private boolean buttonsFocusable = true;
+  private Dimension preferredButtonSize;
+  private int buttonGap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
 
   DefaultButtonPanelBuilder(Action... actions) {
     this(Controls.controls(actions));
@@ -33,17 +42,31 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   }
 
   @Override
+  public ButtonPanelBuilder preferredButtonSize(Dimension preferredButtonSize) {
+    this.preferredButtonSize = requireNonNull(preferredButtonSize);
+    return this;
+  }
+
+  @Override
+  public ButtonPanelBuilder buttonGap(int buttonGap) {
+    this.buttonGap = buttonGap;
+    return this;
+  }
+
+  @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
     ButtonBuilder<?, ?, ?> buttonBuilder = buttonBuilder();
     if (buttonBuilder == null) {
       buttonBuilder = ButtonBuilder.builder()
-              .focusable(buttonsFocusable);
+              .focusable(buttonsFocusable)
+              .preferredSize(preferredButtonSize);
     }
     ToggleButtonBuilder<?, ?> toggleButtonBuilder = toggleButtonBuilder();
     if (toggleButtonBuilder == null) {
       toggleButtonBuilder = createToggleButtonBuilder()
-              .focusable(buttonsFocusable);
+              .focusable(buttonsFocusable)
+              .preferredSize(preferredButtonSize);
     }
     new ButtonControlHandler(panel, controls(), buttonBuilder, toggleButtonBuilder);
 
@@ -51,7 +74,24 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   }
 
   private JPanel createPanel() {
-    return new JPanel(orientation() == SwingConstants.HORIZONTAL ? new GridLayout(1, 0) : new GridLayout(0, 1));
+    return new JPanel(orientation() == SwingConstants.HORIZONTAL ?
+            new GridLayout(1, 0, buttonGap, 0) :
+            new GridLayout(0, 1, 0, buttonGap));
+  }
+
+  static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
+    requireNonNull(centerComponent, "centerComponent");
+    requireNonNull(buttonActions, "buttonActions");
+
+    ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
+            .buttonsFocusable(buttonFocusable)
+            .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
+            .buttonGap(0);
+
+    return Components.panel(new BorderLayout())
+            .add(centerComponent, BorderLayout.CENTER)
+            .add(buttonPanelBuilder.build(), BorderLayout.EAST)
+            .build();
   }
 
   private final class ButtonControlHandler extends ControlHandler {

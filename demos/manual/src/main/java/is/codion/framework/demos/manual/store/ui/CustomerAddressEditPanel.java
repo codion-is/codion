@@ -14,8 +14,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 // tag::customerAddressEditPanel[]
 public class CustomerAddressEditPanel extends EntityEditPanel {
@@ -35,10 +34,7 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
     Control newAddressControl = EntityPanel.builder(Address.TYPE)
             .editPanelClass(AddressEditPanel.class)
             .createInsertControl(addressComboBox);
-    JPanel addressPanel = borderLayoutPanel()
-            .centerComponent(addressComboBox)
-            .eastComponent(buttonPanel(newAddressControl).build())
-            .build();
+    JPanel addressPanel = createEastButtonPanel(addressComboBox, newAddressControl);
 
     setLayout(new BorderLayout(5, 5));
 

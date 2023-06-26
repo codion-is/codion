@@ -9261,3 +9261,13 @@
   jetty library removed, accessible via javalin
   EntityConnection.update() now throws UpdateException instead of IllegalArgumentException in case of non-updatable attributes, test improvements
   LocalEntityConnection.setLimitFetchDepth() renamed setLimitForeignKeyFetchDepth()
+  FilteredComboBoxModel.setIncludeNull() bug fixed, kept adding nulls on subsequent calls
+  FilteredComboBoxModel.setAllowSelectionPredicate() now throws exception in case the currently selected item does not match the predicate, added a couple of tests
+  ButtonPanelBuilder.preferredButtonSize() added
+  ButtonPanelBuilder.createEastButtonPanel() reintroduced, turns out to be quite useful, related refactoring
+  DefaultButtonPanelBuilder, buttonsFocusable now defaults to true
+  ButtonPanelBuilder.buttonGap() added
+  ButtonPanelBuilder.createEastButtonPanel() now uses button gap 0
+  EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS and CONTROL_PANEL_CONSTRAINTS configuration values added, related refactoring
+  EntityEditPanel.controlPanelConstraints() renamed getControlPanelConstraints() since there is a setter available
+  EntityPanel.toolbarControls plus getter/setter added

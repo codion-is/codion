@@ -14,8 +14,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 public final class PetEditPanel extends EntityEditPanel {
 
@@ -35,10 +34,7 @@ public final class PetEditPanel extends EntityEditPanel {
     Control newPetTypeControl = EntityPanel.builder(PetType.TYPE)
             .editPanelClass(PetTypeEditPanel.class)
             .createInsertControl(petTypeBox);
-    JPanel petTypePanel = borderLayoutPanel()
-            .centerComponent(petTypeBox)
-            .eastComponent(buttonPanel(newPetTypeControl).build())
-            .build();
+    JPanel petTypePanel = createEastButtonPanel(petTypeBox, newPetTypeControl);
 
     setLayout(Layouts.gridLayout(2, 2));
 

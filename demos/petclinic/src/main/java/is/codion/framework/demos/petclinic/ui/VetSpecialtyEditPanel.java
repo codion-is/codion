@@ -14,8 +14,7 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 public final class VetSpecialtyEditPanel extends EntityEditPanel {
 
@@ -33,10 +32,7 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
     Control newSpecialtyControl = EntityPanel.builder(Specialty.TYPE)
             .editPanelClass(SpecialtyEditPanel.class)
             .createInsertControl(specialtyComboBox);
-    JPanel specialtyPanel = borderLayoutPanel()
-            .centerComponent(specialtyComboBox)
-            .eastComponent(buttonPanel(newSpecialtyControl).build())
-            .build();
+    JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyControl);
 
     setLayout(Layouts.gridLayout(1, 2));
 

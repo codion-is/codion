@@ -10,8 +10,7 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
-import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.buttonPanel;
+import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
 public class ItemEditPanel extends EntityEditPanel {
 
@@ -44,20 +43,14 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.NAME);
     addInputPanel(Item.DESCRIPTION);
     addInputPanel(Item.PRICE);
-    addInputPanel(Item.CONTACT_INFO_FK, borderLayoutPanel()
-            .centerComponent(contactInfoBox)
-            .eastComponent(buttonPanel(EntityPanel.builder(SellerContactInfo.TYPE)
+    addInputPanel(Item.CONTACT_INFO_FK, createEastButtonPanel(contactInfoBox,
+            EntityPanel.builder(SellerContactInfo.TYPE)
                     .editPanelClass(ContactInfoEditPanel.class)
-                    .createInsertControl(contactInfoBox))
-                    .build())
-            .build());
-    addInputPanel(Item.ADDRESS_FK, borderLayoutPanel()
-            .centerComponent(addressBox)
-            .eastComponent(buttonPanel(EntityPanel.builder(Address.TYPE)
+                    .createInsertControl(contactInfoBox)));
+    addInputPanel(Item.ADDRESS_FK, createEastButtonPanel(addressBox,
+            EntityPanel.builder(Address.TYPE)
                     .editPanelClass(AddressEditPanel.class)
-                    .createInsertControl(addressBox))
-                    .build())
-            .build());
+                    .createInsertControl(addressBox)));
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);
