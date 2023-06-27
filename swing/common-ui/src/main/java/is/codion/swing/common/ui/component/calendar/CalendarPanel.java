@@ -328,8 +328,8 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JPanel createNorthPanel() {
-    return borderLayoutPanel(borderLayout())
-            .northComponent(borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
+            .northComponent(borderLayoutPanel()
                     .centerComponent(formattedDateLabel)
                     .border(createTitledBorder(""))
                     .build())
@@ -365,7 +365,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private JPanel createDayPanel() {
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .northComponent(createDayHeaderPanel())
             .centerComponent(dayGridPanel)
             .border(createTitledBorder(""))

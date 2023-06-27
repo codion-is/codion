@@ -219,7 +219,7 @@ public final class ApplicationPanel extends JPanel {
             .transferFocusOnEnter(true)
             .enabledState(inputEnabledState)
             .build();
-    borderLayoutPanel(borderLayout())
+    borderLayoutPanel()
             .westComponent(integerItemSelectorField)
             .centerComponent(integerItemComboBox)
             .build(inputPanel::add);

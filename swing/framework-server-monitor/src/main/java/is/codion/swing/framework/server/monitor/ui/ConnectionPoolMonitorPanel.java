@@ -240,14 +240,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .westComponent(chartConfig)
             .centerComponent(statisticsPanel())
             .build();
   }
 
   private JPanel statisticsPanel() {
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .border(createTitledBorder("Statistics"))
             .centerComponent(panel(flexibleGridLayout(1, 0))
                     .add(borderLayoutPanel()

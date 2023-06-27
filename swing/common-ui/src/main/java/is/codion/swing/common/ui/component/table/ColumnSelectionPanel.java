@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
@@ -154,7 +153,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
       });
     });
 
-    return Components.borderLayoutPanel(borderLayout())
+    return Components.borderLayoutPanel()
             .northComponent(northPanel)
             .scrollPane()
             .preferredHeight(COLUMNS_SELECTION_PANEL_HEIGHT)

@@ -9232,3 +9232,4 @@
   EntityPanel.CONTROL_TOOLBAR_CONSTRAINTS and CONTROL_PANEL_CONSTRAINTS configuration values added, related refactoring
   EntityEditPanel.controlPanelConstraints() renamed getControlPanelConstraints() since there is a setter available
   EntityPanel.toolbarControls plus getter/setter added
+  BorderLayoutPanelBuilder.builder() now uses the default border layout from Layouts

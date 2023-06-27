@@ -57,7 +57,7 @@ final class ContinentPanel extends EntityPanel {
             .add(gnpChartPanel)
             .build();
 
-    JPanel chartPanel = Components.borderLayoutPanel(borderLayout())
+    JPanel chartPanel = Components.borderLayoutPanel()
             .northComponent(lifeExpectancyChartPanel)
             .centerComponent(pieChartChartPanel)
             .build();

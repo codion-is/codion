@@ -26,7 +26,8 @@ import java.rmi.RemoteException;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -90,7 +91,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .add(userScroller)
             .build();
 
-    JPanel clientTypeBase = borderLayoutPanel(borderLayout())
+    JPanel clientTypeBase = borderLayoutPanel()
             .centerComponent(clientUserBase)
             .southComponent(button(control(model::refresh))
                     .text("Refresh")
@@ -115,7 +116,7 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel currentConnectionsPanel = borderLayoutPanel(borderLayout())
+    JPanel currentConnectionsPanel = borderLayoutPanel()
             .northComponent(actionBase)
             .centerComponent(clientTypeMonitorPanel)
             .build();
@@ -139,7 +140,7 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel configBase = borderLayoutPanel(borderLayout())
+    JPanel configBase = borderLayoutPanel()
             .centerComponent(configPanel)
             .eastComponent(button(control(model::resetHistory))
                     .text("Reset")
@@ -148,7 +149,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     FilteredTable<?, ?> userHistoryTable = FilteredTable.builder(model.userHistoryTableModel()).build();
 
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .centerComponent(new JScrollPane(userHistoryTable))
             .southComponent(configBase)
             .build();
