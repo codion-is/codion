@@ -9233,3 +9233,4 @@
   EntityEditPanel.controlPanelConstraints() renamed getControlPanelConstraints() since there is a setter available
   EntityPanel.toolbarControls plus getter/setter added
   BorderLayoutPanelBuilder.builder() now uses the default border layout from Layouts
+  EntityPanelBuilder.InsertEntityCommand and UpdateEntityCommand no longer request focus on the component, when done updating/inserting
