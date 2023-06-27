@@ -359,7 +359,7 @@ public final class EntitySearchField extends HintTextField {
     JLabel messageLabel = Components.label(FrameworkMessages.noResultsFromCondition())
             .border(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE))
             .build();
-    JPanel messagePanel = Components.borderLayoutPanel(borderLayout())
+    JPanel messagePanel = Components.borderLayoutPanel()
             .centerComponent(messageLabel)
             .southComponent(buttonPanel)
             .build();
@@ -420,7 +420,7 @@ public final class EntitySearchField extends HintTextField {
                       .build())
               .build();
 
-      JPanel valueSeparatorPanel = Components.borderLayoutPanel(borderLayout())
+      JPanel valueSeparatorPanel = Components.borderLayoutPanel()
               .centerComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
               .westComponent(Components.textField(searchModel.multipleItemSeparatorValue())
                       .columns(1)

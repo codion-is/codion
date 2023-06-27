@@ -511,7 +511,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
       finally {
         insertedEntities.clear();
-        component.requestFocusInWindow();
       }
     }
 
@@ -618,7 +617,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       finally {
         entityToUpdate = null;
         updatedEntities.clear();
-        component.requestFocusInWindow();
       }
     }
 

@@ -190,9 +190,9 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createApplicationPanel() {
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .border(createTitledBorder("Applications"))
-            .northComponent(borderLayoutPanel(borderLayout())
+            .northComponent(borderLayoutPanel()
                     .westComponent(panel(flexibleGridLayout(1, 2))
                             .add(new JLabel("Batch size"))
                             .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
@@ -214,6 +214,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .build())
             .centerComponent(integerField()
                     .editable(false)
+                    .focusable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
                     .linkedValueObserver(loadTestModel.applicationCountObserver())
@@ -332,7 +333,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createScenarioPanel(UsageScenario<T> item) {
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .centerComponent(tabbedPane()
                     .tab("Duration", createScenarioDurationChartPanel(item))
                     .tab("Exceptions", createScenarioExceptionsPanel(item))
@@ -367,9 +368,9 @@ public final class LoadTestPanel<T> extends JPanel {
             .name("Clear"))
             .build();
 
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .centerComponent(new JScrollPane(exceptionsArea))
-            .eastComponent(borderLayoutPanel(borderLayout())
+            .eastComponent(borderLayoutPanel()
                     .northComponent(refreshButton)
                     .southComponent(clearButton)
                     .build())

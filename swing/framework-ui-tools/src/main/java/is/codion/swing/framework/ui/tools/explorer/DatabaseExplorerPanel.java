@@ -81,7 +81,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 
-    JPanel textAreaCopyPanel = Components.borderLayoutPanel(borderLayout())
+    JPanel textAreaCopyPanel = Components.borderLayoutPanel()
             .centerComponent(new JScrollPane(textArea))
             .southComponent(Components.panel(flowLayout(FlowLayout.RIGHT))
                     .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
@@ -114,7 +114,7 @@ public final class DatabaseExplorerPanel extends JPanel {
 
   private void populateSchema() {
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-    JPanel northPanel = Components.borderLayoutPanel(borderLayout())
+    JPanel northPanel = Components.borderLayoutPanel()
             .centerComponent(schemaLabel)
             .build();
     EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));

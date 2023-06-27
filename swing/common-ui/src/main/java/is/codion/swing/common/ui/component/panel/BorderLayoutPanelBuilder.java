@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.component.panel;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -45,10 +46,13 @@ public interface BorderLayoutPanelBuilder extends ComponentBuilder<Void, JPanel,
   BorderLayoutPanelBuilder westComponent(JComponent westComponent);
 
   /**
+   * Creates a new {@link BorderLayoutPanelBuilder} instance using a new
+   * {@link BorderLayout} instance with the default horizontal and vertical gap.
    * @return a border layout panel builder
+   * @see Layouts#HORIZONTAL_VERTICAL_GAP
    */
   static BorderLayoutPanelBuilder builder() {
-    return new DefaultBorderLayoutPanelBuilder(new BorderLayout());
+    return builder(Layouts.borderLayout());
   }
 
   /**

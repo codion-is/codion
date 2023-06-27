@@ -17,7 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeFormatterBuilder;
 import java.time.temporal.ChronoField;
 
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 // tag::constructor[]
@@ -71,7 +70,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
     setComponent(Employee.DEPARTMENT_FK, departmentIdField);
 
-    return Components.borderLayoutPanel(borderLayout())
+    return Components.borderLayoutPanel()
             .westComponent(departmentIdField)
             .centerComponent(departmentBox)
             .build();

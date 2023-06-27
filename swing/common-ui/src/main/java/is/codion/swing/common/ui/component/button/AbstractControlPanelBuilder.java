@@ -10,6 +10,7 @@ import is.codion.swing.common.ui.control.Controls;
 import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.SwingConstants;
+import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 
@@ -90,12 +91,12 @@ abstract class AbstractControlPanelBuilder<C extends JComponent, B extends Contr
     return orientation;
   }
 
-  protected final ButtonBuilder<?, ?, ?> buttonBuilder() {
-    return buttonBuilder;
+  protected final Optional<ButtonBuilder<?, ?, ?>> buttonBuilder() {
+    return Optional.ofNullable(buttonBuilder);
   }
 
-  protected final ToggleButtonBuilder<?, ?> toggleButtonBuilder() {
-    return toggleButtonBuilder;
+  protected final Optional<ToggleButtonBuilder<?, ?>> toggleButtonBuilder() {
+    return Optional.ofNullable(toggleButtonBuilder);
   }
 
   protected final ToggleButtonBuilder<?, ?> createToggleButtonBuilder() {

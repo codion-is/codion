@@ -57,7 +57,7 @@ public final class ClientMonitorPanel extends JPanel {
     JScrollPane clientInstanceScroller = scrollPane(clientList)
             .border(BorderFactory.createTitledBorder("Clients"))
             .build();
-    JPanel clientInstanceBase = borderLayoutPanel(borderLayout())
+    JPanel clientInstanceBase = borderLayoutPanel()
             .centerComponent(clientInstanceScroller)
             .southComponent(button(control(this::refresh))
                     .text("Refresh")

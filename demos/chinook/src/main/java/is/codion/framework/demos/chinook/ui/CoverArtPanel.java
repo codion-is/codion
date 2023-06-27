@@ -70,7 +70,7 @@ final class CoverArtPanel extends JPanel {
   }
 
   private JPanel createPanel() {
-    return Components.borderLayoutPanel(borderLayout())
+    return Components.borderLayoutPanel()
             .border(BorderFactory.createEmptyBorder(5, 5, 5, 5))
             .preferredSize(EMBEDDED_SIZE)
             .centerComponent(imagePanel)

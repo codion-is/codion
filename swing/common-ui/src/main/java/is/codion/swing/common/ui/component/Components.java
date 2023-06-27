@@ -44,6 +44,7 @@ import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.Action;
 import javax.swing.BoundedRangeModel;
@@ -997,7 +998,10 @@ public final class Components {
   }
 
   /**
-   * @return a new border layout panel builder
+   * Creates a new {@link BorderLayoutPanelBuilder} instance using a new
+   * {@link BorderLayout} instance with the default horizontal and vertical gap.
+   * @return a border layout panel builder
+   * @see Layouts#HORIZONTAL_VERTICAL_GAP
    */
   public static BorderLayoutPanelBuilder borderLayoutPanel() {
     return BorderLayoutPanelBuilder.builder();

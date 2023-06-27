@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.Action;
 import javax.swing.JToolBar;
+import java.util.Optional;
 
 final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, ToolBarBuilder> implements ToolBarBuilder {
 
@@ -45,12 +46,12 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
     toolBar.setOrientation(orientation());
     toolBar.setRollover(rollover);
     toolBar.setBorderPainted(borderPainted);
-    boolean defaultButtonBuilder = buttonBuilder() == null;
-    boolean defaultToggleButtonBuilder = toggleButtonBuilder() == null;
+    Optional<ButtonBuilder<?, ?, ?>> buttonBuilder = buttonBuilder();
+    Optional<ToggleButtonBuilder<?, ?>> toggleButtonBuilder = toggleButtonBuilder();
 
     new ToolBarControlHandler(toolBar, controls(),
-            defaultButtonBuilder ? ButtonBuilder.builder() : buttonBuilder(), defaultButtonBuilder,
-            defaultToggleButtonBuilder ? createToggleButtonBuilder() : toggleButtonBuilder(), defaultToggleButtonBuilder);
+            buttonBuilder.orElse(ButtonBuilder.builder()), !buttonBuilder.isPresent(),
+            toggleButtonBuilder.orElse(createToggleButtonBuilder()), !toggleButtonBuilder.isPresent());
 
     return toolBar;
   }

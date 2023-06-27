@@ -56,19 +56,7 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
   @Override
   protected JPanel createComponent() {
     JPanel panel = createPanel();
-    ButtonBuilder<?, ?, ?> buttonBuilder = buttonBuilder();
-    if (buttonBuilder == null) {
-      buttonBuilder = ButtonBuilder.builder()
-              .focusable(buttonsFocusable)
-              .preferredSize(preferredButtonSize);
-    }
-    ToggleButtonBuilder<?, ?> toggleButtonBuilder = toggleButtonBuilder();
-    if (toggleButtonBuilder == null) {
-      toggleButtonBuilder = createToggleButtonBuilder()
-              .focusable(buttonsFocusable)
-              .preferredSize(preferredButtonSize);
-    }
-    new ButtonControlHandler(panel, controls(), buttonBuilder, toggleButtonBuilder);
+    new ButtonControlHandler(panel, controls(), getButtonBuilder(), getToggleButtonBuilder());
 
     return panel;
   }
@@ -79,11 +67,23 @@ final class DefaultButtonPanelBuilder extends AbstractControlPanelBuilder<JPanel
             new GridLayout(0, 1, 0, buttonGap));
   }
 
+  private ToggleButtonBuilder<?, ?> getToggleButtonBuilder() {
+    return toggleButtonBuilder().orElse(createToggleButtonBuilder()
+            .focusable(buttonsFocusable)
+            .preferredSize(preferredButtonSize));
+  }
+
+  private ButtonBuilder<?, ?, ?> getButtonBuilder() {
+    return buttonBuilder().orElse(ButtonBuilder.builder()
+            .focusable(buttonsFocusable)
+            .preferredSize(preferredButtonSize));
+  }
+
   static JPanel createEastButtonPanel(JComponent centerComponent, boolean buttonFocusable, Action... buttonActions) {
     requireNonNull(centerComponent, "centerComponent");
     requireNonNull(buttonActions, "buttonActions");
 
-    ButtonPanelBuilder buttonPanelBuilder = ButtonPanelBuilder.builder(buttonActions)
+    ButtonPanelBuilder buttonPanelBuilder = new DefaultButtonPanelBuilder(buttonActions)
             .buttonsFocusable(buttonFocusable)
             .preferredButtonSize(new Dimension(centerComponent.getPreferredSize().height, centerComponent.getPreferredSize().height))
             .buttonGap(0);

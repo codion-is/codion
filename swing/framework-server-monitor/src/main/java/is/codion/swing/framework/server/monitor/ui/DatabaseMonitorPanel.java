@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -71,9 +70,9 @@ public final class DatabaseMonitorPanel extends JPanel {
 
     queriesPerSecondChartPanel.setBorder(createEtchedBorder());
 
-    return borderLayoutPanel(borderLayout())
+    return borderLayoutPanel()
             .centerComponent(queriesPerSecondChartPanel)
-            .southComponent(borderLayoutPanel(borderLayout())
+            .southComponent(borderLayoutPanel()
                     .westComponent(chartConfig)
                     .build())
             .build();

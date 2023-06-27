@@ -644,14 +644,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
 
     @Override
     public Collection<T> get() {
-//      return items();
-      List<T> items = new ArrayList<>(visibleItems);
-      if (includeNull) {
-        items.remove(null);
-      }
-      items.addAll(filteredItems);
-
-      return items;
+      return items();
     }
   }
 
