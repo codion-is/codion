@@ -33,9 +33,8 @@ public final class ClientMonitorPanel extends JPanel {
   /**
    * Instantiates a new ClientMonitorPanel
    * @param model the model
-   * @throws RemoteException in case of an exception
    */
-  public ClientMonitorPanel(ClientMonitor model) throws RemoteException {
+  public ClientMonitorPanel(ClientMonitor model) {
     this.model = model;
     this.clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
             .popupMenu(createPopupMenu())
@@ -47,7 +46,7 @@ public final class ClientMonitorPanel extends JPanel {
     return model;
   }
 
-  public void refresh() throws RemoteException {
+  public void refresh() {
     model.refresh();
   }
 

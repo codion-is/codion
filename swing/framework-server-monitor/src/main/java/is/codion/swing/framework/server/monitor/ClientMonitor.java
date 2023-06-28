@@ -56,9 +56,8 @@ public final class ClientMonitor {
   /**
    * Instantiates a new {@link ClientMonitor}
    * @param server the server being monitored
-   * @throws RemoteException in case of an exception
    */
-  public ClientMonitor(EntityServerAdmin server) throws RemoteException {
+  public ClientMonitor(EntityServerAdmin server) {
     this.server = requireNonNull(server);
     refresh();
   }
@@ -68,19 +67,13 @@ public final class ClientMonitor {
     this.clientTypeIds.clear();
     this.users.addAll(users);
     this.clientTypeIds.addAll(clientTypeIds);
-    try {
-      refresh();
-    }
-    catch (RemoteException e) {
-      throw new RuntimeException(e);
-    }
+    refresh();
   }
 
   /**
    * Refreshes the client info from the server
-   * @throws RemoteException in case of an exception
    */
-  public void refresh() throws RemoteException {
+  public void refresh() {
     clientInstanceTableModel.refresh();
   }
 

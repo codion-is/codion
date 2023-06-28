@@ -130,9 +130,8 @@ public final class ClientUserMonitor {
 
   /**
    * Refreshes the user and client data from the server
-   * @throws RemoteException in case of a communication error
    */
-  public void refresh() throws RemoteException {
+  public void refresh() {
     clientTypeTableModel.refresh();
     userTableModel.refresh();
   }
@@ -191,20 +190,6 @@ public final class ClientUserMonitor {
    */
   public Value<Integer> updateIntervalValue() {
     return updateIntervalValue;
-  }
-
-  private List<String> sortedClientTypes() throws RemoteException {
-    List<String> users = new ArrayList<>(server.clientTypes());
-    Collections.sort(users);
-
-    return users;
-  }
-
-  private List<User> sortedUsers() throws RemoteException {
-    List<User> users = new ArrayList<>(server.users());
-    users.sort(USER_COMPARATOR);
-
-    return users;
   }
 
   private int getIdleConnectionTimeout() {
@@ -277,7 +262,10 @@ public final class ClientUserMonitor {
     @Override
     public Collection<String> get() {
       try {
-        return sortedClientTypes();
+        List<String> users = new ArrayList<>(server.clientTypes());
+        Collections.sort(users);
+
+        return users;
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -290,7 +278,10 @@ public final class ClientUserMonitor {
     @Override
     public Collection<User> get() {
       try {
-        return sortedUsers();
+        List<User> users = new ArrayList<>(server.users());
+        users.sort(USER_COMPARATOR);
+
+        return users;
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
