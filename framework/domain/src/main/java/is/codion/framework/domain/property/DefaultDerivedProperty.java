@@ -10,8 +10,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-//todo should extend AbstractProperty, not DefaultTransientProperty
-final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implements DerivedProperty<T> {
+final class DefaultDerivedProperty<T> extends AbstractProperty<T> implements DerivedProperty<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -39,8 +38,8 @@ final class DefaultDerivedProperty<T> extends DefaultTransientProperty<T> implem
     return true;
   }
 
-  static final class DefaultDerivedPropertyBuilder<T, B extends TransientProperty.Builder<T, B>>
-          extends DefaultTransientPropertyBuilder<T, B> implements TransientProperty.Builder<T, B> {
+  static final class DefaultDerivedPropertyBuilder<T, B extends Property.Builder<T, B>>
+          extends AbstractPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
     private final Provider<T> valueProvider;
     private final List<Attribute<?>> sourceAttributes;

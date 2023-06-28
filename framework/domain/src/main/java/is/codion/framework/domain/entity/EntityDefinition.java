@@ -406,14 +406,6 @@ public interface EntityDefinition {
   MethodHandle defaultMethodHandle(Method method);
 
   /**
-   * Returns a serialization version indicator for the underlying entity.
-   * Two {@link EntityDefinition}s having the same version
-   * means they are (very likely) compatible when it comes to serialization.
-   * @return a version indicator for the underlying entity
-   */
-  int serializationVersion();
-
-  /**
    * Builds a EntityDefinition
    * @see #definition(Property.Builder[])
    */

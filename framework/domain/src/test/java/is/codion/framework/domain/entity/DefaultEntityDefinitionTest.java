@@ -18,7 +18,6 @@ import is.codion.framework.domain.entity.query.SelectQuery;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.Locale;
@@ -446,76 +445,5 @@ public class DefaultEntityDefinitionTest {
 
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Prufa", definition.caption());
-  }
-
-  private static final DomainType COMPATIBILITY = domainType("compatibility");
-
-  interface Person {
-    EntityType TYPE = COMPATIBILITY.entityType("test");
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("salary");
-    Attribute<String> SALARY_FORMATTED = TYPE.stringAttribute("salary_formatted");
-    Attribute<Boolean> ENABLED = TYPE.booleanAttribute("enabled");
-  }
-
-  interface PersonDifferentType {
-    EntityType TYPE = COMPATIBILITY.entityType("test2");
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<BigDecimal> SALARY = TYPE.bigDecimalAttribute("salary");
-    Attribute<String> SALARY_FORMATTED = TYPE.stringAttribute("salary_formatted");
-    Attribute<Boolean> ENABLED = TYPE.booleanAttribute("enabled");
-  }
-
-  @Test
-  void serializationCompatibility() {
-    EntityDefinition definition = EntityDefinition.definition(
-                    primaryKeyProperty(Person.ID),
-                    columnProperty(Person.NAME),
-                    columnProperty(Person.SALARY),
-                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
-                    columnProperty(Person.ENABLED))
-            .build();
-
-    EntityDefinition missingProperty = EntityDefinition.definition(
-                    primaryKeyProperty(Person.ID),
-                    columnProperty(Person.NAME),
-                    columnProperty(Person.SALARY),
-                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                            sourceValues.get(Person.SALARY).toString(), Person.SALARY))
-            .build();
-
-    EntityDefinition missingDerivedProperty = EntityDefinition.definition(
-                    primaryKeyProperty(Person.ID),
-                    columnProperty(Person.NAME),
-                    columnProperty(Person.SALARY),
-                    columnProperty(Person.ENABLED))
-            .build();
-
-    EntityDefinition differentOrder = EntityDefinition.definition(
-                    primaryKeyProperty(Person.ID),
-                    derivedProperty(Person.SALARY_FORMATTED, sourceValues ->
-                            sourceValues.get(Person.SALARY).toString(), Person.SALARY),
-                    columnProperty(Person.ENABLED),
-                    columnProperty(Person.NAME),
-                    columnProperty(Person.SALARY))
-            .build();
-
-    EntityDefinition differentType = EntityDefinition.definition(
-                    primaryKeyProperty(PersonDifferentType.ID),
-                    columnProperty(PersonDifferentType.NAME),
-                    columnProperty(PersonDifferentType.SALARY),
-                    derivedProperty(PersonDifferentType.SALARY_FORMATTED, sourceValues ->
-                            sourceValues.get(PersonDifferentType.SALARY).toString(), PersonDifferentType.SALARY),
-                    columnProperty(PersonDifferentType.ENABLED))
-            .build();
-
-    assertNotEquals(definition.serializationVersion(), missingProperty.serializationVersion());
-    assertEquals(definition.serializationVersion(), missingDerivedProperty.serializationVersion());
-    assertNotEquals(definition.serializationVersion(), differentOrder.serializationVersion());
-    assertNotEquals(missingProperty.serializationVersion(), differentOrder.serializationVersion());
-    assertNotEquals(definition.serializationVersion(), differentType.serializationVersion());
   }
 }
