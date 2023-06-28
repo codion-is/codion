@@ -9236,3 +9236,4 @@
   EntityPanelBuilder.InsertEntityCommand and UpdateEntityCommand no longer request focus on the component, when done updating/inserting
   AbstractControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() now return Optional, related refactoring
   Legacy serialization removed
+  ConnectionRequest.clientTimeZone() and clientLocale() added
