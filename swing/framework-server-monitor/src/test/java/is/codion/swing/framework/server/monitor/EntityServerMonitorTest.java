@@ -21,7 +21,8 @@ import org.junit.jupiter.api.Test;
 import java.rmi.registry.LocateRegistry;
 import java.util.Collections;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 public class EntityServerMonitorTest {
 
@@ -70,23 +71,24 @@ public class EntityServerMonitorTest {
     assertNotNull(serverMonitor);
     ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
     clientUserMonitor.refresh();
-    assertEquals(1, clientUserMonitor.userListModel().size());
-    assertEquals(1, clientUserMonitor.clientTypeListModel().size());
-    ClientMonitor clientMonitor = clientUserMonitor.clientTypeListModel().firstElement();
-    assertEquals(clientTypeId, clientMonitor.clientTypeId());
-    clientMonitor.refresh();
-    assertEquals(1, clientMonitor.remoteClientListModel().size());
-    RemoteClient remoteClient = clientMonitor.remoteClientListModel().firstElement();
+    assertEquals(1, clientUserMonitor.userTableModel().getRowCount());
+    assertEquals(1, clientUserMonitor.clientTypeTableModel().getRowCount());
+    assertEquals(clientTypeId, clientUserMonitor.clientTypeTableModel().itemAt(0));
+    clientUserMonitor.userTableModel().selectionModel().setSelectedIndex(0);
+    ClientMonitor clientMonitor = clientUserMonitor.clientMonitor();
+    clientMonitor.clientInstanceTableModel().refresh();
+    assertEquals(1, clientMonitor.clientInstanceTableModel().getRowCount());
+    RemoteClient remoteClient = clientMonitor.clientInstanceTableModel().itemAt(0);
     assertEquals(connectionProvider.clientId(), remoteClient.clientId());
     assertEquals(UNIT_TEST_USER, remoteClient.user());
 
     clientMonitor.server().disconnect(remoteClient.clientId());//disconnects the client
 
     clientMonitor.refresh();
-    assertTrue(clientMonitor.remoteClientListModel().isEmpty());
+    assertEquals(0, clientMonitor.clientInstanceTableModel().getRowCount());
     clientUserMonitor.refresh();
-    assertTrue(clientUserMonitor.userListModel().isEmpty());
-    assertTrue(clientUserMonitor.clientTypeListModel().isEmpty());
+    assertEquals(0, clientUserMonitor.userTableModel().getRowCount());
+    assertEquals(0, clientUserMonitor.clientTypeTableModel().getRowCount());
 
     serverMonitor.shutdown();
   }

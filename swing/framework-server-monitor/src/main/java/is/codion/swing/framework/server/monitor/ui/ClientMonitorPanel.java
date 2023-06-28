@@ -4,13 +4,13 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.server.monitor.ClientInstanceMonitor;
 import is.codion.swing.framework.server.monitor.ClientMonitor;
 
 import javax.swing.BorderFactory;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -27,34 +27,32 @@ import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
  */
 public final class ClientMonitorPanel extends JPanel {
 
-  private ClientMonitor model;
-  private final JList<RemoteClient> clientList = new JList<>();
+  private final ClientMonitor model;
+  private final FilteredTable<RemoteClient, Integer> clientInstanceTable;
 
   /**
    * Instantiates a new ClientMonitorPanel
+   * @param model the model
    * @throws RemoteException in case of an exception
    */
-  public ClientMonitorPanel() throws RemoteException {
+  public ClientMonitorPanel(ClientMonitor model) throws RemoteException {
+    this.model = model;
+    this.clientInstanceTable = FilteredTable.builder(model.clientInstanceTableModel())
+            .popupMenu(createPopupMenu())
+            .build();
     initializeUI();
   }
 
-  public void setModel(ClientMonitor model) {
-    this.model = model;
-    if (model != null) {
-      clientList.setModel(model.remoteClientListModel());
-    }
+  public ClientMonitor model() {
+    return model;
   }
 
   public void refresh() throws RemoteException {
-    if (model != null) {
-      model.refresh();
-    }
+    model.refresh();
   }
 
   private void initializeUI() {
-    clientList.setComponentPopupMenu(createPopupMenu());
-
-    JScrollPane clientInstanceScroller = scrollPane(clientList)
+    JScrollPane clientInstanceScroller = scrollPane(clientInstanceTable)
             .border(BorderFactory.createTitledBorder("Clients"))
             .build();
     JPanel clientInstanceBase = borderLayoutPanel()
@@ -64,7 +62,7 @@ public final class ClientMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel clientInstancePanel = panel(borderLayout()).build();
+    JPanel clientInstancePanel = borderLayoutPanel().build();
     JSplitPane splitPane = splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .oneTouchExpandable(true)
@@ -73,10 +71,9 @@ public final class ClientMonitorPanel extends JPanel {
             .rightComponent(clientInstancePanel)
             .build();
 
-    clientList.getSelectionModel().addListSelectionListener(e -> {
+    model.clientInstanceTableModel().selectionModel().addSelectedItemListener(remoteClient -> {
       clientInstancePanel.removeAll();
       try {
-        RemoteClient remoteClient = clientList.getSelectedValue();
         if (model != null && remoteClient != null) {
           ClientInstanceMonitorPanel clientMonitor = new ClientInstanceMonitorPanel(new ClientInstanceMonitor(model.server(), remoteClient));
           clientInstancePanel.add(clientMonitor, BorderLayout.CENTER);
@@ -95,15 +92,16 @@ public final class ClientMonitorPanel extends JPanel {
   private JPopupMenu createPopupMenu() {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
-                    .name("Disconnect"))
+                    .name("Disconnect")
+                    .enabledState(model.clientInstanceTableModel().selectionModel().selectionNotEmptyObserver()))
             .build())
             .createPopupMenu();
   }
 
   private void disconnect() throws RemoteException {
-    for (RemoteClient remoteClient : clientList.getSelectedValuesList()) {
+    for (RemoteClient remoteClient : model.clientInstanceTableModel().selectionModel().getSelectedItems()) {
       model.server().disconnect(remoteClient.clientId());
-      model.remoteClientListModel().removeElement(remoteClient);
+      model.clientInstanceTableModel().removeItem(remoteClient);
     }
   }
 }
