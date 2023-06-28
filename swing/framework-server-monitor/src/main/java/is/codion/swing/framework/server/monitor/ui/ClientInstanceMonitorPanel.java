@@ -69,13 +69,13 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   public void updateView() throws RemoteException {
-    creationDateField.setText(DATE_TIME_FORMATTER.format(model.creationDate()));
+    creationDateField.setText(DATE_TIME_FORMATTER.format(model.remoteClient().creationTime()));
     model.refreshLog();
   }
 
   private void initializeUI() {
     JPanel creationDatePanel = panel(flowLayout(FlowLayout.LEFT))
-            .add(new JLabel("Creation date"))
+            .add(new JLabel("Creation time"))
             .add(creationDateField)
             .build();
 

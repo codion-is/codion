@@ -9278,3 +9278,5 @@
   ConnectionRequest.clientTimeZone() and clientLocale() added
   DefaultFilteredTableCellRendererBuilder.DefaultDisplayValueProvider bug fixed, now returns empty string instead of null when column value is null
   EntityServerMonitor user monitor refactored
+  RemoteClient.creationTime() added
+  ClientLog.connectionCreationDate() removed
