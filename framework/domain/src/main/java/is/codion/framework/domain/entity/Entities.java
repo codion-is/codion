@@ -22,20 +22,8 @@ import java.util.List;
 public interface Entities {
 
   /**
-   * Specifies whether legacy serialization should be used.<br>
-   * There is nothing gained from using it, so don't, it's here for backwards compatibility only.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   * @deprecated for removal
-   */
-  @Deprecated
-  PropertyValue<Boolean> LEGACY_SERIALIZATION =
-          Configuration.booleanValue("codion.domain.legacySerialization", false);
-
-  /**
    * Specifies whether strict deserialization should be used. This means that when an unknown attribute<br>
    * is encountered during deserialization, an exception is thrown, instead of silently dropping the associated value.<br>
-   * Has no effect when legacy serialization is in use.<br>
    * Value type: Boolean<br>
    * Default value: true
    */

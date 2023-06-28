@@ -46,6 +46,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
     ChinookAppModel applicationModel = new ChinookAppModel(EntityConnectionProvider.builder()
             .domainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
             .clientTypeId(ChinookAppPanel.class.getName())
+            .clientVersion(ChinookAppModel.VERSION)
             .user(getUser())
             .build());
 

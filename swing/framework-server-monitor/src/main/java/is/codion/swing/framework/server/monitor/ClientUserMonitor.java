@@ -17,7 +17,6 @@ import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnVal
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.DefaultListModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.rmi.RemoteException;
@@ -34,6 +33,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -56,8 +56,19 @@ public final class ClientUserMonitor {
 
   private final EntityServerAdmin server;
   private final Value<Integer> idleConnectionTimeoutValue;
-  private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
-  private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
+  private final ClientMonitor clientMonitor;
+  private final FilteredTableModel<String, Integer> clientTypeTableModel = FilteredTableModel.builder(new ClientTypeColumnValueProvider())
+          .columns(singletonList(FilteredTableColumn.builder(0)
+                  .headerValue("Client type id")
+                  .build()))
+          .itemSupplier(new ClientTypeItemSupplier())
+          .build();
+  private final FilteredTableModel<User, Integer> userTableModel = FilteredTableModel.builder(new UserColumnValueProvider())
+          .columns(singletonList(FilteredTableColumn.builder(0)
+                  .headerValue("User")
+                  .build()))
+          .itemSupplier(new UserItemSupplier())
+          .build();
   private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = FilteredTableModel.builder(new UserHistoryColumnValueProvider())
           .columns(createUserHistoryColumns())
           .itemSupplier(new UserHistoryItemSupplier())
@@ -75,11 +86,13 @@ public final class ClientUserMonitor {
    */
   public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
     this.server = requireNonNull(server);
+    this.clientMonitor = new ClientMonitor(server);
     this.idleConnectionTimeoutValue = Value.value(this::getIdleConnectionTimeout, this::setIdleConnectionTimeout, 0);
     this.updateScheduler = TaskScheduler.builder(this::refreshUserHistoryTableModel)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
+    bindEvents();
     refresh();
   }
 
@@ -90,18 +103,22 @@ public final class ClientUserMonitor {
     updateScheduler.stop();
   }
 
-  /**
-   * @return a ListModel containing the connected client types
-   */
-  public DefaultListModel<ClientMonitor> clientTypeListModel() {
-    return clientTypeListModel;
+  public ClientMonitor clientMonitor() {
+    return clientMonitor;
   }
 
   /**
-   * @return a ListModel containing the connected users
+   * @return a TableModel containing the connected client types
    */
-  public DefaultListModel<ClientMonitor> userListModel() {
-    return userListModel;
+  public FilteredTableModel<String, Integer> clientTypeTableModel() {
+    return clientTypeTableModel;
+  }
+
+  /**
+   * @return a TableModel containing the connected users
+   */
+  public FilteredTableModel<User, Integer> userTableModel() {
+    return userTableModel;
   }
 
   /**
@@ -116,14 +133,8 @@ public final class ClientUserMonitor {
    * @throws RemoteException in case of a communication error
    */
   public void refresh() throws RemoteException {
-    clientTypeListModel.clear();
-    for (String clientType : sortedClientTypes()) {
-      clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));
-    }
-    userListModel.clear();
-    for (User user : sortedUsers()) {
-      userListModel.addElement(new ClientMonitor(server, null, user));
-    }
+    clientTypeTableModel.refresh();
+    userTableModel.refresh();
   }
 
   /**
@@ -230,6 +241,13 @@ public final class ClientUserMonitor {
     }
   }
 
+  private void bindEvents() {
+    clientTypeTableModel.selectionModel().addSelectedItemsListener(clientTypeIds ->
+            clientMonitor.setUsersClientTypeIds(userTableModel.selectionModel().getSelectedItems(), clientTypeIds));
+    userTableModel.selectionModel().addSelectedItemsListener(users ->
+            clientMonitor.setUsersClientTypeIds(users, clientTypeTableModel.selectionModel().getSelectedItems()));
+  }
+
   private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
     return asList(
             createColumn(USERNAME_COLUMN, "Username", String.class),
@@ -254,7 +272,33 @@ public final class ClientUserMonitor {
             .build();
   }
 
-  private class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
+  private final class ClientTypeItemSupplier implements Supplier<Collection<String>> {
+
+    @Override
+    public Collection<String> get() {
+      try {
+        return sortedClientTypes();
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private final class UserItemSupplier implements Supplier<Collection<User>> {
+
+    @Override
+    public Collection<User> get() {
+      try {
+        return sortedUsers();
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }
+
+  private final class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
 
     @Override
     public Collection<UserInfo> get() {
@@ -283,6 +327,30 @@ public final class ClientUserMonitor {
       catch (RemoteException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class ClientTypeColumnValueProvider implements ColumnValueProvider<String, Integer> {
+
+    @Override
+    public Object value(String row, Integer columnIdentifier) {
+      if (columnIdentifier == 0) {
+        return row;
+      }
+
+      throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
+    }
+  }
+
+  private static final class UserColumnValueProvider implements ColumnValueProvider<User, Integer> {
+
+    @Override
+    public Object value(User row, Integer columnIdentifier) {
+      if (columnIdentifier == 0) {
+        return row.username();
+      }
+
+      throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
     }
   }
 

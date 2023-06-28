@@ -7,7 +7,6 @@ import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
 
 import java.time.temporal.Temporal;
-import java.util.Objects;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
@@ -141,7 +140,7 @@ public class DefaultFilteredTableCellRendererBuilder<R, C> implements FilteredTa
   private static final class DefaultDisplayValueProvider implements Function<Object, Object> {
     @Override
     public Object apply(Object value) {
-      return Objects.toString(value);
+      return value == null ? "" : value.toString();
     }
   }
 

@@ -6,6 +6,8 @@ package is.codion.common.rmi.client;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
+import java.time.ZoneId;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -28,6 +30,16 @@ public interface ConnectionRequest {
    * @return the client type id
    */
   String clientTypeId();
+
+  /**
+   * @return the client locale
+   */
+  Locale clientLocale();
+
+  /**
+   * @return the client time zone
+   */
+  ZoneId clientTimeZone();
 
   /**
    * @return the client version

@@ -33,11 +33,6 @@ public final class EntitySerializerTest {
   }
 
   @Test
-  void legacySerializer() throws IOException, ClassNotFoundException {
-    testSerializer(new LegacyEntitySerializer(ENTITIES));
-  }
-
-  @Test
   void mismatch() throws IOException, ClassNotFoundException {
     SerialDomain domain1 = new SerialDomain(definition(
             primaryKeyProperty(TestTable.ID),

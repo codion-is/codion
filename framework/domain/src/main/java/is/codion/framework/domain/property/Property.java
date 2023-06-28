@@ -522,67 +522,67 @@ public interface Property<T> {
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from an entity attribute.
+   * Instantiates a {@link Property.Builder} instance, for displaying a value from a referenced entity attribute.
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @param attribute the attribute
    * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the attribute from the referenced entity, from which this property gets its value
-   * @return a new {@link TransientProperty.Builder}
+   * @return a new {@link Property.Builder}
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute,
-                                                                                                             Attribute<Entity> entityAttribute,
-                                                                                                             Attribute<T> denormalizedAttribute) {
+  static <T, B extends Property.Builder<T, B>> Property.Builder<T, B> denormalizedProperty(Attribute<T> attribute,
+                                                                                           Attribute<Entity> entityAttribute,
+                                                                                           Attribute<T> denormalizedAttribute) {
     return denormalizedProperty(attribute, null, entityAttribute, denormalizedAttribute);
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, for displaying a value from an entity attribute.
+   * Instantiates a {@link Property.Builder} instance, for displaying a value from a referenced entity attribute.
    * @param <T> the attribute value type
    * @param <B> the builder type
    * @param attribute the attribute
    * @param caption the caption of this property
    * @param entityAttribute the entity attribute from which this property gets its value
    * @param denormalizedAttribute the attribute from the referenced entity, from which this property gets its value
-   * @return a new {@link TransientProperty.Builder}
+   * @return a new {@link Property.Builder}
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
-                                                                                                             Attribute<Entity> entityAttribute,
-                                                                                                             Attribute<T> denormalizedAttribute) {
-    //for serialization backwards compatibility
-    return Properties.denormalizedViewProperty(attribute, caption, entityAttribute, denormalizedAttribute);
+  static <T, B extends Property.Builder<T, B>> Property.Builder<T, B> denormalizedProperty(Attribute<T> attribute, String caption,
+                                                                                           Attribute<Entity> entityAttribute,
+                                                                                           Attribute<T> denormalizedAttribute) {
+    return new DefaultDerivedProperty.DefaultDerivedPropertyBuilder<>(attribute, caption,
+            new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from one or more source attributes.
+   * Instantiates a {@link Property.Builder} instance, which value is derived from one or more source attributes.
    * @param attribute the attribute
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param sourceAttributes the attributes from which this property derives its value
    * @param <T> the attribute value type
    * @param <B> the builder type
-   * @return a new {@link TransientProperty.Builder}
+   * @return a new {@link Property.Builder}
    * @throws IllegalArgumentException in case no source properties are specified
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> derivedProperty(Attribute<T> attribute,
-                                                                                                        DerivedProperty.Provider<T> valueProvider,
-                                                                                                        Attribute<?>... sourceAttributes) {
+  static <T, B extends Property.Builder<T, B>> Property.Builder<T, B> derivedProperty(Attribute<T> attribute,
+                                                                                      DerivedProperty.Provider<T> valueProvider,
+                                                                                      Attribute<?>... sourceAttributes) {
     return derivedProperty(attribute, null, valueProvider, sourceAttributes);
   }
 
   /**
-   * Instantiates a {@link TransientProperty.Builder} instance, which value is derived from one or more source attributes.
+   * Instantiates a {@link Property.Builder} instance, which value is derived from one or more source attributes.
    * @param attribute the attribute
    * @param caption the caption
    * @param valueProvider a {@link DerivedProperty.Provider} instance responsible for deriving the value
    * @param sourceAttributes the ids of the properties from which this property derives its value
    * @param <T> the attribute value type
    * @param <B> the builder type
-   * @return a new {@link TransientProperty.Builder}
+   * @return a new {@link Property.Builder}
    * @throws IllegalArgumentException in case no source properties are specified
    */
-  static <T, B extends TransientProperty.Builder<T, B>> TransientProperty.Builder<T, B> derivedProperty(Attribute<T> attribute, String caption,
-                                                                                                        DerivedProperty.Provider<T> valueProvider,
-                                                                                                        Attribute<?>... sourceAttributes) {
+  static <T, B extends Property.Builder<T, B>> Property.Builder<T, B> derivedProperty(Attribute<T> attribute, String caption,
+                                                                                      DerivedProperty.Provider<T> valueProvider,
+                                                                                      Attribute<?>... sourceAttributes) {
     return new DefaultDerivedProperty.DefaultDerivedPropertyBuilder<>(attribute, caption, valueProvider, sourceAttributes);
   }
 

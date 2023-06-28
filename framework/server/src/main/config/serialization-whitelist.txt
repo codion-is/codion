@@ -28,6 +28,8 @@ java.time.LocalDate
 java.time.LocalDateTime
 java.time.LocalTime
 java.time.Ser
+java.time.ZoneId
+java.time.ZoneRegion
 java.util.ArrayList
 java.util.Arrays$ArrayList
 java.util.Collections$EmptyList
@@ -43,6 +45,7 @@ java.util.HashMap
 java.util.HashSet
 java.util.LinkedHashMap
 java.util.LinkedHashSet
+java.util.Locale
 java.util.UUID
 net.sf.jasperreports.compilers.ConstantExpressionEvaluation
 net.sf.jasperreports.compilers.FieldEvaluation

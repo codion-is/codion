@@ -7,7 +7,9 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
 import java.io.Serializable;
+import java.time.ZoneId;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,6 +24,8 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   private final User user;
   private final UUID clientId;
   private final String clientTypeId;
+  private final Locale clientLocale = Locale.getDefault();
+  private final ZoneId clientTimeZone = ZoneId.systemDefault();
   private final Version clientVersion;
   private final Version frameworkVersion = Version.version();
   private final Map<String, Object> parameters;
@@ -47,6 +51,16 @@ final class DefaultConnectionRequest implements ConnectionRequest, Serializable 
   @Override
   public String clientTypeId() {
     return clientTypeId;
+  }
+
+  @Override
+  public Locale clientLocale() {
+    return clientLocale;
+  }
+
+  @Override
+  public ZoneId clientTimeZone() {
+    return clientTimeZone;
   }
 
   @Override

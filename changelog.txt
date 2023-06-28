@@ -9274,3 +9274,7 @@
   BorderLayoutPanelBuilder.builder() now uses the default border layout from Layouts
   EntityPanelBuilder.InsertEntityCommand and UpdateEntityCommand no longer request focus on the component, when done updating/inserting
   AbstractControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() now return Optional, related refactoring
+  Legacy serialization removed
+  ConnectionRequest.clientTimeZone() and clientLocale() added
+  DefaultFilteredTableCellRendererBuilder.DefaultDisplayValueProvider bug fixed, now returns empty string instead of null when column value is null
+  EntityServerMonitor user monitor refactored

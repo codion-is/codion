@@ -246,11 +246,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public int serializationVersion() {
-    return entityProperties.serializationVersion;
-  }
-
-  @Override
   public String tableName() {
     return tableName;
   }
@@ -794,8 +789,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<TransientProperty<?>> transientProperties;
     private final List<Attribute<?>> defaultSelectAttributes;
 
-    private final int serializationVersion;
-
     private EntityProperties(List<Property.Builder<?, ?>> propertyBuilders) {
       if (requireNonNull(propertyBuilders, "propertyBuilders").isEmpty()) {
         throw new IllegalArgumentException("One of more properties must be specified for an entity");
@@ -815,7 +808,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.derivedAttributes = unmodifiableMap(derivedAttributes());
       this.transientProperties = unmodifiableList(transientProperties());
       this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
-      this.serializationVersion = createSerializationVersion();
     }
 
     private Map<Attribute<?>, Property<?>> propertyMap(List<Property.Builder<?, ?>> builders) {
@@ -941,15 +933,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       return primaryKeyProperties.stream()
               .map(Property::attribute)
               .collect(toList());
-    }
-
-    private int createSerializationVersion() {
-      return propertyMap.values().stream()
-              .filter(property -> !property.isDerived())
-              .map(Property::attribute)
-              .map(attribute -> attribute.name() + attribute.valueClass().getName())
-              .collect(Collectors.joining())
-              .hashCode();
     }
 
     private static Map<String, Attribute<?>> attributeMap(Map<Attribute<?>, Property<?>> properties) {

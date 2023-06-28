@@ -3,20 +3,19 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
+import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.table.FilteredTable;
-import is.codion.swing.framework.server.monitor.ClientMonitor;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -42,7 +41,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
   private final ClientUserMonitor model;
 
-  private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
+  private final ClientMonitorPanel clientTypeMonitorPanel;
 
   /**
    * Instantiates a new ClientUserMonitorPanel
@@ -51,6 +50,7 @@ public final class ClientUserMonitorPanel extends JPanel {
    */
   public ClientUserMonitorPanel(ClientUserMonitor model) throws RemoteException {
     this.model = requireNonNull(model);
+    this.clientTypeMonitorPanel = new ClientMonitorPanel(model.clientMonitor());
     initializeUI();
   }
 
@@ -70,20 +70,17 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
-    JList<ClientMonitor> clientTypeList = new JList<>(model.clientTypeListModel());
+    FilteredTable<String, Integer> clientTypeTable = FilteredTable.builder(model.clientTypeTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
+    FilteredTable<User, Integer> userTable = FilteredTable.builder(model.userTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
 
-    clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    clientTypeList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(clientTypeList.getSelectedValue()));
-
-    JList<ClientMonitor> userList = new JList<>(model.userListModel());
-
-    userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    userList.getSelectionModel().addListSelectionListener(e -> clientTypeMonitorPanel.setModel(userList.getSelectedValue()));
-
-    JScrollPane clientTypeScroller = scrollPane(clientTypeList)
+    JScrollPane clientTypeScroller = scrollPane(clientTypeTable)
             .border(createTitledBorder("Client types"))
             .build();
-    JScrollPane userScroller = scrollPane(userList)
+    JScrollPane userScroller = scrollPane(userTable)
             .border(createTitledBorder("Users"))
             .build();
     JPanel clientUserBase = panel(gridLayout(2, 1))

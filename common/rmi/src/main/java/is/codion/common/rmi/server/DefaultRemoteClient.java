@@ -8,6 +8,8 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
 import java.io.Serializable;
+import java.time.ZoneId;
+import java.util.Locale;
 import java.util.Map;
 import java.util.UUID;
 
@@ -50,6 +52,16 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   @Override
   public String clientTypeId() {
     return connectionRequest.clientTypeId();
+  }
+
+  @Override
+  public Locale clientLocale() {
+    return connectionRequest.clientLocale();
+  }
+
+  @Override
+  public ZoneId clientTimeZone() {
+    return connectionRequest.clientTimeZone();
   }
 
   @Override
