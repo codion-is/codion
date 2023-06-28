@@ -9237,3 +9237,4 @@
   AbstractControlPanelBuilder.buttonBuilder() and toggleButtonBuilder() now return Optional, related refactoring
   Legacy serialization removed
   ConnectionRequest.clientTimeZone() and clientLocale() added
+  DefaultFilteredTableCellRendererBuilder.DefaultDisplayValueProvider bug fixed, now returns empty string instead of null when column value is null
