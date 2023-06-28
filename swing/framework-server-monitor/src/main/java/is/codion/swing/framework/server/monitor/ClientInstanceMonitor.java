@@ -17,7 +17,6 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import java.rmi.RemoteException;
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -62,24 +61,6 @@ public final class ClientInstanceMonitor {
    */
   public State loggingEnabledState() {
     return loggingEnabledState;
-  }
-
-  /**
-   * @return the creation date of the client connection
-   * @throws RemoteException in case of an exception
-   */
-  public LocalDateTime creationDate() throws RemoteException {
-    ClientLog log = server.clientLog(remoteClient.clientId());
-
-    return log == null ? null : log.connectionCreationDate();
-  }
-
-  /**
-   * Disconnects the client from the server
-   * @throws RemoteException in case of an exception
-   */
-  public void disconnect() throws RemoteException {
-    server.disconnect(remoteClient.clientId());
   }
 
   /**

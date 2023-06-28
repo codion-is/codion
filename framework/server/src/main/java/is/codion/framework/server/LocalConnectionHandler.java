@@ -26,8 +26,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.time.Instant;
-import java.time.ZoneId;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
@@ -200,9 +198,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
   ClientLog clientLog() {
     synchronized (methodLogger) {
-      return ClientLog.clientLog(remoteClient.clientId(),
-              Instant.ofEpochMilli(creationDate).atZone(ZoneId.systemDefault()).toLocalDateTime(),
-              methodLogger.entries());
+      return ClientLog.clientLog(remoteClient.clientId(), methodLogger.entries());
     }
   }
 

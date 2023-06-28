@@ -5,7 +5,6 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.logging.MethodLogger;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -25,19 +24,12 @@ public interface ClientLog {
   UUID clientId();
 
   /**
-   * @return the log creation date
-   */
-  LocalDateTime connectionCreationDate();
-
-  /**
    * Instantiates a new ClientLog instance.
    * @param clientId the id of the client this log represents
-   * @param connectionCreationDate the date and time this client connection was created
    * @param entries the log entries
    * @return a new ClientLog instance
    */
-  static ClientLog clientLog(UUID clientId, LocalDateTime connectionCreationDate,
-                             List<MethodLogger.Entry> entries) {
-    return new DefaultClientLog(clientId, connectionCreationDate, entries);
+  static ClientLog clientLog(UUID clientId, List<MethodLogger.Entry> entries) {
+    return new DefaultClientLog(clientId, entries);
   }
 }

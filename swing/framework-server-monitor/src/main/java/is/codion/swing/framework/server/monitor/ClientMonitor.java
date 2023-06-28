@@ -11,6 +11,7 @@ import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import java.rmi.RemoteException;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public final class ClientMonitor {
   private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) ->
           c1.user().username().compareToIgnoreCase(c2.user().username());
 
+  private static final int CREATION_TIME = 8;
   private static final int TIMEZONE = 7;
   private static final int LOCALE = 6;
   private static final int CLEINT_ID = 5;
@@ -121,6 +123,10 @@ public final class ClientMonitor {
             FilteredTableColumn.builder(TIMEZONE)
                     .headerValue("Timezone")
                     .columnClass(ZoneId.class)
+                    .build(),
+            FilteredTableColumn.builder(CREATION_TIME)
+                    .headerValue("Created")
+                    .columnClass(LocalDateTime.class)
                     .build()
     );
   }
@@ -172,6 +178,8 @@ public final class ClientMonitor {
           return row.clientLocale();
         case TIMEZONE:
           return row.clientTimeZone();
+        case CREATION_TIME:
+          return row.creationTime();
         default:
           throw new IllegalArgumentException("Unknown column");
       }

@@ -8,6 +8,7 @@ import is.codion.common.user.User;
 import is.codion.common.version.Version;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Locale;
 import java.util.Map;
@@ -22,6 +23,7 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   private final ConnectionRequest connectionRequest;
   private final User databaseUser;
   private final String clientHost;
+  private final LocalDateTime creationTime = LocalDateTime.now();
 
   DefaultRemoteClient(ConnectionRequest connectionRequest, User databaseUser, String clientHost) {
     this.connectionRequest = requireNonNull(connectionRequest, "connectionRequest");
@@ -32,6 +34,11 @@ final class DefaultRemoteClient implements RemoteClient, Serializable {
   @Override
   public ConnectionRequest connectionRequest() {
     return connectionRequest;
+  }
+
+  @Override
+  public LocalDateTime creationTime() {
+    return creationTime;
   }
 
   @Override

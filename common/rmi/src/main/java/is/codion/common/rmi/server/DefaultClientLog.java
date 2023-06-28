@@ -6,7 +6,6 @@ package is.codion.common.rmi.server;
 import is.codion.common.logging.MethodLogger;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 
@@ -17,13 +16,10 @@ final class DefaultClientLog implements ClientLog, Serializable {
   private static final long serialVersionUID = 1;
 
   private final UUID clientId;
-  private final LocalDateTime connectionCreationDate;
   private final List<MethodLogger.Entry> entries;
 
-  DefaultClientLog(UUID clientId, LocalDateTime connectionCreationDate,
-                   List<MethodLogger.Entry> entries) {
+  DefaultClientLog(UUID clientId, List<MethodLogger.Entry> entries) {
     this.clientId = requireNonNull(clientId);
-    this.connectionCreationDate = requireNonNull(connectionCreationDate);
     this.entries = requireNonNull(entries);
   }
 
@@ -35,11 +31,6 @@ final class DefaultClientLog implements ClientLog, Serializable {
   @Override
   public UUID clientId() {
     return clientId;
-  }
-
-  @Override
-  public LocalDateTime connectionCreationDate() {
-    return connectionCreationDate;
   }
 
   @Override

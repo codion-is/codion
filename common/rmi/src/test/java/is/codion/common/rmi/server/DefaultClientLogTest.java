@@ -5,7 +5,6 @@ package is.codion.common.rmi.server;
 
 import org.junit.jupiter.api.Test;
 
-import java.time.LocalDateTime;
 import java.util.UUID;
 
 import static java.util.Collections.emptyList;
@@ -17,11 +16,8 @@ public class DefaultClientLogTest {
   @Test
   void clientLog() {
     UUID uuid = UUID.randomUUID();
-    LocalDateTime currentTime = LocalDateTime.now();
-    ClientLog log = ClientLog.clientLog(uuid, currentTime, emptyList());
+    ClientLog log = ClientLog.clientLog(uuid, emptyList());
     assertEquals(uuid, log.clientId());
-    assertEquals(currentTime, log.connectionCreationDate());
-    assertEquals(log, ClientLog.clientLog(uuid, currentTime, emptyList()));
     assertEquals(uuid.hashCode(), log.hashCode());
     assertTrue(log.entries().isEmpty());
   }

@@ -6,6 +6,8 @@ package is.codion.common.rmi.server;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 
+import java.time.LocalDateTime;
+
 /**
  * Contains basic information about a remote client
  */
@@ -15,6 +17,11 @@ public interface RemoteClient extends ConnectionRequest {
    * @return the initial connection request this client is based on
    */
   ConnectionRequest connectionRequest();
+
+  /**
+   * @return the time when this client connection was created
+   */
+  LocalDateTime creationTime();
 
   /**
    * @return the user used when connecting to the underlying database
