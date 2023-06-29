@@ -46,16 +46,12 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   private final JButton calendarButton;
   private final ImageIcon buttonIcon;
 
-  TemporalInputPanel(TemporalField<T> temporalField) {
-    this(temporalField, null);
-  }
-
-  TemporalInputPanel(TemporalField<T> temporalField, ImageIcon buttonIcon) {
+  TemporalInputPanel(DefaultBuilder<T> builder) {
     super(new BorderLayout());
-    this.inputField = requireNonNull(temporalField, "temporalField");
-    this.buttonIcon = buttonIcon;
-    add(temporalField, BorderLayout.CENTER);
-    if (supportsCalendar(temporalField.temporalClass())) {
+    this.inputField = requireNonNull(builder.createTemporalField());
+    this.buttonIcon = builder.buttonIcon;
+    add(inputField, BorderLayout.CENTER);
+    if (supportsCalendar(inputField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
               .name(buttonIcon == null ? "..." : null)
               .smallIcon(buttonIcon)
@@ -63,15 +59,16 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .build();
       KeyEvents.builder(VK_INSERT)
               .action(displayCalendarControl)
-              .enable(temporalField);
+              .enable(inputField);
       calendarButton = new JButton(displayCalendarControl);
       calendarButton.setPreferredSize(new Dimension(inputField.getPreferredSize().height, inputField.getPreferredSize().height));
+      calendarButton.setFocusable(builder.buttonFocusable);
       add(calendarButton, BorderLayout.EAST);
     }
     else {
       calendarButton = null;
     }
-    addFocusListener(new InputFocusAdapter(temporalField));
+    addFocusListener(new InputFocusAdapter(inputField));
   }
 
   /**
@@ -299,11 +296,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     @Override
     protected TemporalInputPanel<T> createComponent() {
-      TemporalInputPanel<T> inputPanel = new TemporalInputPanel<>(createTemporalField(), buttonIcon);
-      inputPanel.calendarButton().ifPresent(button ->
-              button.setFocusable(buttonFocusable));
-
-      return inputPanel;
+      return new TemporalInputPanel<>(this);
     }
 
     @Override
