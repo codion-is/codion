@@ -3,10 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Property;
-
 /**
- * Typed {@link Attribute} to base a {@link Property} on.
+ * Typed {@link Attribute} to base a {@link is.codion.framework.domain.property.Property} on.
  * Note that attribute names are case-sensitive and Attributes are equal if their
  * names and entityTypes are equal, the valueClass does not factor into equality.
  * @param <T> the attribute type

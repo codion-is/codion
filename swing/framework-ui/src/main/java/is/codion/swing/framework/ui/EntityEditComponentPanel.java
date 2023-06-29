@@ -583,7 +583,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T extends Temporal> TemporalInputPanel.Builder<T> createTemporalInputPanel(Attribute<T> attribute) {
     return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute)
-            .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.inputField(), editModel())));
+            .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
   }
 
   /**
@@ -595,7 +595,7 @@ public class EntityEditComponentPanel extends JPanel {
    */
   protected final <T extends Temporal> TemporalInputPanel.Builder<T> createTemporalInputPanel(Attribute<T> attribute, String dateTimePattern) {
     return setComponentBuilder(attribute, entityComponents.temporalInputPanel(attribute, dateTimePattern)
-            .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.inputField(), editModel())));
+            .onBuild(inputPanel -> addFormattedValidator(attribute, inputPanel.temporalField(), editModel())));
   }
 
   /**
