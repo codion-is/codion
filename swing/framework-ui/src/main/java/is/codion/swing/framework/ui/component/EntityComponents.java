@@ -113,6 +113,7 @@ public class EntityComponents {
    * @param <B> the builder type
    * @return the component builder handling input for {@code attribute}
    * @throws IllegalArgumentException in case the attribute type is not supported
+   * @see #supports(Attribute)
    */
   public <T, C extends JComponent, B extends ComponentBuilder<T, C, B>> ComponentBuilder<T, C, B> component(Attribute<T> attribute) {
     Property<T> property = entityDefinition.property(attribute);
