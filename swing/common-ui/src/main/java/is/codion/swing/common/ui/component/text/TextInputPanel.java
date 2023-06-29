@@ -47,9 +47,9 @@ public final class TextInputPanel extends JPanel {
   private final Dimension textAreaSize;
   private final int maximumLength;
 
-  private TextInputPanel(DefaultBuilder builder, JTextField textField) {
+  private TextInputPanel(DefaultBuilder builder) {
+    this.textField = builder.textFieldBuilder.build();
     this.dialogTitle = builder.dialogTitle;
-    this.textField = textField;
     this.textAreaSize = builder.textAreaSize;
     this.button = createButton(builder.buttonFocusable, builder.buttonIcon);
     this.caption = builder.caption;
@@ -340,7 +340,7 @@ public final class TextInputPanel extends JPanel {
 
     @Override
     protected TextInputPanel createComponent() {
-      return new TextInputPanel(this, textFieldBuilder.build());
+      return new TextInputPanel(this);
     }
 
     @Override
