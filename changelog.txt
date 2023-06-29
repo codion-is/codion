@@ -9243,3 +9243,4 @@
   ClientLog.connectionCreationDate() removed
   TextComponentBuilder.selectedTextColor() and selectionColor() added
   TemporalInputPanel refactored
+  TemporalInputPanel.inputField() renamed temporalField()

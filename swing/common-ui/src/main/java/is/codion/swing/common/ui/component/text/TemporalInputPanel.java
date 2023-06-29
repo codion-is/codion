@@ -42,16 +42,16 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(TemporalInputPanel.class.getName());
 
-  private final TemporalField<T> inputField;
+  private final TemporalField<T> temporalField;
   private final JButton calendarButton;
   private final ImageIcon buttonIcon;
 
   TemporalInputPanel(DefaultBuilder<T> builder) {
     super(new BorderLayout());
-    this.inputField = requireNonNull(builder.createTemporalField());
+    this.temporalField = requireNonNull(builder.createTemporalField());
     this.buttonIcon = builder.buttonIcon;
-    add(inputField, BorderLayout.CENTER);
-    if (supportsCalendar(inputField.temporalClass())) {
+    add(temporalField, BorderLayout.CENTER);
+    if (supportsCalendar(temporalField.temporalClass())) {
       Control displayCalendarControl = Control.builder(this::displayCalendar)
               .name(buttonIcon == null ? "..." : null)
               .smallIcon(buttonIcon)
@@ -59,23 +59,23 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
               .build();
       KeyEvents.builder(VK_INSERT)
               .action(displayCalendarControl)
-              .enable(inputField);
+              .enable(temporalField);
       calendarButton = new JButton(displayCalendarControl);
-      calendarButton.setPreferredSize(new Dimension(inputField.getPreferredSize().height, inputField.getPreferredSize().height));
+      calendarButton.setPreferredSize(new Dimension(temporalField.getPreferredSize().height, temporalField.getPreferredSize().height));
       calendarButton.setFocusable(builder.buttonFocusable);
       add(calendarButton, BorderLayout.EAST);
     }
     else {
       calendarButton = null;
     }
-    addFocusListener(new InputFocusAdapter(inputField));
+    addFocusListener(new InputFocusAdapter(temporalField));
   }
 
   /**
-   * @return the input field
+   * @return the temporal input field
    */
-  public TemporalField<T> inputField() {
-    return inputField;
+  public TemporalField<T> temporalField() {
+    return temporalField;
   }
 
   /**
@@ -89,14 +89,14 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @return the Temporal value currently being displayed, an empty Optional in case of an incomplete/unparseable date
    */
   public Optional<T> optional() {
-    return inputField.optional();
+    return temporalField.optional();
   }
 
   /**
    * @return the Temporal value currently being displayed, null in case of an incomplete/unparseable date
    */
   public T getTemporal() {
-    return inputField.getTemporal();
+    return temporalField.getTemporal();
   }
 
   /**
@@ -104,7 +104,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    * @param temporal the temporal value to set
    */
   public void setTemporal(Temporal temporal) {
-    inputField.setTemporal(temporal);
+    temporalField.setTemporal(temporal);
   }
 
   /**
@@ -112,13 +112,13 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
    */
   public void setTransferFocusOnEnter(boolean transferFocusOnEnter) {
     if (transferFocusOnEnter) {
-      TransferFocusOnEnter.enable(inputField);
+      TransferFocusOnEnter.enable(temporalField);
       if (calendarButton != null) {
         TransferFocusOnEnter.enable(calendarButton);
       }
     }
     else {
-      TransferFocusOnEnter.disable(inputField);
+      TransferFocusOnEnter.disable(temporalField);
       if (calendarButton != null) {
         TransferFocusOnEnter.disable(calendarButton);
       }
@@ -128,7 +128,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   @Override
   public void setEnabled(boolean enabled) {
     super.setEnabled(enabled);
-    inputField.setEnabled(enabled);
+    temporalField.setEnabled(enabled);
     if (calendarButton != null) {
       calendarButton.setEnabled(enabled);
     }
@@ -136,7 +136,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
   @Override
   public void setToolTipText(String text) {
-    inputField.setToolTipText(text);
+    temporalField.setToolTipText(text);
   }
 
   /**
@@ -164,24 +164,24 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
   }
 
   private void displayCalendar() {
-    if (LocalDate.class.equals(inputField.temporalClass())) {
+    if (LocalDate.class.equals(temporalField.temporalClass())) {
       Dialogs.calendarDialog()
-              .owner(inputField)
+              .owner(temporalField)
               .icon(buttonIcon)
               .initialValue((LocalDate) getTemporal())
               .selectLocalDate()
-              .ifPresent(inputField::setTemporal);
+              .ifPresent(temporalField::setTemporal);
     }
-    else if (LocalDateTime.class.equals(inputField.temporalClass())) {
+    else if (LocalDateTime.class.equals(temporalField.temporalClass())) {
       Dialogs.calendarDialog()
-              .owner(inputField)
+              .owner(temporalField)
               .icon(buttonIcon)
               .initialValue((LocalDateTime) getTemporal())
               .selectLocalDateTime()
-              .ifPresent(inputField::setTemporal);
+              .ifPresent(temporalField::setTemporal);
     }
     else {
-      throw new IllegalArgumentException("Unsupported temporal type: " + inputField.temporalClass());
+      throw new IllegalArgumentException("Unsupported temporal type: " + temporalField.temporalClass());
     }
   }
 
@@ -327,7 +327,7 @@ public final class TemporalInputPanel<T extends Temporal> extends JPanel {
 
     private TemporalInputPanelValue(TemporalInputPanel<T> inputPanel) {
       super(inputPanel);
-      inputPanel.inputField().addTemporalListener(temporal -> notifyValueChange());
+      inputPanel.temporalField().addTemporalListener(temporal -> notifyValueChange());
     }
 
     @Override

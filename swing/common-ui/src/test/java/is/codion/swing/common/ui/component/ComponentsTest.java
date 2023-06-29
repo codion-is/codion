@@ -271,7 +271,7 @@ public final class ComponentsTest {
 
     assertEquals(value.get(), date);
 
-    componentValue.component().inputField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
+    componentValue.component().temporalField().setText(DateTimeFormatter.ofPattern("dd-MM-yyyy").format(date));
     assertEquals(date, componentValue.get());
   }
 
