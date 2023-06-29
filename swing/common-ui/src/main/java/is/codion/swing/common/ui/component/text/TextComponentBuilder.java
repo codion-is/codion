@@ -68,6 +68,20 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
   B disabledTextColor(Color disabledTextColor);
 
   /**
+   * @param selectedTextColor the color used to render selected text
+   * @return this builder instance
+   * @see JTextComponent#setSelectedTextColor(Color)
+   */
+  B selectedTextColor(Color selectedTextColor);
+
+  /**
+   * @param selectionColor the color used to render selected text background
+   * @return this builder instance
+   * @see JTextComponent#setSelectionColor(Color)
+   */
+  B selectionColor(Color selectionColor);
+
+  /**
    * Makes the text component select all when it gains focus
    * @param selectAllOnFocusGained if true the component will select contents on focus gained
    * @return this builder instance

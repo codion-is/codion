@@ -9241,3 +9241,4 @@
   EntityServerMonitor user monitor refactored
   RemoteClient.creationTime() added
   ClientLog.connectionCreationDate() removed
+  TextComponentBuilder.selectedTextColor() and selectionColor() added
