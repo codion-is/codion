@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.text.NumberField;
+import is.codion.swing.common.ui.component.text.SelectionProvider;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
@@ -25,6 +26,7 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.TransferHandler;
 import java.awt.BorderLayout;
@@ -32,6 +34,7 @@ import java.awt.datatransfer.DataFlavor;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
@@ -85,8 +88,7 @@ public final class ApplicationPanel extends JPanel {
             .selectAllOnFocusGained(true)
             .transferFocusOnEnter(true)
             .validator(new PGValidator())
-            .selectionProvider(Dialogs.selectionProvider(() ->
-                    Arrays.asList("a", "few", "short", "strings", "to", "choose", "from")))
+            .selectionProvider(new StringSelectionProvider())
             .label(label("Short String (1)")
                     .displayedMnemonic('1')
                     .build(inputPanel::add))
@@ -328,6 +330,20 @@ public final class ApplicationPanel extends JPanel {
           }
         });
       }
+    }
+  }
+
+  private static class StringSelectionProvider implements SelectionProvider<String> {
+
+    private final List<String> stringsToSelectFrom = Arrays.asList("a", "few", "short", "strings", "to", "choose", "from");
+    private final String defaultSelection = "strings";
+
+    @Override
+    public Optional<String> select(JTextField textField) {
+      return Dialogs.selectionDialog(stringsToSelectFrom)
+              .owner(textField)
+              .defaultSelection(defaultSelection)
+              .selectSingle();
     }
   }
 

@@ -9256,3 +9256,5 @@
   EntityPanel.editControlPanel, empty border added
   DefaultOkCancelDialogBuilder bug fixed, now sets the name and mnemonic
   SelectionDialogBuilder.allowEmptySelection() added
+  SelectionDialogBuilder.singleSelection() removed, unnecessary due to select() and selectSingle()
+  DefaultSelectionDialogBuilder refactored
