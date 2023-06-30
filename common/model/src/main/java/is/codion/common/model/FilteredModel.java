@@ -257,7 +257,7 @@ public interface FilteredModel<T> {
 
     @Override
     public final void refreshThen(Consumer<Collection<T>> afterRefresh) {
-      if (asyncRefresh && isUserInterfaceThread()) {
+      if (asyncRefresh && isAsyncRefreshSupported()) {
         refreshAsync(afterRefresh);
       }
       else {
@@ -316,9 +316,9 @@ public interface FilteredModel<T> {
     }
 
     /**
-     * @return true if we're running on the user interface thread (meaning an async refresh is in order)
+     * @return true if we're running on a thread which supports async refresh, such as a UI or application thread
      */
-    protected abstract boolean isUserInterfaceThread();
+    protected abstract boolean isAsyncRefreshSupported();
 
     /**
      * Performes an async refresh

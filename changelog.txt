@@ -9289,3 +9289,6 @@
   FilteredTableModel.Builder.columnFactory() added, columns() removed
   FilteredTableModel.Builder.columnFactory() removed, FilteredTableModel.builder() ColumnFactory parameter added
   SwingEntityColumnFactory.createColumn() added, related refactoring
+  SwingEntityColumnFactory moved to SwingEntityTableModel, renamed EntityColumnFactory, not quite ready for public consumption
+  EntityFilterModelFactory moved to SwingEntityTableModel
+  FilteredModel.AbstractRefresher.isUserInterfaceThread() renamed isAsyncRefreshSupported()

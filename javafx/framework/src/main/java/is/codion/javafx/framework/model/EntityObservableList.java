@@ -380,7 +380,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
     }
 
     @Override
-    protected boolean isUserInterfaceThread() {
+    protected boolean isAsyncRefreshSupported() {
       return Platform.isFxApplicationThread();
     }
 
