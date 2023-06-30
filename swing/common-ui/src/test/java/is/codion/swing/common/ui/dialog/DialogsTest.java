@@ -142,8 +142,19 @@ public final class DialogsTest {
     Dialogs.selectionDialog(Collections.singletonList("hello"))
             .owner(new JLabel())
             .title("title")
-            .singleSelection(false)
+            .allowEmptySelection(true)
             .defaultSelection("hello");
+  }
+
+  @Test
+  void selectionDialogNoItems() {
+    assertThrows(IllegalArgumentException.class, () -> Dialogs.selectionDialog(Collections.emptyList()));
+  }
+
+  @Test
+  void selectionDialogNonExistingDefaultSelection() {
+    assertThrows(IllegalArgumentException.class, () -> Dialogs.selectionDialog(Collections.singletonList("helloist"))
+            .defaultSelection("hello"));
   }
 
   @Test

@@ -13,22 +13,24 @@ import java.util.Optional;
 public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialogBuilder<T>> {
 
   /**
-   * @param singleSelection if true then the selection is restricted to a single value
-   * @return this SelectionDialogBuilder instance
-   */
-  SelectionDialogBuilder<T> singleSelection(boolean singleSelection);
-
-  /**
    * @param defaultSelection the item selected by default
    * @return this SelectionDialogBuilder instance
+   * @throws IllegalArgumentException in case the selection values do not contain the default selection item
    */
   SelectionDialogBuilder<T> defaultSelection(T defaultSelection);
 
   /**
    * @param defaultSelection the items selected by default
    * @return this SelectionDialogBuilder instance
+   * @throws IllegalArgumentException in case the selection values do not contain the default selection items
    */
   SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
+
+  /**
+   * @param allowEmptySelection if true then the dialog accepts an empty selection, default false
+   * @return this SelectionDialogBuilder instance
+   */
+  SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection);
 
   /**
    * @return the selected value, {@link Optional#empty()} if none was selected

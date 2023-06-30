@@ -117,6 +117,10 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
             .enabledState(cancelEnabledState)
             .build();
     }
+    okAction.putValue(Action.NAME, Messages.ok());
+    okAction.putValue(Action.MNEMONIC_KEY, (int) Messages.okMnemonic());
+    cancelAction.putValue(Action.NAME, Messages.cancel());
+    cancelAction.putValue(Action.MNEMONIC_KEY, (int) Messages.cancelMnemonic());
     super.defaultAction(okAction);
     super.escapeAction(cancelAction);
 

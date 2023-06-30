@@ -9292,3 +9292,8 @@
   SwingEntityColumnFactory moved to SwingEntityTableModel, renamed EntityColumnFactory, not quite ready for public consumption
   EntityFilterModelFactory moved to SwingEntityTableModel
   FilteredModel.AbstractRefresher.isUserInterfaceThread() renamed isAsyncRefreshSupported()
+  EntityPanel.editControlPanel, empty border added
+  DefaultOkCancelDialogBuilder bug fixed, now sets the name and mnemonic
+  SelectionDialogBuilder.allowEmptySelection() added
+  SelectionDialogBuilder.singleSelection() removed, unnecessary due to select() and selectSingle()
+  DefaultSelectionDialogBuilder refactored
