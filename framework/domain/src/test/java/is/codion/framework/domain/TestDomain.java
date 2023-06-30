@@ -244,10 +244,11 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("deptNo"),
             columnProperty(Department.NAME, Department.NAME.name())
                     .searchProperty(true)
-                    .preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .maximumLength(14)
+                    .nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOCATION, Department.LOCATION.name())
-                    .preferredColumnWidth(150).maximumLength(13)
+                    .maximumLength(13)
                     .beanProperty("location"),
             booleanProperty(Department.ACTIVE, null, Integer.class, 1, 0)
                     .readOnly(true)
@@ -334,8 +335,7 @@ public final class TestDomain extends DefaultDomain {
                             .build())
                     .nullable(false)
                     .beanProperty("hiredate"),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .preferredColumnWidth(100),
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION),
             derivedProperty(Employee.DEPARTMENT_NAME, new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
             blobProperty(Employee.DATA, "Data")
                     .eagerlyLoaded(true))

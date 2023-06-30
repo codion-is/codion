@@ -831,9 +831,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
                       .headerValue(property.caption())
                       .columnClass(property.attribute().valueClass())
                       .comparator(attributeComparator(entities, property.attribute()));
-      if (property.preferredColumnWidth() > 0) {
-        columnBuilder.preferredWidth(property.preferredColumnWidth());
-      }
       columns.add((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
     }
 

@@ -150,11 +150,9 @@ public final class TestDomain extends DefaultDomain {
                     .updatable(true).nullable(false),
             columnProperty(Department.NAME, Department.NAME.name())
                     .searchProperty(true)
-                    .preferredColumnWidth(120)
                     .maximumLength(14)
                     .nullable(false),
             columnProperty(Department.LOCATION, Department.LOCATION.name())
-                    .preferredColumnWidth(150)
                     .maximumLength(13))
             .tableName("scott.dept")
             .smallDataset(true)
@@ -213,8 +211,7 @@ public final class TestDomain extends DefaultDomain {
             foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name()),
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .preferredColumnWidth(100))
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION))
             .tableName("scott.emp")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)

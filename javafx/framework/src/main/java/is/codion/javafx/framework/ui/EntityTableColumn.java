@@ -33,10 +33,6 @@ public final class EntityTableColumn<T> extends FXEntityListModel.AttributeTable
     super(property.attribute(), property.caption());
     this.conditionView = createConditionView(listModel, property);
     setCellValueFactory(cellValueFactory);
-    int preferredWidth = property.preferredColumnWidth();
-    if (preferredWidth > 0) {
-      setPrefWidth(preferredWidth);
-    }
   }
 
   /**

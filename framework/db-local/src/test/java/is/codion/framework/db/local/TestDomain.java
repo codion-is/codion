@@ -107,10 +107,12 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false)
                     .beanProperty("id"),
             columnProperty(Department.DNAME, Department.DNAME.name())
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false)
+                    .searchProperty(true)
+                    .maximumLength(14)
+                    .nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOC, Department.LOC.name())
-                    .preferredColumnWidth(150).maximumLength(13)
+                    .maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
             .stringFactory(Department.DNAME)
@@ -171,7 +173,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
                     .nullable(false),
             columnProperty(Employee.HIRETIME, Employee.HIRETIME.name()),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC).preferredColumnWidth(100),
+            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC),
             columnProperty(Employee.DATA_LAZY),
             blobProperty(Employee.DATA)
                     .eagerlyLoaded(true))

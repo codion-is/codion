@@ -70,11 +70,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private final boolean nullable;
 
   /**
-   * The preferred column width when this property is presented in a table
-   */
-  private final int preferredColumnWidth;
-
-  /**
    * True if this property should be hidden in table views
    */
   private final boolean hidden;
@@ -150,7 +145,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     this.beanProperty = builder.beanProperty;
     this.defaultValueSupplier = builder.defaultValueSupplier;
     this.nullable = builder.nullable;
-    this.preferredColumnWidth = builder.preferredColumnWidth;
     this.hidden = builder.hidden;
     this.maximumLength = builder.maximumLength;
     this.maximumValue = builder.maximumValue;
@@ -223,11 +217,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   @Override
   public final Number minimumValue() {
     return minimumValue;
-  }
-
-  @Override
-  public final int preferredColumnWidth() {
-    return preferredColumnWidth;
   }
 
   @Override
@@ -427,7 +416,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private ValueSupplier<T> defaultValueSupplier;
     private String captionResourceKey;
     private boolean nullable;
-    private int preferredColumnWidth;
     private boolean hidden;
     private int maximumLength;
     private Number maximumValue;
@@ -450,7 +438,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
       captionResourceKey = attribute.name();
       hidden = caption == null && resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
       nullable = true;
-      preferredColumnWidth = -1;
       maximumLength = -1;
       defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
       decimalRoundingMode = DECIMAL_ROUNDING_MODE.get();
@@ -556,15 +543,6 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
         throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + attribute);
       }
       ((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
-      return (B) this;
-    }
-
-    @Override
-    public final B preferredColumnWidth(int preferredColumnWidth) {
-      if (preferredColumnWidth <= 0) {
-        throw new IllegalArgumentException("preferredColumnWidth must be larger than 0");
-      }
-      this.preferredColumnWidth = preferredColumnWidth;
       return (B) this;
     }
 
