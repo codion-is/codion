@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(ColumnValueProvider)
+ * @see #builder(ColumnFactory, ColumnValueProvider)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 

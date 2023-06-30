@@ -9249,3 +9249,4 @@
   FilteredTableModel.ColumnFactory added
   FilteredTableModel.Builder.columnFactory() added, columns() removed
   FilteredTableModel.Builder.columnFactory() removed, FilteredTableModel.builder() ColumnFactory parameter added
+  SwingEntityColumnFactory.createColumn() added, related refactoring
