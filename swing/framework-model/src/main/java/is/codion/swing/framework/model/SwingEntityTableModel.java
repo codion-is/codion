@@ -3,6 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
+import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
@@ -31,7 +32,6 @@ import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
-import is.codion.framework.model.EntityFilterModelFactory;
 import is.codion.framework.model.EntityModel;
 import is.codion.framework.model.EntityTableConditionModel;
 import is.codion.framework.model.EntityTableModel;
@@ -53,6 +53,7 @@ import java.awt.Color;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -1140,24 +1141,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
     return FilteredTableModel.builder(new EntityColumnFactory(), new EntityColumnValueProvider())
-            .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
+            .filterModelFactory(new EntityFilterModelFactory())
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
             .itemValidator(row -> row.type().equals(entityDefinition.type()))
             .build();
-  }
-
-  private final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
-
-    @Override
-    public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
-      Property<?> property = entityDefinition().property(attribute);
-      if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
-        return Optional.of(summaryValueProvider(attribute, tableModel, format));
-      }
-
-      return Optional.empty();
-    }
   }
 
   private final class EntityColumnFactory implements ColumnFactory<Attribute<?>> {
@@ -1211,6 +1199,51 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       }
 
       return (Comparable<T>) value;
+    }
+  }
+
+  private final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+
+    @Override
+    public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
+      if (requireNonNull(attribute).isEntity()) {
+        return Optional.empty();
+      }
+      if (!Comparable.class.isAssignableFrom(attribute.valueClass())) {
+        return Optional.empty();
+      }
+
+      Property<?> property = editModel.entityDefinition().property(attribute);
+      if (property.isHidden()) {
+        return Optional.empty();
+      }
+
+      return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
+              .operators(operators(attribute.valueClass()))
+              .format(property.format())
+              .dateTimePattern(property.dateTimePattern())
+              .build());
+    }
+
+    private List<Operator> operators(Class<?> columnClass) {
+      if (columnClass.equals(Boolean.class)) {
+        return singletonList(Operator.EQUAL);
+      }
+
+      return Arrays.asList(Operator.values());
+    }
+  }
+
+  private final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+
+    @Override
+    public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
+      Property<?> property = entityDefinition().property(attribute);
+      if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
+        return Optional.of(summaryValueProvider(attribute, tableModel, format));
+      }
+
+      return Optional.empty();
     }
   }
 }
