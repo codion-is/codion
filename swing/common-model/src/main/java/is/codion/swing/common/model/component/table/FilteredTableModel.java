@@ -305,11 +305,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
     return new DefaultFilteredTableModel.DefaultSummaryValueProvider<>(columnIdentifier, tableModel, format);
   }
 
-  interface ColumnFactory<C> {
-
-    List<FilteredTableColumn<C>> createColumns();
-  }
-
   /**
    * A builder for a {@link FilteredTableModel}.
    * @param <R> the row type
@@ -358,6 +353,18 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @return a new {@link FilteredTableModel} instance.
      */
     FilteredTableModel<R, C> build();
+  }
+
+  /**
+   * Provides columns for a {@link FilteredTableModel}.
+   * @param <C> the column identifier type
+   */
+  interface ColumnFactory<C> {
+
+    /**
+     * @return the columns, may not be empty
+     */
+    List<FilteredTableColumn<C>> createColumns();
   }
 
   /**
