@@ -42,33 +42,33 @@ asciidoctor {
     }
     attributes "codion-version": documentationVersion,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
-            experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
-            'diagram-cachedir': "${buildDir}/asciidoc/images/diagram-cache",
-            'opar': '(',
-            'cpar': ')',
-            'comma': ',',
-            'common-core': '/is.codion.common.core',
-            'common-db': '/is.codion.common.db',
-            'common-model': '/is.codion.common.model',
-            'common-rmi': '/is.codion.common.rmi',
-            'framework-db-core': '/is.codion.framework.db.core',
-            'framework-db-http': '/is.codion.framework.db.http',
-            'framework-db-local': '/is.codion.framework.db.local',
-            'framework-db-rmi': '/is.codion.framework.db.rmi',
-            'framework-domain': '/is.codion.framework.domain',
-            'framework-domain-test': '/is.codion.framework.domain.test',
-            'framework-json-domain': '/is.codion.framework.json.domain',
-            'framework-json-db': '/is.codion.framework.json.db',
-            'framework-model': '/is.codion.framework.model',
-            'framework-model-test': '/is.codion.framework.model.test',
-            'framework-server': '/is.codion.framework.server',
-            'framework-servlet': '/is.codion.framework.servlet',
-            'plugin-jasperreports': '/is.codion.plugin.jasperreports',
-            'swing-common-model': '/is.codion.swing.common.model',
-            'swing-common-ui': '/is.codion.swing.common.ui',
-            'swing-framework-model': '/is.codion.swing.framework.model',
-            'swing-framework-model-tools': '/is.codion.swing.framework.model.tools',
-            'swing-framework-ui': '/is.codion.swing.framework.ui'
+            experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: "UA-159091863-1",
+            "diagram-cachedir": "${buildDir}/asciidoc/images/diagram-cache",
+            "opar": "(",
+            "cpar": ")",
+            "comma": ",",
+            "common-core": "/is.codion.common.core",
+            "common-db": "/is.codion.common.db",
+            "common-model": "/is.codion.common.model",
+            "common-rmi": "/is.codion.common.rmi",
+            "framework-db-core": "/is.codion.framework.db.core",
+            "framework-db-http": "/is.codion.framework.db.http",
+            "framework-db-local": "/is.codion.framework.db.local",
+            "framework-db-rmi": "/is.codion.framework.db.rmi",
+            "framework-domain": "/is.codion.framework.domain",
+            "framework-domain-test": "/is.codion.framework.domain.test",
+            "framework-json-domain": "/is.codion.framework.json.domain",
+            "framework-json-db": "/is.codion.framework.json.db",
+            "framework-model": "/is.codion.framework.model",
+            "framework-model-test": "/is.codion.framework.model.test",
+            "framework-server": "/is.codion.framework.server",
+            "framework-servlet": "/is.codion.framework.servlet",
+            "plugin-jasperreports": "/is.codion.plugin.jasperreports",
+            "swing-common-model": "/is.codion.swing.common.model",
+            "swing-common-ui": "/is.codion.swing.common.ui",
+            "swing-framework-model": "/is.codion.swing.framework.model",
+            "swing-framework-model-tools": "/is.codion.swing.framework.model.tools",
+            "swing-framework-ui": "/is.codion.swing.framework.ui"
     asciidoctorj {
         version = "2.5.7"
         modules {
@@ -81,8 +81,8 @@ asciidoctor {
 /**
  * An absolute monstrosity of a workaround for combining javadocs for multiple modular sub-projects.
  */
-tasks.register('combinedJavadoc') {
-    group 'documentation'
+tasks.register("combinedJavadoc") {
+    group "documentation"
 
     def tempDir = "${buildDir}/tmp"
     def combinedSrcDir = "${tempDir}/combinedSource";
@@ -100,7 +100,7 @@ tasks.register('combinedJavadoc') {
     doLast {
         //combine the framework source, with each module in a separate directory, named after the module
         frameworkModules.each { module ->
-            ant.copy(todir: "${combinedSrcDir}/" + "is." + module.name.replace('-', '.')) {
+            ant.copy(todir: "${combinedSrcDir}/" + "is." + module.name.replace("-", ".")) {
                 fileset(dir: "${module.projectDir}/src/main/java")
             }
         }
@@ -119,7 +119,7 @@ tasks.register('combinedJavadoc') {
         options.write(optionsFile)
 
         exec {
-            executable = System.getProperty('java.home') + '/bin/javadoc'
+            executable = System.getProperty("java.home") + "/bin/javadoc"
             args = ["@" + optionsFile.getAbsolutePath()]
         }
 

@@ -1,5 +1,5 @@
 plugins {
-    id 'org.openjfx.javafxplugin' version '0.0.14'
+    id "org.openjfx.javafxplugin" version "0.0.14"
 }
 
 dependencies {
@@ -26,20 +26,20 @@ dependencies {
 }
 
 javafx {
-    version = '18'
-    modules = ['javafx.base', 'javafx.graphics', 'javafx.controls', 'javafx.swing']
+    version = "18"
+    modules = ["javafx.base", "javafx.graphics", "javafx.controls", "javafx.swing"]
 }
 
 compileTestJava {
     options.compilerArgs = [
-            '--add-modules', 'is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local',
-            '--add-reads', "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
+            "--add-modules", "is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local",
+            "--add-reads", "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
     ]
 }
 
 test {
     jvmArgs = [
-            '--add-modules', 'is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local',
-            '--add-reads', "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
+            "--add-modules", "is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local",
+            "--add-reads", "is.codion.javafx.framework=is.codion.framework.domain.test,is.codion.framework.model.test,is.codion.framework.db.local"
     ]
 }
