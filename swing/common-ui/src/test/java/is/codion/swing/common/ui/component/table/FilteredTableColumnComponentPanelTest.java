@@ -26,7 +26,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void wrongColumn() {
     FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columns(asList(column0, column1, column2))
+            .columnFactory(() -> asList(column0, column1, column2))
             .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
@@ -37,7 +37,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void setColumnVisible() {
     FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columns(asList(column0, column1, column2))
+            .columnFactory(() -> asList(column0, column1, column2))
             .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
@@ -57,7 +57,7 @@ public class FilteredTableColumnComponentPanelTest {
   @Test
   void width() {
     FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columns(asList(column0, column1, column2))
+            .columnFactory(() -> asList(column0, column1, column2))
             .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));

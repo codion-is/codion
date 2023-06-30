@@ -58,19 +58,19 @@ public final class ClientUserMonitor {
   private final Value<Integer> idleConnectionTimeoutValue;
   private final ClientMonitor clientMonitor;
   private final FilteredTableModel<String, Integer> clientTypeTableModel = FilteredTableModel.builder(new ClientTypeColumnValueProvider())
-          .columns(singletonList(FilteredTableColumn.builder(0)
+          .columnFactory(() -> singletonList(FilteredTableColumn.builder(0)
                   .headerValue("Client type id")
                   .build()))
           .itemSupplier(new ClientTypeItemSupplier())
           .build();
   private final FilteredTableModel<User, Integer> userTableModel = FilteredTableModel.builder(new UserColumnValueProvider())
-          .columns(singletonList(FilteredTableColumn.builder(0)
+          .columnFactory(() -> singletonList(FilteredTableColumn.builder(0)
                   .headerValue("User")
                   .build()))
           .itemSupplier(new UserItemSupplier())
           .build();
   private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel = FilteredTableModel.builder(new UserHistoryColumnValueProvider())
-          .columns(createUserHistoryColumns())
+          .columnFactory(() -> createUserHistoryColumns())
           .itemSupplier(new UserHistoryItemSupplier())
           .mergeOnRefresh(true)
           .build();

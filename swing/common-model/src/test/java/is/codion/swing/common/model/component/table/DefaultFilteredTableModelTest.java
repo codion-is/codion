@@ -24,7 +24,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.*;
+import static java.util.Collections.singletonList;
+import static java.util.Collections.unmodifiableList;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -56,7 +57,7 @@ public final class DefaultFilteredTableModelTest {
 
   private static FilteredTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
     return FilteredTableModel.<TestRow, Integer>builder((row, columnIdentifier) -> row.value)
-            .columns(createColumns(customComparator))
+            .columnFactory(() -> createColumns(customComparator))
             .itemSupplier(() -> ITEMS)
             .build();
   }
@@ -126,7 +127,8 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void noColumns() {
     assertThrows(IllegalArgumentException.class, () -> FilteredTableModel.<String, Integer>builder((row, columnIdentifier) -> null)
-            .columns(emptyList()));
+            .columnFactory(Collections::emptyList)
+            .build());
   }
 
   @Test
@@ -161,7 +163,7 @@ public final class DefaultFilteredTableModelTest {
     AtomicInteger selectionEvents = new AtomicInteger();
     List<TestRow> items = new ArrayList<>(ITEMS);
     FilteredTableModel<TestRow, Integer> testModel = FilteredTableModel.<TestRow, Integer>builder((row, columnIdentifier) -> row.value)
-            .columns(createColumns(null))
+            .columnFactory(() -> createColumns(null))
             .itemSupplier(() -> items)
             .build();
     testModel.selectionModel().addSelectionListener(selectionEvents::incrementAndGet);
@@ -303,7 +305,7 @@ public final class DefaultFilteredTableModelTest {
       }
 
       return row.value;
-    }).columns(asList(columnId, columnValue)).itemSupplier(() -> items).build();
+    }).columnFactory(() -> asList(columnId, columnValue)).itemSupplier(() -> items).build();
 
     testModel.refresh();
     FilteredTableSearchModel searchModel = testModel.searchModel();

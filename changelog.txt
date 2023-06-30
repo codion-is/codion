@@ -9246,3 +9246,5 @@
   TemporalInputPanel.inputField() renamed temporalField()
   Property.preferredColumnWidth() removed
   SwingEntityTableModel.createColumns() Entities parameter replaced with EntityDefinition, related refactoring
+  FilteredTableModel.ColumnFactory added
+  FilteredTableModel.Builder.columnFactory() added, columns() removed

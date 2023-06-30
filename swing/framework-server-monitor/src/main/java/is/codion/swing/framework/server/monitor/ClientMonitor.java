@@ -51,7 +51,7 @@ public final class ClientMonitor {
 
   private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
           FilteredTableModel.builder(new RemoteClientColumnValueProvider())
-                  .columns(createColumns())
+                  .columnFactory(new ClientColumnFactory())
                   .itemSupplier(new RemoteClientItemSupplier())
                   .build();
 
@@ -63,7 +63,7 @@ public final class ClientMonitor {
     this.server = requireNonNull(server);
     refresh();
   }
-  
+
   public void setUsersClientTypeIds(Collection<User> users, Collection<String> clientTypeIds) {
     this.users.clear();
     this.clientTypeIds.clear();
@@ -90,47 +90,6 @@ public final class ClientMonitor {
     return server;
   }
 
-  private static List<FilteredTableColumn<Integer>> createColumns() {
-    return Arrays.asList(
-            FilteredTableColumn.builder(USER)
-                    .headerValue("User")
-                    .columnClass(String.class)
-                    .build(),
-            FilteredTableColumn.builder(CLIENT_HOST)
-                    .headerValue("Host")
-                    .columnClass(String.class)
-                    .build(),
-            FilteredTableColumn.builder(CLIENT_TYPE)
-                    .headerValue("Type")
-                    .columnClass(String.class)
-                    .build(),
-            FilteredTableColumn.builder(CLIENT_VERSION)
-                    .headerValue("Version")
-                    .columnClass(Version.class)
-                    .build(),
-            FilteredTableColumn.builder(CODION_VERSION)
-                    .headerValue("Framework version")
-                    .columnClass(Version.class)
-                    .build(),
-            FilteredTableColumn.builder(CLEINT_ID)
-                    .headerValue("Id")
-                    .columnClass(String.class)
-                    .build(),
-            FilteredTableColumn.builder(LOCALE)
-                    .headerValue("Locale")
-                    .columnClass(Locale.class)
-                    .build(),
-            FilteredTableColumn.builder(TIMEZONE)
-                    .headerValue("Timezone")
-                    .columnClass(ZoneId.class)
-                    .build(),
-            FilteredTableColumn.builder(CREATION_TIME)
-                    .headerValue("Created")
-                    .columnClass(LocalDateTime.class)
-                    .build()
-    );
-  }
-
   private final class RemoteClientItemSupplier implements Supplier<Collection<RemoteClient>> {
 
     @Override
@@ -154,6 +113,51 @@ public final class ClientMonitor {
       catch (RemoteException e) {
         throw new RuntimeException(e);
       }
+    }
+  }
+
+  private static final class ClientColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      return Arrays.asList(
+              FilteredTableColumn.builder(USER)
+                      .headerValue("User")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(CLIENT_HOST)
+                      .headerValue("Host")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(CLIENT_TYPE)
+                      .headerValue("Type")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(CLIENT_VERSION)
+                      .headerValue("Version")
+                      .columnClass(Version.class)
+                      .build(),
+              FilteredTableColumn.builder(CODION_VERSION)
+                      .headerValue("Framework version")
+                      .columnClass(Version.class)
+                      .build(),
+              FilteredTableColumn.builder(CLEINT_ID)
+                      .headerValue("Id")
+                      .columnClass(String.class)
+                      .build(),
+              FilteredTableColumn.builder(LOCALE)
+                      .headerValue("Locale")
+                      .columnClass(Locale.class)
+                      .build(),
+              FilteredTableColumn.builder(TIMEZONE)
+                      .headerValue("Timezone")
+                      .columnClass(ZoneId.class)
+                      .build(),
+              FilteredTableColumn.builder(CREATION_TIME)
+                      .headerValue("Created")
+                      .columnClass(LocalDateTime.class)
+                      .build()
+      );
     }
   }
 

@@ -23,7 +23,7 @@ public class DefaultFilteredTableSelectionModelTest {
             .columnClass(String.class)
             .build();
     FilteredTableModel<String, Integer> tableModel = FilteredTableModel.<String, Integer>builder((row, integer) -> row)
-            .columns(singletonList(column))
+            .columnFactory(() -> singletonList(column))
             .itemSupplier(() -> data)
             .build();
     tableModel.refresh();

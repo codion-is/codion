@@ -54,7 +54,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -806,38 +805,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   /**
-   * Initializes default {@link FilteredTableColumn}s for all visible properties in the given entity type.
-   * @param entityDefinition the entity definition
-   * @return a list of TableColumns based on the given entity
-   */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition entityDefinition) {
-    return createColumns(entityDefinition, requireNonNull(entityDefinition).visibleProperties());
-  }
-
-  /**
-   * Initializes default {@link FilteredTableColumn}s from the given properties.
-   * @param entityDefinition the entity definition
-   * @param properties the properties
-   * @return a list of TableColumns based on the given properties
-   */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition entityDefinition,
-                                                                      List<Property<?>> properties) {
-    requireNonNull(properties);
-    requireNonNull(entityDefinition);
-    List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(properties.size());
-    for (Property<?> property : properties) {
-      FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-              FilteredTableColumn.builder(columns.size(), property.attribute())
-                      .headerValue(property.caption())
-                      .columnClass(property.attribute().valueClass())
-                      .comparator(attributeComparator(entityDefinition, property.attribute()));
-      columns.add((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
-    }
-
-    return columns;
-  }
-
-  /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #orderBy()}
    * @return entities selected from the database according the query condition.
@@ -1135,14 +1102,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private static Comparator<?> attributeComparator(EntityDefinition definition, Attribute<?> attribute) {
-    if (attribute instanceof ForeignKey) {
-      return definition.referencedDefinition((ForeignKey) attribute).comparator();
-    }
-
-    return definition.property(attribute).comparator();
-  }
-
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
 
     @Override
@@ -1180,7 +1139,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
     return FilteredTableModel.builder(new EntityColumnValueProvider())
-            .columns(createColumns(entityDefinition))
+            .columnFactory(new SwingEntityColumnFactory(entityDefinition))
             .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
