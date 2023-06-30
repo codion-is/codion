@@ -50,8 +50,7 @@ public final class ClientMonitor {
   private final Collection<User> users = new ArrayList<>();
 
   private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
-          FilteredTableModel.builder(new RemoteClientColumnValueProvider())
-                  .columnFactory(new ClientColumnFactory())
+          FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValueProvider())
                   .itemSupplier(new RemoteClientItemSupplier())
                   .build();
 
@@ -116,7 +115,7 @@ public final class ClientMonitor {
     }
   }
 
-  private static final class ClientColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+  private static final class RemoteClientColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
 
     @Override
     public List<FilteredTableColumn<Integer>> createColumns() {

@@ -22,10 +22,10 @@ public class DefaultFilteredTableSelectionModelTest {
     FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
             .columnClass(String.class)
             .build();
-    FilteredTableModel<String, Integer> tableModel = FilteredTableModel.<String, Integer>builder((row, integer) -> row)
-            .columnFactory(() -> singletonList(column))
-            .itemSupplier(() -> data)
-            .build();
+    FilteredTableModel<String, Integer> tableModel =
+            FilteredTableModel.<String, Integer>builder(() -> singletonList(column), (row, integer) -> row)
+                    .itemSupplier(() -> data)
+                    .build();
     tableModel.refresh();
 
     testModel = tableModel.selectionModel();

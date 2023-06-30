@@ -281,14 +281,15 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * Instantiates a new table model builder.
+   * @param columnFactory the column factory
    * @param columnValueProvider the column value provider
    * @param <R> the row type
    * @param <C> the column identifier type
    * @return a new builder instance
-   * @throws NullPointerException in case {@code columnValueProvider} is null
+   * @throws NullPointerException in case {@code columnFactory} or {@code columnValueProvider} is null
    */
-  static <R, C> Builder<R, C> builder(ColumnValueProvider<R, C> columnValueProvider) {
-    return new DefaultFilteredTableModel.DefaultBuilder<>(columnValueProvider);
+  static <R, C> Builder<R, C> builder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
+    return new DefaultFilteredTableModel.DefaultBuilder<>(columnFactory, columnValueProvider);
   }
 
   /**
@@ -315,8 +316,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param <C> the column identifer type
    */
   interface Builder<R, C> {
-
-    Builder<R, C> columnFactory(ColumnFactory<C> columnFactory);
 
     /**
      * @param filterModelFactory the column filter model factory

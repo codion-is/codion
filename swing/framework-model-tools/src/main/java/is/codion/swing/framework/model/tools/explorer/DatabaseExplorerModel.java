@@ -49,13 +49,11 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnValueProvider())
-              .columnFactory(new SchemaColumnFactory())
+      this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValueProvider())
               .itemSupplier(metaDataModel::schemas)
               .build();
       this.schemaTableModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
-      this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnValueProvider())
-              .columnFactory(new DefinitionColumnFactory())
+      this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValueProvider())
               .itemSupplier(new DefinitionItemSupplier())
               .build();
       this.schemaTableModel.refresh();

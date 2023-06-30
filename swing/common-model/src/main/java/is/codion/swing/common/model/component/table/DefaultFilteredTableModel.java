@@ -644,9 +644,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
+    private final ColumnFactory<C> columnFactory;
     private final ColumnValueProvider<R, C> columnValueProvider;
 
-    private ColumnFactory<C> columnFactory;
     private Supplier<Collection<R>> itemSupplier;
     private Predicate<R> itemValidator = new ValidPredicate<>();
     private ColumnConditionModel.Factory<C> filterModelFactory;
@@ -654,14 +654,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     private boolean mergeOnRefresh = false;
     private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
-    DefaultBuilder(ColumnValueProvider<R, C> columnValueProvider) {
-      this.columnValueProvider = requireNonNull(columnValueProvider);
-    }
-
-    @Override
-    public Builder<R, C> columnFactory(ColumnFactory<C> columnFactory) {
+    DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
       this.columnFactory = requireNonNull(columnFactory);
-      return this;
+      this.columnValueProvider = requireNonNull(columnValueProvider);
     }
 
     @Override

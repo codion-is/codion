@@ -56,8 +56,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   private static FilteredTableModel<TestRow, Integer> createTestModel(Comparator<String> customComparator) {
-    return FilteredTableModel.<TestRow, Integer>builder((row, columnIdentifier) -> row.value)
-            .columnFactory(() -> createColumns(customComparator))
+    return FilteredTableModel.<TestRow, Integer>builder(() -> createColumns(customComparator), (row, columnIdentifier) -> row.value)
             .itemSupplier(() -> ITEMS)
             .build();
   }
@@ -120,15 +119,21 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
+  void nullColumnFactory() {
+    assertThrows(NullPointerException.class, () ->
+            FilteredTableModel.<String, Integer>builder(null, (row, columnIdentifier) -> null));
+  }
+
+  @Test
   void nullColumnValueProvider() {
-    assertThrows(NullPointerException.class, () -> FilteredTableModel.<String, Integer>builder(null));
+    assertThrows(NullPointerException.class, () -> FilteredTableModel.<String, Integer>builder(() -> null, null));
   }
 
   @Test
   void noColumns() {
-    assertThrows(IllegalArgumentException.class, () -> FilteredTableModel.<String, Integer>builder((row, columnIdentifier) -> null)
-            .columnFactory(Collections::emptyList)
-            .build());
+    assertThrows(IllegalArgumentException.class, () ->
+            FilteredTableModel.<String, Integer>builder(Collections::emptyList, (row, columnIdentifier) -> null)
+                    .build());
   }
 
   @Test
@@ -162,10 +167,10 @@ public final class DefaultFilteredTableModelTest {
   void mergeOnRefresh() {
     AtomicInteger selectionEvents = new AtomicInteger();
     List<TestRow> items = new ArrayList<>(ITEMS);
-    FilteredTableModel<TestRow, Integer> testModel = FilteredTableModel.<TestRow, Integer>builder((row, columnIdentifier) -> row.value)
-            .columnFactory(() -> createColumns(null))
-            .itemSupplier(() -> items)
-            .build();
+    FilteredTableModel<TestRow, Integer> testModel =
+            FilteredTableModel.<TestRow, Integer>builder(() -> createColumns(null), (row, columnIdentifier) -> row.value)
+                    .itemSupplier(() -> items)
+                    .build();
     testModel.selectionModel().addSelectionListener(selectionEvents::incrementAndGet);
     testModel.setMergeOnRefresh(true);
     testModel.refresh();
@@ -299,13 +304,14 @@ public final class DefaultFilteredTableModelTest {
             new Row(4, "e")
     );
 
-    FilteredTableModel<Row, Integer> testModel = FilteredTableModel.<Row, Integer>builder((row, columnIdentifier) -> {
-      if (columnIdentifier == 0) {
-        return row.id;
-      }
+    FilteredTableModel<Row, Integer> testModel =
+            FilteredTableModel.<Row, Integer>builder(() -> asList(columnId, columnValue), (row, columnIdentifier) -> {
+              if (columnIdentifier == 0) {
+                return row.id;
+              }
 
-      return row.value;
-    }).columnFactory(() -> asList(columnId, columnValue)).itemSupplier(() -> items).build();
+              return row.value;
+            }).itemSupplier(() -> items).build();
 
     testModel.refresh();
     FilteredTableSearchModel searchModel = testModel.searchModel();

@@ -30,14 +30,14 @@ public class FilteredTableTest {
             .columnClass(String.class)
             .build();
 
-    FilteredTableModel<List<String>, Integer> tableModel = FilteredTableModel.<List<String>, Integer>builder(List::get)
-            .columnFactory(() -> singletonList(column))
-            .itemSupplier(() -> asList(
-                    singletonList("darri"),
-                    singletonList("dac"),
-                    singletonList("dansinn"),
-                    singletonList("dlabo")))
-            .build();
+    FilteredTableModel<List<String>, Integer> tableModel =
+            FilteredTableModel.<List<String>, Integer>builder(() -> singletonList(column), List::get)
+                    .itemSupplier(() -> asList(
+                            singletonList("darri"),
+                            singletonList("dac"),
+                            singletonList("dansinn"),
+                            singletonList("dlabo")))
+                    .build();
 
     FilteredTable<List<String>, Integer> filteredTable = FilteredTable.builder(tableModel).build();
     tableModel.refresh();

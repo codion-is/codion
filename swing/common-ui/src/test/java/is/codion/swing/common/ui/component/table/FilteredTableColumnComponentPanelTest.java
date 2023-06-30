@@ -25,9 +25,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void wrongColumn() {
-    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columnFactory(() -> asList(column0, column1, column2))
-            .build();
+    FilteredTableModel<Object, Integer> tableModel =
+            FilteredTableModel.<Object, Integer>builder(() -> asList(column0, column1, column2), (row, columnIdentifier) -> null)
+                    .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     Map<Integer, JPanel> columnComponents = createColumnComponents(columnModel);
     columnComponents.put(3, new JPanel());
@@ -36,9 +36,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void setColumnVisible() {
-    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columnFactory(() -> asList(column0, column1, column2))
-            .build();
+    FilteredTableModel<Object, Integer> tableModel =
+            FilteredTableModel.<Object, Integer>builder(() -> asList(column0, column1, column2), (row, columnIdentifier) -> null)
+                    .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     columnModel.setColumnVisible(1, false);
 
@@ -56,9 +56,9 @@ public class FilteredTableColumnComponentPanelTest {
 
   @Test
   void width() {
-    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columnFactory(() -> asList(column0, column1, column2))
-            .build();
+    FilteredTableModel<Object, Integer> tableModel =
+            FilteredTableModel.<Object, Integer>builder(() -> asList(column0, column1, column2), (row, columnIdentifier) -> null)
+                    .build();
     FilteredTableColumnModel<Integer> columnModel = tableModel.columnModel();
     FilteredTableColumnComponentPanel<Integer, JPanel> panel = FilteredTableColumnComponentPanel.filteredTableColumnComponentPanel(columnModel, createColumnComponents(columnModel));
     column0.setWidth(100);
