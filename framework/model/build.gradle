@@ -1,18 +1,18 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
+    api project(":codion-common-model")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-db-core')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-db-core")
 
-    testImplementation project(':codion-framework-db-local')
-    testImplementation project(':codion-framework-model-test')
+    testImplementation project(":codion-framework-db-local")
+    testImplementation project(":codion-framework-model-test")
 
     implementation(libs.json)
 
     implementation(libs.slf4j.api)
 
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }

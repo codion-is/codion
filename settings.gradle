@@ -1,167 +1,167 @@
 plugins {
-    id 'org.gradle.toolchains.foojay-resolver-convention' version '0.5.0'
+    id "org.gradle.toolchains.foojay-resolver-convention" version "0.5.0"
 }
 
-rootProject.name = 'is.codion'
+rootProject.name = "is.codion"
 
-include 'codion-documentation'
-project(':codion-documentation').projectDir = file('documentation')
+include "codion-documentation"
+project(":codion-documentation").projectDir = file("documentation")
 
-include 'codion-common-core'
-project(':codion-common-core').projectDir = file('common/core')
+include "codion-common-core"
+project(":codion-common-core").projectDir = file("common/core")
 
-include 'codion-common-db'
-project(':codion-common-db').projectDir = file('common/db')
+include "codion-common-db"
+project(":codion-common-db").projectDir = file("common/db")
 
-include 'codion-common-model'
-project(':codion-common-model').projectDir = file('common/model')
+include "codion-common-model"
+project(":codion-common-model").projectDir = file("common/model")
 
-include 'codion-common-rmi'
-project(':codion-common-rmi').projectDir = file('common/rmi')
+include "codion-common-rmi"
+project(":codion-common-rmi").projectDir = file("common/rmi")
 
-include 'codion-dbms-db2database'
-project(':codion-dbms-db2database').projectDir = file('dbms/db2database')
+include "codion-dbms-db2database"
+project(":codion-dbms-db2database").projectDir = file("dbms/db2database")
 
-include 'codion-dbms-derby'
-project(':codion-dbms-derby').projectDir = file('dbms/derby')
+include "codion-dbms-derby"
+project(":codion-dbms-derby").projectDir = file("dbms/derby")
 
-include 'codion-dbms-h2database'
-project(':codion-dbms-h2database').projectDir = file('dbms/h2database')
+include "codion-dbms-h2database"
+project(":codion-dbms-h2database").projectDir = file("dbms/h2database")
 
-include 'codion-dbms-hsqldb'
-project(':codion-dbms-hsqldb').projectDir = file('dbms/hsqldb')
+include "codion-dbms-hsqldb"
+project(":codion-dbms-hsqldb").projectDir = file("dbms/hsqldb")
 
-include 'codion-dbms-mariadb'
-project(':codion-dbms-mariadb').projectDir = file('dbms/mariadb')
+include "codion-dbms-mariadb"
+project(":codion-dbms-mariadb").projectDir = file("dbms/mariadb")
 
-include 'codion-dbms-mysql'
-project(':codion-dbms-mysql').projectDir = file('dbms/mysql')
+include "codion-dbms-mysql"
+project(":codion-dbms-mysql").projectDir = file("dbms/mysql")
 
-include 'codion-dbms-oracle'
-project(':codion-dbms-oracle').projectDir = file('dbms/oracle')
+include "codion-dbms-oracle"
+project(":codion-dbms-oracle").projectDir = file("dbms/oracle")
 
-include 'codion-dbms-postgresql'
-project(':codion-dbms-postgresql').projectDir = file('dbms/postgresql')
+include "codion-dbms-postgresql"
+project(":codion-dbms-postgresql").projectDir = file("dbms/postgresql")
 
-include 'codion-dbms-sqlite'
-project(':codion-dbms-sqlite').projectDir = file('dbms/sqlite')
+include "codion-dbms-sqlite"
+project(":codion-dbms-sqlite").projectDir = file("dbms/sqlite")
 
-include 'codion-dbms-sqlserver'
-project(':codion-dbms-sqlserver').projectDir = file('dbms/sqlserver')
+include "codion-dbms-sqlserver"
+project(":codion-dbms-sqlserver").projectDir = file("dbms/sqlserver")
 
-include 'codion-framework-domain'
-project(':codion-framework-domain').projectDir = file('framework/domain')
+include "codion-framework-domain"
+project(":codion-framework-domain").projectDir = file("framework/domain")
 
-include 'codion-framework-domain-test'
-project(':codion-framework-domain-test').projectDir = file('framework/domain-test')
+include "codion-framework-domain-test"
+project(":codion-framework-domain-test").projectDir = file("framework/domain-test")
 
-include 'codion-framework-db-core'
-project(':codion-framework-db-core').projectDir = file('framework/db-core')
+include "codion-framework-db-core"
+project(":codion-framework-db-core").projectDir = file("framework/db-core")
 
-include 'codion-framework-db-local'
-project(':codion-framework-db-local').projectDir = file('framework/db-local')
+include "codion-framework-db-local"
+project(":codion-framework-db-local").projectDir = file("framework/db-local")
 
-include 'codion-framework-db-rmi'
-project(':codion-framework-db-rmi').projectDir = file('framework/db-rmi')
+include "codion-framework-db-rmi"
+project(":codion-framework-db-rmi").projectDir = file("framework/db-rmi")
 
-include 'codion-framework-db-http'
-project(':codion-framework-db-http').projectDir = file('framework/db-http')
+include "codion-framework-db-http"
+project(":codion-framework-db-http").projectDir = file("framework/db-http")
 
-include 'codion-framework-json-domain'
-project(':codion-framework-json-domain').projectDir = file('framework/json-domain')
+include "codion-framework-json-domain"
+project(":codion-framework-json-domain").projectDir = file("framework/json-domain")
 
-include 'codion-framework-json-db'
-project(':codion-framework-json-db').projectDir = file('framework/json-db')
+include "codion-framework-json-db"
+project(":codion-framework-json-db").projectDir = file("framework/json-db")
 
-include 'codion-framework-model'
-project(':codion-framework-model').projectDir = file('framework/model')
+include "codion-framework-model"
+project(":codion-framework-model").projectDir = file("framework/model")
 
-include 'codion-framework-model-test'
-project(':codion-framework-model-test').projectDir = file('framework/model-test')
+include "codion-framework-model-test"
+project(":codion-framework-model-test").projectDir = file("framework/model-test")
 
-include 'codion-framework-server'
-project(':codion-framework-server').projectDir = file('framework/server')
+include "codion-framework-server"
+project(":codion-framework-server").projectDir = file("framework/server")
 
-include 'codion-framework-servlet'
-project(':codion-framework-servlet').projectDir = file('framework/servlet')
+include "codion-framework-servlet"
+project(":codion-framework-servlet").projectDir = file("framework/servlet")
 
-include 'codion-javafx-framework'
-project(':codion-javafx-framework').projectDir = file('javafx/framework')
+include "codion-javafx-framework"
+project(":codion-javafx-framework").projectDir = file("javafx/framework")
 
-include 'codion-swing-common-model'
-project(':codion-swing-common-model').projectDir = file('swing/common-model')
+include "codion-swing-common-model"
+project(":codion-swing-common-model").projectDir = file("swing/common-model")
 
-include 'codion-swing-common-ui'
-project(':codion-swing-common-ui').projectDir = file('swing/common-ui')
+include "codion-swing-common-ui"
+project(":codion-swing-common-ui").projectDir = file("swing/common-ui")
 
-include 'codion-swing-common-model-tools'
-project(':codion-swing-common-model-tools').projectDir = file('swing/common-model-tools')
+include "codion-swing-common-model-tools"
+project(":codion-swing-common-model-tools").projectDir = file("swing/common-model-tools")
 
-include 'codion-swing-common-ui-tools'
-project(':codion-swing-common-ui-tools').projectDir = file('swing/common-ui-tools')
+include "codion-swing-common-ui-tools"
+project(":codion-swing-common-ui-tools").projectDir = file("swing/common-ui-tools")
 
-include 'codion-swing-framework-model'
-project(':codion-swing-framework-model').projectDir = file('swing/framework-model')
+include "codion-swing-framework-model"
+project(":codion-swing-framework-model").projectDir = file("swing/framework-model")
 
-include 'codion-swing-framework-model-tools'
-project(':codion-swing-framework-model-tools').projectDir = file('swing/framework-model-tools')
+include "codion-swing-framework-model-tools"
+project(":codion-swing-framework-model-tools").projectDir = file("swing/framework-model-tools")
 
-include 'codion-swing-framework-ui'
-project(':codion-swing-framework-ui').projectDir = file('swing/framework-ui')
+include "codion-swing-framework-ui"
+project(":codion-swing-framework-ui").projectDir = file("swing/framework-ui")
 
-include 'codion-swing-framework-ui-tools'
-project(':codion-swing-framework-ui-tools').projectDir = file('swing/framework-ui-tools')
+include "codion-swing-framework-ui-tools"
+project(":codion-swing-framework-ui-tools").projectDir = file("swing/framework-ui-tools")
 
-include 'codion-swing-framework-ui-test'
-project(':codion-swing-framework-ui-test').projectDir = file('swing/framework-ui-test')
+include "codion-swing-framework-ui-test"
+project(":codion-swing-framework-ui-test").projectDir = file("swing/framework-ui-test")
 
-include 'codion-swing-framework-server-monitor'
-project(':codion-swing-framework-server-monitor').projectDir = file('swing/framework-server-monitor')
+include "codion-swing-framework-server-monitor"
+project(":codion-swing-framework-server-monitor").projectDir = file("swing/framework-server-monitor")
 
-include 'codion-plugin-credentials-server'
-project(':codion-plugin-credentials-server').projectDir = file('plugins/credentials-server')
+include "codion-plugin-credentials-server"
+project(":codion-plugin-credentials-server").projectDir = file("plugins/credentials-server")
 
-include 'codion-plugin-hikari-pool'
-project(':codion-plugin-hikari-pool').projectDir = file('plugins/hikari-pool')
+include "codion-plugin-hikari-pool"
+project(":codion-plugin-hikari-pool").projectDir = file("plugins/hikari-pool")
 
-include 'codion-plugin-imagepanel'
-project(':codion-plugin-imagepanel').projectDir = file('plugins/imagepanel')
+include "codion-plugin-imagepanel"
+project(":codion-plugin-imagepanel").projectDir = file("plugins/imagepanel")
 
-include 'codion-plugin-jasperreports'
-project(':codion-plugin-jasperreports').projectDir = file('plugins/jasperreports')
+include "codion-plugin-jasperreports"
+project(":codion-plugin-jasperreports").projectDir = file("plugins/jasperreports")
 
-include 'codion-plugin-jul-proxy'
-project(':codion-plugin-jul-proxy').projectDir = file('plugins/jul-proxy')
+include "codion-plugin-jul-proxy"
+project(":codion-plugin-jul-proxy").projectDir = file("plugins/jul-proxy")
 
-include 'codion-plugin-log4j-proxy'
-project(':codion-plugin-log4j-proxy').projectDir = file('plugins/log4j-proxy')
+include "codion-plugin-log4j-proxy"
+project(":codion-plugin-log4j-proxy").projectDir = file("plugins/log4j-proxy")
 
-include 'codion-plugin-logback-proxy'
-project(':codion-plugin-logback-proxy').projectDir = file('plugins/logback-proxy')
+include "codion-plugin-logback-proxy"
+project(":codion-plugin-logback-proxy").projectDir = file("plugins/logback-proxy")
 
-include 'codion-plugin-tomcat-pool'
-project(':codion-plugin-tomcat-pool').projectDir = file('plugins/tomcat-pool')
+include "codion-plugin-tomcat-pool"
+project(":codion-plugin-tomcat-pool").projectDir = file("plugins/tomcat-pool")
 
-include 'codion-demos-chinook'
-project(':codion-demos-chinook').projectDir = file('demos/chinook')
+include "codion-demos-chinook"
+project(":codion-demos-chinook").projectDir = file("demos/chinook")
 
-include 'codion-demos-empdept'
-project(':codion-demos-empdept').projectDir = file('demos/empdept')
+include "codion-demos-empdept"
+project(":codion-demos-empdept").projectDir = file("demos/empdept")
 
-include 'codion-demos-manual'
-project(':codion-demos-manual').projectDir = file('demos/manual')
+include "codion-demos-manual"
+project(":codion-demos-manual").projectDir = file("demos/manual")
 
-include 'codion-demos-petclinic'
-project(':codion-demos-petclinic').projectDir = file('demos/petclinic')
+include "codion-demos-petclinic"
+project(":codion-demos-petclinic").projectDir = file("demos/petclinic")
 
-include 'codion-demos-petstore'
-project(':codion-demos-petstore').projectDir = file('demos/petstore')
+include "codion-demos-petstore"
+project(":codion-demos-petstore").projectDir = file("demos/petstore")
 
-include 'codion-demos-schemabrowser'
-project(':codion-demos-schemabrowser').projectDir = file('demos/schemabrowser')
+include "codion-demos-schemabrowser"
+project(":codion-demos-schemabrowser").projectDir = file("demos/schemabrowser")
 
-include 'codion-demos-world'
-project(':codion-demos-world').projectDir = file('demos/world')
+include "codion-demos-world"
+project(":codion-demos-world").projectDir = file("demos/world")
 
 dependencyResolutionManagement {
     repositories {
@@ -169,71 +169,71 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            version('slf4j.api', '2.0.7')
-            version('logback', '1.4.8')
-            version('h2', '2.1.214')
-            version('json', '20230618')
+            version("slf4j.api", "2.0.7")
+            version("logback", "1.4.8")
+            version("h2", "2.1.214")
+            version("json", "20230618")
             //jfreechart
-            version('jfreechart', '1.5.4')
-            version('jcommon', '1.0.24')
-            version('http.client', '4.5.14')
-            version('junit', '5.9.3')
-            version('sslcontext.kickstart', '8.1.2')
-            version('flatlaf', '3.1.1')
-            version('ikonli', '12.3.1')
-            version('javalin', '5.6.1')
+            version("jfreechart", "1.5.4")
+            version("jcommon", "1.0.24")
+            version("http.client", "4.5.14")
+            version("junit", "5.9.3")
+            version("sslcontext.kickstart", "8.1.2")
+            version("flatlaf", "3.1.1")
+            version("ikonli", "12.3.1")
+            version("javalin", "5.6.1")
             //plugins
-            version('hikari', '5.0.1')
-            version('jackson', '2.15.2')
-            version('log4j', '2.20.0')
-            version('tomcat', '10.1.2')
+            version("hikari", "5.0.1")
+            version("jackson", "2.15.2")
+            version("log4j", "2.20.0")
+            version("tomcat", "10.1.2")
             //jasperreports
-            version('jasperreports', '6.20.5')
-            version('commons.logging', '1.2')
-            version('commons.digester', '2.1')
-            version('commons.collections4', '4.4')
-            version('commons.beanutils', '1.9.4')
-            version('jdt.core.compiler', '3.29.0')
+            version("jasperreports", "6.20.5")
+            version("commons.logging", "1.2")
+            version("commons.digester", "2.1")
+            version("commons.collections4", "4.4")
+            version("commons.beanutils", "1.9.4")
+            version("jdt.core.compiler", "3.29.0")
 
-            library('slf4j-api', 'org.slf4j', 'slf4j-api').versionRef('slf4j.api')
-            library('logback-core', 'ch.qos.logback', 'logback-core').versionRef('logback')
-            library('logback-classic', 'ch.qos.logback', 'logback-classic').versionRef('logback')
-            library('h2', 'com.h2database', 'h2').versionRef('h2')
-            library('json', 'org.json', 'json').versionRef('json')
+            library("slf4j-api", "org.slf4j", "slf4j-api").versionRef("slf4j.api")
+            library("logback-core", "ch.qos.logback", "logback-core").versionRef("logback")
+            library("logback-classic", "ch.qos.logback", "logback-classic").versionRef("logback")
+            library("h2", "com.h2database", "h2").versionRef("h2")
+            library("json", "org.json", "json").versionRef("json")
             //jfreechart
-            library('jfreechart', 'org.jfree', 'jfreechart').versionRef('jfreechart')
-            library('jcommon', 'org.jfree', 'jcommon').versionRef('jcommon')
+            library("jfreechart", "org.jfree", "jfreechart").versionRef("jfreechart")
+            library("jcommon", "org.jfree", "jcommon").versionRef("jcommon")
 
-            library('javalin', 'io.javalin', 'javalin').versionRef('javalin')
-            library('javalin-ssl', 'io.javalin.community.ssl', 'ssl-plugin').versionRef('javalin')
-            library('http-client', 'org.apache.httpcomponents', 'httpclient').versionRef('http.client')
+            library("javalin", "io.javalin", "javalin").versionRef("javalin")
+            library("javalin-ssl", "io.javalin.community.ssl", "ssl-plugin").versionRef("javalin")
+            library("http-client", "org.apache.httpcomponents", "httpclient").versionRef("http.client")
 
-            library('junit-api', 'org.junit.jupiter', 'junit-jupiter-api').versionRef('junit')
-            library('junit-engine', 'org.junit.jupiter', 'junit-jupiter-engine').versionRef('junit')
+            library("junit-api", "org.junit.jupiter", "junit-jupiter-api").versionRef("junit")
+            library("junit-engine", "org.junit.jupiter", "junit-jupiter-engine").versionRef("junit")
 
-            library('sslcontext-kickstart', 'io.github.hakky54', 'sslcontext-kickstart').versionRef('sslcontext.kickstart')
-            library('flatlaf', 'com.formdev', 'flatlaf').versionRef('flatlaf')
-            library('flatlaf-intellij-themes', 'com.formdev', 'flatlaf-intellij-themes').versionRef('flatlaf')
-            library('ikonli-core', 'org.kordamp.ikonli', 'ikonli-core').versionRef('ikonli')
-            library('ikonli-swing', 'org.kordamp.ikonli', 'ikonli-swing').versionRef('ikonli')
-            library('ikonli-foundation-pack', 'org.kordamp.ikonli', 'ikonli-foundation-pack').versionRef('ikonli')
+            library("sslcontext-kickstart", "io.github.hakky54", "sslcontext-kickstart").versionRef("sslcontext.kickstart")
+            library("flatlaf", "com.formdev", "flatlaf").versionRef("flatlaf")
+            library("flatlaf-intellij-themes", "com.formdev", "flatlaf-intellij-themes").versionRef("flatlaf")
+            library("ikonli-core", "org.kordamp.ikonli", "ikonli-core").versionRef("ikonli")
+            library("ikonli-swing", "org.kordamp.ikonli", "ikonli-swing").versionRef("ikonli")
+            library("ikonli-foundation-pack", "org.kordamp.ikonli", "ikonli-foundation-pack").versionRef("ikonli")
 
             //plugins
-            library('hikari', 'com.zaxxer', 'HikariCP').versionRef('hikari')
-            library('jackson-databind', 'com.fasterxml.jackson.core', 'jackson-databind').versionRef('jackson')
-            library('jackson-datatype-jsr310', 'com.fasterxml.jackson.datatype', 'jackson-datatype-jsr310').versionRef('jackson')
-            library('log4j-api', 'org.apache.logging.log4j', 'log4j-api').versionRef('log4j')
-            library('log4j-core', 'org.apache.logging.log4j', 'log4j-core').versionRef('log4j')
-            library('tomcat-jdbc', 'org.apache.tomcat', 'tomcat-jdbc').versionRef('tomcat')
-            library('tomcat-juli', 'org.apache.tomcat', 'tomcat-juli').versionRef('tomcat')
+            library("hikari", "com.zaxxer", "HikariCP").versionRef("hikari")
+            library("jackson-databind", "com.fasterxml.jackson.core", "jackson-databind").versionRef("jackson")
+            library("jackson-datatype-jsr310", "com.fasterxml.jackson.datatype", "jackson-datatype-jsr310").versionRef("jackson")
+            library("log4j-api", "org.apache.logging.log4j", "log4j-api").versionRef("log4j")
+            library("log4j-core", "org.apache.logging.log4j", "log4j-core").versionRef("log4j")
+            library("tomcat-jdbc", "org.apache.tomcat", "tomcat-jdbc").versionRef("tomcat")
+            library("tomcat-juli", "org.apache.tomcat", "tomcat-juli").versionRef("tomcat")
 
             //jasperreports
-            library('jasperreports', 'net.sf.jasperreports', 'jasperreports').versionRef('jasperreports')
-            library('commons-logging', 'commons-logging', 'commons-logging').versionRef('commons.logging')
-            library('commons-digester', 'commons-digester', 'commons-digester').versionRef('commons.digester')
-            library('commons-collections4', 'org.apache.commons', 'commons-collections4').versionRef('commons.collections4')
-            library('commons-beanutils', 'commons-beanutils', 'commons-beanutils').versionRef('commons.beanutils')
-            library('jdt-core-compiler', 'org.eclipse.jdt', 'ecj').versionRef('jdt.core.compiler')
+            library("jasperreports", "net.sf.jasperreports", "jasperreports").versionRef("jasperreports")
+            library("commons-logging", "commons-logging", "commons-logging").versionRef("commons.logging")
+            library("commons-digester", "commons-digester", "commons-digester").versionRef("commons.digester")
+            library("commons-collections4", "org.apache.commons", "commons-collections4").versionRef("commons.collections4")
+            library("commons-beanutils", "commons-beanutils", "commons-beanutils").versionRef("commons.beanutils")
+            library("jdt-core-compiler", "org.eclipse.jdt", "ecj").versionRef("jdt.core.compiler")
         }
     }
 }

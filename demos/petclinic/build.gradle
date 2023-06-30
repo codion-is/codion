@@ -1,20 +1,20 @@
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 dependencies {
-    implementation project(':codion-swing-framework-ui')
+    implementation project(":codion-swing-framework-ui")
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
-    runtimeOnly project(':codion-framework-db-local')
-    runtimeOnly project(':codion-framework-db-rmi')
-    runtimeOnly project(':codion-framework-db-http')
+    runtimeOnly project(":codion-framework-db-local")
+    runtimeOnly project(":codion-framework-db-rmi")
+    runtimeOnly project(":codion-framework-db-http")
 
     implementation(libs.flatlaf.intellij.themes)
 
-    testImplementation project(':codion-framework-domain-test')
-    testImplementation project(':codion-swing-framework-ui-test')
+    testImplementation project(":codion-framework-domain-test")
+    testImplementation project(":codion-swing-framework-ui-test")
 
-    runtimeOnly project(':codion-dbms-h2database')
+    runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
 

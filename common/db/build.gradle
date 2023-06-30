@@ -1,8 +1,8 @@
 dependencies {
-    api project(':codion-common-core')
+    api project(":codion-common-core")
 
-    testImplementation project(':codion-dbms-h2database')
+    testImplementation project(":codion-dbms-h2database")
 
-    testRuntimeOnly project(':codion-plugin-hikari-pool')
+    testRuntimeOnly project(":codion-plugin-hikari-pool")
     testRuntimeOnly(libs.h2)
 }

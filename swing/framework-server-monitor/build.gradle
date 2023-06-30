@@ -1,13 +1,13 @@
 dependencies {
-    implementation project(':codion-common-core')
-    implementation project(':codion-common-db')
-    implementation project(':codion-common-model')
-    implementation project(':codion-common-rmi')
+    implementation project(":codion-common-core")
+    implementation project(":codion-common-db")
+    implementation project(":codion-common-model")
+    implementation project(":codion-common-rmi")
 
-    implementation project(':codion-swing-common-model')
-    implementation project(':codion-swing-common-ui')
+    implementation project(":codion-swing-common-model")
+    implementation project(":codion-swing-common-ui")
 
-    implementation project(':codion-framework-server')
+    implementation project(":codion-framework-server")
 
     implementation(libs.flatlaf.intellij.themes)
     implementation(libs.slf4j.api)
@@ -15,25 +15,25 @@ dependencies {
     implementation(libs.jcommon)
     implementation(libs.jfreechart)
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
-    testImplementation project(':codion-framework-server')
-    testImplementation project(':codion-framework-db-rmi')
-    testRuntimeOnly project(':codion-plugin-hikari-pool')
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testImplementation project(":codion-framework-server")
+    testImplementation project(":codion-framework-db-rmi")
+    testRuntimeOnly project(":codion-plugin-hikari-pool")
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }
 
-tasks.register('runServerMonitor', JavaExec) {
-    group 'application'
+tasks.register("runServerMonitor", JavaExec) {
+    group "application"
     classpath = sourceSets.main.runtimeClasspath
-    mainClass.set('is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel')
-    maxHeapSize = '1024m'
+    mainClass.set("is.codion.swing.framework.server.monitor.ui.EntityServerMonitorPanel")
+    maxHeapSize = "1024m"
     systemProperties = [
-            'codion.server.hostname'          : "${serverHostName}",
-            'codion.server.admin.user'        : 'scott:tiger',
-            'codion.client.trustStore'        : '../../framework/server/src/main/config/truststore.jks',
-            'codion.client.trustStorePassword': 'crappypass',
-            'logback.configurationFile'       : 'src/config/logback.xml'
+            "codion.server.hostname"          : "${serverHostName}",
+            "codion.server.admin.user"        : "scott:tiger",
+            "codion.client.trustStore"        : "../../framework/server/src/main/config/truststore.jks",
+            "codion.client.trustStorePassword": "crappypass",
+            "logback.configurationFile"       : "src/config/logback.xml"
     ]
 }

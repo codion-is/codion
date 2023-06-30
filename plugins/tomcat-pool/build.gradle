@@ -3,13 +3,13 @@ plugins {
 }
 
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
 
     implementation(libs.tomcat.jdbc)
     implementation(libs.tomcat.juli)
 
-    testImplementation project(':codion-dbms-h2database')
+    testImplementation project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }
 

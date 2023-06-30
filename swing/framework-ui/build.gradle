@@ -1,22 +1,22 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
+    api project(":codion-common-model")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-model')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-model")
 
-    api project(':codion-swing-common-model')
-    api project(':codion-swing-common-ui')
+    api project(":codion-swing-common-model")
+    api project(":codion-swing-common-ui")
 
-    api project(':codion-swing-framework-model')
+    api project(":codion-swing-framework-model")
 
     implementation(libs.ikonli.swing)
 
     implementation(libs.slf4j.api)
 
-    testImplementation project(':codion-framework-db-local')
+    testImplementation project(":codion-framework-db-local")
 
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }

@@ -3,25 +3,25 @@ plugins {
 }
 
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
+    api project(":codion-common-model")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-db-core')
-    api project(':codion-framework-model')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-db-core")
+    api project(":codion-framework-model")
 
-    testImplementation project(':codion-framework-domain-test')
-    testImplementation project(':codion-framework-model-test')
+    testImplementation project(":codion-framework-db-local")
+    testImplementation project(":codion-framework-model-test")
 
     implementation(libs.json)
 
     implementation(libs.slf4j.api)
 
-    testImplementation 'org.testfx:testfx-core:4.0.16-alpha'
+    testImplementation "org.testfx:testfx-core:4.0.16-alpha"
     testImplementation "org.testfx:testfx-junit5:4.0.16-alpha"
 
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }
 

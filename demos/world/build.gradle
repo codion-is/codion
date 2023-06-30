@@ -2,28 +2,28 @@ plugins {
     id 'org.gradlex.extra-java-module-info'
 }
 
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 apply plugin: BuildReportsPlugin
 
 dependencies {
-    implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-framework-json-domain')
-    implementation project(':codion-plugin-jasperreports')
+    implementation project(":codion-swing-framework-ui")
+    implementation project(":codion-framework-json-domain")
+    implementation project(":codion-plugin-jasperreports")
 
     implementation(libs.jfreechart)
     implementation(libs.json)
-    implementation 'org.jxmapviewer:jxmapviewer2:2.6'
-    implementation 'org.kordamp.ikonli:ikonli-foundation-pack:12.3.1'
+    implementation "org.jxmapviewer:jxmapviewer2:2.6"
+    implementation "org.kordamp.ikonli:ikonli-foundation-pack:12.3.1"
 
-    testImplementation project(':codion-framework-domain-test')
-    testImplementation project(':codion-swing-framework-ui-test')
+    testImplementation project(":codion-framework-domain-test")
+    testImplementation project(":codion-swing-framework-ui-test")
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
-    runtimeOnly project(':codion-framework-db-local')
-    runtimeOnly project(':codion-framework-db-rmi')
-    runtimeOnly project(':codion-framework-db-http')
+    runtimeOnly project(":codion-framework-db-local")
+    runtimeOnly project(":codion-framework-db-rmi")
+    runtimeOnly project(":codion-framework-db-http")
 
     implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
@@ -32,7 +32,7 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly project(':codion-dbms-h2database')
+    runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
 
@@ -43,8 +43,8 @@ extraJavaModuleInfo {
 }
 
 buildReports {
-    sourceDir = file('src/main/reports')
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/world/model')
+    sourceDir = file("src/main/reports")
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/world/model")
 }
 
 test {

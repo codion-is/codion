@@ -2,18 +2,18 @@ plugins {
     id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
-apply plugin: 'maven-publish'
+apply plugin: "maven-publish"
 
-def documentationVersion = project.version.replace('-SNAPSHOT', '')
+def documentationVersion = project.version.replace("-SNAPSHOT", "")
 
 def documentationDir = "${documentationVersion}"
 
-tasks.register('copyModuleDependencyGraphs') {
+tasks.register("copyModuleDependencyGraphs") {
     doLast {
         frameworkModules.each {
             def moduleDir = it.projectDir
             def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
-            graphFilePath = graphFilePath.replace(rootDir.toString(), '').substring(1)
+            graphFilePath = graphFilePath.replace(rootDir.toString(), "").substring(1)
             ant.copy(todir: "${buildDir}/asciidoc/images/modules") {
                 fileset(dir: rootDir, includes: graphFilePath)
             }
@@ -23,7 +23,7 @@ tasks.register('copyModuleDependencyGraphs') {
 
 asciidoctor {
     dependsOn copyModuleDependencyGraphs
-    // since the sources included in the docs may have changed, there's definitely
+    // since the sources included in the docs may have changed, there"s definitely
     // a more gradle like way to do this, but it escapes me
     inputs.dir(new File("../demos/chinook/src"))
     inputs.dir(new File("../demos/empdept/src"))
@@ -38,9 +38,9 @@ asciidoctor {
 
     baseDirFollowsSourceFile()
     sources {
-        include '*.adoc', 'technical/**/*.adoc', 'tutorials/**/*.adoc', 'manual/**/*.adoc', 'help/**/*.adoc'
+        include "*.adoc", "technical/**/*.adoc", "tutorials/**/*.adoc", "manual/**/*.adoc", "help/**/*.adoc"
     }
-    attributes 'codion-version': documentationVersion,
+    attributes "codion-version": documentationVersion,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: 'UA-159091863-1',
             'diagram-cachedir': "${buildDir}/asciidoc/images/diagram-cache",
@@ -70,11 +70,11 @@ asciidoctor {
             'swing-framework-model-tools': '/is.codion.swing.framework.model.tools',
             'swing-framework-ui': '/is.codion.swing.framework.ui'
     asciidoctorj {
-        version = '2.5.7'
+        version = "2.5.7"
         modules {
             diagram.use()
         }
-        attributes 'source-highlighter': 'prettify'
+        attributes "source-highlighter": "prettify"
     }
 }
 
@@ -127,35 +127,35 @@ tasks.register('combinedJavadoc') {
     }
 }
 
-tasks.register('assembleDocs') {
+tasks.register("assembleDocs") {
     dependsOn combinedJavadoc, asciidoctor
-    group 'documentation'
+    group "documentation"
     def docFolder = "${buildDir}/${documentationDir}"
     doLast {
         ant.delete(dir: docFolder)
         ant.copy(todir: docFolder) {
             fileset(dir: "${buildDir}/asciidoc")
         }
-        ant.copy(todir: docFolder + '/api') {
+        ant.copy(todir: docFolder + "/api") {
             fileset(dir: "${buildDir}/javadoc")
         }
-        ant.copy(todir: docFolder + '/utilities') {
-            fileset(dir: project.projectDir.absolutePath + '/src/docs/utilities')
+        ant.copy(todir: docFolder + "/utilities") {
+            fileset(dir: project.projectDir.absolutePath + "/src/docs/utilities")
         }
     }
 }
 
-tasks.register('copyToGitHubPages', Sync) {
+tasks.register("copyToGitHubPages", Sync) {
     dependsOn assembleDocs
-    group 'documentation'
+    group "documentation"
     def ghPagesDocDir = "../../codion-pages/doc/${documentationDir}"
     from "${buildDir}/${documentationDir}"
     into ghPagesDocDir
 }
 
-tasks.register('documentationZip', Zip) {
+tasks.register("documentationZip", Zip) {
     dependsOn assembleDocs
-    group 'documentation'
+    group "documentation"
     from "${buildDir}/${documentationDir}"
 }
 
@@ -166,7 +166,7 @@ artifacts {
 publishing {
     publications {
         mavenJava(MavenPublication) {
-            groupId 'is.codion'
+            groupId "is.codion"
             artifact documentationZip
         }
     }

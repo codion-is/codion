@@ -1,5 +1,5 @@
 dependencies {
-    api project(':codion-common-core')
+    api project(":codion-common-core")
 
     implementation(libs.logback.classic) {
         exclude group: 'javax.activation', module: 'activation'
