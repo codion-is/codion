@@ -31,6 +31,12 @@ public interface SelectionDialogBuilder<T> extends DialogBuilder<SelectionDialog
   SelectionDialogBuilder<T> defaultSelection(Collection<T> defaultSelection);
 
   /**
+   * @param allowEmptySelection if true then the dialog accepts an empty selection, default false
+   * @return this SelectionDialogBuilder instance
+   */
+  SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection);
+
+  /**
    * @return the selected value, {@link Optional#empty()} if none was selected
    * @throws is.codion.common.model.CancelException in case the user cancelled
    */

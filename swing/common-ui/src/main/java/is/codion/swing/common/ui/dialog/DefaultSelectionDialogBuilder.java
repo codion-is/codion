@@ -6,6 +6,7 @@ package is.codion.swing.common.ui.dialog;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.control.Control;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JDialog;
@@ -38,6 +39,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
   private final Collection<T> values;
   private boolean singleSelection;
+  private boolean allowEmptySelection = false;
   private Collection<T> defaultSelection = Collections.emptyList();
 
   DefaultSelectionDialogBuilder(Collection<T> values) {
@@ -65,20 +67,26 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
   }
 
   @Override
+  public SelectionDialogBuilder<T> allowEmptySelection(boolean allowEmptySelection) {
+    this.allowEmptySelection = allowEmptySelection;
+    return this;
+  }
+
+  @Override
   public Optional<T> selectSingle() {
     return selectValue(owner, values, titleProvider == null ? MESSAGES.getString("select_value") : titleProvider.get(),
-            defaultSelection.isEmpty() ? null : defaultSelection.iterator().next());
+            defaultSelection.isEmpty() ? null : defaultSelection.iterator().next(), allowEmptySelection);
   }
 
   @Override
   public Collection<T> select() {
-    return selectValues(owner, values, titleProvider == null ? MESSAGES.getString("select_values") : titleProvider.get(), singleSelection, defaultSelection);
+    return selectValues(owner, values, titleProvider == null ? MESSAGES.getString("select_values") : titleProvider.get(), singleSelection, defaultSelection, allowEmptySelection);
   }
 
   static <T> Optional<T> selectValue(Window dialogOwner, Collection<T> values, String dialogTitle,
-                                     T defaultSelection) {
+                                     T defaultSelection, boolean allowEmptySelection) {
     List<T> selected = selectValues(dialogOwner, values, dialogTitle, true,
-            defaultSelection == null ? emptyList() : singletonList(defaultSelection));
+            defaultSelection == null ? emptyList() : singletonList(defaultSelection), allowEmptySelection);
     if (selected.isEmpty()) {
       return Optional.empty();
     }
@@ -88,21 +96,26 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
 
   static <T> List<T> selectValues(Window dialogOwner, Collection<T> values,
                                   String dialogTitle, boolean singleSelection,
-                                  Collection<T> defaultSelection) {
+                                  Collection<T> defaultSelection,
+                                  boolean allowEmptySelection) {
     DefaultListModel<T> listModel = new DefaultListModel<>();
     values.forEach(listModel::addElement);
     JList<T> list = new JList<>(listModel);
-    DisposeDialogAction okAction = new DisposeDialogAction(() -> Utilities.parentDialog(list), null);
+    State selectionEmptyState = State.state(true);
+    list.addListSelectionListener(e -> selectionEmptyState.set(list.getSelectionModel().isSelectionEmpty()));
     if (singleSelection) {
       list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
     list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
+    Control okControl = Control.builder(() -> Utilities.parentDialog(list).dispose())
+            .enabledState(allowEmptySelection ? null : selectionEmptyState.reversedObserver())
+            .build();
     list.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(MouseEvent e) {
         if (e.getClickCount() == 2) {
-          okAction.actionPerformed(null);
+          okControl.actionPerformed(null);
         }
       }
     });
@@ -114,7 +127,7 @@ final class DefaultSelectionDialogBuilder<T> extends AbstractDialogBuilder<Selec
     JDialog dialog = new DefaultOkCancelDialogBuilder(new JScrollPane(list))
             .owner(dialogOwner)
             .title(dialogTitle)
-            .okAction(okAction)
+            .okAction(okControl)
             .onCancel(onCancel)
             .build();
     if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
