@@ -1,10 +1,10 @@
 apply plugin: BuildReportsPlugin
 
 dependencies {
-    implementation project(':codion-common-core')
-    implementation project(':codion-common-db')
+    implementation project(":codion-common-core")
+    implementation project(":codion-common-db")
 
-    testImplementation project(':codion-framework-db-local')
+    testImplementation project(":codion-framework-db-local")
 
     implementation(libs.jasperreports) {
         transitive = false
@@ -20,12 +20,12 @@ dependencies {
     }
     implementation(libs.jdt.core.compiler)
 
-    testImplementation project(':codion-dbms-h2database')
+    testImplementation project(":codion-dbms-h2database")
     testImplementation(libs.javalin)
     testRuntimeOnly(libs.h2)
 }
 
 buildReports {
-    sourceDir = file('src/test/reports')
+    sourceDir = file("src/test/reports")
     targetDir = file(sourceSets.test.output.resourcesDir.toString())
 }

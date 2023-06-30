@@ -1,18 +1,18 @@
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 dependencies {
-    implementation project(':codion-swing-common-ui-tools')
-    implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-model-tools')
-    implementation project(':codion-framework-domain-test')
-    implementation project(':codion-framework-db-local')
-    implementation project(':codion-framework-db-rmi')
-    implementation project(':codion-framework-db-http')
-    implementation project(':codion-plugin-jasperreports')
+    implementation project(":codion-swing-common-ui-tools")
+    implementation project(":codion-swing-framework-ui")
+    implementation project(":codion-swing-framework-model-tools")
+    implementation project(":codion-framework-domain-test")
+    implementation project(":codion-framework-db-local")
+    implementation project(":codion-framework-db-rmi")
+    implementation project(":codion-framework-db-http")
+    implementation project(":codion-plugin-jasperreports")
 
-    implementation project(':codion-framework-server')
-    implementation project(':codion-framework-servlet')
-    implementation project(':codion-dbms-h2database')
+    implementation project(":codion-framework-server")
+    implementation project(":codion-framework-servlet")
+    implementation project(":codion-dbms-h2database")
 
     implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
@@ -21,7 +21,7 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
     runtimeOnly(libs.h2)
 }

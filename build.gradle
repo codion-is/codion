@@ -12,13 +12,13 @@ ext {
 }
 
 configure(project.frameworkModules) {
-    apply plugin: 'java-library'
-    apply plugin: 'jacoco'
-    apply plugin: 'maven-publish'
-    apply plugin: 'com.github.ben-manes.versions'
-    apply plugin: 'project-report'
-    apply plugin: 'com.vanniktech.dependency.graph.generator'
-    apply plugin: 'com.diffplug.spotless'
+    apply plugin: "java-library"
+    apply plugin: "jacoco"
+    apply plugin: "maven-publish"
+    apply plugin: "com.github.ben-manes.versions"
+    apply plugin: "project-report"
+    apply plugin: "com.vanniktech.dependency.graph.generator"
+    apply plugin: "com.diffplug.spotless"
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
@@ -31,7 +31,7 @@ configure(project.frameworkModules) {
     clean {
         doLast {
             //clean intellij output dir as well
-            file('out').deleteDir()
+            file("out").deleteDir()
         }
     }
 
@@ -41,18 +41,18 @@ configure(project.frameworkModules) {
     }
 
     tasks.withType(JavaCompile).configureEach {
-        options.encoding = 'UTF-8'
+        options.encoding = "UTF-8"
         options.deprecation = true
     }
 
     javadoc {
-        options.links 'https://docs.oracle.com/javase/8/docs/api/'
-        options.encoding = 'UTF-8'
+        options.links "https://docs.oracle.com/javase/8/docs/api/"
+        options.encoding = "UTF-8"
     }
 
     spotless {
         java {
-            licenseHeader('/*\n' + ' * Copyright (c) $YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n' + ' */').yearSeparator(' - ')
+            licenseHeader("/*\n" + " * Copyright (c) \$YEAR, Björn Darri Sigurðsson. All Rights Reserved.\n" + " */").yearSeparator(" - ")
         }
     }
 
@@ -68,7 +68,7 @@ configure(project.frameworkModules) {
                     "Implementation-Vendor": "Codion",
                     "Implementation-Vendor-Id": "is.codion",
                     "Implementation-URL": "https://codion.is",
-                    "Automatic-Module-Name": "is." + project.name.replace('-', '.'),
+                    "Automatic-Module-Name": "is." + project.name.replace("-", "."),
                     "Build-Jdk": org.gradle.internal.jvm.Jvm.current(),
                     "Built-By": System.getProperty("user.name"),
                     "Build-Date": java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd").format(LocalDate.now()))
@@ -79,7 +79,7 @@ configure(project.frameworkModules) {
         publishing {
             publications {
                 mavenJava(MavenPublication) {
-                    groupId 'is.codion.jdk8'
+                    groupId "is.codion.jdk8"
                     from components.java
                 }
             }
@@ -90,7 +90,7 @@ configure(project.frameworkModules) {
                         password "${artifactoryPassword}"
                     }
                     allowInsecureProtocol = true
-                    if (project.version.endsWith('-SNAPSHOT')) {
+                    if (project.version.endsWith("-SNAPSHOT")) {
                         url "${artifactorySnapshotUrl}"
                     } else {
                         url "${artifactoryReleaseUrl}"
@@ -105,7 +105,7 @@ configure(project.frameworkModules) {
             System.setProperty("sonar.host.url", "${sonarHostUrl}")
             System.setProperty("sonar.login", "${sonarLogin}")
             System.setProperty("sonar.password", "${sonarPassword}")
-            System.setProperty("sonar.projectVersion", project.version.replace('-SNAPSHOT', ''))
+            System.setProperty("sonar.projectVersion", project.version.replace("-SNAPSHOT", ""))
             System.setProperty("sonar.java.source", "8")
             System.setProperty("sonar.sourceEncoding", "UTF-8")
             System.setProperty("sonar.exclusions", "**/*TestDomain.java")
@@ -117,31 +117,31 @@ configure(project.frameworkModules) {
     }
 
     /** Creates a key- and truststore pair used when running server unit tests and demos with remote connection */
-    tasks.register('createServerKeystore') {
+    tasks.register("createServerKeystore") {
         def keystoreDir = "${rootDir}/framework/server/src/main/config/"
-        def keystore = keystoreDir + 'keystore.jks'
-        def truststore = keystoreDir + 'truststore.jks'
-        def certificate = keystoreDir + 'certificate.cer'
-        def keyToolExecutable = System.getProperty('java.home') + '/bin/keytool'
+        def keystore = keystoreDir + "keystore.jks"
+        def truststore = keystoreDir + "truststore.jks"
+        def certificate = keystoreDir + "certificate.cer"
+        def keyToolExecutable = System.getProperty("java.home") + "/bin/keytool"
 
         onlyIf { !file(keystore).exists() }
 
         doLast {
             exec {
                 executable = keyToolExecutable
-                args = ['-genkeypair', '-keyalg', 'RSA', '-keystore', keystore, '-storepass', 'crappypass', '-keypass', 'crappypass',
-                        '-dname', 'CN=Dummy, OU=dummy, O=dummy.org, C=DU',
-                        '-alias', 'Alias', '-storetype', 'pkcs12', '-ext', 'SAN=dns:localhost']
+                args = ["-genkeypair", "-keyalg", "RSA", "-keystore", keystore, "-storepass", "crappypass", "-keypass", "crappypass",
+                        "-dname", "CN=Dummy, OU=dummy, O=dummy.org, C=DU",
+                        "-alias", "Alias", "-storetype", "pkcs12", "-ext", "SAN=dns:localhost"]
             }
             exec {
                 executable = keyToolExecutable
-                args = ['-exportcert', '-keystore', keystore, '-storepass', 'crappypass',
-                        '-alias', 'Alias', '-rfc', '-file', certificate]
+                args = ["-exportcert", "-keystore", keystore, "-storepass", "crappypass",
+                        "-alias", "Alias", "-rfc", "-file", certificate]
             }
             exec {
                 executable = keyToolExecutable
-                args = ['-import', '-alias', 'Alias', '-storepass', 'crappypass', '-file', certificate,
-                        '-keystore', truststore, '-noprompt', '-storetype', 'pkcs12']
+                args = ["-import", "-alias", "Alias", "-storepass", "crappypass", "-file", certificate,
+                        "-keystore", truststore, "-noprompt", "-storetype", "pkcs12"]
             }
             ant.delete(file: certificate)
         }
@@ -167,27 +167,27 @@ configure(project.frameworkModules) {
     }
 }
 
-tasks.register('tagRelease') {
+tasks.register("tagRelease") {
     doLast {
         if (project.version.contains("SNAPSHOT")) {
             throw new GradleException("Thou shalt not tag a snapshot release")
         }
-        def tagName = 'v' + project.version + '-jdk8'
-        exec { commandLine 'git', 'push' }
-        exec { commandLine 'git', 'tag', '-a', tagName, '-m', '"' + tagName + ' release"' }
-        exec { commandLine 'git', 'push', 'origin', tagName }
+        def tagName = "v" + project.version + "-jdk8"
+        exec { commandLine "git", "push" }
+        exec { commandLine 'git', 'tag', '-a', tagName, '-m', "\"" + tagName + " release\"" }
+        exec { commandLine "git", "push", "origin", tagName }
     }
 }
 
 boolean hasPublicationProperties() {
-    return project.hasProperty('artifactoryUsername') &&
-            project.hasProperty('artifactoryPassword') &&
-            project.hasProperty('artifactorySnapshotUrl') &&
-            project.hasProperty('artifactoryReleaseUrl')
+    return project.hasProperty("artifactoryUsername") &&
+            project.hasProperty("artifactoryPassword") &&
+            project.hasProperty("artifactorySnapshotUrl") &&
+            project.hasProperty("artifactoryReleaseUrl")
 }
 
 boolean hasSonarqubeProperties() {
-    return project.hasProperty('sonarHostUrl') &&
-            project.hasProperty('sonarLogin') &&
-            project.hasProperty('sonarPassword')
+    return project.hasProperty("sonarHostUrl") &&
+            project.hasProperty("sonarLogin") &&
+            project.hasProperty("sonarPassword")
 }

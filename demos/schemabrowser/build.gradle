@@ -1,23 +1,23 @@
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 dependencies {
-    implementation project(':codion-swing-common-model-tools')
-    implementation project(':codion-swing-common-ui-tools')
-    implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-model-tools')
+    implementation project(":codion-swing-common-model-tools")
+    implementation project(":codion-swing-common-ui-tools")
+    implementation project(":codion-swing-framework-ui")
+    implementation project(":codion-swing-framework-model-tools")
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
-    runtimeOnly project(':codion-framework-db-local')
-    runtimeOnly project(':codion-framework-db-rmi')
-    runtimeOnly project(':codion-framework-db-http')
+    runtimeOnly project(":codion-framework-db-local")
+    runtimeOnly project(":codion-framework-db-rmi")
+    runtimeOnly project(":codion-framework-db-http")
 
-    testImplementation project(':codion-framework-domain-test')
-    testImplementation project(':codion-swing-framework-ui-test')
+    testImplementation project(":codion-framework-domain-test")
+    testImplementation project(":codion-swing-framework-ui-test")
 
     implementation(libs.jfreechart)
 
-    runtimeOnly project(':codion-dbms-h2database')
+    runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
 
@@ -35,13 +35,13 @@ runClientLocal {
     mainClass.set("is.codion.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel")
     //overwrite the default initScripts value
     systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : '../chinook/src/main/sql/create_schema.sql,' +
-                    '../empdept/src/main/sql/create_schema.sql,' +
-                    '../petclinic/src/main/sql/create_schema.sql,' +
-                    '../petstore/src/main/sql/create_schema.sql,' +
-                    '../world/src/main/sql/create_schema.sql'
+            "codion.client.connectionType": "local",
+            "codion.db.url"               : "jdbc:h2:mem:h2db",
+            "codion.db.initScripts"       : "../chinook/src/main/sql/create_schema.sql," +
+                    "../empdept/src/main/sql/create_schema.sql," +
+                    "../petclinic/src/main/sql/create_schema.sql," +
+                    "../petstore/src/main/sql/create_schema.sql," +
+                    "../world/src/main/sql/create_schema.sql"
     ]
 }
 

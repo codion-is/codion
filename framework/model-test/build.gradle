@@ -1,12 +1,12 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
+    api project(":codion-common-model")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-db-core')
-    api project(':codion-framework-db-local')
-    api project(':codion-framework-model')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-db-core")
+    api project(":codion-framework-db-local")
+    api project(":codion-framework-model")
 
     api(libs.junit.api)
 

@@ -5,59 +5,59 @@ configurations {
 }
 
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
-    api project(':codion-common-rmi')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
+    api project(":codion-common-rmi")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-db-core')
-    api project(':codion-framework-db-local')
-    api project(':codion-framework-db-rmi')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-db-core")
+    api project(":codion-framework-db-local")
+    api project(":codion-framework-db-rmi")
 
     implementation(libs.slf4j.api)
 
-    testRuntimeOnly project(':codion-plugin-hikari-pool')
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testRuntimeOnly project(":codion-plugin-hikari-pool")
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 
-    serverRuntime project(':codion-framework-server')
-    serverRuntime project(':codion-framework-servlet')
-    serverRuntime project(':codion-plugin-jasperreports')
-    serverRuntime project(':codion-plugin-hikari-pool')
-    serverRuntime project(':codion-plugin-logback-proxy')
+    serverRuntime project(":codion-framework-server")
+    serverRuntime project(":codion-framework-servlet")
+    serverRuntime project(":codion-plugin-jasperreports")
+    serverRuntime project(":codion-plugin-hikari-pool")
+    serverRuntime project(":codion-plugin-logback-proxy")
 
-    serverRuntime project(path: ':codion-demos-empdept', configuration: 'domain')
-    serverRuntime project(path: ':codion-demos-chinook', configuration: 'domain')
-    serverRuntime project(path: ':codion-demos-petclinic', configuration: 'domain')
-    serverRuntime project(path: ':codion-demos-petstore', configuration: 'domain')
-    serverRuntime project(path: ':codion-demos-schemabrowser', configuration: 'domain')
-    serverRuntime project(path: ':codion-demos-world', configuration: 'domain')
+    serverRuntime project(path: ":codion-demos-empdept", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-chinook", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-petclinic", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-petstore", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-schemabrowser", configuration: "domain")
+    serverRuntime project(path: ":codion-demos-world", configuration: "domain")
 
-    serverRuntime project(':codion-dbms-h2database')
+    serverRuntime project(":codion-dbms-h2database")
     serverRuntime(libs.h2)
 }
 
-tasks.register('runServer', JavaExec) {
+tasks.register("runServer", JavaExec) {
     dependsOn createServerKeystore
-    group 'application'
+    group "application"
     classpath = configurations.serverRuntime
-    mainClass.set('is.codion.framework.server.EntityServer')
-    maxHeapSize = '256m'
+    mainClass.set("is.codion.framework.server.EntityServer")
+    maxHeapSize = "256m"
     systemProperties = [
-            'codion.db.url'                                 : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'                         : '../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql',
-            'codion.server.connectionPoolUsers'             : 'scott:tiger',
-            'codion.server.port'                            : '2222',
-            'codion.server.admin.port'                      : '2223',
-            'codion.server.admin.user'                      : 'scott:tiger',
-            'codion.server.http.secure'                     : 'false',
-            'codion.server.pooling.poolFactoryClass'        : 'is.codion.plugin.hikari.pool.HikariConnectionPoolProvider',
-            'codion.server.auxiliaryServerFactoryClassNames': 'is.codion.framework.servlet.EntityServiceFactory',
-            'codion.server.serializationFilterWhitelist'    : 'src/main/config/serialization-whitelist.txt',
-            'codion.server.serializationFilterDryRun'       : 'false',
-            'javax.net.ssl.keyStore'                        : 'src/main/config/keystore.jks',
-            'javax.net.ssl.keyStorePassword'                : 'crappypass',
-            'java.rmi.server.hostname'                      : "${serverHostName}",
-            'logback.configurationFile'                     : 'src/main/config/logback.xml'
+            "codion.db.url"                                 : "jdbc:h2:mem:h2db",
+            "codion.db.initScripts"                         : "../../demos/empdept/src/main/sql/create_schema.sql,../../demos/chinook/src/main/sql/create_schema.sql,../../demos/petclinic/src/main/sql/create_schema.sql,../../demos/petstore/src/main/sql/create_schema.sql,../../demos/world/src/main/sql/create_schema.sql",
+            "codion.server.connectionPoolUsers"             : "scott:tiger",
+            "codion.server.port"                            : "2222",
+            "codion.server.admin.port"                      : "2223",
+            "codion.server.admin.user"                      : "scott:tiger",
+            "codion.server.http.secure"                     : "false",
+            "codion.server.pooling.poolFactoryClass"        : "is.codion.plugin.hikari.pool.HikariConnectionPoolProvider",
+            "codion.server.auxiliaryServerFactoryClassNames": "is.codion.framework.servlet.EntityServiceFactory",
+            "codion.server.serializationFilterWhitelist"    : "src/main/config/serialization-whitelist.txt",
+            "codion.server.serializationFilterDryRun"       : "false",
+            "javax.net.ssl.keyStore"                        : "src/main/config/keystore.jks",
+            "javax.net.ssl.keyStorePassword"                : "crappypass",
+            "java.rmi.server.hostname"                      : "${serverHostName}",
+            "logback.configurationFile"                     : "src/main/config/logback.xml"
     ]
 }

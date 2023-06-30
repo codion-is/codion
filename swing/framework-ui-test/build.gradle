@@ -1,14 +1,14 @@
 dependencies {
-    implementation project(':codion-common-core')
-    implementation project(':codion-common-model')
+    implementation project(":codion-common-core")
+    implementation project(":codion-common-model")
 
-    api project(':codion-framework-domain')
-    api project(':codion-framework-db-core')
-    implementation project(':codion-framework-model')
+    api project(":codion-framework-domain")
+    api project(":codion-framework-db-core")
+    implementation project(":codion-framework-model")
 
-    implementation project(':codion-swing-common-model')
-    implementation project(':codion-swing-common-ui')
+    implementation project(":codion-swing-common-model")
+    implementation project(":codion-swing-common-ui")
 
-    implementation project(':codion-swing-framework-model')
-    api project(':codion-swing-framework-ui')
+    implementation project(":codion-swing-framework-model")
+    api project(":codion-swing-framework-ui")
 }

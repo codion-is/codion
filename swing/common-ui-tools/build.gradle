@@ -1,9 +1,9 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-model")
 
-    api project(':codion-swing-common-model-tools')
-    implementation project(':codion-swing-common-ui')
+    api project(":codion-swing-common-model-tools")
+    implementation project(":codion-swing-common-ui")
 
     implementation(libs.flatlaf.intellij.themes)
 }

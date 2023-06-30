@@ -1,31 +1,31 @@
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 apply plugin: BuildReportsPlugin
 
 dependencies {
-    implementation project(':codion-common-rmi')
+    implementation project(":codion-common-rmi")
 
-    implementation project(':codion-framework-db-local')
+    implementation project(":codion-framework-db-local")
 
-    implementation project(':codion-swing-common-model-tools')
-    implementation project(':codion-swing-common-ui-tools')
-    implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-model-tools')
+    implementation project(":codion-swing-common-model-tools")
+    implementation project(":codion-swing-common-ui-tools")
+    implementation project(":codion-swing-framework-ui")
+    implementation project(":codion-swing-framework-model-tools")
 
-    implementation project(':codion-javafx-framework')
+    implementation project(":codion-javafx-framework")
 
-    implementation project(':codion-plugin-imagepanel')
-    implementation project(':codion-plugin-jasperreports')
+    implementation project(":codion-plugin-imagepanel")
+    implementation project(":codion-plugin-jasperreports")
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
-    implementation project(':codion-framework-db-http')
-    implementation project(':codion-framework-db-rmi')
+    implementation project(":codion-framework-db-http")
+    implementation project(":codion-framework-db-rmi")
 
     implementation(libs.flatlaf)
     implementation(libs.flatlaf.intellij.themes)
 
-    testImplementation project(':codion-framework-domain-test')
+    testImplementation project(":codion-framework-domain-test")
 
     implementation(libs.jasperreports) {
         transitive = false
@@ -37,13 +37,13 @@ dependencies {
     runtimeOnly(libs.commons.beanutils)
     runtimeOnly(libs.jdt.core.compiler)
 
-    runtimeOnly project(':codion-dbms-h2database')
+    runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
 
 buildReports {
-    sourceDir = file('src/main/reports')
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/chinook/domain')
+    sourceDir = file("src/main/reports")
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/chinook/domain")
 }
 
 test {

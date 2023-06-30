@@ -1,24 +1,24 @@
 dependencies {
-    implementation project(':codion-common-core')
-    implementation project(':codion-common-db')
-    implementation project(':codion-common-rmi')
+    implementation project(":codion-common-core")
+    implementation project(":codion-common-db")
+    implementation project(":codion-common-rmi")
 
-    implementation project(':codion-framework-domain')
-    implementation project(':codion-framework-db-core')
-    implementation project(':codion-framework-db-rmi')
-    implementation project(':codion-framework-json-domain')
-    implementation project(':codion-framework-json-db')
+    implementation project(":codion-framework-domain")
+    implementation project(":codion-framework-db-core")
+    implementation project(":codion-framework-db-rmi")
+    implementation project(":codion-framework-json-domain")
+    implementation project(":codion-framework-json-db")
 
     implementation(libs.javalin)
 
     implementation(libs.slf4j.api)
 
-    testImplementation project(':codion-framework-db-local')
-    testImplementation project(':codion-framework-server')
+    testImplementation project(":codion-framework-db-local")
+    testImplementation project(":codion-framework-server")
 
     testImplementation(libs.http.client)
 
-    testRuntimeOnly project(':codion-plugin-hikari-pool')
-    testRuntimeOnly project(':codion-dbms-h2database')
+    testRuntimeOnly project(":codion-plugin-hikari-pool")
+    testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }

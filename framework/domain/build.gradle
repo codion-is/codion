@@ -1,6 +1,6 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-db')
+    api project(":codion-common-core")
+    api project(":codion-common-db")
 
     implementation(libs.slf4j.api)
 }

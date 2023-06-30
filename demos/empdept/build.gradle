@@ -1,30 +1,30 @@
-apply from: '../demos.gradle'
+apply from: "../demos.gradle"
 
 apply plugin: BuildReportsPlugin
 
 dependencies {
-    implementation project(':codion-framework-db-local')
-    implementation project(':codion-framework-db-http')
-    implementation project(':codion-framework-domain-test')
-    implementation project(':codion-framework-server')
-    implementation project(':codion-framework-servlet')
+    implementation project(":codion-framework-db-local")
+    implementation project(":codion-framework-db-http")
+    implementation project(":codion-framework-domain-test")
+    implementation project(":codion-framework-server")
+    implementation project(":codion-framework-servlet")
 
-    implementation project(':codion-swing-common-model-tools')
-    implementation project(':codion-swing-common-ui-tools')
-    implementation project(':codion-swing-framework-ui')
-    implementation project(':codion-swing-framework-model-tools')
+    implementation project(":codion-swing-common-model-tools")
+    implementation project(":codion-swing-common-ui-tools")
+    implementation project(":codion-swing-framework-ui")
+    implementation project(":codion-swing-framework-model-tools")
 
-    implementation project(':codion-javafx-framework')
+    implementation project(":codion-javafx-framework")
 
-    implementation project(':codion-plugin-jasperreports')
-    implementation project(':codion-framework-json-domain')
+    implementation project(":codion-plugin-jasperreports")
+    implementation project(":codion-framework-json-domain")
 
-    testImplementation project(':codion-swing-framework-ui-test')
+    testImplementation project(":codion-swing-framework-ui-test")
 
     implementation(libs.flatlaf.intellij.themes)
-    implementation 'javax.ws.rs:jsr311-api:1.1.1'
+    implementation "javax.ws.rs:jsr311-api:1.1.1"
 
-    runtimeOnly project(':codion-plugin-logback-proxy')
+    runtimeOnly project(":codion-plugin-logback-proxy")
 
     implementation(libs.jasperreports) {
         transitive = false
@@ -36,13 +36,13 @@ dependencies {
     runtimeOnly(libs.commons.beanutils)
     runtimeOnly(libs.jdt.core.compiler)
 
-    runtimeOnly project(':codion-dbms-h2database')
+    runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
 
 buildReports {
-    sourceDir = file('src/main/reports')
-    targetDir = file(sourceSets.main.output.resourcesDir.toString() + '/is/codion/framework/demos/empdept/domain')
+    sourceDir = file("src/main/reports")
+    targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/empdept/domain")
 }
 
 test {
@@ -54,14 +54,14 @@ runClientLocal {
     mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
 }
 
-tasks.register('runClientLocalFX', JavaExec) {
-    group 'application'
-    mainClass.set('is.codion.framework.demos.empdept.javafx.EmpDeptFX')
+tasks.register("runClientLocalFX", JavaExec) {
+    group "application"
+    mainClass.set("is.codion.framework.demos.empdept.javafx.EmpDeptFX")
     classpath = sourceSets.main.runtimeClasspath
     systemProperties = [
-            'codion.client.connectionType': 'local',
-            'codion.db.url'               : 'jdbc:h2:mem:h2db',
-            'codion.db.initScripts'       : 'src/main/sql/create_schema.sql'
+            "codion.client.connectionType": "local",
+            "codion.db.url"               : "jdbc:h2:mem:h2db",
+            "codion.db.initScripts"       : "src/main/sql/create_schema.sql"
     ]
 }
 

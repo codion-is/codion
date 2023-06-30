@@ -1,4 +1,4 @@
 dependencies {
-    api project(':codion-common-core')
-    api project(':codion-common-model')
+    api project(":codion-common-core")
+    api project(":codion-common-model")
 }
