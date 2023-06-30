@@ -178,7 +178,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
     this.editModel = requireNonNull(editModel);
-    this.tableModel = createTableModel(editModel.entityType(), editModel.entities());
+    this.tableModel = createTableModel(editModel.entityDefinition());
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     addEditEventListeners();
@@ -807,30 +807,30 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Initializes default {@link FilteredTableColumn}s for all visible properties in the given entity type.
-   * @param entityType the entity type
-   * @param entities the domain entities
+   * @param entityDefinition the entity definition
    * @return a list of TableColumns based on the given entity
    */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityType entityType, Entities entities) {
-    return createColumns(entities.definition(requireNonNull(entityType)).visibleProperties(), requireNonNull(entities));
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition entityDefinition) {
+    return createColumns(entityDefinition, requireNonNull(entityDefinition).visibleProperties());
   }
 
   /**
    * Initializes default {@link FilteredTableColumn}s from the given properties.
+   * @param entityDefinition the entity definition
    * @param properties the properties
-   * @param entities the domain entities
    * @return a list of TableColumns based on the given properties
    */
-  public static List<FilteredTableColumn<Attribute<?>>> createColumns(List<Property<?>> properties, Entities entities) {
-    requireNonNull(entities);
+  public static List<FilteredTableColumn<Attribute<?>>> createColumns(EntityDefinition entityDefinition,
+                                                                      List<Property<?>> properties) {
     requireNonNull(properties);
+    requireNonNull(entityDefinition);
     List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(properties.size());
     for (Property<?> property : properties) {
       FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
               FilteredTableColumn.builder(columns.size(), property.attribute())
                       .headerValue(property.caption())
                       .columnClass(property.attribute().valueClass())
-                      .comparator(attributeComparator(entities, property.attribute()));
+                      .comparator(attributeComparator(entityDefinition, property.attribute()));
       columns.add((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
     }
 
@@ -1135,12 +1135,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private static Comparator<?> attributeComparator(Entities entities, Attribute<?> attribute) {
+  private static Comparator<?> attributeComparator(EntityDefinition definition, Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
-      return entities.definition(((ForeignKey) attribute).referencedType()).comparator();
+      return definition.referencedDefinition((ForeignKey) attribute).comparator();
     }
 
-    return entities.definition(attribute.entityType()).property(attribute).comparator();
+    return definition.property(attribute).comparator();
   }
 
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
@@ -1178,13 +1178,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityType entityType, Entities entities) {
+  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
     return FilteredTableModel.builder(new EntityColumnValueProvider())
-            .columns(createColumns(entityType, entities))
-            .filterModelFactory(new EntityFilterModelFactory(entities.definition(entityType)))
+            .columns(createColumns(entityDefinition))
+            .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
-            .itemValidator(row -> row.type().equals(entityType))
+            .itemValidator(row -> row.type().equals(entityDefinition.type()))
             .build();
   }
 
