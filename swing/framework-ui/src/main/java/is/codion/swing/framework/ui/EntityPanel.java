@@ -19,6 +19,7 @@ import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
+import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
@@ -1358,6 +1359,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   protected final void initializeEditControlPanel() {
     editPanel.initializePanel();
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    editControlPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {

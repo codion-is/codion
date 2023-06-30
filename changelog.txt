@@ -9253,3 +9253,4 @@
   SwingEntityColumnFactory moved to SwingEntityTableModel, renamed EntityColumnFactory, not quite ready for public consumption
   EntityFilterModelFactory moved to SwingEntityTableModel
   FilteredModel.AbstractRefresher.isUserInterfaceThread() renamed isAsyncRefreshSupported()
+  EntityPanel.editControlPanel, empty border added
