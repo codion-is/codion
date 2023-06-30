@@ -12,6 +12,7 @@ dependencies {
     api project(":codion-framework-model")
 
     testImplementation project(":codion-framework-db-local")
+    testImplementation project(":codion-framework-domain-test")
     testImplementation project(":codion-framework-model-test")
 
     implementation(libs.json)
