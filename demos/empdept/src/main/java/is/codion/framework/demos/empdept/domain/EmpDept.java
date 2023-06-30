@@ -144,12 +144,10 @@ public final class EmpDept extends DefaultDomain {
                     .nullable(false)
                     .beanProperty("id"),
             columnProperty(Department.NAME, "Department name")
-                    .preferredColumnWidth(120)
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
             columnProperty(Department.LOCATION, "Location")
-                    .preferredColumnWidth(150)
                     .maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
@@ -196,8 +194,7 @@ public final class EmpDept extends DefaultDomain {
                             .yearTwoDigits()
                             .build()),
             denormalizedProperty(Employee.DEPARTMENT_LOCATION, "Location",
-                    Employee.DEPARTMENT_FK, Department.LOCATION)
-                    .preferredColumnWidth(100))
+                    Employee.DEPARTMENT_FK, Department.LOCATION))
             .keyGenerator(increment("scott.emp", Employee.ID.name()))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)

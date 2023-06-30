@@ -23,7 +23,7 @@ import java.util.function.Supplier;
  * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> the type used to identify columns in this table model, Integer for indexed identification for example
- * @see #builder(ColumnValueProvider)
+ * @see #builder(ColumnFactory, ColumnValueProvider)
  */
 public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
@@ -281,14 +281,15 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
 
   /**
    * Instantiates a new table model builder.
+   * @param columnFactory the column factory
    * @param columnValueProvider the column value provider
    * @param <R> the row type
    * @param <C> the column identifier type
    * @return a new builder instance
-   * @throws NullPointerException in case {@code columnValueProvider} is null
+   * @throws NullPointerException in case {@code columnFactory} or {@code columnValueProvider} is null
    */
-  static <R, C> Builder<R, C> builder(ColumnValueProvider<R, C> columnValueProvider) {
-    return new DefaultFilteredTableModel.DefaultBuilder<>(columnValueProvider);
+  static <R, C> Builder<R, C> builder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
+    return new DefaultFilteredTableModel.DefaultBuilder<>(columnFactory, columnValueProvider);
   }
 
   /**
@@ -310,13 +311,6 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
    * @param <C> the column identifer type
    */
   interface Builder<R, C> {
-
-    /**
-     * @param columns the columns
-     * @return this builder instance
-     * @throws IllegalArgumentException in case columns is empty
-     */
-    Builder<R, C> columns(List<FilteredTableColumn<C>> columns);
 
     /**
      * @param filterModelFactory the column filter model factory
@@ -359,6 +353,18 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
      * @return a new {@link FilteredTableModel} instance.
      */
     FilteredTableModel<R, C> build();
+  }
+
+  /**
+   * Provides columns for a {@link FilteredTableModel}.
+   * @param <C> the column identifier type
+   */
+  interface ColumnFactory<C> {
+
+    /**
+     * @return the columns, may not be empty
+     */
+    List<FilteredTableColumn<C>> createColumns();
   }
 
   /**

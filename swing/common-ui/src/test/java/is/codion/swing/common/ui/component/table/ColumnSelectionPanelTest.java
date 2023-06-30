@@ -18,9 +18,9 @@ public final class ColumnSelectionPanelTest {
     FilteredTableColumn<Integer> column = filteredTableColumn(0);
     column.setHeaderValue("Testing");
 
-    FilteredTableModel<Object, Integer> tableModel = FilteredTableModel.<Object, Integer>builder((row, columnIdentifier) -> null)
-            .columns(singletonList(column))
-            .build();
+    FilteredTableModel<Object, Integer> tableModel =
+            FilteredTableModel.<Object, Integer>builder(() -> singletonList(column), (row, columnIdentifier) -> null)
+                    .build();
 
     new ColumnSelectionPanel<>(tableModel.columnModel());
   }

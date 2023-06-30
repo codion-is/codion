@@ -34,16 +34,6 @@ dependencies {
         transitive = false
     }
 
-    implementation(libs.commons.logging)
-    implementation(libs.commons.digester) {
-        transitive = false
-    }
-    implementation(libs.commons.collections4)
-    implementation(libs.commons.beanutils) {
-        transitive = false
-    }
-    implementation(libs.jdt.core.compiler)
-
     runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }

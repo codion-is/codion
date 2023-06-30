@@ -57,7 +57,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   private final DefaultRefresher refresher;
 
   private DefaultFilteredTableModel(DefaultBuilder<R, C> builder) {
-    this.columnModel = new DefaultFilteredTableColumnModel<>(builder.columns);
+    this.columnModel = new DefaultFilteredTableColumnModel<>(requireNonNull(builder.columnFactory).createColumns());
     this.searchModel = new DefaultFilteredTableSearchModel<>(this);
     this.columnValueProvider = requireNonNull(builder.columnValueProvider);
     this.sortModel = new DefaultFilteredTableSortModel<>(columnModel, columnValueProvider);
@@ -644,9 +644,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   static final class DefaultBuilder<R, C> implements Builder<R, C> {
 
+    private final ColumnFactory<C> columnFactory;
     private final ColumnValueProvider<R, C> columnValueProvider;
 
-    private List<FilteredTableColumn<C>> columns;
     private Supplier<Collection<R>> itemSupplier;
     private Predicate<R> itemValidator = new ValidPredicate<>();
     private ColumnConditionModel.Factory<C> filterModelFactory;
@@ -654,17 +654,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     private boolean mergeOnRefresh = false;
     private boolean asyncRefresh = FilteredModel.ASYNC_REFRESH.get();
 
-    DefaultBuilder(ColumnValueProvider<R, C> columnValueProvider) {
+    DefaultBuilder(ColumnFactory<C> columnFactory, ColumnValueProvider<R, C> columnValueProvider) {
+      this.columnFactory = requireNonNull(columnFactory);
       this.columnValueProvider = requireNonNull(columnValueProvider);
-    }
-
-    @Override
-    public Builder<R, C> columns(List<FilteredTableColumn<C>> columns) {
-      if (requireNonNull(columns, "columns").isEmpty()) {
-        throw new IllegalArgumentException("One or more columns must be specified");
-      }
-      this.columns = columns;
-      return this;
     }
 
     @Override

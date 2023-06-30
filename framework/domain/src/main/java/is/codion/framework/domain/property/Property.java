@@ -207,11 +207,6 @@ public interface Property<T> {
   RoundingMode decimalRoundingMode();
 
   /**
-   * @return the preferred column width of this property in pixels when presented in a table, -1 if none has been specified
-   */
-  int preferredColumnWidth();
-
-  /**
    * @return true if null is a valid value for this property
    */
   boolean isNullable();
@@ -372,14 +367,6 @@ public interface Property<T> {
      * @throws IllegalStateException in case this is not a numerical property
      */
     B numberFormatGrouping(boolean numberFormatGrouping);
-
-    /**
-     * Specifies the preferred column width when displaying this property in a table.
-     * @param preferredColumnWidth the preferred column width of this property in pixels when displayed in a table
-     * @return this builder instance
-     * @throws IllegalArgumentException in case the value is less than 1
-     */
-    B preferredColumnWidth(int preferredColumnWidth);
 
     /**
      * Specifies whether this property is nullable. Note that this will not prevent

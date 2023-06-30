@@ -74,9 +74,11 @@ public final class TestDomain extends DefaultDomain {
             primaryKeyProperty(Department.DEPTNO)
                     .updatable(true).nullable(false),
             columnProperty(Department.NAME)
-                    .searchProperty(true).preferredColumnWidth(120).maximumLength(14).nullable(false),
+                    .searchProperty(true)
+                    .maximumLength(14)
+                    .nullable(false),
             columnProperty(Department.LOCATION)
-                    .preferredColumnWidth(150).maximumLength(13),
+                    .maximumLength(13),
             columnProperty(Department.LOGO))
             .smallDataset(true)
             .caption("Department"));
@@ -116,7 +118,7 @@ public final class TestDomain extends DefaultDomain {
             foreignKeyProperty(Employee.MGR_FK),
             columnProperty(Employee.HIREDATE)
                     .nullable(false),
-            denormalizedProperty(Employee.EMP_DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION).preferredColumnWidth(100))
+            denormalizedProperty(Employee.EMP_DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));

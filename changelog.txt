@@ -9283,3 +9283,9 @@
   TextComponentBuilder.selectedTextColor() and selectionColor() added
   TemporalInputPanel refactored
   TemporalInputPanel.inputField() renamed temporalField()
+  Property.preferredColumnWidth() removed
+  SwingEntityTableModel.createColumns() Entities parameter replaced with EntityDefinition, related refactoring
+  FilteredTableModel.ColumnFactory added
+  FilteredTableModel.Builder.columnFactory() added, columns() removed
+  FilteredTableModel.Builder.columnFactory() removed, FilteredTableModel.builder() ColumnFactory parameter added
+  SwingEntityColumnFactory.createColumn() added, related refactoring

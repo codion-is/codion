@@ -55,8 +55,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Artist.NAME)
                     .searchProperty(true)
                     .nullable(false)
-                    .maximumLength(120)
-                    .preferredColumnWidth(160),
+                    .maximumLength(120),
             subqueryProperty(Artist.NUMBER_OF_ALBUMS,
                     "select count(*) " +
                             "from chinook.album " +
@@ -78,13 +77,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Album.ARTIST_ID)
                     .nullable(false),
             foreignKeyProperty(Album.ARTIST_FK)
-                    .selectAttributes(Artist.NAME)
-                    .preferredColumnWidth(160),
+                    .selectAttributes(Artist.NAME),
             columnProperty(Album.TITLE)
                     .searchProperty(true)
                     .nullable(false)
-                    .maximumLength(160)
-                    .preferredColumnWidth(160),
+                    .maximumLength(160),
             blobProperty(Album.COVER)
                     .eagerlyLoaded(true)
                     .format(new CoverFormatter()),
@@ -200,8 +197,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Genre.NAME)
                     .searchProperty(true)
                     .nullable(false)
-                    .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .maximumLength(120))
             .tableName("chinook.genre")
             .keyGenerator(identity())
             .orderBy(ascending(Genre.NAME))
@@ -214,8 +210,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             primaryKeyProperty(MediaType.ID),
             columnProperty(MediaType.NAME)
                     .nullable(false)
-                    .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .maximumLength(120))
             .tableName("chinook.mediatype")
             .keyGenerator(identity())
             .stringFactory(MediaType.NAME)
@@ -226,25 +221,21 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     add(definition(
             primaryKeyProperty(Track.ID),
             denormalizedProperty(Track.ARTIST_DENORM,
-                    Track.ALBUM_FK, Album.ARTIST_FK)
-                    .preferredColumnWidth(160),
+                    Track.ALBUM_FK, Album.ARTIST_FK),
             columnProperty(Track.ALBUM_ID),
             // tag::fetchDepth2[]
             foreignKeyProperty(Track.ALBUM_FK)
                     .selectAttributes(Album.ARTIST_FK, Album.TITLE)
-                    .fetchDepth(2)
-                    .preferredColumnWidth(160),
+                    .fetchDepth(2),
             // end::fetchDepth2[]
             columnProperty(Track.NAME)
                     .searchProperty(true)
                     .nullable(false)
-                    .maximumLength(200)
-                    .preferredColumnWidth(160),
+                    .maximumLength(200),
             columnProperty(Track.GENRE_ID),
             foreignKeyProperty(Track.GENRE_FK),
             columnProperty(Track.COMPOSER)
-                    .maximumLength(220)
-                    .preferredColumnWidth(160),
+                    .maximumLength(220),
             columnProperty(Track.MEDIATYPE_ID)
                     .nullable(false),
             foreignKeyProperty(Track.MEDIATYPE_FK),
@@ -323,8 +314,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(InvoiceLine.TRACK_ID)
                     .nullable(false),
             foreignKeyProperty(InvoiceLine.TRACK_FK)
-                    .selectAttributes(Track.NAME, Track.UNITPRICE)
-                    .preferredColumnWidth(100),
+                    .selectAttributes(Track.NAME, Track.UNITPRICE),
             columnProperty(InvoiceLine.UNITPRICE)
                     .nullable(false),
             columnProperty(InvoiceLine.QUANTITY)
@@ -342,8 +332,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Playlist.NAME)
                     .searchProperty(true)
                     .nullable(false)
-                    .maximumLength(120)
-                    .preferredColumnWidth(160))
+                    .maximumLength(120))
             .tableName("chinook.playlist")
             .keyGenerator(identity())
             .orderBy(ascending(Playlist.NAME))
@@ -357,19 +346,15 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             primaryKeyProperty(PlaylistTrack.ID),
             columnProperty(PlaylistTrack.PLAYLIST_ID)
                     .nullable(false),
-            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK)
-                    .preferredColumnWidth(120),
+            foreignKeyProperty(PlaylistTrack.PLAYLIST_FK),
             denormalizedProperty(PlaylistTrack.ARTIST_DENORM,
-                    PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK)
-                    .preferredColumnWidth(160),
+                    PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK),
             columnProperty(PlaylistTrack.TRACK_ID)
                     .nullable(false),
             foreignKeyProperty(PlaylistTrack.TRACK_FK)
-                    .fetchDepth(3)
-                    .preferredColumnWidth(160),
+                    .fetchDepth(3),
             denormalizedProperty(PlaylistTrack.ALBUM_DENORM,
-                    PlaylistTrack.TRACK_FK, Track.ALBUM_FK)
-                    .preferredColumnWidth(160))
+                    PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
             .tableName("chinook.playlisttrack")
             .keyGenerator(identity())
             .stringFactory(StringFactory.builder()

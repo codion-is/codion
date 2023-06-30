@@ -46,8 +46,7 @@ final class KeyBindingModel {
   KeyBindingModel(FilteredComboBoxModel<Item<LookAndFeelProvider>> lookAndFeelComboBoxModel) {
     this.componentComboBoxModel = createComponentComboBoxModel(lookAndFeelComboBoxModel);
     this.componentComboBoxModel.refresh();
-    this.tableModel = FilteredTableModel.builder(new KeyBindingValueProvider())
-            .columns(createColumns())
+    this.tableModel = FilteredTableModel.builder(new KeyBindingColumnFactory(), new KeyBindingValueProvider())
             .itemSupplier(new KeyBindingItemSupplier())
             .build();
     bindEvents(lookAndFeelComboBoxModel);
@@ -75,25 +74,28 @@ final class KeyBindingModel {
     return PACKAGE + componentName;
   }
 
-  private static List<FilteredTableColumn<Integer>> createColumns() {
-    FilteredTableColumn<Integer> action = FilteredTableColumn.builder(ACTION_COLUMN_INDEX)
-            .headerValue("Action")
-            .columnClass(String.class)
-            .build();
-    FilteredTableColumn<Integer> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN_INDEX)
-            .headerValue("When Focused")
-            .columnClass(String.class)
-            .build();
-    FilteredTableColumn<Integer> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX)
-            .headerValue("When in Focused Window")
-            .columnClass(String.class)
-            .build();
-    FilteredTableColumn<Integer> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN_INDEX)
-            .headerValue("When Ancestor")
-            .columnClass(String.class)
-            .build();
+  private static final class KeyBindingColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      FilteredTableColumn<Integer> action = FilteredTableColumn.builder(ACTION_COLUMN_INDEX)
+              .headerValue("Action")
+              .columnClass(String.class)
+              .build();
+      FilteredTableColumn<Integer> whenFocused = FilteredTableColumn.builder(WHEN_FOCUSED_COLUMN_INDEX)
+              .headerValue("When Focused")
+              .columnClass(String.class)
+              .build();
+      FilteredTableColumn<Integer> whenInFocusedWindow = FilteredTableColumn.builder(WHEN_IN_FOCUSED_WINDOW_COLUMN_INDEX)
+              .headerValue("When in Focused Window")
+              .columnClass(String.class)
+              .build();
+      FilteredTableColumn<Integer> whenAncestor = FilteredTableColumn.builder(WHEN_ANCESTOR_COLUMN_INDEX)
+              .headerValue("When Ancestor")
+              .columnClass(String.class)
+              .build();
 
-    return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
+      return asList(action, whenFocused, whenInFocusedWindow, whenAncestor);
+    }
   }
 
   static final class KeyBinding {

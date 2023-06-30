@@ -49,13 +49,11 @@ public final class DatabaseExplorerModel {
     this.connection = requireNonNull(database, "database").createConnection(user);
     try {
       this.metaDataModel = new MetaDataModel(connection.getMetaData());
-      this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnValueProvider())
-              .columns(createSchemaColumns())
+      this.schemaTableModel = FilteredTableModel.builder(new SchemaColumnFactory(), new SchemaColumnValueProvider())
               .itemSupplier(metaDataModel::schemas)
               .build();
       this.schemaTableModel.sortModel().setSortOrder(0, SortOrder.ASCENDING);
-      this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnValueProvider())
-              .columns(createDefinitionColumns())
+      this.definitionTableModel = FilteredTableModel.builder(new DefinitionColumnFactory(), new DefinitionColumnValueProvider())
               .itemSupplier(new DefinitionItemSupplier())
               .build();
       this.schemaTableModel.refresh();
@@ -110,30 +108,36 @@ public final class DatabaseExplorerModel {
             .collect(Collectors.joining(LINE_SEPARATOR + LINE_SEPARATOR)));
   }
 
-  private static List<FilteredTableColumn<Integer>> createSchemaColumns() {
-    FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.SCHEMA)
-            .headerValue("Schema")
-            .columnClass(String.class)
-            .build();
-    FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.POPULATED)
-            .headerValue("Populated")
-            .columnClass(Boolean.class)
-            .build();
+  private static final class SchemaColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      FilteredTableColumn<Integer> schemaColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.SCHEMA)
+              .headerValue("Schema")
+              .columnClass(String.class)
+              .build();
+      FilteredTableColumn<Integer> populatedColumn = FilteredTableColumn.builder(SchemaColumnValueProvider.POPULATED)
+              .headerValue("Populated")
+              .columnClass(Boolean.class)
+              .build();
 
-    return asList(schemaColumn, populatedColumn);
+      return asList(schemaColumn, populatedColumn);
+    }
   }
 
-  private static List<FilteredTableColumn<Integer>> createDefinitionColumns() {
-    FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.DOMAIN)
-            .headerValue("Domain")
-            .columnClass(String.class)
-            .build();
-    FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
-            .headerValue("Entity")
-            .columnClass(String.class)
-            .build();
+  private static final class DefinitionColumnFactory implements FilteredTableModel.ColumnFactory<Integer> {
+    @Override
+    public List<FilteredTableColumn<Integer>> createColumns() {
+      FilteredTableColumn<Integer> domainColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.DOMAIN)
+              .headerValue("Domain")
+              .columnClass(String.class)
+              .build();
+      FilteredTableColumn<Integer> entityTypeColumn = FilteredTableColumn.builder(DefinitionColumnValueProvider.ENTITY)
+              .headerValue("Entity")
+              .columnClass(String.class)
+              .build();
 
-    return asList(domainColumn, entityTypeColumn);
+      return asList(domainColumn, entityTypeColumn);
+    }
   }
 
   private static Collection<DefinitionRow> createDomainDefinitions(Schema schema) {
