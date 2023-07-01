@@ -225,9 +225,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void batchUpdateNotEnabled() {
-    testModel.setBatchUpdateEnabled(false);
-    assertFalse(testModel.isBatchUpdateEnabled());
+  public void multipleEntityUpdateEnabled() {
+    testModel.setMultipleEntityUpdateEnabled(false);
+    assertFalse(testModel.isMultipleEntityUpdateEnabled());
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(asList(0, 1));
     List<Entity> entities = testModel.selectionModel().getSelectedItems();
