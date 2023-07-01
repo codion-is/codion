@@ -129,7 +129,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * Specifies whether multiple entities can be updated at a time
    */
-  private boolean batchUpdateEnabled = true;
+  private boolean multipleEntityUpdateEnabled = true;
 
   /**
    * Specifies whether this table model is editable.
@@ -304,13 +304,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final boolean isBatchUpdateEnabled() {
-    return batchUpdateEnabled;
+  public final boolean isMultipleEntityUpdateEnabled() {
+    return multipleEntityUpdateEnabled;
   }
 
   @Override
-  public final void setBatchUpdateEnabled(boolean batchUpdateEnabled) {
-    this.batchUpdateEnabled = batchUpdateEnabled;
+  public final void setMultipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled) {
+    this.multipleEntityUpdateEnabled = multipleEntityUpdateEnabled;
   }
 
   @Override
@@ -471,8 +471,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     if (!isUpdateEnabled()) {
       throw new IllegalStateException("Updating is not enabled in this table model");
     }
-    if (entities.size() > 1 && !batchUpdateEnabled) {
-      throw new IllegalStateException("Batch update of entities is not enabled!");
+    if (entities.size() > 1 && !multipleEntityUpdateEnabled) {
+      throw new IllegalStateException("Batch update of entities is not enabled");
     }
     editModel.update(entities);
   }

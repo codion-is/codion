@@ -355,7 +355,7 @@ public interface Entity extends Comparable<Entity> {
   }
 
   /**
-   * Checks if any of the primary keys of the given entities is modified
+   * Checks if any of the primary keys of the given entities have been modified
    * @param <T> the entity type
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key

@@ -42,7 +42,7 @@ public final class DefaultFrameworkIconsTest {
     assertNotNull(logo12);
     assertSame(logo12, icons.logo(12));
     assertThrows(NullPointerException.class, () -> icons.add((Ikon[]) null));
-    assertThrows(NullPointerException.class, () -> icons.add(null, FrameworkIkons.SETTINGS));
-    assertThrows(IllegalArgumentException.class, () -> icons.add(FrameworkIkons.SETTINGS));
+    assertThrows(NullPointerException.class, () -> icons.add(null, FrameworkIkon.SETTINGS));
+    assertThrows(IllegalArgumentException.class, () -> icons.add(FrameworkIkon.SETTINGS));
   }
 }

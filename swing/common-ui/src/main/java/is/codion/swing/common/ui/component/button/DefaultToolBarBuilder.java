@@ -90,7 +90,7 @@ final class DefaultToolBarBuilder extends AbstractControlPanelBuilder<JToolBar, 
     @Override
     void onToggleControl(ToggleControl toggleControl) {
       if (defaultToggleButtonBuilder) {
-        buttonBuilder.includeText(includeButtonText(toggleControl));
+        toggleButtonBuilder.includeText(includeButtonText(toggleControl));
       }
       toolBar.add(toggleButtonBuilder
               .toggleControl(toggleControl)

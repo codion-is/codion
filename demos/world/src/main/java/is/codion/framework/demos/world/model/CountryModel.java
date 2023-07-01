@@ -33,8 +33,7 @@ public final class CountryModel extends SwingEntityModel {
 
     return Entity.castTo(City.class, cityTableModel.items()).stream()
             .filter(city -> city.isInCountry(country))
-            .map(City::population)
-            .mapToInt(Integer::valueOf)
+            .mapToInt(City::population)
             .average()
             .orElse(0d);
   }

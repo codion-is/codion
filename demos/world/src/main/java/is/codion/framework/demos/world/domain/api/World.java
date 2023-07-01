@@ -157,6 +157,7 @@ public interface World {
     Attribute<String> CITY_NAME = TYPE.stringAttribute("city.name");
     Attribute<String> CITY_DISTRICT = TYPE.stringAttribute("city.district");
     Attribute<Integer> CITY_POPULATION = TYPE.integerAttribute("city.population");
+    Attribute<Location> CITY_LOCATION = TYPE.attribute("city.location", Location.class);
   }
 
   // tag::customTypeClass[]

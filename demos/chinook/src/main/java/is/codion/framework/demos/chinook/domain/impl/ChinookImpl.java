@@ -377,7 +377,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                               .fetchDepth(0)
                               .build()))
               .stream()
-              .map(Invoice::updateTotal)
+              .peek(Invoice::updateTotal)
               .filter(Invoice::isModified)
               .collect(toList()));
     }
@@ -454,7 +454,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
       return entityConnection.update(Entity.castTo(Track.class,
                       entityConnection.select(selectCondition)).stream()
-              .map(track -> track.raisePrice(parameters.priceIncrease()))
+              .peek(track -> track.raisePrice(parameters.priceIncrease()))
               .collect(toList()));
     }
   }

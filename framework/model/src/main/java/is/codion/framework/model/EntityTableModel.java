@@ -174,12 +174,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return true if multiple entities can be updated at a time
    */
-  boolean isBatchUpdateEnabled();
+  boolean isMultipleEntityUpdateEnabled();
 
   /**
-   * @param batchUpdateEnabled true if this model should enable multiple entities to be updated at a time
+   * @param multipleEntityUpdateEnabled true if this model should enable multiple entities to be updated at a time
    */
-  void setBatchUpdateEnabled(boolean batchUpdateEnabled);
+  void setMultipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled);
 
   /**
    * @param row the row for which to retrieve the background color

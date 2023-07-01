@@ -336,7 +336,7 @@ public class EntityTableView extends TableView<Entity> {
     FXEntityListModel entityTableModel = listModel();
 
     return !entityTableModel.isReadOnly() && entityTableModel.isUpdateEnabled() &&
-            entityTableModel.isBatchUpdateEnabled() &&
+            entityTableModel.isMultipleEntityUpdateEnabled() &&
             !entityTableModel.entityDefinition().updatableProperties().isEmpty();
   }
 

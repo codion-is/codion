@@ -253,13 +253,13 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final boolean isBatchUpdateEnabled() {
+  public final boolean isMultipleEntityUpdateEnabled() {
     return batchUpdateEnabled;
   }
 
   @Override
-  public final void setBatchUpdateEnabled(boolean batchUpdateEnabled) {
-    this.batchUpdateEnabled = batchUpdateEnabled;
+  public final void setMultipleEntityUpdateEnabled(boolean multipleEntityUpdateEnabled) {
+    this.batchUpdateEnabled = multipleEntityUpdateEnabled;
   }
 
   @Override

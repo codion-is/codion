@@ -4,7 +4,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.domain.api.World.City;
-import is.codion.framework.demos.world.domain.api.World.Location;
 import is.codion.framework.demos.world.model.CityEditModel;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
@@ -18,21 +17,12 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.jxmapviewer.JXMapKit;
 import org.jxmapviewer.JXMapViewer;
-import org.jxmapviewer.OSMTileFactoryInfo;
-import org.jxmapviewer.viewer.DefaultTileFactory;
-import org.jxmapviewer.viewer.DefaultWaypoint;
-import org.jxmapviewer.viewer.GeoPosition;
-import org.jxmapviewer.viewer.Waypoint;
-import org.jxmapviewer.viewer.WaypointPainter;
 import org.kordamp.ikonli.foundation.Foundation;
 
 import javax.swing.JPanel;
-import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Collection;
-import java.util.Objects;
-import java.util.Set;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
@@ -40,8 +30,6 @@ import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 
 public final class CityEditPanel extends EntityEditPanel {
-
-  private static final int MIN_ZOOM = 19;
 
   private final JXMapKit mapKit;
   private final EventDataListener<Collection<Entity>> displayLocationListener;
@@ -54,7 +42,7 @@ public final class CityEditPanel extends EntityEditPanel {
 
   CityEditPanel(CityTableModel tableModel) {
     super(tableModel.editModel());
-    this.mapKit = createMapKit();
+    this.mapKit = Maps.createMapKit();
     this.displayLocationListener = new DisplayLocationListener(mapKit.getMainMap());
     tableModel.addDisplayLocationListener(displayLocationListener);
   }
@@ -102,21 +90,7 @@ public final class CityEditPanel extends EntityEditPanel {
     displayLocationListener.onEvent(singletonList(editModel().entity()));
   }
 
-  private static JXMapKit createMapKit() {
-    JXMapKit mapKit = new JXMapKit();
-    mapKit.setTileFactory(new DefaultTileFactory(new OSMTileFactoryInfo()));
-    mapKit.setMiniMapVisible(false);
-    mapKit.setZoomSliderVisible(false);
-    mapKit.setZoomButtonsVisible(false);
-    mapKit.getMainMap().setZoom(MIN_ZOOM);
-    mapKit.getMainMap().setOverlayPainter(new WaypointPainter<>());
-
-    return mapKit;
-  }
-
   private static final class DisplayLocationListener implements EventDataListener<Collection<Entity>> {
-
-    private static final int SINGLE_WAYPOINT_ZOOM_LEVEL = 15;
 
     private final JXMapViewer mapViewer;
 
@@ -126,41 +100,10 @@ public final class CityEditPanel extends EntityEditPanel {
 
     @Override
     public void onEvent(Collection<Entity> cities) {
-      SwingUtilities.invokeLater(() -> paintWaypoints(cities));
-    }
-
-    private void paintWaypoints(Collection<Entity> cities) {
-      paintWaypoints(cities.stream()
+      Maps.paintWaypoints(cities.stream()
+              .filter(city -> city.isNotNull(City.LOCATION))
               .map(city -> city.get(City.LOCATION))
-              .filter(Objects::nonNull)
-              .collect(toSet()));
-    }
-
-    private void paintWaypoints(Set<Location> positions) {
-      Set<GeoPosition> geoPositions = positions.stream()
-              .map(DisplayLocationListener::toGeoPosition)
-              .collect(toSet());
-      WaypointPainter<Waypoint> overlayPainter = (WaypointPainter<Waypoint>) mapViewer.getOverlayPainter();
-      overlayPainter.setWaypoints(geoPositions.stream()
-              .map(DefaultWaypoint::new)
-              .collect(toSet()));
-      if (geoPositions.isEmpty()) {
-        mapViewer.setZoom(MIN_ZOOM);
-        mapViewer.repaint();
-      }
-      else if (geoPositions.size() == 1) {
-        mapViewer.setZoom(0);
-        mapViewer.setCenterPosition(geoPositions.iterator().next());
-        mapViewer.setZoom(SINGLE_WAYPOINT_ZOOM_LEVEL);
-      }
-      else {
-        mapViewer.setZoom(0);
-        mapViewer.zoomToBestFit(geoPositions, 1);
-      }
-    }
-
-    private static GeoPosition toGeoPosition(Location location) {
-      return new GeoPosition(location.latitude(), location.longitude());
+              .collect(toSet()), mapViewer);
     }
   }
 }
