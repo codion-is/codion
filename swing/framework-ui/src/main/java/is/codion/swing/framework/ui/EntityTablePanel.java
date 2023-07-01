@@ -1501,7 +1501,9 @@ public class EntityTablePanel extends JPanel {
     controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
     controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
-    controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
+    if (includeViewDependenciesControl()) {
+      controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
+    }
     if (summaryPanelScrollPane != null) {
       controls.putIfAbsent(ControlCode.TOGGLE_SUMMARY_PANEL, createToggleSummaryPanelControl());
     }
@@ -1524,6 +1526,13 @@ public class EntityTablePanel extends JPanel {
     }
     controls.put(ControlCode.REQUEST_TABLE_FOCUS, Control.control(table()::requestFocus));
     controls.put(ControlCode.CONFIGURE_COLUMNS, createColumnControls());
+  }
+
+  private boolean includeViewDependenciesControl() {
+    return tableModel.entities().definitions().stream()
+            .flatMap(entityDefinition -> entityDefinition.foreignKeyProperties().stream())
+            .filter(foreignKeyProperty -> !foreignKeyProperty.isSoftReference())
+            .anyMatch(foreignKeyProperty -> foreignKeyProperty.referencedType().equals(tableModel.entityType()));
   }
 
   private void setupTable() {

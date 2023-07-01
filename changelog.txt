@@ -9262,3 +9262,4 @@
   FrameworkIkons renamed FrameworkIkon
   EntityObjectMapper.serializeEntities() and serializerKeys() now take Collection instead of List
   DefaultToolBarBuilder bug fixed, buttonBuilder referenced instead of toggleButtonBuilder
+  EntityTablePanel, dependencies control only added to popup menu if the entity has depending entities
