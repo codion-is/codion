@@ -20,6 +20,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 
 import static java.util.Objects.requireNonNull;
@@ -86,7 +87,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a JSON string representation of the given entities
    * @throws JsonProcessingException in case of an exception
    */
-  public String serializeEntities(List<Entity> entities) throws JsonProcessingException {
+  public String serializeEntities(Collection<Entity> entities) throws JsonProcessingException {
     return writeValueAsString(entities);
   }
 
@@ -116,7 +117,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a JSON string representation of the given entity keys
    * @throws JsonProcessingException in case of an exception
    */
-  public String serializeKeys(List<Key> keys) throws JsonProcessingException {
+  public String serializeKeys(Collection<Key> keys) throws JsonProcessingException {
     return writeValueAsString(keys);
   }
 

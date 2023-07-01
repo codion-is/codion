@@ -9260,3 +9260,4 @@
   DefaultSelectionDialogBuilder refactored
   EntityTableModel.batchUpdateEnabled renamed to multipleEntityUpdateEnabled
   FrameworkIkons renamed FrameworkIkon
+  EntityObjectMapper.serializeEntities() and serializerKeys() now take Collection instead of List
