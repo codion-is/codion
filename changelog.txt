@@ -9259,3 +9259,4 @@
   SelectionDialogBuilder.singleSelection() removed, unnecessary due to select() and selectSingle()
   DefaultSelectionDialogBuilder refactored
   EntityTableModel.batchUpdateEnabled renamed to multipleEntityUpdateEnabled
+  FrameworkIkons renamed FrameworkIkon

@@ -20,7 +20,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ServiceLoader;
 
-import static is.codion.swing.framework.ui.icon.FrameworkIkons.*;
+import static is.codion.swing.framework.ui.icon.FrameworkIkon.*;
 
 /**
  * A default FrameworkIcons implementation.

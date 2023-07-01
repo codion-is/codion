@@ -19,7 +19,7 @@ public final class FrameworkIkonHandler extends AbstractIkonHandler {
 
   @Override
   public Ikon resolve(String description) {
-    for (FrameworkIkons font : FrameworkIkons.values()) {
+    for (FrameworkIkon font : FrameworkIkon.values()) {
       if (font.getDescription().equals(description)) {
         return font;
       }
