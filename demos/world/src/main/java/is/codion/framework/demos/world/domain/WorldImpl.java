@@ -221,7 +221,10 @@ public final class WorldImpl extends DefaultDomain implements World {
             columnProperty(Lookup.CITY_NAME, "City"),
             columnProperty(Lookup.CITY_DISTRICT, "District"),
             columnProperty(Lookup.CITY_POPULATION, "City population")
-                    .numberFormatGrouping(true))
+                    .numberFormatGrouping(true),
+            columnProperty(Lookup.CITY_LOCATION, "City location")
+                    .columnClass(String.class, new LocationConverter())
+                    .comparator(new LocationComparator()))
             .selectQuery(SelectQuery.builder()
                     .from("world.country join world.city on city.countrycode = country.code")
                     .build())

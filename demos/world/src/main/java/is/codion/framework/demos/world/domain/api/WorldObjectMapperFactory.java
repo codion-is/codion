@@ -19,8 +19,8 @@ import java.io.IOException;
 // tag::customSerializer[]
 public final class WorldObjectMapperFactory extends DefaultEntityObjectMapperFactory {
 
-  private static final String LATITUDE = "lat";
-  private static final String LONGITUDE = "lon";
+  private static final String LATITUDE = "latitude";
+  private static final String LONGITUDE = "longitude";
 
   public WorldObjectMapperFactory() {
     super(World.DOMAIN);
