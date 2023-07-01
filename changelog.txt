@@ -9261,3 +9261,4 @@
   EntityTableModel.batchUpdateEnabled renamed to multipleEntityUpdateEnabled
   FrameworkIkons renamed FrameworkIkon
   EntityObjectMapper.serializeEntities() and serializerKeys() now take Collection instead of List
+  DefaultToolBarBuilder bug fixed, buttonBuilder referenced instead of toggleButtonBuilder
