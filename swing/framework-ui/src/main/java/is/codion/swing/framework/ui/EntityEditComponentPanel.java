@@ -973,7 +973,7 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   protected final void requestFocusAfterUpdate() {
-    requestFocus(focusedInputComponent.get() == null ? initialFocusComponent() : focusedInputComponent.get());
+    requestFocus(focusedInputComponent.optional().orElse(initialFocusComponent()));
   }
 
   private <T, B extends ComponentBuilder<T, ?, ?>> B setComponentBuilder(Attribute<T> attribute, B componentBuilder) {
