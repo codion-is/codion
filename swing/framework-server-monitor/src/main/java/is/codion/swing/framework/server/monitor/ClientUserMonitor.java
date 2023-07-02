@@ -82,9 +82,8 @@ public final class ClientUserMonitor {
    * Instantiates a new {@link ClientUserMonitor}
    * @param server the server
    * @param updateRate the initial statistics update rate in seconds
-   * @throws RemoteException in case of a communication error
    */
-  public ClientUserMonitor(EntityServerAdmin server, int updateRate) throws RemoteException {
+  public ClientUserMonitor(EntityServerAdmin server, int updateRate) {
     this.server = requireNonNull(server);
     this.clientMonitor = new ClientMonitor(server);
     this.idleConnectionTimeoutValue = Value.value(this::getIdleConnectionTimeout, this::setIdleConnectionTimeout, 0);

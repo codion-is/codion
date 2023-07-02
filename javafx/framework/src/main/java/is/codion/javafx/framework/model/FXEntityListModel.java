@@ -66,7 +66,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
-  private final State queryConditionRequiredState = State.state();
+  private final State conditionRequiredState = State.state();
   private final FXEntityEditModel editModel;
   private final State conditionChangedState = State.state();
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
@@ -170,8 +170,8 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   @Override
-  public final State queryConditionRequiredState() {
-    return queryConditionRequiredState;
+  public final State conditionRequiredState() {
+    return conditionRequiredState;
   }
 
   @Override
@@ -432,12 +432,12 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #orderBy()}
    * @return entities selected from the database according the query condition.
-   * @see #queryConditionRequiredState()
+   * @see #conditionRequiredState()
    * @see EntityTableConditionModel#condition()
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!conditionModel.isEnabled() && queryConditionRequiredState.get()) {
+    if (!conditionModel.isEnabled() && conditionRequiredState.get()) {
       return emptyList();
     }
 
