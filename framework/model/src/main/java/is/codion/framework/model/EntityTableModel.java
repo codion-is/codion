@@ -265,7 +265,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * with a large underlying dataset.
    * @return a State specifying whether this table model requires a query condition
    */
-  State queryConditionRequiredState();
+  State conditionRequiredState();
 
   /**
    * @return true if entities that are deleted via the associated edit model

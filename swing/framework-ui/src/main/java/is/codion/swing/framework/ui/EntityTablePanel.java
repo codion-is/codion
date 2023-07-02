@@ -1586,7 +1586,7 @@ public class EntityTablePanel extends JPanel {
       conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
-    conditionControls.add(ToggleControl.builder(tableModel.queryConditionRequiredState())
+    conditionControls.add(ToggleControl.builder(tableModel.conditionRequiredState())
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());

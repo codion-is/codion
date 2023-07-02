@@ -91,7 +91,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final FilteredTableModel<Entity, Attribute<?>> tableModel;
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
-  private final State queryConditionRequiredState = State.state();
+  private final State conditionRequiredState = State.state();
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
@@ -233,8 +233,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final State queryConditionRequiredState() {
-    return queryConditionRequiredState;
+  public final State conditionRequiredState() {
+    return conditionRequiredState;
   }
 
   @Override
@@ -810,11 +810,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
    * using the order by clause returned by {@link #orderBy()}
    * @return entities selected from the database according the query condition.
-   * @see #queryConditionRequiredState()
+   * @see #conditionRequiredState()
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
-    if (queryConditionRequiredState.get() && !conditionModel.isEnabled()) {
+    if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
       return emptyList();
     }
     try {
