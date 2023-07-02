@@ -1400,7 +1400,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return Components.splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
-            .border(BorderFactory.createEmptyBorder())
             .oneTouchExpandable(true)
             .resizeWeight(detailSplitPanelResizeWeight)
             .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
