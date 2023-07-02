@@ -130,7 +130,7 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
       tableModel.selectionModel().setSelectedIndex(searchResultValue.get().row());
     }
 
-    return searchResultValue.toOptional();
+    return searchResultValue.optional();
   }
 
   private Optional<RowColumn> emptyResult(boolean addToSelection) {

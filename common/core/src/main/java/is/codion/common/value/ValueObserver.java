@@ -18,7 +18,7 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
   /**
    * @return an {@link Optional} wrapping this value.
    */
-  default Optional<T> toOptional() {
+  default Optional<T> optional() {
     if (isNullable()) {
       return Optional.ofNullable(get());
     }

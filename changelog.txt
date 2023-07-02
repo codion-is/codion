@@ -9264,3 +9264,4 @@
   DefaultToolBarBuilder bug fixed, buttonBuilder referenced instead of toggleButtonBuilder
   EntityTablePanel, dependencies control only added to popup menu if the entity has depending entities
   EntityTableModel.queryConditionRequiredState() renamed conditionRequiredState()
+  ValueObserver.getOptional() renamed optional()

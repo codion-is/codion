@@ -90,11 +90,11 @@ public class ValueTest {
     AtomicInteger eventCounter = new AtomicInteger();
     Value<Integer> intValue = Value.value(42, -1);
     assertFalse(intValue.isNullable());
-    assertTrue(intValue.toOptional().isPresent());
+    assertTrue(intValue.optional().isPresent());
     assertTrue(intValue.equalTo(42));
     ValueObserver<Integer> valueObserver = intValue.observer();
     assertFalse(valueObserver.isNullable());
-    assertTrue(valueObserver.toOptional().isPresent());
+    assertTrue(valueObserver.optional().isPresent());
     assertTrue(valueObserver.equalTo(42));
     EventListener eventListener = eventCounter::incrementAndGet;
     valueObserver.addListener(eventListener);
@@ -112,7 +112,7 @@ public class ValueTest {
     assertTrue(intValue.equalTo(-1));
     assertFalse(intValue.isNull());
     assertTrue(intValue.isNotNull());
-    assertTrue(intValue.toOptional().isPresent());
+    assertTrue(intValue.optional().isPresent());
     assertEquals(-1, intValue.get());
     assertEquals(-1, valueObserver.get());
     assertEquals(2, eventCounter.get());
@@ -135,9 +135,9 @@ public class ValueTest {
     assertEquals("null", stringValue.get());
 
     Value<String> value = Value.value();
-    assertFalse(value.toOptional().isPresent());
+    assertFalse(value.optional().isPresent());
     value.set("hello");
-    assertTrue(value.toOptional().isPresent());
+    assertTrue(value.optional().isPresent());
 
     valueObserver.removeListener(eventListener);
   }
@@ -254,7 +254,7 @@ public class ValueTest {
     assertFalse(valueSet.isNotEmpty());
 
     assertFalse(valueSet.isNullable());
-    assertTrue(valueSet.toOptional().isPresent());
+    assertTrue(valueSet.optional().isPresent());
 
     assertTrue(valueSet.add(1));
     assertFalse(valueSet.add(1));

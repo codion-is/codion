@@ -492,7 +492,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(caption == null ? connectionProvider.entities().definition(entityType).caption() : caption)
-              .onShown(d -> invalidAttribute.toOptional()
+              .onShown(d -> invalidAttribute.optional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))
               .build();
@@ -597,7 +597,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(caption == null ? connectionProvider.entities().definition(entityType).caption() : caption)
-              .onShown(d -> invalidAttribute.toOptional()
+              .onShown(d -> invalidAttribute.optional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))
               .build();

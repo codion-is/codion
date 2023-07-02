@@ -58,7 +58,7 @@ public class StateTest {
     assertNotEquals(reversed.get(), state.get());
     assertEquals(state.get(), reversedReversed.get());
     state.set(true);
-    assertFalse(reversed.toOptional().orElse(null));
+    assertFalse(reversed.optional().orElse(null));
     assertEquals(1, stateCounter.get());
     assertEquals(1, reversedStateCounter.get());
     assertEquals(1, reversedReversedStateCounter.get());
@@ -80,7 +80,7 @@ public class StateTest {
     assertTrue(state.isNotNull());
     assertFalse(state.isNullable());
     assertFalse(state.equalTo(true));
-    assertTrue(state.toOptional().isPresent());
+    assertTrue(state.optional().isPresent());
     state.onEvent(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");
     assertEquals("true", state.toString());
