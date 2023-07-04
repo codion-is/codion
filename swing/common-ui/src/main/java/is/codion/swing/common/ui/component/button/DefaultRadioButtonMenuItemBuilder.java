@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.button;
 
 import is.codion.common.value.Value;
 
-import javax.swing.JMenuItem;
 import javax.swing.JRadioButtonMenuItem;
 
 final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JRadioButtonMenuItem, B>
@@ -16,7 +15,7 @@ final class DefaultRadioButtonMenuItemBuilder<B extends RadioButtonMenuItemBuild
   }
 
   @Override
-  protected JMenuItem createMenuItem() {
-    return new ControlDownRadioMenuItem();
+  protected JRadioButtonMenuItem createMenuItem() {
+    return new ControlDownRadioButtonMenuItem();
   }
 }

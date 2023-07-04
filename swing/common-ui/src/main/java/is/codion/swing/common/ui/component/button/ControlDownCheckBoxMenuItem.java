@@ -4,10 +4,9 @@
 package is.codion.swing.common.ui.component.button;
 
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
 import java.awt.event.MouseEvent;
 
-final class ControlDownMenuItem extends JMenuItem {
+final class ControlDownCheckBoxMenuItem extends JCheckBoxMenuItem {
 
   @Override
   protected void processMouseEvent(MouseEvent e) {

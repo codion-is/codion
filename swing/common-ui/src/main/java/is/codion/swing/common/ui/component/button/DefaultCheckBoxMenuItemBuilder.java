@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.button;
 import is.codion.common.value.Value;
 
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JMenuItem;
 
 final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>> extends AbstractToggleMenuItemBuilder<JCheckBoxMenuItem, B>
         implements CheckBoxMenuItemBuilder<B> {
@@ -16,7 +15,7 @@ final class DefaultCheckBoxMenuItemBuilder<B extends CheckBoxMenuItemBuilder<B>>
   }
 
   @Override
-  protected JMenuItem createMenuItem() {
-    return new ControlDownMenuItem();
+  protected JCheckBoxMenuItem createMenuItem() {
+    return new ControlDownCheckBoxMenuItem();
   }
 }
