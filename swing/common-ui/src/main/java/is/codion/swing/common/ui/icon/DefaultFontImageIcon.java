@@ -40,8 +40,8 @@ final class DefaultFontImageIcon implements FontImageIcon {
 
   static final class DefaultBuilder implements Builder {
 
-    private static final IconPainter DEFAULT_ICON_PAINTER = new IconPainter() {};
-    private static final ImageIconFactory DEFAULT_ICON_FACTORY = new ImageIconFactory() {};
+    private static final IconPainter DEFAULT_ICON_PAINTER = new DefaultIconPainter();
+    private static final ImageIconFactory DEFAULT_ICON_FACTORY = new DefaultImageIconFactory();
 
     private final Ikon ikon;
 
@@ -83,4 +83,8 @@ final class DefaultFontImageIcon implements FontImageIcon {
       return new DefaultFontImageIcon(this);
     }
   }
+
+  private static final class DefaultIconPainter implements IconPainter {}
+
+  private static final class DefaultImageIconFactory implements ImageIconFactory {}
 }

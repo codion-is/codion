@@ -579,8 +579,12 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
-    column.setCellRenderer(rendererFactory.tableCellRenderer(column));
-    column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column));
+    if (column.getCellRenderer() == null) {
+      column.setCellRenderer(rendererFactory.tableCellRenderer(column));
+    }
+    if (column.getHeaderRenderer() == null) {
+      column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column));
+    }
   }
 
   private void initializeTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
@@ -707,6 +711,7 @@ public final class FilteredTable<R, C> extends JTable {
     Builder<R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory);
 
     /**
+     * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer set.
      * @param cellRendererFactory the table cell renderer factory
      * @return this builder instance
      */

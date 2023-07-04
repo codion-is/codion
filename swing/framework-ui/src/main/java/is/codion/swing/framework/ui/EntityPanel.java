@@ -1401,6 +1401,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
+            .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
             .resizeWeight(detailSplitPanelResizeWeight)
             .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
             .leftComponent(editControlTablePanel)
