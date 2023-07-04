@@ -55,7 +55,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -1140,43 +1139,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
-    return FilteredTableModel.builder(new EntityColumnFactory(), new EntityColumnValueProvider())
+    return FilteredTableModel.builder(new SwingEntityColumnFactory(entityDefinition), new EntityColumnValueProvider())
             .filterModelFactory(new EntityFilterModelFactory())
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
             .itemSupplier(SwingEntityTableModel.this::refreshItems)
             .itemValidator(row -> row.type().equals(entityDefinition.type()))
             .build();
-  }
-
-  private final class EntityColumnFactory implements ColumnFactory<Attribute<?>> {
-
-    @Override
-    public List<FilteredTableColumn<Attribute<?>>> createColumns() {
-      List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(editModel.entityDefinition().visibleProperties().size());
-      for (Property<?> property : editModel.entityDefinition().visibleProperties()) {
-        columns.add(createColumn(columns.size(), property));
-      }
-
-      return columns;
-    }
-
-    private FilteredTableColumn<Attribute<?>> createColumn(int modelIndex, Property<?> property) {
-      FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-              FilteredTableColumn.builder(modelIndex, property.attribute())
-                      .headerValue(property.caption())
-                      .columnClass(property.attribute().valueClass())
-                      .comparator(attributeComparator(property.attribute()));
-
-      return (FilteredTableColumn<Attribute<?>>) columnBuilder.build();
-    }
-
-    private Comparator<?> attributeComparator(Attribute<?> attribute) {
-      if (attribute instanceof ForeignKey) {
-        return editModel.entityDefinition().referencedDefinition((ForeignKey) attribute).comparator();
-      }
-
-      return editModel.entityDefinition().property(attribute).comparator();
-    }
   }
 
   private static final class EntityColumnValueProvider implements ColumnValueProvider<Entity, Attribute<?>> {

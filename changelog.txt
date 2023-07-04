@@ -9265,3 +9265,5 @@
   EntityTablePanel, dependencies control only added to popup menu if the entity has depending entities
   EntityTableModel.queryConditionRequiredState() renamed conditionRequiredState()
   ValueObserver.getOptional() renamed optional()
+  SwingEntityTableModel.EntityColumnFactory moved up to package level and renamed SwingEntityColumnFactory
+  FilteredTable.configureColumn() now only sets the cell and header renderers in case the column hasn't already specified those

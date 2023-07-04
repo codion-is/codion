@@ -12,14 +12,14 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * A {@link TableColumn} with a typed identifier.
- * For instances use factory method {@link #filteredTableColumn(int)} or {@link #filteredTableColumn(int, Object)}
- * or builder methods {@link #builder(int)} or {@link #builder(int, Object)}.
+ * For instances use factory method {@link #filteredTableColumn(int)} or {@link #filteredTableColumn(Object, int)}
+ * or builder methods {@link #builder(int)} or {@link #builder(Object, int)}.
  * Note that the identifier is used as a default header value.
  * @param <C> the column identifier type
  * @see #filteredTableColumn(int)
- * @see #filteredTableColumn(int, Object)
+ * @see #filteredTableColumn(Object, int)
  * @see #builder(int)
- * @see #builder(int, Object)
+ * @see #builder(Object, int)
  */
 public final class FilteredTableColumn<C> extends TableColumn {
 
@@ -98,7 +98,7 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   /**
    * Instantiates a new index based {@link FilteredTableColumn}.
-   * @param modelIndex the column model index and identifier
+   * @param modelIndex the column model index, also used as identifier
    * @return a new {@link FilteredTableColumn} instance
    */
   public static FilteredTableColumn<Integer> filteredTableColumn(int modelIndex) {
@@ -107,19 +107,19 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   /**
    * Instantiates a new {@link FilteredTableColumn}.
-   * @param modelIndex the column model index
-   * @param identifier the column identifier
    * @param <C> the column identifier type
+   * @param identifier the column identifier
+   * @param modelIndex the column model index
    * @return a new {@link FilteredTableColumn} instance
    * @throws NullPointerException in case {@code identifier} is null
    */
-  public static <C> FilteredTableColumn<C> filteredTableColumn(int modelIndex, C identifier) {
-    return builder(modelIndex, identifier).build();
+  public static <C> FilteredTableColumn<C> filteredTableColumn(C identifier, int modelIndex) {
+    return builder(identifier, modelIndex).build();
   }
 
   /**
    * Instantiates a new index based {@link FilteredTableColumn.Builder}.
-   * @param modelIndex the column model index and identifier
+   * @param modelIndex the column model index, also used as identifier
    * @return a new {@link FilteredTableColumn.Builder} instance
    */
   public static FilteredTableColumn.Builder<Integer> builder(int modelIndex) {
@@ -128,14 +128,14 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   /**
    * Instantiates a new {@link FilteredTableColumn.Builder}.
-   * @param modelIndex the column model index
-   * @param identifier the column identifier
    * @param <C> the column identifier type
+   * @param identifier the column identifier
+   * @param modelIndex the column model index
    * @return a new {@link FilteredTableColumn} instance
    * @throws NullPointerException in case {@code identifier} is null
    */
-  public static <C> FilteredTableColumn.Builder<C> builder(int modelIndex, C identifier) {
-    return new DefaultBuilder<>(modelIndex, identifier);
+  public static <C> FilteredTableColumn.Builder<C> builder(C identifier, int modelIndex) {
+    return new DefaultBuilder<>(identifier, modelIndex);
   }
 
   private static Comparator<?> defaultComparator(Class<?> columnClass) {
@@ -226,8 +226,8 @@ public final class FilteredTableColumn<C> extends TableColumn {
 
   private static final class DefaultBuilder<C> implements Builder<C> {
 
-    private final int modelIndex;
     private final C identifier;
+    private final int modelIndex;
 
     private Class<?> columnClass = Object.class;
     private Comparator<?> comparator;
@@ -241,12 +241,12 @@ public final class FilteredTableColumn<C> extends TableColumn {
     private TableCellEditor cellEditor;
     private TableCellRenderer cellRenderer;
 
-    private DefaultBuilder(int modelIndex, C identifier) {
+    private DefaultBuilder(C identifier, int modelIndex) {
       if (modelIndex < 0) {
         throw new IllegalArgumentException("Model index must be positive: " + modelIndex);
       }
-      this.modelIndex = modelIndex;
       this.identifier = requireNonNull(identifier);
+      this.modelIndex = modelIndex;
       this.headerValue = identifier;
     }
 
