@@ -3,9 +3,11 @@
  */
 package is.codion.swing.common.ui.dialog;
 
+import is.codion.common.event.EventListener;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.value.ComponentValue;
@@ -102,7 +104,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     if (caption != null) {
       basePanel.add(new JLabel(caption), BorderLayout.NORTH);
     }
-    okCancelDialogBuilder.onOk(new OnOk(okPressed)).show();
+    okCancelDialogBuilder.onOk(new OnOk(componentValue, okPressed)).show();
     if (okPressed.get()) {
       return componentValue.get();
     }
@@ -112,16 +114,18 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
   private StateObserver createValidInputState(Predicate<T> validInputPredicate) {
     State validInputState = State.state(validInputPredicate.test(componentValue.get()));
-    componentValue.addDataListener(value -> validInputState.set(validInputPredicate.test(componentValue.get())));
+    componentValue.addListener(new InputValidStateListener<T>(validInputState, validInputPredicate, componentValue));
 
     return validInputState;
   }
 
-  private final class OnOk implements Runnable {
+  private static final class OnOk implements Runnable {
 
+    private final ComponentValue<?, ?> componentValue;
     private final State okPressed;
 
-    private OnOk(State okPressed) {
+    private OnOk(ComponentValue<?, ?> componentValue, State okPressed) {
+      this.componentValue = componentValue;
       this.okPressed = okPressed;
     }
 
@@ -129,6 +133,24 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     public void run() {
       Utilities.parentDialog(componentValue.component()).dispose();
       okPressed.set(true);
+    }
+  }
+
+  private static final class InputValidStateListener<T> implements EventListener {
+
+    private final State validInputState;
+    private final Predicate<T> validInputPredicate;
+    private final Value<T> componentValue;
+
+    private InputValidStateListener(State validInputState, Predicate<T> validInputPredicate, Value<T> componentValue) {
+      this.validInputState = validInputState;
+      this.validInputPredicate = validInputPredicate;
+      this.componentValue = componentValue;
+    }
+
+    @Override
+    public void onEvent() {
+      validInputState.set(validInputPredicate.test(componentValue.get()));
     }
   }
 }

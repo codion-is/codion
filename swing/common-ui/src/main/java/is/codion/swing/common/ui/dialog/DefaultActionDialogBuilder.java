@@ -19,12 +19,15 @@ import javax.swing.JPanel;
 import javax.swing.WindowConstants;
 import javax.swing.border.Border;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Predicate;
 
 import static is.codion.swing.common.ui.dialog.DefaultComponentDialogBuilder.createDialog;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
@@ -136,11 +139,11 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (defaultAction != null) {
       Arrays.stream(buttonPanel.getComponents())
-              .filter(JButton.class::isInstance)
-              .map(JButton.class::cast)
-              .filter(button -> button.getAction() == defaultAction)
+              .filter(new IsButton())
+              .map(new CastToButtonFunction())
+              .filter(new IsActionButton(defaultAction))
               .findFirst()
-              .ifPresent(defaultButton -> dialog.getRootPane().setDefaultButton(defaultButton));
+              .ifPresent(new SetDefaultButton(dialog));
     }
     if (escapeAction != null) {
       dialog.addWindowListener(new EscapeOnWindowClosingListener(escapeAction));
@@ -172,6 +175,50 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     @Override
     public void windowClosing(WindowEvent e) {
       escapeAction.actionPerformed(null);
+    }
+  }
+
+  private static final class IsButton implements Predicate<Component> {
+
+    @Override
+    public boolean test(Component component) {
+      return component instanceof JButton;
+    }
+  }
+
+  private static final class CastToButtonFunction implements Function<Component, JButton> {
+
+    @Override
+    public JButton apply(Component component) {
+      return (JButton) component;
+    }
+  }
+
+  private static final class IsActionButton implements Predicate<JButton> {
+
+    private final Action defaultAction;
+
+    private IsActionButton(Action defaultAction) {
+      this.defaultAction = defaultAction;
+    }
+
+    @Override
+    public boolean test(JButton button) {
+      return button.getAction() == defaultAction;
+    }
+  }
+
+  private static final class SetDefaultButton implements Consumer<JButton> {
+
+    private final JDialog dialog;
+
+    private SetDefaultButton(JDialog dialog) {
+      this.dialog = dialog;
+    }
+
+    @Override
+    public void accept(JButton button) {
+      dialog.getRootPane().setDefaultButton(button);
     }
   }
 }
