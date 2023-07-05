@@ -9271,3 +9271,4 @@
   SearchHighlighter.createPopupMenu() bug fixed, case sensitive menu item did not work, now uses CheckBoxMenuItemBuilder
   DefaultLocalEntityConnection.selectReferencedEntities() bug fixed, did not work correctly when selecting references based on a non-primary key
   DefaultKeyBuilder, related refactoring
+  DefaultKeyBuilder bug fixed, repeated calls to build() no longer return keys based on the same value map instance
