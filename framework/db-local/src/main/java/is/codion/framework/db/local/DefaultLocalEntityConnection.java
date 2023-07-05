@@ -57,6 +57,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
@@ -66,8 +67,7 @@ import static is.codion.framework.db.local.Queries.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.joining;
-import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.*;
 
 /**
  * A default LocalEntityConnection implementation
@@ -1015,7 +1015,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private Map<Key, Entity> selectReferencedEntities(ForeignKeyProperty foreignKeyProperty, List<Key> referencedKeys,
                                                     int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
-    List<Attribute<?>> keyAttributes = referencedKeys.get(0).attributes();
+    Key referencedKey = referencedKeys.get(0);
+    List<Attribute<?>> keyAttributes = referencedKey.attributes();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
@@ -1030,7 +1031,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               .collect(toList()));
     }
 
-    return Entity.mapToPrimaryKey(referencedEntities);
+    if (referencedKey.isPrimaryKey()) {
+      return Entity.mapToPrimaryKey(referencedEntities);
+    }
+
+    return referencedEntities.stream()
+            .collect(toMap(entity -> createKey(entity, keyAttributes), Function.identity()));
+  }
+
+  private Key createKey(Entity entity, List<Attribute<?>> keyAttributes) {
+    Key.Builder keyBuilder = entities().keyBuilder(entity.type());
+    keyAttributes.forEach(attribute -> keyBuilder.with((Attribute<Object>) attribute, entity.get(attribute)));
+
+    return keyBuilder.build();
   }
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
@@ -1318,7 +1331,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the key since that's the best we can do under the circumstances
-      referencedEntity = Entity.entity(referencedKey);
+      referencedEntity = Entity.entity(referencedKey).immutable();
     }
 
     return referencedEntity;

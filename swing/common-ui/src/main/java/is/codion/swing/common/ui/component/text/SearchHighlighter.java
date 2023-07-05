@@ -8,6 +8,7 @@ import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
 import is.codion.swing.common.ui.KeyEvents;
+import is.codion.swing.common.ui.component.button.CheckBoxMenuItemBuilder;
 import is.codion.swing.common.ui.control.ToggleControl;
 
 import javax.swing.JPopupMenu;
@@ -216,7 +217,9 @@ public final class SearchHighlighter {
 
   private static JPopupMenu createPopupMenu(ToggleControl caseSensitiveControl) {
     JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(caseSensitiveControl);
+    popupMenu.add(CheckBoxMenuItemBuilder.builder()
+            .toggleControl(caseSensitiveControl)
+            .build());
 
     return popupMenu;
   }
