@@ -13,11 +13,12 @@ final class DefaultKeyBuilder implements Key.Builder {
   private final EntityDefinition definition;
   private final Map<Attribute<?>, Object> attributeValues = new HashMap<>();
 
-  private boolean primaryKey = false;
+  private boolean primaryKey = true;
 
   DefaultKeyBuilder(Key key) {
     this(key.definition());
-    key.attributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
+    this.primaryKey = key.isPrimaryKey();
+    key.attributes().forEach(attribute -> attributeValues.put(attribute, key.get(attribute)));
   }
 
   DefaultKeyBuilder(EntityDefinition definition) {
@@ -27,8 +28,8 @@ final class DefaultKeyBuilder implements Key.Builder {
   @Override
   public <T> Key.Builder with(Attribute<T> attribute, T value) {
     ColumnProperty<T> property = definition.columnProperty(attribute);
-    if (property.isPrimaryKeyColumn()) {
-      primaryKey = true;
+    if (!property.isPrimaryKeyColumn()) {
+      primaryKey = false;
     }
     attributeValues.put(attribute, value);
 
@@ -37,7 +38,8 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   @Override
   public Key build() {
-    if (primaryKey) {
+    if (primaryKey && !attributeValues.isEmpty()) {
+      //populate the rest of the primary key attributes with null values
       definition.primaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
     }
 
