@@ -38,11 +38,16 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   @Override
   public Key build() {
-    if (primaryKey && !attributeValues.isEmpty()) {
-      //populate the rest of the primary key attributes with null values
-      definition.primaryKeyAttributes().forEach(attribute -> attributeValues.putIfAbsent(attribute, null));
+    return new DefaultKey(definition, initializeValues(new HashMap<>(attributeValues)), primaryKey);
+  }
+
+  private Map<Attribute<?>, Object> initializeValues(Map<Attribute<?>, Object> values) {
+    if (primaryKey && !values.isEmpty()) {
+      //populate any missing primary key attributes with null values,
+      //DefaultKey.equals() relies on the key attributes being present
+      definition.primaryKeyAttributes().forEach(attribute -> values.putIfAbsent(attribute, null));
     }
 
-    return new DefaultKey(definition, attributeValues, primaryKey);
+    return values;
   }
 }

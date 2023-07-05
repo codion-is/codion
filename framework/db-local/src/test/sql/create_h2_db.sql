@@ -107,5 +107,23 @@ values (2, 3);
 
 commit;
 
+create table scott.master_fk (
+    id int not null,
+    name varchar(5) not null
+);
+
+create table scott.detail_fk (
+    id int not null,
+    master_name varchar(5) not null
+);
+
+insert into scott.master_fk(id, name)
+values (1, 'name');
+
+insert into scott.detail_fk(id, master_name)
+values (1, 'name');
+
+commit;
+
 create user scott password 'tiger';
 alter user scott admin true;

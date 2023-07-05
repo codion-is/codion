@@ -78,6 +78,8 @@ public final class TestDomain extends DefaultDomain {
     queryFromWhereClause();
     master();
     detail();
+    masterFk();
+    detailFk();
   }
 
   public interface Department extends Entity {
@@ -477,5 +479,34 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Detail.MASTER_2_ID),
             foreignKeyProperty(Detail.MASTER_2_FK))
             .keyGenerator(identity()));
+  }
+
+  public interface MasterFk {
+    EntityType TYPE = DOMAIN.entityType("scott.master_fk");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> NAME = TYPE.stringAttribute("name");
+  }
+
+  void masterFk() {
+    add(definition(
+            primaryKeyProperty(MasterFk.ID),
+            columnProperty(MasterFk.NAME)));
+  }
+
+  public interface DetailFk {
+    EntityType TYPE = DOMAIN.entityType("scott.detail_fk");
+
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
+
+    ForeignKey MASTER_FK = TYPE.foreignKey("master_fk", MASTER_NAME, MasterFk.NAME);
+  }
+
+  void detailFk() {
+    add(definition(
+            primaryKeyProperty(DetailFk.ID),
+            columnProperty(DetailFk.MASTER_NAME),
+            foreignKeyProperty(DetailFk.MASTER_FK)));
   }
 }
