@@ -1230,6 +1230,18 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
+  void nonPrimaryKeyForeignKey() throws DatabaseException {
+    Entity selected = connection.selectSingle(condition(DetailFk.TYPE));
+    assertEquals(1, selected.get(DetailFk.MASTER_FK).get(MasterFk.ID));
+
+    connection.insert(connection.entities().builder(MasterFk.TYPE)
+            .with(MasterFk.ID, 2)
+            .with(MasterFk.NAME, "name")
+            .build());
+    assertThrows(IllegalStateException.class, () -> connection.selectSingle(condition(DetailFk.TYPE)));
+  }
+
+  @Test
   void domain() {
     assertInstanceOf(TestDomain.class, connection.domain());
   }
