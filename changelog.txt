@@ -9268,3 +9268,4 @@
   SwingEntityTableModel.EntityColumnFactory moved up to package level and renamed SwingEntityColumnFactory
   FilteredTable.configureColumn() now only sets the cell and header renderers in case the column hasn't already specified those
   DefaultInputDialogBuilder and DefaultActionDialogBuilder, lambdas replaced with classes, preventing references to builder instance hanging around
+  SearchHighlighter.createPopupMenu() bug fixed, case sensitive menu item did not work, now uses CheckBoxMenuItemBuilder
