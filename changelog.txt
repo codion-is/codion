@@ -9311,3 +9311,5 @@
   DefaultLocalEntityConnection.selectReferencedEntities() bug fixed, did not work correctly when selecting references based on a non-primary key
   DefaultKeyBuilder, related refactoring
   DefaultKeyBuilder bug fixed, repeated calls to build() no longer return keys based on the same value map instance
+  FrameBuilder.titleProvider() added
+  SwingEntityTableModel, FXEntityListModel bug fixed, now remembers the actual condition instance that was used when queried
