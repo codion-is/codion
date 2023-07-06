@@ -12,6 +12,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -437,12 +438,11 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
    */
   @Override
   protected List<Entity> performQuery() {
-    if (!conditionModel.isEnabled() && conditionRequiredState.get()) {
+    if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
       return emptyList();
     }
-
     try {
-      return connectionProvider().connection().select(conditionModel.condition()
+      return queryItems(conditionModel.condition()
               .selectBuilder()
               .selectAttributes(selectAttributes())
               .limit(limit)
@@ -510,6 +510,14 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
         editModel.setEntity(selectionModel().getSelectedItem());
       }
     });
+  }
+
+  private List<Entity> queryItems(SelectCondition selectCondition) throws DatabaseException {
+    List<Entity> items = connectionProvider().connection().select(selectCondition);
+    refreshCondition = selectCondition;
+    conditionChangedState.set(false);
+
+    return items;
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
@@ -634,7 +642,6 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   private void bindEvents() {
-    refresher().addRefreshListener(this::rememberCondition);
     conditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
@@ -655,11 +662,6 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
 
   private void removeEditEventListeners() {
     entityDefinition().foreignKeys().forEach(foreignKey -> EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
-  }
-
-  private void rememberCondition() {
-    refreshCondition = conditionModel.condition();
-    conditionChangedState.set(false);
   }
 
   private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {

@@ -18,6 +18,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -817,7 +818,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       return emptyList();
     }
     try {
-      return editModel.connectionProvider().connection().select(conditionModel.condition()
+      return queryItems(conditionModel.condition()
               .selectBuilder()
               .selectAttributes(selectAttributes())
               .limit(limit)
@@ -912,7 +913,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    refresher().addRefreshListener(this::rememberCondition);
     conditionModel.addChangeListener(condition ->
             conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
     editModel.addAfterInsertListener(this::onInsert);
@@ -938,9 +938,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
-  private void rememberCondition() {
-    refreshCondition = conditionModel.condition();
+  private List<Entity> queryItems(SelectCondition selectCondition) throws DatabaseException {
+    List<Entity> items = editModel.connectionProvider().connection().select(selectCondition);
+    refreshCondition = selectCondition;
     conditionChangedState.set(false);
+
+    return items;
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
