@@ -3,6 +3,8 @@
  */
 package is.codion.swing.common.ui;
 
+import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.swing.common.ui.layout.Layouts;
 
 import javax.swing.ImageIcon;
@@ -114,6 +116,12 @@ public final class Windows {
     FrameBuilder title(String title);
 
     /**
+     * @param titleProvider a value observer for a dynamic dialog title
+     * @return this builder instance
+     */
+    FrameBuilder titleProvider(ValueObserver<String> titleProvider);
+
+    /**
      * @param icon the icon
      * @return this builder instance
      */
@@ -213,7 +221,7 @@ public final class Windows {
     private final List<WindowListener> windowListeners = new ArrayList<>(0);
 
     private ImageIcon icon;
-    private String title;
+    private ValueObserver<String> titleProvider;
     private Consumer<WindowEvent> onClosing;
     private Consumer<WindowEvent> onClosed;
     private Consumer<WindowEvent> onOpened;
@@ -232,7 +240,12 @@ public final class Windows {
 
     @Override
     public FrameBuilder title(String title) {
-      this.title = title;
+      return titleProvider(Value.value(title));
+    }
+
+    @Override
+    public FrameBuilder titleProvider(ValueObserver<String> titleProvider) {
+      this.titleProvider = requireNonNull(titleProvider);
       return this;
     }
 
@@ -320,8 +333,9 @@ public final class Windows {
       frame.setDefaultCloseOperation(defaultCloseOperation);
       frame.setLayout(Layouts.borderLayout());
       frame.add(component, BorderLayout.CENTER);
-      if (title != null) {
-        frame.setTitle(title);
+      if (titleProvider != null) {
+        frame.setTitle(titleProvider.get());
+        titleProvider.addDataListener(frame::setTitle);
       }
       if (icon != null) {
         frame.setIconImage(icon.getImage());
