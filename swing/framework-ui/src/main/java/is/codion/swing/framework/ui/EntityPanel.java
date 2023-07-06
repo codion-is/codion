@@ -1417,11 +1417,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     TabbedPaneBuilder builder = Components.tabbedPane()
             .focusable(false)
             .changeListener(e -> selectedDetailPanel().activatePanel());
-    for (EntityPanel detailPanel : detailEntityPanels) {
-      builder.tabBuilder(detailPanel.caption, detailPanel)
-              .toolTipText(detailPanel.description)
-              .add();
-    }
+    detailEntityPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption, detailPanel)
+            .toolTipText(detailPanel.description)
+            .add());
     if (includeDetailPanelControls) {
       builder.mouseListener(new TabbedPaneMouseReleasesListener());
     }
