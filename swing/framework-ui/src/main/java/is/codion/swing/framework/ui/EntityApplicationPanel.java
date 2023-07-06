@@ -29,8 +29,10 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
+import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -56,6 +58,8 @@ import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -770,6 +774,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected void initializeUI() {
     applicationTabPane = createApplicationTabPane();
+    //initialize first panel
+    selectedChildPanel()
+            .map(EntityPanel.class::cast)
+            .ifPresent(EntityPanel::initializePanel);
     setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     add(borderLayoutPanel()
@@ -779,7 +787,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     if (northPanel != null) {
       add(northPanel, BorderLayout.NORTH);
     }
-
     JPanel southPanel = createSouthPanel();
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
@@ -863,29 +870,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private JTabbedPane createApplicationTabPane() {
-    JTabbedPane tabbedPane = new JTabbedPane(TAB_PLACEMENT.get());
-    tabbedPane.setFocusable(false);
-    tabbedPane.addChangeListener(e -> {
-      if (tabbedPane.getTabCount() > 0) {
-        ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
-      }
-    });
-    for (EntityPanel entityPanel : entityPanels) {
-      tabbedPane.addTab(entityPanel.getCaption(), null, entityPanel, entityPanel.getDescription());
-      if (entityPanel.editPanel() != null) {
-        entityPanel.editPanel().addActiveListener(panelActivated -> {
-          if (panelActivated) {
-            selectChildPanel(entityPanel);
-          }
-        });
-      }
-    }
-    //initialize first panel
-    if (tabbedPane.getTabCount() > 0) {
-      ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
-    }
+    TabbedPaneBuilder builder = Components.tabbedPane()
+            .tabPlacement(TAB_PLACEMENT.get())
+            .focusable(false)
+            .changeListener(new InitializeSelectedPanelListener());
+    entityPanels.stream()
+            .peek(entityPanel -> builder.tabBuilder(entityPanel.getCaption(), entityPanel)
+                    .toolTipText(entityPanel.getDescription())
+                    .add())
+            .filter(entityPanel -> entityPanel.editPanel() != null)
+            .forEach(this::addSelectActivatedPanelListener);
 
-    return tabbedPane;
+    return builder.build();
+  }
+
+  private void addSelectActivatedPanelListener(EntityPanel entityPanel) {
+    entityPanel.editPanel().addActiveListener(new SelectActivatedPanelListener(entityPanel));
   }
 
   private void bindEventsInternal() {
@@ -1017,6 +1017,33 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.definition(entityType).foreignKeys().stream()
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
+  }
+
+  private final class SelectActivatedPanelListener implements EventDataListener<Boolean> {
+
+    private final EntityPanel entityPanel;
+
+    private SelectActivatedPanelListener(EntityPanel entityPanel) {
+      this.entityPanel = entityPanel;
+    }
+
+    @Override
+    public void onEvent(Boolean panelActivated) {
+      if (panelActivated) {
+        selectChildPanel(entityPanel);
+      }
+    }
+  }
+
+  private static final class InitializeSelectedPanelListener implements ChangeListener {
+
+    @Override
+    public void stateChanged(ChangeEvent e) {
+      JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
+      if (tabbedPane.getTabCount() > 0) {
+        ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
+      }
+    }
   }
 
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
