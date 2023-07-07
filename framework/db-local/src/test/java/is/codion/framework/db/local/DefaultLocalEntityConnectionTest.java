@@ -52,6 +52,7 @@ import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
+import static is.codion.framework.domain.entity.OrderBy.descending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -683,7 +684,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectValuesNonColumnProperty() throws Exception {
+  void selectValuesNonColumnProperty() {
     assertThrows(IllegalArgumentException.class, () -> connection.select(Employee.DEPARTMENT_LOCATION));
   }
 
@@ -701,9 +702,20 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectValuesIncorrectAttribute() throws Exception {
+  void selectValuesIncorrectAttribute() {
     assertThrows(IllegalArgumentException.class, () -> connection.select(Department.DNAME,
             where(Employee.ID).equalTo(1)));
+  }
+
+  @Test
+  void selectValuesLimit() throws DatabaseException {
+    List<Integer> deptnos = connection.select(Department.DEPTNO, condition(Department.TYPE)
+            .selectBuilder()
+            .limit(2)
+            .orderBy(descending(Department.DEPTNO))
+            .build());
+    assertEquals(40, deptnos.get(0));
+    assertEquals(30, deptnos.get(1));
   }
 
   @Test
@@ -1095,14 +1107,14 @@ public class DefaultLocalEntityConnectionTest {
     result2 = connection.select(where(Department.DEPTNO)
             .greaterThanOrEqualTo(20)
             .selectBuilder()
-            .orderBy(OrderBy.descending(Department.DEPTNO))
+            .orderBy(descending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
     result = connection.select(where(Department.DEPTNO)
             .greaterThanOrEqualTo(20)
             .selectBuilder()
-            .orderBy(OrderBy.descending(Department.DEPTNO))
+            .orderBy(descending(Department.DEPTNO))
             .build());
     assertSame(result, result2);
 
