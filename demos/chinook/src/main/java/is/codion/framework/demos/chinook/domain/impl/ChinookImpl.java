@@ -285,12 +285,11 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .maximumLength(10),
             columnProperty(Invoice.TOTAL)
                     .maximumFractionDigits(2),
-            subqueryProperty(Invoice.TOTAL_SUBQUERY,
+            subqueryProperty(Invoice.CALCULATED_TOTAL,
                     "select sum(unitprice * quantity) " +
                             "from chinook.invoiceline " +
                             "where invoiceid = invoice.invoiceid")
-                    .maximumFractionDigits(2)
-                    .hidden(true))
+                    .maximumFractionDigits(2))
             .tableName("chinook.invoice")
             // tag::identity[]
             .keyGenerator(identity())
