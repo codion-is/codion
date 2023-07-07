@@ -141,15 +141,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
 
   /**
-   * Specifies if EntityPanels opened via the {@link EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)} method
-   * should be displayed in a frame instead of the default dialog<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   * @see EntityApplicationPanel#displayEntityPanel(EntityPanel.Builder)
-   */
-  public static final PropertyValue<Boolean> DISPLAY_ENTITY_PANELS_IN_FRAME = Configuration.booleanValue("codion.swing.displayEntityPanelsInFrame", false);
-
-  /**
    * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanel} method
    * should be persisted, or kept in memory, when the dialog/frame is closed, instead of being created each time.<br>
    * Value type: Boolean<br>
@@ -682,11 +673,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Displays the panel provided by the given builder in a frame or dialog,
-   * depending on {@link EntityApplicationPanel#DISPLAY_ENTITY_PANELS_IN_FRAME}.
+   * depending on {@link EntityPanel#USE_FRAME_PANEL_DISPLAY}.
    * @param panelBuilder the entity panel builder
    */
   protected final void displayEntityPanel(EntityPanel.Builder panelBuilder) {
-    if (DISPLAY_ENTITY_PANELS_IN_FRAME.get()) {
+    if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
       displayEntityPanelFrame(panelBuilder);
     }
     else {
