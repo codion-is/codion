@@ -144,7 +144,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
-    EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME.set(true);
     EntityApplicationPanel.PERSIST_ENTITY_PANELS.set(true);
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     EntityPanel.USE_FRAME_PANEL_DISPLAY.set(true);
