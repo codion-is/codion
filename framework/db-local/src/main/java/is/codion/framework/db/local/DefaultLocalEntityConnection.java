@@ -567,15 +567,15 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                     .orderBy(ascending(attribute))
                     .build() :
             condition.selectBuilder().build();
-    if (!selectCondition.entityType().equals(entityDefinition.type())) {
-      throw new IllegalArgumentException("Condition entity type " + attribute.entityType() + " required, got " + condition.entityType());
+    if (!selectCondition.entityType().equals(attribute.entityType())) {
+      throw new IllegalArgumentException("Condition entity type " + attribute.entityType() + " required, got " + selectCondition.entityType());
     }
-    ColumnProperty<T> propertyToSelect = entityDefinition.columnProperty(attribute);
+    ColumnProperty<T> property = entityDefinition.columnProperty(attribute);
     String selectQuery = selectQueries.builder(entityDefinition)
             .selectCondition(selectCondition, false)
-            .columns(propertyToSelect.columnExpression())
+            .columns(property.columnExpression())
             .where(selectCondition.and(where(attribute).isNotNull()))
-            .groupBy(propertyToSelect.columnExpression())
+            .groupBy(property.columnExpression())
             .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -583,7 +583,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
-        List<T> result = propertyToSelect.resultPacker().pack(resultSet);
+        List<T> result = property.resultPacker().pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;

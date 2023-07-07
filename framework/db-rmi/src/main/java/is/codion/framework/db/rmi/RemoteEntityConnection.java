@@ -241,8 +241,9 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   <T> List<T> select(Attribute<T> attribute) throws RemoteException, DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
-   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}.
+   * Selects distinct non-null values of the given attribute, note that the attribute
+   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}. If the condition provides no
+   * order by clause the result is ordered by the attribute column.
    * @param attribute the attribute
    * @param condition the condition, null if all values should be selected
    * @param <T> the value type
