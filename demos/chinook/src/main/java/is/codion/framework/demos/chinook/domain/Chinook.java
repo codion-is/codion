@@ -136,6 +136,7 @@ public interface Chinook {
     Attribute<String> MINUTES_SECONDS_DERIVED = TYPE.stringAttribute("minutes_seconds_derived");
     Attribute<Integer> BYTES = TYPE.integerAttribute("bytes");
     Attribute<BigDecimal> UNITPRICE = TYPE.bigDecimalAttribute("unitprice");
+    Attribute<Void> RANDOM = TYPE.attribute("random()", Void.class);
 
     ForeignKey ALBUM_FK = TYPE.foreignKey("album_fk", ALBUM_ID, Album.ID);
     ForeignKey MEDIATYPE_FK = TYPE.foreignKey("mediatype_fk", MEDIATYPE_ID, MediaType.ID);

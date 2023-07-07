@@ -9315,3 +9315,4 @@
   SwingEntityTableModel, FXEntityListModel bug fixed, now remembers the actual condition instance that was used when queried
   Entity, DefaultStringFactory no longer just prints the primary key, now includes all attributes and associated values
   EntityApplicationPanel.DISPLAY_ENTITY_PANELS_IN_FRAME removed, now uses EntityPanel.USE_FRAME_PANEL_DISPLAY instead
+  DefaultLocalEntityConnection.select(Attribute, Condition) bug fixed, now respects select condition settings when querying, such as limit and order by

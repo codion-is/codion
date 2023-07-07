@@ -80,12 +80,18 @@ final class SelectQueries {
     }
 
     Builder selectCondition(SelectCondition condition) {
+      return selectCondition(condition, true);
+    }
+
+    Builder selectCondition(SelectCondition condition, boolean setWhereClause) {
       entitySelectQuery();
       if (!columnsClauseFromSelectQuery) {
         setColumns(condition);
       }
       //default from clause is handled by from()
-      where(condition);
+      if (setWhereClause) {
+        where(condition);
+      }
       if (groupBy == null) {
         groupBy(definition.groupByClause());
       }

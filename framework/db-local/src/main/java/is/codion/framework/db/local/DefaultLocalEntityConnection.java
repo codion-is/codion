@@ -64,6 +64,7 @@ import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.local.Queries.*;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -561,24 +562,27 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.selectQuery() != null) {
       throw new UnsupportedOperationException("select is not implemented for entities with custom select queries");
     }
-    Condition combinedCondition = where(attribute).isNotNull();
-    if (condition != null) {
-      condition.attributes().forEach(conditionAttribute -> validateAttribute(attribute.entityType(), conditionAttribute));
-      combinedCondition = combinedCondition.and(condition);
+    SelectCondition selectCondition = condition == null ?
+            condition(entityDefinition.type()).selectBuilder()
+                    .orderBy(ascending(attribute))
+                    .build() :
+            condition.selectBuilder().build();
+    if (!selectCondition.entityType().equals(entityDefinition.type())) {
+      throw new IllegalArgumentException("Condition entity type " + attribute.entityType() + " required, got " + condition.entityType());
     }
     ColumnProperty<T> propertyToSelect = entityDefinition.columnProperty(attribute);
-    String columnExpression = propertyToSelect.columnExpression();
     String selectQuery = selectQueries.builder(entityDefinition)
-            .columns("distinct " + columnExpression)
-            .where(combinedCondition)
-            .orderBy(columnExpression)
+            .selectCondition(selectCondition, false)
+            .columns(propertyToSelect.columnExpression())
+            .where(selectCondition.and(where(attribute).isNotNull()))
+            .groupBy(propertyToSelect.columnExpression())
             .build();
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
       try {
         statement = prepareStatement(selectQuery);
-        resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
+        resultSet = executeStatement(statement, selectQuery, selectCondition, entityDefinition);
         List<T> result = propertyToSelect.resultPacker().pack(resultSet);
         commitIfTransactionIsNotOpen();
 
@@ -586,8 +590,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, asList(attribute, combinedCondition),
-                entityDefinition.columnProperties(combinedCondition.attributes()), e), e);
+        LOG.error(createLogMessage(selectQuery, asList(attribute, selectCondition),
+                entityDefinition.columnProperties(selectCondition.attributes()), e), e);
         throw translateSQLException(e);
       }
       finally {
@@ -1418,12 +1422,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     selectAttributes.addAll(referencedAttributes);
 
     return selectAttributes;
-  }
-
-  private static void validateAttribute(EntityType entityType, Attribute<?> conditionAttribute) {
-    if (!conditionAttribute.entityType().equals(entityType)) {
-      throw new IllegalArgumentException("Condition attribute entity type " + entityType + " required, got " + conditionAttribute.entityType());
-    }
   }
 
   private static String createValueString(List<?> values, List<ColumnProperty<?>> properties) {
