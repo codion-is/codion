@@ -9274,3 +9274,4 @@
   DefaultKeyBuilder bug fixed, repeated calls to build() no longer return keys based on the same value map instance
   FrameBuilder.titleProvider() added
   SwingEntityTableModel, FXEntityListModel bug fixed, now remembers the actual condition instance that was used when queried
+  Entity, DefaultStringFactory no longer just prints the primary key, now includes all attributes and associated values
