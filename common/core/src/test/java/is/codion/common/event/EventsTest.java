@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class EventsTest {
 
   @Test
-  void test() throws Exception {
+  void test() {
     Event<Integer> event = Event.event();
     AtomicInteger counter = new AtomicInteger();
     EventListener listener = counter::incrementAndGet;
@@ -28,5 +28,19 @@ public class EventsTest {
     assertEquals(2, counter.get(), "Removed EventListener should not have been notified");
     event.removeDataListener(dataListener);
     Event.listener(Event.dataListener(listener));
+  }
+
+  @Test
+  void weakListeners() {
+    Event<Integer> event = Event.event();
+    EventListener listener = () -> {};
+    EventDataListener<Integer> dataListener = integer -> {};
+    event.addWeakListener(listener);
+    event.addWeakListener(listener);
+    event.addWeakDataListener(dataListener);
+    event.addWeakDataListener(dataListener);
+    event.onEvent(1);
+    event.removeWeakListener(listener);
+    event.removeWeakDataListener(dataListener);
   }
 }

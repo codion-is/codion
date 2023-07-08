@@ -240,6 +240,17 @@ image::modules/framework/db-http/build/reports/dependency-graph/dependency-graph
 ====
 
 [discrete]
+=== codion-framework-i18n
+
+Internationalization strings.
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/framework/i18n/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === codion-framework-json-domain
 
 .Dependency graph

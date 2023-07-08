@@ -49,6 +49,9 @@ project(":codion-dbms-sqlite").projectDir = file("dbms/sqlite")
 include "codion-dbms-sqlserver"
 project(":codion-dbms-sqlserver").projectDir = file("dbms/sqlserver")
 
+include "codion-framework-i18n"
+project(":codion-framework-i18n").projectDir = file("framework/i18n")
+
 include "codion-framework-domain"
 project(":codion-framework-domain").projectDir = file("framework/domain")
 

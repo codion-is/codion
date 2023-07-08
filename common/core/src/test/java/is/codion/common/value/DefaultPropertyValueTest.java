@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DefaultPropertyValueTest {
 
   @Test
-  void findGetMethod() throws NoSuchMethodException {
+  void findGetMethod() {
     Method getMethod = DefaultPropertyValue.findGetMethod(boolean.class, "booleanValue", Bean.class);
     assertEquals("isBooleanValue", getMethod.getName());
     getMethod = DefaultPropertyValue.findGetMethod(int.class, "intValue", Bean.class);
@@ -22,13 +22,13 @@ public class DefaultPropertyValueTest {
   }
 
   @Test
-  void findGetMethodBoolean() throws NoSuchMethodException {
+  void findGetMethodBoolean() {
     Method getMethod = DefaultPropertyValue.findGetMethod(boolean.class, "anotherBooleanValue", Bean.class);
     assertEquals("getAnotherBooleanValue", getMethod.getName());
   }
 
   @Test
-  void findSetMethod() throws NoSuchMethodException {
+  void findSetMethod() {
     Method setMethod = DefaultPropertyValue.findSetMethod(boolean.class, "booleanValue", Bean.class).orElse(null);
     assertEquals("setBooleanValue", setMethod.getName());
     setMethod = DefaultPropertyValue.findSetMethod(int.class, "intValue", Bean.class).orElse(null);
@@ -36,22 +36,22 @@ public class DefaultPropertyValueTest {
   }
 
   @Test
-  void findGetMethodInvalidMethod() throws NoSuchMethodException {
+  void findGetMethodInvalidMethod() {
     assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findGetMethod(boolean.class, "invalidValue", Bean.class));
   }
 
   @Test
-  void findSetMethodInvalidMethod() throws NoSuchMethodException {
+  void findSetMethodInvalidMethod() {
     assertFalse(DefaultPropertyValue.findSetMethod(boolean.class, "invalidValue", Bean.class).isPresent());
   }
 
   @Test
-  void findSetMethodNoProperty() throws NoSuchMethodException {
+  void findSetMethodNoProperty() {
     assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findSetMethod(boolean.class, "", Bean.class));
   }
 
   @Test
-  void findGetMethodNoProperty() throws NoSuchMethodException {
+  void findGetMethodNoProperty() {
     assertThrows(IllegalArgumentException.class, () -> DefaultPropertyValue.findGetMethod(boolean.class, "", Bean.class));
   }
 
@@ -145,6 +145,43 @@ public class DefaultPropertyValueTest {
 
     public void setI(int i) {
       this.i = i;
+    }
+  }
+
+  @Test
+  void exceptions() {
+    RuntimeExceptionBean runtimeExceptionBean = new RuntimeExceptionBean();
+    DefaultPropertyValue<Integer> runtimeExceptionValue = new DefaultPropertyValue<>(runtimeExceptionBean, "intValue", Integer.class, Event.event());
+    assertThrows(RuntimeException.class, runtimeExceptionValue::get);
+    assertThrows(RuntimeException.class, () -> runtimeExceptionValue.set(1));
+
+    ExceptionBean exceptionBean = new ExceptionBean();
+    DefaultPropertyValue<Integer> exceptionValue = new DefaultPropertyValue<>(exceptionBean, "intValue", Integer.class, Event.event());
+    assertThrows(RuntimeException.class, exceptionValue::get);
+    assertThrows(RuntimeException.class, () -> exceptionValue.set(1));
+  }
+
+  public static final class RuntimeExceptionBean {
+    int intValue;
+
+    public int getIntValue() {
+      throw new RuntimeException();
+    }
+
+    public void setIntValue(int intValue) {
+      throw new RuntimeException();
+    }
+  }
+
+  public static final class ExceptionBean {
+    int intValue;
+
+    public int getIntValue() throws Exception {
+      throw new Exception();
+    }
+
+    public void setIntValue(int intValue) throws Exception {
+      throw new Exception();
     }
   }
 }

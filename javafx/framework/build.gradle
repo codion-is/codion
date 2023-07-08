@@ -10,6 +10,7 @@ dependencies {
     api project(":codion-framework-domain")
     api project(":codion-framework-db-core")
     api project(":codion-framework-model")
+    api project(":codion-framework-i18n")
 
     testImplementation project(":codion-framework-db-local")
     testImplementation project(":codion-framework-domain-test")

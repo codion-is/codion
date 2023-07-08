@@ -29,6 +29,14 @@ public class UserTest {
     assertEquals(user, User.parse("scott:blabla"));
     assertEquals(User.user("scott"), User.user("ScoTT"));
     assertEquals(Serializer.deserialize(Serializer.serialize(User.user("scott", "test".toCharArray()))), User.user("Scott"));
+    User copy = user.copy();
+    assertEquals(user.username(), copy.username());
+    assertNotSame(user.password(), copy.password());
+    assertEquals(String.valueOf(user.password()), String.valueOf(copy.password()));
+    assertEquals("User: scott", user.toString());
+    copy.clearPassword();
+    assertNotNull(copy.password());
+    assertEquals(0, copy.password().length);
   }
 
   @Test

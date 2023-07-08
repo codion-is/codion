@@ -53,6 +53,9 @@ final class DefaultStateObserver implements StateObserver {
 
   @Override
   public StateObserver reversedObserver() {
+    if (reversed) {
+      return stateObserver;
+    }
     synchronized (lock) {
       if (reversedStateObserver == null) {
         reversedStateObserver = new DefaultStateObserver(this, true);

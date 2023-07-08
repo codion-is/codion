@@ -4,12 +4,15 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -52,6 +55,7 @@ public class StateTest {
     State state = State.state();
     StateObserver reversed = state.reversedObserver();
     StateObserver reversedReversed = reversed.reversedObserver();
+    assertSame(state.observer(), reversedReversed);
     state.addListener(listener);
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
@@ -93,7 +97,7 @@ public class StateTest {
   }
 
   @Test
-  void group() throws Exception {
+  void group() {
     State stateOne = State.state(true);
     State stateTwo = State.state(true);
     State stateThree = State.state(true);
@@ -111,19 +115,19 @@ public class StateTest {
     stateOne.set(true);
     assertFalse(stateTwo.get());
     assertFalse(stateThree.get());
+
+    stateGroup = State.group(Arrays.asList(stateOne, stateTwo));
+    stateGroup.add(Collections.singletonList(stateThree));
   }
 
   @Test
   void stateCombination() {
-    State.Combination orState = State.or();
     State stateOne = State.state();
     State stateTwo = State.state();
     State stateThree = State.state();
-    orState.add(stateOne);
-    orState.add(stateTwo);
-    orState.add(stateThree);
+    State.Combination orState = State.or(Arrays.asList(stateOne, stateTwo, stateThree));
 
-    State.Combination andState = State.and(stateOne, stateTwo, stateThree);
+    State.Combination andState = State.and(Arrays.asList(stateOne, stateTwo, stateThree));
     assertEquals(Conjunction.AND, andState.conjunction());
     assertEquals("Combination and false, false, false, false", andState.toString());
 
@@ -211,22 +215,29 @@ public class StateTest {
     State three = State.state();
 
     StateObserver combinationAnd = State.combination(Conjunction.AND, one, two, three);
-    combinationAnd.addDataListener(newValue -> assertEquals(combinationAnd.get(), newValue));
+    EventListener listener = () -> {};
+    EventDataListener<Boolean> dataListener = newValue -> assertEquals(combinationAnd.get(), newValue);
+    combinationAnd.addListener(listener);
+    combinationAnd.addDataListener(dataListener);
     one.set(true);
     two.set(true);
     three.set(true);
     one.set(false);
     two.set(false);
     three.set(false);
+    combinationAnd.removeListener(listener);
+    combinationAnd.removeDataListener(dataListener);
 
     StateObserver combinationOr = State.combination(Conjunction.OR, one, two, three);
-    combinationOr.addDataListener(newValue -> assertEquals(combinationOr.get(), newValue));
+    dataListener = newValue -> assertEquals(combinationOr.get(), newValue);
+    combinationOr.addDataListener(dataListener);
     one.set(true);
     one.set(false);
     two.set(true);
     two.set(false);
     three.set(true);
     three.set(false);
+    combinationOr.removeDataListener(dataListener);
   }
 
   @Test
@@ -294,5 +305,29 @@ public class StateTest {
     assertTrue(state.get());
     state.set(false);
     assertTrue(state.get());
+  }
+
+  @Test
+  void weakListeners() {
+    State state = State.state();
+    EventListener listener = () -> {};
+    EventDataListener<Boolean> dataListener = bool -> {};
+    state.addWeakListener(listener);
+    state.addWeakListener(listener);
+    state.addWeakDataListener(dataListener);
+    state.addWeakDataListener(dataListener);
+    state.set(true);
+    state.removeWeakListener(listener);
+    state.removeWeakDataListener(dataListener);
+
+    State state2 = State.state();
+    StateObserver combination = State.combination(Conjunction.AND, state, state2);
+    combination.addWeakListener(listener);
+    combination.addWeakListener(listener);
+    combination.addWeakDataListener(dataListener);
+    combination.addWeakDataListener(dataListener);
+    state2.set(true);
+    combination.removeWeakListener(listener);
+    combination.removeWeakDataListener(dataListener);
   }
 }
