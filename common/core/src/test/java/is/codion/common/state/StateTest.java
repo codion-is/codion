@@ -52,6 +52,7 @@ public class StateTest {
     State state = State.state();
     StateObserver reversed = state.reversedObserver();
     StateObserver reversedReversed = reversed.reversedObserver();
+    assertSame(state.observer(), reversedReversed);
     state.addListener(listener);
     reversed.addListener(reversedListener);
     reversedReversed.addListener(reversedReversedListener);
