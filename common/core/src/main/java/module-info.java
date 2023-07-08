@@ -12,7 +12,6 @@ module is.codion.common.core {
   exports is.codion.common.event;
   exports is.codion.common.formats;
   exports is.codion.common.item;
-  exports is.codion.common.i18n;
   exports is.codion.common.logging;
   exports is.codion.common.properties;
   exports is.codion.common.proxy;

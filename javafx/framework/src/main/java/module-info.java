@@ -6,6 +6,7 @@ module is.codion.javafx.framework {
   requires org.json;
   requires transitive javafx.graphics;
   requires transitive javafx.controls;
+  requires transitive is.codion.common.i18n;
   requires transitive is.codion.framework.i18n;
   requires transitive is.codion.framework.model;
 
