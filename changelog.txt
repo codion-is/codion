@@ -9279,3 +9279,4 @@
   DefaultLocalEntityConnection.select(Attribute, Condition) bug fixed, now respects select condition settings when querying, such as limit and order by
   DefaultLocalEntityConnection.select(Attribute, Condition) bug fixed, NullPointerException averted
   DefaultStateObserver.reversedObserver() of a reversed observer now returns the original observer instead of instantiating a new one
+  framework-i18n module split from framework-domain

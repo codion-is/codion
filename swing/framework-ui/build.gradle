@@ -5,6 +5,7 @@ dependencies {
 
     api project(":codion-framework-domain")
     api project(":codion-framework-model")
+    api project(":codion-framework-i18n")
 
     api project(":codion-swing-common-model")
     api project(":codion-swing-common-ui")
