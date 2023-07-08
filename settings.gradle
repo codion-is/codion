@@ -19,6 +19,9 @@ project(":codion-common-model").projectDir = file("common/model")
 include "codion-common-rmi"
 project(":codion-common-rmi").projectDir = file("common/rmi")
 
+include "codion-common-i18n"
+project(":codion-common-i18n").projectDir = file("common/i18n")
+
 include "codion-dbms-db2database"
 project(":codion-dbms-db2database").projectDir = file("dbms/db2database")
 

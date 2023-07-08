@@ -47,6 +47,15 @@ image::modules/common/model/build/reports/dependency-graph/dependency-graph.svg[
 ====
 
 [discrete]
+=== codion-common-i18n
+
+.Dependency graph
+[%collapsible]
+====
+image::modules/common/i18n/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
+====
+
+[discrete]
 === codion-common-rmi
 
 RMI related classes.
