@@ -13,7 +13,7 @@ import java.util.List;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
-public final class DefaultVersionTest {
+public final class VersionTest {
 
   @Test
   void parse() {
