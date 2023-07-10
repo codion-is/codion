@@ -12,7 +12,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -439,15 +438,12 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   @Override
   protected List<Entity> performQuery() {
     if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+      updateRefreshCondition(conditionModel.condition());
+
       return emptyList();
     }
     try {
-      return queryItems(conditionModel.condition()
-              .selectBuilder()
-              .selectAttributes(selectAttributes())
-              .limit(limit)
-              .orderBy(orderBy())
-              .build());
+      return queryItems(conditionModel.condition());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -512,12 +508,24 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     });
   }
 
-  private List<Entity> queryItems(SelectCondition selectCondition) throws DatabaseException {
-    List<Entity> items = connectionProvider().connection().select(selectCondition);
-    refreshCondition = selectCondition;
-    conditionChangedState.set(false);
+  private List<Entity> queryItems(Condition condition) throws DatabaseException {
+    List<Entity> items = connectionProvider().connection().select(condition.selectBuilder()
+              .selectAttributes(selectAttributes())
+              .limit(limit)
+              .orderBy(orderBy())
+              .build());
+    updateRefreshCondition(condition);
 
     return items;
+  }
+
+  private void updateRefreshCondition(Condition condition) {
+    refreshCondition = condition;
+    conditionChangedState.set(false);
+  }
+
+  private void onConditionChanged(Condition condition) {
+    conditionChangedState.set(!Objects.equals(refreshCondition, condition));
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
@@ -642,8 +650,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   private void bindEvents() {
-    conditionModel.addChangeListener(condition ->
-            conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
+    conditionModel.addChangeListener(this::onConditionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);

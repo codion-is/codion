@@ -104,7 +104,7 @@ public final class EntitySearchField extends HintTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
 
-  private static final int BORDER_SIZE = 15;
+  private static final int BORDER_SIZE = 10;
 
   private final EntitySearchModel model;
   private final SettingsPanel settingsPanel;

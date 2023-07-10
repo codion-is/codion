@@ -18,7 +18,6 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -102,7 +101,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
 
   /**
-   * the condition used during the last refresh
+   * the condition used during the last successful refresh
    */
   private Condition refreshCondition;
 
@@ -815,15 +814,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   protected Collection<Entity> refreshItems() {
     if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+      updateRefreshCondition(conditionModel.condition());
+
       return emptyList();
     }
     try {
-      return queryItems(conditionModel.condition()
-              .selectBuilder()
-              .selectAttributes(selectAttributes())
-              .limit(limit)
-              .orderBy(orderBy())
-              .build());
+      return queryItems(conditionModel.condition());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -913,8 +909,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    conditionModel.addChangeListener(condition ->
-            conditionChangedState.set(!Objects.equals(refreshCondition, condition)));
+    conditionModel.addChangeListener(this::onConditionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
@@ -938,12 +933,20 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
-  private List<Entity> queryItems(SelectCondition selectCondition) throws DatabaseException {
-    List<Entity> items = editModel.connectionProvider().connection().select(selectCondition);
-    refreshCondition = selectCondition;
-    conditionChangedState.set(false);
+  private List<Entity> queryItems(Condition condition) throws DatabaseException {
+    List<Entity> items = editModel.connectionProvider().connection().select(condition.selectBuilder()
+              .selectAttributes(selectAttributes())
+              .limit(limit)
+              .orderBy(orderBy())
+              .build());
+    updateRefreshCondition(condition);
 
     return items;
+  }
+
+  private void updateRefreshCondition(Condition condition) {
+    refreshCondition = condition;
+    conditionChangedState.set(false);
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
@@ -1012,6 +1015,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         break;
       }
     }
+  }
+
+  private void onConditionChanged(Condition condition) {
+    conditionChangedState.set(!Objects.equals(refreshCondition, condition));
   }
 
   private void onColumnHidden(Attribute<?> attribute) {
