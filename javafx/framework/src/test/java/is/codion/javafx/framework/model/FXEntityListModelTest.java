@@ -4,6 +4,7 @@
 package is.codion.javafx.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
@@ -185,5 +186,20 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
 
     assertThrows(NullPointerException.class, () -> tableModel.add(null));
     assertThrows(NullPointerException.class, () -> tableModel.addAll(0, singletonList(null)));
+  }
+
+  @Test
+  void conditionChangedObserver() {
+    FXEntityListModel tableModel = createEmployeeTableModel();
+    tableModel.refresh();
+    ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
+    nameConditionModel.setEqualValue("JONES");
+    assertTrue(tableModel.conditionChangedObserver().get());
+    tableModel.refresh();
+    assertFalse(tableModel.conditionChangedObserver().get());
+    nameConditionModel.setEnabled(false);
+    assertTrue(tableModel.conditionChangedObserver().get());
+    nameConditionModel.setEnabled(true);
+    assertFalse(tableModel.conditionChangedObserver().get());
   }
 }

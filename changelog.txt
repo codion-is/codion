@@ -9281,3 +9281,4 @@
   DefaultStateObserver.reversedObserver() of a reversed observer now returns the original observer instead of instantiating a new one
   framework-i18n module split from framework-domain
   common-i18n module split from common-core
+  SwingEntityTableModel, FXEntityListModel.queryItems() bug fixed, no longer sets the refreshCondition to the selectCondition, which messed up the conditionChangedObserver due to SelectCondition inequality

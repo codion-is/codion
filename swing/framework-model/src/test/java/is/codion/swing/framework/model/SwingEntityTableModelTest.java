@@ -323,4 +323,19 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertThrows(NullPointerException.class, () -> tableModel.addItems(singletonList(null)));
     assertThrows(NullPointerException.class, () -> tableModel.addItemsAt(0, singletonList(null)));
   }
+
+  @Test
+  void conditionChangedObserver() {
+    SwingEntityTableModel tableModel = createEmployeeTableModel();
+    tableModel.refresh();
+    ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
+    nameConditionModel.setEqualValue("JONES");
+    assertTrue(tableModel.conditionChangedObserver().get());
+    tableModel.refresh();
+    assertFalse(tableModel.conditionChangedObserver().get());
+    nameConditionModel.setEnabled(false);
+    assertTrue(tableModel.conditionChangedObserver().get());
+    nameConditionModel.setEnabled(true);
+    assertFalse(tableModel.conditionChangedObserver().get());
+  }
 }
