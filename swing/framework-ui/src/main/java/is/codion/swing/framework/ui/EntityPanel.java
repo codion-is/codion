@@ -86,7 +86,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
+  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 8;
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
@@ -1390,6 +1390,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
     tablePanel.initializePanel();
     tablePanel.setMinimumSize(new Dimension(0, 0));
+    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
+    tablePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
   }
 
   /**
