@@ -814,6 +814,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   protected Collection<Entity> refreshItems() {
     if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+      updateRefreshCondition(conditionModel.condition());
+
       return emptyList();
     }
     try {
@@ -937,10 +939,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .limit(limit)
               .orderBy(orderBy())
               .build());
-    refreshCondition = condition;
-    conditionChangedState.set(false);
+    updateRefreshCondition(condition);
 
     return items;
+  }
+
+  private void updateRefreshCondition(Condition condition) {
+    refreshCondition = condition;
+    conditionChangedState.set(false);
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {

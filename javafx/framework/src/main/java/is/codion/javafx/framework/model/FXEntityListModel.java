@@ -438,6 +438,8 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   @Override
   protected List<Entity> performQuery() {
     if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+      updateRefreshCondition(conditionModel.condition());
+
       return emptyList();
     }
     try {
@@ -512,10 +514,14 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
               .limit(limit)
               .orderBy(orderBy())
               .build());
-    refreshCondition = condition;
-    conditionChangedState.set(false);
+    updateRefreshCondition(condition);
 
     return items;
+  }
+
+  private void updateRefreshCondition(Condition condition) {
+    refreshCondition = condition;
+    conditionChangedState.set(false);
   }
 
   private void onConditionChanged(Condition condition) {
