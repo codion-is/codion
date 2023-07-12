@@ -136,8 +136,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final T fetchValue(ResultSet resultSet, int index) throws SQLException {
-    return valueConverter.fromColumnValue(valueFetcher.fetch(resultSet, index));
+  public final T get(ResultSet resultSet, int index) throws SQLException {
+    return valueConverter.fromColumnValue(valueFetcher.get(resultSet, index));
   }
 
   @Override
@@ -148,8 +148,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private class PropertyResultPacker implements ResultPacker<T> {
 
     @Override
-    public T fetch(ResultSet resultSet) throws SQLException {
-      return valueConverter.fromColumnValue(valueFetcher.fetch(resultSet, 1));
+    public T get(ResultSet resultSet) throws SQLException {
+      return DefaultColumnProperty.this.get(resultSet, 1);
     }
   }
 
@@ -438,7 +438,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class ShortFetcher implements ValueFetcher<Short> {
 
     @Override
-    public Short fetch(ResultSet resultSet, int index) throws SQLException {
+    public Short get(ResultSet resultSet, int index) throws SQLException {
       short value = resultSet.getShort(index);
 
       return value == 0 && resultSet.wasNull() ? null : value;
@@ -448,7 +448,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class IntegerFetcher implements ValueFetcher<Integer> {
 
     @Override
-    public Integer fetch(ResultSet resultSet, int index) throws SQLException {
+    public Integer get(ResultSet resultSet, int index) throws SQLException {
       int value = resultSet.getInt(index);
 
       return value == 0 && resultSet.wasNull() ? null : value;
@@ -458,7 +458,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class LongFetcher implements ValueFetcher<Long> {
 
     @Override
-    public Long fetch(ResultSet resultSet, int index) throws SQLException {
+    public Long get(ResultSet resultSet, int index) throws SQLException {
       long value = resultSet.getLong(index);
 
       return value == 0L && resultSet.wasNull() ? null : value;
@@ -468,7 +468,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class DoubleFetcher implements ValueFetcher<Double> {
 
     @Override
-    public Double fetch(ResultSet resultSet, int index) throws SQLException {
+    public Double get(ResultSet resultSet, int index) throws SQLException {
       double value = resultSet.getDouble(index);
 
       return Double.compare(value, 0d) == 0 && resultSet.wasNull() ? null : value;
@@ -478,7 +478,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class BigDecimalFetcher implements ValueFetcher<BigDecimal> {
 
     @Override
-    public BigDecimal fetch(ResultSet resultSet, int index) throws SQLException {
+    public BigDecimal get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getBigDecimal(index);
     }
   }
@@ -486,7 +486,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class LocalDateFetcher implements ValueFetcher<LocalDate> {
 
     @Override
-    public LocalDate fetch(ResultSet resultSet, int index) throws SQLException {
+    public LocalDate get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, LocalDate.class);
     }
   }
@@ -494,7 +494,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class LocalDateTimeFetcher implements ValueFetcher<LocalDateTime> {
 
     @Override
-    public LocalDateTime fetch(ResultSet resultSet, int index) throws SQLException {
+    public LocalDateTime get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, LocalDateTime.class);
     }
   }
@@ -502,7 +502,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class OffsetDateTimeFetcher implements ValueFetcher<OffsetDateTime> {
 
     @Override
-    public OffsetDateTime fetch(ResultSet resultSet, int index) throws SQLException {
+    public OffsetDateTime get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, OffsetDateTime.class);
     }
   }
@@ -510,7 +510,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class LocalTimeFetcher implements ValueFetcher<LocalTime> {
 
     @Override
-    public LocalTime fetch(ResultSet resultSet, int index) throws SQLException {
+    public LocalTime get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, LocalTime.class);
     }
   }
@@ -518,7 +518,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class StringFetcher implements ValueFetcher<String> {
 
     @Override
-    public String fetch(ResultSet resultSet, int index) throws SQLException {
+    public String get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getString(index);
     }
   }
@@ -526,7 +526,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class BooleanFetcher implements ValueFetcher<Boolean> {
 
     @Override
-    public Boolean fetch(ResultSet resultSet, int index) throws SQLException {
+    public Boolean get(ResultSet resultSet, int index) throws SQLException {
       boolean value = resultSet.getBoolean(index);
 
       return !value && resultSet.wasNull() ? null : value;
@@ -536,7 +536,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class CharacterFetcher implements ValueFetcher<Character> {
 
     @Override
-    public Character fetch(ResultSet resultSet, int index) throws SQLException {
+    public Character get(ResultSet resultSet, int index) throws SQLException {
       String string = resultSet.getString(index);
       if (nullOrEmpty(string)) {
         return null;
@@ -549,7 +549,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private static final class ByteArrayFetcher implements ValueFetcher<byte[]> {
 
     @Override
-    public byte[] fetch(ResultSet resultSet, int index) throws SQLException {
+    public byte[] get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getBytes(index);
     }
   }
@@ -563,7 +563,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public Object fetch(ResultSet resultSet, int index) throws SQLException {
+    public Object get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, valueClass);
     }
   }

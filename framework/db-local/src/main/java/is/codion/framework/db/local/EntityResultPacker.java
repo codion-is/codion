@@ -34,7 +34,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   @Override
-  public Entity fetch(ResultSet resultSet) throws SQLException {
+  public Entity get(ResultSet resultSet) throws SQLException {
     Map<Attribute<?>, Object> values = new HashMap<>(columnProperties.size());
     addResultSetValues(resultSet, values);
     addTransientNullValues(values);
@@ -47,7 +47,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
     for (int i = 0; i < columnProperties.size(); i++) {
       ColumnProperty<Object> property = (ColumnProperty<Object>) columnProperties.get(i);
       try {
-        values.put(property.attribute(), property.prepareValue(property.fetchValue(resultSet, i + 1)));
+        values.put(property.attribute(), property.prepareValue(property.get(resultSet, i + 1)));
       }
       catch (Exception e) {
         throw new SQLException("Exception fetching: " + property + ", entity: " +

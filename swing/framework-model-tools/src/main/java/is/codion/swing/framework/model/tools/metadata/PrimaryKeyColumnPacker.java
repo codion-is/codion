@@ -11,7 +11,7 @@ import java.sql.SQLException;
 final class PrimaryKeyColumnPacker implements ResultPacker<PrimaryKeyColumn> {
 
   @Override
-  public PrimaryKeyColumn fetch(ResultSet resultSet) throws SQLException {
+  public PrimaryKeyColumn get(ResultSet resultSet) throws SQLException {
     return new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ"));
   }
 }

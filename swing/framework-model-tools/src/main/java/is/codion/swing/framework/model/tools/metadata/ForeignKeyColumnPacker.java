@@ -11,7 +11,7 @@ import java.sql.SQLException;
 final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
 
   @Override
-  public ForeignKeyColumn fetch(ResultSet resultSet) throws SQLException {
+  public ForeignKeyColumn get(ResultSet resultSet) throws SQLException {
     String pktableSchem = resultSet.getString("PKTABLE_SCHEM");
     if (pktableSchem == null) {
       pktableSchem = resultSet.getString("PKTABLE_CAT");

@@ -101,7 +101,7 @@ public interface ColumnProperty<T> extends Property<T> {
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  T fetchValue(ResultSet resultSet, int index) throws SQLException;
+  T get(ResultSet resultSet, int index) throws SQLException;
 
   /**
    * @return a ResultPacker responsible for packing this property
@@ -121,7 +121,7 @@ public interface ColumnProperty<T> extends Property<T> {
      * @return a single value fetched from the given ResultSet
      * @throws java.sql.SQLException in case of an exception
      */
-    C fetch(ResultSet resultSet, int index) throws SQLException;
+    C get(ResultSet resultSet, int index) throws SQLException;
   }
 
   /**

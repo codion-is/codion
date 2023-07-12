@@ -62,7 +62,7 @@ final class EntityResultIterator implements ResultIterator<Entity> {
     }
     hasNextCalled = false;
     try {
-      return resultPacker.fetch(resultSet);
+      return resultPacker.get(resultSet);
     }
     catch (SQLException e) {
       close();
