@@ -9285,3 +9285,4 @@
   SwingEntityTableModel, FXEntityListModel.queryItems() bug fixed, now updates the refreshCondition when performQuery returns an emptyList as well
   DefaultFileSelectionDialogBuilder refactored
   FileSelectionDialogBuilder.selectStartDirectory() added
+  common.core.credentials package moved to common.model
