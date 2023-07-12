@@ -27,7 +27,7 @@ final class ColumnPacker implements ResultPacker<Column> {
   }
 
   @Override
-  public Column fetch(ResultSet resultSet) throws SQLException {
+  public Column get(ResultSet resultSet) throws SQLException {
     int dataType = resultSet.getInt("DATA_TYPE");
     int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
     if (resultSet.wasNull()) {

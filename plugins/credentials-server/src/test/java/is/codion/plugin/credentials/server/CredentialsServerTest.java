@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.credentials.server;
 
-import is.codion.common.credentials.CredentialsException;
-import is.codion.common.credentials.CredentialsProvider;
+import is.codion.common.model.credentials.CredentialsException;
+import is.codion.common.model.credentials.CredentialsProvider;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;

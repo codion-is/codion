@@ -3,7 +3,7 @@
  */
 package is.codion.plugin.credentials.server;
 
-import is.codion.common.credentials.CredentialsProvider;
+import is.codion.common.model.credentials.CredentialsProvider;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.user.User;

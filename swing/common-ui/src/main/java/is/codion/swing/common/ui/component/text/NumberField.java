@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.EventDataListener;
-import is.codion.common.formats.Formats;
 import is.codion.common.properties.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -488,6 +487,13 @@ public final class NumberField<T extends Number> extends HintTextField {
     }
   }
 
+  private static NumberFormat nonGroupingIntegerFormat() {
+    NumberFormat format = NumberFormat.getIntegerInstance();
+    format.setGroupingUsed(false);
+
+    return format;
+  }
+
   private static final class DefaultBigDecimalFieldBuilder extends AbstractNumberFieldBuilder<BigDecimal> {
 
     private DefaultBigDecimalFieldBuilder(Value<BigDecimal> linkedValue) {
@@ -556,7 +562,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
     @Override
     protected NumberFormat createFormat() {
-      return Formats.nonGroupingIntegerFormat();
+      return nonGroupingIntegerFormat();
     }
   }
 
@@ -578,7 +584,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
     @Override
     protected NumberFormat createFormat() {
-      return Formats.nonGroupingIntegerFormat();
+      return nonGroupingIntegerFormat();
     }
   }
 
@@ -600,7 +606,7 @@ public final class NumberField<T extends Number> extends HintTextField {
 
     @Override
     protected NumberFormat createFormat() {
-      return Formats.nonGroupingIntegerFormat();
+      return nonGroupingIntegerFormat();
     }
   }
 

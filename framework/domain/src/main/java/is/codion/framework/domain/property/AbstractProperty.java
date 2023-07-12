@@ -5,8 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.Rounder;
 import is.codion.common.Text;
-import is.codion.common.formats.Formats;
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -654,10 +653,24 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private static NumberFormat defaultNumberFormat(Attribute<?> attribute) {
       boolean grouping = NUMBER_FORMAT_GROUPING.get();
       if (attribute.isInteger() || attribute.isLong()) {
-        return setSeparators(grouping ? NumberFormat.getIntegerInstance() : Formats.nonGroupingIntegerFormat());
+        return setSeparators(grouping ? NumberFormat.getIntegerInstance() : nonGroupingIntegerFormat());
       }
 
-      return setSeparators(grouping ? NumberFormat.getNumberInstance() : Formats.nonGroupingNumberFormat());
+      return setSeparators(grouping ? NumberFormat.getNumberInstance() : nonGroupingNumberFormat());
+    }
+
+    private static NumberFormat nonGroupingNumberFormat() {
+      NumberFormat format = NumberFormat.getNumberInstance();
+      format.setGroupingUsed(false);
+
+      return format;
+    }
+
+    private static NumberFormat nonGroupingIntegerFormat() {
+      NumberFormat format = NumberFormat.getIntegerInstance();
+      format.setGroupingUsed(false);
+
+      return format;
     }
 
     private static NumberFormat setSeparators(NumberFormat numberFormat) {

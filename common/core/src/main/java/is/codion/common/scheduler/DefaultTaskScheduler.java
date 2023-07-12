@@ -140,4 +140,15 @@ final class DefaultTaskScheduler implements TaskScheduler {
       return new DefaultTaskScheduler(this);
     }
   }
+
+  private static final class DaemonThreadFactory implements ThreadFactory {
+
+    @Override
+    public Thread newThread(Runnable runnable) {
+      Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
+    }
+  }
 }

@@ -10,7 +10,6 @@ import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.UIManager;
 import javax.swing.filechooser.FileFilter;
-import java.awt.Window;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.io.File;
@@ -20,7 +19,6 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
@@ -36,8 +34,10 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   private static JFileChooser fileChooserSave;
 
   private final List<FileFilter> fileFilters = new ArrayList<>();
+
   private String startDirectory;
   private boolean confirmOverwrite = true;
+  private boolean selectStartDirectory = false;
 
   static {
     UIManager.addPropertyChangeListener(new LookAndFeelChangeListener());
@@ -46,6 +46,12 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   @Override
   public FileSelectionDialogBuilder startDirectory(String startDirectory) {
     this.startDirectory = startDirectory;
+    return this;
+  }
+
+  @Override
+  public FileSelectionDialogBuilder selectStartDirectory(boolean selectStartDirectory) {
+    this.selectStartDirectory = selectStartDirectory;
     return this;
   }
 
@@ -63,36 +69,32 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
   @Override
   public File selectFile() {
-    return selectFile(owner, startDirectory, titleProvider == null ? MESSAGES.getString("select_file") : titleProvider.get(), fileFilters);
+    return selectFile(MESSAGES.getString("select_file"));
   }
 
   @Override
   public List<File> selectFiles() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.FILES, false,
-            titleProvider == null ? MESSAGES.getString("select_files") : titleProvider.get(), fileFilters);
+    return selectFilesOrDirectories(FilesOrDirectories.FILES, MESSAGES.getString("select_files"), false);
   }
 
   @Override
   public File selectDirectory() {
-    return selectDirectory(owner, startDirectory, titleProvider == null ? MESSAGES.getString("select_directory") : titleProvider.get());
+    return selectDirectory(MESSAGES.getString("select_directory"));
   }
 
   @Override
   public List<File> selectDirectories() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.DIRECTORIES, false,
-            titleProvider == null ? MESSAGES.getString("select_directories") : titleProvider.get(), emptyList());
+    return selectFilesOrDirectories(FilesOrDirectories.DIRECTORIES, MESSAGES.getString("select_directories"), false);
   }
 
   @Override
   public File selectFileOrDirectory() {
-    return selectFileOrDirectory(owner, startDirectory, FilesOrDirectories.BOTH,
-            titleProvider == null ? MESSAGES.getString("select_file_or_directory") : titleProvider.get(), fileFilters);
+    return selectFileOrDirectory(FilesOrDirectories.BOTH, MESSAGES.getString("select_file_or_directory"));
   }
 
   @Override
   public List<File> selectFilesOrDirectories() {
-    return selectFilesOrDirectories(owner, startDirectory, FilesOrDirectories.BOTH, false,
-            titleProvider == null ? MESSAGES.getString("select_files_or_directories") : titleProvider.get(), fileFilters);
+    return selectFilesOrDirectories(FilesOrDirectories.BOTH, MESSAGES.getString("select_files_or_directories"), false);
   }
 
   @Override
@@ -102,7 +104,60 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
   @Override
   public File selectFileToSave(String defaultFileName) {
-    return selectFileToSave(owner, startDirectory, defaultFileName, confirmOverwrite);
+    synchronized (DefaultSelectionDialogBuilder.class) {
+      if (fileChooserSave == null) {
+        try {
+          WaitCursor.show(owner);
+          fileChooserSave = new JFileChooser();
+        }
+        finally {
+          WaitCursor.hide(owner);
+        }
+      }
+      fileChooserSave.setSelectedFiles(new File[]{new File("")});
+      fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
+      fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
+      fileChooserSave.setMultiSelectionEnabled(false);
+      File startDirectory;
+      if (!nullOrEmpty(this.startDirectory) && new File(this.startDirectory).exists()) {
+        startDirectory = new File(this.startDirectory);
+      }
+      else {
+        startDirectory = fileChooserSave.getCurrentDirectory();
+      }
+      File selectedFile = new File(startDirectory.getAbsolutePath() + (defaultFileName != null ? File.separator + defaultFileName : ""));
+      boolean fileChosen = false;
+      while (!fileChosen) {
+        if (selectedFile.isDirectory()) {
+          fileChooserSave.setCurrentDirectory(selectedFile);
+        }
+        else {
+          fileChooserSave.setSelectedFile(selectedFile);
+        }
+        int option = fileChooserSave.showSaveDialog(owner);
+        if (option == JFileChooser.APPROVE_OPTION) {
+          selectedFile = fileChooserSave.getSelectedFile();
+          if (selectedFile.exists() && confirmOverwrite) {
+            option = JOptionPane.showConfirmDialog(owner, MESSAGES.getString("overwrite_file"),
+                    MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
+            if (option == JOptionPane.YES_OPTION) {
+              fileChosen = true;
+            }
+            else if (option == JOptionPane.CANCEL_OPTION) {
+              throw new CancelException();
+            }
+          }
+          else {
+            fileChosen = true;
+          }
+        }
+        else {
+          throw new CancelException();
+        }
+      }
+
+      return selectedFile;
+    }
   }
 
   /**
@@ -123,139 +178,78 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
     BOTH
   }
 
-  static File selectDirectory(Window dialogParent, String startDir, String dialogTitle) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.DIRECTORIES, dialogTitle, emptyList());
+  private File selectDirectory(String defaultDialogTitle) {
+    return selectFileOrDirectory(FilesOrDirectories.DIRECTORIES, defaultDialogTitle);
   }
 
-  static File selectFile(Window dialogParent, String startDir, String dialogTitle,
-                         List<FileFilter> fileFilters) {
-    return selectFileOrDirectory(dialogParent, startDir, FilesOrDirectories.FILES, dialogTitle, fileFilters);
+  private File selectFile(String defaultDialogTitle) {
+    return selectFileOrDirectory(FilesOrDirectories.FILES, defaultDialogTitle);
   }
 
-  static File selectFileOrDirectory(Window dialogParent, String startDir,
-                                    FilesOrDirectories filesOrDirectories, String dialogTitle,
-                                    List<FileFilter> fileFilters) {
-    return selectFilesOrDirectories(dialogParent, startDir, filesOrDirectories, false, dialogTitle, fileFilters).get(0);
+  private File selectFileOrDirectory(FilesOrDirectories filesOrDirectories, String defaultDialogTitle) {
+    return selectFilesOrDirectories(filesOrDirectories, defaultDialogTitle, false).get(0);
   }
 
-  static synchronized List<File> selectFilesOrDirectories(Window dialogParent, String startDir,
-                                                          FilesOrDirectories filesOrDirectories,
-                                                          boolean singleSelection,
-                                                          String dialogTitle,
-                                                          List<FileFilter> fileFilters) {
-    if (fileChooserOpen == null) {
-      try {
-        WaitCursor.show(dialogParent);
-        fileChooserOpen = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
+  private List<File> selectFilesOrDirectories(FilesOrDirectories filesOrDirectories, String defaultDialogTitle, boolean singleSelection) {
+    synchronized (DefaultSelectionDialogBuilder.class) {
+      if (fileChooserOpen == null) {
+        try {
+          WaitCursor.show(owner);
+          fileChooserOpen = new JFileChooser(new File(startDirectory == null ? System.getProperty("user.home") : startDirectory));
+        }
+        finally {
+          WaitCursor.hide(owner);
+        }
       }
-      finally {
-        WaitCursor.hide(dialogParent);
+      switch (filesOrDirectories) {
+        case FILES:
+          fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
+          break;
+        case DIRECTORIES:
+          fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+          break;
+        case BOTH:
+          fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+          break;
       }
-    }
-    switch (filesOrDirectories) {
-      case FILES:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        break;
-      case DIRECTORIES:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-        break;
-      case BOTH:
-        fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        break;
-    }
-    fileChooserOpen.setSelectedFiles(new File[] {new File("")});
-    fileChooserOpen.resetChoosableFileFilters();
-    if (!fileFilters.isEmpty()) {
-      fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
-    }
-    fileFilters.forEach(fileChooserOpen::addChoosableFileFilter);
-    fileChooserOpen.setMultiSelectionEnabled(!singleSelection);
-    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
-      fileChooserOpen.setCurrentDirectory(new File(startDir));
-    }
-    if (dialogTitle != null) {
-      fileChooserOpen.setDialogTitle(dialogTitle);
-    }
-    int option = fileChooserOpen.showOpenDialog(dialogParent);
-    if (option == JFileChooser.APPROVE_OPTION) {
-      List<File> selectedFiles;
-      if (singleSelection) {
-        selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
+      fileChooserOpen.setSelectedFiles(new File[] {initialSelection(filesOrDirectories)});
+      fileChooserOpen.resetChoosableFileFilters();
+      if (!fileFilters.isEmpty()) {
+        fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
       }
-      else {
-        selectedFiles = Arrays.asList(fileChooserOpen.getSelectedFiles());
+      fileFilters.forEach(fileChooserOpen::addChoosableFileFilter);
+      fileChooserOpen.setMultiSelectionEnabled(!singleSelection);
+      if (!nullOrEmpty(startDirectory) && new File(startDirectory).exists()) {
+        fileChooserOpen.setCurrentDirectory(new File(startDirectory));
       }
-      if (!selectedFiles.isEmpty()) {
-        return selectedFiles;
+      String dialogTitle = titleProvider == null ? defaultDialogTitle : titleProvider.get();
+      if (dialogTitle != null) {
+        fileChooserOpen.setDialogTitle(dialogTitle);
       }
-    }
-
-    throw new CancelException();
-  }
-
-  /**
-   * Displays a save file dialog for creating a new file
-   * @param dialogParent the dialog parent
-   * @param startDir the start dir, user.dir if not specified
-   * @param defaultFileName the default file name to suggest
-   * @param confirmOverwrite specifies whether overwriting a file should be confirmed
-   * @return the selected file
-   * @throws CancelException in case the user cancels
-   */
-  static synchronized File selectFileToSave(Window dialogParent, String startDir,
-                                            String defaultFileName, boolean confirmOverwrite) {
-    if (fileChooserSave == null) {
-      try {
-        WaitCursor.show(dialogParent);
-        fileChooserSave = new JFileChooser();
-      }
-      finally {
-        WaitCursor.hide(dialogParent);
-      }
-    }
-    fileChooserSave.setSelectedFiles(new File[] {new File("")});
-    fileChooserSave.setFileSelectionMode(JFileChooser.FILES_ONLY);
-    fileChooserSave.removeChoosableFileFilter(fileChooserSave.getFileFilter());
-    fileChooserSave.setMultiSelectionEnabled(false);
-    File startDirectory;
-    if (!nullOrEmpty(startDir) && new File(startDir).exists()) {
-      startDirectory = new File(startDir);
-    }
-    else {
-      startDirectory = fileChooserSave.getCurrentDirectory();
-    }
-    File selectedFile = new File(startDirectory.getAbsolutePath() + (defaultFileName != null ? File.separator + defaultFileName : ""));
-    boolean fileChosen = false;
-    while (!fileChosen) {
-      if (selectedFile.isDirectory()) {
-        fileChooserSave.setCurrentDirectory(selectedFile);
-      }
-      else {
-        fileChooserSave.setSelectedFile(selectedFile);
-      }
-      int option = fileChooserSave.showSaveDialog(dialogParent);
+      int option = fileChooserOpen.showOpenDialog(owner);
       if (option == JFileChooser.APPROVE_OPTION) {
-        selectedFile = fileChooserSave.getSelectedFile();
-        if (selectedFile.exists() && confirmOverwrite) {
-          option = JOptionPane.showConfirmDialog(dialogParent, MESSAGES.getString("overwrite_file"),
-                  MESSAGES.getString("file_exists"), JOptionPane.YES_NO_CANCEL_OPTION);
-          if (option == JOptionPane.YES_OPTION) {
-            fileChosen = true;
-          }
-          else if (option == JOptionPane.CANCEL_OPTION) {
-            throw new CancelException();
-          }
+        List<File> selectedFiles;
+        if (singleSelection) {
+          selectedFiles = singletonList(fileChooserOpen.getSelectedFile());
         }
         else {
-          fileChosen = true;
+          selectedFiles = Arrays.asList(fileChooserOpen.getSelectedFiles());
+        }
+        if (!selectedFiles.isEmpty()) {
+          return selectedFiles;
         }
       }
-      else {
-        throw new CancelException();
-      }
+
+      throw new CancelException();
+    }
+  }
+
+  private File initialSelection(FilesOrDirectories filesOrDirectories) {
+    if (filesOrDirectories == FilesOrDirectories.DIRECTORIES && selectStartDirectory && !nullOrEmpty(startDirectory)) {
+      return new File(startDirectory);
     }
 
-    return selectedFile;
+    return new File("");
   }
 
   private static final class LookAndFeelChangeListener implements PropertyChangeListener {

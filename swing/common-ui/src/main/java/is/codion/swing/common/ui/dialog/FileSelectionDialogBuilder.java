@@ -21,7 +21,14 @@ public interface FileSelectionDialogBuilder extends DialogBuilder<FileSelectionD
   FileSelectionDialogBuilder startDirectory(String startDirectory);
 
   /**
-   * @param confirmOverwrite specifies whether overwriting a file should be confirmed
+   * Only applies for {@link #selectDirectory()} and {@link #selectDirectories()}.
+   * @param selectStartDirectory if true and a start directory is specified it is selected by default initially, false by default
+   * @return this builder instance
+   */
+  FileSelectionDialogBuilder selectStartDirectory(boolean selectStartDirectory);
+
+  /**
+   * @param confirmOverwrite specifies whether overwriting a file should be confirmed, true by default
    * @return this builder instance
    */
   FileSelectionDialogBuilder confirmOverwrite(boolean confirmOverwrite);

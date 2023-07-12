@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.formats;
+package is.codion.common.format;
 
 import java.io.Serializable;
 import java.time.chrono.IsoChronology;

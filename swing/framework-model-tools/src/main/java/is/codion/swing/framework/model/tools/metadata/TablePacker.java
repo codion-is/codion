@@ -23,7 +23,7 @@ final class TablePacker implements ResultPacker<Table> {
   }
 
   @Override
-  public Table fetch(ResultSet resultSet) throws SQLException {
+  public Table get(ResultSet resultSet) throws SQLException {
     String tableName = resultSet.getString("TABLE_NAME");
     List<PrimaryKeyColumn> primaryKeyColumns = primaryKeyColumns(schema, metaData, catalog, tableName);
     List<ForeignKeyColumn> foreignKeyColumns = foreignKeyColumns(schema, metaData, catalog, tableName);
