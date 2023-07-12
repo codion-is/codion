@@ -34,8 +34,10 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   private static JFileChooser fileChooserSave;
 
   private final List<FileFilter> fileFilters = new ArrayList<>();
+
   private String startDirectory;
   private boolean confirmOverwrite = true;
+  private boolean selectStartDirectory = false;
 
   static {
     UIManager.addPropertyChangeListener(new LookAndFeelChangeListener());
@@ -44,6 +46,12 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
   @Override
   public FileSelectionDialogBuilder startDirectory(String startDirectory) {
     this.startDirectory = startDirectory;
+    return this;
+  }
+
+  @Override
+  public FileSelectionDialogBuilder selectStartDirectory(boolean selectStartDirectory) {
+    this.selectStartDirectory = selectStartDirectory;
     return this;
   }
 
@@ -204,7 +212,7 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
           fileChooserOpen.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
           break;
       }
-      fileChooserOpen.setSelectedFiles(new File[]{new File("")});
+      fileChooserOpen.setSelectedFiles(new File[] {initialSelection(filesOrDirectories)});
       fileChooserOpen.resetChoosableFileFilters();
       if (!fileFilters.isEmpty()) {
         fileChooserOpen.removeChoosableFileFilter(fileChooserOpen.getFileFilter());
@@ -234,6 +242,14 @@ final class DefaultFileSelectionDialogBuilder extends AbstractDialogBuilder<File
 
       throw new CancelException();
     }
+  }
+
+  private File initialSelection(FilesOrDirectories filesOrDirectories) {
+    if (filesOrDirectories == FilesOrDirectories.DIRECTORIES && selectStartDirectory && !nullOrEmpty(startDirectory)) {
+      return new File(startDirectory);
+    }
+
+    return new File("");
   }
 
   private static final class LookAndFeelChangeListener implements PropertyChangeListener {
