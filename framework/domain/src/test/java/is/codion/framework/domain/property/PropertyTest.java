@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.Serializer;
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;

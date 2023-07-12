@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;

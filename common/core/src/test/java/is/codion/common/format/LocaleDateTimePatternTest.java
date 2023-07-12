@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.formats;
+package is.codion.common.format;
 
 import org.junit.jupiter.api.Test;
 

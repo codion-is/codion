@@ -5,7 +5,7 @@ package is.codion.framework.demos.chinook.domain.impl;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnection;

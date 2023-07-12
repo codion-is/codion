@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.empdept.domain;
 
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;

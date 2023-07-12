@@ -5,7 +5,7 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerAdmin;

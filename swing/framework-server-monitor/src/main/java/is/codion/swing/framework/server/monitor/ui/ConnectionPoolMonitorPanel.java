@@ -4,7 +4,7 @@
 package is.codion.swing.framework.server.monitor.ui;
 
 import is.codion.common.db.pool.ConnectionPoolStatistics;
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.swing.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;

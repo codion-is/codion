@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.formats.LocaleDateTimePattern;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.text.SearchHighlighter;
