@@ -91,7 +91,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .addAt(6, toggleMapControl)
             .addSeparatorAt(9)
             .addAt(10, ToggleControl.builder(columnSelectionPaneVisibleState)
-                    .name("Select columns")
+                    .name("Columns")
                     .build());
   }
 
