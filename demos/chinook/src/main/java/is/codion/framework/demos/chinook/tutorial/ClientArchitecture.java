@@ -112,8 +112,8 @@ public final class ClientArchitecture {
 
     EntityPanel artistPanel = artistPanel(connectionProvider);
 
-    // lazy initialization of the UI
-    artistPanel.initializePanel();
+    // lazy initialization
+    artistPanel.initialize();
 
     // fetch data from the database
     artistPanel.model().tableModel().refresh();

@@ -238,7 +238,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
     }
     TabPane tabPane = new TabPane();
     for (EntityView entityView : entityViews) {
-      entityView.initializePanel();
+      entityView.initialize();
       tabPane.getTabs().add(new Tab(entityView.caption(), entityView));
     }
 

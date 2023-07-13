@@ -516,7 +516,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider);
-      editPanel.initializePanel();
+      editPanel.initialize();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
       editPanel.editModel().addAfterInsertListener(new AfterInsertListener());
 
@@ -622,7 +622,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider);
-      editPanel.initializePanel();
+      editPanel.initialize();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
       editPanel.editModel().addAfterUpdateListener(new AfterUpdateListener());
 

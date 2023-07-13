@@ -73,7 +73,7 @@ public final class FilteredTable<R, C> extends JTable {
   /**
    * Specifies the default table column resize mode for tables in the application<br>
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
-   * Default value: JTable.AUTO_RESIZE_OFF
+   * Default value: {@link JTable#AUTO_RESIZE_OFF}
    */
   public static final PropertyValue<Integer> AUTO_RESIZE_MODE =
           Configuration.integerValue("is.codion.swing.common.ui.component.table.FilteredTable.autoResizeMode", AUTO_RESIZE_OFF);

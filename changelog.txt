@@ -9328,3 +9328,9 @@
   Formats utility class removed
   common.formats package renamed format
   ResultPacker.fetch() renamed get(), ColumnProperty.fetchValue() renamed get()
+  LabelBuilder.LABEL_TEXT_ALIGNMENT renamed HORIZONTAL_ALIGNMENT, minor related fixes
+  EntityPanel.createEditControlPanel(), now uses SwingConstants.LEADING as horizontalAlignment for buttons in a vertical layout
+  initializePanel() renamed initialize()
+  EntityView, EntityEditView.initialize() now sets initialized in a finally block
+  FilteredTableHeaderRenderer.getTableCellRendererComponent() bug fixed, did not set the horizontalAlignment in case of a BooleanRenderer
+  EntityPanel.SPLIT_PANE_DIVIDER_SIZE removed

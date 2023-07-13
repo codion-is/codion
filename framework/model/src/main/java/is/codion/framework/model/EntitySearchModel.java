@@ -247,7 +247,7 @@ public interface EntitySearchModel {
   }
 
   /**
-   * Instantiates a new {@link EntitySearchModel.Builder}, intialized with the search properties for the given entity type
+   * Instantiates a new {@link EntitySearchModel.Builder}, initialized with the search properties for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @return a new {@link EntitySearchModel.Builder} instance

@@ -134,6 +134,7 @@ public interface ComponentBuilder<T, C extends JComponent, B extends ComponentBu
    * Note that for JTextArea CTRL is added to move focus forward and CTRL + SHIFT to move it backwards
    * @param transferFocusOnEnter if true then the text field transfer focus on enter (shift-enter for backwards)
    * @return this builder instance
+   * @see ComponentBuilder#TRANSFER_FOCUS_ON_ENTER
    */
   B transferFocusOnEnter(boolean transferFocusOnEnter);
 

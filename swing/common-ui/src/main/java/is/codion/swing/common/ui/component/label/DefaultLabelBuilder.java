@@ -19,7 +19,7 @@ final class DefaultLabelBuilder<T> extends AbstractComponentBuilder<T, JLabel, L
   private final String text;
 
   private Icon icon;
-  private int horizontalAlignment = LABEL_TEXT_ALIGNMENT.get();
+  private int horizontalAlignment = HORIZONTAL_ALIGNMENT.get();
   private Integer displayedMnemonic;
   private Character displayedMnemonicChar;
   private int iconTextGap = -1;

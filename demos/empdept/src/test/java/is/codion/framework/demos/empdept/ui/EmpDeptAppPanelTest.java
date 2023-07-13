@@ -19,7 +19,7 @@ public class EmpDeptAppPanelTest extends EntityApplicationPanelTestUnit<EmpDeptA
   }
 
   @Test
-  void initializePanel() throws Exception {
-    testInitializePanel();
+  void initialize() throws Exception {
+    testInitialize();
   }
 }

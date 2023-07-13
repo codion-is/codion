@@ -27,7 +27,7 @@ public class DepartmentEditPanelTest extends EntityEditPanelTestUnit {
   }
 
   @Test
-  void initializePanel() throws Exception {
-    testInitializePanel();
+  void initialize() throws Exception {
+    testInitialize();
   }
 }

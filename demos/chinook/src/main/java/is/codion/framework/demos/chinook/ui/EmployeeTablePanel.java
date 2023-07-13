@@ -6,7 +6,6 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.swing.JPanel;
@@ -29,7 +28,6 @@ public final class EmployeeTablePanel extends EntityTablePanel {
     EmployeeTableModel employeeTableModel = tableModel();
     JSplitPane splitPane = Components.splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
-            .dividerSize(EntityPanel.SPLIT_PANE_DIVIDER_SIZE.get())
             .continuousLayout(true)
             .oneTouchExpandable(true)
             .resizeWeight(0.65)

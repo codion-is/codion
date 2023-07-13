@@ -178,10 +178,14 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    * Initializes this {@link EntityView}
    * @return the initialized {@link EntityView}
    */
-  public final EntityView initializePanel() {
+  public final EntityView initialize() {
     if (!initialized) {
-      initializeUI();
-      initialized = true;
+      try {
+        initializeUI();
+      }
+      finally {
+        initialized = true;
+      }
     }
 
     return this;
@@ -276,7 +280,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   }
 
   private void activateView() {
-    initializePanel();
+    initialize();
     TabPane parent = FXUiUtil.parentOfType(this, TabPane.class);
     if (parent != null) {
       parent.getTabs().stream()
@@ -289,7 +293,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
   private void bindEvents() {
     detailViewTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
       if (newValue != null) {
-        ((EntityView) newValue.getContent()).initializePanel();
+        ((EntityView) newValue.getContent()).initialize();
       }
     });
   }
@@ -298,7 +302,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
     BorderPane editPane;
     if (editView != null) {
       editPane = new BorderPane();
-      editView.initializePanel();
+      editView.initialize();
       editPane.setCenter(editView);
       editPane.setRight(editView.createButtonPanel());
     }
@@ -335,7 +339,7 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
 
   private void setDetailPanelState(PanelState state) {
     if (state != PanelState.HIDDEN) {
-      tabbedDetailPanel().initializePanel();
+      tabbedDetailPanel().initialize();
     }
 
     FXEntityModel entityModel = model();

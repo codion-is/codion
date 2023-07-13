@@ -152,7 +152,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Specifies the tab placement<br>
    * Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)<br>
-   * Default value: SwingConstants.TOP
+   * Default value: {@link SwingConstants#TOP}
    */
   public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", SwingConstants.TOP);
 
@@ -178,7 +178,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
-  private boolean panelInitialized = false;
+  private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
     this.applicationModel = requireNonNull(applicationModel);
@@ -379,8 +379,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Initializes this panel and marks is as initialized, subsequent calls have no effect.
    */
-  public final void initializePanel() {
-    if (!panelInitialized) {
+  public final void initialize() {
+    if (!initialized) {
       try {
         this.entityPanels.addAll(createEntityPanels());
         this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
@@ -389,7 +389,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         bindEvents();
       }
       finally {
-        panelInitialized = true;
+        initialized = true;
       }
     }
   }
@@ -424,7 +424,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   /**
    * Returns the JTabbedPane used by the default UI, an empty Optional in case the default UI
-   * initialization has been overridden. Returns an empty Optional until the panel has been intialized via {@link #initializePanel()}.
+   * initialization has been overridden. Returns an empty Optional until the panel has been initialized via {@link #initialize()}.
    * @return the default application tab pane or an empty Optional if none is available
    */
   protected final Optional<JTabbedPane> applicationTabPane() {
@@ -768,7 +768,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     //initialize first panel
     selectedChildPanel()
             .map(EntityPanel.class::cast)
-            .ifPresent(EntityPanel::initializePanel);
+            .ifPresent(EntityPanel::initialize);
     setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     add(borderLayoutPanel()
@@ -896,7 +896,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.connectionProvider());
-    entityPanel.initializePanel();
+    entityPanel.initialize();
     if (PERSIST_ENTITY_PANELS.get()) {
       persistentEntityPanels.put(panelBuilder, entityPanel);
     }
@@ -1032,7 +1032,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     public void stateChanged(ChangeEvent e) {
       JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
       if (tabbedPane.getTabCount() > 0) {
-        ((EntityPanel) tabbedPane.getSelectedComponent()).initializePanel();
+        ((EntityPanel) tabbedPane.getSelectedComponent()).initialize();
       }
     }
   }

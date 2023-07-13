@@ -122,7 +122,7 @@ final class CountryEditPanel extends EntityEditPanel {
       //if a country is selected, then we don't allow it to be changed
       capitalEditPanel.editModel().put(City.COUNTRY_FK, country);
       //initialize the panel components, so we can configure the country component
-      capitalEditPanel.initializePanel();
+      capitalEditPanel.initialize();
       //disable the country selection component
       JComponent countryComponent = capitalEditPanel.getComponent(City.COUNTRY_FK);
       countryComponent.setEnabled(false);

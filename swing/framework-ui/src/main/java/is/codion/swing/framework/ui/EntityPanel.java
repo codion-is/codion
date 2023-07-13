@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -31,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -75,7 +77,7 @@ import static javax.swing.SwingConstants.VERTICAL;
  *   EntityConnectionProvider connectionProvider = ...;
  *   SwingEntityModel entityModel = new SwingEntityModel(entityType, connectionProvider);
  *   EntityPanel entityPanel = new EntityPanel(entityModel);
- *   entityPanel.initializePanel();
+ *   entityPanel.initialize();
  *   JFrame frame = new JFrame();
  *   frame.add(entityPanel);
  *   frame.pack();
@@ -85,8 +87,6 @@ import static javax.swing.SwingConstants.VERTICAL;
 public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
-
-  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 8;
 
   /**
    * Indicates whether keyboard navigation will be enabled<br>
@@ -121,14 +121,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeDetailPanelControls", true);
 
   /**
-   * Specifies the default size of the divider for detail panel split panes.<br>
-   * Value type: Integer<br>
-   * Default value: 18<br>
-   */
-  public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE =
-          Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
-
-  /**
    * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -147,7 +139,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Specifies where the control panel should be placed in a BorderLayout<br>
    * Value type: Boolean<br>
-   * Default value: BorderLayout.EAST
+   * Default value: {@link BorderLayout#EAST}
    * @see #TOOLBAR_CONTROLS
    */
   public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =
@@ -300,9 +292,9 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private boolean useKeyboardNavigation = USE_KEYBOARD_NAVIGATION.get();
 
   /**
-   * True after {@code initializePanel()} has been called
+   * True after {@link #initialize()} has been called
    */
-  private boolean panelInitialized = false;
+  private boolean initialized = false;
 
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
 
@@ -313,7 +305,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
@@ -321,7 +313,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    */
@@ -330,7 +322,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
    */
@@ -339,7 +331,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initializePanel()} is called.
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    * @param tablePanel the table panel
@@ -475,19 +467,19 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   /**
-   * Initializes this EntityPanels UI, in case of some specific initialization code you can override the
-   * {@code initialize()} method and add your code there.
+   * Initializes this EntityPanel, in case of some specific initialization code you can override the
+   * {@link #initializeUI()} method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether an exception occurs or not.
    * @return this EntityPanel instance
    */
-  public final EntityPanel initializePanel() {
-    if (!panelInitialized) {
+  public final EntityPanel initialize() {
+    if (!initialized) {
       WaitCursor.show(this);
       try {
         initializeUI();
       }
       finally {
-        panelInitialized = true;
+        initialized = true;
         WaitCursor.hide(this);
       }
     }
@@ -620,7 +612,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   public final void activatePanel() {
     parentPanel().ifPresent(panel ->
             panel.selectChildPanel(this));
-    initializePanel();
+    initialize();
     Window parentWindow = parentWindow(this);
     if (parentWindow != null) {
       parentWindow.toFront();
@@ -893,7 +885,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (state != HIDDEN) {
-      selectedDetailPanel().initializePanel();
+      selectedDetailPanel().initialize();
     }
 
     if (detailPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
@@ -1138,6 +1130,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return panel(borderLayout())
             .add(buttonPanel(controls)
                     .orientation(VERTICAL)
+                    .buttonBuilder(ButtonBuilder.builder()
+                            .horizontalAlignment(SwingConstants.LEADING))
                     .toggleButtonType(CHECKBOX)
                     .build(), BorderLayout.NORTH)
             .build();
@@ -1358,7 +1352,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   protected final void initializeEditControlPanel() {
-    editPanel.initializePanel();
+    editPanel.initialize();
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     editControlPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
     editControlPanel.setMinimumSize(new Dimension(0, 0));
@@ -1388,7 +1382,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     if (tablePanel.table().getDoubleClickAction() == null) {
       tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());
     }
-    tablePanel.initializePanel();
+    tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     tablePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
@@ -1405,7 +1399,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             .oneTouchExpandable(true)
             .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
             .resizeWeight(detailSplitPanelResizeWeight)
-            .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
             .leftComponent(editControlTablePanel)
             .rightComponent(detailPanelTabbedPane)
             .build();
@@ -1623,7 +1616,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   private void checkIfInitialized() {
-    if (panelInitialized) {
+    if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
   }

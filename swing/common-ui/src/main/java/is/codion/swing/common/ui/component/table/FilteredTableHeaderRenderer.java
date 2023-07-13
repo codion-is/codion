@@ -6,12 +6,12 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.SortOrder;
 import javax.swing.border.Border;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
@@ -49,8 +49,11 @@ final class FilteredTableHeaderRenderer<R, C> implements TableCellRenderer {
       label.setFont((filterModel != null && filterModel.isEnabled()) ? defaultFont.deriveFont(Font.ITALIC) : defaultFont);
       label.setIcon(sortArrowIcon(tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       label.setIconTextGap(0);
-      if (columnCellRenderer instanceof DefaultTableCellRenderer) {
-        label.setHorizontalAlignment(((DefaultTableCellRenderer) columnCellRenderer).getHorizontalAlignment());
+      if (columnCellRenderer instanceof JLabel) {
+        label.setHorizontalAlignment(((JLabel) columnCellRenderer).getHorizontalAlignment());
+      }
+      else if (columnCellRenderer instanceof AbstractButton) {
+        label.setHorizontalAlignment(((AbstractButton) columnCellRenderer).getHorizontalAlignment());
       }
       if (columnCellRenderer instanceof DefaultFilteredTableCellRenderer) {
         Border tableCellBorder = ((DefaultFilteredTableCellRenderer<?, ?>) columnCellRenderer).settings().defaultCellBorder();
