@@ -67,7 +67,7 @@ public interface ServerConfiguration {
   /**
    * The port on which to locate the server registry<br>
    * Value type: Integer<br>
-   * Default value: Registry.REGISTRY_PORT (1099)
+   * Default value: {@link Registry#REGISTRY_PORT} (1099)
    */
   PropertyValue<Integer> REGISTRY_PORT = Configuration.integerValue("codion.server.registryPort", Registry.REGISTRY_PORT);
 

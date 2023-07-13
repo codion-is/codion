@@ -9289,3 +9289,4 @@
   Formats utility class removed
   common.formats package renamed format
   ResultPacker.fetch() renamed get(), ColumnProperty.fetchValue() renamed get()
+  LabelBuilder.LABEL_TEXT_ALIGNMENT renamed HORIZONTAL_ALIGNMENT, minor related fixes

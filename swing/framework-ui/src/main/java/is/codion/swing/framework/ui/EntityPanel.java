@@ -123,7 +123,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
    * Value type: Integer<br>
-   * Default value: 18<br>
+   * Default value: 8<br>
    */
   public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE =
           Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
@@ -147,7 +147,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   /**
    * Specifies where the control panel should be placed in a BorderLayout<br>
    * Value type: Boolean<br>
-   * Default value: BorderLayout.EAST
+   * Default value: {@link BorderLayout#EAST}
    * @see #TOOLBAR_CONTROLS
    */
   public static final PropertyValue<String> CONTROL_PANEL_CONSTRAINTS =

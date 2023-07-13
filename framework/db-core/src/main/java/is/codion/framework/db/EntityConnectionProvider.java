@@ -49,7 +49,7 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * Specifies whether the client should connect locally, via rmi or http,
    * accepted values: local, remote, http<br>
    * Value type: String<br>
-   * Default value: local
+   * Default value: {@link #CONNECTION_TYPE_LOCAL}
    * @see #CONNECTION_TYPE_LOCAL
    * @see #CONNECTION_TYPE_REMOTE
    * @see #CONNECTION_TYPE_HTTP
