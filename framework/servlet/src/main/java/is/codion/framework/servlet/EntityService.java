@@ -162,13 +162,13 @@ public final class EntityService implements AuxiliaryServer {
   }
 
   @Override
-  public void startServer() throws Exception {
+  public void startServer() {
     javalin = Javalin.create(new JavalinConfigurer()).start(sslEnabled ? securePort : port);
     setupHandlers();
   }
 
   @Override
-  public void stopServer() throws Exception {
+  public void stopServer() {
     if (javalin != null) {
       javalin.close();
     }
@@ -244,7 +244,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class EntitiesHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
@@ -259,7 +259,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class CloseHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         authenticate(context).close();
         context.req().getSession().invalidate();
@@ -273,7 +273,7 @@ public final class EntityService implements AuxiliaryServer {
 
   private final class IsTransactionOpenHandler implements Handler {
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
@@ -289,7 +289,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class IsTransactionOpenJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
@@ -306,7 +306,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class BeginTransactionHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         connection.beginTransaction();
@@ -321,7 +321,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class RollbackTransactionHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         connection.rollbackTransaction();
@@ -336,7 +336,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class CommitTransactionHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         connection.commitTransaction();
@@ -351,7 +351,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class IsQueryCacheEnabledHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
@@ -367,7 +367,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class IsQueryCacheEnabledJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
@@ -384,7 +384,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SetQueryCacheEnabledHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         connection.setQueryCacheEnabled(deserialize(context.req()));
@@ -399,7 +399,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SetQueryCacheEnabledJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         connection.setQueryCacheEnabled(deserialize(context.req()));
@@ -414,10 +414,10 @@ public final class EntityService implements AuxiliaryServer {
   private final class ProcedureHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
-      RemoteEntityConnection connection = authenticate(context);
-      List<Object> parameters = deserialize(context.req());
+    public void handle(Context context) {
       try {
+        RemoteEntityConnection connection = authenticate(context);
+        List<Object> parameters = deserialize(context.req());
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
         connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
         context.status(HttpStatus.OK_200);
@@ -431,10 +431,10 @@ public final class EntityService implements AuxiliaryServer {
   private final class FunctionHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
-      RemoteEntityConnection connection = authenticate(context);
-      List<Object> parameters = deserialize(context.req());
+    public void handle(Context context) {
       try {
+        RemoteEntityConnection connection = authenticate(context);
+        List<Object> parameters = deserialize(context.req());
         FunctionType<? extends EntityConnection, Object, Object> functionType =
                 (FunctionType<? extends EntityConnection, Object, Object>) parameters.get(0);
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
@@ -451,7 +451,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class ReportHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req());
@@ -469,7 +469,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DependenciesHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
@@ -485,7 +485,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DependenciesJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
@@ -504,7 +504,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class CountHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         int rowCount = connection.rowCount(deserialize(context.req()));
@@ -521,7 +521,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class CountJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper conditionObjectMapper = conditionObjectMapper(connection.entities());
@@ -539,7 +539,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class ValuesHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req());
@@ -557,7 +557,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class ValuesJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Entities entities = connection.entities();
@@ -584,7 +584,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SelectByKeyHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Key> keys = deserialize(context.req());
@@ -602,7 +602,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SelectByKeyJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
@@ -621,7 +621,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SelectHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Condition selectCondition = deserialize(context.req());
@@ -639,7 +639,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class SelectJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
@@ -658,7 +658,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class InsertHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Collection<Key> keys = connection.insert((Collection<Entity>) deserialize(context.req()));
@@ -675,7 +675,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class InsertJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper mapper = entityObjectMapper(connection.entities());
@@ -694,7 +694,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class UpdateHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Collection<Entity> updated = connection.update((List<Entity>) deserialize(context.req()));
@@ -711,7 +711,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class UpdateJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper mapper = entityObjectMapper(connection.entities());
@@ -730,7 +730,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class UpdateByConditionHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         int updateCount = connection.update((UpdateCondition) deserialize(context.req()));
@@ -747,7 +747,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class UpdateByConditionJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
@@ -766,7 +766,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DeleteHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         Condition condition = deserialize(context.req());
@@ -784,7 +784,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DeleteJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
@@ -803,7 +803,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DeleteByKeyHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Key> keys = deserialize(context.req());
@@ -819,7 +819,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class DeleteByKeyJsonHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper mapper = entityObjectMapper(connection.entities());
@@ -836,7 +836,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class WriteBlobHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req());
@@ -855,7 +855,7 @@ public final class EntityService implements AuxiliaryServer {
   private final class ReadBlobHandler implements Handler {
 
     @Override
-    public void handle(Context context) throws Exception {
+    public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req());
