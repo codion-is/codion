@@ -9295,3 +9295,4 @@
   EntityView, EntityEditView.initialize() now sets initialized in a finally block
   FilteredTableHeaderRenderer.getTableCellRendererComponent() bug fixed, did not set the horizontalAlignment in case of a BooleanRenderer
   EntityPanel.SPLIT_PANE_DIVIDER_SIZE removed
+  EntityService, redundant throws clauses removed, minor related refactoring
