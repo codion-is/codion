@@ -9293,3 +9293,4 @@
   EntityPanel.createEditControlPanel(), now uses SwingConstants.LEADING as horizontalAlignment for buttons in a vertical layout
   initializePanel() renamed initialize()
   EntityView, EntityEditView.initialize() now sets initialized in a finally block
+  FilteredTableHeaderRenderer.getTableCellRendererComponent() bug fixed, did not set the horizontalAlignment in case of a BooleanRenderer
