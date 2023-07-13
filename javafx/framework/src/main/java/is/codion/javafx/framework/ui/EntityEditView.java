@@ -75,8 +75,12 @@ public abstract class EntityEditView extends BorderPane {
    */
   public final EntityEditView initialize() {
     if (!initialized) {
-      initializeUI();
-      initialized = true;
+      try {
+        initializeUI();
+      }
+      finally {
+        initialized = true;
+      }
     }
 
     return this;

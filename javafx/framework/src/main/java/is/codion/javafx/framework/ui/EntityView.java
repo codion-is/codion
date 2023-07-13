@@ -180,8 +180,12 @@ public class EntityView extends BorderPane implements ViewTreeNode<EntityView> {
    */
   public final EntityView initialize() {
     if (!initialized) {
-      initializeUI();
-      initialized = true;
+      try {
+        initializeUI();
+      }
+      finally {
+        initialized = true;
+      }
     }
 
     return this;

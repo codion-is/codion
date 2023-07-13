@@ -9292,3 +9292,4 @@
   LabelBuilder.LABEL_TEXT_ALIGNMENT renamed HORIZONTAL_ALIGNMENT, minor related fixes
   EntityPanel.createEditControlPanel(), now uses SwingConstants.LEADING as horizontalAlignment for buttons in a vertical layout
   initializePanel() renamed initialize()
+  EntityView, EntityEditView.initialize() now sets initialized in a finally block
