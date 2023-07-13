@@ -41,7 +41,7 @@ public final class MultiPanelDemo {
     for (int i = 0; i < 4; i++) {
       EntityPanel employeePanel = new EntityPanel(employeeModel, new EmployeeEditPanel(employeeModel.editModel()));
       employeePanel.tablePanel().setConditionPanelVisible(true);
-      employeePanel.initializePanel();
+      employeePanel.initialize();
       basePanel.add(employeePanel);
     }
 

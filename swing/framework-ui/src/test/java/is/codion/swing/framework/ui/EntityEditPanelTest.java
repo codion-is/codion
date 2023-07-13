@@ -32,7 +32,7 @@ public final class EntityEditPanelTest {
     TestEditPanel editPanel = new TestEditPanel(editModel);
     assertEquals(7, editPanel.componentAttributes().size());
     assertThrows(IllegalStateException.class, editPanel::createControls);
-    editPanel.initializePanel();
+    editPanel.initialize();
     editPanel.createControls();
 
     assertEquals(editModel, editPanel.editModel());

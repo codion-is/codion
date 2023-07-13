@@ -382,7 +382,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
   private P initializeApplicationPanel(M applicationModel) {
     P applicationPanel = applicationPanelFactory.apply(applicationModel);
-    applicationPanel.initializePanel();
+    applicationPanel.initialize();
 
     return applicationPanel;
   }

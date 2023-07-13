@@ -133,9 +133,9 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private boolean requestFocusAfterInsert = true;
 
   /**
-   * True after {@link #initializePanel()} has been called
+   * True after {@link #initialize()} has been called
    */
-  private boolean panelInitialized = false;
+  private boolean initialized = false;
 
   /**
    * The action to take when a referential integrity error occurs on delete
@@ -343,13 +343,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   /**
-   * Initializes this EntityEditPanel UI.
+   * Initializes this EntityEditPanel.
    * This method marks this panel as initialized which prevents it from running again,
    * whether an exception occurs or not.
    * @return this EntityEditPanel instance
    */
-  public final EntityEditPanel initializePanel() {
-    if (!panelInitialized) {
+  public final EntityEditPanel initialize() {
+    if (!initialized) {
       WaitCursor.show(this);
       try {
         setupControls();
@@ -357,7 +357,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
         initializeUI();
       }
       finally {
-        panelInitialized = true;
+        initialized = true;
         WaitCursor.hide(this);
       }
     }
@@ -512,10 +512,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   /**
    * @return true if this panel has been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
-  public final boolean isPanelInitialized() {
-    return panelInitialized;
+  public final boolean isInitialized() {
+    return initialized;
   }
 
   /**
@@ -546,7 +546,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    */
   protected final void setControl(ControlCode controlCode, Control control) {
     requireNonNull(controlCode);
-    if (isPanelInitialized()) {
+    if (isInitialized()) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
     controls.put(controlCode, control == null ? NULL_CONTROL : control);
@@ -556,10 +556,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
    * Creates a Controls instance containing all the controls available in this edit panel
    * @return the Controls available in this edit panel
    * @throws IllegalStateException in case the panel has not been initialized
-   * @see #isPanelInitialized()
+   * @see #isInitialized()
    */
   protected Controls createControls() {
-    if (!isPanelInitialized()) {
+    if (!isInitialized()) {
       throw new IllegalStateException("Method must be called after the panel is initialized");
     }
 

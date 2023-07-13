@@ -33,7 +33,7 @@ public class EntityApplicationPanelTestUnit<M extends SwingEntityApplicationMode
   /**
    * Instantiates the panel and initializes it
    */
-  protected final void testInitializePanel() {
+  protected final void testInitialize() {
     EntityApplicationPanel.builder(modelClass, panelClass)
             .automaticLoginUser(user)
             .saveDefaultUsername(false)

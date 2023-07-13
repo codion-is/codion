@@ -42,7 +42,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
     departmentView.addDetailView(employeeView);
 
-    departmentView.initializePanel();
+    departmentView.initialize();
 
     addEntityView(departmentView);
   }

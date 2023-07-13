@@ -19,7 +19,7 @@ public class WorldAppPanelTest extends EntityApplicationPanelTestUnit<WorldAppMo
   }
 
   @Test
-  void initializePanel() throws Exception {
-    testInitializePanel();
+  void initialize() throws Exception {
+    testInitialize();
   }
 }

@@ -73,7 +73,7 @@ public abstract class EntityEditView extends BorderPane {
    * Initializes this edit view
    * @return the initialized view
    */
-  public final EntityEditView initializePanel() {
+  public final EntityEditView initialize() {
     if (!initialized) {
       initializeUI();
       initialized = true;

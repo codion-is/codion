@@ -196,7 +196,7 @@ public final class Example {
     customerPanel.addDetailPanel(customerAddressPanel);
 
     //lazy initialization of UI components
-    customerPanel.initializePanel();
+    customerPanel.initialize();
 
     //populate the model with data from the database
     customerModel.tableModel().refresh();

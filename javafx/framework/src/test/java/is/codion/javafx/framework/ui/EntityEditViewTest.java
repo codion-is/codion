@@ -33,7 +33,7 @@ public final class EntityEditViewTest {
   @Test
   void constructor() {
     FXEntityEditModel editModel = new FXEntityEditModel(Employee.TYPE, CONNECTION_PROVIDER);
-    EntityEditView editView = new EmpEditView(editModel).initializePanel();
+    EntityEditView editView = new EmpEditView(editModel).initialize();
     editView.createButtonPanel();
   }
 

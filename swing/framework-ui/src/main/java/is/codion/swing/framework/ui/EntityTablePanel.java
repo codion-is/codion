@@ -128,7 +128,7 @@ import static javax.swing.ScrollPaneConstants.VERTICAL_SCROLLBAR_NEVER;
  * |____________________________________________________|
  * </pre>
  * The condition and summary panels can be hidden
- * Note that {@link #initializePanel()} must be called to initialize this panel before displaying it.
+ * Note that {@link #initialize()} must be called to initialize this panel before displaying it.
  * @see EntityTableModel
  * @see #entityTablePanel(SwingEntityTableModel)
  * @see #entityTablePanel(Collection, EntityConnectionProvider)
@@ -290,7 +290,7 @@ public class EntityTablePanel extends JPanel {
   private boolean includeSelectionModeControl = false;
   private ColumnSelection columnSelection = COLUMN_SELECTION.get();
   private boolean includePopupMenu = true;
-  private boolean panelInitialized = false;
+  private boolean initialized = false;
 
   /**
    * The action to take when a referential integrity error occurs on delete
@@ -374,7 +374,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param additionalPopupMenuControls a set of controls to add to the table popup menu
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void addPopupMenuControls(Controls additionalPopupMenuControls) {
     checkIfInitialized();
@@ -384,7 +384,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param additionalToolBarControls a set of controls to add to the table toolbar menu
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void addToolBarControls(Controls additionalToolBarControls) {
     checkIfInitialized();
@@ -395,7 +395,7 @@ public class EntityTablePanel extends JPanel {
    * @param includeSouthPanel true if the south panel should be included
    * @throws IllegalStateException in case the panel has already been initialized
    * @see #initializeSouthPanel()
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludeSouthPanel(boolean includeSouthPanel) {
     checkIfInitialized();
@@ -405,7 +405,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param includeConditionPanel true if the condition panel should be included
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludeConditionPanel(boolean includeConditionPanel) {
     checkIfInitialized();
@@ -415,7 +415,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param includeFilterPanel true if the filter panel should be included
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludeFilterPanel(boolean includeFilterPanel) {
     checkIfInitialized();
@@ -425,7 +425,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param includePopupMenu true if a popup menu should be included
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludePopupMenu(boolean includePopupMenu) {
     checkIfInitialized();
@@ -435,7 +435,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param includeClearControl true if a 'Clear' control should be included in the popup menu
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludeClearControl(boolean includeClearControl) {
     checkIfInitialized();
@@ -445,7 +445,7 @@ public class EntityTablePanel extends JPanel {
   /**
    * @param includeSelectionModeControl true if a 'Single Selection' control should be included in the popup menu
    * @throws IllegalStateException in case the panel has already been initialized
-   * @see #initializePanel()
+   * @see #initialize()
    */
   public final void setIncludeSelectionModeControl(boolean includeSelectionModeControl) {
     checkIfInitialized();
@@ -810,7 +810,7 @@ public class EntityTablePanel extends JPanel {
    * @return an entity table panel based on the given model
    */
   public static EntityTablePanel entityTablePanel(SwingEntityTableModel tableModel) {
-    return new StaticEntityTablePanel(tableModel).initializePanel();
+    return new StaticEntityTablePanel(tableModel).initialize();
   }
 
   /**
@@ -818,8 +818,8 @@ public class EntityTablePanel extends JPanel {
    * Note that calling this method more than once has no effect.
    * @return this EntityTablePanel instance
    */
-  public final EntityTablePanel initializePanel() {
-    if (!panelInitialized) {
+  public final EntityTablePanel initialize() {
+    if (!initialized) {
       WaitCursor.show(this);
       try {
         setupComponents();
@@ -832,7 +832,7 @@ public class EntityTablePanel extends JPanel {
         setupKeyboardActions();
       }
       finally {
-        panelInitialized = true;
+        initialized = true;
         WaitCursor.hide(this);
       }
     }
@@ -1568,7 +1568,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void checkIfInitialized() {
-    if (panelInitialized) {
+    if (initialized) {
       throw new IllegalStateException("Method must be called before the panel is initialized");
     }
   }

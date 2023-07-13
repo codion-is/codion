@@ -98,7 +98,7 @@ public class StoreDemo {
             .setConditionPanelVisible(true);
 
     customerModel.tableModel().refresh();
-    customerPanel.initializePanel();
+    customerPanel.initialize();
 
     Dialogs.componentDialog(customerPanel)
             .title("Customers")

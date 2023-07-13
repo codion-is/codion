@@ -133,7 +133,7 @@ public final class EntitySelectionDialog extends JDialog {
   private EntityTablePanel createTablePanel(SwingEntityTableModel tableModel, Dimension preferredSize,
                                             boolean singleSelection) {
     EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
-    tablePanel.initializePanel();
+    tablePanel.initialize();
     tablePanel.table().addDoubleClickListener(mouseEvent -> {
       if (!tableModel.selectionModel().isSelectionEmpty()) {
         okControl.actionPerformed(null);
