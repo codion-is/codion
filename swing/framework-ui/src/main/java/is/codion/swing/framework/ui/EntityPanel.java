@@ -14,6 +14,7 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.component.Components;
+import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
@@ -31,6 +32,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -1138,6 +1140,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return panel(borderLayout())
             .add(buttonPanel(controls)
                     .orientation(VERTICAL)
+                    .buttonBuilder(ButtonBuilder.builder()
+                            .horizontalAlignment(SwingConstants.LEADING))
                     .toggleButtonType(CHECKBOX)
                     .build(), BorderLayout.NORTH)
             .build();
