@@ -88,8 +88,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
-  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 8;
-
   /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
@@ -121,14 +119,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    */
   public static final PropertyValue<Boolean> INCLUDE_DETAIL_PANEL_CONTROLS =
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityPanel.includeDetailPanelControls", true);
-
-  /**
-   * Specifies the default size of the divider for detail panel split panes.<br>
-   * Value type: Integer<br>
-   * Default value: 8<br>
-   */
-  public static final PropertyValue<Integer> SPLIT_PANE_DIVIDER_SIZE =
-          Configuration.integerValue("is.codion.swing.framework.ui.EntityPanel.splitPaneDividerSize", DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
 
   /**
    * Specifies whether the edit controls (Save, update, delete, clear, refresh) should be on a toolbar instead of a button panel<br>
@@ -1409,7 +1399,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
             .oneTouchExpandable(true)
             .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
             .resizeWeight(detailSplitPanelResizeWeight)
-            .dividerSize(SPLIT_PANE_DIVIDER_SIZE.get())
             .leftComponent(editControlTablePanel)
             .rightComponent(detailPanelTabbedPane)
             .build();
