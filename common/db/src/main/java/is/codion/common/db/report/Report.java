@@ -4,7 +4,7 @@
 package is.codion.common.db.report;
 
 import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 
 import java.sql.Connection;
 import java.util.Objects;

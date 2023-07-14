@@ -8,7 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
 import java.sql.Connection;

@@ -14,7 +14,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.credentials.CredentialsException;
 import is.codion.common.model.credentials.CredentialsProvider;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;

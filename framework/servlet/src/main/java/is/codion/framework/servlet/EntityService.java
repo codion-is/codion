@@ -8,7 +8,7 @@ import is.codion.common.Serializer;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.AuxiliaryServer;
 import is.codion.common.rmi.server.Server;

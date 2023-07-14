@@ -5,7 +5,7 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.Configuration;
 import is.codion.common.Text;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 
 import java.rmi.registry.Registry;
 import java.rmi.server.RMIClientSocketFactory;

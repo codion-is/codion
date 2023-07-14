@@ -5,7 +5,7 @@ package is.codion.common.db.pool;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
 import javax.sql.DataSource;

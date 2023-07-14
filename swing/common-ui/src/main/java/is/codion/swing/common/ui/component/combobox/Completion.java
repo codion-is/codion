@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.combobox;
 
 import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 
 import javax.swing.JComboBox;
 import javax.swing.text.AttributeSet;

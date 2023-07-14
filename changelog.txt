@@ -9298,3 +9298,4 @@
   EntityService, redundant throws clauses removed, minor related refactoring
   SwingEntityTableModel, FXEntityListModel.isConditionEnabled() added
   SwingEntityTableModel constructor overloaded with ColumnFactory parameter
+  common.properties package renamed property, for consistency

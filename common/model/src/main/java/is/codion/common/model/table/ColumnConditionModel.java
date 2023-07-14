@@ -6,7 +6,7 @@ package is.codion.common.model.table;
 import is.codion.common.Configuration;
 import is.codion.common.Operator;
 import is.codion.common.event.EventListener;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;

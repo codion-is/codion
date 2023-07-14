@@ -8,7 +8,7 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.model.FilteredModel;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;

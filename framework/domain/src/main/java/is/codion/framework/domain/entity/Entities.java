@@ -4,7 +4,7 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.DomainType;
 
 import java.util.Collection;

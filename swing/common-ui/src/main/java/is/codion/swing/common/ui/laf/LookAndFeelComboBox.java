@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.laf;
 
 import is.codion.common.Configuration;
 import is.codion.common.item.Item;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import javax.swing.JComboBox;

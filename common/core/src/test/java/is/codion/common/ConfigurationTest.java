@@ -3,7 +3,7 @@
  */
 package is.codion.common;
 
-import is.codion.common.properties.PropertyStore;
+import is.codion.common.property.PropertyStore;
 
 import org.junit.jupiter.api.Test;
 

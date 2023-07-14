@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.properties;
+package is.codion.common.property;
 
 import is.codion.common.value.AbstractValue;
 

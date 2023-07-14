@@ -5,7 +5,7 @@ package is.codion.framework.db.local;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.database.Database;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 

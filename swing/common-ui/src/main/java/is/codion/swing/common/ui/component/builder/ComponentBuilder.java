@@ -4,7 +4,7 @@
 package is.codion.swing.common.ui.component.builder;
 
 import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.Value.Validator;
