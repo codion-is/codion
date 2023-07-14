@@ -37,9 +37,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
     requireNonNull(builder);
-    this.user = requireNonNull(builder.user, "user");
-    this.domainClassName = requireNonNull(builder.domainClassName, "domainClassName");
-    this.clientId = requireNonNull(builder.clientId, "clientId");
+    this.user = requireNonNull(builder.user, "A user must be specified");
+    this.domainClassName = requireNonNull(builder.domainClassName, "A domainClassName must be specified");
+    this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
     this.clientTypeId = builder.clientTypeId;
     this.clientVersion = builder.clientVersion;
   }
@@ -116,9 +116,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   @Override
   public final EntityConnection connection() {
     synchronized (lock) {
-      if (user == null) {
-        throw new IllegalStateException("No user set");
-      }
       validateConnection();
 
       return entityConnection;
@@ -170,9 +167,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   private void doConnect() {
-    if (user == null) {
-      throw new IllegalStateException("User has not been set for this connection provider");
-    }
     entityConnection = connect();
     entities = entityConnection.entities();
     onConnectEvent.onEvent(entityConnection);
