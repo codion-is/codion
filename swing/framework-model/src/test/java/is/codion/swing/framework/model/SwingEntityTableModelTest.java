@@ -338,4 +338,27 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     nameConditionModel.setEnabled(true);
     assertFalse(tableModel.conditionChangedObserver().get());
   }
+
+  @Test
+  void isConditionEnabled() {
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider()) {
+      @Override
+      protected boolean isConditionEnabled() {
+        return conditionModel().isEnabled(Employee.MGR_FK);
+      }
+    };
+    tableModel.refresh();
+    assertEquals(16, tableModel.getRowCount());
+    tableModel.conditionRequiredState().set(true);
+    tableModel.refresh();
+    assertEquals(0, tableModel.getRowCount());
+    ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);
+    mgrConditionModel.setEqualValue(null);
+    mgrConditionModel.setEnabled(true);
+    tableModel.refresh();
+    assertEquals(1, tableModel.getRowCount());
+    mgrConditionModel.setEnabled(false);
+    tableModel.refresh();
+    assertEquals(0, tableModel.getRowCount());
+  }
 }

@@ -9296,3 +9296,4 @@
   FilteredTableHeaderRenderer.getTableCellRendererComponent() bug fixed, did not set the horizontalAlignment in case of a BooleanRenderer
   EntityPanel.SPLIT_PANE_DIVIDER_SIZE removed
   EntityService, redundant throws clauses removed, minor related refactoring
+  SwingEntityTableModel, FXEntityListModel.isConditionEnabled() added
