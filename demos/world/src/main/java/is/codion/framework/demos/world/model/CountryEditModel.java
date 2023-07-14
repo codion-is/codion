@@ -1,20 +1,24 @@
 package is.codion.framework.demos.world.model;
 
+import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
+import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 public final class CountryEditModel extends SwingEntityEditModel {
 
-  private ValueObserver<Double> averageCityPopulationObserver;
+  private final Value<Double> averageCityPopulationValue = Value.value();
 
   CountryEditModel(EntityConnectionProvider connectionProvider) {
     super(Country.TYPE, connectionProvider);
     initializeComboBoxModels(Country.CAPITAL_FK);
+    addEntityListener(country -> averageCityPopulationValue.set(averageCityPopulation(country)));
   }
 
   @Override
@@ -31,11 +35,19 @@ public final class CountryEditModel extends SwingEntityEditModel {
     return comboBoxModel;
   }
 
-  public ValueObserver<Double> averageCityPopulationValue() {
-    return averageCityPopulationObserver;
+  public ValueObserver<Double> averageCityPopulationObserver() {
+    return averageCityPopulationValue.observer();
   }
 
-  public void setAverageCityPopulationObserver(ValueObserver<Double> averageCityPopulationObserver) {
-    this.averageCityPopulationObserver = averageCityPopulationObserver;
+  private Double averageCityPopulation(Entity country) {
+    if (country == null) {
+      return null;
+    }
+    try {
+      return connectionProvider().connection().executeFunction(Country.AVERAGE_CITY_POPULATION, country.get(Country.CODE));
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
