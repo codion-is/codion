@@ -11,7 +11,7 @@ module is.codion.common.core {
   exports is.codion.common.format;
   exports is.codion.common.item;
   exports is.codion.common.logging;
-  exports is.codion.common.properties;
+  exports is.codion.common.property;
   exports is.codion.common.proxy;
   exports is.codion.common.scheduler;
   exports is.codion.common.state;
