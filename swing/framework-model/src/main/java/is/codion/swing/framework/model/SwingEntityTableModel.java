@@ -157,6 +157,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
    * @param connectionProvider the connection provider
+   * @param columnFactory the table column factory
+   */
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               ColumnFactory<Attribute<?>> columnFactory) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
    * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -166,10 +177,32 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Instantiates a new SwingEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
+   * @param columnFactory the table column factory
+   * @param conditionModelFactory the table condition model factory
+   */
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               ColumnFactory<Attribute<?>> columnFactory,
+                               EntityConditionModelFactory conditionModelFactory) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory, conditionModelFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(editModel, new SwingEntityConditionModelFactory(editModel.connectionProvider()));
+    this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()));
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param editModel the edit model
+   * @param columnFactory the table column factory
+   */
+  public SwingEntityTableModel(SwingEntityEditModel editModel, ColumnFactory<Attribute<?>> columnFactory) {
+    this(editModel, columnFactory, new SwingEntityConditionModelFactory(requireNonNull(editModel).connectionProvider()));
   }
 
   /**
@@ -178,8 +211,20 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
+    this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()), conditionModelFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param editModel the edit model
+   * @param columnFactory the table column factory
+   * @param conditionModelFactory the table condition model factory
+   */
+  public SwingEntityTableModel(SwingEntityEditModel editModel,
+                               ColumnFactory<Attribute<?>> columnFactory,
+                               EntityConditionModelFactory conditionModelFactory) {
     this.editModel = requireNonNull(editModel);
-    this.tableModel = createTableModel(editModel.entityDefinition());
+    this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     addEditEventListeners();
@@ -1164,8 +1209,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
-    return FilteredTableModel.builder(new SwingEntityColumnFactory(entityDefinition), new EntityColumnValueProvider())
+  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition, ColumnFactory<Attribute<?>> columnFactory) {
+    return FilteredTableModel.builder(columnFactory, new EntityColumnValueProvider())
             .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
             .itemSupplier(new EntityItemSupplier(this))

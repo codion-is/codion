@@ -10,9 +10,11 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.exception.ValidationException;
+import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.test.AbstractEntityTableModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -28,6 +30,7 @@ import java.awt.Color;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.Optional;
 
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -360,5 +363,22 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     mgrConditionModel.setEnabled(false);
     tableModel.refresh();
     assertEquals(0, tableModel.getRowCount());
+  }
+
+  @Test
+  void columnFactory() {
+    EntityDefinition definition = testModel.connectionProvider().entities().definition(Employee.TYPE);
+    SwingEntityTableModel tableModel = new SwingEntityTableModel(Employee.TYPE, testModel.connectionProvider(),
+            new SwingEntityColumnFactory(definition) {
+              @Override
+              protected Optional<FilteredTableColumn<Attribute<?>>> createColumn(Property<?> property, int modelIndex) {
+                if (property.attribute().equals(Employee.COMMISSION)) {
+                  return Optional.empty();
+                }
+
+                return super.createColumn(property, modelIndex);
+              }
+            });
+    assertFalse(tableModel.columnModel().containsColumn(Employee.COMMISSION));
   }
 }
