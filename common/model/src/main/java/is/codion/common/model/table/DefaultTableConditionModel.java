@@ -44,12 +44,12 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
 
   @Override
   public <T> ColumnConditionModel<C, T> conditionModel(C columnIdentifier) {
-    ColumnConditionModel<C, T> filterModel = (ColumnConditionModel<C, T>) conditionModels.get(columnIdentifier);
-    if (filterModel == null) {
-      throw new IllegalArgumentException("No filter model available for column: " + columnIdentifier);
+    ColumnConditionModel<C, T> conditionModel = (ColumnConditionModel<C, T>) conditionModels.get(columnIdentifier);
+    if (conditionModel == null) {
+      throw new IllegalArgumentException("No condition model available for column: " + columnIdentifier);
     }
 
-    return filterModel;
+    return conditionModel;
   }
 
   @Override
