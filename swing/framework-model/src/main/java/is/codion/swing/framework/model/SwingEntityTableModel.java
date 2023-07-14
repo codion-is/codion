@@ -65,6 +65,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
@@ -1165,10 +1166,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
     return FilteredTableModel.builder(new SwingEntityColumnFactory(entityDefinition), new EntityColumnValueProvider())
-            .filterModelFactory(new EntityFilterModelFactory())
-            .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
-            .itemSupplier(SwingEntityTableModel.this::refreshItems)
-            .itemValidator(row -> row.type().equals(entityDefinition.type()))
+            .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
+            .summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
+            .itemSupplier(new EntityItemSupplier(this))
+            .itemValidator(new EntityItemValidator(entityDefinition))
             .build();
   }
 
@@ -1195,7 +1196,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+  private static final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+
+    private final EntityDefinition entityDefinition;
+
+    private EntityFilterModelFactory(EntityDefinition entityDefinition) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+    }
 
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
@@ -1206,7 +1213,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      Property<?> property = editModel.entityDefinition().property(attribute);
+      Property<?> property = entityDefinition.property(attribute);
       if (property.isHidden()) {
         return Optional.empty();
       }
@@ -1218,7 +1225,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .build());
     }
 
-    private List<Operator> operators(Class<?> columnClass) {
+    private static List<Operator> operators(Class<?> columnClass) {
       if (columnClass.equals(Boolean.class)) {
         return singletonList(Operator.EQUAL);
       }
@@ -1227,16 +1234,52 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+  private static final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+
+    private final EntityDefinition entityDefinition;
+    private final FilteredTableModel<?, Attribute<?>> tableModel;
+
+    private EntitySummaryValueProviderFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+      this.tableModel = requireNonNull(tableModel);
+    }
 
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
-      Property<?> property = entityDefinition().property(attribute);
+      Property<?> property = entityDefinition.property(attribute);
       if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }
 
       return Optional.empty();
+    }
+  }
+
+  private static final class EntityItemSupplier implements Supplier<Collection<Entity>> {
+
+    private final SwingEntityTableModel tableModel;
+
+    private EntityItemSupplier(SwingEntityTableModel tableModel) {
+      this.tableModel = requireNonNull(tableModel);
+    }
+
+    @Override
+    public Collection<Entity> get() {
+      return tableModel.refreshItems();
+    }
+  }
+
+  private static final class EntityItemValidator implements Predicate<Entity> {
+
+    private final EntityDefinition entityDefinition;
+
+    private EntityItemValidator(EntityDefinition entityDefinition) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+    }
+
+    @Override
+    public boolean test(Entity entity) {
+      return entity.type().equals(entityDefinition.type());
     }
   }
 }
