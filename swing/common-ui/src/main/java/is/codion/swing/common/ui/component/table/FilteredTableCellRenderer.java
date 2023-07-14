@@ -5,7 +5,7 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Configuration;
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import javax.swing.SwingConstants;

@@ -4,7 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 
 /**
  * The possible actions to take on a referential integrity error.

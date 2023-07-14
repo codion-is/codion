@@ -5,7 +5,7 @@ package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 
 import java.rmi.RemoteException;

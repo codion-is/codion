@@ -3,7 +3,7 @@
  */
 package is.codion.common;
 
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyValue;
 
 import java.io.BufferedReader;
 import java.io.File;

@@ -5,8 +5,8 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.Memory;
 import is.codion.common.Separators;
-import is.codion.common.properties.PropertyStore;
-import is.codion.common.properties.PropertyStore.PropertyFormatter;
+import is.codion.common.property.PropertyStore;
+import is.codion.common.property.PropertyStore.PropertyFormatter;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.user.User;
 

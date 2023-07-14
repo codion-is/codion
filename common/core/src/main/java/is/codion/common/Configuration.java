@@ -3,8 +3,8 @@
  */
 package is.codion.common;
 
-import is.codion.common.properties.PropertyStore;
-import is.codion.common.properties.PropertyValue;
+import is.codion.common.property.PropertyStore;
+import is.codion.common.property.PropertyValue;
 
 import java.io.File;
 import java.io.IOException;

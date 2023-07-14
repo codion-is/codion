@@ -170,7 +170,7 @@ include::{dir-source}/is/codion/framework/demos/empdept/ui/EmployeeEditPanel.jav
 [#_main_application_model]
 === Main application model
 
-We create a main application model by extending {url-javadoc}{swing-framework-ui}/is/codion/swing/framework/model/SwingEntityApplicationModel.html[SwingEntityApplicationModel] and add an entity model for the department entity.
+We create a main application model by extending {url-javadoc}{swing-framework-model}/is/codion/swing/framework/model/SwingEntityApplicationModel.html[SwingEntityApplicationModel] and add an entity model for the department entity.
 
 [source,java]
 ----
