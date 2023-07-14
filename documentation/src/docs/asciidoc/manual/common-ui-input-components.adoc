@@ -2,7 +2,7 @@
 :dir-source: ../../../../../demos/manual/src/main/java
 :url-javadoc: link:../api
 
-Binding model data to UI components is accomplished by linking a {url-javadoc}{common-db}/is/codion/common/value/Value.html[Value] instance to an instance of its subclass {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/ComponentValue.html[ComponentValue], which represents a value based on an input component.
+Binding model data to UI components is accomplished by linking a {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] instance to an instance of its subclass {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/value/ComponentValue.html[ComponentValue], which represents a value based on an input component.
 
 [source,java,indent=0]
 ----
