@@ -162,6 +162,13 @@ include::{dir-source}/is/codion/framework/demos/world/model/ContinentModel.java[
 include::{dir-source}/is/codion/framework/demos/world/model/LookupTableModel.java[tag=**]
 ----
 
+== Tests
+
+[source,java]
+----
+include::{dir-test-source}/is/codion/framework/demos/world/model/CountryEditModelTest.java[tag=**]
+----
+
 == UI
 
 [#_main_application_panel]
