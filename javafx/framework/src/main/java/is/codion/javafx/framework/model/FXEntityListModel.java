@@ -429,15 +429,18 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   }
 
   /**
-   * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #orderBy()}
+   * Queries the data used to populate this EntityTableModel when it is refreshed.
+   * This method should take into account the condition ({EntityTableConditionModel#condition()}),
+   * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
+   * ({@link #selectAttributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequiredState()
+   * @see #isConditionEnabled()
    * @see EntityTableConditionModel#condition()
    */
   @Override
   protected List<Entity> performQuery() {
-    if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+    if (conditionRequiredState.get() && !isConditionEnabled()) {
       updateRefreshCondition(conditionModel.condition());
 
       return emptyList();
@@ -448,6 +451,18 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
+   * This can be done by enabling the {@link #conditionRequiredState()}, which prevents a refresh as long as this
+   * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
+   * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
+   * @return true if enough conditions are enabled for a safe refresh
+   * @see #conditionRequiredState()
+   */
+  protected boolean isConditionEnabled() {
+    return conditionModel.isEnabled();
   }
 
   /**
@@ -511,7 +526,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
   private List<Entity> queryItems(Condition condition) throws DatabaseException {
     List<Entity> items = connectionProvider().connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes())
-              .limit(limit)
+              .limit(getLimit())
               .orderBy(orderBy())
               .build());
     updateRefreshCondition(condition);

@@ -65,6 +65,7 @@ import java.util.ResourceBundle;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
+import java.util.function.Supplier;
 
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
@@ -156,6 +157,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Instantiates a new SwingEntityTableModel.
    * @param entityType the entityType
    * @param connectionProvider the connection provider
+   * @param columnFactory the table column factory
+   */
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               ColumnFactory<Attribute<?>> columnFactory) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
    * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -165,10 +177,32 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * Instantiates a new SwingEntityTableModel.
+   * @param entityType the entityType
+   * @param connectionProvider the connection provider
+   * @param columnFactory the table column factory
+   * @param conditionModelFactory the table condition model factory
+   */
+  public SwingEntityTableModel(EntityType entityType, EntityConnectionProvider connectionProvider,
+                               ColumnFactory<Attribute<?>> columnFactory,
+                               EntityConditionModelFactory conditionModelFactory) {
+    this(new SwingEntityEditModel(entityType, connectionProvider), columnFactory, conditionModelFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
    * @param editModel the edit model
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel) {
-    this(editModel, new SwingEntityConditionModelFactory(editModel.connectionProvider()));
+    this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()));
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param editModel the edit model
+   * @param columnFactory the table column factory
+   */
+  public SwingEntityTableModel(SwingEntityEditModel editModel, ColumnFactory<Attribute<?>> columnFactory) {
+    this(editModel, columnFactory, new SwingEntityConditionModelFactory(requireNonNull(editModel).connectionProvider()));
   }
 
   /**
@@ -177,8 +211,20 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @param conditionModelFactory the table condition model factory
    */
   public SwingEntityTableModel(SwingEntityEditModel editModel, EntityConditionModelFactory conditionModelFactory) {
+    this(editModel, new SwingEntityColumnFactory(requireNonNull(editModel).entityDefinition()), conditionModelFactory);
+  }
+
+  /**
+   * Instantiates a new SwingEntityTableModel.
+   * @param editModel the edit model
+   * @param columnFactory the table column factory
+   * @param conditionModelFactory the table condition model factory
+   */
+  public SwingEntityTableModel(SwingEntityEditModel editModel,
+                               ColumnFactory<Attribute<?>> columnFactory,
+                               EntityConditionModelFactory conditionModelFactory) {
     this.editModel = requireNonNull(editModel);
-    this.tableModel = createTableModel(editModel.entityDefinition());
+    this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
     addEditEventListeners();
@@ -806,14 +852,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   /**
-   * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #orderBy()}
+   * Queries the data used to populate this EntityTableModel when it is refreshed.
+   * This method should take into account the condition ({EntityTableConditionModel#condition()}),
+   * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
+   * ({@link #selectAttributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequiredState()
+   * @see #isConditionEnabled()
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
-    if (conditionRequiredState.get() && !conditionModel.isEnabled()) {
+    if (conditionRequiredState.get() && !isConditionEnabled()) {
       updateRefreshCondition(conditionModel.condition());
 
       return emptyList();
@@ -824,6 +873,18 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
+   * This can be done by enabling the {@link #conditionRequiredState()}, which prevents a refresh as long as this
+   * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
+   * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
+   * @return true if enough conditions are enabled for a safe refresh
+   * @see #conditionRequiredState()
+   */
+  protected boolean isConditionEnabled() {
+    return conditionModel.isEnabled();
   }
 
   /**
@@ -936,7 +997,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private List<Entity> queryItems(Condition condition) throws DatabaseException {
     List<Entity> items = editModel.connectionProvider().connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes())
-              .limit(limit)
+              .limit(getLimit())
               .orderBy(orderBy())
               .build());
     updateRefreshCondition(condition);
@@ -1148,12 +1209,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition) {
-    return FilteredTableModel.builder(new SwingEntityColumnFactory(entityDefinition), new EntityColumnValueProvider())
-            .filterModelFactory(new EntityFilterModelFactory())
-            .summaryValueProviderFactory(new EntitySummaryValueProviderFactory())
-            .itemSupplier(SwingEntityTableModel.this::refreshItems)
-            .itemValidator(row -> row.type().equals(entityDefinition.type()))
+  private FilteredTableModel<Entity, Attribute<?>> createTableModel(EntityDefinition entityDefinition, ColumnFactory<Attribute<?>> columnFactory) {
+    return FilteredTableModel.builder(columnFactory, new EntityColumnValueProvider())
+            .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
+            .summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
+            .itemSupplier(new EntityItemSupplier(this))
+            .itemValidator(new EntityItemValidator(entityDefinition))
             .build();
   }
 
@@ -1180,7 +1241,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+  private static final class EntityFilterModelFactory implements ColumnConditionModel.Factory<Attribute<?>> {
+
+    private final EntityDefinition entityDefinition;
+
+    private EntityFilterModelFactory(EntityDefinition entityDefinition) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+    }
 
     @Override
     public Optional<ColumnConditionModel<? extends Attribute<?>, ?>> createConditionModel(Attribute<?> attribute) {
@@ -1191,7 +1258,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      Property<?> property = editModel.entityDefinition().property(attribute);
+      Property<?> property = entityDefinition.property(attribute);
       if (property.isHidden()) {
         return Optional.empty();
       }
@@ -1203,7 +1270,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
               .build());
     }
 
-    private List<Operator> operators(Class<?> columnClass) {
+    private static List<Operator> operators(Class<?> columnClass) {
       if (columnClass.equals(Boolean.class)) {
         return singletonList(Operator.EQUAL);
       }
@@ -1212,16 +1279,52 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+  private static final class EntitySummaryValueProviderFactory implements SummaryValueProvider.Factory<Attribute<?>> {
+
+    private final EntityDefinition entityDefinition;
+    private final FilteredTableModel<?, Attribute<?>> tableModel;
+
+    private EntitySummaryValueProviderFactory(EntityDefinition entityDefinition, FilteredTableModel<?, Attribute<?>> tableModel) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+      this.tableModel = requireNonNull(tableModel);
+    }
 
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
-      Property<?> property = entityDefinition().property(attribute);
+      Property<?> property = entityDefinition.property(attribute);
       if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }
 
       return Optional.empty();
+    }
+  }
+
+  private static final class EntityItemSupplier implements Supplier<Collection<Entity>> {
+
+    private final SwingEntityTableModel tableModel;
+
+    private EntityItemSupplier(SwingEntityTableModel tableModel) {
+      this.tableModel = requireNonNull(tableModel);
+    }
+
+    @Override
+    public Collection<Entity> get() {
+      return tableModel.refreshItems();
+    }
+  }
+
+  private static final class EntityItemValidator implements Predicate<Entity> {
+
+    private final EntityDefinition entityDefinition;
+
+    private EntityItemValidator(EntityDefinition entityDefinition) {
+      this.entityDefinition = requireNonNull(entityDefinition);
+    }
+
+    @Override
+    public boolean test(Entity entity) {
+      return entity.type().equals(entityDefinition.type());
     }
   }
 }

@@ -144,7 +144,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
   protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider) {
-    this(entityType, connectionProvider, connectionProvider.entities().definition(entityType).validator());
+    this(requireNonNull(entityType), requireNonNull(connectionProvider), connectionProvider.entities().definition(entityType).validator());
   }
 
   /**
@@ -155,8 +155,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    */
   protected AbstractEntityEditModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                                     EntityValidator validator) {
-    this.entity = connectionProvider.entities().entity(entityType);
-    this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
+    this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
+    this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
     this.modifiedSupplier = entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
