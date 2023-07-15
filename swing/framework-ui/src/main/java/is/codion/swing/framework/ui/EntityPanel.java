@@ -4,10 +4,8 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -1893,7 +1891,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     /**
      * Creates a new Control which shows the edit panel provided by this panel builder in a dialog and if insert is performed
      * adds the new entity to the {@code comboBox} and selects it.
-     * @param comboBox the combo box in which to select the new entity, receives the focus after insert
+     * Creates a INSERT key binding on the given component for triggering the resulting Control.
+     * @param comboBox the combo box in which to select the new entity
      * @return the Control
      */
     Control createInsertControl(EntityComboBox comboBox);
@@ -1901,26 +1900,17 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     /**
      * Creates a new Control which shows the edit panel provided by this panel builder in a dialog and if insert is performed
      * selects the new entity in the {@code searchField}.
-     * @param searchField the search field in which to select the new entity, receives the focus after insert
+     * Creates a INSERT key binding on the given component for triggering the resulting Control.
+     * @param searchField the search field in which to select the new entity
      * @return the Control
      */
     Control createInsertControl(EntitySearchField searchField);
 
     /**
-     * Creates a new Control which shows the edit panel provided by this panel builder in a dialog and if insert is performed
-     * {@code onInsert} is notified.
-     * @param component this component used as dialog parent, receives the focus after insert
-     * @param connectionProvider the connection provider
-     * @param onInsert the listener notified when insert has been performed
-     * @return the Control
-     */
-    Control createInsertControl(JComponent component, EntityConnectionProvider connectionProvider,
-                                EventDataListener<List<Entity>> onInsert);
-
-    /**
      * Creates a new Control which shows the edit panel provided by this panel builder in a dialog displaying
      * the selected item for update, and if update is performed replaces the updated entity in the combo box.
-     * @param comboBox the combo box which selected item to edit, receives the focus after insert
+     * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
+     * @param comboBox the combo box which selected item to edit
      * @return the Control
      */
     Control createUpdateControl(EntityComboBox comboBox);
@@ -1928,7 +1918,8 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     /**
      * Creates a new Control which shows the edit panel provided by this panel builder in a dialog displaying
      * the selected item for update, and if update is performed replaces the updated entity in the search field.
-     * @param searchField the search field which selected item to edit, receives the focus after insert
+     * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
+     * @param searchField the search field which selected item to edit
      * @return the Control
      */
     Control createUpdateControl(EntitySearchField searchField);
