@@ -9305,3 +9305,5 @@
   ConnectionValidationException removed, unused
   Attribute.isEnum() added
   EntityTestUnit.randomEnum() added
+  EntityComponents now supports enum based attributes with a combo box
+  SwingEntityEditModel.comboBoxModel() now supports enum based attributes
