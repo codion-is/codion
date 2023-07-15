@@ -7,7 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.demos.petclinic.domain.api.PetclinicApi.DOMAIN;
+import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Vet extends Entity {
   EntityType TYPE = DOMAIN.entityType("petclinic.vet", Vet.class);

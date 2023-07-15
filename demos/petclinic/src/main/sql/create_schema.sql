@@ -35,7 +35,8 @@ CREATE TABLE petclinic.owner (
   last_name  VARCHAR_IGNORECASE(30),
   address    VARCHAR(255),
   city       VARCHAR(80),
-  telephone  VARCHAR(20)
+  telephone  VARCHAR(20),
+  phone_type VARCHAR(20) not null
 );
 CREATE INDEX owners_last_name ON petclinic.owner (last_name);
 
@@ -83,16 +84,16 @@ INSERT INTO petclinic.pet_type(name) VALUES ('snake');
 INSERT INTO petclinic.pet_type(name) VALUES ('bird');
 INSERT INTO petclinic.pet_type(name) VALUES ('hamster');
 
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Eduardo', 'Rodriquez', '2693 Commerce St.', 'McFarland', '6085558763');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Harold', 'Davis', '563 Friendly St.', 'Windsor', '6085553198');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Peter', 'McTavish', '2387 S. Fair Way', 'Madison', '6085552765');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Jean', 'Coleman', '105 N. Lake St.', 'Monona', '6085552654');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Jeff', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Maria', 'Escobito', '345 Maple St.', 'Madison', '6085557683');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435');
-INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone) VALUES ('Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('George', 'Franklin', '110 W. Liberty St.', 'Madison', '6085551023', 'MOBILE');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Betty', 'Davis', '638 Cardinal Ave.', 'Sun Prairie', '6085551749', 'MOBILE');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Eduardo', 'Rodriquez', '2693 Commerce St.', 'McFarland', '6085558763', 'HOME');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Harold', 'Davis', '563 Friendly St.', 'Windsor', '6085553198', 'MOBILE');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Peter', 'McTavish', '2387 S. Fair Way', 'Madison', '6085552765', 'HOME');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Jean', 'Coleman', '105 N. Lake St.', 'Monona', '6085552654', 'WORK');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Jeff', 'Black', '1450 Oak Blvd.', 'Monona', '6085555387', 'WORK');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Maria', 'Escobito', '345 Maple St.', 'Madison', '6085557683', 'MOBILE');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('David', 'Schroeder', '2749 Blackhawk Trail', 'Madison', '6085559435', 'HOME');
+INSERT INTO petclinic.owner(first_name, last_name, address, city, telephone, phone_type) VALUES ('Carlos', 'Estaban', '2335 Independence La.', 'Waunakee', '6085555487', 'WORK');
 
 INSERT INTO petclinic.pet(name, birth_date, type_id, owner_id) VALUES ('Leo', '2010-09-07', 1, 1);
 INSERT INTO petclinic.pet(name, birth_date, type_id, owner_id) VALUES ('Basil', '2012-08-06', 6, 2);

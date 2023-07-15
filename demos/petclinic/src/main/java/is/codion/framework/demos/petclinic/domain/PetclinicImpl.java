@@ -4,9 +4,10 @@
 package is.codion.framework.demos.petclinic.domain;
 
 import is.codion.framework.demos.petclinic.domain.api.Owner;
+import is.codion.framework.demos.petclinic.domain.api.Owner.PhoneType;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
-import is.codion.framework.demos.petclinic.domain.api.PetclinicApi;
+import is.codion.framework.demos.petclinic.domain.api.Petclinic;
 import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
@@ -14,16 +15,19 @@ import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
+
+import java.sql.Statement;
 
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Property.*;
 
-public final class Petclinic extends DefaultDomain {
+public final class PetclinicImpl extends DefaultDomain {
 
-  public Petclinic() {
-    super(PetclinicApi.DOMAIN);
+  public PetclinicImpl() {
+    super(Petclinic.DOMAIN);
     vet();
     specialty();
     vetSpecialty();
@@ -114,7 +118,9 @@ public final class Petclinic extends DefaultDomain {
             columnProperty(Owner.CITY, "City")
                     .maximumLength(80),
             columnProperty(Owner.TELEPHONE, "Telephone")
-                    .maximumLength(20))
+                    .maximumLength(20),
+            columnProperty(Owner.PHONE_TYPE, "Phone type")
+                    .columnClass(String.class, new PhoneTypeValueConverter()))
             .keyGenerator(identity())
             .caption("Owners")
             .stringFactory(StringFactory.builder()
@@ -162,5 +168,18 @@ public final class Petclinic extends DefaultDomain {
                     .descending(Visit.DATE)
                     .build())
             .caption("Visits"));
+  }
+
+  private static final class PhoneTypeValueConverter implements ValueConverter<PhoneType, String> {
+
+    @Override
+    public String toColumnValue(PhoneType value, Statement statement) {
+      return value.name();
+    }
+
+    @Override
+    public PhoneType fromColumnValue(String columnValue) {
+      return PhoneType.valueOf(columnValue);
+    }
   }
 }

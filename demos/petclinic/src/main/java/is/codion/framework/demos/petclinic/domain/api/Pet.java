@@ -10,7 +10,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 
 import java.time.LocalDate;
 
-import static is.codion.framework.demos.petclinic.domain.api.PetclinicApi.DOMAIN;
+import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Pet extends Entity {
   EntityType TYPE = DOMAIN.entityType("petclinic.pet", Pet.class);

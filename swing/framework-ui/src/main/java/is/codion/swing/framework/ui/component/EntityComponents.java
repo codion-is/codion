@@ -11,6 +11,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntitySearchModel;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
@@ -51,8 +52,10 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
+import java.util.Collection;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -102,7 +105,8 @@ public class EntityComponents {
             attribute.isInteger() ||
             attribute.isLong() ||
             attribute.isDouble() ||
-            attribute.isBigDecimal();
+            attribute.isBigDecimal() ||
+            attribute.isEnum();
   }
 
   /**
@@ -152,6 +156,9 @@ public class EntityComponents {
     }
     if (attribute.isBigDecimal()) {
       return (ComponentBuilder<T, C, B>) bigDecimalField((Attribute<BigDecimal>) attribute);
+    }
+    if (attribute.isEnum()) {
+      return (ComponentBuilder<T, C, B>) comboBox(attribute, createEnumComboBoxModel(attribute, property.isNullable()));
     }
 
     throw new IllegalArgumentException("No input component available for attribute: " + attribute + " (type: " + attribute.valueClass() + ")");
@@ -658,6 +665,16 @@ public class EntityComponents {
 
     return Components.maskedTextField()
             .toolTipText(property.description());
+  }
+
+  private static <T> FilteredComboBoxModel<T> createEnumComboBoxModel(Attribute<T> attribute, boolean nullable) {
+    FilteredComboBoxModel<T> comboBoxModel = new FilteredComboBoxModel<>();
+    Collection<T> enumConstants = asList(attribute.valueClass().getEnumConstants());
+    comboBoxModel.setItemSupplier(() -> enumConstants);
+    comboBoxModel.setIncludeNull(nullable);
+    comboBoxModel.refresh();
+
+    return comboBoxModel;
   }
 
   private static final class EntityReadOnlyFormat extends Format {

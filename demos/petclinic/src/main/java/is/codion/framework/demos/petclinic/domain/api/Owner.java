@@ -7,7 +7,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.demos.petclinic.domain.api.PetclinicApi.DOMAIN;
+import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
 public interface Owner extends Entity {
   EntityType TYPE = DOMAIN.entityType("petclinic.owner", Owner.class);
@@ -18,4 +18,9 @@ public interface Owner extends Entity {
   Attribute<String> ADDRESS = TYPE.stringAttribute("address");
   Attribute<String> CITY = TYPE.stringAttribute("city");
   Attribute<String> TELEPHONE = TYPE.stringAttribute("telephone");
+  Attribute<PhoneType> PHONE_TYPE = TYPE.attribute("phone_type", PhoneType.class);
+
+  enum PhoneType {
+    MOBILE, HOME, WORK
+  }
 }

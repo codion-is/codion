@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.function.Supplier;
 
+import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -295,9 +296,25 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Attribute<T> attribute) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.setItemSupplier(new AttributeItemSupplier<>(connectionProvider(), attribute));
+    model.setItemSupplier(attribute.isEnum() ?
+            new EnumAttributeItemSupplier<>(attribute) :
+            new AttributeItemSupplier<>(connectionProvider(), attribute));
 
     return model;
+  }
+
+  private static final class EnumAttributeItemSupplier<T> implements Supplier<Collection<T>> {
+
+    private final Collection<T> items;
+
+    private EnumAttributeItemSupplier(Attribute<T> attribute) {
+      items = asList(attribute.valueClass().getEnumConstants());
+    }
+
+    @Override
+    public Collection<T> get() {
+      return items;
+    }
   }
 
   private static final class AttributeItemSupplier<T> implements Supplier<Collection<T>> {

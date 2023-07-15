@@ -140,6 +140,11 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   }
 
   @Override
+  public final boolean isEnum() {
+    return valueClass.isEnum();
+  }
+
+  @Override
   public final boolean isEntity() {
     return isType(Entity.class);
   }

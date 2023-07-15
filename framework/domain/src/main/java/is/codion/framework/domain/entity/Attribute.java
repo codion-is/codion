@@ -115,6 +115,11 @@ public interface Attribute<T> {
   boolean isByteArray();
 
   /**
+   * @return true if this attribute represents an enum value.
+   */
+  boolean isEnum();
+
+  /**
    * @return true if this attribute represents a {@link Entity} value.
    */
   boolean isEntity();
