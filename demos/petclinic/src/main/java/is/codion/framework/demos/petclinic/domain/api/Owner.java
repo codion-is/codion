@@ -18,4 +18,9 @@ public interface Owner extends Entity {
   Attribute<String> ADDRESS = TYPE.stringAttribute("address");
   Attribute<String> CITY = TYPE.stringAttribute("city");
   Attribute<String> TELEPHONE = TYPE.stringAttribute("telephone");
+  Attribute<PhoneType> PHONE_TYPE = TYPE.attribute("phone_type", PhoneType.class);
+
+  enum PhoneType {
+    MOBILE, HOME, WORK
+  }
 }
