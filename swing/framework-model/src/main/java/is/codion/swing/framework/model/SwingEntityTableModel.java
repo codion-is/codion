@@ -1124,7 +1124,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return preferencesRoot;
   }
 
-  private JSONObject createColumnPreferences() throws Exception {
+  private JSONObject createColumnPreferences() {
     JSONObject columnPreferencesRoot = new JSONObject();
     for (FilteredTableColumn<Attribute<?>> column : columnModel().columns()) {
       Attribute<?> attribute = column.getIdentifier();

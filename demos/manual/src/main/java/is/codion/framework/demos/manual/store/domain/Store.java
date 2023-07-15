@@ -19,7 +19,6 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 
 import java.io.Serializable;
-import java.sql.SQLException;
 import java.util.Map;
 import java.util.UUID;
 import java.util.function.Function;
@@ -160,7 +159,7 @@ public final class Store extends DefaultDomain {
   private static final class UUIDKeyGenerator implements KeyGenerator {
 
     @Override
-    public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+    public void beforeInsert(Entity entity, DatabaseConnection connection) {
       entity.put(Customer.ID, UUID.randomUUID().toString());
     }
   }

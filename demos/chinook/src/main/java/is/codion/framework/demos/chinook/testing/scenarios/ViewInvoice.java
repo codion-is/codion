@@ -14,7 +14,7 @@ import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel
 public final class ViewInvoice extends AbstractEntityUsageScenario<ChinookAppModel> {
 
   @Override
-  protected void perform(ChinookAppModel application) throws Exception {
+  protected void perform(ChinookAppModel application) {
     SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
     customerModel.tableModel().refresh();
     selectRandomRow(customerModel.tableModel());

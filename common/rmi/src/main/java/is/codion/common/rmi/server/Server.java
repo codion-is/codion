@@ -5,7 +5,6 @@ package is.codion.common.rmi.server;
 
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
@@ -35,10 +34,9 @@ public interface Server<C extends Remote, A extends ServerAdmin> extends Remote 
    * @throws RemoteException in case of a communication error
    * @throws ConnectionNotAvailableException in case the server isn't accepting more connections
    * @throws LoginException in case the login fails
-   * @throws ConnectionValidationException in case connection validation fails
    */
   C connect(ConnectionRequest connectionRequest) throws RemoteException,
-          ConnectionNotAvailableException, LoginException, ConnectionValidationException;
+          ConnectionNotAvailableException, LoginException;
 
   /**
    * Returns the admin interface used to administer this server

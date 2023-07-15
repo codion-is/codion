@@ -18,7 +18,6 @@ import is.codion.framework.domain.property.Property;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -419,7 +418,7 @@ public final class EntitiesTest {
   }
 
   @Test
-  void itemValidation() throws ValidationException {
+  void itemValidation() {
     Map<Attribute<?>, Object> values = new HashMap<>();
     values.put(TestDomain.Employee.NAME, "Name");
     values.put(TestDomain.Employee.DEPARTMENT_NO, 1);
@@ -499,8 +498,7 @@ public final class EntitiesTest {
   }
 
   @Test
-  void toBeans() throws InvocationTargetException, NoSuchMethodException,
-          InstantiationException, IllegalAccessException {
+  void toBeans() {
     final Integer deptNo = 13;
     final String deptName = "Department";
     final String deptLocation = "Location";

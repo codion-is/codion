@@ -31,7 +31,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
@@ -89,7 +88,7 @@ public class EntityServerTest {
   }
 
   @Test
-  void testWrongPassword() throws Exception {
+  void testWrongPassword() {
     assertThrows(ServerAuthenticationException.class, () -> server.connect(ConnectionRequest.builder()
             .user(User.user(UNIT_TEST_USER.username(), "foobar".toCharArray()))
             .clientTypeId(getClass().getSimpleName())
@@ -97,22 +96,22 @@ public class EntityServerTest {
   }
 
   @Test
-  void serverAdminEmptyPassword() throws Exception {
+  void serverAdminEmptyPassword() {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "".toCharArray())));
   }
 
   @Test
-  void serverAdminNullPassword() throws Exception {
+  void serverAdminNullPassword() {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test")));
   }
 
   @Test
-  void serverAdminWrongPassword() throws Exception {
+  void serverAdminWrongPassword() {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
   }
 
   @Test
-  void serverAdminWrongUsername() throws Exception {
+  void serverAdminWrongUsername() {
     assertThrows(ServerAuthenticationException.class, () -> server.serverAdmin(User.user("test", "test".toCharArray())));
   }
 
@@ -305,7 +304,7 @@ public class EntityServerTest {
   }
 
   @Test
-  void clientLogNotConnected() throws RemoteException {
+  void clientLogNotConnected() {
     assertThrows(IllegalArgumentException.class, () -> admin.clientLog(UUID.randomUUID()));
   }
 

@@ -193,7 +193,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void deleteByConditionWithForeignKeys() throws DatabaseException {
+  void deleteByConditionWithForeignKeys() {
     assertThrows(ReferentialIntegrityException.class, () ->
             connection.delete(where(Department.DNAME).equalTo("ACCOUNTING")));
   }
@@ -437,7 +437,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectInvalidColumn() throws Exception {
+  void selectInvalidColumn() {
     assertThrows(DatabaseException.class, () -> connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
   }
 
@@ -495,17 +495,17 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectSingleNotFound() throws Exception {
+  void selectSingleNotFound() {
     assertThrows(RecordNotFoundException.class, () -> connection.selectSingle(Department.DNAME, "NO_NAME"));
   }
 
   @Test
-  void selectSingleManyFound() throws Exception {
+  void selectSingleManyFound() {
     assertThrows(MultipleRecordsFoundException.class, () -> connection.selectSingle(Employee.JOB, "MANAGER"));
   }
 
   @Test
-  void insertOnlyNullValues() throws DatabaseException {
+  void insertOnlyNullValues() {
     connection.beginTransaction();
     try {
       Entity department = ENTITIES.entity(Department.TYPE);
@@ -631,7 +631,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void updateNonUpdatable() throws DatabaseException {
+  void updateNonUpdatable() {
     assertThrows(UpdateException.class, () -> connection.update(where(Employee.ID).equalTo(1)
             .updateBuilder()
             .set(Employee.ID, 999)
@@ -639,7 +639,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void updateWithConditionNoProperties() throws DatabaseException {
+  void updateWithConditionNoProperties() {
     UpdateCondition condition = Condition.condition(Employee.TYPE).updateBuilder().build();
     assertThrows(IllegalArgumentException.class, () -> connection.update(condition));
   }
@@ -927,7 +927,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void testConstructorInvalidConnection() throws Exception {
+  void testConstructorInvalidConnection() {
     assertThrows(DatabaseException.class, () -> {
       Connection connection = null;
       try {

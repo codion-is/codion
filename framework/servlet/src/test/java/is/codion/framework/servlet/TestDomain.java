@@ -6,7 +6,6 @@ package is.codion.framework.servlet;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
@@ -127,12 +126,12 @@ public final class TestDomain extends DefaultDomain {
   void report() {
     add(REPORT_TYPE, new AbstractReport<Object, String, String>("report.path", false) {
       @Override
-      public String fillReport(Connection connection, String parameters) throws ReportException {
+      public String fillReport(Connection connection, String parameters) {
         return parameters;
       }
 
       @Override
-      public Object loadReport() throws ReportException {
+      public Object loadReport() {
         return null;
       }
     });

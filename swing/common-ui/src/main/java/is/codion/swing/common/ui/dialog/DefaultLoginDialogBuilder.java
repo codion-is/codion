@@ -98,6 +98,6 @@ final class DefaultLoginDialogBuilder extends AbstractDialogBuilder<LoginDialogB
   private static final class NoLoginValidation implements LoginValidator {
 
     @Override
-    public void validate(User user) throws Exception {}
+    public void validate(User user) {}
   }
 }

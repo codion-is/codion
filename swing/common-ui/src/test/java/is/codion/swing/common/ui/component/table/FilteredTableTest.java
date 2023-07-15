@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import java.awt.AWTException;
 import java.util.List;
 
 import static java.util.Arrays.asList;
@@ -25,7 +24,7 @@ public class FilteredTableTest {
   }
 
   @Test
-  void searchField() throws AWTException {
+  void searchField() {
     FilteredTableColumn<Integer> column = FilteredTableColumn.builder(0)
             .columnClass(String.class)
             .build();

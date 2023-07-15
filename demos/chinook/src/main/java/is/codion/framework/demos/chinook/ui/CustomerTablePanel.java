@@ -36,7 +36,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
     setRefreshButtonVisible(RefreshButtonVisible.ALWAYS);
   }
 
-  private void viewCustomerReport() throws Exception {
+  private void viewCustomerReport() {
     Dialogs.progressWorkerDialog(this::fillCustomerReport)
             .onResult(this::viewReport)
             .execute();

@@ -278,7 +278,7 @@ public class AbstractServerTest {
     }
 
     @Override
-    public ServerAdmin serverAdmin(User user) throws RemoteException, ServerAuthenticationException {
+    public ServerAdmin serverAdmin(User user) throws RemoteException {
       return getAdmin();
     }
 

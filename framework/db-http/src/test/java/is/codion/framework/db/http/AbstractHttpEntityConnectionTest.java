@@ -27,7 +27,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -55,29 +54,29 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @AfterAll
-  public static void tearDown() throws Exception {
+  public static void tearDown() {
     server.shutdown();
     deconfigure();
   }
 
   @Test
-  void executeProcedure() throws IOException, DatabaseException {
+  void executeProcedure() throws DatabaseException {
     connection.executeProcedure(TestDomain.PROCEDURE_ID);
   }
 
   @Test
-  void executeFunction() throws IOException, DatabaseException {
+  void executeFunction() throws DatabaseException {
     assertNotNull(connection.executeFunction(TestDomain.FUNCTION_ID));
   }
 
   @Test
-  void fillReport() throws ReportException, DatabaseException, IOException {
+  void fillReport() throws ReportException, DatabaseException {
     String result = connection.fillReport(TestDomain.REPORT, "");
     assertNotNull(result);
   }
 
   @Test
-  void insert() throws IOException, DatabaseException {
+  void insert() throws DatabaseException {
     Entity entity = connection.entities().builder(Department.TYPE)
             .with(Department.ID, 33)
             .with(Department.NAME, "name")
@@ -89,14 +88,14 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectByKey() throws IOException, DatabaseException {
+  void selectByKey() throws DatabaseException {
     Key key = connection.entities().primaryKey(Department.TYPE, 10);
     Collection<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
-  void selectByKeyDifferentEntityTypes() throws IOException, DatabaseException {
+  void selectByKeyDifferentEntityTypes() throws DatabaseException {
     Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
     Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
 
@@ -105,13 +104,13 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectByValue() throws IOException, DatabaseException {
+  void selectByValue() throws DatabaseException {
     List<Entity> department = connection.select(Department.NAME, "SALES");
     assertEquals(1, department.size());
   }
 
   @Test
-  void update() throws IOException, DatabaseException {
+  void update() throws DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "ACCOUNTING");
     department.put(Department.NAME, "TEstING");
     connection.update(department);
@@ -147,7 +146,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void deleteByKey() throws IOException, DatabaseException {
+  void deleteByKey() throws DatabaseException {
     Entity employee = connection.selectSingle(Employee.NAME, "ADAMS");
     connection.beginTransaction();
     try {
@@ -161,7 +160,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void deleteByKeyDifferentEntityTypes() throws IOException, DatabaseException {
+  void deleteByKeyDifferentEntityTypes() throws DatabaseException {
     Key deptKey = connection.entities().primaryKey(Department.TYPE, 40);
     Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
     connection.beginTransaction();
@@ -177,7 +176,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectDependencies() throws IOException, DatabaseException {
+  void selectDependencies() throws DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "SALES");
     Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
@@ -186,18 +185,18 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void rowCount() throws IOException, DatabaseException {
+  void rowCount() throws DatabaseException {
     assertEquals(4, connection.rowCount(condition(Department.TYPE)));
   }
 
   @Test
-  void selectValues() throws IOException, DatabaseException {
+  void selectValues() throws DatabaseException {
     List<String> values = connection.select(Department.NAME);
     assertEquals(4, values.size());
   }
 
   @Test
-  void transactions() throws IOException, DatabaseException {
+  void transactions() {
     assertFalse(connection.isTransactionOpen());
     connection.beginTransaction();
     assertTrue(connection.isTransactionOpen());
@@ -220,13 +219,13 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void close() throws IOException, DatabaseException {
+  void close() {
     connection.close();
     assertFalse(connection.isConnected());
   }
 
   @Test
-  void deleteDepartmentWithEmployees() throws IOException, DatabaseException {
+  void deleteDepartmentWithEmployees() throws DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "SALES");
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(Condition.condition(department.primaryKey())));
   }
@@ -239,7 +238,7 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void queryCache() throws DatabaseException {
+  void queryCache() {
     connection.setQueryCacheEnabled(true);
     assertTrue(connection.isQueryCacheEnabled());
     connection.setQueryCacheEnabled(false);

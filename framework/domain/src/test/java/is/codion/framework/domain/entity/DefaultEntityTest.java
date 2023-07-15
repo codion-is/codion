@@ -360,7 +360,7 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void entity() throws Exception {
+  void entity() {
     Entity referencedEntityValue = ENTITIES.builder(Master.TYPE)
             .with(Master.ID, 2L)
             .with(Master.NAME, masterName)

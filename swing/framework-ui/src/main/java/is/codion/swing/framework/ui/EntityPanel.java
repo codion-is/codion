@@ -1635,7 +1635,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   private final class TableDoubleClickCommand implements Control.Command {
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
         if (containsEditPanel() && getEditPanelState() == HIDDEN) {
           setEditPanelState(WINDOW);
@@ -1656,7 +1656,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       setDetailPanelState(EMBEDDED);
       detailPanel.activatePanel();
     }

@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.KeyDeserializer;
 
-import java.io.IOException;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -23,7 +22,7 @@ final class EntityTypeKeyDeserializer extends KeyDeserializer {
   }
 
   @Override
-  public Object deserializeKey(String key, DeserializationContext ctxt) throws IOException {
+  public Object deserializeKey(String key, DeserializationContext ctxt) {
     return definitions.computeIfAbsent(key, entities::definition).type();
   }
 }

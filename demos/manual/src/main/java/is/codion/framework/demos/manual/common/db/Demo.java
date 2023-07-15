@@ -14,7 +14,7 @@ import java.sql.SQLException;
 
 public final class Demo {
 
-  private void databaseFromSystemProperty() throws DatabaseException {
+  private void databaseFromSystemProperty() {
     // tag::systemProperty[]
     System.setProperty("codion.db.url", "jdbc:h2:mem:h2db");
 

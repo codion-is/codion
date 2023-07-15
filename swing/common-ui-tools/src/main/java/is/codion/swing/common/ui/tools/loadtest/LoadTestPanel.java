@@ -392,7 +392,7 @@ public final class LoadTestPanel<T> extends JPanel {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       scenario.clearExceptions();
       exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
     }
@@ -409,7 +409,7 @@ public final class LoadTestPanel<T> extends JPanel {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       exceptionsTextArea.replaceRange("", 0, exceptionsTextArea.getDocument().getLength());
       for (Throwable exception : scenario.exceptions()) {
         exceptionsTextArea.append(exception.getMessage());

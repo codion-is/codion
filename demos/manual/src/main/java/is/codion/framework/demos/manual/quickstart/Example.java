@@ -29,7 +29,6 @@ import is.codion.swing.framework.ui.EntityPanel;
 
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
@@ -80,7 +79,7 @@ public final class Example {
 
     private static final class CustomerKeyGenerator implements KeyGenerator {
       @Override
-      public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+      public void beforeInsert(Entity entity, DatabaseConnection connection) {
         entity.put(Customer.ID, randomUUID().toString());
       }
     }

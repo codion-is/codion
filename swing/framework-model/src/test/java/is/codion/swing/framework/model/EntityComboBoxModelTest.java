@@ -94,7 +94,7 @@ public final class EntityComboBoxModelTest {
   }
 
   @Test
-  void foreignKeyFilterComboBoxModel() throws Exception {
+  void foreignKeyFilterComboBoxModel() {
     EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
     EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
     empBox.setNullCaption("-");
@@ -115,7 +115,7 @@ public final class EntityComboBoxModelTest {
   }
 
   @Test
-  void foreignKeyConditionComboBoxModel() throws Exception {
+  void foreignKeyConditionComboBoxModel() {
     EntityConnectionProvider connectionProvider = comboBoxModel.connectionProvider();
     EntityComboBoxModel empBox = new EntityComboBoxModel(Employee.TYPE, connectionProvider);
     empBox.setNullCaption("-");

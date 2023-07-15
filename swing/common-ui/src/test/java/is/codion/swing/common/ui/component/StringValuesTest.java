@@ -53,7 +53,7 @@ public class StringValuesTest {
   }
 
   @Test
-  void nullInitialValue() throws Exception {
+  void nullInitialValue() {
     stringValue = null;
     Value<String> stringPropertyValue = Value.propertyValue(this, "stringValue",
             String.class, stringValueChangedEvent);
@@ -75,7 +75,7 @@ public class StringValuesTest {
   }
 
   @Test
-  void nonNullInitialValue() throws Exception {
+  void nonNullInitialValue() {
     stringValue = "name";
     JTextField textField = Components.textField(Value.propertyValue(this, "stringValue", String.class, stringValueChangedEvent))
             .build();

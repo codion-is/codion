@@ -57,12 +57,12 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void wrongUsername() throws Exception {
+  void wrongUsername() {
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user("foo", "bar".toCharArray())));
   }
 
   @Test
-  void wrongPassword() throws Exception {
+  void wrongPassword() {
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
   }
 
@@ -107,7 +107,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void close() throws Exception {
+  void close() {
     dbConnection.close();
     assertFalse(dbConnection.isConnected());
     assertNull(dbConnection.getConnection());
@@ -119,7 +119,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void getConnection() throws Exception {
+  void getConnection() {
     assertNotNull(dbConnection.getConnection());
   }
 
@@ -130,13 +130,13 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void commitWithinTransaction() throws SQLException {
+  void commitWithinTransaction() {
     dbConnection.beginTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.commit());
   }
 
   @Test
-  void rollbackWithinTransaction() throws SQLException {
+  void rollbackWithinTransaction() {
     dbConnection.beginTransaction();
     assertThrows(IllegalStateException.class, () -> dbConnection.rollback());
   }
@@ -156,7 +156,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void commitTransaction() throws Exception {
+  void commitTransaction() {
     dbConnection.beginTransaction();
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.commitTransaction();
@@ -164,7 +164,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
-  void rollbackTransaction() throws Exception {
+  void rollbackTransaction() {
     dbConnection.beginTransaction();
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.rollbackTransaction();

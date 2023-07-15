@@ -106,7 +106,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void searchModel() throws Exception {
+  void searchModel() {
     searchModel.singleSelectionState().set(false);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("joh");
@@ -227,7 +227,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @AfterEach
-  void tearDown() throws Exception {
+  void tearDown() {
     CONNECTION_PROVIDER.connection().rollbackTransaction();
   }
 

@@ -8,7 +8,6 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.Report;
-import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
@@ -63,12 +62,12 @@ public final class TestDomain extends DefaultDomain {
     Report.REPORT_PATH.set("path/to/reports");
     add(REPORT, new AbstractReport<Object, String, Map<String, Object>>("report.path", false) {
       @Override
-      public String fillReport(Connection connection, Map<String, Object> parameters) throws ReportException {
+      public String fillReport(Connection connection, Map<String, Object> parameters) {
         return "result";
       }
 
       @Override
-      public Object loadReport() throws ReportException {
+      public Object loadReport() {
         return null;
       }
     });
@@ -284,7 +283,7 @@ public final class TestDomain extends DefaultDomain {
   private void uuidTestNoDefaultValue() {
     KeyGenerator uuidKeyGenerator = new KeyGenerator() {
       @Override
-      public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
+      public void beforeInsert(Entity entity, DatabaseConnection connection) {
         entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
       }
     };

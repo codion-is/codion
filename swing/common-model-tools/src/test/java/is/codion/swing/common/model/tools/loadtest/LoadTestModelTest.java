@@ -30,7 +30,7 @@ public class LoadTestModelTest {
 
   private static final UsageScenario<Object> SCENARIO_II = new AbstractUsageScenario<Object>("testII") {
     @Override
-    protected void perform(Object application) throws Exception {}
+    protected void perform(Object application) {}
   };
 
   @Test

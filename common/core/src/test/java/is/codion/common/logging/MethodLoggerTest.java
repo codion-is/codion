@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class MethodLoggerTest {
 
   @Test
-  void test() throws Exception {
+  void test() {
     MethodLogger logger = MethodLogger.methodLogger(10);
     assertFalse(logger.isEnabled());
     logger.setEnabled(true);

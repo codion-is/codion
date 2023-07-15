@@ -546,7 +546,7 @@ public final class EntitySearchField extends HintTextField {
       }
 
       @Override
-      public void perform() throws Exception {
+      public void perform() {
         searchModel.setSelectedEntities(list.getSelectedValuesList());
         Utilities.disposeParentWindow(list);
       }

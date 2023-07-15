@@ -327,7 +327,7 @@ public final class ConditionTest {
   }
 
   @Test
-  void whereClause() throws Exception {
+  void whereClause() {
     EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
     ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(Department.NAME);
     Condition condition = where(Department.NAME).equalTo("upper%");

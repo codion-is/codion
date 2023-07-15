@@ -35,7 +35,7 @@ public final class AbstractDatabaseTest {
   };
 
   @Test
-  void test() throws Exception {
+  void test() {
     assertEquals("for update nowait", database.selectForUpdateClause());
     assertTrue(database.supportsIsValid());
     assertEquals("name", database.name());
@@ -49,7 +49,7 @@ public final class AbstractDatabaseTest {
     Connection connection = database.createConnection(sa);
     database.setConnectionProvider(new ConnectionProvider() {
       @Override
-      public Connection connection(User user, String url) throws SQLException {
+      public Connection connection(User user, String url) {
         return connection;
       }
     });

@@ -7,7 +7,6 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.scheduler.TaskScheduler;
@@ -167,8 +166,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   @Override
-  public final T connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException,
-          LoginException, ConnectionValidationException {
+  public final T connect(ConnectionRequest connectionRequest) throws RemoteException, ConnectionNotAvailableException, LoginException {
     if (shuttingDown) {
       throw new LoginException("Server is shutting down");
     }

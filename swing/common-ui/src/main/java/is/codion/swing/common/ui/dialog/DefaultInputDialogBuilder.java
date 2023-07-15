@@ -114,7 +114,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
 
   private StateObserver createValidInputState(Predicate<T> validInputPredicate) {
     State validInputState = State.state(validInputPredicate.test(componentValue.get()));
-    componentValue.addListener(new InputValidStateListener<T>(validInputState, validInputPredicate, componentValue));
+    componentValue.addListener(new InputValidStateListener<>(validInputState, validInputPredicate, componentValue));
 
     return validInputState;
   }

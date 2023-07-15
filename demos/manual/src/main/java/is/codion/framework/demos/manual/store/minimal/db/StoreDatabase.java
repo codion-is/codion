@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
-import java.sql.SQLException;
 import java.util.List;
 
 import static is.codion.framework.db.condition.Condition.where;
@@ -25,7 +24,7 @@ import static java.util.Arrays.asList;
 
 public class StoreDatabase {
 
-  static void storeEntityConnection() throws SQLException, DatabaseException {
+  static void storeEntityConnection() throws DatabaseException {
     Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:store",
                     "src/main/sql/create_schema_minimal.sql");

@@ -117,7 +117,7 @@ public class DefaultColumnConditionModelTest {
   }
 
   @Test
-  void test() throws Exception {
+  void test() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
     assertTrue(model.autoEnableState().get());
     model.setEqualValue("test");

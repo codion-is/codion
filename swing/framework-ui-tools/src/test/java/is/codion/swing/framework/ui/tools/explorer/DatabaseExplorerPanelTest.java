@@ -16,7 +16,7 @@ public class DatabaseExplorerPanelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  void test() throws ClassNotFoundException, DatabaseException {
+  void test() throws DatabaseException {
     DatabaseExplorerModel model = DatabaseExplorerModel.databaseExplorerModel(Database.instance(), UNIT_TEST_USER);
     new DatabaseExplorerPanel(model);
     model.schemaModel().refresh();

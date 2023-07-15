@@ -216,7 +216,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       comboBoxModel.forceRefresh();
     }
   }
