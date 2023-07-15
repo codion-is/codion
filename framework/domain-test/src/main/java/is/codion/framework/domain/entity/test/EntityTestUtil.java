@@ -140,6 +140,9 @@ public final class EntityTestUtil {
     if (attribute.isByteArray()) {
       return (T) randomBlob(property);
     }
+    if (attribute.isEnum()) {
+      return (T) randomEnum(attribute);
+    }
 
     return null;
   }
@@ -180,6 +183,12 @@ public final class EntityTestUtil {
     RANDOM.nextBytes(bytes);
 
     return bytes;
+  }
+
+  private static <T> T randomEnum(Attribute<?> attribute) {
+    Object[] enumConstants = attribute.valueClass().getEnumConstants();
+
+    return (T) enumConstants[RANDOM.nextInt(enumConstants.length)];
   }
 
   private static Entity referenceEntity(ForeignKey foreignKey, Map<ForeignKey, Entity> referenceEntities) {

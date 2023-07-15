@@ -9303,3 +9303,5 @@
   EntityPanelBuilder, InsertEntityCommand and UpdateEntityCommand related refactoring
   Redundant throws declarations removed
   ConnectionValidationException removed, unused
+  Attribute.isEnum() added
+  EntityTestUnit.randomEnum() added
