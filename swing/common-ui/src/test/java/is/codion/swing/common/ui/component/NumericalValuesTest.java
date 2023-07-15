@@ -93,7 +93,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testLong() throws Exception {
+  void testLong() {
     Value<Long> longPropertyValue = Value.propertyValue(this, "longValue",
             Long.class, longValueChangedEvent);
     NumberField<Long> longField = Components.longField(longPropertyValue)
@@ -108,7 +108,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testLongPrimitive() throws Exception {
+  void testLongPrimitive() {
     Value<Long> longPrimitivePropertyValue = Value.propertyValue(this, "longPrimitiveValue",
             long.class, longPrimitiveValueChangedEvent);
     assertFalse(longPrimitivePropertyValue.isNullable());
@@ -126,7 +126,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testInteger() throws Exception {
+  void testInteger() {
     Value<Integer> integerPropertyValue = Value.propertyValue(this, "integerValue",
             Integer.class, integerValueChangedEvent);
     NumberField<Integer> integerField = Components.integerField(integerPropertyValue)
@@ -141,7 +141,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testInt() throws Exception {
+  void testInt() {
     Value<Integer> integerPropertyValue = Value.propertyValue(this, "intValue", int.class, intValueChangedEvent);
     ComponentValue<Integer, NumberField<Integer>> componentValue = Components.integerField(integerPropertyValue)
             .buildValue();
@@ -174,7 +174,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testDouble() throws Exception {
+  void testDouble() {
     Value<Double> doublePropertyValue = Value.propertyValue(this, "doubleValue",
             Double.class, doubleValueChangedEvent);
     NumberField<Double> doubleField = Components.doubleField(doublePropertyValue)
@@ -191,7 +191,7 @@ public class NumericalValuesTest {
   }
 
   @Test
-  void testDoublePrimitive() throws Exception {
+  void testDoublePrimitive() {
     Value<Double> doublePrimitivePropertyValue = Value.propertyValue(this, "doublePrimitiveValue",
             double.class, doublePrimitiveValueValueChangedEvent);
     ComponentValue<Double, NumberField<Double>> componentValue = Components.doubleField()

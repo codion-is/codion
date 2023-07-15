@@ -21,7 +21,6 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
-import java.sql.SQLException;
 import java.util.Collections;
 
 import static is.codion.framework.db.condition.Condition.condition;
@@ -63,7 +62,7 @@ public class EntityConnectionTest {
   }
 
   @Test
-  void copyEntities() throws SQLException, DatabaseException {
+  void copyEntities() throws DatabaseException {
     EntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Department.TYPE)
@@ -94,7 +93,7 @@ public class EntityConnectionTest {
   }
 
   @Test
-  void insertEntities() throws SQLException, DatabaseException {
+  void insertEntities() throws DatabaseException {
     LocalEntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
     try (ResultIterator<Entity> iterator = sourceConnection.iterator(condition(Department.TYPE))) {
       assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
@@ -117,7 +116,7 @@ public class EntityConnectionTest {
   }
 
   @Test
-  void batchInsertNegativeBatchSize() throws DatabaseException {
+  void batchInsertNegativeBatchSize() {
     assertThrows(IllegalArgumentException.class, () ->
             EntityConnection.insertEntities(CONNECTION_PROVIDER.connection(), Collections.emptyIterator())
                     .batchSize(-6));

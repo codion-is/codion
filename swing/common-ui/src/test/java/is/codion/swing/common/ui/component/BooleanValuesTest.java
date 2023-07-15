@@ -35,7 +35,7 @@ public class BooleanValuesTest {
   }
 
   @Test
-  void booleanToggleButtonCheckBox() throws Exception {
+  void booleanToggleButtonCheckBox() {
     JCheckBox checkBox = Components.checkBox(Value.propertyValue(this, "booleanValue", boolean.class, booleanValueChangedEvent))
             .build();
     assertFalse(checkBox.isSelected());

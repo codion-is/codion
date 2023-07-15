@@ -1116,9 +1116,8 @@ public class EntityTablePanel extends JPanel {
    * Called before update is performed.
    * To cancel the update throw a {@link is.codion.common.model.CancelException}.
    * @param entities the entities being updated, including the values being modified
-   * @throws ValidationException in case of a validation failure
    */
-  protected void beforeUpdate(Collection<Entity> entities) throws ValidationException {}
+  protected void beforeUpdate(Collection<Entity> entities) {}
 
   /**
    * Called before delete is performed on the selected entities.

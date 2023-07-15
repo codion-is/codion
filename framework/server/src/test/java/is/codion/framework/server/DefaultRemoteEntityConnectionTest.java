@@ -35,7 +35,7 @@ public class DefaultRemoteEntityConnectionTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   @Test
-  void wrongUsername() throws Exception {
+  void wrongUsername() {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user("foo", "bar".toCharArray()))
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
@@ -44,7 +44,7 @@ public class DefaultRemoteEntityConnectionTest {
   }
 
   @Test
-  void wrongPassword() throws Exception {
+  void wrongPassword() {
     RemoteClient client = RemoteClient.remoteClient(ConnectionRequest.builder()
             .user(User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray()))
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")

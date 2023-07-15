@@ -34,7 +34,7 @@ public class DatabaseConnectionTest {
   }
 
   @Test
-  void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
+  void createConnectionWithClosedConnection() {
     assertThrows(DatabaseException.class, () -> {
       try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
         connection.close();

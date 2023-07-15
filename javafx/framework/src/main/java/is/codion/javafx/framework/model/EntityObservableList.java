@@ -462,7 +462,7 @@ public class EntityObservableList extends SimpleListProperty<Entity> implements 
       }
 
       @Override
-      protected Collection<Entity> call() throws Exception {
+      protected Collection<Entity> call() {
         return performQuery();
       }
 

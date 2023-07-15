@@ -56,7 +56,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  void testTime() throws Exception {
+  void testTime() {
     final String format = "HH:mm";
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern(format);
 
@@ -77,7 +77,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  void testDate() throws Exception {
+  void testDate() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
 
     Value<LocalDate> datePropertyValue = Value.propertyValue(this, "date",
@@ -97,7 +97,7 @@ public class TemporalValuesTest {
   }
 
   @Test
-  void testTimestamp() throws Exception {
+  void testTimestamp() {
     DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yy HH:mm");
 
     Value<LocalDateTime> timestampPropertyValue = Value.propertyValue(this, "timestamp",

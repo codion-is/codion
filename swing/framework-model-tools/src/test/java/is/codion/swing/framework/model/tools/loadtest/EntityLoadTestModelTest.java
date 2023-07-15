@@ -57,10 +57,10 @@ public class EntityLoadTestModelTest {
     public TestLoadTestModel() {
       super(UNIT_TEST_USER, asList(new AbstractEntityUsageScenario<SwingEntityApplicationModel>("1") {
         @Override
-        protected void perform(SwingEntityApplicationModel application) throws Exception {}
+        protected void perform(SwingEntityApplicationModel application) {}
       }, new AbstractEntityUsageScenario<SwingEntityApplicationModel>("2") {
         @Override
-        protected void perform(SwingEntityApplicationModel application) throws Exception {}
+        protected void perform(SwingEntityApplicationModel application) {}
       }));
     }
 

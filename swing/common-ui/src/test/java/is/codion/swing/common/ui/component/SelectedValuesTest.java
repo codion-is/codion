@@ -25,7 +25,7 @@ public class SelectedValuesTest {
   private final Event<String> selectedItemChangedEvent = Event.event();
 
   @Test
-  void selectedItemValueLinkValidate() throws Exception {
+  void selectedItemValueLinkValidate() {
     Value<String> originalValue = Value.value("b");
     originalValue.addValidator(value -> {
       if (value != null && value.equals("s")) {
@@ -44,7 +44,7 @@ public class SelectedValuesTest {
   }
 
   @Test
-  void selectedItemValueLink() throws Exception {
+  void selectedItemValueLink() {
     ComponentValue<String, JComboBox<String>> componentValue = Components.comboBox(new DefaultComboBoxModel<>(new String[] {"b", "d", "s"}),
                     Value.propertyValue(this, "selectedItem", String.class, selectedItemChangedEvent))
             .buildValue();

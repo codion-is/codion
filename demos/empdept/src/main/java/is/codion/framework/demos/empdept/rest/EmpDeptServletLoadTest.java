@@ -53,7 +53,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
             .build();
   }
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
   }
 

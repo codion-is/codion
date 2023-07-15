@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public final class NullOrEmptyTest {
 
   @Test
-  void notNull() throws Exception {
+  void notNull() {
     assertTrue(NullOrEmpty.notNull(new Object(), new Object(), new Object()));
     assertTrue(NullOrEmpty.notNull(new Object()));
     assertFalse(NullOrEmpty.notNull(new Object(), null, new Object()));

@@ -310,9 +310,8 @@ public final class WorldImpl extends DefaultDomain implements World {
 
     @Override
     public Double execute(EntityConnection connection, String countryCode) throws DatabaseException {
-      return connection.select(where(City.COUNTRY_CODE).equalTo(countryCode)).stream()
-              .map(city -> city.castTo(City.class))
-              .mapToInt(City::population)
+      return connection.select(City.POPULATION, where(City.COUNTRY_CODE).equalTo(countryCode)).stream()
+              .mapToInt(Integer::intValue)
               .average()
               .orElse(0d);
     }

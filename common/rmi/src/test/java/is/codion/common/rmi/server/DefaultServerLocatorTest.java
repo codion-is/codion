@@ -3,7 +3,6 @@
  */
 package is.codion.common.rmi.server;
 
-import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.Test;
@@ -72,7 +71,7 @@ public class DefaultServerLocatorTest {
     @Override
     protected Remote connect(RemoteClient remoteClient) {return null;}
     @Override
-    public ServerAdmin serverAdmin(User user) throws RemoteException, ServerAuthenticationException {return null;}
+    public ServerAdmin serverAdmin(User user) throws RemoteException {return null;}
     @Override
     protected void disconnect(Remote connection) {}
     @Override

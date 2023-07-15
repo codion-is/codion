@@ -9,7 +9,6 @@ import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
-import is.codion.common.rmi.server.exception.ConnectionValidationException;
 import is.codion.common.rmi.server.exception.LoginException;
 import is.codion.common.user.User;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
@@ -33,7 +32,7 @@ public final class EmployeeServerTest {
 
   @Test
   void test() throws RemoteException, NotBoundException, LoginException,
-          ConnectionNotAvailableException, ConnectionValidationException, DatabaseException {
+          ConnectionNotAvailableException, DatabaseException {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
 
     EntityServerConfiguration configuration = EntityServerConfiguration.builder(SERVER_PORT, REGISTRY_PORT)

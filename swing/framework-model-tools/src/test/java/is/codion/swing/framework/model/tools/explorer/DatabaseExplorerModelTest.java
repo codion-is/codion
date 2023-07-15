@@ -69,7 +69,7 @@ public final class DatabaseExplorerModelTest {
   }
 
   @Test
-  void tagItem() throws Exception {
+  void tagItem() {
     model.definitionModel().selectionModel().setSelectedIndex(6);
     String tagItemDef = model.domainSourceObserver().get().trim();
     assertEquals(TAG_ITEM_DEF, tagItemDef);

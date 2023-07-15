@@ -216,7 +216,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       checkBoxes.stream()
               .filter(Component::isFocusOwner)
               .findAny()

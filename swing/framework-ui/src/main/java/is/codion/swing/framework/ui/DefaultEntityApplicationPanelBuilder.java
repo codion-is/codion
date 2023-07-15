@@ -508,7 +508,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     private EntityConnectionProvider connectionProvider;
 
     @Override
-    public void validate(User user) throws Exception {
+    public void validate(User user) {
       connectionProvider = initializeConnectionProvider(user, domainClassName(),
               applicationPanelClass.getName(), applicationVersion);
       try {

@@ -179,7 +179,7 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void defaultValueSupplier() throws DatabaseException {
+  void defaultValueSupplier() {
     employeeEditModel.setDefaultValueSupplier(Employee.NAME, () -> "Scott");
     assertTrue(employeeEditModel.isNull(Employee.NAME));
     employeeEditModel.setDefaultValues();
@@ -323,19 +323,19 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void insertReadOnly() throws CancelException, ValidationException, DatabaseException {
+  void insertReadOnly() throws CancelException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.insert());
   }
 
   @Test
-  void updateReadOnly() throws CancelException, ValidationException, DatabaseException {
+  void updateReadOnly() throws CancelException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.update());
   }
 
   @Test
-  void deleteReadOnly() throws CancelException, DatabaseException {
+  void deleteReadOnly() throws CancelException {
     employeeEditModel.setReadOnly(true);
     assertThrows(IllegalStateException.class, () -> employeeEditModel.delete());
   }

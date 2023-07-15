@@ -187,7 +187,7 @@ public final class DefaultPropertyStoreTest {
   }
 
   @Test
-  void exceptions() throws IOException {
+  void exceptions() {
     assertThrows(FileNotFoundException.class, () -> new DefaultPropertyStore(new File("test.file")));
 
     PropertyStore store = PropertyStore.propertyStore();

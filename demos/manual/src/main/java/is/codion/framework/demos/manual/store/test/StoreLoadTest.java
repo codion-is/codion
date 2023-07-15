@@ -41,8 +41,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
           AbstractEntityUsageScenario<StoreApplicationModel> {
 
     @Override
-    protected void perform(StoreApplicationModel application)
-            throws Exception {
+    protected void perform(StoreApplicationModel application) {
       SwingEntityModel customerModel = application.entityModel(Customer.TYPE);
       customerModel.tableModel().refresh();
       selectRandomRow(customerModel.tableModel());

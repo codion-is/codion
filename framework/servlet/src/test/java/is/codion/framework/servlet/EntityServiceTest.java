@@ -98,7 +98,7 @@ public class EntityServiceTest {
   }
 
   @AfterAll
-  public static void tearDown() throws Exception {
+  public static void tearDown() {
     if (server != null) {
       server.shutdown();
     }

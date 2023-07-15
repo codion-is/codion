@@ -17,7 +17,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 public class ItemComboBoxModelTest {
 
   @Test
-  void test() throws Exception {
+  void test() {
     ItemComboBoxModel.itemComboBoxModel();
     Item<Integer> nullItem = item(null, "");
     Item<Integer> aOne = item(1, "AOne");
@@ -67,7 +67,7 @@ public class ItemComboBoxModelTest {
   }
 
   @Test
-  void booleanComboBoxModel() throws Exception {
+  void booleanComboBoxModel() {
     ItemComboBoxModel<Boolean> model = ItemComboBoxModel.booleanItemComboBoxModel();
 
     model.setSelectedItem(false);

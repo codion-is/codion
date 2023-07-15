@@ -38,7 +38,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  void test() throws Exception {
+  void test() {
     State enabledState = State.state();
     Control control = Control.builder(this::method).enabledState(enabledState).build();
     JButton button = button(control).build();
@@ -66,7 +66,7 @@ public final class DefaultControlTest {
   }
 
   @Test
-  void basics() throws Exception {
+  void basics() {
     Control test = Control.control(this::doNothing);
     test.setName("test");
     assertEquals("test", test.toString());

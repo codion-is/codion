@@ -9339,3 +9339,6 @@
   SwingEntityTableModel constructor overloaded with ColumnFactory parameter
   common.properties package renamed property, for consistency
   AbstractEntityConnectionProvider, unnecessary null checks for user removed, error messages improved
+  EntityPanelBuilder, InsertEntityCommand and UpdateEntityCommand related refactoring
+  Redundant throws declarations removed
+  ConnectionValidationException removed, unused

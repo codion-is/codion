@@ -737,7 +737,7 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void filtering() throws Exception {
+  void filtering() {
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
     assertNull(tableModel.getIncludeCondition());

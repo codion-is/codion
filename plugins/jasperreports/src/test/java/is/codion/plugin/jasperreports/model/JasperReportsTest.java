@@ -4,7 +4,6 @@
 package is.codion.plugin.jasperreports.model;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
@@ -16,7 +15,6 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.plugin.jasperreports.model.TestDomain.Employee;
 
 import net.sf.jasperreports.engine.JRDataSource;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JasperPrint;
 import org.eclipse.jetty.server.Server;
@@ -25,7 +23,6 @@ import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Test;
 
-import java.net.MalformedURLException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -53,7 +50,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  void fillJdbcReport() throws ReportException, DatabaseException {
+  void fillJdbcReport() throws ReportException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     HashMap<String, Object> reportParameters = new HashMap<>();
@@ -64,14 +61,14 @@ public class JasperReportsTest {
   }
 
   @Test
-  void fillDataSourceReport() throws ReportException, MalformedURLException, JRException {
+  void fillDataSourceReport() throws ReportException {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     JRReport wrapper = JasperReports.fileReport("empdept_employees.jasper");
     JRDataSource dataSource = new JRDataSource() {
       boolean done = false;
       @Override
-      public boolean next() throws JRException {
+      public boolean next() {
         if (done) {
           return false;
         }
@@ -80,7 +77,7 @@ public class JasperReportsTest {
       }
 
       @Override
-      public Object getFieldValue(JRField jrField) throws JRException {
+      public Object getFieldValue(JRField jrField) {
         return null;
       }
     };
@@ -88,7 +85,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  void fillJdbcReportInvalidReport() throws Exception {
+  void fillJdbcReportInvalidReport() {
     Report.CACHE_REPORTS.set(false);
     Report.REPORT_PATH.set(REPORT_PATH);
     ReportType<Object, Object, Object> nonExisting = ReportType.reportType("test");
@@ -118,7 +115,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  void classPathReport() throws DatabaseException, ReportException {
+  void classPathReport() throws ReportException {
     JRReportType report = JasperReports.reportType("report");
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));
@@ -129,7 +126,7 @@ public class JasperReportsTest {
   }
 
   @Test
-  void fileReport() throws DatabaseException, ReportException {
+  void fileReport() throws ReportException {
     JRReportType report = JasperReports.reportType("report");
     Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", asList(10, 20));

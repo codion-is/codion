@@ -647,7 +647,7 @@ public class FXEntityListModel extends EntityObservableList implements EntityTab
     return preferencesRoot;
   }
 
-  private JSONObject createColumnPreferences() throws Exception {
+  private JSONObject createColumnPreferences() {
     JSONObject columnPreferencesRoot = new JSONObject();
     for (AttributeTableColumn<?> column : initialColumns) {
       Attribute<?> attribute = column.attribute();

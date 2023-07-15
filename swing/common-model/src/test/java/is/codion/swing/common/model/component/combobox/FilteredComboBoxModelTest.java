@@ -218,7 +218,7 @@ public class FilteredComboBoxModelTest {
   }
 
   @Test
-  void setNullValueString() throws Exception {
+  void setNullValueString() {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.visibleItems().size());
@@ -349,7 +349,7 @@ public class FilteredComboBoxModelTest {
   }
 
   @BeforeEach
-  void setUp() throws Exception {
+  void setUp() {
     testModel = new FilteredComboBoxModel<>();
     testModel.setIncludeNull(true);
     testModel.setNullItem(NULL);
@@ -363,7 +363,7 @@ public class FilteredComboBoxModelTest {
   }
 
   @AfterEach
-  void tearDown() throws Exception {
+  void tearDown() {
     testModel = null;
   }
 }

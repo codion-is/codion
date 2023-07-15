@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
+import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
@@ -271,12 +272,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       throw new IllegalStateException("Can not create a insert control when no edit panel class is specified");
     }
 
-    return createInsertControl(comboBox, comboBox.getModel().connectionProvider(), inserted -> {
-      EntityComboBoxModel comboBoxModel = comboBox.getModel();
-      Entity item = inserted.get(0);
-      comboBoxModel.addItem(item);
-      comboBoxModel.setSelectedItem(item);
-    });
+    return createInsertControl(new InsertEntityCommand(comboBox), comboBox);
   }
 
   @Override
@@ -286,21 +282,18 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       throw new IllegalStateException("Can not create a insert control when no edit panel class is specified");
     }
 
-    return createInsertControl(searchField, searchField.model().connectionProvider(), inserted ->
-            searchField.model().setSelectedEntities(inserted));
+    return createInsertControl(new InsertEntityCommand(searchField), searchField);
   }
 
-  @Override
-  public Control createInsertControl(JComponent component, EntityConnectionProvider connectionProvider,
-                                     EventDataListener<List<Entity>> onInsert) {
+  private Control createInsertControl(InsertEntityCommand insertEntityCommand, JComponent component) {
     requireNonNull(component);
-    State enabledState = State.state(component.isEnabled());
-    component.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
+    State componentEnabledState = State.state(component.isEnabled());
+    component.addPropertyChangeListener(ENABLED, changeEvent -> componentEnabledState.set((Boolean) changeEvent.getNewValue()));
 
-    Control control = Control.builder(new InsertEntityCommand(component, connectionProvider, onInsert))
+    Control control = Control.builder(insertEntityCommand)
             .smallIcon(FrameworkIcons.instance().add())
             .description(MESSAGES.getString("insert_new_item"))
-            .enabledState(enabledState)
+            .enabledState(componentEnabledState)
             .build();
 
     KeyEvents.builder(VK_INSERT)
@@ -317,11 +310,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       throw new IllegalStateException("Can not create an update control when no edit panel class is specified");
     }
 
-    State enabledState = State.state(comboBox.isEnabled() && !comboBox.getModel().isSelectionEmpty());
-    comboBox.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
-    comboBox.getModel().addSelectionListener(selected -> enabledState.set(selected != null));
+    State selectionNonEmpty = State.state(!comboBox.getModel().isSelectionEmpty());
+    comboBox.getModel().addSelectionListener(selected -> selectionNonEmpty.set(selected != null));
 
-    return createUpdateControl(new UpdateEntityCommand(comboBox), comboBox, enabledState);
+    return createUpdateControl(new UpdateEntityCommand(comboBox), comboBox, selectionNonEmpty);
   }
 
   @Override
@@ -331,18 +323,18 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       throw new IllegalStateException("Can not create an update control when no edit panel class is specified");
     }
 
-    State enabledState = State.state(searchField.isEnabled() && !searchField.model().getSelectedEntities().isEmpty());
-    searchField.addPropertyChangeListener(ENABLED, changeEvent -> enabledState.set((Boolean) changeEvent.getNewValue()));
-    searchField.model().addSelectedEntitiesListener(selected -> enabledState.set(!selected.isEmpty()));
-
-    return createUpdateControl(new UpdateEntityCommand(searchField), searchField, enabledState);
+    return createUpdateControl(new UpdateEntityCommand(searchField), searchField,
+            searchField.model().selectionEmptyObserver().reversedObserver());
   }
 
-  private Control createUpdateControl(UpdateEntityCommand updateEntityCommand, JComponent component, State enabledState) {
+  private Control createUpdateControl(UpdateEntityCommand updateEntityCommand, JComponent component, StateObserver selectionNonEmptyState) {
+    State componentEnabledState = State.state(component.isEnabled());
+    component.addPropertyChangeListener(ENABLED, changeEvent -> componentEnabledState.set((Boolean) changeEvent.getNewValue()));
+
     Control control = Control.builder(updateEntityCommand)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(MESSAGES.getString("update_selected_item"))
-            .enabledState(enabledState)
+            .enabledState(State.and(componentEnabledState, selectionNonEmptyState))
             .build();
 
     KeyEvents.builder(VK_INSERT)
@@ -477,15 +469,20 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     private final EventDataListener<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
-    private InsertEntityCommand(JComponent component, EntityConnectionProvider connectionProvider,
-                                EventDataListener<List<Entity>> onInsert) {
-      this.component = requireNonNull(component);
-      this.connectionProvider = requireNonNull(connectionProvider);
-      this.onInsert = requireNonNull(onInsert);
+    private InsertEntityCommand(EntityComboBox comboBox) {
+      this.component = comboBox;
+      this.connectionProvider = comboBox.getModel().connectionProvider();
+      this.onInsert = new EntityComboBoxOnInsert();
+    }
+
+    private InsertEntityCommand(EntitySearchField searchField) {
+      this.component = searchField;
+      this.connectionProvider = searchField.model().connectionProvider();
+      this.onInsert = new EntitySearchFieldOnInsert();
     }
 
     @Override
-    public void perform() throws Exception {
+    public void perform() {
       EntityEditPanel editPanel = createEditPanel();
       State cancelled = State.state();
       Value<Attribute<?>> invalidAttribute = Value.value();
@@ -515,10 +512,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private EntityEditPanel createEditPanel() {
-      EntityEditPanel editPanel = buildEditPanel(connectionProvider);
-      editPanel.initialize();
+      EntityEditPanel editPanel = buildEditPanel(connectionProvider).initialize();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-      editPanel.editModel().addAfterInsertListener(new AfterInsertListener());
+      editPanel.editModel().addAfterInsertListener(new PopulateInsertedEntities());
 
       return editPanel;
     }
@@ -546,12 +542,30 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       return false;
     }
 
-    private final class AfterInsertListener implements EventDataListener<Collection<Entity>> {
+    private final class PopulateInsertedEntities implements EventDataListener<Collection<Entity>> {
 
       @Override
       public void onEvent(Collection<Entity> inserted) {
         insertedEntities.clear();
         insertedEntities.addAll(inserted);
+      }
+    }
+
+    private class EntityComboBoxOnInsert implements EventDataListener<List<Entity>> {
+
+      @Override
+      public void onEvent(List<Entity> inserted) {
+        ((EntitySearchField) component).model().setSelectedEntities(inserted);
+      }
+    }
+
+    private class EntitySearchFieldOnInsert implements EventDataListener<List<Entity>> {
+      @Override
+      public void onEvent(List<Entity> inserted) {
+        EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
+        Entity item = inserted.get(0);
+        comboBoxModel.addItem(item);
+        comboBoxModel.setSelectedItem(item);
       }
     }
   }
@@ -621,10 +635,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     }
 
     private EntityEditPanel createEditPanel() {
-      EntityEditPanel editPanel = buildEditPanel(connectionProvider);
-      editPanel.initialize();
+      EntityEditPanel editPanel = buildEditPanel(connectionProvider).initialize();
       editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
-      editPanel.editModel().addAfterUpdateListener(new AfterUpdateListener());
+      editPanel.editModel().addAfterUpdateListener(new PopulateUpdatedEntities());
 
       return editPanel;
     }
@@ -673,7 +686,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
     }
 
-    private final class AfterUpdateListener implements EventDataListener<Map<Key, Entity>> {
+    private final class PopulateUpdatedEntities implements EventDataListener<Map<Key, Entity>> {
 
       @Override
       public void onEvent(Map<Key, Entity> updated) {
