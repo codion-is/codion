@@ -11,5 +11,5 @@ module is.codion.framework.demos.petclinic {
           to is.codion.swing.framework.ui;
 
   provides is.codion.framework.domain.Domain
-          with is.codion.framework.demos.petclinic.domain.Petclinic;
+          with is.codion.framework.demos.petclinic.domain.PetclinicImpl;
 }
