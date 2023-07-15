@@ -20,6 +20,11 @@ image::tutorials/petclinic/owners.png[]
 
 [source,java]
 ----
+include::{dir-source}/is/codion/framework/demos/petclinic/domain/api/Petclinic.java[lines=4..-1]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/petclinic/domain/api/Owner.java[lines=4..-1]
 ----
 
@@ -57,14 +62,14 @@ include::{dir-source}/is/codion/framework/demos/petclinic/domain/api/Visit.java[
 
 [source,java]
 ----
-include::{dir-source}/is/codion/framework/demos/petclinic/domain/Petclinic.java[lines=4..-1]
+include::{dir-source}/is/codion/framework/demos/petclinic/domain/PetclinicImpl.java[lines=4..-1]
 ----
 
 == Domain unit test
 
 [source,java]
 ----
-include::{dir-test-source}/is/codion/framework/demos/petclinic/domain/PetclinicTest.java[lines=4..-1]
+include::{dir-test-source}/is/codion/framework/demos/petclinic/domain/PetclinicImplTest.java[lines=4..-1]
 ----
 
 == Model

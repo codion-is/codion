@@ -7,7 +7,7 @@ import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Owner.PhoneType;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
-import is.codion.framework.demos.petclinic.domain.api.PetclinicApi;
+import is.codion.framework.demos.petclinic.domain.api.Petclinic;
 import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
@@ -24,10 +24,10 @@ import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.framework.domain.property.Property.*;
 
-public final class Petclinic extends DefaultDomain {
+public final class PetclinicImpl extends DefaultDomain {
 
-  public Petclinic() {
-    super(PetclinicApi.DOMAIN);
+  public PetclinicImpl() {
+    super(Petclinic.DOMAIN);
     vet();
     specialty();
     vetSpecialty();
