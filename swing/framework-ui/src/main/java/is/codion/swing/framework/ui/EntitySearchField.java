@@ -44,6 +44,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -74,8 +75,8 @@ import static is.codion.swing.common.ui.Colors.darker;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
-import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -101,8 +102,6 @@ import static java.util.Objects.requireNonNull;
 public final class EntitySearchField extends HintTextField {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntitySearchField.class.getName());
-
-  private static final int BORDER_SIZE = 10;
 
   private final EntitySearchModel model;
   private final SettingsPanel settingsPanel;
@@ -294,7 +293,8 @@ public final class EntitySearchField extends HintTextField {
             }
             else if (promptUser) {
               if (queryResult.isEmpty()) {
-                showEmptyResultMessage();
+                JOptionPane.showMessageDialog(this, FrameworkMessages.noResultsFound(),
+                        SwingMessages.get("OptionPane.messageDialogTitle"), JOptionPane.INFORMATION_MESSAGE);
               }
               else {
                 selectionProvider.selectEntities(this, queryResult);
@@ -341,32 +341,7 @@ public final class EntitySearchField extends HintTextField {
    * triggers another search, resulting in a loop
    */
   private void showEmptyResultMessage() {
-    Event<?> closeEvent = Event.event();
-    JButton okButton = Components.button(control(closeEvent::onEvent))
-            .text(Messages.ok())
-            .build();
-    KeyEvents.builder(VK_ENTER)
-            .action(control(okButton::doClick))
-            .enable(okButton);
-    KeyEvents.builder(VK_ESCAPE)
-            .action(control(closeEvent::onEvent))
-            .enable(okButton);
-    JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.CENTER))
-            .add(okButton)
-            .build();
-    JLabel messageLabel = Components.label(FrameworkMessages.noResultsFromCondition())
-            .border(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE))
-            .build();
-    JPanel messagePanel = Components.borderLayoutPanel()
-            .centerComponent(messageLabel)
-            .southComponent(buttonPanel)
-            .build();
 
-    Dialogs.componentDialog(messagePanel)
-            .owner(this)
-            .title(SwingMessages.get("OptionPane.messageDialogTitle"))
-            .closeEvent(closeEvent)
-            .show();
   }
 
   private static final class SearchStringValue extends AbstractValue<String> {
