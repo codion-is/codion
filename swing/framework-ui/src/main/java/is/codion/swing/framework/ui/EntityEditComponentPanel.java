@@ -864,14 +864,14 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for combo boxes, containing the values of the given attribute.
+   * Creates a builder for a combo boxe, containing the values of the given attribute.
    * @param attribute the attribute for which to build a combo box
    * @param <T> the value type
    * @param <C> the component type
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createAttributeComboBox(Attribute<T> attribute) {
+  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 

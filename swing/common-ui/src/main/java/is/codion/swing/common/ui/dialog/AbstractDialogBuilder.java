@@ -5,18 +5,25 @@ package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.Window;
+import java.util.ArrayList;
+import java.util.List;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A base class for Dialog builders.
  * @param <B> the builder type
  */
 public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements DialogBuilder<B> {
+
+  protected final List<KeyEvents.Builder> keyEventBuilders = new ArrayList<>(1);
 
   protected Window owner;
   protected Component locationRelativeTo;
@@ -68,6 +75,12 @@ public class AbstractDialogBuilder<B extends DialogBuilder<B>> implements Dialog
   @Override
   public final B icon(ImageIcon icon) {
     this.icon = icon;
+    return (B) this;
+  }
+
+  @Override
+  public final B keyEvent(KeyEvents.Builder keyEventBuilder) {
+    this.keyEventBuilders.add(requireNonNull(keyEventBuilder));
     return (B) this;
   }
 }

@@ -46,7 +46,7 @@ public class FrameworkMessagesTest {
     FrameworkMessages.confirmDelete();
     FrameworkMessages.confirmInsert();
     FrameworkMessages.show();
-    FrameworkMessages.noResultsFromCondition();
+    FrameworkMessages.noResultsFound();
     FrameworkMessages.search();
     FrameworkMessages.filter();
     FrameworkMessages.searchMnemonic();

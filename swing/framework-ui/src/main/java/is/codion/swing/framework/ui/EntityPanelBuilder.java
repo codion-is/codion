@@ -25,7 +25,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
@@ -40,6 +39,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_INSERT;
 import static java.util.Objects.requireNonNull;
@@ -462,8 +462,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
   private final class InsertEntityCommand implements Control.Command {
 
-    private static final int BORDER = 10;
-
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
     private final EventDataListener<List<Entity>> onInsert;
@@ -513,7 +511,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider).initialize();
-      editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
+      editPanel.setBorder(createEmptyBorder());
       editPanel.editModel().addAfterInsertListener(new PopulateInsertedEntities());
 
       return editPanel;
@@ -571,8 +569,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   private final class UpdateEntityCommand implements Control.Command {
-
-    private static final int BORDER = 10;
 
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
@@ -636,7 +632,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private EntityEditPanel createEditPanel() {
       EntityEditPanel editPanel = buildEditPanel(connectionProvider).initialize();
-      editPanel.setBorder(BorderFactory.createEmptyBorder(BORDER, BORDER, BORDER, BORDER));
+      editPanel.setBorder(createEmptyBorder());
       editPanel.editModel().addAfterUpdateListener(new PopulateUpdatedEntities());
 
       return editPanel;

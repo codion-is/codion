@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
+import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.icon.Logos;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import java.awt.event.KeyEvent;
 import java.util.Collections;
 
 import static is.codion.swing.common.ui.control.Control.control;
@@ -37,6 +39,8 @@ public final class DialogsTest {
             .closeEvent(Event.event())
             .confirmCloseListener(state -> {})
             .disposeOnEscape(false)
+            .keyEvent(KeyEvents.builder(KeyEvent.VK_ESCAPE)
+                    .action(Control.control(() -> {})))
             .build();
   }
 

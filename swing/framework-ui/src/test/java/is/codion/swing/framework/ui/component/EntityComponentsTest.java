@@ -10,6 +10,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -19,6 +20,7 @@ import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Detail;
+import is.codion.swing.framework.ui.TestDomain.Detail.EnumType;
 import is.codion.swing.framework.ui.TestDomain.Master;
 
 import org.junit.jupiter.api.Test;
@@ -187,6 +189,17 @@ public final class EntityComponentsTest {
     assertEquals(3, editModel.get(Detail.INT));
     box.setSelectedItem(4);//does not exist
     assertEquals(3, editModel.get(Detail.INT));
+  }
+
+  @Test
+  void enumComboBox() {
+    JComboBox<?> comboBox = (JComboBox<?>) entityComponents.component(Detail.ENUM_TYPE).build();
+    FilteredComboBoxModel<EnumType> comboBoxModel = (FilteredComboBoxModel<EnumType>) comboBox.getModel();
+    comboBoxModel.refresh();
+    assertEquals(4, comboBoxModel.getSize());
+    for (EnumType enumType : EnumType.values()) {
+      assertTrue(comboBoxModel.containsItem(enumType));
+    }
   }
 
   @Test

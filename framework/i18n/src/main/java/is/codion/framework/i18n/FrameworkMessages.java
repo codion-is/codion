@@ -49,7 +49,7 @@ public final class FrameworkMessages {
   private static final String CONFIRM_DELETE = "confirm_delete";
   private static final String CONFIRM_INSERT = "confirm_insert";
   private static final String SHOW = "show";
-  private static final String NO_RESULTS_FROM_CONDITION = "no_results_from_condition";
+  private static final String NO_RESULTS_FOUND = "no_results_found";
   private static final String SEARCH = "search";
   private static final String FILTER = "filter";
   private static final String SEARCH_MNEMONIC = "search_mnemonic";
@@ -324,10 +324,10 @@ public final class FrameworkMessages {
   }
 
   /**
-   * @return no result from condition
+   * @return no results found
    */
-  public static String noResultsFromCondition() {
-    return get(NO_RESULTS_FROM_CONDITION);
+  public static String noResultsFound() {
+    return get(NO_RESULTS_FOUND);
   }
 
   /**

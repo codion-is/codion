@@ -8,13 +8,11 @@ import is.codion.common.value.Value;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.FileTransferHandler;
 import is.codion.swing.common.ui.Utilities;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 
 import javax.imageio.ImageIO;
-import javax.swing.BorderFactory;
 import javax.swing.JPanel;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.awt.BorderLayout;
@@ -31,8 +29,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 import static is.codion.swing.common.ui.component.Components.buttonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static javax.swing.BorderFactory.createTitledBorder;
 
 /**
  * A panel for displaying a cover image, based on a byte array.
@@ -54,6 +55,7 @@ final class CoverArtPanel extends JPanel {
   private final JPanel basePanel;
   private final NavigableImagePanel imagePanel;
   private final Value<byte[]> imageBytesValue;
+  private final State imageSelectedState;
   private final State embeddedState = State.state(true);
 
   /**
@@ -62,29 +64,32 @@ final class CoverArtPanel extends JPanel {
   CoverArtPanel(Value<byte[]> imageBytesValue) {
     super(borderLayout());
     this.imageBytesValue = imageBytesValue;
+    this.imageSelectedState = State.state(imageBytesValue.isNotNull());
     this.imagePanel = createImagePanel();
     this.basePanel = createPanel();
     add(basePanel, BorderLayout.CENTER);
-    setBorder(BorderFactory.createTitledBorder(BUNDLE.getString(COVER)));
+    setBorder(createTitledBorder(BUNDLE.getString(COVER)));
     bindEvents();
   }
 
   private JPanel createPanel() {
-    return Components.borderLayoutPanel()
-            .border(BorderFactory.createEmptyBorder(5, 5, 5, 5))
+    return borderLayoutPanel()
+            .border(createEmptyBorder())
             .preferredSize(EMBEDDED_SIZE)
             .centerComponent(imagePanel)
             .southComponent(buttonPanel(Controls.builder()
                     .control(Control.builder(this::selectCover)
                             .name(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
-                            .name(BUNDLE.getString(REMOVE_COVER))))
+                            .name(BUNDLE.getString(REMOVE_COVER))
+                            .enabledState(imageSelectedState)))
                     .build())
             .build();
   }
 
   private void bindEvents() {
     imageBytesValue.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
+    imageBytesValue.addDataListener(imageBytes -> imageSelectedState.set(imageBytes != null));
     embeddedState.addDataListener(this::setEmbedded);
     imagePanel.addMouseListener(new EmbeddingMouseListener());
   }

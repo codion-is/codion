@@ -135,13 +135,14 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
                     .build())
             .build();
 
-    JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo, location, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, titleProvider, icon, panel, size, locationRelativeTo,
+            location, modal, resizable, onShown, keyEventBuilders);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     if (defaultAction != null) {
       Arrays.stream(buttonPanel.getComponents())
               .filter(new IsButton())
-              .map(new CastToButtonFunction())
-              .filter(new IsActionButton(defaultAction))
+              .map(new CastToButton())
+              .filter(new IsButtonAction(defaultAction))
               .findFirst()
               .ifPresent(new SetDefaultButton(dialog));
     }
@@ -186,7 +187,7 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     }
   }
 
-  private static final class CastToButtonFunction implements Function<Component, JButton> {
+  private static final class CastToButton implements Function<Component, JButton> {
 
     @Override
     public JButton apply(Component component) {
@@ -194,11 +195,11 @@ class DefaultActionDialogBuilder<B extends ActionDialogBuilder<B>> extends Abstr
     }
   }
 
-  private static final class IsActionButton implements Predicate<JButton> {
+  private static final class IsButtonAction implements Predicate<JButton> {
 
     private final Action defaultAction;
 
-    private IsActionButton(Action defaultAction) {
+    private IsButtonAction(Action defaultAction) {
       this.defaultAction = defaultAction;
     }
 

@@ -23,7 +23,7 @@ public final class OwnerEditPanel extends EntityEditPanel {
     createTextField(Owner.ADDRESS);
     createTextField(Owner.CITY);
     createTextField(Owner.TELEPHONE);
-    createAttributeComboBox(Owner.PHONE_TYPE);
+    createComboBox(Owner.PHONE_TYPE);
 
     setLayout(Layouts.gridLayout(3, 2));
 

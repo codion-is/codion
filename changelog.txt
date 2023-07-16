@@ -9346,3 +9346,8 @@
   EntityTestUnit.randomEnum() added
   EntityComponents now supports enum based attributes with a combo box
   SwingEntityEditModel.comboBoxModel() now supports enum based attributes
+  EntityEditComponentPanel.createAttributeComboBox() renamed createComboBox()
+  Borders utility class added, used where applicable
+  DialogBuilder.keyEvent() added
+  EntitySearchField.showEmptyResultMessage() removed, now uses JOptionPane, using Enter button to close the message doesn't trigger a new search on Windows any more
+  FrameworkMessages.noResultFromCondition() renamed noResultsFound(), text value updated accordingly

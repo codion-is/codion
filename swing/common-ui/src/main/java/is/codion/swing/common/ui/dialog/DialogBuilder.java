@@ -4,6 +4,7 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.ui.KeyEvents;
 
 import javax.swing.ImageIcon;
 import java.awt.Component;
@@ -60,4 +61,11 @@ public interface DialogBuilder<B extends DialogBuilder<B>> {
    * @return this builder instance
    */
   B icon(ImageIcon icon);
+
+  /**
+   * Enables the key event defined by the given {@link KeyEvents.Builder} on the dialog root pane.
+   * @param keyEventBuilder a key event builder to enable on the dialog root pane
+   * @return this builder instance
+   */
+  B keyEvent(KeyEvents.Builder keyEventBuilder);
 }

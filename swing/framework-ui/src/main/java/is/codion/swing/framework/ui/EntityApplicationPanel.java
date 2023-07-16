@@ -89,10 +89,10 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.model.UserPreferences.getUserPreference;
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A central application panel class.
@@ -649,7 +649,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected JPanel createAboutPanel() {
     PanelBuilder versionMemoryPanel = panel(gridLayout(0, 2))
-            .border(createEmptyBorder(5, 5, 5, 5));
+            .border(createEmptyBorder());
     applicationModel().version().ifPresent(version -> versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))
             .add(new JLabel(version.toString())));
@@ -660,7 +660,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .add(new JLabel(Memory.memoryUsage()));
 
     return borderLayoutPanel()
-            .border(createEmptyBorder(5, 5, 5, 5))
+            .border(createEmptyBorder())
             .westComponent(new JLabel(FrameworkIcons.instance().logo(DEFAULT_LOGO_SIZE)))
             .centerComponent(versionMemoryPanel.build())
             .build();
