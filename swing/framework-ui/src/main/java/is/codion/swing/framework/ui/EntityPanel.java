@@ -11,6 +11,7 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
+import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
@@ -1351,8 +1352,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
   protected final void initializeEditControlPanel() {
     editPanel.initialize();
-    int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-    editControlPanel.setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+    editControlPanel.setBorder(Borders.createEmptyBorder());
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     editControlPanel.add(createEditBasePanel(editPanel), BorderLayout.CENTER);
     if (includeControlPanel) {

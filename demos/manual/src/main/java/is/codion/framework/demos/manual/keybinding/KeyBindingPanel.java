@@ -20,12 +20,12 @@ import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.util.Arrays;
 
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A utility for displaying component action/input maps for installed look and feels.<br>
@@ -48,7 +48,7 @@ public final class KeyBindingPanel extends JPanel {
             .preferredHeight(preferredTextFieldHeight())
             .preferredWidth(200)
             .build();
-    setBorder(createEmptyBorder(10, 10, 10, 10));
+    setBorder(createEmptyBorder());
     add(panel(flexibleGridLayout(1, 4))
             .add(label("Look & Feel")
                     .horizontalAlignment(SwingConstants.RIGHT)

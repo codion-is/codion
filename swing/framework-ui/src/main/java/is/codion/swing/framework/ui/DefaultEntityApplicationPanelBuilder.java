@@ -16,14 +16,12 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.icon.Icons;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -32,7 +30,6 @@ import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
-import javax.swing.border.Border;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Frame;
@@ -47,6 +44,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.framework.db.EntityConnectionProvider.CLIENT_DOMAIN_CLASS;
 import static is.codion.swing.common.ui.Utilities.*;
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -292,7 +290,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       Dialogs.progressWorkerDialog(() -> initializeApplicationModel(connectionProvider))
               .title(applicationName)
               .icon(applicationIcon)
-              .border(initializeStartupDialogBorder())
+              .border(createEmptyBorder())
               .westPanel(createStartupIconPanel())
               .onResult(applicationModel -> startApplication(applicationModel, initializationStarted))
               .onException(DefaultEntityApplicationPanelBuilder::displayExceptionAndExit)
@@ -452,12 +450,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private EntityConnectionProvider initializeConnectionProvider(User user, String domainClassName,
                                                                 String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.createConnectionProvider(user, domainClassName, clientTypeId, clientVersion);
-  }
-
-  private static Border initializeStartupDialogBorder() {
-    int borderSize = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-
-    return BorderFactory.createEmptyBorder(borderSize, borderSize, borderSize, borderSize);
   }
 
   private static void displayExceptionAndExit(Throwable exception) {

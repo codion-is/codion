@@ -9308,3 +9308,4 @@
   EntityComponents now supports enum based attributes with a combo box
   SwingEntityEditModel.comboBoxModel() now supports enum based attributes
   EntityEditComponentPanel.createAttributeComboBox() renamed createComboBox()
+  Borders utility class added, used where applicable

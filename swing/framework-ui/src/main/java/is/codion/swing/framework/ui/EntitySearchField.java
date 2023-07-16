@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.value.AbstractValue;
@@ -42,7 +41,6 @@ import is.codion.swing.framework.ui.icon.FrameworkIcons;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
-import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JList;
@@ -59,7 +57,6 @@ import java.awt.BorderLayout;
 import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyAdapter;
@@ -74,6 +71,7 @@ import java.util.function.Function;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.Colors.darker;
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -434,8 +432,7 @@ public final class EntitySearchField extends HintTextField {
       add(Components.comboBox(propertyComboBoxModel).build(), BorderLayout.NORTH);
       add(propertyBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
-      int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
-      setBorder(BorderFactory.createEmptyBorder(gap, gap, gap, gap));
+      setBorder(createEmptyBorder());
     }
 
     private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {

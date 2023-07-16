@@ -39,10 +39,10 @@ import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.ResourceBundle;
 
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
-import static javax.swing.BorderFactory.createEmptyBorder;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -63,7 +63,6 @@ final class ExceptionPanel extends JPanel {
   private static final int SCROLL_PANE_WIDTH = 500;
   private static final int SCROLL_PANE_HEIGHT = 200;
   private static final int MAX_MESSAGE_LENGTH = 100;
-  private static final int BORDER_SIZE = 5;
   private static final int ICON_TEXT_GAP = 10;
   private static final int TAB_SIZE = 4;
 
@@ -137,7 +136,7 @@ final class ExceptionPanel extends JPanel {
   private void initializeUI() {
     setLayout(borderLayout());
     add(BorderLayoutPanelBuilder.builder(borderLayout())
-            .border(createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE))
+            .border(createEmptyBorder())
             .northComponent(createNorthPanel())
             .centerComponent(centerPanel)
             .southComponent(createButtonPanel())

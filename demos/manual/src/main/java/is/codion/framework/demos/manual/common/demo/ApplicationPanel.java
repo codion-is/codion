@@ -20,7 +20,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
-import javax.swing.BorderFactory;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JList;
@@ -38,6 +37,7 @@ import java.util.Optional;
 import java.util.Random;
 import java.util.function.Predicate;
 
+import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
@@ -60,7 +60,7 @@ public final class ApplicationPanel extends JPanel {
   public ApplicationPanel(ApplicationModel model) {
     super(borderLayout());
 
-    setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    setBorder(createEmptyBorder());
 
     JPanel settingsPanel = new JPanel(borderLayout());
 
