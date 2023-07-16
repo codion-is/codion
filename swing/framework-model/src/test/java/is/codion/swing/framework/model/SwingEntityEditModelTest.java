@@ -12,6 +12,8 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
+import is.codion.framework.model.test.TestDomain.EnumEntity;
+import is.codion.framework.model.test.TestDomain.EnumEntity.EnumType;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -103,5 +105,16 @@ public class SwingEntityEditModelTest {
     assertFalse(employeeEditModel.comboBoxModel(Employee.JOB).isCleared());
     assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK).isCleared());
     assertFalse(employeeEditModel.foreignKeyComboBoxModel(Employee.MGR_FK).isCleared());
+  }
+
+  @Test
+  void enumComboBoxModel() {
+    SwingEntityEditModel editModel = new SwingEntityEditModel(EnumEntity.TYPE, CONNECTION_PROVIDER);
+    FilteredComboBoxModel<EnumType> comboBoxModel = editModel.comboBoxModel(EnumEntity.ENUM_TYPE);
+    comboBoxModel.refresh();
+    assertEquals(4, comboBoxModel.getSize());
+    for (EnumType enumType : EnumType.values()) {
+      assertTrue(comboBoxModel.containsItem(enumType));
+    }
   }
 }

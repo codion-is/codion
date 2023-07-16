@@ -77,6 +77,11 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
     Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
+    Attribute<EnumType> ENUM_TYPE = TYPE.attribute("enum_type", EnumType.class);
+
+    enum EnumType {
+      ONE, TWO, THREE
+    }
   }
 
   private static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
@@ -117,7 +122,8 @@ public final class TestDomain extends DefaultDomain {
               }
 
               return intValue * 10;
-            }, Detail.INT))
+            }, Detail.INT),
+            columnProperty(Detail.ENUM_TYPE))
             .selectTableName(DETAIL_SELECT_TABLE_NAME)
             .orderBy(ascending(Detail.STRING))
             .smallDataset(true)

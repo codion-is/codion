@@ -32,6 +32,7 @@ public final class TestDomain extends DefaultDomain {
     detail();
     department();
     employee();
+    enumEntity();
   }
 
   public interface Master {
@@ -200,5 +201,22 @@ public final class TestDomain extends DefaultDomain {
 
               return null;
             }));
+  }
+
+  public interface EnumEntity {
+    EntityType TYPE = DOMAIN.entityType("enum_entity");
+    
+    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Attribute<EnumType> ENUM_TYPE = TYPE.attribute("enum_type", EnumType.class);
+
+    enum EnumType {
+      ONE, TWO, THREE
+    }
+  }
+
+  void enumEntity() {
+    add(definition(
+            primaryKeyProperty(EnumEntity.ID),
+            columnProperty(EnumEntity.ENUM_TYPE)));
   }
 }
