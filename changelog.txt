@@ -9309,3 +9309,4 @@
   SwingEntityEditModel.comboBoxModel() now supports enum based attributes
   EntityEditComponentPanel.createAttributeComboBox() renamed createComboBox()
   Borders utility class added, used where applicable
+  DialogBuilder.keyEvent() added

@@ -25,6 +25,7 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
@@ -123,7 +124,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   @Override
   public JDialog build() {
-    JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo, location, modal, resizable, onShown);
+    JDialog dialog = createDialog(owner, titleProvider, icon, component, size, locationRelativeTo,
+            location, modal, resizable, onShown, keyEventBuilders);
     if (enterAction != null) {
       KeyEvents.builder(VK_ENTER)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
@@ -151,7 +153,8 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
 
   static JDialog createDialog(Window owner, ValueObserver<String> titleProvider, ImageIcon icon,
                               JComponent component, Dimension size, Component locationRelativeTo,
-                              Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown) {
+                              Point location, boolean modal, boolean resizable, Consumer<JDialog> onShown,
+                              List<KeyEvents.Builder> keyEventBuilders) {
     JDialog dialog = new JDialog(owner);
     if (titleProvider != null) {
       dialog.setTitle(titleProvider.get());
@@ -179,6 +182,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     }
     dialog.setModal(modal);
     dialog.setResizable(resizable);
+    keyEventBuilders.forEach(keyEventBuilder -> keyEventBuilder.enable(dialog.getRootPane()));
     if (onShown != null) {
       dialog.addComponentListener(new OnShownAdapter(dialog, onShown));
     }
