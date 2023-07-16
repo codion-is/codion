@@ -55,6 +55,7 @@ final class CoverArtPanel extends JPanel {
   private final JPanel basePanel;
   private final NavigableImagePanel imagePanel;
   private final Value<byte[]> imageBytesValue;
+  private final State imageSelectedState;
   private final State embeddedState = State.state(true);
 
   /**
@@ -63,6 +64,7 @@ final class CoverArtPanel extends JPanel {
   CoverArtPanel(Value<byte[]> imageBytesValue) {
     super(borderLayout());
     this.imageBytesValue = imageBytesValue;
+    this.imageSelectedState = State.state(imageBytesValue.isNotNull());
     this.imagePanel = createImagePanel();
     this.basePanel = createPanel();
     add(basePanel, BorderLayout.CENTER);
@@ -79,13 +81,15 @@ final class CoverArtPanel extends JPanel {
                     .control(Control.builder(this::selectCover)
                             .name(BUNDLE.getString(SELECT_COVER)))
                     .control(Control.builder(this::removeCover)
-                            .name(BUNDLE.getString(REMOVE_COVER))))
+                            .name(BUNDLE.getString(REMOVE_COVER))
+                            .enabledState(imageSelectedState)))
                     .build())
             .build();
   }
 
   private void bindEvents() {
     imageBytesValue.addDataListener(imageBytes -> imagePanel.setImage(readImage(imageBytes)));
+    imageBytesValue.addDataListener(imageBytes -> imageSelectedState.set(imageBytes != null));
     embeddedState.addDataListener(this::setEmbedded);
     imagePanel.addMouseListener(new EmbeddingMouseListener());
   }
