@@ -351,7 +351,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * @param requiredUser the required credentials
    * @throws ServerAuthenticationException in case either User instance is null or if the username or password does not match
    */
-  protected static final void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
+  protected static void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
             || !Objects.equals(userToCheck.username(), requiredUser.username())
             || !Arrays.equals(userToCheck.password(), requiredUser.password())) {
