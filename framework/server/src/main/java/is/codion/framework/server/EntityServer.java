@@ -460,6 +460,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() throws ServerAuthenticationException {
+    Clients.resolveTrustStore();
     EntityServerConfiguration configuration = EntityServerConfiguration.builderFromSystemProperties().build();
     String serverName = configuration.serverName();
     int registryPort = configuration.registryPort();
@@ -467,7 +468,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     if (adminUser == null) {
       throw new ServerAuthenticationException("No admin user specified");
     }
-    Clients.resolveTrustStore();
     try {
       Registry registry = LocateRegistry.getRegistry(registryPort);
       Server<?, EntityServerAdmin> server = (Server<?, EntityServerAdmin>) registry.lookup(serverName);

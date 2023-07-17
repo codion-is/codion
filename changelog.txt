@@ -9351,3 +9351,4 @@
   DialogBuilder.keyEvent() added
   EntitySearchField.showEmptyResultMessage() removed, now uses JOptionPane, using Enter button to close the message doesn't trigger a new search on Windows any more
   FrameworkMessages.noResultFromCondition() renamed noResultsFound(), text value updated accordingly
+  EntityServer.shutdownServer() bug fixed, now calls Clients.resolveTrustStore() first, otherwise the ssl infrastructure has been initialized and setting the truststore has no effect

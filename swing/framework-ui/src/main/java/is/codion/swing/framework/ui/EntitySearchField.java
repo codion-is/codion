@@ -336,14 +336,6 @@ public final class EntitySearchField extends HintTextField {
             .createPopupMenu();
   }
 
-  /**
-   * Necessary due to a bug on Windows, where pressing Enter to dismiss this message
-   * triggers another search, resulting in a loop
-   */
-  private void showEmptyResultMessage() {
-
-  }
-
   private static final class SearchStringValue extends AbstractValue<String> {
 
     private final JTextField searchField;
