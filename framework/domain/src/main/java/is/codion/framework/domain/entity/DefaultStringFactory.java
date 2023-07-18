@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.property.Property;
+
 import java.io.Serializable;
 import java.util.function.Function;
 
@@ -18,8 +20,9 @@ final class DefaultStringFactory implements Function<Entity, String>, Serializab
   @Override
   public String apply(Entity entity) {
     return new StringBuilder(entity.type().name())
-            .append(entity.entrySet().stream()
-                    .map(entry -> entry.getKey().name() + ":" + entity.toString(entry.getKey()))
+            .append(entity.definition().properties().stream()
+                    .map(Property::attribute)
+                    .map(attribute -> attribute.name() + ": " + entity.toString(attribute))
                     .collect(joining(", ", ": ", "")))
             .toString();
   }
