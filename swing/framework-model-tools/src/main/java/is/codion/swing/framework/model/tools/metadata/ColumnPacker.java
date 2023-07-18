@@ -11,6 +11,8 @@ import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -91,8 +93,12 @@ final class ColumnPacker implements ResultPacker<Column> {
         return decimalDigits == 0 ? Integer.class : Double.class;
       case Types.TIME:
         return LocalTime.class;
+      case Types.TIME_WITH_TIMEZONE:
+        return OffsetTime.class;
       case Types.TIMESTAMP:
         return LocalDateTime.class;
+      case Types.TIMESTAMP_WITH_TIMEZONE:
+        return OffsetDateTime.class;
       case Types.LONGVARCHAR:
       case Types.VARCHAR:
         return String.class;

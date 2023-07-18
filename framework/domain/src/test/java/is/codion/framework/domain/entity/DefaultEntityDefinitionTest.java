@@ -319,7 +319,7 @@ public class DefaultEntityDefinitionTest {
 
     Entity entity = entities.entity(entityType);
     entity.put(attribute, 1);
-    assertEquals("testDefaultStringProvider: attribute:1", entity.toString());
+    assertEquals("testDefaultStringProvider: attribute: 1", entity.toString());
   }
 
   @Test

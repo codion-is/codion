@@ -9352,3 +9352,5 @@
   EntitySearchField.showEmptyResultMessage() removed, now uses JOptionPane, using Enter button to close the message doesn't trigger a new search on Windows any more
   FrameworkMessages.noResultFromCondition() renamed noResultsFound(), text value updated accordingly
   EntityServer.shutdownServer() bug fixed, now calls Clients.resolveTrustStore() first, otherwise the ssl infrastructure has been initialized and setting the truststore has no effect
+  ColumnPacker.columnClass() improved, now translates TIMESTAMP_WITH_TIMEZONE to OffsetDateTime and TIME_WITH_TIMEZONE to OffsetTime
+  DefaultStringFactory now outputs attribute values in their original order

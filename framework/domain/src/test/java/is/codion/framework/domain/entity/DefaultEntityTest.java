@@ -885,7 +885,7 @@ public class DefaultEntityTest {
     Entity entity = ENTITIES.builder(NullString.TYPE)
             .with(NullString.ID, 42)
             .build();
-    assertEquals("null_string: id:42", entity.toString());
+    assertEquals("null_string: id: 42, trans: ", entity.toString());
   }
 
   @Test
