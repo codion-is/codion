@@ -77,6 +77,7 @@ NOTE: Typically, the *attribute* name is the underlying column name, but as with
 |LocalDateTime|java.sql.Types.TIMESTAMP
 |LocalDate|java.sql.Types.DATE
 |LocalTime|java.sql.Types.TIME
+|OffsetTime|java.sql.Types.TIME_WITH_TIMEZONE
 |OffsetDateTime|java.sql.Types.TIMESTAMP_WITH_TIMEZONE
 |java.util.Date|java.sql.Types.DATE
 |java.sql.Time|java.sql.Types.TIME
