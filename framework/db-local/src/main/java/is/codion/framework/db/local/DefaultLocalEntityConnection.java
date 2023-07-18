@@ -93,7 +93,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private final Map<EntityType, List<ColumnProperty<?>>> insertablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ColumnProperty<?>>> updatablePropertiesCache = new HashMap<>();
   private final Map<EntityType, List<ForeignKeyProperty>> nonSoftForeignKeyReferenceCache = new HashMap<>();
-  private final Map<EntityType, Attribute<?>[]> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
+  private final Map<EntityType, List<Attribute<?>>> primaryKeyAndWritableColumnPropertiesCache = new HashMap<>();
   private final Map<SelectCondition, List<Entity>> queryCache = new HashMap<>();
 
   private boolean optimisticLockingEnabled = LocalEntityConnection.OPTIMISTIC_LOCKING_ENABLED.get();
@@ -1195,21 +1195,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             entityDefinition.writableColumnProperties(true, false));
   }
 
-  private Attribute<?>[] primaryKeyAndWritableColumnAttributes(EntityType entityType) {
-    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e -> {
-      EntityDefinition entityDefinition = domainEntities.definition(entityType);
-      List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
-              new ArrayList<>(entityDefinition.writableColumnProperties(true, true));
-      entityDefinition.primaryKeyProperties().forEach(primaryKeyProperty -> {
-        if (!writableAndPrimaryKeyProperties.contains(primaryKeyProperty)) {
-          writableAndPrimaryKeyProperties.add(primaryKeyProperty);
-        }
-      });
+  private List<Attribute<?>> primaryKeyAndWritableColumnAttributes(EntityType entityType) {
+    return primaryKeyAndWritableColumnPropertiesCache.computeIfAbsent(entityType, e ->
+            collectPrimaryKeyAndWritableColumnAttributes(entityType));
+  }
 
-      return writableAndPrimaryKeyProperties.stream()
-              .map(ColumnProperty::attribute)
-              .toArray(Attribute<?>[]::new);
+  private List<Attribute<?>> collectPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
+    EntityDefinition entityDefinition = domainEntities.definition(entityType);
+    List<ColumnProperty<?>> writableAndPrimaryKeyProperties =
+            new ArrayList<>(entityDefinition.writableColumnProperties(true, true));
+    entityDefinition.primaryKeyProperties().forEach(primaryKeyProperty -> {
+      if (!writableAndPrimaryKeyProperties.contains(primaryKeyProperty)) {
+        writableAndPrimaryKeyProperties.add(primaryKeyProperty);
+      }
     });
+
+    return writableAndPrimaryKeyProperties.stream()
+            .map(ColumnProperty::attribute)
+            .collect(toList());
   }
 
   private DatabaseException translateSQLException(SQLException exception) {
