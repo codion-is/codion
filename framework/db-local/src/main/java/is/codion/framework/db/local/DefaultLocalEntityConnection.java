@@ -75,13 +75,13 @@ import static java.util.stream.Collectors.*;
  */
 final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
-  private static final String RECORD_MODIFIED = "record_modified";
-
   private static final Logger LOG = LoggerFactory.getLogger(DefaultLocalEntityConnection.class);
-  private static final String CONDITION_PARAM_NAME = "condition";
-  private static final String ENTITIES_PARAM_NAME = "entities";
+
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(LocalEntityConnection.class.getName());
   private static final String EXECUTE_STATEMENT = "executeStatement";
+  private static final String RECORD_MODIFIED = "record_modified";
+  private static final String CONDITION = "condition";
+  private static final String ENTITIES = "entities";
 
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
@@ -207,7 +207,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
-    if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
     checkIfReadOnly(entities);
@@ -263,7 +263,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
-    if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
     Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
@@ -340,7 +340,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int update(UpdateCondition condition) throws DatabaseException {
-    if (requireNonNull(condition, CONDITION_PARAM_NAME).attributeValues().isEmpty()) {
+    if (requireNonNull(condition, CONDITION).attributeValues().isEmpty()) {
       throw new IllegalArgumentException("No attribute values provided for update");
     }
     checkIfReadOnly(condition.entityType());
@@ -382,7 +382,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int delete(Condition condition) throws DatabaseException {
-    checkIfReadOnly(requireNonNull(condition, CONDITION_PARAM_NAME).entityType());
+    checkIfReadOnly(requireNonNull(condition, CONDITION).entityType());
 
     EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
     List<?> statementValues = condition.values();
@@ -532,7 +532,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION);
     SelectCondition selectCondition = condition instanceof SelectCondition ?
             (SelectCondition) condition : condition.selectBuilder().build();
     synchronized (connection) {
@@ -604,7 +604,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public int rowCount(Condition condition) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(condition, CONDITION_PARAM_NAME).entityType());
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(condition, CONDITION).entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
@@ -643,7 +643,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
-    if (requireNonNull(entities, ENTITIES_PARAM_NAME).isEmpty()) {
+    if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyMap();
     }
 
@@ -1051,7 +1051,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
-    requireNonNull(condition, CONDITION_PARAM_NAME);
+    requireNonNull(condition, CONDITION);
     SelectCondition selectCondition = condition instanceof SelectCondition ?
             (SelectCondition) condition : condition.selectBuilder().build();
     PreparedStatement statement = null;

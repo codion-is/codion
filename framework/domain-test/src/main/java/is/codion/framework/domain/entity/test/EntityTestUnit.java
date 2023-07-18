@@ -47,7 +47,7 @@ public class EntityTestUnit {
    */
   public static final PropertyValue<String> TEST_USER = Configuration.stringValue("codion.test.user");
 
-  private static final int SELECT_FETCH_COUNT = 10;
+  private static final int SELECT_LIMIT = 10;
 
   private final EntityConnectionProvider connectionProvider;
 
@@ -221,7 +221,7 @@ public class EntityTestUnit {
     else {
       connection.select(condition(entityType)
               .selectBuilder()
-              .limit(SELECT_FETCH_COUNT)
+              .limit(SELECT_LIMIT)
               .build());
     }
   }
