@@ -21,6 +21,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 import static java.util.Collections.emptyList;
@@ -318,6 +319,11 @@ public final class FXEntityListSelectionModel implements TableSelectionModel<Ent
     }
 
     return selectionModel.getSelectedItem();
+  }
+
+  @Override
+  public Optional<Entity> selectedItem() {
+    return Optional.ofNullable(getSelectedItem());
   }
 
   @Override

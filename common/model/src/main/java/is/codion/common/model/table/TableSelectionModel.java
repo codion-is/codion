@@ -10,6 +10,7 @@ import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.function.Predicate;
 
 /**
@@ -239,6 +240,11 @@ public interface TableSelectionModel<R> {
    * @param items the items to remove from the selection
    */
   void removeSelectedItems(Collection<R> items);
+
+  /**
+   * @return the selected item, or an empty Optional in case the selection is empty
+   */
+  Optional<R> selectedItem();
 
   /**
    * Clears the selection
