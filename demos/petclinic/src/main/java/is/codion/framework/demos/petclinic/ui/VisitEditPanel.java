@@ -5,13 +5,15 @@ package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
+
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
@@ -24,15 +26,16 @@ public final class VisitEditPanel extends EntityEditPanel {
     setInitialFocusAttribute(Visit.PET_FK);
 
     createForeignKeyComboBox(Visit.PET_FK);
-    createTextField(Visit.DATE);
-    createTextArea(Visit.DESCRIPTION).rowsColumns(4, 20);
+    createTextField(Visit.VISIT_DATE);
+    createTextArea(Visit.DESCRIPTION)
+            .rowsColumns(4, 20);
 
-    JPanel northPanel = Components.panel(Layouts.gridLayout(1, 2))
+    JPanel northPanel = Components.panel(gridLayout(1, 2))
             .add(createInputPanel(Visit.PET_FK))
-            .add(createInputPanel(Visit.DATE))
+            .add(createInputPanel(Visit.VISIT_DATE))
             .build();
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(borderLayout());
     add(northPanel, BorderLayout.NORTH);
     addInputPanel(Visit.DESCRIPTION, new JScrollPane(getComponent(Visit.DESCRIPTION)), BorderLayout.CENTER);
   }

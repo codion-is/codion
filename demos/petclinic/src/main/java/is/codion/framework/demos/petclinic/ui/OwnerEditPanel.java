@@ -4,9 +4,10 @@
 package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.framework.demos.petclinic.domain.api.Owner;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
+
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class OwnerEditPanel extends EntityEditPanel {
 
@@ -25,7 +26,7 @@ public final class OwnerEditPanel extends EntityEditPanel {
     createTextField(Owner.TELEPHONE);
     createComboBox(Owner.PHONE_TYPE);
 
-    setLayout(Layouts.gridLayout(3, 2));
+    setLayout(gridLayout(3, 2));
 
     addInputPanel(Owner.FIRST_NAME);
     addInputPanel(Owner.LAST_NAME);

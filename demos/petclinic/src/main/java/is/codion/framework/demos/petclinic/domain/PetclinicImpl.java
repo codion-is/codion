@@ -131,6 +131,19 @@ public final class PetclinicImpl extends DefaultDomain {
             .orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME)));
   }
 
+  private static final class PhoneTypeValueConverter implements ValueConverter<PhoneType, String> {
+
+    @Override
+    public String toColumnValue(PhoneType value, Statement statement) {
+      return value.name();
+    }
+
+    @Override
+    public PhoneType fromColumnValue(String columnValue) {
+      return PhoneType.valueOf(columnValue);
+    }
+  }
+
   private void pet() {
     add(definition(
             primaryKeyProperty(Pet.ID),
@@ -158,28 +171,15 @@ public final class PetclinicImpl extends DefaultDomain {
             columnProperty(Visit.PET_ID)
                     .nullable(false),
             foreignKeyProperty(Visit.PET_FK, "Pet"),
-            columnProperty(Visit.DATE, "Date")
+            columnProperty(Visit.VISIT_DATE, "Date")
                     .nullable(false),
             columnProperty(Visit.DESCRIPTION, "Description")
                     .maximumLength(255))
             .keyGenerator(identity())
             .orderBy(OrderBy.builder()
                     .ascending(Visit.PET_ID)
-                    .descending(Visit.DATE)
+                    .descending(Visit.VISIT_DATE)
                     .build())
             .caption("Visits"));
-  }
-
-  private static final class PhoneTypeValueConverter implements ValueConverter<PhoneType, String> {
-
-    @Override
-    public String toColumnValue(PhoneType value, Statement statement) {
-      return value.name();
-    }
-
-    @Override
-    public PhoneType fromColumnValue(String columnValue) {
-      return PhoneType.valueOf(columnValue);
-    }
   }
 }
