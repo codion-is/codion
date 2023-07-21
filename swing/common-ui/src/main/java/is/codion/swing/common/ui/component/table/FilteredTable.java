@@ -168,7 +168,6 @@ public final class FilteredTable<R, C> extends JTable {
     super(builder.tableModel, builder.tableModel.columnModel(), builder.tableModel.selectionModel());
     this.tableModel = builder.tableModel;
     this.conditionPanelFactory = builder.conditionPanelFactory;
-    this.tableModel.columnModel().columns().forEach(column -> configureColumn(column, builder.cellRendererFactory));
     this.centerOnScroll = builder.centerOnScroll;
     this.doubleClickAction = builder.doubleClickAction;
     this.scrollToSelectedItem = builder.scrollToSelectedItem;
@@ -176,7 +175,8 @@ public final class FilteredTable<R, C> extends JTable {
     setAutoStartsEdit(builder.autoStartsEdit);
     setSelectionMode(builder.selectionMode);
     setAutoResizeMode(builder.autoResizeMode);
-    initializeTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
+    configureColumns(builder.cellRendererFactory);
+    configureTableHeader(builder.columnReorderingAllowed, builder.columnResizingAllowed);
     bindEvents();
   }
 
@@ -578,16 +578,16 @@ public final class FilteredTable<R, C> extends JTable {
             .build();
   }
 
-  private void configureColumn(FilteredTableColumn<C> column, FilteredTableCellRendererFactory<C> rendererFactory) {
-    if (column.getCellRenderer() == null) {
-      column.setCellRenderer(rendererFactory.tableCellRenderer(column));
-    }
-    if (column.getHeaderRenderer() == null) {
-      column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column));
-    }
+  private void configureColumns(FilteredTableCellRendererFactory<C> cellRendererFactory) {
+    tableModel.columnModel().columns().stream()
+            .filter(column -> column.getCellRenderer() == null)
+            .forEach(column -> column.setCellRenderer(cellRendererFactory.tableCellRenderer(column)));
+    tableModel.columnModel().columns().stream()
+            .filter(column -> column.getHeaderRenderer() == null)
+            .forEach(column -> column.setHeaderRenderer(new FilteredTableHeaderRenderer<>(this, column)));
   }
 
-  private void initializeTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
+  private void configureTableHeader(boolean reorderingAllowed, boolean columnResizingAllowed) {
     JTableHeader header = getTableHeader();
     header.setFocusable(false);
     header.setReorderingAllowed(reorderingAllowed);
@@ -598,11 +598,11 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   private void bindEvents() {
-    addMouseListener(new FilteredTableMouseListener());
     tableModel.selectionModel().addSelectedIndexesListener(new ScrollToSelectedListener());
     tableModel.filterModel().addChangeListener(getTableHeader()::repaint);
     tableModel.searchModel().addCurrentResultListener(rowColumn -> repaint());
     tableModel.sortModel().addSortingChangedListener(columnIdentifier -> getTableHeader().repaint());
+    addMouseListener(new FilteredTableMouseListener());
     addKeyListener(new MoveResizeColumnKeyListener());
     KeyEvents.builder(VK_C)
             .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)

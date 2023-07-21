@@ -9318,3 +9318,4 @@
   TableSelectionModel.selectedItem() returning optional added
   Components.gridLayoutPanel() and flexibleGridLayoutPanel() added
   EntityPanelBuilder.InsertEntityCommand bug fixed, EntityComboBoxOnInsert and EntitySearchFieldOnInsert functionality was switched, causing ClassCastException
+  FilteredTable, column configuration refactored, initializeTableHeader() renamed configureTableHeader()
