@@ -553,17 +553,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
       @Override
       public void onEvent(List<Entity> inserted) {
-        ((EntitySearchField) component).model().setSelectedEntities(inserted);
+        EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
+        Entity item = inserted.get(0);
+        comboBoxModel.addItem(item);
+        comboBoxModel.setSelectedItem(item);
       }
     }
 
     private class EntitySearchFieldOnInsert implements EventDataListener<List<Entity>> {
       @Override
       public void onEvent(List<Entity> inserted) {
-        EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
-        Entity item = inserted.get(0);
-        comboBoxModel.addItem(item);
-        comboBoxModel.setSelectedItem(item);
+        ((EntitySearchField) component).model().setSelectedEntities(inserted);
       }
     }
   }

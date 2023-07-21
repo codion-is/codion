@@ -9317,3 +9317,4 @@
   DefaultStringFactory now outputs attribute values in their original order
   TableSelectionModel.selectedItem() returning optional added
   Components.gridLayoutPanel() and flexibleGridLayoutPanel() added
+  EntityPanelBuilder.InsertEntityCommand bug fixed, EntityComboBoxOnInsert and EntitySearchFieldOnInsert functionality was switched, causing ClassCastException
