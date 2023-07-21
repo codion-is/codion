@@ -4,7 +4,6 @@ import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.CountryEditModel;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
@@ -15,8 +14,7 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 
-import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.label;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
@@ -68,7 +66,7 @@ final class CountryEditPanel extends EntityEditPanel {
             .createInsertControl(capitalComboBox));
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = editModel();
-    NumberField<Double> averageCityPopulationField = Components.doubleField()
+    NumberField<Double> averageCityPopulationField = doubleField()
             .linkedValueObserver(editModel.averageCityPopulationObserver())
             .maximumFractionDigits(2)
             .groupingUsed(true)

@@ -1,6 +1,5 @@
 package is.codion.framework.demos.world.ui;
 
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -12,6 +11,8 @@ import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.tabbedPane;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.awt.event.KeyEvent.VK_2;
@@ -28,11 +29,11 @@ abstract class ChartTablePanel extends EntityTablePanel {
 
   @Override
   protected final void layoutPanel(JPanel tablePanel, JPanel southPanel) {
-    JPanel tableViewPanel = Components.borderLayoutPanel()
+    JPanel tableViewPanel = borderLayoutPanel()
             .centerComponent(tablePanel)
             .southComponent(southPanel)
             .build();
-    JTabbedPane tabbedPane = Components.tabbedPane()
+    JTabbedPane tabbedPane = tabbedPane()
             .tabBuilder("Table", tableViewPanel)
             .mnemonic(VK_1)
             .add()

@@ -8,7 +8,6 @@ import is.codion.framework.demos.world.model.CityEditModel;
 import is.codion.framework.demos.world.model.CityTableModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -24,6 +23,7 @@ import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Collection;
 
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
@@ -56,14 +56,14 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(City.DISTRICT);
     createTextField(City.POPULATION);
 
-    JPanel inputPanel = Components.gridLayoutPanel(0, 1)
+    JPanel inputPanel = gridLayoutPanel(0, 1)
             .add(createInputPanel(City.COUNTRY_FK))
             .add(createInputPanel(City.NAME))
             .add(createInputPanel(City.DISTRICT))
             .add(createInputPanel(City.POPULATION))
             .build();
 
-    JPanel centerPanel = Components.gridLayoutPanel(1, 0)
+    JPanel centerPanel = gridLayoutPanel(1, 0)
             .add(inputPanel)
             .build();
     if (mapKit != null) {
