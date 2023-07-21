@@ -30,11 +30,13 @@ public class DefaultFilteredTableColumnModelTest {
     assertEquals(1, testModel.getColumnCount());
     assertNotNull(testModel.column(0));
 
-    testModel.setColumnVisible(0, false);
+    assertTrue(testModel.setColumnVisible(0, false));
+    assertFalse(testModel.setColumnVisible(0, false));
     assertFalse(testModel.isColumnVisible(0));
     assertEquals(1, hidden.size());
     assertEquals(1, testModel.hiddenColumns().size());
-    testModel.setColumnVisible(0, true);
+    assertTrue(testModel.setColumnVisible(0, true));
+    assertFalse(testModel.setColumnVisible(0, true));
     assertTrue(testModel.isColumnVisible(0));
     assertEquals(1, shown.size());
 

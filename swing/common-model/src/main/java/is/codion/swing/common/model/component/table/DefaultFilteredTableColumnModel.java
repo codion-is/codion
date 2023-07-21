@@ -15,12 +15,12 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.unmodifiableCollection;
@@ -42,13 +42,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
-    tableColumns.forEach(column -> {
-      C identifier = column.getIdentifier();
-      columns.put(identifier, column);
-      columnIdentifiers.put(column.getModelIndex(), identifier);
-      tableColumnModel.addColumn(column);
-      visibleStates.put(identifier, createVisibleState(identifier));
-    });
+    tableColumns.forEach(this::initializeColumn);
   }
 
   @Override
@@ -272,6 +266,14 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     columnShownEvent.removeDataListener(listener);
   }
 
+  private void initializeColumn(FilteredTableColumn<C> column) {
+    C identifier = column.getIdentifier();
+    columns.put(identifier, column);
+    columnIdentifiers.put(column.getModelIndex(), identifier);
+    tableColumnModel.addColumn(column);
+    visibleStates.put(identifier, createVisibleState(identifier));
+  }
+
   private State createVisibleState(C identifier) {
     State visibleState = State.state(true);
     visibleState.addValidator(value -> checkIfLocked());
@@ -289,31 +291,23 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     }
   }
 
-  private boolean showColumn(C columnIdentifier) {
+  private void showColumn(C columnIdentifier) {
     HiddenColumn column = hiddenColumns.get(columnIdentifier);
     if (column != null) {
       hiddenColumns.remove(columnIdentifier);
       tableColumnModel.addColumn(column.column);
       tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
       columnShownEvent.onEvent(columnIdentifier);
-
-      return true;
     }
-
-    return false;
   }
 
-  private boolean hideColumn(C columnIdentifier) {
+  private void hideColumn(C columnIdentifier) {
     if (!hiddenColumns.containsKey(columnIdentifier)) {
       HiddenColumn hiddenColumn = new HiddenColumn(column(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
       columnHiddenEvent.onEvent(columnIdentifier);
-
-      return true;
     }
-
-    return false;
   }
 
   private void checkIfLocked() {
@@ -333,12 +327,9 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
     }
 
     private Set<FilteredTableColumn<C>> columnsToTheRightOf(FilteredTableColumn<C> column) {
-      Set<FilteredTableColumn<C>> set = new HashSet<>();
-      for (int i = tableColumnModel.getColumnIndex(column.getIdentifier()) + 1; i < tableColumnModel.getColumnCount(); i++) {
-        set.add((FilteredTableColumn<C>) tableColumnModel.getColumn(i));
-      }
-
-      return set;
+      return IntStream.range(tableColumnModel.getColumnIndex(column.getIdentifier()) + 1, tableColumnModel.getColumnCount())
+              .mapToObj(columnIndex -> (FilteredTableColumn<C>) tableColumnModel.getColumn(columnIndex))
+              .collect(Collectors.toSet());
     }
 
     private int indexWhenShown() {
