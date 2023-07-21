@@ -4,13 +4,12 @@
 package is.codion.framework.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-public interface Vet extends Entity {
-  EntityType TYPE = DOMAIN.entityType("petclinic.vet", Vet.class);
+public interface Vet {
+  EntityType TYPE = DOMAIN.entityType("petclinic.vet");
 
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");

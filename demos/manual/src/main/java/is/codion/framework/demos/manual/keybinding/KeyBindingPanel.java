@@ -25,7 +25,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 /**
  * A utility for displaying component action/input maps for installed look and feels.<br>
@@ -49,7 +48,7 @@ public final class KeyBindingPanel extends JPanel {
             .preferredWidth(200)
             .build();
     setBorder(createEmptyBorder());
-    add(panel(flexibleGridLayout(1, 4))
+    add(flexibleGridLayoutPanel(1, 4)
             .add(label("Look & Feel")
                     .horizontalAlignment(SwingConstants.RIGHT)
                     .preferredWidth(100)

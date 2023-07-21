@@ -5,10 +5,12 @@ package is.codion.framework.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.DomainType;
 
+import static is.codion.framework.domain.DomainType.domainType;
+
 /**
  * The domain model type.
  */
 public interface Petclinic {
 
-  DomainType DOMAIN = DomainType.domainType("Petclinic");
+  DomainType DOMAIN = domainType("Petclinic");
 }

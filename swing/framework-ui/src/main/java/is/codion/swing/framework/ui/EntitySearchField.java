@@ -76,7 +76,6 @@ import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.menu;
 import static is.codion.swing.common.ui.component.text.TextComponents.selectAllOnFocusGained;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.InputEvent.SHIFT_DOWN_MASK;
 import static java.awt.event.KeyEvent.*;
@@ -378,7 +377,7 @@ public final class EntitySearchField extends HintTextField {
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
-      JPanel generalSettingsPanel = Components.panel(gridLayout(2, 1))
+      JPanel generalSettingsPanel = Components.gridLayoutPanel(2, 1)
               .border(BorderFactory.createTitledBorder(""))
               .add(Components.checkBox(searchModel.singleSelectionState())
                       .text(MESSAGES.getString("single_selection"))
@@ -403,7 +402,7 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
-      return Components.panel(gridLayout(3, 1))
+      return Components.gridLayoutPanel(3, 1)
               .add(Components.checkBox(settings.caseSensitiveState())
                       .text(MESSAGES.getString("case_sensitive"))
                       .build())

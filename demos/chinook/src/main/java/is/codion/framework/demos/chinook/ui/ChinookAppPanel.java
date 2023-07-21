@@ -8,7 +8,6 @@ import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -16,7 +15,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
@@ -38,6 +36,8 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.radioButton;
 import static javax.swing.JOptionPane.showMessageDialog;
 
 public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppModel> {
@@ -69,40 +69,49 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
   @Override
   protected List<EntityPanel.Builder> createSupportEntityPanelBuilders() {
-    EntityPanel.Builder trackBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(Track.TYPE))
+    EntityPanel.Builder trackPanelBuilder =
+            EntityPanel.builder(Track.TYPE)
                     .tablePanelClass(TrackTablePanel.class);
 
-    EntityPanel.Builder customerBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(Customer.TYPE))
+    SwingEntityModel.Builder genreModelBuilder =
+            SwingEntityModel.builder(Genre.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE));
+
+    EntityPanel.Builder genrePanelBuilder =
+            EntityPanel.builder(genreModelBuilder)
+                    .editPanelClass(GenreEditPanel.class)
+                    .detailPanelBuilder(trackPanelBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+
+    SwingEntityModel.Builder mediaTypeModelBuilder =
+            SwingEntityModel.builder(MediaType.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Track.TYPE));
+
+    EntityPanel.Builder mediaTypePanelBuilder =
+            EntityPanel.builder(mediaTypeModelBuilder)
+                    .editPanelClass(MediaTypeEditPanel.class)
+                    .detailPanelBuilder(trackPanelBuilder)
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+
+    EntityPanel.Builder customerPanelBuilder =
+            EntityPanel.builder(Customer.TYPE)
                     .editPanelClass(CustomerEditPanel.class)
                     .tablePanelClass(CustomerTablePanel.class);
 
-    EntityPanel.Builder genreBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(Genre.TYPE)
-                            .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
-                    .editPanelClass(GenreEditPanel.class)
-                    .detailPanelBuilder(trackBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+    SwingEntityModel.Builder employeeModelBuilder =
+            SwingEntityModel.builder(Employee.TYPE)
+                    .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
+                    .tableModelClass(EmployeeTableModel.class);
 
-    EntityPanel.Builder mediaTypeBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(MediaType.TYPE)
-                            .detailModelBuilder(SwingEntityModel.builder(Track.TYPE)))
-                    .editPanelClass(MediaTypeEditPanel.class)
-                    .detailPanelBuilder(trackBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
-
-    EntityPanel.Builder employeeBuilder =
-            EntityPanel.builder(SwingEntityModel.builder(Employee.TYPE)
-                            .detailModelBuilder(SwingEntityModel.builder(Customer.TYPE))
-                            .tableModelClass(EmployeeTableModel.class))
+    EntityPanel.Builder employeePanelBuilder =
+            EntityPanel.builder(employeeModelBuilder)
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
-                    .detailPanelBuilder(customerBuilder)
+                    .detailPanelBuilder(customerPanelBuilder)
                     .detailPanelState(EntityPanel.PanelState.HIDDEN)
                     .preferredSize(new Dimension(1000, 500));
 
-    return Arrays.asList(genreBuilder, mediaTypeBuilder, employeeBuilder);
+    return Arrays.asList(genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);
   }
 
   @Override
@@ -115,14 +124,14 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
 
   private void selectLanguage() {
     String currentLanguage = UserPreferences.getUserPreference(LANGUAGE_PREFERENCES_KEY, Locale.getDefault().getLanguage());
-    JPanel languagePanel = new JPanel(Layouts.gridLayout(2, 1));
+    JPanel languagePanel = gridLayoutPanel(2, 1).build();
     ButtonGroup buttonGroup = new ButtonGroup();
-    Components.radioButton()
+    radioButton()
             .text("English")
             .selected(currentLanguage.equals(LANGUAGE_EN))
             .buttonGroup(buttonGroup)
             .build(languagePanel::add);
-    JRadioButton isButton = Components.radioButton()
+    JRadioButton isButton = radioButton()
             .text("Íslenska")
             .selected(currentLanguage.equals(LANGUAGE_IS))
             .buttonGroup(buttonGroup)

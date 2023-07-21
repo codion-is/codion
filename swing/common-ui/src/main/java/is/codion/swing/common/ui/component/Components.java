@@ -71,6 +71,8 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
+import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -1013,6 +1015,30 @@ public final class Components {
    */
   public static BorderLayoutPanelBuilder borderLayoutPanel(BorderLayout layout) {
     return BorderLayoutPanelBuilder.builder(layout);
+  }
+
+  /**
+   * Creates a new {@link PanelBuilder} instance using a new {@link java.awt.GridLayout}
+   * with the default horizontal and vertical gap.
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @return a grid layout panel builder
+   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   */
+  public static PanelBuilder gridLayoutPanel(int rows, int columns) {
+    return panel(gridLayout(rows, columns));
+  }
+
+  /**
+   * Creates a new {@link PanelBuilder} instance using a new
+   * {@link is.codion.swing.common.ui.layout.FlexibleGridLayout} with the default horizontal and vertical gap.
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @return a flexible grid layout panel builder
+   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   */
+  public static PanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
+    return panel(flexibleGridLayout(rows, columns));
   }
 
   /**

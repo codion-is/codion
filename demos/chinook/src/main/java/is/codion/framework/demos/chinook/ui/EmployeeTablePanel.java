@@ -4,7 +4,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
@@ -13,6 +12,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import java.awt.BorderLayout;
 
+import static is.codion.swing.common.ui.component.Components.splitPane;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static is.codion.swing.framework.ui.EntityTree.entityTree;
 
@@ -26,7 +26,7 @@ public final class EmployeeTablePanel extends EntityTablePanel {
   protected void layoutPanel(JPanel tablePanel, JPanel southPanel) {
     setLayout(borderLayout());
     EmployeeTableModel employeeTableModel = tableModel();
-    JSplitPane splitPane = Components.splitPane()
+    JSplitPane splitPane = splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)

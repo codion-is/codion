@@ -13,9 +13,9 @@ import java.util.Collection;
 import java.util.function.Supplier;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
-import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class CustomerEditPanel extends EntityEditPanel {
 
@@ -50,17 +50,17 @@ public final class CustomerEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Customer.SUPPORTREP_FK)
             .preferredWidth(120);
 
-    JPanel firstLastNamePanel = panel(gridLayout(1, 2))
+    JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
             .add(createInputPanel(Customer.FIRSTNAME))
             .add(createInputPanel(Customer.LASTNAME))
             .build();
 
-    JPanel cityPostalCodePanel = panel(flexibleGridLayout(1, 2))
+    JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Customer.CITY))
             .add(createInputPanel(Customer.POSTALCODE))
             .build();
 
-    JPanel stateCountryPanel = panel(flexibleGridLayout(1, 2))
+    JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Customer.STATE))
             .add(createInputPanel(Customer.COUNTRY))
             .build();

@@ -1,7 +1,6 @@
 package is.codion.framework.demos.chinook.ui;
 
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.plugin.imagepanel.NavigableImagePanel;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
@@ -11,6 +10,7 @@ import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 
 import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 
@@ -31,15 +31,14 @@ public final class AlbumTablePanel extends EntityTablePanel {
             .build();
   }
 
-  private void viewSelectedCover() throws IOException {
-    Entity selectedAlbum = tableModel().selectionModel().getSelectedItem();
-    if (selectedAlbum != null && selectedAlbum.isNotNull(Album.COVER)) {
-      displayImage(selectedAlbum.get(Album.TITLE), selectedAlbum.get(Album.COVER));
-    }
+  private void viewSelectedCover() {
+    tableModel().selectionModel().selectedItem()
+            .filter(album -> album.isNotNull(Album.COVER))
+            .ifPresent(album -> displayImage(album.get(Album.TITLE), album.get(Album.COVER)));
   }
 
-  private void displayImage(String title, byte[] imageBytes) throws IOException {
-    imagePanel.setImage(ImageIO.read(new ByteArrayInputStream(imageBytes)));
+  private void displayImage(String title, byte[] imageBytes) {
+    imagePanel.setImage(readImage(imageBytes));
     if (imagePanel.isShowing()) {
       Utilities.parentDialog(imagePanel).toFront();
     }
@@ -50,6 +49,15 @@ public final class AlbumTablePanel extends EntityTablePanel {
               .modal(false)
               .onClosed(dialog -> imagePanel.setImage(null))
               .show();
+    }
+  }
+
+  private static BufferedImage readImage(byte[] bytes) {
+    try {
+      return ImageIO.read(new ByteArrayInputStream(bytes));
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
     }
   }
 }

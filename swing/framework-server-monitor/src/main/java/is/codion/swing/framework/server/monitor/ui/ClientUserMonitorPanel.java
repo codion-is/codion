@@ -26,7 +26,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -83,7 +82,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     JScrollPane userScroller = scrollPane(userTable)
             .border(createTitledBorder("Users"))
             .build();
-    JPanel clientUserBase = panel(gridLayout(2, 1))
+    JPanel clientUserBase = gridLayoutPanel(2, 1)
             .add(clientTypeScroller)
             .add(userScroller)
             .build();

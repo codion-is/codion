@@ -283,6 +283,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             columnProperty(Invoice.BILLINGPOSTALCODE)
                     .maximumLength(10),
             columnProperty(Invoice.TOTAL)
+                    .nullable(false)
                     .maximumFractionDigits(2),
             subqueryProperty(Invoice.CALCULATED_TOTAL,
                     "select sum(unitprice * quantity) " +

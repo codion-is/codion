@@ -5,6 +5,7 @@ package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
+import is.codion.framework.demos.petclinic.domain.PetclinicImpl;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
@@ -13,6 +14,7 @@ import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
 import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.demos.petclinic.model.PetclinicAppModel;
+import is.codion.framework.demos.petclinic.model.VetSpecialtyEditModel;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
@@ -28,6 +30,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.util.Arrays.asList;
+import static java.util.Collections.singletonList;
 
 public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicAppModel> {
 
@@ -53,17 +56,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
     ownersPanel.addDetailPanel(petsPanel);
     petsPanel.addDetailPanel(visitsPanel);
 
-    SwingEntityModel vetsModel = applicationModel().entityModel(Vet.TYPE);
-    SwingEntityModel vetSpecialtiesModel = vetsModel.detailModel(VetSpecialty.TYPE);
-
-    EntityPanel vetsPanel = new EntityPanel(vetsModel,
-            new VetEditPanel(vetsModel.editModel()));
-    EntityPanel vetSpecialtiesPanel = new EntityPanel(vetSpecialtiesModel,
-            new VetSpecialtyEditPanel(vetSpecialtiesModel.editModel()));
-
-    vetsPanel.addDetailPanel(vetSpecialtiesPanel);
-
-    return asList(ownersPanel, vetsPanel);
+    return singletonList(ownersPanel);
   }
 
   @Override
@@ -72,12 +65,29 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             EntityPanel.builder(PetType.TYPE)
                     .editPanelClass(PetTypeEditPanel.class)
                     .caption("Pet types");
-    EntityPanel.Builder specialtiesPanelBuilder =
+    EntityPanel.Builder specialtyPanelBuilder =
             EntityPanel.builder(Specialty.TYPE)
                     .editPanelClass(SpecialtyEditPanel.class)
                     .caption("Specialties");
 
-    return asList(petTypePanelBuilder, specialtiesPanelBuilder);
+    SwingEntityModel.Builder vetSpecialtyModelBuilder =
+            SwingEntityModel.builder(VetSpecialty.TYPE)
+                    .editModelClass(VetSpecialtyEditModel.class);
+    SwingEntityModel.Builder vetModelBuilder =
+            SwingEntityModel.builder(Vet.TYPE)
+                    .detailModelBuilder(vetSpecialtyModelBuilder);
+
+    EntityPanel.Builder vetSpecialtyPanelBuilder =
+            EntityPanel.builder(vetSpecialtyModelBuilder)
+                    .editPanelClass(VetSpecialtyEditPanel.class)
+                    .caption("Specialty");
+    EntityPanel.Builder vetPanelBuilder =
+            EntityPanel.builder(vetModelBuilder)
+                    .editPanelClass(VetEditPanel.class)
+                    .detailPanelBuilder(vetSpecialtyPanelBuilder)
+                    .caption("Vets");
+
+    return asList(petTypePanelBuilder, specialtyPanelBuilder, vetPanelBuilder);
   }
 
   public static void main(String[] args) throws CancelException {
@@ -89,7 +99,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
-            .domainClassName("is.codion.framework.demos.petclinic.domain.PetclinicImpl")
+            .domainClassName(PetclinicImpl.class.getName())
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))

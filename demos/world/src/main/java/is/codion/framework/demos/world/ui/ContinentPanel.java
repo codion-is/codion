@@ -2,7 +2,6 @@ package is.codion.framework.demos.world.ui;
 
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.demos.world.model.ContinentModel;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
@@ -18,8 +17,8 @@ import static is.codion.framework.demos.world.ui.ChartPanels.createBarChartPanel
 import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel;
 import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.awt.event.KeyEvent.VK_2;
 
@@ -53,13 +52,13 @@ final class ContinentPanel extends EntityPanel {
     surfaceAreaChartPanel.setPreferredSize(pieChartSize);
     gnpChartPanel.setPreferredSize(pieChartSize);
 
-    JPanel pieChartChartPanel = Components.panel(gridLayout(1, 3))
+    JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
             .add(populationChartPanel)
             .add(surfaceAreaChartPanel)
             .add(gnpChartPanel)
             .build();
 
-    JPanel chartPanel = Components.borderLayoutPanel()
+    JPanel chartPanel = borderLayoutPanel()
             .northComponent(lifeExpectancyChartPanel)
             .centerComponent(pieChartChartPanel)
             .build();
@@ -67,7 +66,7 @@ final class ContinentPanel extends EntityPanel {
     countryPanel.initialize();
     countryPanel.setPreferredSize(new Dimension(countryPanel.getPreferredSize().width, 100));
 
-    JTabbedPane tabbedPane = Components.tabbedPane()
+    JTabbedPane tabbedPane = tabbedPane()
             .tabBuilder("Charts", chartPanel)
             .mnemonic(VK_1)
             .add()

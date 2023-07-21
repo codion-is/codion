@@ -28,8 +28,8 @@ import java.util.ResourceBundle;
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class RandomPlaylistParametersPanel extends JPanel {
 
@@ -43,13 +43,13 @@ final class RandomPlaylistParametersPanel extends JPanel {
 
   RandomPlaylistParametersPanel(EntityConnectionProvider connectionProvider) {
     super(borderLayout());
-    this.playlistNameField = Components.textField(model.playlistNameValue)
+    this.playlistNameField = textField(model.playlistNameValue)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
             .maximumLength(120)
             .columns(10)
             .build();
-    this.noOfTracksField = Components.integerField(model.noOfTracksValue)
+    this.noOfTracksField = integerField(model.noOfTracksValue)
             .valueRange(1, 5000)
             .transferFocusOnEnter(true)
             .selectAllOnFocusGained(true)
@@ -59,17 +59,17 @@ final class RandomPlaylistParametersPanel extends JPanel {
             .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
             .visibleRowCount(5)
             .build();
-    Components.panel(gridLayout(1, 2))
+    gridLayoutPanel(1, 2)
             .add(new JLabel(BUNDLE.getString("playlist_name")))
             .add(new JLabel(BUNDLE.getString("no_of_tracks")))
             .build(panel -> add(panel, BorderLayout.NORTH));
-    Components.panel(gridLayout(1, 2))
+    gridLayoutPanel(1, 2)
             .add(playlistNameField)
             .add(noOfTracksField)
             .build(panel -> add(panel, BorderLayout.CENTER));
-    Components.panel(borderLayout())
-            .add(new JLabel(BUNDLE.getString("genres")), BorderLayout.NORTH)
-            .add(new JScrollPane(genreList), BorderLayout.CENTER)
+    borderLayoutPanel()
+            .northComponent(new JLabel(BUNDLE.getString("genres")))
+            .centerComponent(new JScrollPane(genreList))
             .build(panel -> add(panel, BorderLayout.SOUTH));
   }
 

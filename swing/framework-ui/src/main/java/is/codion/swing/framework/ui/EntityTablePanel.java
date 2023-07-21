@@ -1608,11 +1608,9 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void showEntityMenu() {
-    Entity selected = tableModel.selectionModel().getSelectedItem();
-    if (selected != null) {
-      Point location = popupLocation(table);
-      new EntityPopupMenu(selected.copy(), tableModel.connectionProvider().connection()).show(table, location.x, location.y);
-    }
+    Point location = popupLocation(table);
+    tableModel.selectionModel().selectedItem().ifPresent(selected ->
+            new EntityPopupMenu(selected.copy(), tableModel.connectionProvider().connection()).show(table, location.x, location.y));
   }
 
   private void onConditionChanged() {

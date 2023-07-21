@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -55,7 +54,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   }
 
   private JPanel chartPanel() {
-    JPanel chartConfig = panel(flexibleGridLayout(1, 3))
+    JPanel chartConfig = flexibleGridLayoutPanel(1, 3)
             .border(createTitledBorder("Charts"))
             .add(new JLabel("Update interval (s)"))
             .add(integerSpinner(model.updateIntervalValue())

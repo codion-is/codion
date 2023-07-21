@@ -20,8 +20,9 @@ import java.awt.Dimension;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Customer;
 import static is.codion.framework.demos.chinook.domain.Chinook.Invoice;
-import static is.codion.swing.common.ui.component.Components.panel;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
 import static javax.swing.SortOrder.ASCENDING;
 
 public final class InvoiceEditPanel extends EntityEditPanel {
@@ -63,27 +64,27 @@ public final class InvoiceEditPanel extends EntityEditPanel {
             .columns(8)
             .selectAllOnFocusGained(true);
 
-    JPanel customerDatePanel = panel(flexibleGridLayout(1, 2))
+    JPanel customerDatePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Invoice.CUSTOMER_FK))
             .add(createInputPanel(Invoice.DATE))
             .build();
 
-    JPanel cityPostalCodePanel = panel(flexibleGridLayout(1, 2))
+    JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Invoice.BILLINGCITY))
             .add(createInputPanel(Invoice.BILLINGPOSTALCODE))
             .build();
 
-    JPanel stateCountryPanel = panel(flexibleGridLayout(1, 2))
+    JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Invoice.BILLINGSTATE))
             .add(createInputPanel(Invoice.BILLINGCOUNTRY))
             .build();
 
-    JPanel cityPostalCodeStateCountryPanel = panel(gridLayout(1, 2))
+    JPanel cityPostalCodeStateCountryPanel = gridLayoutPanel(1, 2)
             .add(cityPostalCodePanel)
             .add(stateCountryPanel)
             .build();
 
-    JPanel centerPanel = panel(gridLayout(4, 1))
+    JPanel centerPanel = gridLayoutPanel(4, 1)
             .add(customerDatePanel)
             .add(createInputPanel(Invoice.BILLINGADDRESS))
             .add(cityPostalCodeStateCountryPanel)

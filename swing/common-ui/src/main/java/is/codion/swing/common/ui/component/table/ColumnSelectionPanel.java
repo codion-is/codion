@@ -31,7 +31,6 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
 import static javax.swing.BorderFactory.createEmptyBorder;
@@ -118,7 +117,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
             .enable(selectAllBox)
             .enable(selectNoneBox);
 
-    return Components.panel(gridLayout(2, 1))
+    return Components.gridLayoutPanel(2, 1)
             .addAll(selectAllBox, selectNoneBox)
             .border(createEmptyBorder(insets.top, insets.left, insets.bottom, insets.right))
             .build();
@@ -133,7 +132,7 @@ final class ColumnSelectionPanel<C> extends JPanel {
   }
 
   private JScrollPane createCheckBoxPanel() {
-    JPanel northPanel = Components.panel(gridLayout(0, 1))
+    JPanel northPanel = Components.gridLayoutPanel(0, 1)
             .addAll(checkBoxes)
             .build();
     KeyEvents.Builder upEventBuilder = KeyEvents.builder(VK_UP)

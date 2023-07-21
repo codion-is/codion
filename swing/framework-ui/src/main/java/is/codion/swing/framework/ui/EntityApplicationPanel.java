@@ -91,7 +91,6 @@ import java.util.function.Supplier;
 import static is.codion.common.model.UserPreferences.getUserPreference;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -648,7 +647,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel createAboutPanel() {
-    PanelBuilder versionMemoryPanel = panel(gridLayout(0, 2))
+    PanelBuilder versionMemoryPanel = gridLayoutPanel(0, 2)
             .border(createEmptyBorder());
     applicationModel().version().ifPresent(version -> versionMemoryPanel
             .add(new JLabel(resourceBundle.getString(APPLICATION_VERSION) + ":"))

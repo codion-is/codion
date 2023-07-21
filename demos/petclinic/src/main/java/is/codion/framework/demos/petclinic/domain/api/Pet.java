@@ -4,7 +4,6 @@
 package is.codion.framework.demos.petclinic.domain.api;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -12,8 +11,8 @@ import java.time.LocalDate;
 
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 
-public interface Pet extends Entity {
-  EntityType TYPE = DOMAIN.entityType("petclinic.pet", Pet.class);
+public interface Pet {
+  EntityType TYPE = DOMAIN.entityType("petclinic.pet");
 
   Attribute<Integer> ID = TYPE.integerAttribute("id");
   Attribute<String> NAME = TYPE.stringAttribute("name");
