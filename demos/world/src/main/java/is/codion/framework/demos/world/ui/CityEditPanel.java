@@ -25,7 +25,6 @@ import java.io.IOException;
 import java.util.Collection;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toSet;
 
@@ -57,14 +56,14 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(City.DISTRICT);
     createTextField(City.POPULATION);
 
-    JPanel inputPanel = Components.panel(gridLayout(0, 1))
+    JPanel inputPanel = Components.gridLayoutPanel(0, 1)
             .add(createInputPanel(City.COUNTRY_FK))
             .add(createInputPanel(City.NAME))
             .add(createInputPanel(City.DISTRICT))
             .add(createInputPanel(City.POPULATION))
             .build();
 
-    JPanel centerPanel = Components.panel(gridLayout(1, 0))
+    JPanel centerPanel = Components.gridLayoutPanel(1, 0)
             .add(inputPanel)
             .build();
     if (mapKit != null) {

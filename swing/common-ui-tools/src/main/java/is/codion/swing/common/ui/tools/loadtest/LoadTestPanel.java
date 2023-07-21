@@ -139,7 +139,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private void initializeUI() {
     setLayout(borderLayout());
     add(borderLayoutPanel()
-            .northComponent(panel(flexibleGridLayout(5, 1))
+            .northComponent(flexibleGridLayoutPanel(5, 1)
                     .add(createApplicationPanel())
                     .add(createActivityPanel())
                     .add(scenarioPanel)
@@ -180,7 +180,7 @@ public final class LoadTestPanel<T> extends JPanel {
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
 
-    return panel(flexibleGridLayout(2, 2))
+    return flexibleGridLayoutPanel(2, 2)
             .border(createTitledBorder("User"))
             .add(new JLabel("Username"))
             .add(usernameField)
@@ -193,7 +193,7 @@ public final class LoadTestPanel<T> extends JPanel {
     return borderLayoutPanel()
             .border(createTitledBorder("Applications"))
             .northComponent(borderLayoutPanel()
-                    .westComponent(panel(flexibleGridLayout(1, 2))
+                    .westComponent(flexibleGridLayoutPanel(1, 2)
                             .add(new JLabel("Batch size"))
                             .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
                                     .editable(false)
@@ -227,7 +227,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createChartControlPanel() {
-    return panel(flexibleGridLayout(1, 2))
+    return flexibleGridLayoutPanel(1, 2)
             .border(createTitledBorder("Charts"))
             .add(checkBox(loadTestModel.collectChartDataState())
                     .text("Collect chart data")
@@ -306,7 +306,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createActivityPanel() {
-    return panel(flexibleGridLayout(4, 2))
+    return flexibleGridLayoutPanel(4, 2)
             .add(new JLabel("Max. think time", SwingConstants.CENTER))
             .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
                     .stepSize(SPINNER_STEP_SIZE)

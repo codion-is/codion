@@ -42,7 +42,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelComboBox.lookAndFeelComboBox;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
 import static java.awt.event.KeyEvent.VK_SPACE;
 import static java.util.Arrays.asList;
@@ -301,7 +300,7 @@ public final class ApplicationPanel extends JPanel {
     add(settingsPanel, BorderLayout.NORTH);
     add(inputPanel, BorderLayout.CENTER);
 
-    panel(flexibleGridLayout(2, 1))
+    flexibleGridLayoutPanel(2, 1)
             .add(textField()
                     .columns(20)
                     .editable(false)

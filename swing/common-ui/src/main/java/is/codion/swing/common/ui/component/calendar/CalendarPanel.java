@@ -346,7 +346,7 @@ public final class CalendarPanel extends JPanel {
     JSpinner hourSpinner = createHourSpinner();
     JSpinner minuteSpinner = createMinuteSpinner();
 
-    PanelBuilder yearMonthHourMinutePanel = panel(flexibleGridLayout(1, 0))
+    PanelBuilder yearMonthHourMinutePanel = flexibleGridLayoutPanel(1, 0)
             .add(monthSpinner)
             .add(yearSpinner);
     if (includeTime) {
@@ -585,7 +585,7 @@ public final class CalendarPanel extends JPanel {
   }
 
   private static JPanel createDayHeaderPanel() {
-    return panel(gridLayout(1, DAYS_IN_WEEK))
+    return gridLayoutPanel(1, DAYS_IN_WEEK)
             .add(createDayLabel(DayOfWeek.MONDAY))
             .add(createDayLabel(DayOfWeek.TUESDAY))
             .add(createDayLabel(DayOfWeek.WEDNESDAY))

@@ -16,7 +16,6 @@ import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldHeight;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
 public final class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -46,7 +45,7 @@ public final class InvoiceLineEditPanel extends EntityEditPanel {
             .preferredHeight(preferredTextFieldHeight())
             .build();
 
-    JPanel eastPanel = Components.panel(flexibleGridLayout(1, 2))
+    JPanel eastPanel = Components.flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(new JLabel(" "), updateToolBar))
             .add(createInputPanel(new JLabel(" "), tableSearchField))
             .build();

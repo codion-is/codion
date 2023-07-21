@@ -9,9 +9,9 @@ import is.codion.swing.framework.ui.EntityEditPanel;
 import javax.swing.JPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Employee;
-import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class EmployeeEditPanel extends EntityEditPanel {
 
@@ -50,22 +50,22 @@ public final class EmployeeEditPanel extends EntityEditPanel {
     createForeignKeyComboBox(Employee.REPORTSTO_FK)
             .preferredWidth(120);
 
-    JPanel firstLastNamePanel = panel(gridLayout(1, 2))
+    JPanel firstLastNamePanel = gridLayoutPanel(1, 2)
             .add(createInputPanel(Employee.FIRSTNAME))
             .add(createInputPanel(Employee.LASTNAME))
             .build();
 
-    JPanel birthHireDatePanel = panel(gridLayout(1, 2))
+    JPanel birthHireDatePanel = gridLayoutPanel(1, 2)
             .add(createInputPanel(Employee.BIRTHDATE))
             .add(createInputPanel(Employee.HIREDATE))
             .build();
 
-    JPanel cityPostalCodePanel = panel(flexibleGridLayout(1, 2))
+    JPanel cityPostalCodePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Employee.CITY))
             .add(createInputPanel(Employee.POSTALCODE))
             .build();
 
-    JPanel stateCountryPanel = panel(flexibleGridLayout(1, 2))
+    JPanel stateCountryPanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Employee.STATE))
             .add(createInputPanel(Employee.COUNTRY))
             .build();

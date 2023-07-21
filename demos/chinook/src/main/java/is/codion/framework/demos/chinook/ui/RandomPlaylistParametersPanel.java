@@ -29,7 +29,6 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 final class RandomPlaylistParametersPanel extends JPanel {
 
@@ -59,11 +58,11 @@ final class RandomPlaylistParametersPanel extends JPanel {
             .selectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
             .visibleRowCount(5)
             .build();
-    Components.panel(gridLayout(1, 2))
+    Components.gridLayoutPanel(1, 2)
             .add(new JLabel(BUNDLE.getString("playlist_name")))
             .add(new JLabel(BUNDLE.getString("no_of_tracks")))
             .build(panel -> add(panel, BorderLayout.NORTH));
-    Components.panel(gridLayout(1, 2))
+    Components.gridLayoutPanel(1, 2)
             .add(playlistNameField)
             .add(noOfTracksField)
             .build(panel -> add(panel, BorderLayout.CENTER));

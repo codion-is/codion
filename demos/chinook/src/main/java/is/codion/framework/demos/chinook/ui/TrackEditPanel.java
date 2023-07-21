@@ -15,7 +15,7 @@ import javax.swing.JPanel;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
-import static is.codion.swing.common.ui.component.Components.panel;
+import static is.codion.swing.common.ui.component.Components.flexibleGridLayoutPanel;
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
 
@@ -60,12 +60,12 @@ public final class TrackEditPanel extends EntityEditPanel {
 
     JPanel mediaTypePanel = createEastButtonPanel(mediaTypeBox, newMediaTypeControl, editMediaTypeControl);
     JPanel genrePanel = createEastButtonPanel(genreBox, newGenreControl, editGenreControl);
-    JPanel genreMediaTypePanel = panel(flexibleGridLayout(1, 2))
+    JPanel genreMediaTypePanel = flexibleGridLayoutPanel(1, 2)
             .add(createInputPanel(Track.GENRE_FK, genrePanel))
             .add(createInputPanel(Track.MEDIATYPE_FK, mediaTypePanel))
             .build();
 
-    JPanel durationPanel = panel(flexibleGridLayout(1, 3))
+    JPanel durationPanel = flexibleGridLayoutPanel(1, 3)
             .add(createInputPanel(Track.BYTES))
             .add(createInputPanel(Track.MILLISECONDS))
             .add(minutesSecondsValue.component())

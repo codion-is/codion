@@ -33,7 +33,7 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -169,23 +169,23 @@ public final class ServerMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel controlPanel = panel(flexibleGridLayout(1, 2))
+    JPanel controlPanel = flexibleGridLayoutPanel(1, 2)
             .border(createTitledBorder("Charts"))
             .add(chartsPanel)
             .add(zoomPanel)
             .build();
 
-    JPanel chartPanelLeft = panel(gridLayout(3, 1))
+    JPanel chartPanelLeft = gridLayoutPanel(3, 1)
             .add(requestsPerSecondChartPanel)
             .add(connectionCountChartPanel)
             .add(systemLoadChartPanel)
             .build();
-    JPanel chartPanelRight = panel(gridLayout(3, 1))
+    JPanel chartPanelRight = gridLayoutPanel(3, 1)
             .add(threadCountChartPanel)
             .add(memoryUsageChartPanel)
             .add(gcEventsChartPanel)
             .build();
-    JPanel chartPanel = panel(gridLayout(1, 2))
+    JPanel chartPanel = gridLayoutPanel(1, 2)
             .border(createEtchedBorder())
             .add(chartPanelLeft)
             .add(chartPanelRight)

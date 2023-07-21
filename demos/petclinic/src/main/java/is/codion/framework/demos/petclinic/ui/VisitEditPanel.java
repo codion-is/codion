@@ -13,7 +13,6 @@ import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class VisitEditPanel extends EntityEditPanel {
 
@@ -30,7 +29,7 @@ public final class VisitEditPanel extends EntityEditPanel {
     createTextArea(Visit.DESCRIPTION)
             .rowsColumns(4, 20);
 
-    JPanel northPanel = Components.panel(gridLayout(1, 2))
+    JPanel northPanel = Components.gridLayoutPanel(1, 2)
             .add(createInputPanel(Visit.PET_FK))
             .add(createInputPanel(Visit.VISIT_DATE))
             .build();

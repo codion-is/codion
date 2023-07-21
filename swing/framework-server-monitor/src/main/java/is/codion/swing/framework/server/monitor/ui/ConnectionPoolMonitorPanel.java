@@ -29,7 +29,8 @@ import java.time.format.DateTimeFormatter;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldSize;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -160,7 +161,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel configurationPanel() {
-    JPanel configBase = panel(flexibleGridLayout(1, 0))
+    JPanel configBase = flexibleGridLayoutPanel(1, 0)
             .border(createTitledBorder("Configuration"))
             .add(borderLayoutPanel()
                     .westComponent(new JLabel("Mininum size"))
@@ -218,7 +219,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel southPanel() {
-    JPanel chartConfig = panel(flexibleGridLayout(1, 4))
+    JPanel chartConfig = flexibleGridLayoutPanel(1, 4)
             .border(createTitledBorder("Charts"))
             .add(new JLabel("Update interval (s)"))
             .add(integerSpinner(model.updateIntervalValue())
@@ -249,7 +250,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel statisticsPanel() {
     return borderLayoutPanel()
             .border(createTitledBorder("Statistics"))
-            .centerComponent(panel(flexibleGridLayout(1, 0))
+            .centerComponent(flexibleGridLayoutPanel(1, 0)
                     .add(borderLayoutPanel()
                             .westComponent(new JLabel("Connections"))
                             .centerComponent(poolSizeField)

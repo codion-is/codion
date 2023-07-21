@@ -9316,3 +9316,4 @@
   ColumnPacker.columnClass() improved, now translates TIMESTAMP_WITH_TIMEZONE to OffsetDateTime and TIME_WITH_TIMEZONE to OffsetTime
   DefaultStringFactory now outputs attribute values in their original order
   TableSelectionModel.selectedItem() returning optional added
+  Components.gridLayoutPanel() and flexibleGridLayoutPanel() added

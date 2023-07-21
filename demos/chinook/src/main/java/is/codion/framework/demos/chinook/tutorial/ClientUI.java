@@ -26,7 +26,6 @@ import javax.swing.JTextField;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Album;
 import static is.codion.framework.demos.chinook.domain.Chinook.Artist;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 /**
  * When running this make sure the chinook demo module directory is the
@@ -68,7 +67,7 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(artistNameTextField,
                     "Inserted: " + insertedEntities.iterator().next()));
 
-    JPanel artistPanel = Components.panel(gridLayout(2, 1))
+    JPanel artistPanel = Components.gridLayoutPanel(2, 1)
             .add(new JLabel("Artist name"))
             .add(artistNameTextField)
             .border(BorderFactory.createEmptyBorder(10, 10, 10, 10))
@@ -134,7 +133,7 @@ public final class ClientUI {
             JOptionPane.showMessageDialog(titleTextField,
                     "Inserted: " + insertedEntities.iterator().next()));
 
-    JPanel albumPanel = Components.panel(gridLayout(4, 1))
+    JPanel albumPanel = Components.gridLayoutPanel(4, 1)
             .add(new JLabel("Artist"))
             .add(artistComboBox)
             .add(new JLabel("Title"))

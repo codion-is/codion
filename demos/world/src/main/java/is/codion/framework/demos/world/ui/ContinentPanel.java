@@ -19,7 +19,6 @@ import static is.codion.framework.demos.world.ui.ChartPanels.createPieChartPanel
 import static is.codion.swing.common.ui.Sizes.setPreferredHeight;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.KeyEvent.VK_1;
 import static java.awt.event.KeyEvent.VK_2;
 
@@ -53,7 +52,7 @@ final class ContinentPanel extends EntityPanel {
     surfaceAreaChartPanel.setPreferredSize(pieChartSize);
     gnpChartPanel.setPreferredSize(pieChartSize);
 
-    JPanel pieChartChartPanel = Components.panel(gridLayout(1, 3))
+    JPanel pieChartChartPanel = Components.gridLayoutPanel(1, 3)
             .add(populationChartPanel)
             .add(surfaceAreaChartPanel)
             .add(gnpChartPanel)
