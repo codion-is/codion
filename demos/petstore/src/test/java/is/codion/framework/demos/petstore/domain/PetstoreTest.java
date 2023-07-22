@@ -12,7 +12,7 @@ import static is.codion.framework.demos.petstore.domain.Petstore.*;
 public class PetstoreTest extends EntityTestUnit {
 
   public PetstoreTest() {
-    super(Petstore.class.getName());
+    super(new Petstore());
   }
 
   @Test

@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.javafx;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.javafx.framework.model.FXEntityModel;
@@ -48,7 +49,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   public static void main(String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.empdept.domain.EmpDept");
+    EntityConnectionProvider.CLIENT_DOMAIN_TYPE.set(EmpDept.DOMAIN);
     launch(args);
   }
 }

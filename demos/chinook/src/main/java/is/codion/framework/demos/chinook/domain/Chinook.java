@@ -40,7 +40,7 @@ import static java.util.Objects.requireNonNull;
 
 public interface Chinook {
 
-  DomainType DOMAIN = domainType("ChinookImpl");
+  DomainType DOMAIN = domainType(Chinook.class);
 
   interface Artist {
     EntityType TYPE = DOMAIN.entityType("artist@chinook", Artist.class.getName());

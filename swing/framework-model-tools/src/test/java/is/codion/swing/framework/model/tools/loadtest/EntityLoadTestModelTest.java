@@ -67,7 +67,7 @@ public class EntityLoadTestModelTest {
     @Override
     protected SwingEntityApplicationModel createApplication() {
       return new SwingEntityApplicationModel(EntityConnectionProvider.builder()
-              .domainClassName(TestDomain.class.getName())
+              .domainType(TestDomain.DOMAIN)
               .clientTypeId(EntityLoadTestModelTest.class.getSimpleName())
               .user(getUser())
               .build());

@@ -6,6 +6,7 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
+import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.model.ChinookAppModel;
 import is.codion.framework.demos.chinook.model.EmployeeTableModel;
 import is.codion.swing.common.ui.component.combobox.Completion;
@@ -165,7 +166,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     EntityApplicationPanel.builder(ChinookAppModel.class, ChinookAppPanel.class)
             .applicationName("Chinook")
             .applicationVersion(ChinookAppModel.VERSION)
-            .domainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
+            .domainType(Chinook.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(new Dimension(1280, 720))
             .defaultLoginUser(User.parse("scott:tiger"))

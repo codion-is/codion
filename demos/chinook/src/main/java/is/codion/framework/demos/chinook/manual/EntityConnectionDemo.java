@@ -14,7 +14,6 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
-import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -410,7 +409,7 @@ public final class EntityConnectionDemo {
 
     EntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
-                    .domainClassName(ChinookImpl.class.getName())
+                    .domainType(DOMAIN)
                     .user(User.parse("scott:tiger"))
                     .build();
 

@@ -25,7 +25,7 @@ import static is.codion.common.db.operation.FunctionType.functionType;
  */
 public interface World {
 
-  DomainType DOMAIN = DomainType.domainType("WorldImpl");
+  DomainType DOMAIN = DomainType.domainType(World.class);
 
   interface City extends Entity {
     EntityType TYPE = DOMAIN.entityType("world.city", City.class);

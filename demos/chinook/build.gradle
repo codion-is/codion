@@ -48,7 +48,7 @@ buildReports {
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.chinook.domain.impl.ChinookImpl"
+    systemProperty "codion.client.domainType", "Chinook"
 }
 
 runClientLocal {

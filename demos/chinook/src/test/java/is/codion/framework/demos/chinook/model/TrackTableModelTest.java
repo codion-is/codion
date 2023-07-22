@@ -43,7 +43,7 @@ public final class TrackTableModelTest {
 
   private EntityConnectionProvider createConnectionProvider() {
     return LocalEntityConnectionProvider.builder()
-            .domainClassName(ChinookImpl.class.getName())
+            .domain(new ChinookImpl())
             .user(User.parse("scott:tiger"))
             .build();
   }

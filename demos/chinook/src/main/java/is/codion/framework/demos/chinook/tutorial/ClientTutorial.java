@@ -167,7 +167,7 @@ public final class ClientTutorial {
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);
     EntityApplicationPanel.builder(ApplicationModel.class, ApplicationPanel.class)
             .applicationName("Artists and Albums")
-            .domainClassName(Chinook.class.getName())
+            .domainType(Chinook.DOMAIN)
             .frameSize(screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

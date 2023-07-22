@@ -92,7 +92,7 @@ final class DefaultRemoteEntityConnectionProvider extends AbstractEntityConnecti
                               .clientId(clientId())
                               .clientTypeId(clientTypeId())
                               .clientVersion(clientVersion())
-                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainTypeName(domainClassName()))
+                              .parameter(REMOTE_CLIENT_DOMAIN_TYPE, domainType().name())
                               .build())));
     }
     catch (Exception e) {

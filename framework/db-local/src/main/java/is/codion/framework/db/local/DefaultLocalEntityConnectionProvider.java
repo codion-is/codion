@@ -8,6 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.AbstractEntityConnectionProvider;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,7 +32,7 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
 
   DefaultLocalEntityConnectionProvider(DefaultLocalEntityConnectionProviderBuilder builder) {
     super(builder);
-    this.domain = builder.domain == null ? initializeDomain(domainClassName()) : builder.domain;
+    this.domain = builder.domain == null ? initializeDomain(domainType()) : builder.domain;
     this.database = builder.database == null ? Database.instance() : builder.database;
     this.defaultQueryTimeout = builder.defaultQueryTimeout;
   }
@@ -80,19 +81,8 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
     }
   }
 
-  private static Domain initializeDomain(String domainClassName) {
-    return Domain.domainByClassName(domainClassName)
-            .orElseGet(() -> createDomainInstance(domainClassName));
-  }
-
-  private static Domain createDomainInstance(String domainClassName) {
-    LOG.debug("Domain of type " + domainClassName + " not found in services");
-    try {
-      return (Domain) Class.forName(domainClassName).getConstructor().newInstance();
-    }
-    catch (Exception e) {
-      LOG.error("Error when instantiating Domain of type " + domainClassName);
-      throw new RuntimeException(e);
-    }
+  private static Domain initializeDomain(DomainType domainType) {
+    return Domain.domainByName(domainType.name())
+            .orElseThrow(() -> new IllegalStateException("Domain model not found: " + domainType));
   }
 }

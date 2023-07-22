@@ -22,12 +22,12 @@ class ManualDomainModel {
   // tag::storeApi[]
   public interface Store {
 
-    DomainType DOMAIN = DomainType.domainType("StoreImpl"); //<1>
+    DomainType DOMAIN = DomainType.domainType("Store");
 
     interface City {
-      EntityType TYPE = DOMAIN.entityType("store.city"); //<2>
+      EntityType TYPE = DOMAIN.entityType("store.city"); //<1>
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id"); //<3>
+      Attribute<Integer> ID = TYPE.integerAttribute("id"); //<2>
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
 
@@ -38,7 +38,7 @@ class ManualDomainModel {
       Attribute<String> NAME = TYPE.stringAttribute("name");
       Attribute<Integer> CITY_ID = TYPE.integerAttribute("city_id");
 
-      ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);// <3>
+      ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
     }
   }
 

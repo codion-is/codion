@@ -152,7 +152,7 @@ public abstract class EntityApplicationView<M extends FXEntityApplicationModel>
    */
   protected EntityConnectionProvider initializeConnectionProvider(User user, String clientTypeId) {
     return EntityConnectionProvider.builder()
-            .domainClassName(EntityConnectionProvider.CLIENT_DOMAIN_CLASS.getOrThrow())
+            .domainType(EntityConnectionProvider.CLIENT_DOMAIN_TYPE.getOrThrow())
             .clientTypeId(clientTypeId).user(user)
             .build();
   }

@@ -41,7 +41,7 @@ buildReports {
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
+    systemProperty "codion.client.domainType", "EmpDept"
 }
 
 runClientLocal {

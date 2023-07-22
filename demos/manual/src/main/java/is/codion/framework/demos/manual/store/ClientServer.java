@@ -48,7 +48,7 @@ public final class ClientServer {
             RemoteEntityConnectionProvider.builder()
                     .port(SERVER_PORT)
                     .registryPort(REGISTRY_PORT)
-                    .domainClassName(Store.class.getName())
+                    .domainType(Store.DOMAIN)
                     .user(parse("scott:tiger"))
                     .clientTypeId("ClientServer")
                     .build();
@@ -85,7 +85,7 @@ public final class ClientServer {
             HttpEntityConnectionProvider.builder()
                     .port(HTTP_PORT)
                     .https(false)
-                    .domainClassName(Store.class.getName())
+                    .domainType(Store.DOMAIN)
                     .user(parse("scott:tiger"))
                     .clientTypeId("ClientServer")
                     .build();

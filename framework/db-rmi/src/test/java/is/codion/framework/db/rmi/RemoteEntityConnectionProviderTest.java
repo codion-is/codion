@@ -14,7 +14,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.rmi.TestDomain.Department;
 import is.codion.framework.db.rmi.TestDomain.Employee;
-import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.framework.server.EntityServerConfiguration;
@@ -55,7 +55,7 @@ public class RemoteEntityConnectionProviderTest {
             .port(configuration.port())
             .registryPort(configuration.registryPort())
             .clientTypeId("RemoteEntityConnectionProviderTest")
-            .domainClassName("is.codion.framework.db.rmi.TestDomain")
+            .domainType(TestDomain.DOMAIN)
             .user(User.parse("scott:tiger"))
             .build();
 
@@ -80,7 +80,7 @@ public class RemoteEntityConnectionProviderTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_REMOTE);
     try {
       EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-              .domainClassName(Domain.class.getName())
+              .domainType(DomainType.domainType("entityConnectionProviderBuilder"))
               .clientTypeId("test")
               .user(UNIT_TEST_USER)
               .build();

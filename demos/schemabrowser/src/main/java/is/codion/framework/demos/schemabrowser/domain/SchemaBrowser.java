@@ -24,7 +24,7 @@ import static is.codion.framework.domain.property.Property.*;
 
 public final class SchemaBrowser extends DefaultDomain {
 
-  static final DomainType DOMAIN = domainType(SchemaBrowser.class);
+  public static final DomainType DOMAIN = domainType(SchemaBrowser.class);
 
   private static final ResourceBundle bundle;
 

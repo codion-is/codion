@@ -275,7 +275,7 @@ public final class EmpDeptMinimalApp {
     //we create an instance of our application panel and start it
     EntityApplicationPanel.builder(EmpDeptApplicationModel.class, EmpDeptApplicationPanel.class)
             .applicationName("EmpDept Minimal")
-            .domainClassName(EmpDept.class.getName())
+            .domainType(DOMAIN)
             .frameSize(new Dimension(800, 600))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

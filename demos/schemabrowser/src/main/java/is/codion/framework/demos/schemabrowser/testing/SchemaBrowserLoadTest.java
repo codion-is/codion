@@ -47,7 +47,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
     SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProvider.builder()
-                            .domainClassName(SchemaBrowser.class.getName())
+                            .domainType(SchemaBrowser.DOMAIN)
                             .clientTypeId(getClass().getSimpleName())
                             .user(getUser())
                             .build());

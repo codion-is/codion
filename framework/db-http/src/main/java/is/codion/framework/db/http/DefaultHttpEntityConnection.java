@@ -15,6 +15,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -51,7 +52,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   /**
    * Instantiates a new {@link DefaultHttpEntityConnection} instance
-   * @param domainTypeName the name of the domain model type
+   * @param domainType the domain model type
    * @param hostName the http server host name
    * @param user the user
    * @param clientTypeId the client type id
@@ -63,10 +64,10 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param connectTimeout the connect timeout
    * @param connectionManager the connection manager
    */
-  DefaultHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
+  DefaultHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId,
                               int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
                               HttpClientConnectionManager connectionManager) {
-    super(domainTypeName, hostName, user, clientTypeId, clientId, "application/octet-stream", "/entities/ser",
+    super(domainType, hostName, user, clientTypeId, clientId, "application/octet-stream", "/entities/ser",
             port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
   }
 
@@ -467,7 +468,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   static final class DefaultBuilder implements Builder {
 
-    private String domainTypeName;
+    private DomainType domainType;
     private String hostName = HttpEntityConnection.HOSTNAME.get();
     private int port = HttpEntityConnection.PORT.get();
     private int securePort = HttpEntityConnection.SECURE_PORT.get();
@@ -480,8 +481,8 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     private UUID clientId;
 
     @Override
-    public Builder domainTypeName(String domainTypeName) {
-      this.domainTypeName = requireNonNull(domainTypeName);
+    public Builder domainType(DomainType domainType) {
+      this.domainType = requireNonNull(domainType);
       return this;
     }
 
@@ -548,11 +549,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     @Override
     public EntityConnection build() {
       if (json) {
-        return new JsonHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, securePort,
+        return new JsonHttpEntityConnection(domainType, hostName, user, clientTypeId, clientId, port, securePort,
                 https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
       }
 
-      return new DefaultHttpEntityConnection(domainTypeName, hostName, user, clientTypeId, clientId, port, securePort,
+      return new DefaultHttpEntityConnection(domainType, hostName, user, clientTypeId, clientId, port, securePort,
               https, socketTimeout, connectTimeout, new BasicHttpClientConnectionManager());
     }
   }

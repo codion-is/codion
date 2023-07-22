@@ -3,7 +3,6 @@ package is.codion.framework.demos.world.model;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.demos.world.domain.WorldImpl;
 import is.codion.framework.demos.world.domain.api.World;
 
 import org.junit.jupiter.api.Test;
@@ -30,7 +29,7 @@ public class CountryEditModelTest {
 
   private EntityConnectionProvider createConnectionProvider() {
     return EntityConnectionProvider.builder()
-            .domainClassName(WorldImpl.class.getName())
+            .domainType(World.DOMAIN)
             .user(UNIT_TEST_USER)
             .build();
   }

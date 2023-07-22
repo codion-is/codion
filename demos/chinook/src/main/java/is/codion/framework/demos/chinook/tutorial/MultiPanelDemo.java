@@ -30,7 +30,7 @@ public final class MultiPanelDemo {
     Database.DATABASE_INIT_SCRIPTS.set("src/main/sql/create_schema.sql");
 
     LocalEntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
-            .domainClassName(ChinookImpl.class.getName())
+            .domain(new ChinookImpl())
             .user(User.parse("scott:tiger"))
             .build();
 

@@ -266,7 +266,7 @@ public class EntityServerTest {
                     .hostName("localhost")
                     .port(CONFIGURATION.port())
                     .registryPort(CONFIGURATION.registryPort())
-                    .domainClassName("TestDomain")
+                    .domainType(TestDomain.DOMAIN)
                     .clientTypeId("TestClient")
                     .user(UNIT_TEST_USER)
                     .build();

@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
 import org.slf4j.Logger;
@@ -27,7 +28,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private final Event<EntityConnection> onConnectEvent = Event.event();
 
   private final User user;
-  private final String domainClassName;
+  private final DomainType domainType;
   private final UUID clientId;
   private final Version clientVersion;
   private final String clientTypeId;
@@ -38,7 +39,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   protected AbstractEntityConnectionProvider(AbstractBuilder<?, ?> builder) {
     requireNonNull(builder);
     this.user = requireNonNull(builder.user, "A user must be specified");
-    this.domainClassName = requireNonNull(builder.domainClassName, "A domainClassName must be specified");
+    this.domainType = requireNonNull(builder.domainType, "A domainType must be specified");
     this.clientId = requireNonNull(builder.clientId, "A clientId must be specified");
     this.clientTypeId = builder.clientTypeId;
     this.clientVersion = builder.clientVersion;
@@ -61,8 +62,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final String domainClassName() {
-    return domainClassName;
+  public final DomainType domainType() {
+    return domainType;
   }
 
   @Override
@@ -143,14 +144,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract void close(EntityConnection connection);
 
-  protected final String domainTypeName(String domainClass) {
-    if (domainClass.contains(".")) {
-      return domainClass.substring(domainClass.lastIndexOf('.') + 1);
-    }
-
-    return domainClass;
-  }
-
   private void validateConnection() {
     if (entityConnection == null) {
       doConnect();
@@ -178,7 +171,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     private final String connectionType;
 
     private User user;
-    private String domainClassName = CLIENT_DOMAIN_CLASS.get();
+    private DomainType domainType;
     private UUID clientId = UUID.randomUUID();
     private String clientTypeId;
     private Version clientVersion;
@@ -199,8 +192,8 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     }
 
     @Override
-    public final B domainClassName(String domainClassName) {
-      this.domainClassName = requireNonNull(domainClassName);
+    public final B domainType(DomainType domainType) {
+      this.domainType = requireNonNull(domainType);
       return (B) this;
     }
 

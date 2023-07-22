@@ -66,7 +66,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   /**
    * Instantiates a new {@link JsonHttpEntityConnection} instance
-   * @param domainTypeName the name of the domain model type
+   * @param domainType the domain model type
    * @param hostName the http server host name
    * @param user the user
    * @param clientTypeId the client type id
@@ -78,10 +78,10 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
    * @param connectTimeout the connect timeout
    * @param connectionManager the connection manager
    */
-  JsonHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId,
+  JsonHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId,
                            int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
                            HttpClientConnectionManager connectionManager) {
-    super(domainTypeName, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
+    super(domainType, hostName, user, clientTypeId, clientId, "application/json", "/entities/json",
             port, securePort, httpsEnabled, socketTimeout, connectTimeout, connectionManager);
     this.entityObjectMapper = EntityObjectMapperFactory.instance(entities().domainType()).entityObjectMapper(entities());
     this.conditionObjectMapper = ConditionObjectMapper.conditionObjectMapper(entityObjectMapper);

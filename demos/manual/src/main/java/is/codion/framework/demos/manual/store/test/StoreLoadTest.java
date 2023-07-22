@@ -31,7 +31,7 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
             RemoteEntityConnectionProvider.builder()
                     .clientId(UUID.randomUUID())
                     .user(getUser())
-                    .domainClassName(Store.class.getName())
+                    .domainType(Store.DOMAIN)
                     .build();
 
     return new StoreApplicationModel(connectionProvider);

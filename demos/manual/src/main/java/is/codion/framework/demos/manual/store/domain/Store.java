@@ -30,10 +30,10 @@ import static is.codion.framework.domain.property.Property.*;
 
 public final class Store extends DefaultDomain {
 
-  static final DomainType STORE = domainType(Store.class);
+  public static final DomainType DOMAIN = domainType(Store.class);
 
   public interface Address {
-    EntityType TYPE = STORE.entityType("store.address");
+    EntityType TYPE = DOMAIN.entityType("store.address");
 
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> STREET = TYPE.stringAttribute("street");
@@ -42,7 +42,7 @@ public final class Store extends DefaultDomain {
   }
 
   public interface Customer {
-    EntityType TYPE = STORE.entityType("store.customer");
+    EntityType TYPE = DOMAIN.entityType("store.customer");
 
     Attribute<String> ID = TYPE.stringAttribute("id");
     Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
@@ -55,7 +55,7 @@ public final class Store extends DefaultDomain {
   }
 
   public interface CustomerAddress {
-    EntityType TYPE = STORE.entityType("store.customer_address");
+    EntityType TYPE = DOMAIN.entityType("store.customer_address");
 
     Attribute<Long> ID = TYPE.longAttribute("id");
     Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
@@ -66,7 +66,7 @@ public final class Store extends DefaultDomain {
   }
 
   public Store() {
-    super(STORE);
+    super(DOMAIN);
     customer();
     address();
     customerAddress();

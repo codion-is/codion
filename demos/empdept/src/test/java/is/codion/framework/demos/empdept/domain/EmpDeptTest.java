@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 public class EmpDeptTest extends EntityTestUnit {
 
   public EmpDeptTest() {
-    super(EmpDept.class.getName());
+    super(new EmpDept());
   }
 
   @Test

@@ -5,6 +5,7 @@ package is.codion.framework.db.http;
 
 import is.codion.common.Serializer;
 import is.codion.common.user.User;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
 import org.apache.http.HttpEntity;
@@ -54,7 +55,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
   private final RequestConfig requestConfig;
   private final HttpClientConnectionManager connectionManager;
 
-  private final String domainTypeName;
+  private final DomainType domainType;
   private final User user;
   private final boolean httpsEnabled;
   private final String baseurl;
@@ -68,7 +69,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
 
   /**
    * Instantiates a new {@link JsonHttpEntityConnection} instance
-   * @param domainTypeName the name of the domain model type
+   * @param domainType the domain model type
    * @param hostName the http server host name
    * @param user the user
    * @param clientTypeId the client type id
@@ -82,10 +83,10 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
    * @param connectTimeout the connect timeout
    * @param connectionManager the connection manager
    */
-  AbstractHttpEntityConnection(String domainTypeName, String hostName, User user, String clientTypeId, UUID clientId, String contentType,
+  AbstractHttpEntityConnection(DomainType domainType, String hostName, User user, String clientTypeId, UUID clientId, String contentType,
                                String path, int port, int securePort, boolean httpsEnabled, int socketTimeout, int connectTimeout,
                                HttpClientConnectionManager connectionManager) {
-    this.domainTypeName = requireNonNull(domainTypeName, DOMAIN_TYPE_NAME);
+    this.domainType = requireNonNull(domainType, "domainType");
     this.baseurl = requireNonNull(hostName, "hostName") + ":" + (httpsEnabled ? securePort : port) + path;
     this.connectionManager = requireNonNull(connectionManager);
     this.user = requireNonNull(user, "user");
@@ -187,7 +188,7 @@ abstract class AbstractHttpEntityConnection implements HttpEntityConnection {
             .setConnectionManager(connectionManager)
             .setRetryHandler(new RetryHandler())
             .addInterceptorFirst((HttpRequestInterceptor) (request, context) -> {
-              request.setHeader(DOMAIN_TYPE_NAME, domainTypeName);
+              request.setHeader(DOMAIN_TYPE_NAME, domainType.name());
               request.setHeader(CLIENT_TYPE_ID, clientTypeId);
               request.setHeader(CLIENT_ID, clientId);
               request.setHeader(CONTENT_TYPE, contentType);

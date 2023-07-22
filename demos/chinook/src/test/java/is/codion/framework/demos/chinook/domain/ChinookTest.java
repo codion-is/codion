@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ChinookTest extends EntityTestUnit {
 
   public ChinookTest() {
-    super(ChinookImpl.class.getName());
+    super(new ChinookImpl());
   }
 
   @Test

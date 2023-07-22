@@ -28,7 +28,7 @@ test {
                     "../petclinic/src/main/sql/create_schema.sql," +
                     "../petstore/src/main/sql/create_schema.sql," +
                     "../world/src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.schemabrowser.domain.SchemaBrowser"
+    systemProperty "codion.client.domainType", "SchemaBrowser"
 }
 
 runClientLocal {

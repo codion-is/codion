@@ -18,7 +18,7 @@ public class EmployeeEditPanelTest extends EntityEditPanelTestUnit {
 
   public EmployeeEditPanelTest() {
     super(new EmployeeEditModel(EntityConnectionProvider.builder()
-                    .domainClassName(EmpDept.class.getName())
+                    .domainType(EmpDept.DOMAIN)
                     .clientTypeId(EmployeeEditPanelTest.class.getName())
                     .user(UNIT_TEST_USER)
                     .build()),

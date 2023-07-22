@@ -10,6 +10,8 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.local.LocalEntityConnectionProvider;
+import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -54,22 +56,22 @@ public class EntityTestUnit {
   /**
    * Instantiates a new EntityTestUnit.
    * The default database user is based on the {@link #TEST_USER} configuration value.
-   * @param domainClass the name of the domain model class
+   * @param domain the domain model
    * @throws NullPointerException in case domainClass is null
    */
-  public EntityTestUnit(String domainClass) {
-    this(domainClass, initializeDefaultUser());
+  public EntityTestUnit(Domain domain) {
+    this(domain, initializeDefaultUser());
   }
 
   /**
    * Instantiates a new EntityTestUnit.
-   * @param domainClass the name of the domain model class
+   * @param domain the domain model
    * @param user the user to use when running the tests
    * @throws NullPointerException in case domainClass or user is null
    */
-  public EntityTestUnit(String domainClass, User user) {
-    this.connectionProvider = EntityConnectionProvider.builder()
-            .domainClassName(requireNonNull(domainClass, "domainClass"))
+  public EntityTestUnit(Domain domain, User user) {
+    this.connectionProvider = LocalEntityConnectionProvider.builder()
+            .domain(requireNonNull(domain, "domain"))
             .clientTypeId(getClass().getName())
             .user(requireNonNull(user, "user"))
             .build();

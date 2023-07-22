@@ -36,7 +36,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppModel> 
   protected EmpDeptAppModel createApplication() throws CancelException {
     EmpDeptAppModel applicationModel =
             new EmpDeptAppModel(EntityConnectionProvider.builder()
-                    .domainClassName(EmpDept.class.getName())
+                    .domainType(EmpDept.DOMAIN)
                     .clientTypeId(EmpDeptLoadTest.class.getSimpleName())
                     .user(getUser())
                     .build());

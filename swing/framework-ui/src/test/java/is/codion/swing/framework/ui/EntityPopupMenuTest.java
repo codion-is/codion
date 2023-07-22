@@ -20,7 +20,7 @@ public final class EntityPopupMenuTest {
   @Test
   void test() throws DatabaseException {
     try (EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
+            .domain(new TestDomain())
             .user(UNIT_TEST_USER)
             .build()) {
       Entity blake = connectionProvider.connection().selectSingle(Employee.NAME, "BLAKE");

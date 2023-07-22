@@ -26,7 +26,7 @@ import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
 
-  static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
+  public static final DomainType DOMAIN = DomainType.domainType(TestDomain.class);
 
   public TestDomain() {
     super(DOMAIN);

@@ -5,6 +5,7 @@ package is.codion.framework.demos.chinook.javafx;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -74,7 +75,7 @@ public final class ChinookFXAppView extends EntityApplicationView<ChinookFXAppMo
   }
 
   public static void main(String[] args) {
-    EntityConnectionProvider.CLIENT_DOMAIN_CLASS.set("is.codion.framework.demos.chinook.domain.impl.ChinookImpl");
+    EntityConnectionProvider.CLIENT_DOMAIN_TYPE.set(Chinook.DOMAIN);
     launch(args);
   }
 }
