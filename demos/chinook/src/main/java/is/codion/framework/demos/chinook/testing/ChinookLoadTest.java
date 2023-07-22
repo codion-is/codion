@@ -6,6 +6,7 @@ package is.codion.framework.demos.chinook.testing;
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.demos.chinook.domain.Chinook.Customer;
@@ -44,7 +45,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
   @Override
   protected ChinookAppModel createApplication() throws CancelException {
     ChinookAppModel applicationModel = new ChinookAppModel(EntityConnectionProvider.builder()
-            .domainClassName("is.codion.framework.demos.chinook.domain.impl.ChinookImpl")
+            .domainType(Chinook.DOMAIN)
             .clientTypeId(ChinookAppPanel.class.getName())
             .clientVersion(ChinookAppModel.VERSION)
             .user(getUser())

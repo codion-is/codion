@@ -5,6 +5,7 @@ package is.codion.framework.demos.schemabrowser.client.ui;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Column;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.Constraint;
 import is.codion.framework.demos.schemabrowser.domain.SchemaBrowser.ConstraintColumn;
@@ -59,7 +60,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     EntityTablePanel.CONDITION_PANEL_VISIBLE.set(true);
     EntityApplicationPanel.builder(SchemaBrowserApplicationModel.class, SchemaBrowserAppPanel.class)
             .applicationName("Schema Browser")
-            .domainClassName("is.codion.framework.demos.schemabrowser.domain.SchemaBrowser")
+            .domainType(SchemaBrowser.DOMAIN)
             .frameSize(Windows.screenSizeRatio(0.5))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

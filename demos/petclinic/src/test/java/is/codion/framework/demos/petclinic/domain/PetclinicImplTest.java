@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 public final class PetclinicImplTest extends EntityTestUnit {
 
   public PetclinicImplTest() {
-    super(PetclinicImpl.class.getName());
+    super(new PetclinicImpl());
   }
 
   @Test

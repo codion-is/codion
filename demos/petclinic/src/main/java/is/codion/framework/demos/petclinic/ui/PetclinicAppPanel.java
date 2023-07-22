@@ -5,10 +5,10 @@ package is.codion.framework.demos.petclinic.ui;
 
 import is.codion.common.model.CancelException;
 import is.codion.common.user.User;
-import is.codion.framework.demos.petclinic.domain.PetclinicImpl;
 import is.codion.framework.demos.petclinic.domain.api.Owner;
 import is.codion.framework.demos.petclinic.domain.api.Pet;
 import is.codion.framework.demos.petclinic.domain.api.PetType;
+import is.codion.framework.demos.petclinic.domain.api.Petclinic;
 import is.codion.framework.demos.petclinic.domain.api.Specialty;
 import is.codion.framework.demos.petclinic.domain.api.Vet;
 import is.codion.framework.demos.petclinic.domain.api.VetSpecialty;
@@ -99,7 +99,7 @@ public final class PetclinicAppPanel extends EntityApplicationPanel<PetclinicApp
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityApplicationPanel.builder(PetclinicAppModel.class, PetclinicAppPanel.class)
             .applicationName("Petclinic")
-            .domainClassName(PetclinicImpl.class.getName())
+            .domainType(Petclinic.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))

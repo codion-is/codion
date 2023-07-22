@@ -21,7 +21,7 @@ import java.util.UUID;
 public class StoreTest extends EntityTestUnit {
 
   public StoreTest() {
-    super(Store.class.getName());
+    super(new Store());
   }
 
   @Test

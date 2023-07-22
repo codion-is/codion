@@ -19,6 +19,7 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -1116,10 +1117,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public interface Builder<M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> {
 
     /**
-     * @param domainClassName the full name of the domain implementation class
+     * @param domainType the domain type
      * @return this Builder instance
      */
-    Builder<M, P> domainClassName(String domainClassName);
+    Builder<M, P> domainType(DomainType domainType);
 
     /**
      * @param applicationName the application name
@@ -1315,15 +1316,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       /**
        * Creates a new {@link EntityConnectionProvider} instance.
        * @param user the user, may be null in case login is not required {@link Builder#loginRequired(boolean)}.
-       * @param domainClassName the full name of the domain model class
+       * @param domainType the domain type
        * @param clientTypeId the client type id
        * @param clientVersion the client version
        * @return a new {@link EntityConnectionProvider} instance.
        */
-      default EntityConnectionProvider createConnectionProvider(User user, String domainClassName, String clientTypeId, Version clientVersion) {
+      default EntityConnectionProvider createConnectionProvider(User user, DomainType domainType, String clientTypeId, Version clientVersion) {
         return EntityConnectionProvider.builder()
                 .user(user)
-                .domainClassName(domainClassName)
+                .domainType(domainType)
                 .clientTypeId(clientTypeId)
                 .clientVersion(clientVersion)
                 .build();

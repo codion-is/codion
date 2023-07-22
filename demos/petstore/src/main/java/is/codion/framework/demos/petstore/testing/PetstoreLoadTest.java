@@ -38,7 +38,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
   protected PetstoreAppModel createApplication() throws CancelException {
     PetstoreAppModel applicationModel = new PetstoreAppModel(
             EntityConnectionProvider.builder()
-                    .domainClassName(Petstore.class.getName())
+                    .domainType(Petstore.DOMAIN)
                     .clientTypeId(getClass().getSimpleName())
                     .user(getUser())
                     .build());

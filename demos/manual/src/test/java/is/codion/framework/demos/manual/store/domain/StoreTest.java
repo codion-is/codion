@@ -14,7 +14,7 @@ import org.junit.jupiter.api.Test;
 public final class StoreTest extends EntityTestUnit {
 
   public StoreTest() {
-    super(Store.class.getName());
+    super(new Store());
   }
 
   @Test

@@ -12,5 +12,5 @@ import static is.codion.framework.domain.DomainType.domainType;
  */
 public interface Petclinic {
 
-  DomainType DOMAIN = domainType("Petclinic");
+  DomainType DOMAIN = domainType(Petclinic.class);
 }

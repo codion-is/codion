@@ -85,7 +85,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     EntityApplicationPanel.builder(PetstoreAppModel.class, PetstoreAppPanel.class)
             .applicationName("The Pet Store")
-            .domainClassName("is.codion.framework.demos.petstore.domain.Petstore")
+            .domainType(DOMAIN)
             .frameSize(Windows.screenSizeRatio(0.8))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

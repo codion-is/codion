@@ -18,7 +18,7 @@ public class HttpEntityConnectionProviderTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_HTTP);
     try {
       EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-              .domainClassName(TestDomain.class.getName())
+              .domainType(TestDomain.DOMAIN)
               .clientTypeId("test")
               .user(User.parse("scott:tiger"))
               .build();

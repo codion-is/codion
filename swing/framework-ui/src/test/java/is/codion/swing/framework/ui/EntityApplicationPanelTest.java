@@ -30,7 +30,7 @@ public class EntityApplicationPanelTest {
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domainClassName(TestDomain.class.getName())
+          .domain(new TestDomain())
           .user(UNIT_TEST_USER)
           .build();
 
@@ -57,7 +57,7 @@ public class EntityApplicationPanelTest {
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityApplicationPanel.builder(TestApplicationModel.class, TestApplicationPanel.class)
             .automaticLoginUser(UNIT_TEST_USER)
-            .domainClassName(TestDomain.class.getName())
+            .domainType(TestDomain.DOMAIN)
             .setUncaughtExceptionHandler(false)
             .saveDefaultUsername(false)
             .loginRequired(false)

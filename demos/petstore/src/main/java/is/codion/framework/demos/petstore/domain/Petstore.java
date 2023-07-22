@@ -20,7 +20,7 @@ import static is.codion.framework.domain.property.Property.*;
 
 public final class Petstore extends DefaultDomain {
 
-  static final DomainType DOMAIN = domainType(Petstore.class);
+  public static final DomainType DOMAIN = domainType(Petstore.class);
 
   public Petstore() {
     super(DOMAIN);

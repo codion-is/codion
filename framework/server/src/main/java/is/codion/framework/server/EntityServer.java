@@ -390,11 +390,11 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     List<Domain> serviceDomains = Domain.domains();
     try {
       serviceDomains.forEach(domain -> {
-        LOG.info("Server loading and registering domain model '" + domain.type() + "' as a service");
+        LOG.info("Server loading domain model '" + domain.type() + "' as a service");
         domains.put(domain.type(), domain);
       });
       for (String className : domainModelClassNames) {
-        LOG.info("Server loading and registering domain model class '" + className + "' from classpath");
+        LOG.info("Server loading domain model '" + className + "' from classpath");
         Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
         domains.put(domain.type(), domain);
       }

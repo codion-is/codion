@@ -25,7 +25,7 @@ public final class SwingEntityTreeModelTest {
   @Test
   void test() {
     EntityConnectionProvider connectionProvider = LocalEntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
+            .domain(new TestDomain())
             .user(UNIT_TEST_USER)
             .build();
 

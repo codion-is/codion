@@ -240,7 +240,7 @@ public final class EntitiesTutorial {
     // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
-                    .domainClassName(Chinook.class.getName())
+                    .domain(new Chinook())
                     .user(User.parse("scott:tiger"))
                     .build();
 

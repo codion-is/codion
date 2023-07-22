@@ -63,7 +63,7 @@ public class StoreApplicationPanel extends EntityApplicationPanel<StoreApplicati
             .set(ReferentialIntegrityErrorHandling.DISPLAY_DEPENDENCIES);
     EntityApplicationPanel.builder(StoreApplicationModel.class, StoreApplicationPanel.class)
             .applicationName("Store")
-            .domainClassName(Store.class.getName())
+            .domainType(Store.DOMAIN)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))
             .start();

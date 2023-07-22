@@ -45,7 +45,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
           .user(UNIT_TEST_USER)
-          .domainClassName(TestDomain.class.getName())
+          .domain(new TestDomain())
           .build();
 
   private final EntityConnectionProvider connectionProvider;

@@ -12,6 +12,7 @@ import is.codion.framework.db.http.HttpEntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
+import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.demos.chinook.domain.impl.ChinookImpl;
 import is.codion.framework.domain.entity.Entities;
@@ -28,7 +29,7 @@ public final class EntityConnectionProviderDemo {
 
     LocalEntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
-                    .domainClassName(ChinookImpl.class.getName())
+                    .domain(new ChinookImpl())
                     .user(User.parse("scott:tiger"))
                     .build();
 
@@ -49,7 +50,7 @@ public final class EntityConnectionProviderDemo {
     // tag::remote[]
     RemoteEntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
-                    .domainClassName(ChinookImpl.class.getName())
+                    .domainType(Chinook.DOMAIN)
                     .user(User.parse("scott:tiger"))
                     .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
                     .hostName("localhost")
@@ -71,7 +72,7 @@ public final class EntityConnectionProviderDemo {
     // tag::http[]
     HttpEntityConnectionProvider connectionProvider =
             HttpEntityConnectionProvider.builder()
-                    .domainClassName(ChinookImpl.class.getName())
+                    .domainType(Chinook.DOMAIN)
                     .clientTypeId(EntityConnectionProviderDemo.class.getSimpleName())
                     .user(User.parse("scott:tiger"))
                     .hostName("localhost")

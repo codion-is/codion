@@ -11,7 +11,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 // tag::entityTypesAndAttributes[]
 public interface World {
 
-  DomainType DOMAIN = DomainType.domainType("WorldImpl");
+  DomainType DOMAIN = DomainType.domainType(World.class);
 
   interface City {
     EntityType TYPE = DOMAIN.entityType("world.city");

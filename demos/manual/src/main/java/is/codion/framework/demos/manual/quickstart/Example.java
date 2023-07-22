@@ -158,7 +158,7 @@ public final class Example {
 
     EntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
-                    .domainClassName(Store.class.getName())
+                    .domain(new Store())
                     .user(User.parse("scott:tiger"))
                     .build();
 
@@ -211,7 +211,7 @@ public final class Example {
     class StoreTest extends EntityTestUnit {
 
       public StoreTest() {
-        super(Store.class.getName(), User.parse("scott:tiger"));
+        super(new Store(), User.parse("scott:tiger"));
       }
 
       @Test

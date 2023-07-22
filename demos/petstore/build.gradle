@@ -21,7 +21,7 @@ dependencies {
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.petstore.domain.Petstore"
+    systemProperty "codion.client.domainType", "Petstore"
 }
 
 runClientLocal {

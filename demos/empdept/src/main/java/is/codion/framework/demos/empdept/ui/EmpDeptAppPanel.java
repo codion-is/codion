@@ -5,6 +5,7 @@ package is.codion.framework.demos.empdept.ui;
 
 import is.codion.common.Text;
 import is.codion.common.user.User;
+import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Department;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.demos.empdept.model.EmpDeptAppModel;
@@ -92,7 +93,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppModel> {
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     EntityApplicationPanel.builder(EmpDeptAppModel.class, EmpDeptAppPanel.class)
             .applicationName("Emp-Dept")
-            .domainClassName("is.codion.framework.demos.empdept.domain.EmpDept")
+            .domainType(EmpDept.DOMAIN)
             .defaultLookAndFeelClassName(DEFAULT_FLAT_LOOK_AND_FEEL)
             .frameSize(Windows.screenSizeRatio(0.6))
             .defaultLoginUser(User.parse("scott:tiger"))

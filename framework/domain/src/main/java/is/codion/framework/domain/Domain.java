@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 public interface Domain {
 
   /**
-   * @return the domain type
+   * @return the domain type identifying this domain model
    */
   DomainType type();
 

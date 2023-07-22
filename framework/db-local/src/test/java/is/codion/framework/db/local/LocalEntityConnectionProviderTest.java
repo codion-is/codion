@@ -20,7 +20,7 @@ public class LocalEntityConnectionProviderTest {
   void test() {
     LocalEntityConnectionProvider provider = LocalEntityConnectionProvider.builder()
             .user(UNIT_TEST_USER)
-            .domainClassName(TestDomain.class.getName())
+            .domain(new TestDomain())
             .build();
 
     assertNotNull(provider.database());
@@ -42,7 +42,7 @@ public class LocalEntityConnectionProviderTest {
     String previousValue = EntityConnectionProvider.CLIENT_CONNECTION_TYPE.get();
     EntityConnectionProvider.CLIENT_CONNECTION_TYPE.set(EntityConnectionProvider.CONNECTION_TYPE_LOCAL);
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainClassName(TestDomain.class.getName())
+            .domainType(TestDomain.DOMAIN)
             .user(User.parse("scott:tiger"))
             .build();
     assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);

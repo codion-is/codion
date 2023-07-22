@@ -1,7 +1,7 @@
 package is.codion.framework.demos.manual.store.minimal;
 
-import is.codion.framework.demos.manual.store.minimal.Introduction.Store.City;
-import is.codion.framework.demos.manual.store.minimal.Introduction.Store.Customer;
+import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.City;
+import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.Customer;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
@@ -12,23 +12,22 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.KeyGenerator;
+import is.codion.framework.domain.property.Property;
 
 import java.util.List;
 
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.*;
-
-class Introduction {
+class ManualDomainModel {
 
   // tag::storeApi[]
   public interface Store {
 
-    DomainType DOMAIN = DomainType.domainType("StoreImpl");
+    DomainType DOMAIN = DomainType.domainType("Store");
 
     interface City {
-      EntityType TYPE = DOMAIN.entityType("store.city");
+      EntityType TYPE = DOMAIN.entityType("store.city"); //<1>
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id");
+      Attribute<Integer> ID = TYPE.integerAttribute("id"); //<2>
       Attribute<String> NAME = TYPE.stringAttribute("name");
     }
 
@@ -48,23 +47,29 @@ class Introduction {
   public static class StoreImpl extends DefaultDomain {
 
     public StoreImpl() {
-      super(Store.DOMAIN);
+      super(Store.DOMAIN); //<1>
       city();
       customer();
     }
 
     void city() {
-      add(definition(
-              primaryKeyProperty(City.ID),
-              columnProperty(City.NAME, "Name")));
+      add(EntityDefinition.definition(
+              Property.primaryKeyProperty(City.ID),
+              Property.columnProperty(City.NAME, "Name")
+                      .nullable(false))
+              .keyGenerator(KeyGenerator.identity())
+              .caption("Cities"));
     }
 
     void customer() {
-      add(definition(
-              primaryKeyProperty(Customer.ID),
-              columnProperty(Customer.NAME, "Name"),
-              columnProperty(Customer.CITY_ID),
-              foreignKeyProperty(Customer.CITY_FK, "City")));
+      add(EntityDefinition.definition(
+              Property.primaryKeyProperty(Customer.ID),
+              Property.columnProperty(Customer.NAME, "Name")
+                      .maximumLength(42),
+              Property.columnProperty(Customer.CITY_ID),
+              Property.foreignKeyProperty(Customer.CITY_FK, "City"))
+              .keyGenerator(KeyGenerator.identity())
+              .caption("Customers"));
     }
   }
   // end::storeImpl[]
@@ -72,12 +77,8 @@ class Introduction {
   void usage() {
     // tag::domainUsage[]
     Domain store = new StoreImpl();
+
     Entities entities = store.entities();
-
-    EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
-    EntityDefinition cityDefinition = customerDefinition.referencedDefinition(Customer.CITY_FK);
-
-    List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
 
     Entity city = entities.builder(City.TYPE)
             .with(City.NAME, "Reykjavík")
@@ -91,6 +92,12 @@ class Introduction {
             .with(Customer.NAME, "John")
             .with(Customer.CITY_FK, city)
             .build();
+
+    EntityDefinition customerDefinition = entities.definition(Customer.TYPE);
+
+    EntityDefinition cityDefinition = customerDefinition.referencedDefinition(Customer.CITY_FK);
+
+    List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
     // end::domainUsage[]
   }
 }

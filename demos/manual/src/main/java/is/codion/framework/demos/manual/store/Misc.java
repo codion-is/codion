@@ -31,7 +31,7 @@ public final class Misc {
   static void jasperReports() throws DatabaseException, ReportException {
     EntityConnectionProvider connectionProvider =
             EntityConnectionProvider.builder()
-                    .domainClassName(Store.class.getName())
+                    .domainType(Store.DOMAIN)
                     .user(User.parse("scott:tiger"))
                     .clientTypeId("StoreMisc")
                     .build();
@@ -60,7 +60,7 @@ public final class Misc {
     // tag::editModel[]
     EntityConnectionProvider connectionProvider =
             EntityConnectionProvider.builder()
-                    .domainClassName(Store.class.getName())
+                    .domainType(Store.DOMAIN)
                     .user(User.parse("scott:tiger"))
                     .clientTypeId("StoreMisc")
                     .build();

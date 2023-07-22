@@ -21,7 +21,7 @@ public final class EntitiesInAction {
   public static void main(String[] args) throws DatabaseException {
     // tag::entitiesInAction[]
     EntityConnectionProvider connectionProvider = EntityConnectionProvider.builder()
-            .domainClassName(Petstore.class.getName())
+            .domainType(Petstore.DOMAIN)
             .clientTypeId("Manual")
             .user(User.parse("scott:tiger"))
             .build();

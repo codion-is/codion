@@ -13,7 +13,7 @@ public final class DefaultHttpEntityConnectionTest extends AbstractHttpEntityCon
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
   public DefaultHttpEntityConnectionTest() {
-    super(new DefaultHttpEntityConnection(TestDomain.DOMAIN.name(),
+    super(new DefaultHttpEntityConnection(TestDomain.DOMAIN,
             HttpEntityConnection.HOSTNAME.get(),
             UNIT_TEST_USER, "HttpEntityConnectionTest", UUID.randomUUID(),
             HttpEntityConnection.PORT.get(),

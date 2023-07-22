@@ -35,7 +35,7 @@ import static java.util.Arrays.asList;
 public final class EmpDept extends DefaultDomain {
 
   /** The domain type identifying this domain model */
-  static final DomainType DOMAIN = domainType(EmpDept.class);
+  public static final DomainType DOMAIN = domainType(EmpDept.class);
 
   /** Entity type for the table scott.dept */
   public interface Department extends Entity {

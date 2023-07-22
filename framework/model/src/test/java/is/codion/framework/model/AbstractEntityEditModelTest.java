@@ -49,7 +49,7 @@ public final class AbstractEntityEditModelTest {
   private static final Entities ENTITIES = new TestDomain().entities();
 
   private static final EntityConnectionProvider CONNECTION_PROVIDER = LocalEntityConnectionProvider.builder()
-          .domainClassName(TestDomain.class.getName())
+          .domain(new TestDomain())
           .user(UNIT_TEST_USER)
           .build();
 

@@ -60,7 +60,7 @@ buildReports {
 
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
-    systemProperty "codion.client.domainClass", "is.codion.framework.demos.empdept.domain.EmpDept"
+    systemProperty "codion.client.domainType", "EmpDept"
     jvmArgs = [
             "--add-reads", "$moduleName=is.codion.swing.framework.ui.test",
             "--add-exports", "$moduleName/is.codion.framework.demos.empdept.ui=is.codion.swing.framework.ui,is.codion.swing.framework.ui.test"

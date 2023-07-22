@@ -8,6 +8,7 @@ import is.codion.common.event.EventDataListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 
 import java.util.ServiceLoader;
@@ -39,11 +40,11 @@ public interface EntityConnectionProvider extends AutoCloseable {
   String CONNECTION_TYPE_HTTP = "http";
 
   /**
-   * Specifies the name of the domain model class required for a client connection.<br>
-   * Value type: String<br>
+   * Specifies the domain type required for a client connection.<br>
+   * Value type: is.codion.framework.domain.DomainType<br>
    * Default value: null
    */
-  PropertyValue<String> CLIENT_DOMAIN_CLASS = Configuration.stringValue("codion.client.domainClass");
+  PropertyValue<DomainType> CLIENT_DOMAIN_TYPE = Configuration.value("codion.client.domainType", DomainType::domainType);
 
   /**
    * Specifies whether the client should connect locally, via rmi or http,
@@ -116,9 +117,9 @@ public interface EntityConnectionProvider extends AutoCloseable {
   User user();
 
   /**
-   * @return the domain model classname
+   * @return the domain type
    */
-  String domainClassName();
+  DomainType domainType();
 
   /**
    * @return the UUID identifying this client connection
@@ -171,10 +172,10 @@ public interface EntityConnectionProvider extends AutoCloseable {
     B user(User user);
 
     /**
-     * @param domainClassName the name of the class specifying the domain model for this connection provider
+     * @param domainType the domain type to base this connection on
      * @return this builder instance
      */
-    B domainClassName(String domainClassName);
+    B domainType(DomainType domainType);
 
     /**
      * @param clientId the UUID identifying this client connection

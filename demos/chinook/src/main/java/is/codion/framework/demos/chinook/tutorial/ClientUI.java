@@ -157,7 +157,7 @@ public final class ClientUI {
     // in case a connection can not be established
     EntityConnectionProvider connectionProvider =
             LocalEntityConnectionProvider.builder()
-                    .domainClassName(ChinookImpl.class.getName())
+                    .domain(new ChinookImpl())
                     .user(User.parse("scott:tiger"))
                     .build();
 
