@@ -143,7 +143,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract void close(EntityConnection connection);
 
-  protected String domainTypeName(String domainClass) {
+  protected final String domainTypeName(String domainClass) {
     if (domainClass.contains(".")) {
       return domainClass.substring(domainClass.lastIndexOf('.') + 1);
     }
