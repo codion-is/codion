@@ -65,40 +65,32 @@ Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 
 == Gradle
+A minimal Gradle dependencies clause for a Swing based client application, based on an H2 database.
 [source,groovy,subs=attributes]
 ----
 dependencies {
-    //Swing client UI module
-    implementation 'is.codion:codion-swing-framework-ui:{codion-version}'
+    implementation "is.codion:codion-swing-framework-ui:{codion-version}"
 
-    //Local JDBC connection module
-    runtimeOnly 'is.codion:codion-framework-db-local:{codion-version}'
-    //H2 DBMS module
-    runtimeOnly 'is.codion:codion-dbms-h2database:{codion-version}'
-    //H2 JDBC driver
-    runtimeOnly 'com.h2database:h2:2.1.212'
-    //Logging with Logback
-    runtimeOnly 'is.codion:codion-plugin-logback-proxy:{codion-version}'
+    runtimeOnly "is.codion:codion-framework-db-local:{codion-version}"
+    runtimeOnly "is.codion:codion-dbms-h2database:{codion-version}"
+    runtimeOnly "com.h2database:h2:2.2.220"
+    runtimeOnly "is.codion:codion-plugin-logback-proxy:{codion-version}"
 
-    //Domain model unit testing module
-    testImplementation 'is.codion:codion-framework-domain-test:{codion-version}'
-    //JUnit 5
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation "is.codion:codion-framework-domain-test:{codion-version}"
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.9.3"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.9.3"
 }
 ----
 
 == Code examples
 
-There are at minimum two steps involved in creating a Codion application:
+There are at minimum three steps involved in creating a Codion application:
 
   * Defining a domain model based on the underlying tables.
   * Creating edit panels for tables requiring CRUD functionality.
+  * Assembling a client application from these building blocks.
 
-=== Domain
-
-The Codion framework is based around the *Entity* class, a map-like structure, representing a row in a table. The domain is modelled much like an E/R diagram, with a *EntityType* and *EntityDefinition* per table, an *Attribute* and a *Property* for each column and a *ForeignKey* and a *ForeignKeyProperty* for each foreign key relationship.
-
+===  Domain
 [cols="2,4"]
 |===
 |Module|Artifact
@@ -158,7 +150,7 @@ The *EntityPanel* class provides a Swing UI for viewing and editing entities. It
 
 Here we extend a *EntityEditPanel* to provide the UI for editing a customer and use that edit panel class when we assemble the *EntityPanel*. We use a default *SwingEntityModel* implementation, which internally, creates a default *SwingEntityEditModel* and *SwingEntityTableModel*.
 
-[source,java,indent=0]
+[source,java,indent=0,options="nowrap"]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=customerPanel]
 ----
@@ -167,7 +159,7 @@ include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[t
 
 Here we create a panel for viewing and editing customer addresses, much like the one above. We start by creating a default *SwingEntityModel* instance, which we add as a detail model on the customer model. Finally, we create a *EntityPanel* for the customer address and add that as a detail panel on the customer panel.
 
-[source,java,indent=0]
+[source,java,indent=0,options="nowrap"]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=detailPanel]
 ----
@@ -200,7 +192,7 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 
 ==== Selecting
 
-[source,java,indent=0]
+[source,java,indent=0,options="nowrap"]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=select]
 ----
