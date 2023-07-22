@@ -17,10 +17,9 @@ import is.codion.framework.domain.entity.Entities;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.ServiceLoader;
 
-import static java.util.Objects.requireNonNull;
+import static java.util.Collections.unmodifiableList;
 
 /**
  * Represents an application domain model, entities, reports and database operations.
@@ -109,38 +108,6 @@ public interface Domain {
       domains.add(domain);
     }
 
-    return domains;
-  }
-
-  /**
-   * @param name the domain name
-   * @return a {@link Domain} implementation with the given name, if found
-   * @see DomainType#name()
-   */
-  static Optional<Domain> domainByName(String name) {
-    requireNonNull(name);
-    for (Domain domain : domains()) {
-      if (domain.type().name().equals(name)) {
-        return Optional.of(domain);
-      }
-    }
-
-    return Optional.empty();
-  }
-
-  /**
-   * @param className the domain classname
-   * @return a {@link Domain} implementation of the given type, if found
-   * @see DomainType#name()
-   */
-  static Optional<Domain> domainByClassName(String className) {
-    requireNonNull(className);
-    for (Domain domain : domains()) {
-      if (domain.getClass().getName().equals(className)) {
-        return Optional.of(domain);
-      }
-    }
-
-    return Optional.empty();
+    return unmodifiableList(domains);
   }
 }

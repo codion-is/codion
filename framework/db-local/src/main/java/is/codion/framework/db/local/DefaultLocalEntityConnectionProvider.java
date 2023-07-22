@@ -82,7 +82,9 @@ final class DefaultLocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   private static Domain initializeDomain(DomainType domainType) {
-    return Domain.domainByName(domainType.name())
-            .orElseThrow(() -> new IllegalStateException("Domain model not found: " + domainType));
+    return Domain.domains().stream()
+            .filter(domain -> domain.type().equals(domainType))
+            .findAny()
+            .orElseThrow(() -> new IllegalStateException("Domain model not found in ServiceLoader: " + domainType));
   }
 }
