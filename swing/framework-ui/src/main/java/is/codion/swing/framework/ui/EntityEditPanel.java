@@ -182,7 +182,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     if (USE_FOCUS_ACTIVATION.get()) {
       ACTIVE_STATE_GROUP.add(activeState);
     }
-    this.controlCodes = controlCodes == null ? emptySet() : new LinkedHashSet<>(Arrays.asList(controlCodes));
+    this.controlCodes = validateControlCodes(controlCodes);
     if (editModel.isEntityNew()) {
       editModel.setDefaultValues();
     }
@@ -718,6 +718,17 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
 
   private void showEntityMenu() {
     new EntityPopupMenu(editModel().entity(), editModel().connectionProvider().connection()).show(this, 0, 0);
+  }
+
+  private static Set<ControlCode> validateControlCodes(ControlCode[] controlCodes) {
+    if (controlCodes == null) {
+      return emptySet();
+    }
+    for (ControlCode controlCode : controlCodes) {
+      requireNonNull(controlCode, "controlCode");
+    }
+
+    return new LinkedHashSet<>(Arrays.asList(controlCodes));
   }
 
   /**

@@ -9322,3 +9322,4 @@
   EntityConnectionProvider.Builder.domainClassName() removed, domainType() added, related changes
   DefaultLocalEntityConnectionProvider.initializeDomain() no longer uses Domain.domainByName()
   Domain.domainByClassName() and domainByName() removed, unused
+  EntityEditPanel, bug fixed, now validates that all ControlCodes are non-null
