@@ -17,11 +17,11 @@ import is.codion.framework.domain.property.ColumnProperty;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.stream.Collectors.joining;
@@ -30,8 +30,8 @@ import static java.util.stream.Collectors.toList;
 final class SelectQueries {
 
   private final Database database;
-  private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new HashMap<>();
-  private final Map<EntityType, String> allColumnsClauseCache = new HashMap<>();
+  private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
     this.database = database;
