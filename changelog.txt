@@ -9325,3 +9325,4 @@
   EntityEditPanel, bug fixed, now validates that all ControlCodes are non-null
   SelectQueries bug fixed, now uses ConcurrentHashMap for caches, since queries are created outside of synchronized blocks in DefaultLocalEntityConnection, potentially causing ConcurrentModificationException
   DefaultTextAreaBuilder.lineWrap and wrapStyleWord now false by default, like in JTextArea
+  ExceptionPanel refactored

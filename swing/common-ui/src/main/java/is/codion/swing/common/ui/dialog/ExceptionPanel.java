@@ -4,30 +4,27 @@
 package is.codion.swing.common.ui.dialog;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventObserver;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyStore;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.Sizes;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.button.CheckBoxBuilder;
+import is.codion.swing.common.ui.component.label.LabelBuilder;
 import is.codion.swing.common.ui.component.panel.BorderLayoutPanelBuilder;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.component.scrollpane.ScrollPaneBuilder;
+import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.JButton;
-import javax.swing.JLabel;
+import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.ScrollPaneConstants;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -37,15 +34,16 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
 import java.util.Arrays;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static java.awt.event.KeyEvent.VK_ENTER;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 
 /**
- * A JDialog for displaying information on exceptions.
+ * A Panel for displaying exception information.
  */
 final class ExceptionPanel extends JPanel {
 
@@ -59,181 +57,145 @@ final class ExceptionPanel extends JPanel {
   public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
           Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionPanel.displaySystemProperties", true);
 
-  private static final int DESCRIPTION_LABEL_WIDTH = 320;
+  private static final int MESSAGE_AREA_WIDTH = 500;
   private static final int SCROLL_PANE_WIDTH = 500;
   private static final int SCROLL_PANE_HEIGHT = 200;
-  private static final int MAX_MESSAGE_LENGTH = 100;
-  private static final int ICON_TEXT_GAP = 10;
   private static final int TAB_SIZE = 4;
 
-  private final JTextField exceptionField;
-  private final JTextArea messageArea;
-  private final JTextArea detailsArea;
-  private final JLabel descriptionLabel;
-  private final JButton printButton;
-  private final JButton saveButton;
-  private final JButton copyButton;
-  private final JPanel detailPanel;
-  private final JPanel centerPanel;
-
-  private final State showDetailsState = State.state();
-  private final Event<?> closeEvent = Event.event();
+  private final State showDetailState = State.state();
+  private final JCheckBox detailsCheckBox = CheckBoxBuilder.builder(showDetailState)
+          .text(MESSAGES.getString("details"))
+          .toolTipText(MESSAGES.getString("show_details"))
+          .build();
+  private final JTextArea errorMessageArea = TextAreaBuilder.builder()
+          .rowsColumns(3, 20)
+          .editable(false)
+          .lineWrap(true)
+          .wrapStyleWord(true)
+          .build();
+  private final JTextArea stackTraceArea = TextAreaBuilder.builder()
+          .editable(false)
+          .tabSize(TAB_SIZE)
+          .build();
+  private final JScrollPane stackTraceScrollPane = ScrollPaneBuilder.builder(stackTraceArea)
+          .visible(false)
+          .preferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT))
+          .build();
+  private final JButton printButton = ButtonBuilder.builder(Control.builder(stackTraceArea::print)
+                  .name(Messages.print())
+                  .description(MESSAGES.getString("print_error_report"))
+                  .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0)))
+          .visible(false)
+          .build();
+  private final JButton saveButton = ButtonBuilder.builder(Control.builder(this::saveDetails)
+                  .name(MESSAGES.getString("save"))
+                  .description(MESSAGES.getString("save_error_log"))
+                  .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0)))
+          .visible(false)
+          .build();
+  private final JButton closeButton = ButtonBuilder.builder(Control.builder(this::closeDialog)
+                  .name(MESSAGES.getString("close"))
+                  .description(MESSAGES.getString("close_dialog")))
+          .build();
+  private final JButton copyButton = ButtonBuilder.builder(Control.builder(() -> Utilities.setClipboard(stackTraceArea.getText()))
+                  .name(Messages.copy())
+                  .description(MESSAGES.getString("copy_to_clipboard"))
+                  .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0)))
+          .visible(false)
+          .build();
 
   ExceptionPanel(Throwable throwable, String message) {
-    exceptionField = new JTextField();
-    exceptionField.setEnabled(false);
-    messageArea = new JTextArea();
-    messageArea.setEnabled(false);
-    messageArea.setLineWrap(true);
-    messageArea.setWrapStyleWord(true);
-    messageArea.setBackground(exceptionField.getBackground());
-    messageArea.setBorder(exceptionField.getBorder());
-    detailsArea = new JTextArea();
-    detailsArea.setTabSize(TAB_SIZE);
-    detailsArea.setEditable(false);
-    descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"));
-    Sizes.setPreferredWidth(descriptionLabel, DESCRIPTION_LABEL_WIDTH);
-    descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
-    printButton = ButtonBuilder.builder(Control.builder(detailsArea::print)
-                    .name(Messages.print())
-                    .description(MESSAGES.getString("print_error_report"))
-                    .mnemonic(MESSAGES.getString("print_error_report_mnemonic").charAt(0)))
-            .build();
-    saveButton = ButtonBuilder.builder(Control.builder(this::saveDetails)
-                    .name(MESSAGES.getString("save"))
-                    .description(MESSAGES.getString("save_error_log"))
-                    .mnemonic(MESSAGES.getString("save_mnemonic").charAt(0)))
-            .build();
-    copyButton = ButtonBuilder.builder(Control.builder(() -> Utilities.setClipboard(detailsArea.getText()))
-                    .name(Messages.copy())
-                    .description(MESSAGES.getString("copy_to_clipboard"))
-                    .mnemonic(MESSAGES.getString("copy_mnemonic").charAt(0)))
-            .build();
-    centerPanel = createCenterPanel();
-    detailPanel = PanelBuilder.builder(FlexibleGridLayout.builder()
-                    .rowsColumns(2, 2)
-                    .fixedRowHeight(exceptionField.getPreferredSize().height)
-                    .build())
-            .add(exceptionField)
-            .add(ScrollPaneBuilder.builder(messageArea)
-                    .horizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER)
-                    .verticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED)
-                    .build())
-            .build();
-    showDetailsState.addDataListener(this::initializeDetailView);
-    initializeUI();
-    setException(throwable, message);
-  }
-
-  void addShowDetailsListener(EventDataListener<Boolean> showDetailsListener) {
-    showDetailsState.addDataListener(showDetailsListener);
-  }
-
-  public EventObserver<?> closeObserver() {
-    return closeEvent.observer();
-  }
-
-  private void initializeUI() {
+    setThrowable(throwable, message);
     setLayout(borderLayout());
-    add(BorderLayoutPanelBuilder.builder(borderLayout())
+    add(createMainPanel(), BorderLayout.CENTER);
+    bindEvents();
+  }
+
+  JButton closeButton() {
+    return closeButton;
+  }
+
+  JCheckBox detailsCheckBox() {
+    return detailsCheckBox;
+  }
+
+  private JPanel createMainPanel() {
+    return BorderLayoutPanelBuilder.builder()
             .border(createEmptyBorder())
-            .northComponent(createNorthPanel())
-            .centerComponent(centerPanel)
-            .southComponent(createButtonPanel())
-            .build(), BorderLayout.CENTER);
-  }
-
-  private void initializeDetailView(boolean showDetails) {
-    printButton.setVisible(showDetails);
-    saveButton.setVisible(showDetails);
-    copyButton.setVisible(showDetails);
-    detailPanel.setVisible(showDetails);
-    centerPanel.setVisible(showDetails);
-    detailPanel.revalidate();
-  }
-
-  private JPanel createNorthPanel() {
-    return BorderLayoutPanelBuilder.builder(borderLayout())
-            .centerComponent(descriptionLabel)
-            .build();
-  }
-
-  private JPanel createCenterPanel() {
-    return BorderLayoutPanelBuilder.builder(new BorderLayout())
-            .centerComponent(ScrollPaneBuilder.builder(detailsArea)
-                    .preferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT))
+            .northComponent(BorderLayoutPanelBuilder.builder()
+                    .westComponent(LabelBuilder.builder(UIManager.getIcon("OptionPane.errorIcon")).build())
+                    .centerComponent(ScrollPaneBuilder.builder(errorMessageArea)
+                            .preferredWidth(MESSAGE_AREA_WIDTH)
+                            .build())
                     .build())
+            .centerComponent(stackTraceScrollPane)
+            .southComponent(createButtonPanel())
             .build();
   }
 
   private JPanel createButtonPanel() {
-    Control closeControl = Control.builder(closeEvent::onEvent)
-            .name(MESSAGES.getString("close"))
-            .description(MESSAGES.getString("close_dialog"))
-            .build();
-    KeyEvents.builder(VK_ESCAPE)
-            .condition(WHEN_IN_FOCUSED_WINDOW)
-            .action(closeControl)
-            .enable(this);
-    KeyEvents.builder(VK_ENTER)
-            .condition(WHEN_IN_FOCUSED_WINDOW)
-            .action(closeControl)
-            .enable(this);
-
-    JPanel westPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
-    westPanel.add(CheckBoxBuilder.builder(showDetailsState)
-            .text(MESSAGES.getString("details"))
-            .toolTipText(MESSAGES.getString("show_details"))
-            .build());
-    JPanel centerButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    centerButtonPanel.add(copyButton);
-    centerButtonPanel.add(printButton);
-    centerButtonPanel.add(saveButton);
-    centerButtonPanel.add(ButtonBuilder.builder(closeControl).build());
-
-    return BorderLayoutPanelBuilder.builder(new BorderLayout())
-            .westComponent(westPanel)
-            .centerComponent(centerButtonPanel)
+    return BorderLayoutPanelBuilder.builder(borderLayout())
+            .westComponent(PanelBuilder.builder(flowLayout(FlowLayout.LEFT))
+                    .add(detailsCheckBox)
+                    .build())
+            .centerComponent(PanelBuilder.builder(flowLayout(FlowLayout.RIGHT))
+                    .addAll(copyButton, printButton, saveButton, closeButton)
+                    .build())
             .build();
   }
 
-  void setException(Throwable throwable, String message) {
-    String name = throwable.getClass().getSimpleName();
-    descriptionLabel.setText(message == null ? name : truncateMessage(message));
-    descriptionLabel.setToolTipText(message);
+  private void bindEvents() {
+    KeyEvents.builder(VK_ESCAPE)
+            .condition(WHEN_IN_FOCUSED_WINDOW)
+            .action(Control.control(this::closeDialog))
+            .enable(this);
+    showDetailState.addDataListener(this::showDetails);
+  }
 
-    exceptionField.setText(name);
-    messageArea.setText(throwable.getMessage());
+  private void showDetails(boolean showDetails) {
+    copyButton.setVisible(showDetails);
+    printButton.setVisible(showDetails);
+    saveButton.setVisible(showDetails);
+    stackTraceScrollPane.setVisible(showDetails);
+    parentDialog().ifPresent(dialog -> {
+      dialog.pack();
+      dialog.setLocationRelativeTo(dialog.getOwner());
+    });
+  }
 
-    StringWriter stringWriter = new StringWriter();
-    throwable.printStackTrace(new PrintWriter(stringWriter));
+  private void closeDialog() {
+    parentDialog().ifPresent(JDialog::dispose);
+  }
 
-    detailsArea.setText(null);
-    detailsArea.append(stringWriter.toString());
-
-    if (DISPLAY_SYSTEM_PROPERTIES.get()) {
-      detailsArea.append("\n");
-      detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
-      detailsArea.append(PropertyStore.systemProperties());
-    }
-
-    detailsArea.setCaretPosition(0);
-    initializeDetailView(false);
+  private Optional<JDialog> parentDialog() {
+    return Optional.of(Utilities.parentDialog(this));
   }
 
   private void saveDetails() throws IOException {
     Files.write(new DefaultFileSelectionDialogBuilder()
-                    .owner(detailsArea)
+                    .owner(stackTraceArea)
                     .selectFileToSave("error.txt")
                     .toPath(),
-            Arrays.asList(detailsArea.getText().split("\\r?\\n")));
+            Arrays.asList(stackTraceArea.getText().split("\\r?\\n")));
   }
 
-  private static String truncateMessage(String message) {
-    if (message.length() > MAX_MESSAGE_LENGTH) {
-      return message.substring(0, MAX_MESSAGE_LENGTH) + "...";
+  private void setThrowable(Throwable exception, String message) {
+    errorMessageArea.setText(message);
+    errorMessageArea.setCaretPosition(0);
+    stackTraceArea.setText(stackTraceAndProperties(exception));
+    stackTraceArea.setCaretPosition(0);
+  }
+
+  private static String stackTraceAndProperties(Throwable exception) {
+    StringWriter stringWriter = new StringWriter();
+    exception.printStackTrace(new PrintWriter(stringWriter));
+    StringBuilder builder = new StringBuilder(stringWriter.toString());
+    if (DISPLAY_SYSTEM_PROPERTIES.get()) {
+      builder.append("\n");
+      builder.append("--------------------------------------------Properties--------------------------------------------\n\n");
+      builder.append(PropertyStore.systemProperties());
     }
 
-    return message;
+    return builder.toString();
   }
 }
