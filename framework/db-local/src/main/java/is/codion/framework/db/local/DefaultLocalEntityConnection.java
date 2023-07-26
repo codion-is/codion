@@ -227,7 +227,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           populatePropertiesAndValues(entity, insertableProperties(entityDefinition, keyGenerator.isInserted()),
                   statementProperties, statementValues, columnProperty -> entity.contains(columnProperty.attribute()));
           if (keyGenerator.isInserted() && statementProperties.isEmpty()) {
-            throw new SQLException("Unable to insert entity " + entity.type() + ", no properties to insert");
+            throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
           }
 
           insertQuery = insertQuery(entityDefinition.tableName(), statementProperties);
@@ -441,7 +441,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statement.close();
         }
         if (keys.size() != deleteCount) {
-          throw new DeleteException(keys.size() + " deleted rows expected, deleted " + deleteCount);
+          throw new DeleteException(deleteCount + " rows deleted, expected " + keys.size());
         }
         commitIfTransactionIsNotOpen();
       }
@@ -560,7 +560,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(attribute, "attribute").entityType());
     if (entityDefinition.selectQuery() != null) {
-      throw new UnsupportedOperationException("select is not implemented for entities with custom select queries");
+      throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
             condition(entityDefinition.type()).selectBuilder()
