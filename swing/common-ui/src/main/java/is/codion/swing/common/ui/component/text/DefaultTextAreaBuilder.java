@@ -16,9 +16,9 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   private int columns;
   private int rows;
   private int tabSize;
-  private boolean lineWrap = true;
-  private boolean wrapStyleWord = true;
-  private boolean autoscrolls = true;
+  private boolean lineWrap = false;
+  private boolean wrapStyleWord = false;
+  private boolean autoscrolls = false;
   private Document document;
 
   DefaultTextAreaBuilder(Value<String> linkedValue) {
