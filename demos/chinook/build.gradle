@@ -12,8 +12,6 @@ dependencies {
     implementation project(":codion-swing-framework-ui")
     implementation project(":codion-swing-framework-model-tools")
 
-    implementation project(":codion-javafx-framework")
-
     implementation project(":codion-plugin-imagepanel")
     implementation project(":codion-plugin-jasperreports")
 

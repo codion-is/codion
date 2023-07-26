@@ -14,8 +14,6 @@ dependencies {
     implementation project(":codion-swing-framework-ui")
     implementation project(":codion-swing-framework-model-tools")
 
-    implementation project(":codion-javafx-framework")
-
     implementation project(":codion-plugin-jasperreports")
     implementation project(":codion-framework-json-domain")
 
@@ -46,17 +44,6 @@ test {
 
 runClientLocal {
     mainClass.set("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel")
-}
-
-tasks.register("runClientLocalFX", JavaExec) {
-    group "application"
-    mainClass.set("is.codion.framework.demos.empdept.javafx.EmpDeptFX")
-    classpath = sourceSets.main.runtimeClasspath
-    systemProperties = [
-            "codion.client.connectionType": "local",
-            "codion.db.url"               : "jdbc:h2:mem:h2db",
-            "codion.db.initScripts"       : "src/main/sql/create_schema.sql"
-    ]
 }
 
 runClientRMI {
