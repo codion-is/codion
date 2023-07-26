@@ -90,6 +90,15 @@ provides is.codion.framework.domain.Domain
           with is.codion.framework.demos.store.domain.StoreImpl;
 ----
 
+or if not using Java Modules (JPMS)
+
+_src/main/resources/META-INF/services/is.codion.framework.domain.Domain_
+
+[source]
+----
+is.codion.framework.demos.store.domain.StoreImpl
+----
+
 NOTE: The domain model implementation must be on the classpath when running with a local JDBC connection, but when running with a RMI or HTTP connection the domain model API is sufficient. If you forsee using RMI or HTTP connections it is recommended to split your domain model into separate API and implementation modules, to simplify client configurations (see https://github.com/bjorndarri/chinook[Chinook] and https://github.com/bjorndarri/world[World] demo applications, see https://github.com/bjorndarri/petclinic[Petclinic] for a simple single class domain model).
 
 The domain model provides an {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entities.html[Entities] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html#entities{opar}{cpar}[entities()], which contains the entity definitions and serves as a factory for *Entity* and *Key* instances.
