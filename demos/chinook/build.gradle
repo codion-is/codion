@@ -1,5 +1,4 @@
 plugins {
-    id "org.openjfx.javafxplugin" version "0.0.14"
     id "org.gradlex.extra-java-module-info"
 }
 
@@ -50,18 +49,6 @@ dependencies {
 
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-javafx {
-    version = "18"
-    modules = ["javafx.base", "javafx.graphics", "javafx.controls", "javafx.swing"]
-}
-
-compileTestJava {
-    options.compilerArgs = [
-            "--add-modules", "is.codion.framework.domain.test",
-            "--add-reads", "$moduleName=is.codion.framework.domain.test",
-    ]
-}
-
 buildReports {
     sourceDir = file("src/main/reports")
     targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/chinook/domain")
@@ -70,10 +57,6 @@ buildReports {
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainType", "Chinook"
-    jvmArgs = [
-            "--add-reads", "$moduleName=is.codion.framework.domain.test",
-            "--add-reads", "is.codion.framework.domain=is.codion.framework.demos.chinook"
-    ]
 }
 
 runClientLocal {

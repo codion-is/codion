@@ -1,5 +1,4 @@
 plugins {
-    id "org.openjfx.javafxplugin" version "0.0.14"
     id "org.gradlex.extra-java-module-info"
 }
 
@@ -39,18 +38,6 @@ dependencies {
 apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
-javafx {
-    version = "18"
-    modules = ["javafx.base", "javafx.graphics", "javafx.controls", "javafx.swing"]
-}
-
-compileTestJava {
-    options.compilerArgs = [
-            "--add-modules", "is.codion.swing.framework.ui.test",
-            "--add-reads", "$moduleName=is.codion.swing.framework.ui.test",
-    ]
-}
-
 buildReports {
     sourceDir = file("src/main/reports")
     targetDir = file(sourceSets.main.output.resourcesDir.toString() + "/is/codion/framework/demos/empdept/domain")
@@ -59,10 +46,6 @@ buildReports {
 test {
     systemProperty "codion.db.initScripts", "src/main/sql/create_schema.sql"
     systemProperty "codion.client.domainType", "EmpDept"
-    jvmArgs = [
-            "--add-reads", "$moduleName=is.codion.swing.framework.ui.test",
-            "--add-exports", "$moduleName/is.codion.framework.demos.empdept.ui=is.codion.swing.framework.ui,is.codion.swing.framework.ui.test"
-    ]
 }
 
 runClientLocal {
