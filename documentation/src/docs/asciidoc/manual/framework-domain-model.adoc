@@ -21,7 +21,7 @@ interface Entity {
 == Domain core classes
 
 === *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*
-A domain model in Codion is modelled much like an E/R diagram and is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain]* class and populating it with entity definitions.
+Specifies a domain model, containing entity definitions, procedures, functions and reports. A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain]* class and populating it with entity definitions.
 
 === *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType]*
 A unique identifier for a domain model and a factory for *EntityType* instances associated with that domain model.
@@ -72,13 +72,15 @@ The domain model is implemented by extending the {url-javadoc}{framework-domain}
 
 The factory methods for creating *EntityDefinitions* and *Properties* used below return builders which provide further configuration options (such as nullability and maximum length for properties and the caption and primary key generator for the entity definition). These factory methods are usually statically imported, but the class names are included here for clarity.
 
+NOTE: If a caption is not specified for a property, it is marked as hidden and is not visible in table views.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomainModel.java[tags=storeImpl]
 ----
 <1> The *DomainType* constant is a required constructor parameter.
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a Service Provider Interface (SPI), and it is recommended to expose the domain implementation class to the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[Service Loader]. Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain] is a https://docs.oracle.com/javase/tutorial/sound/SPI-intro.html[Service Provider Interface (SPI)], and it is recommended to configure the domain implementation class for the https://docs.oracle.com/javase/8/docs/api/java/util/ServiceLoader.html[Service Loader]. Without the Service Loader you are restricted to a local JDBC connection, since you must manually provide a domain instance when establishing a connection, instead of just referring to the *DomainType* constant.
 
 _src/main/java/module-info.java_
 

@@ -120,7 +120,6 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     JTextArea textArea = textArea()
             .document(model.logDocument())
             .editable(false)
-            .lineWrap(false)
             .wrapStyleWord(true)
             .build();
     Font font = textArea.getFont();

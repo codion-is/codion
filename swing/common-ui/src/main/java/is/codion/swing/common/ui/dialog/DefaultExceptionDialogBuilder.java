@@ -8,6 +8,7 @@ import is.codion.common.value.Value;
 
 import javax.swing.JDialog;
 import javax.swing.SwingUtilities;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -47,17 +48,25 @@ class DefaultExceptionDialogBuilder extends AbstractDialogBuilder<ExceptionDialo
 
   private void displayException(Throwable exception) {
     ExceptionPanel exceptionPanel = new ExceptionPanel(exception, message == null ? exception.getMessage() : message);
-
-    JDialog dialog = new DefaultComponentDialogBuilder(exceptionPanel)
+    new DefaultComponentDialogBuilder(exceptionPanel)
             .titleProvider(titleProvider)
             .owner(owner)
-            .closeEvent(exceptionPanel.closeObserver())
-            .build();
-    exceptionPanel.addShowDetailsListener(showDetails -> {
-      dialog.pack();
-      dialog.setLocationRelativeTo(owner);
-    });
+            .onShown(new OnShown(exceptionPanel))
+            .show();
+  }
 
-    dialog.setVisible(true);
+  private static final class OnShown implements Consumer<JDialog> {
+
+    private final ExceptionPanel exceptionPanel;
+
+    private OnShown(ExceptionPanel exceptionPanel) {
+      this.exceptionPanel = exceptionPanel;
+    }
+
+    @Override
+    public void accept(JDialog dialog) {
+      dialog.getRootPane().setDefaultButton(exceptionPanel.closeButton());
+      exceptionPanel.detailsCheckBox().requestFocusInWindow();
+    }
   }
 }
