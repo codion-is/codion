@@ -72,6 +72,8 @@ The domain model is implemented by extending the {url-javadoc}{framework-domain}
 
 The factory methods for creating *EntityDefinitions* and *Properties* used below return builders which provide further configuration options (such as nullability and maximum length for properties and the caption and primary key generator for the entity definition). These factory methods are usually statically imported, but the class names are included here for clarity.
 
+NOTE: If a caption is not specified for a property, it is marked as hidden and is not visible in table views.
+
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomainModel.java[tags=storeImpl]
