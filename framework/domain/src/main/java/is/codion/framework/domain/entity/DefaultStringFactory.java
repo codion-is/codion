@@ -11,7 +11,7 @@ import java.util.function.Function;
 import static java.util.stream.Collectors.joining;
 
 /**
- * A ToString implementation using the entityType plus primary key value.
+ * A ToString implementation using the entityType plus available attribute values.
  */
 final class DefaultStringFactory implements Function<Entity, String>, Serializable {
 
@@ -22,8 +22,13 @@ final class DefaultStringFactory implements Function<Entity, String>, Serializab
     return new StringBuilder(entity.type().name())
             .append(entity.definition().properties().stream()
                     .map(Property::attribute)
-                    .map(attribute -> attribute.name() + ": " + entity.toString(attribute))
+                    .filter(entity::contains)
+                    .map(attribute -> toString(entity, attribute))
                     .collect(joining(", ", ": ", "")))
             .toString();
+  }
+
+  private static String toString(Entity entity, Attribute<?> attribute) {
+    return attribute.name() + ": " + (entity.isNull(attribute) ? "null" : entity.toString(attribute));
   }
 }

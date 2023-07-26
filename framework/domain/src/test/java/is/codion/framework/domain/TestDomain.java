@@ -425,13 +425,15 @@ public final class TestDomain extends DefaultDomain {
     EntityType TYPE = DOMAIN.entityType("null_string");
 
     Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
+    Attribute<Integer> ATTR = TYPE.integerAttribute("attr");
+    Attribute<Integer> ATTR2 = TYPE.integerAttribute("attr2");
   }
 
   void nullString() {
     add(definition(
             primaryKeyProperty(NullString.ID),
-            columnProperty(NullString.TRANS))
+            columnProperty(NullString.ATTR),
+            columnProperty(NullString.ATTR2))
             .stringFactory(entity -> null));
   }
 
