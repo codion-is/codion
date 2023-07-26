@@ -5,14 +5,13 @@
 :dir-source-sql: ../../../../demos/manual/src/main/sql
 
 == Rich client
-Codion is primarily a Swing based framework, the Swing client is mature and stable while the JavaFX client is quite rudimentary and still in the 'proof-of-concept' stage. The below artifacts pull in all required framework dependencies.
+This artifact pulls in all required framework dependencies, except the ones related to database connectivity and logging, see below.
 
 [cols="1,4"]
 |===
 |Client|Artifact
 
 |Swing|is.codion:codion-swing-framework.ui:{codion-version}
-|JavaFX|is.codion:codion-javafx-framework:{codion-version}
 |===
 
 == Database connectivity
@@ -27,7 +26,7 @@ A Codion client has three ways of connecting to a database, directly via a local
 |HTTP|is.codion:codion-framework-db-http:{codion-version}
 |===
 
-== DBMS
+=== DBMS
 When connecting to the database with a local JDBC connection the DBMS module for the underlying database must be on the classpath. Note that these artifacts do not depend on the JDBC drivers, so those must be added separately.
 
 The most used and tested DBMS modules are:
@@ -65,7 +64,7 @@ Codion uses SLF4J throughout so all you need to do is add a SLF4J bridge for you
 |===
 
 == Gradle
-A minimal Gradle dependencies clause for a Swing based client application, based on an H2 database.
+A minimal Gradle dependencies configuration for a Swing based client application, using the H2 database.
 [source,groovy,subs=attributes]
 ----
 dependencies {

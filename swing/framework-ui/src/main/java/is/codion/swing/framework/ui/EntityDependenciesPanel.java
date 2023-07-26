@@ -7,6 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.control.Control;
@@ -116,7 +117,7 @@ public final class EntityDependenciesPanel extends JPanel {
       EntityDependenciesPanel dependenciesPanel = new EntityDependenciesPanel(dependencies, connectionProvider);
       Dialogs.componentDialog(dependenciesPanel)
               .owner(dialogParent)
-              .title(MESSAGES.getString("dependencies_found"))
+              .title(FrameworkMessages.dependencies())
               .onShown(dialog -> dependenciesPanel.requestSelectedTableFocus())
               .show();
     }

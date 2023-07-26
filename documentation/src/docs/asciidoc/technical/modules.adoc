@@ -36,7 +36,7 @@ image::modules/common/db/build/reports/dependency-graph/dependency-graph.svg[opt
 [discrete]
 === codion-common-model
 
-General model classes shared between Swing and JavaFX UI components.
+Common model classes.
 
 * {url-javadoc}{common-model}/is/codion/common/model/table/package-summary.html[is.codion.common.model.table]
 
@@ -280,7 +280,7 @@ image::modules/framework/json-db/build/reports/dependency-graph/dependency-graph
 [discrete]
 === codion-framework-model
 
-General application model classes shared between Swing and JavaFX UI components.
+Common framework model classes.
 
 * {url-javadoc}{framework-model}/is/codion/framework/model/package-summary.html[is.codion.framework.model]
 
@@ -446,19 +446,6 @@ image::modules/swing/framework-ui-tools/build/reports/dependency-graph/dependenc
 [%collapsible]
 ====
 image::modules/swing/framework-server-monitor/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
-====
-
-== JavaFX
-
-JavaFX client implementation (still quite experimental).
-
-[discrete]
-=== codion-javafx-framework
-
-.Dependency graph
-[%collapsible]
-====
-image::modules/javafx/framework/build/reports/dependency-graph/dependency-graph.svg[opts=interactive]
 ====
 
 == Plugins
