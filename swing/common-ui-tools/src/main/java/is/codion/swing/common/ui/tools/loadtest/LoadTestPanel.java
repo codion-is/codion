@@ -98,7 +98,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   /**
-   * Runs this load test panel and displays it in a frame on the EDT.
+   * Displays this LoadTestPanel in a frame on the EDT.
    */
   public void run() {
     SwingUtilities.invokeLater(this::showFrame);
@@ -108,7 +108,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * Shows a frame containing this load test panel
    * @return the frame
    */
-  public JFrame showFrame() {
+  private JFrame showFrame() {
     return frame(this)
             .icon(logoTransparent())
             .menuBar(menu(createMainMenuControls()).createMenuBar())
