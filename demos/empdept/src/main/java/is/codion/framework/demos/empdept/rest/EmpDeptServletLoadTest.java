@@ -29,7 +29,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   private static final User UNIT_TEST_USER =
           User.parse(System.getProperty("codion.test.user", "scott:tiger"));
 
-  public EmpDeptServletLoadTest(User user) {
+  private EmpDeptServletLoadTest(User user) {
     super(user, asList(new SelectDepartment(), new UpdateLocation(), new SelectEmployees(), new AddDepartment(), new AddEmployee()),
             5000, 2, 10);
     setWeight(UpdateLocation.NAME, 2);
@@ -54,11 +54,12 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   public static void main(String[] args) {
-    new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).showFrame();
+    new LoadTestPanel<>(new EmpDeptServletLoadTest(UNIT_TEST_USER)).run();
   }
 
   private static final class UpdateLocation extends AbstractUsageScenario<EntityConnectionProvider> {
-    public static final String NAME = "UpdateLocation";
+
+    private static final String NAME = "UpdateLocation";
 
     private UpdateLocation() {
       super(NAME);
@@ -74,7 +75,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   private static final class SelectDepartment extends AbstractUsageScenario<EntityConnectionProvider> {
-    public static final String NAME = "SelectDepartment";
+
+    private static final String NAME = "SelectDepartment";
 
     private SelectDepartment() {
       super(NAME);
@@ -87,7 +89,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   private static final class SelectEmployees extends AbstractUsageScenario<EntityConnectionProvider> {
-    public static final String NAME = "SelectEmployees";
+
+    private static final String NAME = "SelectEmployees";
 
     private SelectEmployees() {
       super(NAME);
@@ -121,7 +124,8 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   private static final class AddEmployee extends AbstractUsageScenario<EntityConnectionProvider> {
-    public static final String NAME = "AddEmployee";
+
+    private static final String NAME = "AddEmployee";
 
     private final Random random = new Random();
 

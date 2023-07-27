@@ -9368,3 +9368,5 @@
   DefaultStringFactory now only includes attributes which have an associated value and outputs 'null' for null values instead of an empty string
   EntityDependenciesPanel, dialog title simplified
   JavaFX client module removed from main repository
+  LoadTestPanel.showFrame() now private
+  LoadTestPanel refactored

@@ -180,7 +180,7 @@ dependencyResolutionManagement {
             version("jfreechart", "1.5.4")
             version("jcommon", "1.0.24")
             version("http.client", "4.5.14")
-            version("junit", "5.9.3")
+            version("junit", "5.10.0")
             version("sslcontext.kickstart", "8.1.4")
             version("flatlaf", "3.1.1")
             version("ikonli", "12.3.1")

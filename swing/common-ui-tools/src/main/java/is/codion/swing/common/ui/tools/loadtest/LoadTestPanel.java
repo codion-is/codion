@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -36,7 +37,6 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.List;
@@ -70,7 +70,6 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private final LoadTest<T> loadTestModel;
   private final JPanel scenarioBase = new JPanel(gridLayout(0, 1));
-  private final ItemRandomizerPanel<UsageScenario<T>> scenarioPanel;
 
   static {
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
@@ -86,7 +85,6 @@ public final class LoadTestPanel<T> extends JPanel {
    */
   public LoadTestPanel(LoadTest<T> loadTestModel) {
     this.loadTestModel = requireNonNull(loadTestModel, "loadTestModel");
-    this.scenarioPanel = createScenarioPanel();
     initializeUI();
   }
 
@@ -98,7 +96,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   /**
-   * Runs this load test panel and displays it in a frame on the EDT.
+   * Displays this LoadTestPanel in a frame on the EDT.
    */
   public void run() {
     SwingUtilities.invokeLater(this::showFrame);
@@ -108,7 +106,7 @@ public final class LoadTestPanel<T> extends JPanel {
    * Shows a frame containing this load test panel
    * @return the frame
    */
-  public JFrame showFrame() {
+  private JFrame showFrame() {
     return frame(this)
             .icon(logoTransparent())
             .menuBar(menu(createMainMenuControls()).createMenuBar())
@@ -142,19 +140,49 @@ public final class LoadTestPanel<T> extends JPanel {
             .northComponent(flexibleGridLayoutPanel(5, 1)
                     .add(createApplicationPanel())
                     .add(createActivityPanel())
-                    .add(scenarioPanel)
+                    .add(createScenarioPanel())
                     .add(createUserPanel())
                     .add(createChartControlPanel())
                     .build())
             .build(), BorderLayout.WEST);
-    add(createChartPanel(), BorderLayout.CENTER);
+    add(createCenterPanel(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private static JPanel createSouthPanel() {
-    return panel(flowLayout(FlowLayout.TRAILING))
-            .add(new JLabel("Memory usage:"))
-            .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
+  private JPanel createApplicationPanel() {
+    return borderLayoutPanel()
+            .border(createTitledBorder("Applications"))
+            .northComponent(borderLayoutPanel()
+                    .westComponent(flexibleGridLayoutPanel(1, 2)
+                            .add(new JLabel("Batch size"))
+                            .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
+                                    .editable(false)
+                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                                    .toolTipText("Application batch size")
+                                    .build())
+                            .build())
+                    .centerComponent(createAddRemoveApplicationPanel())
+                    .build())
+            .build();
+  }
+
+  private JPanel createActivityPanel() {
+    return flexibleGridLayoutPanel(4, 2)
+            .add(new JLabel("Max. think time", SwingConstants.CENTER))
+            .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
+                    .stepSize(SPINNER_STEP_SIZE)
+                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                    .build())
+            .add(new JLabel("Min. think time", SwingConstants.CENTER))
+            .add(integerSpinner(loadTestModel.minimumThinkTimeValue())
+                    .stepSize(SPINNER_STEP_SIZE)
+                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                    .build())
+            .add(toggleButton(loadTestModel.pausedState())
+                    .text("Pause")
+                    .mnemonic('P')
+                    .build())
+            .border(createTitledBorder("Activity"))
             .build();
   }
 
@@ -189,19 +217,14 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel createApplicationPanel() {
-    return borderLayoutPanel()
-            .border(createTitledBorder("Applications"))
-            .northComponent(borderLayoutPanel()
-                    .westComponent(flexibleGridLayoutPanel(1, 2)
-                            .add(new JLabel("Batch size"))
-                            .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
-                                    .editable(false)
-                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                                    .toolTipText("Application batch size")
-                                    .build())
-                            .build())
-                    .centerComponent(createAddRemoveApplicationPanel())
+  private JPanel createChartControlPanel() {
+    return flexibleGridLayoutPanel(1, 2)
+            .border(createTitledBorder("Charts"))
+            .add(checkBox(loadTestModel.collectChartDataState())
+                    .text("Collect chart data")
+                    .build())
+            .add(button(Control.control(loadTestModel::clearChartData))
+                    .text("Clear")
                     .build())
             .build();
   }
@@ -226,78 +249,14 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel createChartControlPanel() {
-    return flexibleGridLayoutPanel(1, 2)
-            .border(createTitledBorder("Charts"))
-            .add(checkBox(loadTestModel.collectChartDataState())
-                    .text("Collect chart data")
-                    .build())
-            .add(button(Control.control(loadTestModel::clearChartData))
-                    .text("Clear")
-                    .build())
-            .build();
-  }
-
-  private JPanel createChartPanel() {
-    JFreeChart thinkTimeChart = createXYStepChart(null,
-            null, null, loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(thinkTimeChart);
-    ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
-    thinkTimeChartPanel.setBorder(createEtchedBorder());
-
-    JFreeChart numberOfApplicationsChart = createXYStepChart(null,
-            null, null, loadTestModel.numberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(numberOfApplicationsChart);
-    ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
-    numberOfApplicationsChartPanel.setBorder(createEtchedBorder());
-
-    JFreeChart usageScenarioChart = createXYStepChart(null,
-            null, null, loadTestModel.usageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(usageScenarioChart);
-    ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
-    usageScenarioChartPanel.setBorder(createEtchedBorder());
-
-    JFreeChart failureChart = createXYStepChart(null,
-            null, null, loadTestModel.usageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(failureChart);
-    ChartPanel failureChartPanel = new ChartPanel(failureChart);
-    failureChartPanel.setBorder(createEtchedBorder());
-
-    JFreeChart memoryUsageChart = createXYStepChart(null,
-            null, null, loadTestModel.memoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(memoryUsageChart);
-    ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
-    memoryUsageChartPanel.setBorder(createEtchedBorder());
-
-    JFreeChart systemLoadChart = createXYStepChart(null,
-            null, null, loadTestModel.systemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
-    setColors(systemLoadChart);
-    systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
-    ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
-    systemLoadChartPanel.setBorder(createEtchedBorder());
-
-    usageScenarioChartPanel.setBorder(createTitledBorder("Scenarios run per second"));
-    thinkTimeChartPanel.setBorder(createTitledBorder("Think time (ms)"));
-    numberOfApplicationsChartPanel.setBorder(createTitledBorder("Application count"));
-    memoryUsageChartPanel.setBorder(createTitledBorder("Memory usage (MB)"));
-    systemLoadChartPanel.setBorder(createTitledBorder("System load"));
-    failureChartPanel.setBorder(createTitledBorder("Scenario run failures per second"));
-
-    return panel(new BorderLayout())
-            .add(tabbedPane()
+  private JPanel createCenterPanel() {
+    return borderLayoutPanel()
+            .centerComponent(tabbedPane()
                     .tab("Overview", splitPane()
                             .orientation(JSplitPane.VERTICAL_SPLIT)
                             .oneTouchExpandable(true)
-                            .leftComponent(tabbedPane()
-                                    .tab("Scenarios run", usageScenarioChartPanel)
-                                    .tab("Failed runs", failureChartPanel)
-                                    .build())
-                            .rightComponent(panel(new GridLayout(1, 4))
-                                    .add(memoryUsageChartPanel)
-                                    .add(systemLoadChartPanel)
-                                    .add(thinkTimeChartPanel)
-                                    .add(numberOfApplicationsChartPanel)
-                                    .build())
+                            .topComponent(createScenarioOverviewChartPanel())
+                            .bottomComponent(createSouthChartPanel())
                             .resizeWeight(RESIZE_WEIGHT)
                             .build())
                     .tab("Scenarios", scenarioBase)
@@ -305,24 +264,81 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
   }
 
-  private JPanel createActivityPanel() {
-    return flexibleGridLayoutPanel(4, 2)
-            .add(new JLabel("Max. think time", SwingConstants.CENTER))
-            .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
-                    .stepSize(SPINNER_STEP_SIZE)
-                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                    .build())
-            .add(new JLabel("Min. think time", SwingConstants.CENTER))
-            .add(integerSpinner(loadTestModel.minimumThinkTimeValue())
-                    .stepSize(SPINNER_STEP_SIZE)
-                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                    .build())
-            .add(toggleButton(loadTestModel.pausedState())
-                    .text("Pause")
-                    .mnemonic('P')
-                    .build())
-            .border(createTitledBorder("Activity"))
+  private JTabbedPane createScenarioOverviewChartPanel() {
+    return tabbedPane()
+            .tab("Scenarios run", createUsageScenarioChartPanel())
+            .tab("Failed runs", createFailureChartPanel())
             .build();
+  }
+
+  private ChartPanel createUsageScenarioChartPanel() {
+    JFreeChart usageScenarioChart = createXYStepChart(null, null, null,
+            loadTestModel.usageScenarioDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(usageScenarioChart);
+    ChartPanel usageScenarioChartPanel = new ChartPanel(usageScenarioChart);
+    usageScenarioChartPanel.setBorder(createTitledBorder("Scenarios run per second"));
+
+    return usageScenarioChartPanel;
+  }
+
+  private ChartPanel createFailureChartPanel() {
+    JFreeChart failureChart = createXYStepChart(null, null, null,
+            loadTestModel.usageScenarioFailureDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(failureChart);
+    ChartPanel failureChartPanel = new ChartPanel(failureChart);
+    failureChartPanel.setBorder(createTitledBorder("Scenario run failures per second"));
+
+    return failureChartPanel;
+  }
+
+  private JPanel createSouthChartPanel() {
+    return gridLayoutPanel(1, 4)
+            .add(createMemoryUsageChartPanel())
+            .add(createSystemLoadChartPanel())
+            .add(createThinkTimeChartPanel())
+            .add(createNumberOfApplicationsChartPanel())
+            .build();
+  }
+
+  private ChartPanel createMemoryUsageChartPanel() {
+    JFreeChart memoryUsageChart = createXYStepChart(null, null, null,
+            loadTestModel.memoryUsageDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(memoryUsageChart);
+    ChartPanel memoryUsageChartPanel = new ChartPanel(memoryUsageChart);
+    memoryUsageChartPanel.setBorder(createTitledBorder("Memory usage (MB)"));
+
+    return memoryUsageChartPanel;
+  }
+
+  private ChartPanel createSystemLoadChartPanel() {
+    JFreeChart systemLoadChart = createXYStepChart(null, null, null,
+            loadTestModel.systemLoadDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(systemLoadChart);
+    systemLoadChart.getXYPlot().getRangeAxis().setRange(0, 100);
+    ChartPanel systemLoadChartPanel = new ChartPanel(systemLoadChart);
+    systemLoadChartPanel.setBorder(createTitledBorder("System load"));
+
+    return systemLoadChartPanel;
+  }
+
+  private ChartPanel createThinkTimeChartPanel() {
+    JFreeChart thinkTimeChart = createXYStepChart(null, null, null,
+            loadTestModel.thinkTimeDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(thinkTimeChart);
+    ChartPanel thinkTimeChartPanel = new ChartPanel(thinkTimeChart);
+    thinkTimeChartPanel.setBorder(createTitledBorder("Think time (ms)"));
+
+    return thinkTimeChartPanel;
+  }
+
+  private ChartPanel createNumberOfApplicationsChartPanel() {
+    JFreeChart numberOfApplicationsChart = createXYStepChart(null, null, null,
+            loadTestModel.numberOfApplicationsDataset(), PlotOrientation.VERTICAL, true, true, false);
+    setColors(numberOfApplicationsChart);
+    ChartPanel numberOfApplicationsChartPanel = new ChartPanel(numberOfApplicationsChart);
+    numberOfApplicationsChartPanel.setBorder(createTitledBorder("Application count"));
+
+    return numberOfApplicationsChartPanel;
   }
 
   private void onScenarioSelectionChanged(List<RandomItem<UsageScenario<T>>> selectedScenarios) {
@@ -379,6 +395,13 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
+  }
+
+  private static JPanel createSouthPanel() {
+    return panel(flowLayout(FlowLayout.TRAILING))
+            .add(new JLabel("Memory usage:"))
+            .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
+            .build();
   }
 
   private static final class ClearExceptionsCommand implements Control.Command {
