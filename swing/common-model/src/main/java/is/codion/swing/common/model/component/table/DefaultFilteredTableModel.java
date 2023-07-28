@@ -332,15 +332,21 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public void removeItemAt(int index) {
-    visibleItems.remove(index);
+  public R removeItemAt(int index) {
+    R removed = visibleItems.remove(index);
     fireTableRowsDeleted(index, index);
+
+    return removed;
   }
 
   @Override
-  public void removeItems(int fromIndex, int toIndex) {
-    visibleItems.subList(fromIndex, toIndex).clear();
+  public List<R> removeItems(int fromIndex, int toIndex) {
+    List<R> subList = visibleItems.subList(fromIndex, toIndex);
+    List<R> removedItems = new ArrayList<>(subList);
+    subList.clear();
     fireTableRowsDeleted(fromIndex, toIndex);
+
+    return removedItems;
   }
 
   @Override

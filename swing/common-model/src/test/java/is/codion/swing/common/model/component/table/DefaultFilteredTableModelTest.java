@@ -255,11 +255,13 @@ public final class DefaultFilteredTableModelTest {
     tableModel.addDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
-    tableModel.removeItems(1, 3);
+    List<TestRow> removed = tableModel.removeItems(1, 3);
     assertEquals(2, events.get());
     assertTrue(tableModel.containsItem(A));
     assertFalse(tableModel.containsItem(B));
+    assertTrue(removed.contains(B));
     assertFalse(tableModel.containsItem(C));
+    assertTrue(removed.contains(C));
     assertTrue(tableModel.containsItem(D));
     assertTrue(tableModel.containsItem(E));
 

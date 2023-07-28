@@ -712,13 +712,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void removeItemAt(int index) {
-    tableModel.removeItemAt(index);
+  public final Entity removeItemAt(int index) {
+    return tableModel.removeItemAt(index);
   }
 
   @Override
-  public final void removeItems(int fromIndex, int toIndex) {
-    tableModel.removeItems(fromIndex, toIndex);
+  public final List<Entity> removeItems(int fromIndex, int toIndex) {
+    return tableModel.removeItems(fromIndex, toIndex);
   }
 
   @Override
