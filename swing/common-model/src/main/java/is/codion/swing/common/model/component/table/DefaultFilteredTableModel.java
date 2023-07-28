@@ -265,9 +265,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemsAt(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items)) {
-      fireTableDataChanged();
-    }
+    addItemsAtInternal(index, items);
   }
 
   @Override
@@ -275,8 +273,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     if (addItemsAtInternal(index, items)) {
       if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
+        fireTableDataChanged();
       }
-      fireTableDataChanged();
     }
   }
 
@@ -295,8 +293,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     if (addItemInternal(item)) {
       if (sortModel.isSorted()) {
         sortModel.sort(visibleItems);
+        fireTableDataChanged();
       }
-      fireTableDataChanged();
     }
   }
 
@@ -445,6 +443,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     validate(item);
     if (include(item)) {
       visibleItems.add(index, item);
+      fireTableRowsInserted(index, index);
 
       return true;
     }
@@ -454,20 +453,25 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   private boolean addItemsAtInternal(int index, Collection<R> items) {
-    requireNonNull(items).forEach(this::validate);
-    boolean visible = false;
-    int counter = 0;
+    requireNonNull(items);
+    Collection<R> visible = new ArrayList<>(items.size());
+    Collection<R> filtered = new ArrayList<>(items.size());
     for (R item : items) {
+      validate(item);
       if (include(item)) {
-        visible = true;
-        visibleItems.add(index + counter++, item);
+        visible.add(item);
       }
       else {
-        filteredItems.add(item);
+        filtered.add(item);
       }
     }
+    if (!visible.isEmpty()) {
+      visibleItems.addAll(index, visible);
+      fireTableRowsInserted(index, index + visible.size());
+    }
+    filteredItems.addAll(filtered);
 
-    return visible;
+    return !visible.isEmpty();
   }
 
   private void validate(R item) {
