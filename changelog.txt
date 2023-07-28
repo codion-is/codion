@@ -9370,3 +9370,5 @@
   JavaFX client module removed from main repository
   LoadTestPanel.showFrame() now private
   LoadTestPanel refactored
+  FilteredTableModel.removeItemAt() and removeItems() now return the removed items
+  DefaultFilteredTableModel.addItemAtInternal() and addItemsAtInternal() bug fixed, did not call fireTableRowsInserted
