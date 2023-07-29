@@ -43,12 +43,12 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
   }
 
   @Override
-  protected ChinookAppModel createApplication() throws CancelException {
+  protected ChinookAppModel createApplication(User user) throws CancelException {
     ChinookAppModel applicationModel = new ChinookAppModel(EntityConnectionProvider.builder()
             .domainType(Chinook.DOMAIN)
             .clientTypeId(ChinookAppPanel.class.getName())
             .clientVersion(ChinookAppModel.VERSION)
-            .user(getUser())
+            .user(user)
             .build());
 
     SwingEntityModel customerModel = applicationModel.entityModel(Customer.TYPE);

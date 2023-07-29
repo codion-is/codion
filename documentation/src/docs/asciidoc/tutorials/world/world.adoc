@@ -2,11 +2,11 @@
 = World Tutorial
 :docinfo: shared-head
 :toc: left
-:imagesdir: ../images
-:dir-source: ../../../../../demos/world/src/main/java
-:dir-reports: ../../../../../demos/world/src/main/reports
-:dir-resources: ../../../../../demos/world/src/main/resources
-:dir-test-source: ../../../../../demos/world/src/test/java
+:imagesdir: ../../images
+:dir-source: ../../../../../../demos/world/src/main/java
+:dir-reports: ../../../../../../demos/world/src/main/reports
+:dir-resources: ../../../../../../demos/world/src/main/resources
+:dir-test-source: ../../../../../../demos/world/src/test/java
 
 == Screenshots
 

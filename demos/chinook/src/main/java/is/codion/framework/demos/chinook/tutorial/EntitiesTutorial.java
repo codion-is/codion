@@ -76,11 +76,13 @@ public final class EntitiesTutorial {
       // a fluent call chain.
 
       // create properties for the columns in the table 'chinook.artist'
-      ColumnProperty.Builder<Long, ?> artistId = primaryKeyProperty(Artist.ID);
+      ColumnProperty.Builder<Long, ?> artistId =
+              primaryKeyProperty(Artist.ID);
 
-      ColumnProperty.Builder<String, ?> artistName = columnProperty(Artist.NAME, "Name")
-              .nullable(false)
-              .maximumLength(120);
+      ColumnProperty.Builder<String, ?> artistName =
+              columnProperty(Artist.NAME, "Name")
+                      .nullable(false)
+                      .maximumLength(120);
 
       // define an entity based on the table 'chinook.artist', with the above properties
       EntityDefinition artist = definition(artistId, artistName)
@@ -94,16 +96,20 @@ public final class EntitiesTutorial {
       add(artist);
 
       // create properties for the columns in the table 'chinook.album'
-      ColumnProperty.Builder<Long, ?> albumId = primaryKeyProperty(Album.ID);
+      ColumnProperty.Builder<Long, ?> albumId =
+              primaryKeyProperty(Album.ID);
 
-      ColumnProperty.Builder<String, ?> albumTitle = columnProperty(Album.TITLE, "Title")
-              .nullable(false)
-              .maximumLength(160);
+      ColumnProperty.Builder<String, ?> albumTitle =
+              columnProperty(Album.TITLE, "Title")
+                      .nullable(false)
+                      .maximumLength(160);
 
-      ColumnProperty.Builder<Long, ?> albumArtistId = columnProperty(Album.ARTIST_ID)
-              .nullable(false);
+      ColumnProperty.Builder<Long, ?> albumArtistId =
+              columnProperty(Album.ARTIST_ID)
+                      .nullable(false);
 
-      ForeignKeyProperty.Builder albumArtist = foreignKeyProperty(Album.ARTIST_FK, "Artist");
+      ForeignKeyProperty.Builder albumArtist =
+              foreignKeyProperty(Album.ARTIST_FK, "Artist");
 
       // define an entity based on the table 'chinook.album', with the above properties
       EntityDefinition album = definition(albumId, albumTitle, albumArtistId, albumArtist)
@@ -126,9 +132,9 @@ public final class EntitiesTutorial {
    * @throws DatabaseException in case of an exception
    */
   private static void selectingEntities(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // fetch the connection from the provider, note that the provider always
-    // returns the same connection or a new one if the previous one has been
-    // disconnected or has become invalid for some reason
+    // fetch the connection from the provider, note that the provider returns
+    // the same connection until the previous one has been disconnected or
+    // has become invalid for some reason
     EntityConnection connection = connectionProvider.connection();
 
     // select the artist Metallica by name, the selectSingle() method

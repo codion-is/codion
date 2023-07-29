@@ -7,11 +7,13 @@ import is.codion.common.state.State;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
 import org.jfree.data.xy.XYDataset;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 
 /**
@@ -28,12 +30,12 @@ public interface LoadTest<T> {
   /**
    * @return the user to use when initializing new application instances
    */
-  User getUser();
+  Value<User> userValue();
 
   /**
-   * @param user the user to use when initializing new application instances
+   * @return a table model for displaying the active application instances
    */
-  void setUser(User user);
+  FilteredTableModel<Application, Integer> applicationTableModel();
 
   /**
    * The title of this LoadTest
@@ -180,4 +182,45 @@ public interface LoadTest<T> {
    * @return the randomizer used to select scenarios
    */
   ItemRandomizer<UsageScenario<T>> scenarioChooser();
+
+  /**
+   * Describes a load test application.
+   */
+  interface Application {
+
+    /**
+     * @return the name of the application
+     */
+    String name();
+
+    /**
+     * @return the application username
+     */
+    String username();
+
+    /**
+     * @return the name of the last scenario run
+     */
+    String scenario();
+
+    /**
+     * @return true if the last scenario run was successful
+     */
+    Boolean successful();
+
+    /**
+     * @return the duration of the last scenario run, in milliseconds
+     */
+    Integer duration();
+
+    /**
+     * @return the exception message from the last run, if any
+     */
+    String exception();
+
+    /**
+     * @return the application create time
+     */
+    LocalDateTime created();
+  }
 }

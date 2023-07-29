@@ -2,12 +2,12 @@
 = EmpDept Tutorial
 :docinfo: shared-head
 :toc: left
-:imagesdir: ../images
-:basedir: ..
-:dir-source: ../../../../../demos/empdept/src/main/java
-:dir-test-source: ../../../../../demos/empdept/src/test/java
-:dir-source-sql: ../../../../../demos/empdept/src/main/sql
-:url-javadoc: link:../api
+:imagesdir: ../../images
+:basedir: ../..
+:dir-source: ../../../../../../demos/empdept/src/main/java
+:dir-test-source: ../../../../../../demos/empdept/src/test/java
+:dir-source-sql: ../../../../../../demos/empdept/src/main/sql
+:url-javadoc: link:../../api
 
 == Screenshots
 

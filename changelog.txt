@@ -9372,3 +9372,5 @@
   LoadTestPanel refactored
   FilteredTableModel.removeItemAt() and removeItems() now return the removed items
   DefaultFilteredTableModel.addItemAtInternal() and addItemsAtInternal() bug fixed, did not call fireTableRowsInserted
+  DefaultFilteredTableModel.DefaultRefresher bug fixed, used addItemSorted() which would cause an empty-selection event, defeating the purpose of merging
+  LoadTestPanel, Applications tab added, related refactoring

@@ -138,7 +138,4 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   protected final void disconnectApplication(M application) {
     application.connectionProvider().close();
   }
-
-  @Override
-  protected abstract M createApplication();
 }

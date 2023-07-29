@@ -33,12 +33,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppModel> 
   }
 
   @Override
-  protected EmpDeptAppModel createApplication() throws CancelException {
+  protected EmpDeptAppModel createApplication(User user) throws CancelException {
     EmpDeptAppModel applicationModel =
             new EmpDeptAppModel(EntityConnectionProvider.builder()
                     .domainType(EmpDept.DOMAIN)
                     .clientTypeId(EmpDeptLoadTest.class.getSimpleName())
-                    .user(getUser())
+                    .user(user)
                     .build());
 
     SwingEntityModel model = applicationModel.entityModel(Department.TYPE);

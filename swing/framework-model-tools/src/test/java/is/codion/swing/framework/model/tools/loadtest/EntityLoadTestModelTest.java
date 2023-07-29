@@ -65,11 +65,11 @@ public class EntityLoadTestModelTest {
     }
 
     @Override
-    protected SwingEntityApplicationModel createApplication() {
+    protected SwingEntityApplicationModel createApplication(User user) {
       return new SwingEntityApplicationModel(EntityConnectionProvider.builder()
               .domainType(TestDomain.DOMAIN)
               .clientTypeId(EntityLoadTestModelTest.class.getSimpleName())
-              .user(getUser())
+              .user(user)
               .build());
     }
   }

@@ -37,29 +37,29 @@ public final class ClientUI {
     // create a EditModel based on the artist entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Artist.TYPE, connectionProvider);
 
-    // create a String Value based on the artist name in the edit model
+    // fetch a Value based on the artist name from the edit model
     Value<String> artistNameEditModelValue = editModel.value(Artist.NAME);
 
+    // create a Control for inserting a new Artist record
+    Control insertControl = Control.actionControl(actionEvent -> {
+      try {
+        // insert the entity
+        editModel.insert();
+        // clear the edit model after a successful insert
+        editModel.setDefaultValues();
+      }
+      catch (DatabaseException | ValidationException e) {
+        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
+                e.getMessage(), "Unable to insert", JOptionPane.ERROR_MESSAGE);
+      }
+    });
     // create a textfield for entering an artist name
     JTextField artistNameTextField =
             // link the text field to the edit model value
             Components.textField(artistNameEditModelValue)
                     .columns(10)
-                    // add an insert action to the text field
-                    // so that we can insert by pressing Enter
-                    .action(Control.actionControl(actionEvent -> {
-                      try {
-                        // insert the entity
-                        editModel.insert();
-
-                        // clear the edit model after a successful insert
-                        editModel.setDefaultValues();
-                      }
-                      catch (DatabaseException | ValidationException e) {
-                        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
-                                e.getMessage(), "Insert error", JOptionPane.ERROR_MESSAGE);
-                      }
-                    }))
+                    // trigger the insert action on pressing Enter
+                    .action(insertControl)
                     .build();
 
     // show a message after insert
@@ -83,7 +83,7 @@ public final class ClientUI {
     // create a EditModel based on the album entity
     SwingEntityEditModel editModel = new SwingEntityEditModel(Album.TYPE, connectionProvider);
 
-    // create an Entity value based on the album artist in the edit model
+    // fetch Value based on the album artist in the edit model
     Value<Entity> editModelArtistValue = editModel.value(Album.ARTIST_FK);
 
     EntityComboBoxModel artistComboBoxModel = editModel.foreignKeyComboBoxModel(Album.ARTIST_FK);
@@ -101,31 +101,32 @@ public final class ClientUI {
                     .onSetVisible(comboBox -> comboBox.getModel().refresh())
                     .build();
 
-    // create a String Value based on the album title in the edit model
+    // fetch a String Value based on the album title from the edit model
     Value<String> editModelTitleValue = editModel.value(Album.TITLE);
 
-    // create a String value based on a JTextfield
+    // create a Control for inserting a new Album record
+    Control insertControl = Control.actionControl(actionEvent -> {
+      try {
+        // insert the entity
+        editModel.insert();
+        // clear the edit model after a successful insert
+        editModel.setDefaultValues();
+        // and transfer the focus to the combo box
+        artistComboBox.requestFocusInWindow();
+      }
+      catch (DatabaseException | ValidationException e) {
+        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
+                e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+      }
+    });
+    // create a text field based on the title value
     JTextField titleTextField =
             // link the text field to the edit model value
             Components.textField(editModelTitleValue)
                     .columns(10)
                     // add an insert action to the title field
                     // so that we can insert by pressing Enter
-                    .action(Control.actionControl(actionEvent -> {
-                      try {
-                        editModel.insert();
-
-                        // clear the edit model after a successful insert
-                        editModel.setDefaultValues();
-
-                        // and set the focus on the combo box
-                        artistComboBox.requestFocusInWindow();
-                      }
-                      catch (DatabaseException | ValidationException e) {
-                        JOptionPane.showMessageDialog((JTextField) actionEvent.getSource(),
-                                e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-                      }
-                    }))
+                    .action(insertControl)
                     .build();
 
     // show a message after insert

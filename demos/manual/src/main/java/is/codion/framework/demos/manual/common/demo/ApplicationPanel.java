@@ -16,7 +16,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.icon.Logos;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
-import is.codion.swing.common.ui.layout.Layouts;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -78,7 +77,7 @@ public final class ApplicationPanel extends JPanel {
             .transferFocusOnEnter(true)
             .build(button -> settingsPanel.add(button, BorderLayout.EAST));
 
-    JPanel inputPanel = new JPanel(Layouts.flexibleGridLayout(0, 2));
+    JPanel inputPanel = flexibleGridLayoutPanel(0, 2).build();
 
     textField(model.shortStringValue())
             .columns(20)

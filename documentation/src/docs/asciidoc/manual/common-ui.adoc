@@ -7,4 +7,6 @@ include::{basedir}/manual/common-ui-action-controls.adoc[leveloffset=+1]
 
 include::{basedir}/manual/common-ui-input-components.adoc[leveloffset=+1]
 
-include::{basedir}/manual/common-ui-input-components-demo.adoc[leveloffset=+1]
+== Examples
+
+<<{basedir}/tutorials/input-components.adoc#_input_components, Input components>>

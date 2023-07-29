@@ -55,7 +55,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   protected void disconnectApplication(QueryApplication application) {/*Not required*/}
 
   @Override
-  protected QueryApplication createApplication() {
+  protected QueryApplication createApplication(User user) {
     return new QueryApplication(pool);
   }
 
