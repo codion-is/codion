@@ -270,11 +270,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemsAtSorted(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items)) {
-      if (sortModel.isSorted()) {
-        sortModel.sort(visibleItems);
-        fireTableDataChanged();
-      }
+    if (addItemsAtInternal(index, items) && sortModel.isSorted()) {
+      sortModel.sort(visibleItems);
+      fireTableDataChanged();
     }
   }
 
@@ -290,11 +288,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemSorted(R item) {
-    if (addItemInternal(item)) {
-      if (sortModel.isSorted()) {
-        sortModel.sort(visibleItems);
-        fireTableDataChanged();
-      }
+    if (addItemInternal(item) && sortModel.isSorted()) {
+      sortModel.sort(visibleItems);
+      fireTableDataChanged();
     }
   }
 

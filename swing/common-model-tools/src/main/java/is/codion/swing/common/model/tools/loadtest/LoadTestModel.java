@@ -136,7 +136,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
-    this.applicationTableModel = FilteredTableModel.builder(this::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
+    this.applicationTableModel = FilteredTableModel.builder(LoadTestModel::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
             .itemSupplier(new ApplicationItemSupplier())
             .build();
     this.userValue = Value.value(requireNonNull(user), user);
@@ -439,7 +439,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
   }
 
-  private List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
+  private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
     return Arrays.asList(
             FilteredTableColumn.builder(ApplicationColumnValueProvider.APPLICATION)
                     .headerValue("Application")
