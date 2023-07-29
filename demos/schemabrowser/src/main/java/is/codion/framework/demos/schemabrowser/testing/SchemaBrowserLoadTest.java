@@ -43,13 +43,13 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrows
   }
 
   @Override
-  protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel createApplication() throws CancelException {
+  protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel createApplication(User user) throws CancelException {
     SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
             new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
                     EntityConnectionProvider.builder()
                             .domainType(SchemaBrowser.DOMAIN)
                             .clientTypeId(getClass().getSimpleName())
-                            .user(getUser())
+                            .user(user)
                             .build());
     SwingEntityModel schemaModel = applicationModel.entityModel(Schema.TYPE);
     SwingEntityModel tableModel = schemaModel.detailModel(Table.TYPE);

@@ -6,9 +6,12 @@ package is.codion.swing.common.ui.tools.loadtest;
 import is.codion.common.Separators;
 import is.codion.common.user.User;
 import is.codion.swing.common.model.tools.loadtest.LoadTest;
+import is.codion.swing.common.model.tools.loadtest.LoadTest.Application;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
+import is.codion.swing.common.ui.component.table.FilteredTable;
+import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -30,6 +33,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
@@ -63,7 +67,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private static final int LARGE_TEXT_FIELD_COLUMNS = 8;
+  private static final int USERNAME_PASSWORD_COLUMNS = 8;
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
@@ -72,6 +76,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private final JPanel scenarioBase = new JPanel(gridLayout(0, 1));
 
   static {
+    FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
     LookAndFeelComboBox.CHANGE_ON_SELECTION.set(true);
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
@@ -195,16 +200,16 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createUserPanel() {
-    User user = loadTestModel.getUser();
+    User user = loadTestModel.userValue().get();
     JTextField usernameField = textField()
             .initialValue(user.username())
-            .columns(LARGE_TEXT_FIELD_COLUMNS)
+            .columns(USERNAME_PASSWORD_COLUMNS)
             .build();
     JPasswordField passwordField = passwordField()
             .initialValue(String.valueOf(user.password()))
-            .columns(LARGE_TEXT_FIELD_COLUMNS)
+            .columns(USERNAME_PASSWORD_COLUMNS)
             .build();
-    ActionListener userInfoListener = e -> loadTestModel.setUser(User.user(usernameField.getText(), passwordField.getPassword()));
+    ActionListener userInfoListener = e -> loadTestModel.userValue().set(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
 
@@ -260,7 +265,19 @@ public final class LoadTestPanel<T> extends JPanel {
                             .resizeWeight(RESIZE_WEIGHT)
                             .build())
                     .tab("Scenarios", scenarioBase)
+                    .tab("Applications", createApplicationsPanel())
                     .build())
+            .build();
+  }
+
+  private JPanel createApplicationsPanel() {
+    return borderLayoutPanel()
+            .northComponent(panel(flowLayout(FlowLayout.TRAILING))
+                    .add(button(Control.builder(() -> model().applicationTableModel().refresh()))
+                            .text("Refresh")
+                            .build())
+                    .build())
+            .centerComponent(new JScrollPane(createApplicationsTable()))
             .build();
   }
 
@@ -339,6 +356,12 @@ public final class LoadTestPanel<T> extends JPanel {
     numberOfApplicationsChartPanel.setBorder(createTitledBorder("Application count"));
 
     return numberOfApplicationsChartPanel;
+  }
+
+  private FilteredTable<Application, Integer> createApplicationsTable() {
+    return FilteredTable.builder(model().applicationTableModel())
+            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .build();
   }
 
   private void onScenarioSelectionChanged(List<RandomItem<UsageScenario<T>>> selectedScenarios) {

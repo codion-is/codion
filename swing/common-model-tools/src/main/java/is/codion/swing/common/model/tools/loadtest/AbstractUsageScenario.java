@@ -6,6 +6,7 @@ package is.codion.swing.common.model.tools.loadtest;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static java.util.Objects.requireNonNull;
@@ -104,14 +105,17 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
   }
 
   @Override
-  public final void run(T application) {
+  public final RunResult run(T application) {
     if (application == null) {
       throw new IllegalArgumentException("Can not run without an application");
     }
     try {
       prepare(application);
+      long startTime = System.currentTimeMillis();
       perform(application);
       successfulRunCount.incrementAndGet();
+
+      return RunResult.success(name, (int) (System.currentTimeMillis() - startTime));
     }
     catch (Throwable e) {
       unsuccessfulRunCount.incrementAndGet();
@@ -121,6 +125,8 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
           exceptions.removeFirst();
         }
       }
+
+      return RunResult.failure(name, e);
     }
     finally {
       cleanup(application);
@@ -160,4 +166,37 @@ public abstract class AbstractUsageScenario<T> implements UsageScenario<T> {
    * @param application the application
    */
   protected void cleanup(T application) {/*Provided for subclasses*/}
+
+  static final class DefaultRunResult implements RunResult {
+
+    private final String scenario;
+    private final int duration;
+    private final Throwable exception;
+
+    DefaultRunResult(String scenario, int duration, Throwable exception) {
+      this.scenario = scenario;
+      this.duration = duration;
+      this.exception = exception;
+    }
+
+    @Override
+    public int duration() {
+      return duration;
+    }
+
+    @Override
+    public String scenario() {
+      return scenario;
+    }
+
+    @Override
+    public boolean successful() {
+      return exception == null;
+    }
+
+    @Override
+    public Optional<Throwable> exception() {
+      return Optional.ofNullable(exception);
+    }
+  }
 }

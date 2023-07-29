@@ -110,8 +110,8 @@ public class LoadTestModelTest {
 
     model.applicationBatchSizeValue().set(5);
     assertTrue(model.usageScenarios().contains(SCENARIO.name()));
-    model.setUser(UNIT_TEST_USER);
-    assertEquals(UNIT_TEST_USER, model.getUser());
+    model.userValue().set(UNIT_TEST_USER);
+    assertEquals(UNIT_TEST_USER, model.userValue().get());
     assertNotNull(model.scenarioChooser());
     model.setWeight(SCENARIO.name(), 2);
     model.setScenarioEnabled(SCENARIO_II.name(), false);
@@ -124,7 +124,7 @@ public class LoadTestModelTest {
     assertEquals(0, SCENARIO_II.totalRunCount());
     assertTrue(SCENARIO.successfulRunCount() > 0);
     assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
-    assertTrue(SCENARIO.exceptions().size() > 0);
+    assertFalse(SCENARIO.exceptions().isEmpty());
     SCENARIO.clearExceptions();
     assertEquals(0, SCENARIO.exceptions().size());
     assertEquals(SCENARIO.successfulRunCount() + SCENARIO.unsuccessfulRunCount(), SCENARIO.totalRunCount());
@@ -149,7 +149,7 @@ public class LoadTestModelTest {
     }
 
     @Override
-    protected Object createApplication() throws CancelException {
+    protected Object createApplication(User user) throws CancelException {
       return new Object();
     }
 

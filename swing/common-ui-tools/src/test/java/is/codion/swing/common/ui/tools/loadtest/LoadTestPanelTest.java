@@ -36,7 +36,7 @@ public class LoadTestPanelTest {
     }
 
     @Override
-    protected Object createApplication() throws CancelException {
+    protected Object createApplication(User user) throws CancelException {
       return new Object();
     }
 

@@ -3,7 +3,10 @@
  */
 package is.codion.swing.common.model.tools.loadtest;
 
+import is.codion.swing.common.model.tools.loadtest.AbstractUsageScenario.DefaultRunResult;
+
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Specifies a load test usage scenario.
@@ -30,8 +33,9 @@ public interface UsageScenario<T> {
   /**
    * Runs this scenario with the given application
    * @param application the application to use
+   * @return the run result
    */
-  void run(T application);
+  RunResult run(T application);
 
   /**
    * @return the total number of times this scenario has been run
@@ -62,4 +66,48 @@ public interface UsageScenario<T> {
    * @return the number of times this scenario has been unsuccessfully run
    */
   int unsuccessfulRunCount();
+
+  /**
+   * Describes the results of a load test scenario run
+   */
+  interface RunResult {
+
+    /**
+     * @return the usage scenario name
+     */
+    String scenario();
+
+    /**
+     * @return the duration in milliseconds
+     */
+    int duration();
+
+    /**
+     * @return true if the run was successful
+     */
+    boolean successful();
+
+    /**
+     * @return the exception in case the run was unsuccessful, otherwise an empty optional
+     */
+    Optional<Throwable> exception();
+
+    /**
+     * @param scenarioName the name of the usage scenario
+     * @param duration the duriation in milliseconds
+     * @return a new {@link RunResult} instance
+     */
+    static RunResult success(String scenarioName, int duration) {
+      return new DefaultRunResult(scenarioName, duration, null);
+    }
+
+    /**
+     * @param scenarioName the name of the usage scenario
+     * @param exception the exception
+     * @return a new {@link RunResult} instance
+     */
+    static RunResult failure(String scenarioName, Throwable exception) {
+      return new DefaultRunResult(scenarioName, -1, exception);
+    }
+  }
 }

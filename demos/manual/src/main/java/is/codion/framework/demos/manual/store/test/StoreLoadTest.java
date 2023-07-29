@@ -14,8 +14,6 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.tools.loadtest.AbstractEntityUsageScenario;
 import is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel;
 
-import java.util.UUID;
-
 import static java.util.Collections.singletonList;
 
 // tag::storeLoadTest[]
@@ -26,11 +24,10 @@ public class StoreLoadTest extends EntityLoadTestModel<StoreApplicationModel> {
   }
 
   @Override
-  protected StoreApplicationModel createApplication() {
+  protected StoreApplicationModel createApplication(User user) {
     EntityConnectionProvider connectionProvider =
             RemoteEntityConnectionProvider.builder()
-                    .clientId(UUID.randomUUID())
-                    .user(getUser())
+                    .user(user)
                     .domainType(Store.DOMAIN)
                     .build();
 

@@ -12,6 +12,10 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
+import is.codion.swing.common.model.component.table.FilteredTableColumn;
+import is.codion.swing.common.model.component.table.FilteredTableModel;
+import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
+import is.codion.swing.common.model.tools.loadtest.UsageScenario.RunResult;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer;
 
 import org.jfree.data.xy.IntervalXYDataset;
@@ -24,22 +28,28 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.lang.management.ManagementFactory;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
-import java.util.Deque;
 import java.util.HashMap;
-import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Random;
-import java.util.concurrent.ConcurrentLinkedDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Function;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.Executors.newScheduledThreadPool;
+import static java.util.stream.Collectors.toList;
 
 /**
  * A default LoadTest implementation.
@@ -53,7 +63,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   protected static final Random RANDOM = new Random();
 
-  private static final long NANO_IN_MILLI = 1000000;
   private static final double THOUSAND = 1000d;
   private static final double HUNDRED = 100d;
   private static final int MINIMUM_NUMBER_OF_THREADS = 12;
@@ -70,11 +79,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final Value<Integer> applicationCountValue = Value.value(0);
   private final Event<?> shutdownEvent = Event.event();
 
-  private User user;
+  private final Value<User> userValue;
 
   private volatile boolean shuttingDown = false;
 
-  private final Deque<ApplicationRunner> applications = new ConcurrentLinkedDeque<>();
+  private final List<ApplicationRunner> applications = new ArrayList<>();
+  private final FilteredTableModel<Application, Integer> applicationTableModel;
   private final Map<String, UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario<T>> scenarioChooser;
   private final ScheduledExecutorService scheduledExecutor =
@@ -126,11 +136,14 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
     }
-    this.user = user;
-    this.loginDelayFactorValue = Value.value(loginDelayFactor);
-    this.applicationBatchSizeValue = Value.value(applicationBatchSize);
-    this.minimumThinkTimeValue = Value.value(maximumThinkTime / 2);
-    this.maximumThinkTimeValue = Value.value(maximumThinkTime);
+    this.applicationTableModel = FilteredTableModel.builder(this::createApplicationTableModelColumns, new ApplicationColumnValueProvider())
+            .itemSupplier(new ApplicationItemSupplier())
+            .build();
+    this.userValue = Value.value(requireNonNull(user), user);
+    this.loginDelayFactorValue = Value.value(loginDelayFactor, loginDelayFactor);
+    this.applicationBatchSizeValue = Value.value(applicationBatchSize, applicationBatchSize);
+    this.minimumThinkTimeValue = Value.value(maximumThinkTime / 2, maximumThinkTime / 2);
+    this.maximumThinkTimeValue = Value.value(maximumThinkTime, maximumThinkTime);
     this.loginDelayFactorValue.addValidator(new MinimumValidator(1));
     this.applicationBatchSizeValue.addValidator(new MinimumValidator(1));
     this.minimumThinkTimeValue.addValidator(new MinimumThinkTimeValidator());
@@ -146,13 +159,13 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final User getUser() {
-    return user;
+  public final Value<User> userValue() {
+    return userValue;
   }
 
   @Override
-  public final void setUser(User user) {
-    this.user = user;
+  public final FilteredTableModel<Application, Integer> applicationTableModel() {
+    return applicationTableModel;
   }
 
   @Override
@@ -268,7 +281,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final int applicationCount() {
-    return applications.size();
+    synchronized (applications) {
+      return applications.size();
+    }
   }
 
   @Override
@@ -279,23 +294,24 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   @Override
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSizeValue.get(); i++) {
-      ApplicationRunner runner = new ApplicationRunner();
-      applications.push(runner);
       int initialDelay = thinkTime();
       if (loginDelayFactorValue.get() > 0) {
         initialDelay *= loginDelayFactorValue.get();
       }
-      scheduledExecutor.schedule(runner, initialDelay, TimeUnit.MILLISECONDS);
+      scheduledExecutor.schedule(new ApplicationInitializer(userValue.get()), initialDelay, TimeUnit.MILLISECONDS);
     }
-    applicationCountValue.set(applications.size());
   }
 
   @Override
   public final void removeApplicationBatch() {
-    for (int i = 0; i < applicationBatchSizeValue.get() && !applications.isEmpty(); i++) {
-      applications.pop().stop();
+    int batchSize = applicationBatchSizeValue.get();
+    synchronized (applications) {
+      List<ApplicationRunner> toStop = applications.stream()
+              .filter(applicationRunner -> !applicationRunner.stopped())
+              .limit(batchSize)
+              .collect(toList());
+      toStop.forEach(this::stop);
     }
-    applicationCountValue.set(applications.size());
   }
 
   @Override
@@ -314,9 +330,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     chartUpdateScheduler.stop();
     scheduledExecutor.shutdown();
     synchronized (applications) {
-      while (!applications.isEmpty()) {
-        applications.pop().stop();
-      }
+      new ArrayList<>(applications).forEach(this::stop);
     }
     try {
       scheduledExecutor.awaitTermination(10, TimeUnit.SECONDS);
@@ -348,15 +362,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   /**
-   * Runs the scenario with the given name on the given application
-   * @param usageScenario the scenario to run
-   * @param application the application to use
-   */
-  protected final void runScenario(UsageScenario<T> usageScenario, T application) {
-    usageScenario.run(application);
-  }
-
-  /**
    * @param listener a listener notified when this load test model has been shutdown.
    */
   protected final void addShutdownListener(EventListener listener) {
@@ -364,10 +369,10 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   /**
+   * @param user the user
    * @return an initialized application.
-   * @throws is.codion.common.model.CancelException in case the initialization was cancelled
    */
-  protected abstract T createApplication();
+  protected abstract T createApplication(User user);
 
   /**
    * @param application the application to disconnect
@@ -387,7 +392,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private ItemRandomizer<UsageScenario<T>> createScenarioChooser() {
     return ItemRandomizer.itemRandomizer(usageScenarios.values().stream()
             .map(scenario -> ItemRandomizer.RandomItem.randomItem(scenario, scenario.defaultWeight()))
-            .collect(Collectors.toList()));
+            .collect(toList()));
   }
 
   private void initializeChartModels() {
@@ -424,6 +429,49 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     });
   }
 
+  private void stop(ApplicationRunner applicationRunner) {
+    applicationRunner.stop();
+    synchronized (applications) {
+      applications.remove(applicationRunner);
+      applicationCountValue.set(applications.size());
+    }
+    disconnectApplication(applicationRunner.application);
+    LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
+  }
+
+  private List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
+    return Arrays.asList(
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.APPLICATION)
+                    .headerValue("Application")
+                    .columnClass(String.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.USERNAME)
+                    .headerValue("User")
+                    .columnClass(String.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.SCENARIO)
+                    .headerValue("Scenario")
+                    .columnClass(String.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.SUCCESSFUL)
+                    .headerValue("Success")
+                    .columnClass(Boolean.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.DURATION)
+                    .headerValue("Duration (ms)")
+                    .columnClass(Integer.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.EXCEPTION)
+                    .headerValue("Exception")
+                    .columnClass(Throwable.class)
+                    .build(),
+            FilteredTableColumn.builder(ApplicationColumnValueProvider.CREATED)
+                    .headerValue("Created")
+                    .columnClass(LocalDateTime.class)
+                    .build()
+    );
+  }
+
   private static double systemCpuLoad() {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getSystemCpuLoad();
   }
@@ -432,50 +480,77 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
+  private final class ApplicationInitializer implements Runnable {
+
+    private final User user;
+
+    private ApplicationInitializer(User user) {
+      this.user = user;
+    }
+
+    @Override
+    public void run() {
+      ApplicationRunner applicationRunner = new ApplicationRunner(user, createApplication(user));
+      LOG.debug("LoadTestModel initialized application: {}", applicationRunner.application);
+      synchronized (applications) {
+        applications.add(applicationRunner);
+        applicationCountValue.set(applications.size());
+      }
+      scheduledExecutor.schedule(applicationRunner, thinkTime(), TimeUnit.MILLISECONDS);
+    }
+  }
+
   private final class ApplicationRunner implements Runnable {
 
-    private T application = null;
-    private volatile boolean stopped = false;
+    private static final int MAX_RESULTS = 20;
 
-    private void stop() {
-      stopped = true;
+    private final User user;
+    private final T application;
+    private final List<RunResult> runResults = new ArrayList<>();
+    private final AtomicBoolean stopped = new AtomicBoolean();
+    private final LocalDateTime created = LocalDateTime.now();
+
+    private ApplicationRunner(User user, T application) {
+      this.user = user;
+      this.application = application;
     }
 
     @Override
     public void run() {
       try {
-        if (application == null) {
-          application = createApplication();
-          LOG.debug("LoadTestModel initialized application: {}", application);
+        if (!stopped.get() && !pausedState.get()) {
+          runScenario(application, scenarioChooser.randomItem());
         }
-        if (!stopped && !pausedState.get()) {
-          runRandomScenario(application);
-        }
-        if (stopped) {
-          disconnectApplication(application);
-          LOG.debug("LoadTestModel disconnected application: {}", application);
-        }
-        else {
+        if (!stopped.get()) {
           scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
         }
       }
       catch (Exception e) {
-        LOG.debug("Exception during " + (application == null ? "application initialization" : ("run " + application)), e);
+        LOG.debug("Exception during run " + application, e);
       }
     }
 
-    private void runRandomScenario(T application) {
-      long currentTimeNano = System.nanoTime();
-      UsageScenario<T> scenario = null;
-      try {
-        scenario = scenarioChooser.randomItem();
-        runScenario(scenario, application);
-      }
-      finally {
-        if (scenario != null) {
-          counter.addScenarioDuration(scenario, (int) ((System.nanoTime() - currentTimeNano) / NANO_IN_MILLI));
+    private void runScenario(T application, UsageScenario<T> scenario) {
+      RunResult runResult = scenario.run(application);
+      counter.addScenarioDuration(scenario, runResult.duration());
+      synchronized (runResults) {
+        runResults.add(runResult);
+        if (runResults.size() > MAX_RESULTS) {
+          runResults.remove(0);
         }
       }
+    }
+
+    private void stop() {
+      stopped.set(true);
+    }
+
+    private boolean stopped() {
+      return stopped.get();
+    }
+
+    private LocalDateTime created() {
+      return created;
     }
   }
 
@@ -495,7 +570,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       delayedScenarioRunsSeries.add(time, counter.delayedWorkRequestsPerSecond());
       minimumThinkTimeSeries.add(time, minimumThinkTimeValue.get());
       maximumThinkTimeSeries.add(time, maximumThinkTimeValue.get());
-      numberOfApplicationsSeries.add(time, applications.size());
+      synchronized (applications) {
+        numberOfApplicationsSeries.add(time, applications.size());
+      }
       allocatedMemoryCollection.add(time, Memory.allocatedMemory() / THOUSAND);
       usedMemoryCollection.add(time, Memory.usedMemory() / THOUSAND);
       maxMemoryCollection.add(time, Memory.maxMemory() / THOUSAND);
@@ -583,7 +660,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     private void addScenarioDuration(UsageScenario<T> scenario, int duration) {
       synchronized (scenarioDurations) {
-        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new LinkedList<>()).add(duration);
+        scenarioDurations.computeIfAbsent(scenario.name(), scenarioName -> new ArrayList<>()).add(duration);
         workRequestCounter++;
         if (scenario.maximumTime() > 0 && duration > scenario.maximumTime()) {
           delayedWorkRequestCounter++;
@@ -689,6 +766,132 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       super.validate(value);
       if (value < minimumThinkTimeValue.get()) {
         throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
+      }
+    }
+  }
+
+  private static final class DefaultApplication implements Application {
+
+    private final List<RunResult> runResults;
+    private final String application;
+    private final String user;
+    private final String scenario;
+    private final Boolean successful;
+    private final Integer duration;
+    private final String exception;
+    private final LocalDateTime created;
+
+    private DefaultApplication(LoadTestModel<?>.ApplicationRunner applicationRunner) {
+      this.runResults = applicationRunner.runResults == null ? emptyList() : applicationRunner.runResults;
+      RunResult runResult = runResults.isEmpty() ? null : runResults.get(runResults.size() - 1);
+      this.application = applicationRunner.application.toString();
+      this.user = applicationRunner.user.username();
+      this.scenario = runResult == null ? null : runResult.scenario();
+      this.successful = runResult == null ? null : runResult.successful();
+      this.duration = runResult == null ? null : runResult.duration();
+      this.exception = runResult == null ? null : runResult.exception().map(Throwable::getMessage).orElse(null);
+      this.created = applicationRunner.created();
+    }
+
+    @Override
+    public String name() {
+      return application;
+    }
+
+    @Override
+    public String username() {
+      return user;
+    }
+
+    @Override
+    public String scenario() {
+      return scenario;
+    }
+
+    @Override
+    public Boolean successful() {
+      return successful;
+    }
+
+    @Override
+    public Integer duration() {
+      return duration;
+    }
+
+    @Override
+    public String exception() {
+      return exception;
+    }
+
+    @Override
+    public LocalDateTime created() {
+      return created;
+    }
+
+    @Override
+    public boolean equals(Object object) {
+      if (this == object) {
+        return true;
+      }
+      if (!(object instanceof DefaultApplication)) {
+        return false;
+      }
+      DefaultApplication that = (DefaultApplication) object;
+
+      return Objects.equals(application, that.application);
+    }
+
+    @Override
+    public int hashCode() {
+      return Objects.hash(application);
+    }
+  }
+
+  private final class ApplicationItemSupplier implements Supplier<Collection<Application>> {
+
+    @Override
+    public Collection<Application> get() {
+      synchronized (applications) {
+        return applications.stream()
+                .map(this::toApplication)
+                .collect(toList());
+      }
+    }
+
+    private Application toApplication(ApplicationRunner applicationRunner) {
+      return new DefaultApplication(applicationRunner);
+    }
+  }
+
+  private static final class ApplicationColumnValueProvider implements ColumnValueProvider<Application, Integer> {
+
+    private static final int APPLICATION = 0;
+    private static final int USERNAME = 1;
+    private static final int SCENARIO = 2;
+    private static final int SUCCESSFUL = 3;
+    private static final int DURATION = 4;
+    private static final int EXCEPTION = 5;
+    private static final int CREATED = 6;
+
+    @Override
+    public Object value(Application application, Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case APPLICATION:
+          return application.name();
+        case USERNAME:
+          return application.username();
+        case SCENARIO:
+          return application.scenario();
+        case SUCCESSFUL:
+          return application.successful();
+        case DURATION:
+          return application.duration();
+        case EXCEPTION:
+          return application.exception();
+        case CREATED:
+          return application.created();
+        default:
+          throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }
     }
   }

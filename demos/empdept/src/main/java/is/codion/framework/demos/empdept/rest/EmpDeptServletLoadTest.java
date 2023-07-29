@@ -45,11 +45,11 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
   }
 
   @Override
-  protected EntityConnectionProvider createApplication() throws CancelException {
+  protected EntityConnectionProvider createApplication(User user) throws CancelException {
     return HttpEntityConnectionProvider.builder()
             .clientTypeId("EmpDeptServletLoadTest")
             .domainType(EmpDept.DOMAIN)
-            .user(UNIT_TEST_USER)
+            .user(user)
             .build();
   }
 

@@ -35,12 +35,12 @@ public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppModel
   }
 
   @Override
-  protected PetstoreAppModel createApplication() throws CancelException {
+  protected PetstoreAppModel createApplication(User user) throws CancelException {
     PetstoreAppModel applicationModel = new PetstoreAppModel(
             EntityConnectionProvider.builder()
                     .domainType(Petstore.DOMAIN)
                     .clientTypeId(getClass().getSimpleName())
-                    .user(getUser())
+                    .user(user)
                     .build());
     SwingEntityModel categoryModel = applicationModel.entityModels().iterator().next();
     categoryModel.detailModelLink(categoryModel.detailModels().iterator().next()).setActive(true);
