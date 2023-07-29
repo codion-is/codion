@@ -5,6 +5,7 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
 import is.codion.common.event.Event;
+import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventListener;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
@@ -27,6 +28,7 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.SwingUtilities;
 import java.lang.management.ManagementFactory;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -69,8 +71,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   private final State pausedState = State.state();
   private final State collectChartDataState = State.state();
+  private final State autoRefreshApplicationsState = State.state();
   private final StateObserver chartUpdateSchedulerEnabledState =
           State.and(pausedState.reversedObserver(), collectChartDataState);
+  private final StateObserver applicationsRefreshSchedulerEnabledState =
+          State.and(pausedState.reversedObserver(), autoRefreshApplicationsState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;
@@ -91,6 +96,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
           newScheduledThreadPool(Math.max(MINIMUM_NUMBER_OF_THREADS, Runtime.getRuntime().availableProcessors() * 2));
   private final Counter counter = new Counter();
   private final TaskScheduler chartUpdateScheduler;
+  private final TaskScheduler applicationsRefreshScheduler;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
   private final XYSeries delayedScenarioRunsSeries = new XYSeries("Warn. time exceeded");
@@ -153,6 +159,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     this.scenarioChooser = createScenarioChooser();
     initializeChartModels();
     this.chartUpdateScheduler = TaskScheduler.builder(new ChartUpdateTask())
+            .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
+            .build();
+    this.applicationsRefreshScheduler = TaskScheduler.builder(new TableRefreshTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
             .build();
     bindEvents();
@@ -325,6 +334,11 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
+  public final State autoRefreshApplicationsState() {
+    return autoRefreshApplicationsState;
+  }
+
+  @Override
   public final void shutdown() {
     shuttingDown = true;
     chartUpdateScheduler.stop();
@@ -419,14 +433,8 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   private void bindEvents() {
-    chartUpdateSchedulerEnabledState.addDataListener(active -> {
-      if (active) {
-        chartUpdateScheduler.start();
-      }
-      else {
-        chartUpdateScheduler.stop();
-      }
-    });
+    chartUpdateSchedulerEnabledState.addDataListener(new TaskSchedulerController(chartUpdateScheduler));
+    applicationsRefreshSchedulerEnabledState.addDataListener(new TaskSchedulerController(applicationsRefreshScheduler));
   }
 
   private void stop(ApplicationRunner applicationRunner) {
@@ -554,15 +562,24 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
   }
 
+  private final class TableRefreshTask implements Runnable {
+
+    @Override
+    public void run() {
+      if (!shuttingDown) {
+        SwingUtilities.invokeLater(applicationTableModel::refresh);
+      }
+    }
+  }
+
   private final class ChartUpdateTask implements Runnable {
 
     @Override
     public void run() {
-      if (shuttingDown) {
-        return;
+      if (!shuttingDown) {
+        counter.updateRequestsPerSecond();
+        updateChartData();
       }
-      counter.updateRequestsPerSecond();
-      updateChartData();
     }
 
     private void updateChartData() {
@@ -766,6 +783,25 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       super.validate(value);
       if (value < minimumThinkTimeValue.get()) {
         throw new IllegalArgumentException("Maximum think time must be equal to or exceed minimum think time");
+      }
+    }
+  }
+
+  private static final class TaskSchedulerController implements EventDataListener<Boolean> {
+
+    private final TaskScheduler taskScheduler;
+
+    private TaskSchedulerController(TaskScheduler taskScheduler) {
+      this.taskScheduler = taskScheduler;
+    }
+
+    @Override
+    public void onEvent(Boolean enabled) {
+      if (enabled) {
+        taskScheduler.start();
+      }
+      else {
+        taskScheduler.stop();
       }
     }
   }

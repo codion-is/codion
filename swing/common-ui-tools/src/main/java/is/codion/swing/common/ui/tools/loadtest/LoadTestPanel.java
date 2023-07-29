@@ -30,7 +30,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -52,7 +51,8 @@ import static is.codion.swing.common.ui.dialog.Dialogs.lookAndFeelSelectionDialo
 import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -73,7 +73,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private static final double RESIZE_WEIGHT = 0.8;
 
   private final LoadTest<T> loadTestModel;
-  private final JPanel scenarioBase = new JPanel(gridLayout(0, 1));
+  private final JPanel scenarioBase = gridLayoutPanel(0, 1).build();
 
   static {
     FilteredTableCellRenderer.NUMERICAL_HORIZONTAL_ALIGNMENT.set(SwingConstants.CENTER);
@@ -272,12 +272,12 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private JPanel createApplicationsPanel() {
     return borderLayoutPanel()
-            .northComponent(panel(flowLayout(FlowLayout.TRAILING))
-                    .add(button(Control.builder(() -> model().applicationTableModel().refresh()))
-                            .text("Refresh")
+            .northComponent(panel(flowLayout(FlowLayout.LEADING))
+                    .add(checkBox(loadTestModel.autoRefreshApplicationsState())
+                            .text("Automatic refresh")
                             .build())
                     .build())
-            .centerComponent(new JScrollPane(createApplicationsTable()))
+            .centerComponent(scrollPane(createApplicationsTable()).build())
             .build();
   }
 
@@ -361,6 +361,10 @@ public final class LoadTestPanel<T> extends JPanel {
   private FilteredTable<Application, Integer> createApplicationsTable() {
     return FilteredTable.builder(model().applicationTableModel())
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
+            .popupMenuControl(Control.builder(model().applicationTableModel()::refresh)
+                    .name("Refresh")
+                    .enabledState(model().autoRefreshApplicationsState().reversedObserver())
+                    .build())
             .build();
   }
 
@@ -408,7 +412,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
 
     return borderLayoutPanel()
-            .centerComponent(new JScrollPane(exceptionsArea))
+            .centerComponent(scrollPane(exceptionsArea).build())
             .eastComponent(borderLayoutPanel()
                     .northComponent(refreshButton)
                     .southComponent(clearButton)

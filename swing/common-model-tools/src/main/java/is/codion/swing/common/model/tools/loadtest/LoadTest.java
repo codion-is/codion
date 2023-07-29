@@ -121,6 +121,11 @@ public interface LoadTest<T> {
   State collectChartDataState();
 
   /**
+   * @return the state controlling whether the applications table model is automatically refreshed
+   */
+  State autoRefreshApplicationsState();
+
+  /**
    * @return an observer notified each time the application count changes
    */
   ValueObserver<Integer> applicationCountObserver();
