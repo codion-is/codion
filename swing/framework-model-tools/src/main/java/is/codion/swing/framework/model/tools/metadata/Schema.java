@@ -3,13 +3,12 @@
  */
 package is.codion.swing.framework.model.tools.metadata;
 
-import is.codion.common.event.EventDataListener;
-
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableMap;
@@ -36,9 +35,9 @@ public final class Schema {
   }
 
   public void populate(DatabaseMetaData metaData, Map<String, Schema> schemas,
-                       EventDataListener<String> schemaNotifier) {
+                       Consumer<String> schemaNotifier) {
     if (!populated) {
-      schemaNotifier.onEvent(name);
+      schemaNotifier.accept(name);
       try (ResultSet resultSet = metaData.getTables(null, name, null, new String[] {"TABLE", "VIEW"})) {
         tables.putAll(new TablePacker(this, metaData, null).pack(resultSet).stream()
                 .collect(toMap(Table::tableName, Function.identity())));

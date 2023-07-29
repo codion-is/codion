@@ -6,7 +6,6 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.result.ResultIterator;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
@@ -22,6 +21,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
+import java.util.function.Consumer;
 
 import static is.codion.framework.db.condition.Condition.condition;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
@@ -99,7 +99,7 @@ public class EntityConnectionTest {
       assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
               .batchSize(-10));
 
-      EventDataListener<Integer> progressReporter = currentProgress -> {};
+      Consumer<Integer> progressReporter = currentProgress -> {};
       EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
               .batchSize(2)
               .progressReporter(progressReporter)

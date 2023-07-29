@@ -3,18 +3,20 @@
  */
 package is.codion.common.event;
 
+import java.util.function.Consumer;
+
 final class DefaultEvent<T> implements Event<T> {
 
   private final Object lock = new Object();
   private DefaultEventObserver<T> observer;
 
   @Override
-  public void onEvent() {
-    onEvent(null);
+  public void run() {
+    accept(null);
   }
 
   @Override
-  public void onEvent(T data) {
+  public void accept(T data) {
     if (observer != null) {
       observer.notifyListeners(data);
     }
@@ -32,42 +34,42 @@ final class DefaultEvent<T> implements Event<T> {
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     observer().addListener(listener);
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     observer().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(EventDataListener<T> listener) {
+  public void addDataListener(Consumer<T> listener) {
     observer().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(EventDataListener<T> listener) {
+  public void removeDataListener(Consumer<T> listener) {
     observer().removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     observer().addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     observer().removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<T> listener) {
+  public void addWeakDataListener(Consumer<T> listener) {
     observer().addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<T> listener) {
+  public void removeWeakDataListener(Consumer<T> listener) {
     observer().removeWeakDataListener(listener);
   }
 }

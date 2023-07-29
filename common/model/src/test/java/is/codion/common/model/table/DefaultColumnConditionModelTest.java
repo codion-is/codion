@@ -5,8 +5,6 @@ package is.codion.common.model.table;
 
 import is.codion.common.Operator;
 import is.codion.common.Text;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 
 import org.junit.jupiter.api.Test;
@@ -15,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -28,12 +27,12 @@ public class DefaultColumnConditionModelTest {
   final AtomicInteger operatorCounter = new AtomicInteger();
   final AtomicInteger enabledCounter = new AtomicInteger();
 
-  final EventDataListener<String> equalToListener = value -> equalToCounter.incrementAndGet();
-  final EventDataListener<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
-  final EventDataListener<String> lowerBoundListener = value -> lowerBoundCounter.incrementAndGet();
-  final EventListener conditionChangedListener = conditionChangedCounter::incrementAndGet;
-  final EventDataListener<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
-  final EventListener enabledListener = enabledCounter::incrementAndGet;
+  final Consumer<String> equalToListener = value -> equalToCounter.incrementAndGet();
+  final Consumer<String> upperBoundListener = value -> upperBoundCounter.incrementAndGet();
+  final Consumer<String> lowerBoundListener = value -> lowerBoundCounter.incrementAndGet();
+  final Runnable conditionChangedListener = conditionChangedCounter::incrementAndGet;
+  final Consumer<Operator> operatorListener = data -> operatorCounter.incrementAndGet();
+  final Runnable enabledListener = enabledCounter::incrementAndGet;
 
   @Test
   void testSetBounds() {

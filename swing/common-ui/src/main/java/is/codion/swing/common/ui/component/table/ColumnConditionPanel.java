@@ -5,7 +5,6 @@ package is.codion.swing.common.ui.component.table;
 
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.item.Item;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
@@ -44,6 +43,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.parentOfType;
@@ -185,21 +185,21 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   /**
    * @param listener a listener notified each time the advanced condition state changes
    */
-  public void addAdvancedViewListener(EventDataListener<Boolean> listener) {
+  public void addAdvancedViewListener(Consumer<Boolean> listener) {
     advancedViewState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
+  public void removeAdvancedViewListener(Consumer<Boolean> listener) {
     advancedViewState.removeDataListener(listener);
   }
 
   /**
    * @param listener listener notified when this condition panels input fields receive focus
    */
-  public void addFocusGainedListener(EventDataListener<C> listener) {
+  public void addFocusGainedListener(Consumer<C> listener) {
     focusGainedEvent.addDataListener(listener);
   }
 
@@ -649,7 +649,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     @Override
     public void focusGained(FocusEvent e) {
       if (!e.isTemporary()) {
-        focusGainedEvent.onEvent(conditionModel.columnIdentifier());
+        focusGainedEvent.accept(conditionModel.columnIdentifier());
       }
     }
   }

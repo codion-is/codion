@@ -1,7 +1,6 @@
 package is.codion.framework.demos.world.ui;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.model.CityEditModel;
@@ -22,6 +21,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toSet;
 public final class CityEditPanel extends EntityEditPanel {
 
   private final JXMapKit mapKit;
-  private final EventDataListener<Collection<Entity>> displayLocationListener;
+  private final Consumer<Collection<Entity>> displayLocationListener;
 
   public CityEditPanel(SwingEntityEditModel editModel) {
     super(editModel);
@@ -86,10 +86,10 @@ public final class CityEditPanel extends EntityEditPanel {
 
   private void setLocation() throws ValidationException, IOException, DatabaseException {
     ((CityEditModel) editModel()).setLocation();
-    displayLocationListener.onEvent(singletonList(editModel().entity()));
+    displayLocationListener.accept(singletonList(editModel().entity()));
   }
 
-  private static final class DisplayLocationListener implements EventDataListener<Collection<Entity>> {
+  private static final class DisplayLocationListener implements Consumer<Collection<Entity>> {
 
     private final JXMapViewer mapViewer;
 
@@ -98,7 +98,7 @@ public final class CityEditPanel extends EntityEditPanel {
     }
 
     @Override
-    public void onEvent(Collection<Entity> cities) {
+    public void accept(Collection<Entity> cities) {
       Maps.paintWaypoints(cities.stream()
               .filter(city -> city.isNotNull(City.LOCATION))
               .map(city -> city.get(City.LOCATION))

@@ -6,7 +6,6 @@ package is.codion.common.model.table;
 import is.codion.common.Operator;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -228,12 +227,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void addChangeListener(EventListener listener) {
+  public void addChangeListener(Runnable listener) {
     conditionChangedEvent.addListener(listener);
   }
 
   @Override
-  public void removeChangeListener(EventListener listener) {
+  public void removeChangeListener(Runnable listener) {
     conditionChangedEvent.removeListener(listener);
   }
 
@@ -475,7 +474,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private void bindEvents() {
-    EventListener autoEnableListener = new AutoEnableListener();
+    Runnable autoEnableListener = new AutoEnableListener();
     equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
@@ -502,10 +501,10 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     }
   }
 
-  private final class AutoEnableListener implements EventListener {
+  private final class AutoEnableListener implements Runnable {
 
     @Override
-    public void onEvent() {
+    public void run() {
       if (autoEnableState.get()) {
         switch (operatorValue.get()) {
           case EQUAL:

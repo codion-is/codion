@@ -4,7 +4,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventListener;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -260,7 +259,7 @@ public final class EntityComboBoxModelTest {
   @Test
   void test() throws DatabaseException {
     AtomicInteger refreshed = new AtomicInteger();
-    EventListener refreshListener = refreshed::incrementAndGet;
+    Runnable refreshListener = refreshed::incrementAndGet;
     comboBoxModel.refresher().addRefreshListener(refreshListener);
     assertEquals(Employee.TYPE, comboBoxModel.entityType());
     comboBoxModel.setStaticData(false);

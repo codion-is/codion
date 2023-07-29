@@ -426,7 +426,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (transferHandler != null) {
       component.setTransferHandler(transferHandler);
     }
-    buildEvent.onEvent(component);
+    buildEvent.accept(component);
     if (onBuild != null) {
       onBuild.accept(component);
     }

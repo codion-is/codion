@@ -4,8 +4,6 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
@@ -14,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -23,7 +22,7 @@ public class StateTest {
   void listeners() {
     State state = State.state();
     AtomicInteger stateChangeCounter = new AtomicInteger();
-    EventListener stateChangeListener = stateChangeCounter::incrementAndGet;
+    Runnable stateChangeListener = stateChangeCounter::incrementAndGet;
     state.addListener(stateChangeListener);
     //this has no effect, coverage whoring
     state.observer().addListener(stateChangeListener);
@@ -47,11 +46,11 @@ public class StateTest {
   @Test
   void reversedState() {
     AtomicInteger stateCounter = new AtomicInteger();
-    EventListener listener = stateCounter::incrementAndGet;
+    Runnable listener = stateCounter::incrementAndGet;
     AtomicInteger reversedStateCounter = new AtomicInteger();
-    EventListener reversedListener = reversedStateCounter::incrementAndGet;
+    Runnable reversedListener = reversedStateCounter::incrementAndGet;
     AtomicInteger reversedReversedStateCounter = new AtomicInteger();
-    EventListener reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
+    Runnable reversedReversedListener = reversedReversedStateCounter::incrementAndGet;
     State state = State.state();
     StateObserver reversed = state.reversedObserver();
     StateObserver reversedReversed = reversed.reversedObserver();
@@ -85,7 +84,7 @@ public class StateTest {
     assertFalse(state.isNullable());
     assertFalse(state.equalTo(true));
     assertTrue(state.optional().isPresent());
-    state.onEvent(true);//calls set()
+    state.accept(true);//calls set()
     assertTrue(state.get(), "State should be active after activation");
     assertEquals("true", state.toString());
     assertFalse(state.reversedObserver().get(), "Reversed state should be inactive after activation");
@@ -215,8 +214,8 @@ public class StateTest {
     State three = State.state();
 
     StateObserver combinationAnd = State.combination(Conjunction.AND, one, two, three);
-    EventListener listener = () -> {};
-    EventDataListener<Boolean> dataListener = newValue -> assertEquals(combinationAnd.get(), newValue);
+    Runnable listener = () -> {};
+    Consumer<Boolean> dataListener = newValue -> assertEquals(combinationAnd.get(), newValue);
     combinationAnd.addListener(listener);
     combinationAnd.addDataListener(dataListener);
     one.set(true);
@@ -310,8 +309,8 @@ public class StateTest {
   @Test
   void weakListeners() {
     State state = State.state();
-    EventListener listener = () -> {};
-    EventDataListener<Boolean> dataListener = bool -> {};
+    Runnable listener = () -> {};
+    Consumer<Boolean> dataListener = bool -> {};
     state.addWeakListener(listener);
     state.addWeakListener(listener);
     state.addWeakDataListener(dataListener);

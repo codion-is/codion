@@ -4,8 +4,6 @@
 package is.codion.common.state;
 
 import is.codion.common.Conjunction;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,6 +11,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -105,42 +104,42 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     observer.addListener(listener);
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     observer.removeListener(listener);
   }
 
   @Override
-  public void addDataListener(EventDataListener<Boolean> listener) {
+  public void addDataListener(Consumer<Boolean> listener) {
     observer.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(EventDataListener<Boolean> listener) {
+  public void removeDataListener(Consumer<Boolean> listener) {
     observer.removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     observer.addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     observer.removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+  public void addWeakDataListener(Consumer<Boolean> listener) {
     observer.addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+  public void removeWeakDataListener(Consumer<Boolean> listener) {
     observer.removeWeakDataListener(listener);
   }
 
@@ -167,7 +166,7 @@ final class DefaultStateCombination implements State.Combination {
             .findFirst();
   }
 
-  private final class StateCombinationListener implements EventDataListener<Boolean> {
+  private final class StateCombinationListener implements Consumer<Boolean> {
     private final StateObserver state;
 
     private StateCombinationListener(StateObserver state) {
@@ -176,7 +175,7 @@ final class DefaultStateCombination implements State.Combination {
     }
 
     @Override
-    public void onEvent(Boolean newValue) {
+    public void accept(Boolean newValue) {
       observer.notifyObservers(get(), previousState(state, !newValue));
     }
 

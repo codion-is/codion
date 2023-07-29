@@ -7,8 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.Memory;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -86,6 +84,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -307,7 +306,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Exits this application
    * @throws CancelException if the exit is cancelled
-   * @see #addOnExitListener(EventListener)
+   * @see #addOnExitListener(Runnable)
    * @see EntityApplicationPanel#CONFIRM_EXIT
    * @see EntityApplicationModel#isWarnAboutUnsavedData()
    */
@@ -317,7 +316,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     try {
-      onExitEvent.onEvent();
+      onExitEvent.run();
     }
     catch (CancelException e) {
       throw e;
@@ -823,7 +822,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * To cancel the exit throw a {@link CancelException}.
    * @param listener a listener notified when the application is about to exit
    */
-  protected final void addOnExitListener(EventListener listener) {
+  protected final void addOnExitListener(Runnable listener) {
     onExitEvent.addListener(listener);
   }
 
@@ -1010,7 +1009,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
   }
 
-  private final class SelectActivatedPanelListener implements EventDataListener<Boolean> {
+  private final class SelectActivatedPanelListener implements Consumer<Boolean> {
 
     private final EntityPanel entityPanel;
 
@@ -1019,7 +1018,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
 
     @Override
-    public void onEvent(Boolean panelActivated) {
+    public void accept(Boolean panelActivated) {
       if (panelActivated) {
         selectChildPanel(entityPanel);
       }
@@ -1223,7 +1222,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * @param onApplicationStarted called after a successful application start
      * @return this Builder instance
      */
-    Builder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted);
+    Builder<M, P> onApplicationStarted(Consumer<P> onApplicationStarted);
 
     /**
      * @param frameSupplier the frame supplier

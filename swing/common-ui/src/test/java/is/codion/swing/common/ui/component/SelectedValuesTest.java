@@ -101,6 +101,6 @@ public class SelectedValuesTest {
 
   public void setSelectedItem(String selectedItem) {
     this.selectedItem = selectedItem;
-    selectedItemChangedEvent.onEvent();
+    selectedItemChangedEvent.run();
   }
 }

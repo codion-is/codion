@@ -3,8 +3,6 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventListener;
-
 import java.util.Set;
 
 /**
@@ -16,8 +14,8 @@ final class ValueLink<T> {
   private final Value<T> linkedValue;
   private final Value<T> originalValue;
 
-  private final EventListener updateLinkedValueListener = new UpdateLinkedValueListener();
-  private final EventListener updateOriginalValueListener = new UpdateOriginalValueListener();
+  private final Runnable updateLinkedValueListener = new UpdateLinkedValueListener();
+  private final Runnable updateOriginalValueListener = new UpdateOriginalValueListener();
 
   private final LinkedValidator<T> linkedValidator;
   private final LinkedValidator<T> originalValidator;
@@ -70,10 +68,10 @@ final class ValueLink<T> {
     linkedValues.forEach(value -> preventLinkCycle(value, originalValue));
   }
 
-  private final class UpdateLinkedValueListener implements EventListener {
+  private final class UpdateLinkedValueListener implements Runnable {
 
     @Override
-    public void onEvent() {
+    public void run() {
       updateLinkedValue();
     }
 
@@ -96,10 +94,10 @@ final class ValueLink<T> {
     }
   }
 
-  private final class UpdateOriginalValueListener implements EventListener {
+  private final class UpdateOriginalValueListener implements Runnable {
 
     @Override
-    public void onEvent() {
+    public void run() {
       updateOriginalValue();
     }
 

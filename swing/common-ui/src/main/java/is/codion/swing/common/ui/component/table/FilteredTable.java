@@ -6,7 +6,6 @@ package is.codion.swing.common.ui.component.table;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
@@ -50,6 +49,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
@@ -428,14 +428,14 @@ public final class FilteredTable<R, C> extends JTable {
   /**
    * @param listener a listener notified each time the table is double-clicked
    */
-  public void addDoubleClickListener(EventDataListener<MouseEvent> listener) {
+  public void addDoubleClickListener(Consumer<MouseEvent> listener) {
     doubleClickEvent.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeDoubleClickListener(EventDataListener<MouseEvent> listener) {
+  public void removeDoubleClickListener(Consumer<MouseEvent> listener) {
     doubleClickEvent.removeDataListener(listener);
   }
 
@@ -620,7 +620,7 @@ public final class FilteredTable<R, C> extends JTable {
 
   /**
    * A MouseListener for handling double click, which invokes the action returned by {@link #getDoubleClickAction()}
-   * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(EventDataListener)} event.
+   * with this table as the ActionEvent source as well as triggering the {@link #addDoubleClickListener(Consumer)} event.
    * @see #getDoubleClickAction()
    */
   private final class FilteredTableMouseListener extends MouseAdapter {
@@ -631,15 +631,15 @@ public final class FilteredTable<R, C> extends JTable {
         if (doubleClickAction != null) {
           doubleClickAction.actionPerformed(new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "doubleClick"));
         }
-        doubleClickEvent.onEvent(e);
+        doubleClickEvent.accept(e);
       }
     }
   }
 
-  private final class ScrollToSelectedListener implements EventDataListener<List<Integer>> {
+  private final class ScrollToSelectedListener implements Consumer<List<Integer>> {
 
     @Override
-    public void onEvent(List<Integer> selectedRowIndexes) {
+    public void accept(List<Integer> selectedRowIndexes) {
       if (scrollToSelectedItem && !selectedRowIndexes.isEmpty() && noRowVisible(selectedRowIndexes)) {
         scrollToCoordinate(selectedRowIndexes.get(0), getSelectedColumn(), centerOnScroll);
       }

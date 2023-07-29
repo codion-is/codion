@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Conjunction;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -13,6 +12,7 @@ import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -82,12 +82,12 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   /**
    * @param listener a listener notified each time the search condition changes
    */
-  void addChangeListener(EventDataListener<Condition> listener);
+  void addChangeListener(Consumer<Condition> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeChangeListener(EventDataListener<Condition> listener);
+  void removeChangeListener(Consumer<Condition> listener);
 
   /**
    * Creates a new {@link EntityTableConditionModel}

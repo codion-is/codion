@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
@@ -38,6 +37,7 @@ import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.util.ResourceBundle;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -86,7 +86,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private boolean saveDefaultUsername = EntityApplicationModel.SAVE_DEFAULT_USERNAME.get();
   private Supplier<JComponent> loginPanelSouthComponentSupplier = new DefaultSouthComponentSupplier();
   private Runnable beforeApplicationStarted;
-  private EventDataListener<P> onApplicationStarted;
+  private Consumer<P> onApplicationStarted;
 
   private String defaultLookAndFeelClassName = systemLookAndFeelClassName();
   private String lookAndFeelClassName;
@@ -248,7 +248,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   }
 
   @Override
-  public EntityApplicationPanel.Builder<M, P> onApplicationStarted(EventDataListener<P> onApplicationStarted) {
+  public EntityApplicationPanel.Builder<M, P> onApplicationStarted(Consumer<P> onApplicationStarted) {
     this.onApplicationStarted = onApplicationStarted;
     return this;
   }
@@ -351,7 +351,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       applicationFrame.setVisible(true);
     }
     if (onApplicationStarted != null) {
-      onApplicationStarted.onEvent(applicationPanel);
+      onApplicationStarted.accept(applicationPanel);
     }
   }
 

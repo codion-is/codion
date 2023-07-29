@@ -3,10 +3,9 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
-
 import javax.swing.SortOrder;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -93,12 +92,12 @@ public interface FilteredTableSortModel<R, C> {
   /**
    * @param listener a listener notified each time the sorting state changes, with the column identifier as event data
    */
-  void addSortingChangedListener(EventDataListener<C> listener);
+  void addSortingChangedListener(Consumer<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSortingChangedListener(EventDataListener<C> listener);
+  void removeSortingChangedListener(Consumer<C> listener);
 
   /**
    * Specifies a sorting state for a column.

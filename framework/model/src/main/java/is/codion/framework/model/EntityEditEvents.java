@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
@@ -16,6 +15,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
 
 import static is.codion.framework.domain.entity.Entity.mapToType;
 import static java.util.Objects.requireNonNull;
@@ -41,7 +41,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+  public static void addInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
     EDIT_LISTENER.addInsertListener(entityType, listener);
   }
 
@@ -52,7 +52,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
+  public static void addUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
     EDIT_LISTENER.addUpdateListener(entityType, listener);
   }
 
@@ -63,7 +63,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+  public static void addDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
     EDIT_LISTENER.addDeleteListener(entityType, listener);
   }
 
@@ -72,7 +72,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+  public static void removeInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
     EDIT_LISTENER.removeInsertListener(entityType, listener);
   }
 
@@ -81,7 +81,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
+  public static void removeUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
     EDIT_LISTENER.removeUpdateListener(entityType, listener);
   }
 
@@ -90,7 +90,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+  public static void removeDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
     EDIT_LISTENER.removeDeleteListener(entityType, listener);
   }
 
@@ -124,27 +124,27 @@ public final class EntityEditEvents {
     private final Map<EntityType, Listeners<Map<Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
     private final Map<EntityType, Listeners<Collection<Entity>>> deleteListeners = new ConcurrentHashMap<>();
 
-    private void addInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+    private void addInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
       insertListeners(entityType).addDataListener(listener);
     }
 
-    private void removeInsertListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+    private void removeInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
       insertListeners(entityType).removeDataListener(listener);
     }
 
-    private void addUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
+    private void addUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
       updateListeners(entityType).addDataListener(listener);
     }
 
-    private void removeUpdateListener(EntityType entityType, EventDataListener<Map<Key, Entity>> listener) {
+    private void removeUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
       updateListeners(entityType).removeDataListener(listener);
     }
 
-    private void addDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+    private void addDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
       deleteListeners(entityType).addDataListener(listener);
     }
 
-    private void removeDeleteListener(EntityType entityType, EventDataListener<Collection<Entity>> listener) {
+    private void removeDeleteListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
       deleteListeners(entityType).removeDataListener(listener);
     }
 
@@ -199,25 +199,25 @@ public final class EntityEditEvents {
 
     private static final class Listeners<T> {
 
-      private final List<WeakReference<EventDataListener<T>>> listenerReferences = new ArrayList<>();
+      private final List<WeakReference<Consumer<T>>> listenerReferences = new ArrayList<>();
 
       private synchronized void onEvent(T data) {
         requireNonNull(data);
-        Iterator<WeakReference<EventDataListener<T>>> iterator = listenerReferences.iterator();
+        Iterator<WeakReference<Consumer<T>>> iterator = listenerReferences.iterator();
         while (iterator.hasNext()) {
-          EventDataListener<T> listener = iterator.next().get();
+          Consumer<T> listener = iterator.next().get();
           if (listener == null) {
             iterator.remove();
           }
           else {
-            listener.onEvent(data);
+            listener.accept(data);
           }
         }
       }
 
-      private synchronized void addDataListener(EventDataListener<T> listener) {
+      private synchronized void addDataListener(Consumer<T> listener) {
         requireNonNull(listener);
-        for (WeakReference<EventDataListener<T>> reference : listenerReferences) {
+        for (WeakReference<Consumer<T>> reference : listenerReferences) {
           if (reference.get() == listener) {
             return;
           }
@@ -225,7 +225,7 @@ public final class EntityEditEvents {
         listenerReferences.add(new WeakReference<>(listener));
       }
 
-      private synchronized void removeDataListener(EventDataListener<T> listener) {
+      private synchronized void removeDataListener(Consumer<T> listener) {
         requireNonNull(listener);
         listenerReferences.removeIf(reference -> reference.get() == null || reference.get() == listener);
       }

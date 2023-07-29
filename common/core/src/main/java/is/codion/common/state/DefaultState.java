@@ -3,8 +3,6 @@
  */
 package is.codion.common.state;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 
@@ -120,54 +118,54 @@ final class DefaultState implements State {
   }
 
   @Override
-  public void onEvent(Boolean data) {
+  public void accept(Boolean data) {
     set(data);
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     observer().addListener(listener);
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     observer().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(EventDataListener<Boolean> listener) {
+  public void addDataListener(Consumer<Boolean> listener) {
     observer().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(EventDataListener<Boolean> listener) {
+  public void removeDataListener(Consumer<Boolean> listener) {
     observer().removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     observer().addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     observer().removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+  public void addWeakDataListener(Consumer<Boolean> listener) {
     observer().addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+  public void removeWeakDataListener(Consumer<Boolean> listener) {
     observer().removeWeakDataListener(listener);
   }
 
-  private final class Notifier implements EventDataListener<Boolean> {
+  private final class Notifier implements Consumer<Boolean> {
 
     @Override
-    public void onEvent(Boolean value) {
+    public void accept(Boolean value) {
       synchronized (DefaultState.this.value) {
         if (observer != null) {
           observer.notifyObservers(value, !value);

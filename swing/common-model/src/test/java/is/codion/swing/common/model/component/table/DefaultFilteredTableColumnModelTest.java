@@ -3,12 +3,11 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.model.component.table.FilteredTableColumn.filteredTableColumn;
 import static java.util.Arrays.asList;
@@ -22,8 +21,8 @@ public class DefaultFilteredTableColumnModelTest {
     FilteredTableColumnModel<Integer> testModel = createTestModel();
     Collection<Object> hidden = new ArrayList<>();
     Collection<Object> shown = new ArrayList<>();
-    EventDataListener<Integer> hideListener = hidden::add;
-    EventDataListener<Integer> showListener = shown::add;
+    Consumer<Integer> hideListener = hidden::add;
+    Consumer<Integer> showListener = shown::add;
     testModel.addColumnHiddenListener(hideListener);
     testModel.addColumnShownListener(showListener);
 

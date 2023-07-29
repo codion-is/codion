@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.DateTimeParser;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -26,6 +25,7 @@ import java.time.format.DateTimeParseException;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.Temporal;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.awt.event.KeyEvent.VK_DOWN;
 import static java.awt.event.KeyEvent.VK_UP;
@@ -112,7 +112,7 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
   /**
    * @param listener notified each time the value changes
    */
-  public void addTemporalListener(EventDataListener<T> listener) {
+  public void addTemporalListener(Consumer<T> listener) {
     value.addDataListener(listener);
   }
 

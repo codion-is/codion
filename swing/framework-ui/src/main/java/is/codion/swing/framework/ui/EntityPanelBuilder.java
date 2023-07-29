@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -464,7 +463,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
-    private final EventDataListener<List<Entity>> onInsert;
+    private final Consumer<List<Entity>> onInsert;
     private final List<Entity> insertedEntities = new ArrayList<>();
 
     private InsertEntityCommand(EntityComboBox comboBox) {
@@ -500,7 +499,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           }
           successfulInsert = insert(editPanel.editModel(), invalidAttribute);
           if (successfulInsert && !insertedEntities.isEmpty()) {
-            onInsert.onEvent(insertedEntities);
+            onInsert.accept(insertedEntities);
           }
         }
       }
@@ -540,19 +539,19 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       return false;
     }
 
-    private final class PopulateInsertedEntities implements EventDataListener<Collection<Entity>> {
+    private final class PopulateInsertedEntities implements Consumer<Collection<Entity>> {
 
       @Override
-      public void onEvent(Collection<Entity> inserted) {
+      public void accept(Collection<Entity> inserted) {
         insertedEntities.clear();
         insertedEntities.addAll(inserted);
       }
     }
 
-    private class EntityComboBoxOnInsert implements EventDataListener<List<Entity>> {
+    private class EntityComboBoxOnInsert implements Consumer<List<Entity>> {
 
       @Override
-      public void onEvent(List<Entity> inserted) {
+      public void accept(List<Entity> inserted) {
         EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
         Entity item = inserted.get(0);
         comboBoxModel.addItem(item);
@@ -560,9 +559,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
     }
 
-    private class EntitySearchFieldOnInsert implements EventDataListener<List<Entity>> {
+    private class EntitySearchFieldOnInsert implements Consumer<List<Entity>> {
       @Override
-      public void onEvent(List<Entity> inserted) {
+      public void accept(List<Entity> inserted) {
         ((EntitySearchField) component).model().setSelectedEntities(inserted);
       }
     }
@@ -572,7 +571,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
 
     private final JComponent component;
     private final EntityConnectionProvider connectionProvider;
-    private final EventDataListener<List<Entity>> onUpdate;
+    private final Consumer<List<Entity>> onUpdate;
     private final List<Entity> updatedEntities = new ArrayList<>();
 
     private Entity entityToUpdate;
@@ -620,7 +619,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
           }
           successfulUpdate = update(editPanel.editModel(), invalidAttribute);
           if (successfulUpdate && !updatedEntities.isEmpty()) {
-            onUpdate.onEvent(updatedEntities);
+            onUpdate.accept(updatedEntities);
           }
         }
       }
@@ -663,10 +662,10 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       return false;
     }
 
-    private final class EntityComboBoxOnUpdate implements EventDataListener<List<Entity>> {
+    private final class EntityComboBoxOnUpdate implements Consumer<List<Entity>> {
 
       @Override
-      public void onEvent(List<Entity> updated) {
+      public void accept(List<Entity> updated) {
         EntityComboBoxModel comboBoxModel = ((EntityComboBox) component).getModel();
         Entity item = updated.get(0);
         comboBoxModel.replaceItem(entityToUpdate, item);
@@ -674,18 +673,18 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       }
     }
 
-    private final class EntitySearchFieldOnUpdate implements EventDataListener<List<Entity>> {
+    private final class EntitySearchFieldOnUpdate implements Consumer<List<Entity>> {
 
       @Override
-      public void onEvent(List<Entity> updated) {
+      public void accept(List<Entity> updated) {
         ((EntitySearchField) component).model().setSelectedEntities(updated);
       }
     }
 
-    private final class PopulateUpdatedEntities implements EventDataListener<Map<Key, Entity>> {
+    private final class PopulateUpdatedEntities implements Consumer<Map<Key, Entity>> {
 
       @Override
-      public void onEvent(Map<Key, Entity> updated) {
+      public void accept(Map<Key, Entity> updated) {
         updatedEntities.clear();
         updatedEntities.addAll(updated.values());
       }

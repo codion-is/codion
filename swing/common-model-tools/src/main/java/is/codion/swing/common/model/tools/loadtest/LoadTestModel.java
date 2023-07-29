@@ -5,8 +5,6 @@ package is.codion.swing.common.model.tools.loadtest;
 
 import is.codion.common.Memory;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -42,6 +40,7 @@ import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -352,7 +351,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     catch (InterruptedException e) {
       Thread.currentThread().interrupt();
     }
-    shutdownEvent.onEvent();
+    shutdownEvent.run();
   }
 
   @Override
@@ -378,7 +377,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   /**
    * @param listener a listener notified when this load test model has been shutdown.
    */
-  protected final void addShutdownListener(EventListener listener) {
+  protected final void addShutdownListener(Runnable listener) {
     shutdownEvent.addListener(listener);
   }
 
@@ -787,7 +786,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
   }
 
-  private static final class TaskSchedulerController implements EventDataListener<Boolean> {
+  private static final class TaskSchedulerController implements Consumer<Boolean> {
 
     private final TaskScheduler taskScheduler;
 
@@ -796,7 +795,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     }
 
     @Override
-    public void onEvent(Boolean enabled) {
+    public void accept(Boolean enabled) {
       if (enabled) {
         taskScheduler.start();
       }

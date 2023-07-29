@@ -4,13 +4,12 @@
 package is.codion.common.value;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 
 import org.junit.jupiter.api.Test;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,7 +26,7 @@ public class ValueTest {
   public void setIntegerValue(Integer integerValue) {
     if (!Objects.equals(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
-      integerValueChange.onEvent(integerValue);
+      integerValueChange.accept(integerValue);
     }
   }
 
@@ -93,8 +92,8 @@ public class ValueTest {
     assertFalse(valueObserver.isNullable());
     assertTrue(valueObserver.optional().isPresent());
     assertTrue(valueObserver.equalTo(42));
-    EventListener eventListener = eventCounter::incrementAndGet;
-    valueObserver.addListener(eventListener);
+    Runnable listener = eventCounter::incrementAndGet;
+    valueObserver.addListener(listener);
     valueObserver.addDataListener(data -> {
       if (eventCounter.get() != 2) {
         assertNotNull(data);
@@ -136,7 +135,7 @@ public class ValueTest {
     value.set("hello");
     assertTrue(value.optional().isPresent());
 
-    valueObserver.removeListener(eventListener);
+    valueObserver.removeListener(listener);
   }
 
   @Test
@@ -292,7 +291,7 @@ public class ValueTest {
   }
 
   @Test
-  void valueAsEventDataListener() {
+  void valueAsDataListener() {
     Value<Integer> value = Value.value();
     Value<Integer> listeningValue = Value.value();
 
@@ -355,8 +354,8 @@ public class ValueTest {
   void weakListeners() {
     Value<Integer> value = Value.value();
     ValueObserver<Integer> observer = value.observer();
-    EventListener listener = () -> {};
-    EventDataListener<Integer> dataListener = integer -> {};
+    Runnable listener = () -> {};
+    Consumer<Integer> dataListener = integer -> {};
     observer.addWeakListener(listener);
     observer.addWeakListener(listener);
     observer.addWeakDataListener(dataListener);

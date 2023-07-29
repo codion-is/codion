@@ -5,7 +5,6 @@ package is.codion.swing.framework.model.tools.explorer;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
@@ -21,6 +20,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -85,7 +85,7 @@ public final class DatabaseExplorerModel {
     definitionTableModel.selectionModel().addSelectionListener(this::updateCodeValue);
   }
 
-  public void populateSelected(EventDataListener<String> schemaNotifier) {
+  public void populateSelected(Consumer<String> schemaNotifier) {
     schemaTableModel.selectionModel().getSelectedItems().forEach(schema ->
             metaDataModel.populateSchema(schema.name(), schemaNotifier));
     definitionTableModel.refresh();

@@ -9336,3 +9336,4 @@
   DefaultFilteredTableModel.DefaultRefresher bug fixed, used addItemSorted() which would cause an empty-selection event, defeating the purpose of merging
   LoadTestPanel, Applications tab added, related refactoring
   LoadTestModel, LoadTestPanel, automatic refresh of applications table added
+  EventListener and EventDataListener removed, replaced with Runnable and Consumer respectively

@@ -5,7 +5,6 @@ package is.codion.framework.model.test;
 
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -301,7 +300,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void conditionChangedListener() {
     TableModel empModel = createEmployeeTableModel();
     AtomicInteger counter = new AtomicInteger();
-    EventListener conditionChangedListener = counter::incrementAndGet;
+    Runnable conditionChangedListener = counter::incrementAndGet;
     empModel.conditionChangedObserver().addListener(conditionChangedListener);
     ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
             empModel.conditionModel().attributeModel(Employee.COMMISSION);

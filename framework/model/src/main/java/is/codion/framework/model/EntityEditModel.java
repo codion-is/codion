@@ -5,8 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -26,6 +24,7 @@ import is.codion.framework.domain.property.Property;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 /**
@@ -345,8 +344,8 @@ public interface EntityEditModel {
    * @throws DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case inserting is not enabled
-   * @see #addBeforeInsertListener(EventDataListener)
-   * @see #addAfterInsertListener(EventDataListener)
+   * @see #addBeforeInsertListener(Consumer)
+   * @see #addAfterInsertListener(Consumer)
    * @see EntityValidator#validate(Entity)
    */
   Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
@@ -371,8 +370,8 @@ public interface EntityEditModel {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case updating is not enabled
-   * @see #addBeforeUpdateListener(EventDataListener)
-   * @see #addAfterUpdateListener(EventDataListener)
+   * @see #addBeforeUpdateListener(Consumer)
+   * @see #addAfterUpdateListener(Consumer)
    * @see EntityValidator#validate(Entity)
    */
   Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException;
@@ -381,8 +380,8 @@ public interface EntityEditModel {
    * Deletes the active entity
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
-   * @see #addBeforeDeleteListener(EventDataListener)
-   * @see #addAfterDeleteListener(EventDataListener)
+   * @see #addBeforeDeleteListener(Consumer)
+   * @see #addAfterDeleteListener(Consumer)
    */
   void delete() throws DatabaseException;
 
@@ -391,8 +390,8 @@ public interface EntityEditModel {
    * @param entities the entities to delete
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException in case deleting is not enabled
-   * @see #addBeforeDeleteListener(EventDataListener)
-   * @see #addAfterDeleteListener(EventDataListener)
+   * @see #addBeforeDeleteListener(Consumer)
+   * @see #addAfterDeleteListener(Consumer)
    */
   void delete(Collection<? extends Entity> entities) throws DatabaseException;
 
@@ -572,7 +571,7 @@ public interface EntityEditModel {
    * @param listener a listener notified each time the value of the given attribute is edited via this model
    * @param <T> the value type
    */
-  <T> void addEditListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void addEditListener(Attribute<T> attribute, Consumer<T> listener);
 
   /**
    * Removes the given listener.
@@ -580,7 +579,7 @@ public interface EntityEditModel {
    * @param listener the listener to remove
    * @param <T> the value type
    */
-  <T> void removeEditListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void removeEditListener(Attribute<T> attribute, Consumer<T> listener);
 
   /**
    * Adds a listener notified each time the value associated with the given attribute changes, either
@@ -590,7 +589,7 @@ public interface EntityEditModel {
    * @param <T> the value type
    * @see #setEntity(Entity)
    */
-  <T> void addValueListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void addValueListener(Attribute<T> attribute, Consumer<T> listener);
 
   /**
    * Removes the given listener.
@@ -598,131 +597,131 @@ public interface EntityEditModel {
    * @param listener the listener to remove
    * @param <T> the value type
    */
-  <T> void removeValueListener(Attribute<T> attribute, EventDataListener<T> listener);
+  <T> void removeValueListener(Attribute<T> attribute, Consumer<T> listener);
 
   /**
    * @param listener a listener notified each time a value changes
    */
-  void addValueListener(EventDataListener<Attribute<?>> listener);
+  void addValueListener(Consumer<Attribute<?>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeValueListener(EventDataListener<Attribute<?>> listener);
+  void removeValueListener(Consumer<Attribute<?>> listener);
 
   /**
    * Notified each time the entity is set via {@link #setEntity(Entity)}.
    * @param listener a listener notified each time the entity is set, possibly to null
    * @see #setEntity(Entity)
    */
-  void addEntityListener(EventDataListener<Entity> listener);
+  void addEntityListener(Consumer<Entity> listener);
 
   /**
    * Removes the given listener.
    * @param listener the listener to remove
    */
-  void removeEntityListener(EventDataListener<Entity> listener);
+  void removeEntityListener(Consumer<Entity> listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(EventDataListener<Collection<Entity>> listener);
+  void addBeforeInsertListener(Consumer<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(EventDataListener<Collection<Entity>> listener);
+  void removeBeforeInsertListener(Consumer<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time insert has been performed
    */
-  void addAfterInsertListener(EventDataListener<Collection<Entity>> listener);
+  void addAfterInsertListener(Consumer<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(EventDataListener<Collection<Entity>> listener);
+  void removeAfterInsertListener(Consumer<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener);
+  void addBeforeUpdateListener(Consumer<Map<Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(EventDataListener<Map<Key, Entity>> listener);
+  void removeBeforeUpdateListener(Consumer<Map<Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed,
    * with the updated entities, mapped to their respective original primary keys, that is,
    * the primary keys before the update was performed
    */
-  void addAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener);
+  void addAfterUpdateListener(Consumer<Map<Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(EventDataListener<Map<Key, Entity>> listener);
+  void removeAfterUpdateListener(Consumer<Map<Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(EventDataListener<Collection<Entity>> listener);
+  void addBeforeDeleteListener(Consumer<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(EventDataListener<Collection<Entity>> listener);
+  void removeBeforeDeleteListener(Consumer<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time delete has been performed
    */
-  void addAfterDeleteListener(EventDataListener<Collection<Entity>> listener);
+  void addAfterDeleteListener(Consumer<Collection<Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(EventDataListener<Collection<Entity>> listener);
+  void removeAfterDeleteListener(Consumer<Collection<Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    * @see #refresh()
    */
-  void addRefreshListener(EventListener listener);
+  void addRefreshListener(Runnable listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeRefreshListener(EventListener listener);
+  void removeRefreshListener(Runnable listener);
 
   /**
    * @param listener a listener to be notified each time an entity is edited via this model,
    * updated, inserted or deleted
    */
-  void addEntitiesEditedListener(EventListener listener);
+  void addEntitiesEditedListener(Runnable listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeEntitiesEditedListener(EventListener listener);
+  void removeEntitiesEditedListener(Runnable listener);
 
   /**
    * @param listener a listener notified each time the active entity is about to be set
    */
-  void addConfirmSetEntityObserver(EventDataListener<State> listener);
+  void addConfirmSetEntityObserver(Consumer<State> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeConfirmSetEntityObserver(EventDataListener<State> listener);
+  void removeConfirmSetEntityObserver(Consumer<State> listener);
 }

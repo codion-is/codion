@@ -6,8 +6,6 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.Operator;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -23,6 +21,7 @@ import is.codion.framework.domain.entity.ForeignKey;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
@@ -120,12 +119,12 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public void addChangeListener(EventListener listener) {
+  public void addChangeListener(Runnable listener) {
     conditionModel.addChangeListener(listener);
   }
 
   @Override
-  public void removeChangeListener(EventListener listener) {
+  public void removeChangeListener(Runnable listener) {
     conditionModel.removeChangeListener(listener);
   }
 
@@ -145,18 +144,18 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public void addChangeListener(EventDataListener<Condition> listener) {
+  public void addChangeListener(Consumer<Condition> listener) {
     conditionChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeChangeListener(EventDataListener<Condition> listener) {
+  public void removeChangeListener(Consumer<Condition> listener) {
     conditionChangedEvent.removeDataListener(listener);
   }
 
   private void bindEvents() {
     conditionModel.conditionModels().values().forEach(columnConditionModel ->
-            columnConditionModel.addChangeListener(() -> conditionChangedEvent.onEvent(condition())));
+            columnConditionModel.addChangeListener(() -> conditionChangedEvent.accept(condition())));
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,

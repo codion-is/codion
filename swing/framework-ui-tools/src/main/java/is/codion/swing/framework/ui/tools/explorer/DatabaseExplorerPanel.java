@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui.tools.explorer;
 
 import is.codion.common.db.database.Database;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.KeyEvents;
@@ -32,6 +31,7 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.InputEvent;
+import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.button;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -117,7 +117,7 @@ public final class DatabaseExplorerPanel extends JPanel {
     JPanel northPanel = Components.borderLayoutPanel()
             .centerComponent(schemaLabel)
             .build();
-    EventDataListener<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
+    Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));
     Dialogs.progressWorkerDialog(() -> model.populateSelected(schemaNotifier))
             .owner(this)
             .title("Populating")

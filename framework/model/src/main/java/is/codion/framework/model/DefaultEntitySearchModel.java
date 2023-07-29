@@ -7,7 +7,6 @@ import is.codion.common.Conjunction;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -28,6 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -153,7 +153,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
     resetSearchString();
     selectionEmptyState.set(selectedEntities.isEmpty());
-    selectedEntitiesChangedEvent.onEvent(unmodifiableList(selectedEntities));
+    selectedEntitiesChangedEvent.accept(unmodifiableList(selectedEntities));
   }
 
   @Override
@@ -241,12 +241,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener) {
+  public void addSelectedEntitiesListener(Consumer<List<Entity>> listener) {
     selectedEntitiesChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedEntitiesListener(EventDataListener<List<Entity>> listener) {
+  public void removeSelectedEntitiesListener(Consumer<List<Entity>> listener) {
     selectedEntitiesChangedEvent.removeDataListener(listener);
   }
 

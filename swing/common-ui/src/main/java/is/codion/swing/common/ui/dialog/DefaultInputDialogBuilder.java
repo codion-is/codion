@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventListener;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -143,7 +142,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     }
   }
 
-  private static final class InputValidStateListener<T> implements EventListener {
+  private static final class InputValidStateListener<T> implements Runnable {
 
     private final State validInputState;
     private final Predicate<T> validInputPredicate;
@@ -156,7 +155,7 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     }
 
     @Override
-    public void onEvent() {
+    public void run() {
       validInputState.set(validInputPredicate.test(componentValue.get()));
     }
   }

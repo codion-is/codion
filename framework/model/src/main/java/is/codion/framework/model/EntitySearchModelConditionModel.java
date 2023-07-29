@@ -3,13 +3,13 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -53,10 +53,10 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     equalValueSet().addDataListener(new EqualValuesListener());
   }
 
-  private final class SelectedEntitiesListener implements EventDataListener<List<Entity>> {
+  private final class SelectedEntitiesListener implements Consumer<List<Entity>> {
 
     @Override
-    public void onEvent(List<Entity> selectedEntities) {
+    public void accept(List<Entity> selectedEntities) {
       updatingModel = true;
       try {
         setEqualValues(null);//todo this is a hack, otherwise super.conditionChangedEvent doesn't get triggered
@@ -68,10 +68,10 @@ public final class EntitySearchModelConditionModel extends AbstractForeignKeyCon
     }
   }
 
-  private final class EqualValuesListener implements EventDataListener<Set<Entity>> {
+  private final class EqualValuesListener implements Consumer<Set<Entity>> {
 
     @Override
-    public void onEvent(Set<Entity> equalValues) {
+    public void accept(Set<Entity> equalValues) {
       if (!updatingModel) {
         entitySearchModel.setSelectedEntities(new ArrayList<>(equalValues));
       }

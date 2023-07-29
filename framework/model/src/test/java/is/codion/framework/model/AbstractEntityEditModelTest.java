@@ -5,8 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.UpdateException;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.CancelException;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
@@ -36,6 +34,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -66,9 +65,9 @@ public final class AbstractEntityEditModelTest {
     AtomicInteger updateEvents = new AtomicInteger();
     AtomicInteger deleteEvents = new AtomicInteger();
 
-    EventDataListener<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
-    EventDataListener<Map<Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
-    EventDataListener<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
+    Consumer<Collection<Entity>> insertListener = inserted -> insertEvents.incrementAndGet();
+    Consumer<Map<Key, Entity>> updateListener = udpated -> updateEvents.incrementAndGet();
+    Consumer<Collection<Entity>> deleteListener = deleted -> deleteEvents.incrementAndGet();
 
     EntityEditEvents.addInsertListener(Employee.TYPE, insertListener);
     EntityEditEvents.addUpdateListener(Employee.TYPE, updateListener);
@@ -227,14 +226,14 @@ public final class AbstractEntityEditModelTest {
     assertTrue(employeeEditModel.updateEnabledObserver().get());
     assertTrue(employeeEditModel.deleteEnabledObserver().get());
 
-    EventDataListener eventDataListener = data -> {};
-    employeeEditModel.addAfterDeleteListener(eventDataListener);
-    employeeEditModel.addAfterInsertListener(eventDataListener);
-    employeeEditModel.addAfterUpdateListener(eventDataListener);
-    employeeEditModel.addBeforeDeleteListener(eventDataListener);
-    employeeEditModel.addBeforeInsertListener(eventDataListener);
-    employeeEditModel.addBeforeUpdateListener(eventDataListener);
-    EventListener listener = () -> {};
+    Consumer dataListener = data -> {};
+    employeeEditModel.addAfterDeleteListener(dataListener);
+    employeeEditModel.addAfterInsertListener(dataListener);
+    employeeEditModel.addAfterUpdateListener(dataListener);
+    employeeEditModel.addBeforeDeleteListener(dataListener);
+    employeeEditModel.addBeforeInsertListener(dataListener);
+    employeeEditModel.addBeforeUpdateListener(dataListener);
+    Runnable listener = () -> {};
     employeeEditModel.addEntitiesEditedListener(listener);
 
     assertEquals(Employee.TYPE, employeeEditModel.entityType());
@@ -313,12 +312,12 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.setDefaultValues();
     assertTrue(employeeEditModel.entity().primaryKey().isNull(), "Active entity is not null after model is cleared");
 
-    employeeEditModel.removeAfterDeleteListener(eventDataListener);
-    employeeEditModel.removeAfterInsertListener(eventDataListener);
-    employeeEditModel.removeAfterUpdateListener(eventDataListener);
-    employeeEditModel.removeBeforeDeleteListener(eventDataListener);
-    employeeEditModel.removeBeforeInsertListener(eventDataListener);
-    employeeEditModel.removeBeforeUpdateListener(eventDataListener);
+    employeeEditModel.removeAfterDeleteListener(dataListener);
+    employeeEditModel.removeAfterInsertListener(dataListener);
+    employeeEditModel.removeAfterUpdateListener(dataListener);
+    employeeEditModel.removeBeforeDeleteListener(dataListener);
+    employeeEditModel.removeBeforeInsertListener(dataListener);
+    employeeEditModel.removeBeforeUpdateListener(dataListener);
     employeeEditModel.removeEntitiesEditedListener(listener);
   }
 
@@ -400,7 +399,7 @@ public final class AbstractEntityEditModelTest {
       employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
       employeeEditModel.put(Employee.NAME, "BJORN");
       List<Entity> toUpdate = singletonList(employeeEditModel.entity());
-      EventDataListener<Map<Key, Entity>> listener = updatedEntities ->
+      Consumer<Map<Key, Entity>> listener = updatedEntities ->
               assertEquals(toUpdate, new ArrayList<>(updatedEntities.values()));
       employeeEditModel.addAfterUpdateListener(listener);
       employeeEditModel.setUpdateEnabled(false);
@@ -477,8 +476,8 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.setWarnAboutUnsavedData(true);
     employeeEditModel.setPersistValue(Employee.DEPARTMENT_FK, false);
 
-    EventDataListener<State> alwaysConfirmListener = data -> data.set(true);
-    EventDataListener<State> alwaysDenyListener = data -> data.set(false);
+    Consumer<State> alwaysConfirmListener = data -> data.set(true);
+    Consumer<State> alwaysDenyListener = data -> data.set(false);
 
     employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
     Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "KING");

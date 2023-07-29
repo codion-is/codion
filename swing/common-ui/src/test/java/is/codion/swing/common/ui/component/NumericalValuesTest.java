@@ -44,7 +44,7 @@ public class NumericalValuesTest {
 
   public void setLongValue(Long longValue) {
     this.longValue = longValue;
-    longValueChangedEvent.onEvent(this.longValue);
+    longValueChangedEvent.accept(this.longValue);
   }
 
   public long getLongPrimitiveValue() {
@@ -53,7 +53,7 @@ public class NumericalValuesTest {
 
   public void setLongPrimitiveValue(long longPrimitiveValue) {
     this.longPrimitiveValue = longPrimitiveValue;
-    longPrimitiveValueChangedEvent.onEvent(this.longPrimitiveValue);
+    longPrimitiveValueChangedEvent.accept(this.longPrimitiveValue);
   }
 
   public Integer getIntegerValue() {
@@ -62,7 +62,7 @@ public class NumericalValuesTest {
 
   public void setIntegerValue(Integer integerValue) {
     this.integerValue = integerValue;
-    integerValueChangedEvent.onEvent(this.integerValue);
+    integerValueChangedEvent.accept(this.integerValue);
   }
 
   public int getIntValue() {
@@ -71,7 +71,7 @@ public class NumericalValuesTest {
 
   public void setIntValue(int intValue) {
     this.intValue = intValue;
-    intValueChangedEvent.onEvent(this.intValue);
+    intValueChangedEvent.accept(this.intValue);
   }
 
   public Double getDoubleValue() {
@@ -80,7 +80,7 @@ public class NumericalValuesTest {
 
   public void setDoubleValue(Double doubleValue) {
     this.doubleValue = doubleValue;
-    doubleValueChangedEvent.onEvent();
+    doubleValueChangedEvent.run();
   }
 
   public double getDoublePrimitiveValue() {
@@ -89,7 +89,7 @@ public class NumericalValuesTest {
 
   public void setDoublePrimitiveValue(double doublePrimitiveValue) {
     this.doublePrimitiveValue = doublePrimitiveValue;
-    doublePrimitiveValueValueChangedEvent.onEvent();
+    doublePrimitiveValueValueChangedEvent.run();
   }
 
   @Test

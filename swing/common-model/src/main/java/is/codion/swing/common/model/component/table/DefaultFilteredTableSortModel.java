@@ -4,7 +4,6 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnValueProvider;
 
 import javax.swing.SortOrder;
@@ -16,6 +15,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -86,7 +86,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     if (!columnSortOrders.isEmpty()) {
       C firstSortColumn = columnSortOrders.get(0).columnIdentifier();
       columnSortOrders.clear();
-      sortingChangedEvent.onEvent(firstSortColumn);
+      sortingChangedEvent.accept(firstSortColumn);
     }
   }
 
@@ -99,7 +99,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     else {
       columnSortingDisabled.add(columnIdentifier);
       if (removeSortOrder(columnIdentifier)) {
-        sortingChangedEvent.onEvent(columnIdentifier);
+        sortingChangedEvent.accept(columnIdentifier);
       }
     }
   }
@@ -110,12 +110,12 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
   }
 
   @Override
-  public void addSortingChangedListener(EventDataListener<C> listener) {
+  public void addSortingChangedListener(Consumer<C> listener) {
     sortingChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSortingChangedListener(EventDataListener<C> listener) {
+  public void removeSortingChangedListener(Consumer<C> listener) {
     sortingChangedEvent.removeDataListener(listener);
   }
 
@@ -134,7 +134,7 @@ final class DefaultFilteredTableSortModel<R, C> implements FilteredTableSortMode
     if (sortOrder != SortOrder.UNSORTED) {
       columnSortOrders.add(new DefaultColumnSortOrder<>(columnIdentifier, sortOrder));
     }
-    sortingChangedEvent.onEvent(columnIdentifier);
+    sortingChangedEvent.accept(columnIdentifier);
   }
 
   private boolean removeSortOrder(C columnIdentifier) {
