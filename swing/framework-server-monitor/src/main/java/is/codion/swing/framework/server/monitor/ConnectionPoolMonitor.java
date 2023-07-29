@@ -291,7 +291,7 @@ public final class ConnectionPoolMonitor {
     minimumPoolSizeValue.set(connectionPool.getMinimumPoolSize());
     maximumPoolSizeValue.set(connectionPool.getMaximumPoolSize());
     maximumCheckoutTimeValue.set(connectionPool.getMaximumCheckOutTime());
-    statisticsUpdatedEvent.onEvent();
+    statisticsUpdatedEvent.run();
   }
 
   private void bindEvents() {

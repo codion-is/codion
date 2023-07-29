@@ -6,7 +6,6 @@ package is.codion.swing.common.model.component.combobox;
 import is.codion.common.Configuration;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.AbstractValue;
@@ -444,7 +443,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
     if (!Objects.equals(selectedItem, toSelect) && allowSelectionPredicate.test(toSelect)) {
       selectedItem = toSelect;
       fireContentsChanged();
-      selectionChangedEvent.onEvent(selectedItem);
+      selectionChangedEvent.accept(selectedItem);
     }
   }
 
@@ -516,14 +515,14 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   /**
    * @param listener a listener notified each time the selection changes
    */
-  public final void addSelectionListener(EventDataListener<T> listener) {
+  public final void addSelectionListener(Consumer<T> listener) {
     selectionChangedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener a selection listener to remove
    */
-  public final void removeSelectionListener(EventDataListener<T> listener) {
+  public final void removeSelectionListener(Consumer<T> listener) {
     selectionChangedEvent.removeDataListener(listener);
   }
 

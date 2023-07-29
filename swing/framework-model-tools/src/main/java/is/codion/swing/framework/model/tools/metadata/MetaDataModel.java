@@ -4,7 +4,6 @@
 package is.codion.swing.framework.model.tools.metadata;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -12,6 +11,7 @@ import java.sql.SQLException;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static java.util.Collections.unmodifiableCollection;
@@ -37,7 +37,7 @@ public final class MetaDataModel {
     return unmodifiableCollection(schemas.values());
   }
 
-  public void populateSchema(String schemaName, EventDataListener<String> schemaNotifier) {
+  public void populateSchema(String schemaName, Consumer<String> schemaNotifier) {
     Schema schema = schemas.get(requireNonNull(schemaName));
     if (schema == null) {
       throw new IllegalArgumentException("Schema not found: " + schemaName);

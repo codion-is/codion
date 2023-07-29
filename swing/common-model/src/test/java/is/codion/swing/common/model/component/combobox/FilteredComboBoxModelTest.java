@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.component.combobox;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 
@@ -17,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
@@ -114,7 +114,7 @@ public class FilteredComboBoxModelTest {
   @Test
   void testSelection() {
     AtomicInteger selectionChangedCounter = new AtomicInteger();
-    EventDataListener<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
+    Consumer<String> selectionListener = selectedItem -> selectionChangedCounter.incrementAndGet();
     testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
     assertEquals(1, selectionChangedCounter.get());

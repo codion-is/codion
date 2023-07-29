@@ -4,7 +4,6 @@
 package is.codion.swing.framework.model;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -29,6 +28,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
@@ -54,9 +54,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
-  private final EventDataListener<Collection<Entity>> insertListener = new InsertListener();
-  private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
-  private final EventDataListener<Collection<Entity>> deleteListener = new DeleteListener();
+  private final Consumer<Collection<Entity>> insertListener = new InsertListener();
+  private final Consumer<Map<Key, Entity>> updateListener = new UpdateListener();
+  private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
   private boolean staticData = false;
@@ -83,7 +83,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     setIncludeCondition(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
-    addEditEventListeners();
+    addEditListeners();
   }
 
   @Override
@@ -191,10 +191,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   public final void setListenToEditEvents(boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
     if (listenToEditEvents) {
-      addEditEventListeners();
+      addEditListeners();
     }
     else {
-      removeEditEventListeners();
+      removeEditListeners();
     }
   }
 
@@ -457,22 +457,22 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
-    EventDataListener<Entity> listener = selected -> {
+    Consumer<Entity> listener = selected -> {
       setSelectConditionSupplier(() -> where(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);
     //initialize
-    listener.onEvent(selectedValue());
+    listener.accept(selectedValue());
   }
 
-  private void addEditEventListeners() {
+  private void addEditListeners() {
     EntityEditEvents.addInsertListener(entityType, insertListener);
     EntityEditEvents.addUpdateListener(entityType, updateListener);
     EntityEditEvents.addDeleteListener(entityType, deleteListener);
   }
 
-  private void removeEditEventListeners() {
+  private void removeEditListeners() {
     EntityEditEvents.removeInsertListener(entityType, insertListener);
     EntityEditEvents.removeUpdateListener(entityType, updateListener);
     EntityEditEvents.removeDeleteListener(entityType, deleteListener);
@@ -519,26 +519,26 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class InsertListener implements EventDataListener<Collection<Entity>> {
+  private final class InsertListener implements Consumer<Collection<Entity>> {
 
     @Override
-    public void onEvent(Collection<Entity> inserted) {
+    public void accept(Collection<Entity> inserted) {
       inserted.forEach(EntityComboBoxModel.this::addItem);
     }
   }
 
-  private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
+  private final class UpdateListener implements Consumer<Map<Key, Entity>> {
 
     @Override
-    public void onEvent(Map<Key, Entity> updated) {
+    public void accept(Map<Key, Entity> updated) {
       updated.forEach((key, entity) -> replaceItem(Entity.entity(key), entity));
     }
   }
 
-  private final class DeleteListener implements EventDataListener<Collection<Entity>> {
+  private final class DeleteListener implements Consumer<Collection<Entity>> {
 
     @Override
-    public void onEvent(Collection<Entity> deleted) {
+    public void accept(Collection<Entity> deleted) {
       deleted.forEach(EntityComboBoxModel.this::removeItem);
     }
   }

@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -30,33 +28,33 @@ public interface FilteredTableModel<R, C> extends TableModel, FilteredModel<R> {
   /**
    * @param listener a listener to be notified each time the table data changes
    */
-  void addDataChangedListener(EventListener listener);
+  void addDataChangedListener(Runnable listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeDataChangedListener(EventListener listener);
+  void removeDataChangedListener(Runnable listener);
 
   /**
    * @param listener a listener to be notified each time the table model is cleared
    */
-  void addClearListener(EventListener listener);
+  void addClearListener(Runnable listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeClearListener(EventListener listener);
+  void removeClearListener(Runnable listener);
 
   /**
    * Adds a listener that is notified each time rows are removed from this model.
    * @param listener the listener
    */
-  void addRowsRemovedListener(EventDataListener<RemovedRows> listener);
+  void addRowsRemovedListener(Consumer<RemovedRows> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRowsRemovedListener(EventDataListener<RemovedRows> listener);
+  void removeRowsRemovedListener(Consumer<RemovedRows> listener);
 
   /**
    * @param item the item

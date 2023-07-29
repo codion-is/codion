@@ -9,7 +9,6 @@ import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
@@ -26,6 +25,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
@@ -476,13 +476,13 @@ public interface EntityConnection extends AutoCloseable {
        * @param progressReporter if specified this will be used to report batch progress
        * @return this builder instance
        */
-      Builder progressReporter(EventDataListener<Integer> progressReporter);
+      Builder progressReporter(Consumer<Integer> progressReporter);
 
       /**
        * @param onInsert notified each time a batch is inserted, providing the inserted keys
        * @return this builder instance
        */
-      Builder onInsert(EventDataListener<Collection<Key>> onInsert);
+      Builder onInsert(Consumer<Collection<Key>> onInsert);
 
       /**
        * Builds and executes this insert operation

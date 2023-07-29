@@ -4,7 +4,6 @@
 package is.codion.framework.db;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.domain.DomainType;
@@ -14,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.UUID;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -105,12 +105,12 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final void addOnConnectListener(EventDataListener<EntityConnection> listener) {
+  public final void addOnConnectListener(Consumer<EntityConnection> listener) {
     onConnectEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeOnConnectListener(EventDataListener<EntityConnection> listener) {
+  public final void removeOnConnectListener(Consumer<EntityConnection> listener) {
     onConnectEvent.removeDataListener(listener);
   }
 
@@ -162,7 +162,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private void doConnect() {
     entityConnection = connect();
     entities = entityConnection.entities();
-    onConnectEvent.onEvent(entityConnection);
+    onConnectEvent.accept(entityConnection);
   }
 
   public abstract static class AbstractBuilder<T extends EntityConnectionProvider,

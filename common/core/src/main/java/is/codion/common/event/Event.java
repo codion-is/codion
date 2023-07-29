@@ -3,6 +3,8 @@
  */
 package is.codion.common.event;
 
+import java.util.function.Consumer;
+
 /**
  * An event class. Listeners are notified in the order they were added.
  * <pre>
@@ -13,12 +15,12 @@ package is.codion.common.event;
  * observer.addListener(this::doSomething);
  * observer.addDataListener(this::onBoolean);
  *
- * event.onEvent(true);
+ * event.accept(true);
  * </pre>
  * A factory class for {@link Event} instances.
  * @param <T> the type of data propagated with this event
  */
-public interface Event<T> extends EventListener, EventDataListener<T>, EventObserver<T> {
+public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {
 
   /**
    * @return an observer notified each time this event occurs
@@ -35,23 +37,23 @@ public interface Event<T> extends EventListener, EventDataListener<T>, EventObse
   }
 
   /**
-   * Creates a {@link EventListener} causing the {@code listener}s {@link EventDataListener#onEvent(Object)} to be called with a null argument on each occurrence.
+   * Creates a {@link Runnable} causing the {@code listener}s {@link Consumer#accept(Object)} to be called with a null argument on each occurrence.
    * @param listener the data listener
    * @param <T> the value type
-   * @return a {@link EventListener} causing the given {@link EventDataListener} to be called with null data on each occurrence
+   * @return a {@link Runnable} causing the given {@link Consumer} to be called with null data on each occurrence
    */
-  static <T> EventListener listener(EventDataListener<T> listener) {
-    return () -> listener.onEvent(null);
+  static <T> Runnable listener(Consumer<T> listener) {
+    return () -> listener.accept(null);
   }
 
   /**
-   * Creates a {@link EventDataListener} causing the {@code listener}s {@link EventListener#onEvent()} to be called on each occurrence.
+   * Creates a {@link Consumer} causing the {@code listener}s {@link Runnable#run()} to be called on each occurrence.
    * Note that any event data will get discarded along the way.
    * @param <T> the type of data propagated to listeners on event occurrence
    * @param listener the listener
-   * @return a {@link EventDataListener} causing the given {@link EventListener} to be called on each occurrence
+   * @return a {@link Consumer} causing the given {@link Runnable} to be called on each occurrence
    */
-  static <T> EventDataListener<T> dataListener(EventListener listener) {
-    return data -> listener.onEvent();
+  static <T> Consumer<T> dataListener(Runnable listener) {
+    return data -> listener.run();
   }
 }

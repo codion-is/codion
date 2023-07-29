@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
@@ -12,6 +11,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.Collection;
+import java.util.function.Consumer;
 
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
@@ -170,10 +170,10 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
   /**
    * @param listener notified each time the active detail models change
    */
-  void addActiveDetailModelsListener(EventDataListener<Collection<M>> listener);
+  void addActiveDetailModelsListener(Consumer<Collection<M>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeActiveDetailModelsListener(EventDataListener<Collection<M>> listener);
+  void removeActiveDetailModelsListener(Consumer<Collection<M>> listener);
 }

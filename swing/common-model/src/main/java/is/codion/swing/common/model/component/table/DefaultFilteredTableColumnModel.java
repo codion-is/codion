@@ -4,7 +4,6 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import javax.swing.ListSelectionModel;
@@ -19,6 +18,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -247,22 +247,22 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   /* TableColumnModel implementation ends */
 
   @Override
-  public void addColumnHiddenListener(EventDataListener<C> listener) {
+  public void addColumnHiddenListener(Consumer<C> listener) {
     columnHiddenEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeColumnHiddenListener(EventDataListener<C> listener) {
+  public void removeColumnHiddenListener(Consumer<C> listener) {
     columnHiddenEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addColumnShownListener(EventDataListener<C> listener) {
+  public void addColumnShownListener(Consumer<C> listener) {
     columnShownEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeColumnShownListener(EventDataListener<C> listener) {
+  public void removeColumnShownListener(Consumer<C> listener) {
     columnShownEvent.removeDataListener(listener);
   }
 
@@ -297,7 +297,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       hiddenColumns.remove(columnIdentifier);
       tableColumnModel.addColumn(column.column);
       tableColumnModel.moveColumn(getColumnCount() - 1, column.indexWhenShown());
-      columnShownEvent.onEvent(columnIdentifier);
+      columnShownEvent.accept(columnIdentifier);
     }
   }
 
@@ -306,7 +306,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
       HiddenColumn hiddenColumn = new HiddenColumn(column(columnIdentifier));
       hiddenColumns.put(columnIdentifier, hiddenColumn);
       tableColumnModel.removeColumn(hiddenColumn.column);
-      columnHiddenEvent.onEvent(columnIdentifier);
+      columnHiddenEvent.accept(columnIdentifier);
     }
   }
 

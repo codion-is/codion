@@ -3,12 +3,12 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
 
 import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * A {@link is.codion.common.model.table.ColumnConditionModel} based on a {@link EntityComboBoxModel}.
@@ -61,10 +61,10 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
     entityComboBoxModel.refresher().addRefreshListener(() -> entityComboBoxModel.setSelectedItem(getEqualValue()));
   }
 
-  private final class SelectedEntityListener implements EventDataListener<Entity> {
+  private final class SelectedEntityListener implements Consumer<Entity> {
 
     @Override
-    public void onEvent(Entity selectedEntity) {
+    public void accept(Entity selectedEntity) {
       updatingModel = true;
       try {
         setEqualValue(selectedEntity);
@@ -75,10 +75,10 @@ public final class EntityComboBoxModelConditionModel extends AbstractForeignKeyC
     }
   }
 
-  private final class EqualValueListener implements EventDataListener<Entity> {
+  private final class EqualValueListener implements Consumer<Entity> {
 
     @Override
-    public void onEvent(Entity equalValue) {
+    public void accept(Entity equalValue) {
       if (!updatingModel) {
         entityComboBoxModel.setSelectedItem(equalValue);
       }

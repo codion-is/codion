@@ -8,7 +8,6 @@ import is.codion.common.db.exception.AuthenticationException;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.report.Report;
-import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.AbstractServer;
 import is.codion.common.rmi.server.AuxiliaryServer;
@@ -515,10 +514,10 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     }
   }
 
-  private final class ShutdownListener implements EventListener {
+  private final class ShutdownListener implements Runnable {
 
     @Override
-    public void onEvent() {
+    public void run() {
       database.closeConnectionPools();
       database.shutdownEmbedded();
     }

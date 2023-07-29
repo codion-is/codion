@@ -5,8 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.Conjunction;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
@@ -15,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.stream.IntStream;
 
@@ -229,31 +228,31 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public void addSelectionInterval(int fromIndex, int toIndex) {
-    beforeSelectionChangeEvent.onEvent();
+    beforeSelectionChangeEvent.run();
     super.addSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void setSelectionInterval(int fromIndex, int toIndex) {
-    beforeSelectionChangeEvent.onEvent();
+    beforeSelectionChangeEvent.run();
     super.setSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void removeSelectionInterval(int fromIndex, int toIndex) {
-    beforeSelectionChangeEvent.onEvent();
+    beforeSelectionChangeEvent.run();
     super.removeSelectionInterval(fromIndex, toIndex);
   }
 
   @Override
   public void insertIndexInterval(int fromIndex, int length, boolean before) {
-    beforeSelectionChangeEvent.onEvent();
+    beforeSelectionChangeEvent.run();
     super.insertIndexInterval(fromIndex, length, before);
   }
 
   @Override
   public void removeIndexInterval(int fromIndex, int toIndex) {
-    beforeSelectionChangeEvent.onEvent();
+    beforeSelectionChangeEvent.run();
     super.removeIndexInterval(fromIndex, toIndex);
   }
 
@@ -300,14 +299,14 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
       int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
-        selectedIndexEvent.onEvent(selectedIndex);
-        selectedItemEvent.onEvent(getSelectedItem());
+        selectedIndexEvent.accept(selectedIndex);
+        selectedItemEvent.accept(getSelectedItem());
       }
       List<Integer> selectedIndexes = getSelectedIndexes();
-      selectionEvent.onEvent();
-      selectedIndexesEvent.onEvent(selectedIndexes);
+      selectionEvent.run();
+      selectedIndexesEvent.accept(selectedIndexes);
       //we don't call getSelectedItems() since that would cause another call to getSelectedIndexes()
-      selectedItemsEvent.onEvent(selectedIndexes.stream()
+      selectedItemsEvent.accept(selectedIndexes.stream()
               .mapToInt(modelIndex -> modelIndex)
               .mapToObj(tableModel::itemAt)
               .collect(toList()));
@@ -315,62 +314,62 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public void addBeforeSelectionChangeListener(EventListener listener) {
+  public void addBeforeSelectionChangeListener(Runnable listener) {
     beforeSelectionChangeEvent.addListener(listener);
   }
 
   @Override
-  public void removeBeforeSelectionChangeListener(EventListener listener) {
+  public void removeBeforeSelectionChangeListener(Runnable listener) {
     beforeSelectionChangeEvent.removeListener(listener);
   }
 
   @Override
-  public void addSelectedIndexListener(EventDataListener<Integer> listener) {
+  public void addSelectedIndexListener(Consumer<Integer> listener) {
     selectedIndexEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexListener(EventDataListener<Integer> listener) {
+  public void removeSelectedIndexListener(Consumer<Integer> listener) {
     selectedIndexEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
+  public void addSelectedIndexesListener(Consumer<List<Integer>> listener) {
     selectedIndexesEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener) {
+  public void removeSelectedIndexesListener(Consumer<List<Integer>> listener) {
     selectedIndexesEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectionListener(EventListener listener) {
+  public void addSelectionListener(Runnable listener) {
     selectionEvent.addListener(listener);
   }
 
   @Override
-  public void removeSelectionListener(EventListener listener) {
+  public void removeSelectionListener(Runnable listener) {
     selectionEvent.removeListener(listener);
   }
 
   @Override
-  public void addSelectedItemListener(EventDataListener<R> listener) {
+  public void addSelectedItemListener(Consumer<R> listener) {
     selectedItemEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemListener(EventDataListener<R> listener) {
+  public void removeSelectedItemListener(Consumer<R> listener) {
     selectedItemEvent.removeDataListener(listener);
   }
 
   @Override
-  public void addSelectedItemsListener(EventDataListener<List<R>> listener) {
+  public void addSelectedItemsListener(Consumer<List<R>> listener) {
     selectedItemsEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeSelectedItemsListener(EventDataListener<List<R>> listener) {
+  public void removeSelectedItemsListener(Consumer<List<R>> listener) {
     selectedItemsEvent.removeDataListener(listener);
   }
 

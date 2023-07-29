@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.icon;
 
-import is.codion.common.event.EventDataListener;
-
 import org.kordamp.ikonli.Ikon;
 
 import javax.swing.ImageIcon;
@@ -14,6 +12,7 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -70,10 +69,10 @@ final class DefaultIcons implements Icons {
     return this;
   }
 
-  private final class OnIconColorChangedListener implements EventDataListener<Color> {
+  private final class OnIconColorChangedListener implements Consumer<Color> {
 
     @Override
-    public void onEvent(Color color) {
+    public void accept(Color color) {
       if (color != null) {
         setIconColor(color);
       }

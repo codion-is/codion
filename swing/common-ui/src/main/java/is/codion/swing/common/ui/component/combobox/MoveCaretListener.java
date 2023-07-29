@@ -3,13 +3,12 @@
  */
 package is.codion.swing.common.ui.component.combobox;
 
-import is.codion.common.event.EventDataListener;
-
 import javax.swing.JComboBox;
 import javax.swing.text.JTextComponent;
 import java.awt.Component;
+import java.util.function.Consumer;
 
-final class MoveCaretListener<T> implements EventDataListener<T> {
+final class MoveCaretListener<T> implements Consumer<T> {
 
   private final JComboBox<?> comboBox;
 
@@ -18,7 +17,7 @@ final class MoveCaretListener<T> implements EventDataListener<T> {
   }
 
   @Override
-  public void onEvent(Object selectedItem) {
+  public void accept(Object selectedItem) {
     Component editorComponent = comboBox.getEditor().getEditorComponent();
     if (selectedItem != null && editorComponent instanceof JTextComponent) {
       ((JTextComponent) editorComponent).setCaretPosition(0);

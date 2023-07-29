@@ -4,7 +4,6 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.db.EntityConnection.InsertEntities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
@@ -13,6 +12,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -21,8 +21,8 @@ final class DefaultInsertEntities implements InsertEntities {
   private final EntityConnection connection;
   private final Iterator<Entity> entityIterator;
   private final int batchSize;
-  private final EventDataListener<Integer> progressReporter;
-  private final EventDataListener<Collection<Key>> onInsert;
+  private final Consumer<Integer> progressReporter;
+  private final Consumer<Collection<Key>> onInsert;
 
   DefaultInsertEntities(DefaultBuilder builder) {
     this.connection = builder.connection;
@@ -44,10 +44,10 @@ final class DefaultInsertEntities implements InsertEntities {
       progress += insertedKeys.size();
       batch.clear();
       if (progressReporter != null) {
-        progressReporter.onEvent(progress);
+        progressReporter.accept(progress);
       }
       if (onInsert != null) {
-        onInsert.onEvent(insertedKeys);
+        onInsert.accept(insertedKeys);
       }
     }
   }
@@ -58,8 +58,8 @@ final class DefaultInsertEntities implements InsertEntities {
     private final Iterator<Entity> entityIterator;
 
     private int batchSize = 100;
-    private EventDataListener<Integer> progressReporter;
-    private EventDataListener<Collection<Key>> onInsert;
+    private Consumer<Integer> progressReporter;
+    private Consumer<Collection<Key>> onInsert;
 
     DefaultBuilder(EntityConnection connection, Iterator<Entity> entityIterator) {
       this.connection = requireNonNull(connection);
@@ -76,13 +76,13 @@ final class DefaultInsertEntities implements InsertEntities {
     }
 
     @Override
-    public Builder progressReporter(EventDataListener<Integer> progressReporter) {
+    public Builder progressReporter(Consumer<Integer> progressReporter) {
       this.progressReporter = requireNonNull(progressReporter);
       return this;
     }
 
     @Override
-    public Builder onInsert(EventDataListener<Collection<Key>> onInsert) {
+    public Builder onInsert(Consumer<Collection<Key>> onInsert) {
       this.onInsert = requireNonNull(onInsert);
       return this;
     }

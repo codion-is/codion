@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import javax.swing.AbstractAction;
@@ -16,15 +15,16 @@ import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.Consumer;
 
 import static java.util.stream.Collectors.toList;
 
 final class DisposeDialogOnEscapeAction extends AbstractAction {
 
   private final JDialog dialog;
-  private final EventDataListener<State> confirmCloseListener;
+  private final Consumer<State> confirmCloseListener;
 
-  DisposeDialogOnEscapeAction(JDialog dialog, EventDataListener<State> confirmCloseListener) {
+  DisposeDialogOnEscapeAction(JDialog dialog, Consumer<State> confirmCloseListener) {
     super("DisposeDialogOnEscapeAction");
     this.dialog = dialog;
     this.confirmCloseListener = confirmCloseListener;

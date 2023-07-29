@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
@@ -19,6 +18,7 @@ import java.awt.BorderLayout;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -96,21 +96,21 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   /**
    * @param listener a listener notified when a condition panel receives focus
    */
-  public void addFocusGainedListener(EventDataListener<C> listener) {
+  public void addFocusGainedListener(Consumer<C> listener) {
     componentPanel().columnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
   }
 
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public void addAdvancedViewListener(EventDataListener<Boolean> listener) {
+  public void addAdvancedViewListener(Consumer<Boolean> listener) {
     advancedViewState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedViewListener(EventDataListener<Boolean> listener) {
+  public void removeAdvancedViewListener(Consumer<Boolean> listener) {
     advancedViewState.removeDataListener(listener);
   }
 

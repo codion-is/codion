@@ -3,13 +3,13 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A TableColumnModel handling hidden columns.
@@ -106,20 +106,20 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   /**
    * @param listener a listener to be notified each time a column is hidden
    */
-  void addColumnHiddenListener(EventDataListener<C> listener);
+  void addColumnHiddenListener(Consumer<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnHiddenListener(EventDataListener<C> listener);
+  void removeColumnHiddenListener(Consumer<C> listener);
 
   /**
    * @param listener a listener to be notified each time a column is shown
    */
-  void addColumnShownListener(EventDataListener<C> listener);
+  void addColumnShownListener(Consumer<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnShownListener(EventDataListener<C> listener);
+  void removeColumnShownListener(Consumer<C> listener);
 }

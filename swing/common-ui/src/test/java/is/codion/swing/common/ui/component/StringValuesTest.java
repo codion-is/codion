@@ -24,7 +24,7 @@ public class StringValuesTest {
 
   public void setStringValue(String stringValue) {
     this.stringValue = stringValue;
-    stringValueChangedEvent.onEvent();
+    stringValueChangedEvent.run();
   }
 
   @Test

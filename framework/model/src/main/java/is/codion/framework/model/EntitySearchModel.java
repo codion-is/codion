@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -19,6 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
 
@@ -137,12 +137,12 @@ public interface EntitySearchModel {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
+  void addSelectedEntitiesListener(Consumer<List<Entity>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedEntitiesListener(EventDataListener<List<Entity>> listener);
+  void removeSelectedEntitiesListener(Consumer<List<Entity>> listener);
 
   /**
    * @return a StateObserver indicating whether the search string represents the selected entities

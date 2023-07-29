@@ -27,12 +27,12 @@ public final class EventStateValue {
     // add a listener notified each time the event occurs
     eventObserver.addListener(() -> System.out.println("Event occurred"));
 
-    event.onEvent();//output: 'Event occurred'
+    event.run();//output: 'Event occurred'
 
-    // data can be propagated by adding a EventDataListener
+    // data can be propagated by adding a Consumer as listener
     eventObserver.addDataListener(data -> System.out.println("Event: " + data));
 
-    event.onEvent("info");//output: 'Event: info'
+    event.accept("info");//output: 'Event: info'
 
     // Event implements EventObserver so listeneres can be added
     // directly without referring to the EventObserver

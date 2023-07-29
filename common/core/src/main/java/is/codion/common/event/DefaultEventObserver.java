@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -18,13 +19,13 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
 
   private final Object lock = new Object();
 
-  private Set<EventListener> eventListeners;
-  private Set<EventDataListener<T>> eventDataListeners;
-  private List<WeakReference<EventListener>> weakEventListeners;
-  private List<WeakReference<EventDataListener<T>>> weakEventDataListeners;
+  private Set<Runnable> listeners;
+  private Set<Consumer<T>> dataListeners;
+  private List<WeakReference<Runnable>> weakListeners;
+  private List<WeakReference<Consumer<T>>> weakDataListeners;
 
   @Override
-  public void addDataListener(EventDataListener<T> listener) {
+  public void addDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initDataListeners().add(listener);
@@ -32,7 +33,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void removeDataListener(EventDataListener<T> listener) {
+  public void removeDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initDataListeners().remove(listener);
@@ -40,7 +41,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initListeners().add(listener);
@@ -48,7 +49,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initListeners().remove(listener);
@@ -56,11 +57,11 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      List<WeakReference<EventListener>> references = initWeakListeners();
-      for (WeakReference<EventListener> reference : references) {
+      List<WeakReference<Runnable>> references = initWeakListeners();
+      for (WeakReference<Runnable> reference : references) {
         if (reference.get() == listener) {
           return;
         }
@@ -70,7 +71,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initWeakListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
@@ -78,11 +79,11 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<T> listener) {
+  public void addWeakDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
-      List<WeakReference<EventDataListener<T>>> references = initWeakDataListeners();
-      for (WeakReference<EventDataListener<T>> reference : references) {
+      List<WeakReference<Consumer<T>>> references = initWeakDataListeners();
+      for (WeakReference<Consumer<T>> reference : references) {
         if (reference.get() == listener) {
           return;
         }
@@ -92,7 +93,7 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<T> listener) {
+  public void removeWeakDataListener(Consumer<T> listener) {
     requireNonNull(listener, LISTENER);
     synchronized (lock) {
       initWeakDataListeners().removeIf(reference -> reference.get() == null || reference.get() == listener);
@@ -100,99 +101,99 @@ final class DefaultEventObserver<T> implements EventObserver<T> {
   }
 
   void notifyListeners(T data) {
-    for (EventListener listener : eventListeners()) {
-      listener.onEvent();
+    for (Runnable listener : listeners()) {
+      listener.run();
     }
-    for (EventDataListener<T> dataListener : eventDataListeners()) {
-      dataListener.onEvent(data);
+    for (Consumer<T> dataListener : dataListeners()) {
+      dataListener.accept(data);
     }
-    for (WeakReference<EventListener> reference : weakEventListeners()) {
-      EventListener weakListener = reference.get();
+    for (WeakReference<Runnable> reference : weakListeners()) {
+      Runnable weakListener = reference.get();
       if (weakListener != null) {
-        weakListener.onEvent();
+        weakListener.run();
       }
     }
-    for (WeakReference<EventDataListener<T>> reference : weakEventDataListeners()) {
-      EventDataListener<T> weakDataListener = reference.get();
+    for (WeakReference<Consumer<T>> reference : weakDataListeners()) {
+      Consumer<T> weakDataListener = reference.get();
       if (weakDataListener != null) {
-        weakDataListener.onEvent(data);
+        weakDataListener.accept(data);
       }
     }
   }
 
-  private List<EventListener> eventListeners() {
+  private List<Runnable> listeners() {
     synchronized (lock) {
-      if (eventListeners != null && !eventListeners.isEmpty()) {
-        return new ArrayList<>(eventListeners);
+      if (listeners != null && !listeners.isEmpty()) {
+        return new ArrayList<>(listeners);
       }
     }
 
     return emptyList();
   }
 
-  private List<EventDataListener<T>> eventDataListeners() {
+  private List<Consumer<T>> dataListeners() {
     synchronized (lock) {
-      if (eventDataListeners != null && !eventDataListeners.isEmpty()) {
-        return new ArrayList<>(eventDataListeners);
+      if (dataListeners != null && !dataListeners.isEmpty()) {
+        return new ArrayList<>(dataListeners);
       }
     }
 
     return emptyList();
   }
 
-  private List<WeakReference<EventListener>> weakEventListeners() {
+  private List<WeakReference<Runnable>> weakListeners() {
     synchronized (lock) {
-      if (weakEventListeners != null && !weakEventListeners.isEmpty()) {
-        weakEventListeners.removeIf(reference -> reference.get() == null);
+      if (weakListeners != null && !weakListeners.isEmpty()) {
+        weakListeners.removeIf(reference -> reference.get() == null);
 
-        return new ArrayList<>(weakEventListeners);
+        return new ArrayList<>(weakListeners);
       }
     }
 
     return emptyList();
   }
 
-  private List<WeakReference<EventDataListener<T>>> weakEventDataListeners() {
+  private List<WeakReference<Consumer<T>>> weakDataListeners() {
     synchronized (lock) {
-      if (weakEventDataListeners != null && !weakEventDataListeners.isEmpty()) {
-        weakEventDataListeners.removeIf(reference -> reference.get() == null);
+      if (weakDataListeners != null && !weakDataListeners.isEmpty()) {
+        weakDataListeners.removeIf(reference -> reference.get() == null);
 
-        return new ArrayList<>(weakEventDataListeners);
+        return new ArrayList<>(weakDataListeners);
       }
     }
 
     return emptyList();
   }
 
-  private Set<EventListener> initListeners() {
-    if (eventListeners == null) {
-      eventListeners = new LinkedHashSet<>(1);
+  private Set<Runnable> initListeners() {
+    if (listeners == null) {
+      listeners = new LinkedHashSet<>(1);
     }
 
-    return eventListeners;
+    return listeners;
   }
 
-  private Set<EventDataListener<T>> initDataListeners() {
-    if (eventDataListeners == null) {
-      eventDataListeners = new LinkedHashSet<>(1);
+  private Set<Consumer<T>> initDataListeners() {
+    if (dataListeners == null) {
+      dataListeners = new LinkedHashSet<>(1);
     }
 
-    return eventDataListeners;
+    return dataListeners;
   }
 
-  private List<WeakReference<EventListener>> initWeakListeners() {
-    if (weakEventListeners == null) {
-      weakEventListeners = new ArrayList<>(1);
+  private List<WeakReference<Runnable>> initWeakListeners() {
+    if (weakListeners == null) {
+      weakListeners = new ArrayList<>(1);
     }
 
-    return weakEventListeners;
+    return weakListeners;
   }
 
-  private List<WeakReference<EventDataListener<T>>> initWeakDataListeners() {
-    if (weakEventDataListeners == null) {
-      weakEventDataListeners = new ArrayList<>(1);
+  private List<WeakReference<Consumer<T>>> initWeakDataListeners() {
+    if (weakDataListeners == null) {
+      weakDataListeners = new ArrayList<>(1);
     }
 
-    return weakEventDataListeners;
+    return weakDataListeners;
   }
 }

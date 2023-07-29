@@ -3,8 +3,6 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventListener;
-
 import java.util.Collection;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -53,12 +51,12 @@ final class DefaultTableConditionModel<C> implements TableConditionModel<C> {
   }
 
   @Override
-  public void addChangeListener(EventListener listener) {
+  public void addChangeListener(Runnable listener) {
     conditionModels.values().forEach(filterModel -> filterModel.addChangeListener(listener));
   }
 
   @Override
-  public void removeChangeListener(EventListener listener) {
+  public void removeChangeListener(Runnable listener) {
     conditionModels.values().forEach(filterModel -> filterModel.removeChangeListener(listener));
   }
 

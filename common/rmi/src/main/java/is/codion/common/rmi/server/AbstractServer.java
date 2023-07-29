@@ -4,7 +4,6 @@
 package is.codion.common.rmi.server;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.common.rmi.client.ConnectionRequest;
 import is.codion.common.rmi.server.exception.ConnectionNotAvailableException;
 import is.codion.common.rmi.server.exception.LoginException;
@@ -233,7 +232,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     if (isSerializationDryRunActive()) {
       writeDryRunWhitelist();
     }
-    shutdownEvent.onEvent();
+    shutdownEvent.run();
   }
 
   public final void addLoginProxy(LoginProxy loginProxy) {
@@ -290,7 +289,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   /**
    * @param listener a listener notified when this server is shutting down.
    */
-  protected final void addShutdownListener(EventListener listener) {
+  protected final void addShutdownListener(Runnable listener) {
     shutdownEvent.addListener(requireNonNull(listener, "listener"));
   }
 

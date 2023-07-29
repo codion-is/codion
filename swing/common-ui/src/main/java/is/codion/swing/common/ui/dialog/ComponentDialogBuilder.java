@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 
@@ -53,10 +52,10 @@ public interface ComponentDialogBuilder extends DialogBuilder<ComponentDialogBui
   /**
    * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
    * the dialog is closed, using the State instance to signal confirmation, the dialog
-   * will only be closed if that state is active after a call to {@link EventDataListener#onEvent(Object)}
+   * will only be closed if that state is active after a call to {@link Consumer#accept(Object)}
    * @return this DialogBuilder instance
    */
-  ComponentDialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener);
+  ComponentDialogBuilder confirmCloseListener(Consumer<State> confirmCloseListener);
 
   /**
    * @param disposeOnEscape if yes then the dialog is disposed when the ESC button is pressed,

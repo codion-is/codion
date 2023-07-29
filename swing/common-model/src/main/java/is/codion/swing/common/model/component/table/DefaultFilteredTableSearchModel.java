@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
@@ -14,6 +13,7 @@ import javax.swing.event.TableColumnModelListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.regex.Pattern;
 import java.util.regex.PatternSyntaxException;
@@ -91,12 +91,12 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   }
 
   @Override
-  public void addCurrentResultListener(EventDataListener<RowColumn> listener) {
+  public void addCurrentResultListener(Consumer<RowColumn> listener) {
     searchResultValue.addDataListener(listener);
   }
 
   @Override
-  public void removeCurrentResultListener(EventDataListener<RowColumn> listener) {
+  public void removeCurrentResultListener(Consumer<RowColumn> listener) {
     searchResultValue.removeDataListener(listener);
   }
 

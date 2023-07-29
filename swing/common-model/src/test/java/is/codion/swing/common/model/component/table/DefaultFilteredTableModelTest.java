@@ -4,8 +4,6 @@
 package is.codion.swing.common.model.component.table;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
 import is.codion.swing.common.model.component.table.FilteredTableSearchModel.RowColumn;
@@ -21,6 +19,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 import static java.util.Arrays.asList;
@@ -140,9 +139,9 @@ public final class DefaultFilteredTableModelTest {
   void refreshEvents() {
     AtomicInteger done = new AtomicInteger();
     AtomicInteger cleared = new AtomicInteger();
-    EventListener successfulListener = done::incrementAndGet;
-    EventDataListener<Throwable> failedListener = exception -> {};
-    EventListener clearedListener = cleared::incrementAndGet;
+    Runnable successfulListener = done::incrementAndGet;
+    Consumer<Throwable> failedListener = exception -> {};
+    Runnable clearedListener = cleared::incrementAndGet;
     tableModel.refresher().addRefreshListener(successfulListener);
     tableModel.refresher().addRefreshFailedListener(failedListener);
     tableModel.addClearListener(clearedListener);
@@ -210,7 +209,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void removeItems() {
     AtomicInteger events = new AtomicInteger();
-    EventListener listener = events::incrementAndGet;
+    Runnable listener = events::incrementAndGet;
     tableModel.addDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
@@ -251,7 +250,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void removeItemsRange() {
     AtomicInteger events = new AtomicInteger();
-    EventListener listener = events::incrementAndGet;
+    Runnable listener = events::incrementAndGet;
     tableModel.addDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.get());
@@ -435,7 +434,7 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void sorting() {
     AtomicInteger actionsPerformed = new AtomicInteger();
-    EventDataListener<Integer> listener = columnIdentifier -> actionsPerformed.incrementAndGet();
+    Consumer<Integer> listener = columnIdentifier -> actionsPerformed.incrementAndGet();
     tableModel.sortModel().addSortingChangedListener(listener);
 
     tableModel.refresh();
@@ -530,8 +529,8 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void selection() {
     AtomicInteger events = new AtomicInteger();
-    EventListener listener = events::incrementAndGet;
-    EventDataListener dataListener = Event.dataListener(listener);
+    Runnable listener = events::incrementAndGet;
+    Consumer dataListener = Event.dataListener(listener);
     FilteredTableSelectionModel<TestRow> selectionModel = tableModel.selectionModel();
     selectionModel.addSelectedIndexListener(dataListener);
     selectionModel.addSelectionListener(listener);

@@ -3,14 +3,13 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventDataListener;
-
 import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -93,11 +92,11 @@ public class ValueSetTest {
     Value<Integer> value = valueSet.value();
 
     AtomicInteger valueEventCounter = new AtomicInteger();
-    EventDataListener<Integer> listener = integer -> valueEventCounter.incrementAndGet();
+    Consumer<Integer> listener = integer -> valueEventCounter.incrementAndGet();
     value.addDataListener(listener);
 
     AtomicInteger valueSetEventCounter = new AtomicInteger();
-    EventDataListener<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
+    Consumer<Set<Integer>> setListener = integers -> valueSetEventCounter.incrementAndGet();
     valueSet.addDataListener(setListener);
 
     valueSet.add(1);

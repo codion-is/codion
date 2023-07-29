@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.StateObserver;
 
@@ -34,6 +33,7 @@ import java.net.URL;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Enumeration;
+import java.util.function.Consumer;
 
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.util.Objects.requireNonNull;
@@ -114,7 +114,7 @@ public final class Utilities {
     requireNonNull(component, COMPONENT);
     requireNonNull(property, "property");
     Event<T> event = Event.event();
-    component.addPropertyChangeListener(property, changeEvent -> event.onEvent((T) changeEvent.getNewValue()));
+    component.addPropertyChangeListener(property, changeEvent -> event.accept((T) changeEvent.getNewValue()));
 
     return event.observer();
   }
@@ -332,7 +332,7 @@ public final class Utilities {
     }
   }
 
-  private static final class EnableComponentListener implements EventDataListener<Boolean> {
+  private static final class EnableComponentListener implements Consumer<Boolean> {
 
     private final JComponent component;
 
@@ -341,7 +341,7 @@ public final class Utilities {
     }
 
     @Override
-    public void onEvent(Boolean enabled) {
+    public void accept(Boolean enabled) {
       if (SwingUtilities.isEventDispatchThread()) {
         component.setEnabled(enabled);
       }

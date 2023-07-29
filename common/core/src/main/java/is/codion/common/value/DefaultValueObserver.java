@@ -3,8 +3,7 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -27,42 +26,42 @@ final class DefaultValueObserver<T> implements ValueObserver<T> {
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     value.addListener(listener);
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     value.removeListener(listener);
   }
 
   @Override
-  public void addDataListener(EventDataListener<T> listener) {
+  public void addDataListener(Consumer<T> listener) {
     value.addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(EventDataListener<T> listener) {
+  public void removeDataListener(Consumer<T> listener) {
     value.removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     value.addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     value.removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<T> listener) {
+  public void addWeakDataListener(Consumer<T> listener) {
     value.addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<T> listener) {
+  public void removeWeakDataListener(Consumer<T> listener) {
     value.removeWeakDataListener(listener);
   }
 }

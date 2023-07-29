@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.component.calendar;
 
-import is.codion.common.event.EventDataListener;
-
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
@@ -12,6 +10,7 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoField;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Consumer;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -25,8 +24,8 @@ public final class CalendarPanelTest {
     CalendarPanel panel = CalendarPanel.dateTimeCalendarPanel();
     panel.setLocalDateTime(startDate);
 
-    EventDataListener<LocalDate> dataListener = date -> dateChangedCounter.incrementAndGet();
-    EventDataListener<LocalDateTime> dateTimeListener = dateTime -> dateTimeChangedCounter.incrementAndGet();
+    Consumer<LocalDate> dataListener = date -> dateChangedCounter.incrementAndGet();
+    Consumer<LocalDateTime> dateTimeListener = dateTime -> dateTimeChangedCounter.incrementAndGet();
 
     panel.addLocalDateListener(dataListener);
     panel.addLocalDateTimeListener(dateTimeListener);

@@ -3,7 +3,6 @@
  */
 package is.codion.common.value;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.event.EventObserver;
 
 import java.util.Collection;
@@ -19,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the type of the wrapped value
  * @see #value()
  */
-public interface Value<T> extends ValueObserver<T>, EventDataListener<T> {
+public interface Value<T> extends ValueObserver<T>, Consumer<T> {
 
   /**
    * Sets the value

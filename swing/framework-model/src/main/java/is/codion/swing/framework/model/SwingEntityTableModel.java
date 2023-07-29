@@ -5,8 +5,6 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.Operator;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
@@ -99,7 +97,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
-  private final EventDataListener<Map<Key, Entity>> updateListener = new UpdateListener();
+  private final Consumer<Map<Key, Entity>> updateListener = new UpdateListener();
 
   /**
    * the condition used during the last successful refresh
@@ -227,7 +225,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
     this.refreshCondition = conditionModel.condition();
-    addEditEventListeners();
+    addEditListeners();
     bindEvents();
     applyPreferences();
   }
@@ -311,10 +309,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   public final void setListenToEditEvents(boolean listenToEditEvents) {
     this.listenToEditEvents = listenToEditEvents;
     if (listenToEditEvents) {
-      addEditEventListeners();
+      addEditListeners();
     }
     else {
-      removeEditEventListeners();
+      removeEditListeners();
     }
   }
 
@@ -550,7 +548,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addSelectionListener(EventListener listener) {
+  public final void addSelectionListener(Runnable listener) {
     selectionModel().addSelectionListener(listener);
   }
 
@@ -812,32 +810,32 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void addDataChangedListener(EventListener listener) {
+  public final void addDataChangedListener(Runnable listener) {
     tableModel.addDataChangedListener(listener);
   }
 
   @Override
-  public final void removeDataChangedListener(EventListener listener) {
+  public final void removeDataChangedListener(Runnable listener) {
     tableModel.removeDataChangedListener(listener);
   }
 
   @Override
-  public final void addClearListener(EventListener listener) {
+  public final void addClearListener(Runnable listener) {
     tableModel.addClearListener(listener);
   }
 
   @Override
-  public final void removeClearListener(EventListener listener) {
+  public final void removeClearListener(Runnable listener) {
     tableModel.removeClearListener(listener);
   }
 
   @Override
-  public final void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public final void addRowsRemovedListener(Consumer<RemovedRows> listener) {
     tableModel.addRowsRemovedListener(listener);
   }
 
   @Override
-  public final void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public final void removeRowsRemovedListener(Consumer<RemovedRows> listener) {
     tableModel.removeRowsRemovedListener(listener);
   }
 
@@ -979,17 +977,17 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addRefreshingObserver(refresher().refreshingObserver());
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
-    EventListener statusListener = () -> statusMessageValue.set(statusMessage());
+    Runnable statusListener = () -> statusMessageValue.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
     addDataChangedListener(statusListener);
   }
 
-  private void addEditEventListeners() {
+  private void addEditListeners() {
     entityDefinition().foreignKeys().forEach(foreignKey ->
             EntityEditEvents.addUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
-  private void removeEditEventListeners() {
+  private void removeEditListeners() {
     entityDefinition().foreignKeys().forEach(foreignKey ->
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
@@ -1174,10 +1172,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private final class UpdateListener implements EventDataListener<Map<Key, Entity>> {
+  private final class UpdateListener implements Consumer<Map<Key, Entity>> {
 
     @Override
-    public void onEvent(Map<Key, Entity> updated) {
+    public void accept(Map<Key, Entity> updated) {
       updated.values().stream()
               .collect(groupingBy(Entity::type, HashMap::new, toList()))
               .forEach((entityType, entities) ->

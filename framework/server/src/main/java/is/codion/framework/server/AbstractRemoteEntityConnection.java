@@ -6,7 +6,6 @@ package is.codion.framework.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.rmi.server.ClientLog;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.common.user.User;
@@ -22,6 +21,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.function.Consumer;
 
 /**
  * A base class for remote connections served by a {@link EntityServer}.
@@ -103,7 +103,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
       }
       connectionHandler.close();
     }
-    disconnectedEvent.onEvent(this);
+    disconnectedEvent.accept(this);
   }
 
   /**
@@ -143,7 +143,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
     return connectionHandler.isActive();
   }
 
-  final void addDisconnectListener(EventDataListener<AbstractRemoteEntityConnection> listener) {
+  final void addDisconnectListener(Consumer<AbstractRemoteEntityConnection> listener) {
     disconnectedEvent.addDataListener(listener);
   }
 

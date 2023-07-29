@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
 import is.codion.common.db.exception.ReferentialIntegrityException;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
@@ -34,6 +33,7 @@ import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.ResourceBundle;
 import java.util.Set;
+import java.util.function.Consumer;
 
 import static is.codion.swing.framework.ui.EntityDependenciesPanel.displayDependenciesDialog;
 import static java.awt.event.InputEvent.ALT_DOWN_MASK;
@@ -196,14 +196,14 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   /**
    * @param listener a listener notified each time the active state changes
    */
-  public final void addActiveListener(EventDataListener<Boolean> listener) {
+  public final void addActiveListener(Consumer<Boolean> listener) {
     activeState.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeActiveListener(EventDataListener<Boolean> listener) {
+  public final void removeActiveListener(Consumer<Boolean> listener) {
     activeState.removeDataListener(listener);
   }
 

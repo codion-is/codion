@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -16,6 +15,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.util.Collections.*;
@@ -206,12 +206,12 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   @Override
-  public final void addActiveDetailModelsListener(EventDataListener<Collection<M>> listener) {
+  public final void addActiveDetailModelsListener(Consumer<Collection<M>> listener) {
     activeDetailModelsEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeActiveDetailModelsListener(EventDataListener<Collection<M>> listener) {
+  public final void removeActiveDetailModelsListener(Consumer<Collection<M>> listener) {
     activeDetailModelsEvent.removeDataListener(listener);
   }
 
@@ -242,7 +242,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   }
 
   private void activeDetailModelChanged(DetailModelLink<M, E, T> detailModelLink) {
-    activeDetailModelsEvent.onEvent(activeDetailModels());
+    activeDetailModelsEvent.accept(activeDetailModels());
     detailModelLink.onSelection(activeEntities());
   }
 

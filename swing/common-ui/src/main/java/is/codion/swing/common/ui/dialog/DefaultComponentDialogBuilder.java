@@ -3,8 +3,6 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
 import is.codion.common.state.State;
 import is.codion.common.value.ValueObserver;
@@ -47,7 +45,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   private Consumer<WindowEvent> onOpened;
   private Consumer<WindowEvent> onClosed;
   private EventObserver<?> closeEvent;
-  private EventDataListener<State> confirmCloseListener;
+  private Consumer<State> confirmCloseListener;
   private boolean disposeOnEscape = true;
 
   DefaultComponentDialogBuilder(JComponent component) {
@@ -85,7 +83,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
   }
 
   @Override
-  public ComponentDialogBuilder confirmCloseListener(EventDataListener<State> confirmCloseListener) {
+  public ComponentDialogBuilder confirmCloseListener(Consumer<State> confirmCloseListener) {
     this.confirmCloseListener = confirmCloseListener;
     return this;
   }
@@ -145,7 +143,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
       }
     }
     else {
-      closeEvent.addListener(new CloseEventListener(disposeAction));
+      closeEvent.addListener(new CloseListener(disposeAction));
     }
 
     return dialog;
@@ -236,21 +234,21 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     }
   }
 
-  private static final class CloseEventListener implements EventListener {
+  private static final class CloseListener implements Runnable {
 
     private final Action disposeAction;
 
-    private CloseEventListener(Action disposeAction) {
+    private CloseListener(Action disposeAction) {
       this.disposeAction = disposeAction;
     }
 
     @Override
-    public void onEvent() {
+    public void run() {
       disposeAction.actionPerformed(null);
     }
   }
 
-  private static final class DialogTitleListener implements EventDataListener<String> {
+  private static final class DialogTitleListener implements Consumer<String> {
 
     private final JDialog dialog;
 
@@ -259,7 +257,7 @@ final class DefaultComponentDialogBuilder extends AbstractDialogBuilder<Componen
     }
 
     @Override
-    public void onEvent(String title) {
+    public void accept(String title) {
       dialog.setTitle(title);
     }
   }

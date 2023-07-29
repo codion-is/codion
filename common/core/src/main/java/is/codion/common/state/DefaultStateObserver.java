@@ -4,9 +4,9 @@
 package is.codion.common.state;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.event.EventObserver;
+
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -66,42 +66,42 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public void addListener(EventListener listener) {
+  public void addListener(Runnable listener) {
     eventObserver().addListener(listener);
   }
 
   @Override
-  public void removeListener(EventListener listener) {
+  public void removeListener(Runnable listener) {
     eventObserver().removeListener(listener);
   }
 
   @Override
-  public void addDataListener(EventDataListener<Boolean> listener) {
+  public void addDataListener(Consumer<Boolean> listener) {
     eventObserver().addDataListener(listener);
   }
 
   @Override
-  public void removeDataListener(EventDataListener<Boolean> listener) {
+  public void removeDataListener(Consumer<Boolean> listener) {
     eventObserver().removeDataListener(listener);
   }
 
   @Override
-  public void addWeakListener(EventListener listener) {
+  public void addWeakListener(Runnable listener) {
     eventObserver().addWeakListener(listener);
   }
 
   @Override
-  public void removeWeakListener(EventListener listener) {
+  public void removeWeakListener(Runnable listener) {
     eventObserver().removeWeakListener(listener);
   }
 
   @Override
-  public void addWeakDataListener(EventDataListener<Boolean> listener) {
+  public void addWeakDataListener(Consumer<Boolean> listener) {
     eventObserver().addWeakDataListener(listener);
   }
 
   @Override
-  public void removeWeakDataListener(EventDataListener<Boolean> listener) {
+  public void removeWeakDataListener(Consumer<Boolean> listener) {
     eventObserver().removeWeakDataListener(listener);
   }
 
@@ -109,7 +109,7 @@ final class DefaultStateObserver implements StateObserver {
     synchronized (lock) {
       if (previousValue != newValue) {
         if (stateChangedEvent != null) {
-          stateChangedEvent.onEvent(newValue);
+          stateChangedEvent.accept(newValue);
         }
         if (reversedStateObserver != null) {
           reversedStateObserver.notifyObservers(previousValue, newValue);

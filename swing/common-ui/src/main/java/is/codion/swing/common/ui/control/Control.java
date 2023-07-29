@@ -216,7 +216,7 @@ public interface Control extends Action {
    */
   static Builder eventControlBuilder(Event<ActionEvent> event) {
     requireNonNull(event, "event");
-    return new ControlBuilder((ActionCommand) event::onEvent);
+    return new ControlBuilder(event::accept);
   }
 
   /**

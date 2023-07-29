@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.rmi.server.Server;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.rmi.server.ServerInformation;
@@ -23,6 +22,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
@@ -103,25 +103,25 @@ public final class HostMonitor {
   /**
    * @param listener a listener notified when a server is added to this monitor
    */
-  public void addServerAddedListener(EventDataListener<ServerMonitor> listener) {
+  public void addServerAddedListener(Consumer<ServerMonitor> listener) {
     serverAddedEvent.addDataListener(listener);
   }
 
   /**
    * @param listener a listener notified when a server is removed from this monitor
    */
-  public void addServerRemovedListener(EventDataListener<ServerMonitor> listener) {
+  public void addServerRemovedListener(Consumer<ServerMonitor> listener) {
     serverRemovedEvent.addDataListener(listener);
   }
 
   private void addServer(ServerMonitor serverMonitor) {
     serverMonitors.add(serverMonitor);
-    serverAddedEvent.onEvent(serverMonitor);
+    serverAddedEvent.accept(serverMonitor);
   }
 
   private void removeServer(ServerMonitor serverMonitor) {
     serverMonitors.remove(serverMonitor);
-    serverRemovedEvent.onEvent(serverMonitor);
+    serverRemovedEvent.accept(serverMonitor);
   }
 
   private boolean containsServerMonitor(UUID serverId) {

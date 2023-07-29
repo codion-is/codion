@@ -3,14 +3,13 @@
  */
 package is.codion.common.model.table;
 
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -48,74 +47,74 @@ public interface TableSelectionModel<R> {
    * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.
    * @param listener a listener to be notified before the selection changes
    */
-  void addBeforeSelectionChangeListener(EventListener listener);
+  void addBeforeSelectionChangeListener(Runnable listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeBeforeSelectionChangeListener(EventListener listener);
+  void removeBeforeSelectionChangeListener(Runnable listener);
 
   /**
    * @param listener a listener to be notified each time the selection changes
    */
-  void addSelectionListener(EventListener listener);
+  void addSelectionListener(Runnable listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectionListener(EventListener listener);
+  void removeSelectionListener(Runnable listener);
 
   /**
    * @param listener a listener to be notified each time the selected index changes
    */
-  void addSelectedIndexListener(EventDataListener<Integer> listener);
+  void addSelectedIndexListener(Consumer<Integer> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(EventDataListener<Integer> listener);
+  void removeSelectedIndexListener(Consumer<Integer> listener);
 
   /**
    * @param listener a listener to be notified each time the selected indexes change
    */
-  void addSelectedIndexesListener(EventDataListener<List<Integer>> listener);
+  void addSelectedIndexesListener(Consumer<List<Integer>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexesListener(EventDataListener<List<Integer>> listener);
+  void removeSelectedIndexesListener(Consumer<List<Integer>> listener);
 
   /**
    * @param listener a listener to be notified each time the selected item changes
    */
-  void addSelectedItemListener(EventDataListener<R> listener);
+  void addSelectedItemListener(Consumer<R> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemListener(EventDataListener<R> listener);
+  void removeSelectedItemListener(Consumer<R> listener);
 
   /**
    * @param listener a listener to be notified each time the selected items change
    */
-  void addSelectedItemsListener(EventDataListener<List<R>> listener);
+  void addSelectedItemsListener(Consumer<List<R>> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedItemsListener(EventDataListener<List<R>> listener);
+  void removeSelectedItemsListener(Consumer<List<R>> listener);
 
   /**
    * Moves all selected indexes down one index, wraps around.
    * If the selection is empty the first item in this model is selected.
-   * @see #addSelectionListener(EventListener)
+   * @see #addSelectionListener(Runnable)
    */
   void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around.
    * If the selection is empty the last item in this model is selected.
-   * @see #addSelectionListener(EventListener)
+   * @see #addSelectionListener(Runnable)
    */
   void moveSelectionUp();
 
@@ -162,7 +161,7 @@ public interface TableSelectionModel<R> {
 
   /**
    * Selects all visible entities
-   * @see #addSelectionListener(EventListener)
+   * @see #addSelectionListener(Runnable)
    */
   void selectAll();
 

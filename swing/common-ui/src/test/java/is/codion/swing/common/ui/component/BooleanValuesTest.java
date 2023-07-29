@@ -31,7 +31,7 @@ public class BooleanValuesTest {
 
   public void setBooleanValue(boolean booleanValue) {
     this.booleanValue = booleanValue;
-    booleanValueChangedEvent.onEvent(booleanValue);
+    booleanValueChangedEvent.accept(booleanValue);
   }
 
   @Test

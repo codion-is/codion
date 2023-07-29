@@ -3,12 +3,12 @@
  */
 package is.codion.swing.common.model.component.table;
 
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 import java.util.function.Predicate;
 
 /**
@@ -75,12 +75,12 @@ public interface FilteredTableSearchModel {
    * @see #nextResult()
    * @see #previousResult()
    */
-  void addCurrentResultListener(EventDataListener<RowColumn> listener);
+  void addCurrentResultListener(Consumer<RowColumn> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeCurrentResultListener(EventDataListener<RowColumn> listener);
+  void removeCurrentResultListener(Consumer<RowColumn> listener);
 
   /**
    * Holds a row/column coordinate

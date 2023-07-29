@@ -4,7 +4,6 @@
 package is.codion.framework.db;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
@@ -13,6 +12,7 @@ import is.codion.framework.domain.entity.Entities;
 
 import java.util.ServiceLoader;
 import java.util.UUID;
+import java.util.function.Consumer;
 
 /**
  * Specifies a class responsible for providing a single {@link EntityConnection} instance.
@@ -98,13 +98,13 @@ public interface EntityConnectionProvider extends AutoCloseable {
    * Adds a listener notified each time this connection provider establishes a connection to the database
    * @param listener a listener notified when a connection is established
    */
-  void addOnConnectListener(EventDataListener<EntityConnection> listener);
+  void addOnConnectListener(Consumer<EntityConnection> listener);
 
   /**
    * Removes the given listener
    * @param listener the listener to remove
    */
-  void removeOnConnectListener(EventDataListener<EntityConnection> listener);
+  void removeOnConnectListener(Consumer<EntityConnection> listener);
 
   /**
    * Logs out, disconnects and performs cleanup if required

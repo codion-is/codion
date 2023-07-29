@@ -5,8 +5,6 @@ package is.codion.swing.common.model.component.table;
 
 import is.codion.common.Text;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
-import is.codion.common.event.EventListener;
 import is.codion.common.model.FilteredModel;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.ColumnSummaryModel;
@@ -150,7 +148,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
     }
-    clearEvent.onEvent();
+    clearEvent.run();
   }
 
   @Override
@@ -270,11 +268,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemsAtSorted(int index, Collection<R> items) {
-    if (addItemsAtInternal(index, items)) {
-      if (sortModel.isSorted()) {
-        sortModel.sort(visibleItems);
-        fireTableDataChanged();
-      }
+    if (addItemsAtInternal(index, items) && sortModel.isSorted()) {
+      sortModel.sort(visibleItems);
+      fireTableDataChanged();
     }
   }
 
@@ -290,11 +286,9 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
   @Override
   public void addItemSorted(R item) {
-    if (addItemInternal(item)) {
-      if (sortModel.isSorted()) {
-        sortModel.sort(visibleItems);
-        fireTableDataChanged();
-      }
+    if (addItemInternal(item) && sortModel.isSorted()) {
+      sortModel.sort(visibleItems);
+      fireTableDataChanged();
     }
   }
 
@@ -348,12 +342,12 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public void addRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public void addRowsRemovedListener(Consumer<RemovedRows> listener) {
     rowsRemovedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeRowsRemovedListener(EventDataListener<RemovedRows> listener) {
+  public void removeRowsRemovedListener(Consumer<RemovedRows> listener) {
     rowsRemovedEvent.removeDataListener(listener);
   }
 
@@ -395,32 +389,32 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public void addDataChangedListener(EventListener listener) {
+  public void addDataChangedListener(Runnable listener) {
     dataChangedEvent.addListener(listener);
   }
 
   @Override
-  public void removeDataChangedListener(EventListener listener) {
+  public void removeDataChangedListener(Runnable listener) {
     dataChangedEvent.removeListener(listener);
   }
 
   @Override
-  public void addClearListener(EventListener listener) {
+  public void addClearListener(Runnable listener) {
     clearEvent.addListener(listener);
   }
 
   @Override
-  public void removeClearListener(EventListener listener) {
+  public void removeClearListener(Runnable listener) {
     clearEvent.removeListener(listener);
   }
 
   private void bindEventsInternal() {
-    addTableModelListener(e -> dataChangedEvent.onEvent());
+    addTableModelListener(e -> dataChangedEvent.run());
     filterModel.addChangeListener(this::filterItems);
     sortModel.addSortingChangedListener(columnIdentifier -> sortItems());
     addTableModelListener(e -> {
       if (e.getType() == TableModelEvent.DELETE) {
-        rowsRemovedEvent.onEvent(new DefaultRemovedRows(e.getFirstRow(), e.getLastRow()));
+        rowsRemovedEvent.accept(new DefaultRemovedRows(e.getFirstRow(), e.getLastRow()));
       }
     });
   }
@@ -637,7 +631,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
     }
 
     @Override
-    public void addListener(EventListener listener) {
+    public void addListener(Runnable listener) {
       tableModel.addDataChangedListener(listener);
       tableModel.selectionModel().addSelectionListener(listener);
     }

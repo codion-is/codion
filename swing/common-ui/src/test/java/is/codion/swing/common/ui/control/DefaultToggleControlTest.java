@@ -47,7 +47,7 @@ public class DefaultToggleControlTest {
 
   public void setValue(boolean value) {
     this.value = value;
-    valueChangeEvent.onEvent(value);
+    valueChangeEvent.accept(value);
   }
 
   public boolean isValue() {
@@ -56,7 +56,7 @@ public class DefaultToggleControlTest {
 
   public void setNullableValue(Boolean value) {
     this.value = value;
-    valueChangeEvent.onEvent(value);
+    valueChangeEvent.accept(value);
   }
 
   public Boolean isNullableValue() {

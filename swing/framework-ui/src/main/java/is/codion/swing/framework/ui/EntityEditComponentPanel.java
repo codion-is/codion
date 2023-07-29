@@ -4,7 +4,6 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
@@ -1107,7 +1106,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
   }
 
-  private static final class ModifiedIndicator implements EventDataListener<Boolean> {
+  private static final class ModifiedIndicator implements Consumer<Boolean> {
 
     private static final String LABELED_BY_PROPERTY = "labeledBy";
     private static final Integer UNDERLINE_STYLE = MODIFIED_INDICATOR_UNDERLINE_STYLE.get();
@@ -1119,7 +1118,7 @@ public class EntityEditComponentPanel extends JPanel {
     }
 
     @Override
-    public void onEvent(Boolean modified) {
+    public void accept(Boolean modified) {
       JLabel label = (JLabel) component.getClientProperty(LABELED_BY_PROPERTY);
       if (label != null) {
         if (SwingUtilities.isEventDispatchThread()) {

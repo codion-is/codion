@@ -2,7 +2,6 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventDataListener;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -19,6 +18,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.function.Consumer;
 
 import static java.util.Collections.singletonList;
 import static java.util.stream.Collectors.toList;
@@ -31,7 +31,7 @@ public final class CityTableModel extends SwingEntityTableModel {
 
   CityTableModel(EntityConnectionProvider connectionProvider) {
     super(new CityEditModel(connectionProvider));
-    selectionModel().addSelectedItemsListener(displayLocationEvent::onEvent);
+    selectionModel().addSelectedItemsListener(displayLocationEvent::accept);
     selectionModel().addSelectionListener(this::updateCitiesWithoutLocationSelected);
     refresher().addRefreshListener(this::refreshChartDataset);
   }
@@ -40,7 +40,7 @@ public final class CityTableModel extends SwingEntityTableModel {
     return chartDataset;
   }
 
-  public void addDisplayLocationListener(EventDataListener<Collection<Entity>> listener) {
+  public void addDisplayLocationListener(Consumer<Collection<Entity>> listener) {
     displayLocationEvent.addDataListener(listener);
   }
 
@@ -64,9 +64,9 @@ public final class CityTableModel extends SwingEntityTableModel {
       editModel.setLocation(city);
       updatedCities.add(city);
       progressReporter.setProgress(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
-      displayLocationEvent.onEvent(singletonList(city));
+      displayLocationEvent.accept(singletonList(city));
     }
-    displayLocationEvent.onEvent(selectionModel().getSelectedItems());
+    displayLocationEvent.accept(selectionModel().getSelectedItems());
   }
 
   private void refreshChartDataset() {

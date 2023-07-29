@@ -34,7 +34,7 @@ public class TemporalValuesTest {
 
   public void setTimestamp(LocalDateTime timestamp) {
     this.timestamp = timestamp;
-    timestampValueChangedEvent.onEvent();
+    timestampValueChangedEvent.run();
   }
 
   public LocalDate getDate() {
@@ -43,7 +43,7 @@ public class TemporalValuesTest {
 
   public void setDate(LocalDate dateValue) {
     this.dateValue = dateValue;
-    dateValueChangedEvent.onEvent();
+    dateValueChangedEvent.run();
   }
 
   public LocalTime getTime() {
@@ -52,7 +52,7 @@ public class TemporalValuesTest {
 
   public void setTime(LocalTime timeValue) {
     this.timeValue = timeValue;
-    timeValueChangedEvent.onEvent();
+    timeValueChangedEvent.run();
   }
 
   @Test

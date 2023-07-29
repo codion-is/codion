@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.event.Event;
-import is.codion.common.event.EventListener;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.logging.LoggerProxy;
 import is.codion.common.rmi.server.Server;
@@ -371,7 +370,7 @@ public final class ServerMonitor {
       server.shutdown();
     }
     catch (RemoteException ignored) {/*ignored*/}
-    serverShutDownEvent.onEvent();
+    serverShutDownEvent.run();
   }
 
   /**
@@ -397,7 +396,7 @@ public final class ServerMonitor {
   /**
    * @param listener a listener notified when the server is shut down
    */
-  public void addServerShutDownListener(EventListener listener) {
+  public void addServerShutDownListener(Runnable listener) {
     serverShutDownEvent.addListener(listener);
   }
 
