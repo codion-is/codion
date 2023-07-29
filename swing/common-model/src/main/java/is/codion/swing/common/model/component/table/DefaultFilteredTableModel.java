@@ -517,20 +517,20 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private void merge(Collection<R> items) {
       Set<R> itemSet = new HashSet<>(items);
-      items().forEach(item -> {
-        if (!itemSet.contains(item)) {
-          removeItem(item);
-        }
-      });
-      items.forEach(item -> {
-        int index = indexOf(item);
-        if (index == -1) {
-          addItemSorted(item);
-        }
-        else {
-          setItemAt(index, item);
-        }
-      });
+      items().stream()
+              .filter(item -> !itemSet.contains(item))
+              .forEach(DefaultFilteredTableModel.this::removeItem);
+      items.forEach(this::merge);
+    }
+
+    private void merge(R item) {
+      int index = indexOf(item);
+      if (index == -1) {
+        addItemInternal(item);
+      }
+      else {
+        setItemAt(index, item);
+      }
     }
 
     private void clearAndAdd(Collection<R> items) {
