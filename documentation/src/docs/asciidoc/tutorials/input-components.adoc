@@ -1,4 +1,5 @@
-= Input Components Demo
+[#_input_components]
+= Input Components
 :dir-source: ../../../../../demos/manual/src/main/java
 
 == Application Model

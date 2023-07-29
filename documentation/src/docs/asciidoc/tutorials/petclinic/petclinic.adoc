@@ -2,9 +2,9 @@
 = Petclinic Tutorial
 :docinfo: shared-head
 :toc: left
-:imagesdir: ../images
-:dir-source: ../../../../../demos/petclinic/src/main/java
-:dir-test-source: ../../../../../demos/petclinic/src/test/java
+:imagesdir: ../../images
+:dir-source: ../../../../../../demos/petclinic/src/main/java
+:dir-test-source: ../../../../../../demos/petclinic/src/test/java
 
 == Screenshots
 
