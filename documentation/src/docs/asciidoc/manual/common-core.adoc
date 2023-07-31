@@ -24,16 +24,26 @@ interface EventObserver<T> {
     +void addDataListener(Consumer<T> listener)
 }
 
+interface Runnable {
+    + void run()
+}
+
+interface Consumer<T> {
+    + void accept(T data)
+}
+
 Runnable <-- Event
 Consumer <-- Event
 EventObserver *-- Event
 -------------------------------------------
 
-The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a simple synchronous event implementation used throughout the framework. Classes typically publish their events via public *addListener* methods. Events are triggered by calling the *onEvent()* method, with or without a *data* parameter.
+The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is a synchronous event implementation used throughout the framework. Classes typically expose their events via public *addListener* methods. Events are triggered by calling the *run* method in case no data is associated with the event or *accept* in case data should be propogated to listeners.
+
+The associated {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] instance can not trigger the event and can be safely passed around.
+
+Event listeners must implement either https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html[Consumer], depending on whether data is associated with the event.
 
 Events are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class.
-
-To listen to Events you use the *Runnable* or *Consumer* interfaces.
 
 [source,java,indent=0]
 ----

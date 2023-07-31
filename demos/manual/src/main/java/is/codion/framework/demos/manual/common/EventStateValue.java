@@ -22,15 +22,15 @@ public final class EventStateValue {
     Event<String> event = Event.event();
 
     // an observer handles the listeners for an Event but can not trigger it
-    EventObserver<String> eventObserver = event.observer();
+    EventObserver<String> observer = event.observer();
 
     // add a listener notified each time the event occurs
-    eventObserver.addListener(() -> System.out.println("Event occurred"));
+    observer.addListener(() -> System.out.println("Event occurred"));
 
     event.run();//output: 'Event occurred'
 
     // data can be propagated by adding a Consumer as listener
-    eventObserver.addDataListener(data -> System.out.println("Event: " + data));
+    observer.addDataListener(data -> System.out.println("Event: " + data));
 
     event.accept("info");//output: 'Event: info'
 
@@ -46,16 +46,16 @@ public final class EventStateValue {
     State state = State.state();
 
     // an observer handles the listeners for a State but can not modify it
-    StateObserver stateObserver = state.observer();
+    StateObserver observer = state.observer();
     // a reversed observer is always available
     StateObserver reversedObserver = state.reversedObserver();
 
     // add a listener notified each time the state changes
-    stateObserver.addListener(() -> System.out.println("State changed"));
+    observer.addListener(() -> System.out.println("State changed"));
 
     state.set(true);//output: 'State changed'
 
-    stateObserver.addDataListener(value -> System.out.println("State: " + value));
+    observer.addDataListener(value -> System.out.println("State: " + value));
 
     state.set(false);//output: 'State: false'
 

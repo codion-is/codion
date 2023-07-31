@@ -20,31 +20,31 @@ interface Entity {
 
 == Domain core classes
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::
 Specifies a domain model, containing entity definitions, procedures, functions and reports. A Codion domain model is implemented by extending the *{url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain]* class and populating it with entity definitions.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType]*::
 A unique identifier for a domain model and a factory for *EntityType* instances associated with that domain model.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType]*::
 A unique identifier for an entity type (based on a table or query) and a factory for *Attribute* instances associated with that entity type.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute]*::
 A typed identifier for a column (actual or pseudo), allowing for type safe access to the associated value. Attributes are usually wrapped in an interface, serving as a convenient namespace.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey]*::
 An attribute subclass representing a foreign key relationship.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition]*::
 Encapsulates the meta-data required for presenting and persisting an entity.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property]*::
 Each *Attribute* has an associated *Property* (or one of its subclasses) which encapsulates the meta-data required for presenting and persisting the associated value.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity]*::
 Represents a row in a table (or query) and maps *Attributes* to their associated values while keeping track of values which have been modified since they were initially set.
 
-=== *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Key.html[Key]*
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Key.html[Key]*::
 Represents a unique key for a given entity.
 
 == Domain API
