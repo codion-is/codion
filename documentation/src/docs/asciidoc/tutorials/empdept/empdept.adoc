@@ -28,7 +28,7 @@ include::{dir-source-sql}/create_schema.sql[]
 ----
 ====
 
-== Domain
+== Domain model
 
 We start by creating a class named EmpDept in a package of our choosing, extending DefaultDomain and define the identity and attribute constants required for the department {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity], which is based on the SCOTT.DEPT table. The EntityType constant represents the entity type, the attributes represent the columns in the table. The entityType in this example contains the actual table name (scott.dept), but the table name can be specified via the __tableName()__ builder method when the entity is defined. The attribute names are the actual column names from the table, but these can also be specified via __columnName()__ builder method.
 

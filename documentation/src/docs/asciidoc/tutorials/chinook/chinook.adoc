@@ -26,8 +26,8 @@ image::tutorials/chinook/playlists.png[]
 image::tutorials/chinook/customers.png[]
 ====
 
-[#_domain]
-== Domain
+[#_domain_model]
+== Domain model
 
 [source,java]
 ----

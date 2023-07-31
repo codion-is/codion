@@ -46,8 +46,8 @@ image::tutorials/world/continent.png[]
 image::tutorials/world/lookup.png[]
 ====
 
-[#_domain]
-== Domain
+[#_domain_model]
+== Domain model
 
 === API
 

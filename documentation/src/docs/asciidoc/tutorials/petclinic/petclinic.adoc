@@ -14,7 +14,7 @@
 image::tutorials/petclinic/owners.png[]
 ====
 
-== Domain
+== Domain model
 
 === API
 

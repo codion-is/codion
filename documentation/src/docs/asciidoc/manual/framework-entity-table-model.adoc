@@ -1,6 +1,5 @@
 = EntityTableModel
 :dir-source: ../../../../../demos/manual/src/main/java
-:dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
 [plantuml, entity-table-model-diagram, svg, align=center]

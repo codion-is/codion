@@ -32,7 +32,7 @@ codion.server.loginProxyClasses=com.app.server.AppLoginProxy # <1>
 
 ==== Login proxy examples
 
-<<{dir-tutorials}/chinook.adoc#_login_proxy, ChinookLoginProxy>>
+<<{dir-tutorials}/chinook/chinook.adoc#_login_proxy, ChinookLoginProxy>>
 
 === RMI SSL encryption
 
