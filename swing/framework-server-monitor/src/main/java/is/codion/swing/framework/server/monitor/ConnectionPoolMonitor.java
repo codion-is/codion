@@ -7,7 +7,6 @@ import is.codion.common.db.pool.ConnectionPoolState;
 import is.codion.common.db.pool.ConnectionPoolStatistics;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.event.Event;
-import is.codion.common.event.EventObserver;
 import is.codion.common.scheduler.TaskScheduler;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
@@ -221,10 +220,10 @@ public final class ConnectionPoolMonitor {
   }
 
   /**
-   * @return EventObserver notified when statistics have been updated
+   * @param listener notified each time the statistics are updated
    */
-  public EventObserver<?> statisticsObserver() {
-    return statisticsUpdatedEvent.observer();
+  public void addStatisticsListener(Runnable listener) {
+    statisticsUpdatedEvent.addListener(listener);
   }
 
   /**
