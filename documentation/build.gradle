@@ -2,6 +2,7 @@ plugins {
     id "org.asciidoctor.jvm.convert" version "3.3.2"
 }
 
+apply plugin: "java"
 apply plugin: "maven-publish"
 
 def documentationVersion = project.version.replace("-SNAPSHOT", "")
@@ -118,8 +119,11 @@ tasks.register("combinedJavadoc") {
 
         options.write(optionsFile)
 
+        def javadocTool = javaToolchains.javadocToolFor {
+            languageVersion.set(JavaLanguageVersion.of(11))
+        }
         exec {
-            executable = System.getProperty("java.home") + "/bin/javadoc"
+            executable = javadocTool.get().getExecutablePath()
             args = ["@" + optionsFile.getAbsolutePath()]
         }
 
