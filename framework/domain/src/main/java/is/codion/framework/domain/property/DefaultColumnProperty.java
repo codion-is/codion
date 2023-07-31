@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -211,6 +212,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     typeMap.put(LocalDate.class, Types.DATE);
     typeMap.put(LocalTime.class, Types.TIME);
     typeMap.put(LocalDateTime.class, Types.TIMESTAMP);
+    typeMap.put(OffsetTime.class, Types.TIME_WITH_TIMEZONE);
     typeMap.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
     typeMap.put(java.util.Date.class, Types.DATE);
     typeMap.put(java.sql.Date.class, Types.DATE);
@@ -233,8 +235,9 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     valueFetchers.put(Types.DECIMAL, new BigDecimalFetcher());
     valueFetchers.put(Types.DATE, new LocalDateFetcher());
     valueFetchers.put(Types.TIMESTAMP, new LocalDateTimeFetcher());
-    valueFetchers.put(Types.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeFetcher());
     valueFetchers.put(Types.TIME, new LocalTimeFetcher());
+    valueFetchers.put(Types.TIMESTAMP_WITH_TIMEZONE, new OffsetDateTimeFetcher());
+    valueFetchers.put(Types.TIME_WITH_TIMEZONE, new OffsetTimeFetcher());
     valueFetchers.put(Types.VARCHAR, new StringFetcher());
     valueFetchers.put(Types.BOOLEAN, new BooleanFetcher());
     valueFetchers.put(Types.CHAR, new CharacterFetcher());
@@ -269,7 +272,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       this.updatable = true;
       this.searchProperty = false;
       this.columnName = attribute.name();
-      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute.valueClass());
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupingColumn = false;
       this.aggregateColumn = false;
@@ -285,7 +288,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
       this.columnType = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute.valueClass());
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute);
       return (B) this;
     }
 
@@ -384,13 +387,13 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
     }
 
-    private static <T> ValueFetcher<T> valueFetcher(int columnType, Class<T> valueClass) {
+    private static <T> ValueFetcher<T> valueFetcher(int columnType, Attribute<T> attribute) {
       if (columnType == Types.OTHER) {
-        return (ValueFetcher<T>) new ObjectFetcher(valueClass);
+        return (ValueFetcher<T>) new ObjectFetcher(attribute.valueClass());
       }
       if (!VALUE_FETCHERS.containsKey(columnType)) {
         throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-                ", attribute value class: " + valueClass.getName());
+                ", attribute: " + attribute + ", valueClass: " + attribute.valueClass());
       }
 
       return (ValueFetcher<T>) VALUE_FETCHERS.get(columnType);
@@ -512,6 +515,14 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     @Override
     public LocalTime get(ResultSet resultSet, int index) throws SQLException {
       return resultSet.getObject(index, LocalTime.class);
+    }
+  }
+
+  private static final class OffsetTimeFetcher implements ValueFetcher<OffsetTime> {
+
+    @Override
+    public OffsetTime get(ResultSet resultSet, int index) throws SQLException {
+      return resultSet.getObject(index, OffsetTime.class);
     }
   }
 
