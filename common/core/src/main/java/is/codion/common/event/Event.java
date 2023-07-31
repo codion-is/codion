@@ -23,6 +23,19 @@ import java.util.function.Consumer;
 public interface Event<T> extends Runnable, Consumer<T>, EventObserver<T> {
 
   /**
+   * Triggers this event.
+   */
+  @Override
+  void run();
+
+  /**
+   * Triggers this event.
+   * @param data data associated with the event
+   */
+  @Override
+  void accept(T data);
+
+  /**
    * @return an observer notified each time this event occurs
    */
   EventObserver<T> observer();

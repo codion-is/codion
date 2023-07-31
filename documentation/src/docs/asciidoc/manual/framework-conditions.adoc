@@ -3,20 +3,16 @@
 :dir-chinook-source: ../../../../../demos/chinook/src/main/java
 :url-javadoc: link:../api
 
-The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
+The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
-== Condition
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.html[Condition]*::
+Represents a where clause for an entity type and contains factory methods for creating Condition instances.
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.html[Condition] represents a where clause for an entity type and contains factory methods for creating Condition instances.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination]*::
+Represents a combination of Condition instances, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
 
-== Condition.Combination
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition]*::
+Represents a where clause as well as extended configuration specifically for selecting, such as *limit*, *offset* and *fetchDepth*.
 
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination] represents a combination of Condition instances, which are either AND'ed or OR'ed together. These can be nested and combined with other condition combinations.
-
-== SelectCondition
-
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition] represents a where clause as well as extended configuration specifically for selecting, such as *limit*, *offset* and *fetchDepth*.
-
-== UpdateCondition
-
-{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition] represents a where clause as well as the attribute values for updating one or more entities.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition]*::
+Represents a where clause as well as the attribute values for updating one or more entities.

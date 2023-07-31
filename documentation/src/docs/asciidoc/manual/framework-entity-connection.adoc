@@ -10,7 +10,7 @@ The Codion database layer is extremely thin, it doesn't perform any joins and pr
 
 The database layer is specified by the {url-entity-connection}[EntityConnection] class. It provides methods for selecting, inserting, updating and deleting entities, executing procedures and functions, filling reports as well as providing transaction control.
 
-The <<{dir-tutorials}/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
+The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
 NOTE: Static imports are used extensively in the examples, see <<#_full_example, full example code>>.
 

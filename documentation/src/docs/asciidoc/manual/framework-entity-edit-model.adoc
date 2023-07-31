@@ -1,6 +1,5 @@
 = EntityEditModel
 :dir-source: ../../../../../demos/manual/src/main/java
-:dir-tutorials: ../tutorials
 :url-javadoc: link:../api
 
 [plantuml, entity-edit-model-diagram, svg, align=center]

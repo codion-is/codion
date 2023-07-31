@@ -9376,3 +9376,4 @@
   LoadTestPanel, Applications tab added, related refactoring
   LoadTestModel, LoadTestPanel, automatic refresh of applications table added
   EventListener and EventDataListener removed, replaced with Runnable and Consumer respectively
+  DefaultColumnProperty.OffsetTimeFetcher added, missing valueFetcher error message improved
