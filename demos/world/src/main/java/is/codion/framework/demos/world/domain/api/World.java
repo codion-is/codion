@@ -244,7 +244,7 @@ public interface World {
     @Override
     public void validate(Entity city) throws ValidationException {
       super.validate(city);
-      //after a call to super.validate() property values that are not nullable
+      //after a call to super.validate() values that are not nullable
       //(such as country and population) are guaranteed to be non-null
       Entity country = city.get(City.COUNTRY_FK);
       Integer cityPopulation = city.get(City.POPULATION);
