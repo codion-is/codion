@@ -7,7 +7,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
@@ -44,13 +43,11 @@ public class ItemEditPanel extends EntityEditPanel {
     addInputPanel(Item.DESCRIPTION);
     addInputPanel(Item.PRICE);
     addInputPanel(Item.CONTACT_INFO_FK, createEastButtonPanel(contactInfoBox,
-            EntityPanel.builder(SellerContactInfo.TYPE)
-                    .editPanelClass(ContactInfoEditPanel.class)
-                    .createInsertControl(contactInfoBox)));
+            createInsertControl(contactInfoBox, () ->
+                    new ContactInfoEditPanel(new SwingEntityEditModel(SellerContactInfo.TYPE, editModel().connectionProvider())))));
     addInputPanel(Item.ADDRESS_FK, createEastButtonPanel(addressBox,
-            EntityPanel.builder(Address.TYPE)
-                    .editPanelClass(AddressEditPanel.class)
-                    .createInsertControl(addressBox)));
+            createInsertControl(addressBox, () ->
+                    new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())))));
     addInputPanel(Item.IMAGE_URL);
     addInputPanel(Item.IMAGE_THUMB_URL);
     addInputPanel(Item.DISABLED);

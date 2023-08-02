@@ -1887,41 +1887,5 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
      * @return an EntityTablePanel based on this provider
      */
     EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
-
-    /**
-     * Creates a new Control which shows the edit panel provided by this panel builder in a dialog and if insert is performed
-     * adds the new entity to the {@code comboBox} and selects it.
-     * Creates a INSERT key binding on the given component for triggering the resulting Control.
-     * @param comboBox the combo box in which to select the new entity
-     * @return the Control
-     */
-    Control createInsertControl(EntityComboBox comboBox);
-
-    /**
-     * Creates a new Control which shows the edit panel provided by this panel builder in a dialog and if insert is performed
-     * selects the new entity in the {@code searchField}.
-     * Creates a INSERT key binding on the given component for triggering the resulting Control.
-     * @param searchField the search field in which to select the new entity
-     * @return the Control
-     */
-    Control createInsertControl(EntitySearchField searchField);
-
-    /**
-     * Creates a new Control which shows the edit panel provided by this panel builder in a dialog displaying
-     * the selected item for update, and if update is performed replaces the updated entity in the combo box.
-     * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
-     * @param comboBox the combo box which selected item to edit
-     * @return the Control
-     */
-    Control createUpdateControl(EntityComboBox comboBox);
-
-    /**
-     * Creates a new Control which shows the edit panel provided by this panel builder in a dialog displaying
-     * the selected item for update, and if update is performed replaces the updated entity in the search field.
-     * Creates a CTRL-INSERT key binding on the given component for triggering the resulting Control.
-     * @param searchField the search field which selected item to edit
-     * @return the Control
-     */
-    Control createUpdateControl(EntitySearchField searchField);
   }
 }

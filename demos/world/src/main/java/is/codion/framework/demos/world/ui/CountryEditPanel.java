@@ -8,7 +8,6 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -60,10 +59,8 @@ final class CountryEditPanel extends EntityEditPanel {
             .preferredWidth(120)
             .build();
     //create a panel with a button for adding a new city
-    JPanel capitalPanel = createEastButtonPanel(capitalComboBox, EntityPanel.builder(City.TYPE)
-            .editPanelClass(CityEditPanel.class)
-            .onBuildEditPanel(this::initializeCapitalEditPanel)
-            .createInsertControl(capitalComboBox));
+    JPanel capitalPanel = createEastButtonPanel(capitalComboBox,
+            createInsertControl(capitalComboBox, this::createCapitalEditPanel));
     //add a field displaying the avarage city population for the selected country
     CountryEditModel editModel = editModel();
     NumberField<Double> averageCityPopulationField = doubleField()
@@ -113,8 +110,8 @@ final class CountryEditPanel extends EntityEditPanel {
             .build(), averageCityPopulationField));
   }
 
-  private void initializeCapitalEditPanel(EntityEditPanel capitalEditPanel) {
-    //set the country to the one selected in the CountryEditPanel
+  private EntityEditPanel createCapitalEditPanel() {
+    CityEditPanel capitalEditPanel = new CityEditPanel(new SwingEntityEditModel(City.TYPE, editModel().connectionProvider()));
     Entity country = editModel().entity();
     if (country.primaryKey().isNotNull()) {
       //if a country is selected, then we don't allow it to be changed
@@ -128,5 +125,7 @@ final class CountryEditPanel extends EntityEditPanel {
       //and change the initial focus property
       capitalEditPanel.setInitialFocusAttribute(City.NAME);
     }
+
+    return capitalEditPanel;
   }
 }
