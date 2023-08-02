@@ -156,8 +156,8 @@ public interface Entity extends Comparable<Entity> {
    * Returns the Entity instance referenced by the given foreign key attribute.
    * If the underlying reference attribute contains a value, that is,
    * a foreign key value exists but the actual referenced entity has not
-   * been loaded, an "empty" entity is returned, containing only the primary
-   * key value. Null is returned only if the actual reference attribute is null.
+   * been loaded, an "empty" entity is returned, containing only the reference
+   * key value(s). Null is returned only if the actual reference attribute is null.
    * @param foreignKey the foreign key for which to retrieve the value
    * @return the value of {@code foreignKey},
    * assuming it is an Entity
