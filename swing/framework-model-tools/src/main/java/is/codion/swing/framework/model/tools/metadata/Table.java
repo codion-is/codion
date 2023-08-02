@@ -22,14 +22,16 @@ public final class Table {
 
   private final Schema schema;
   private final String tableName;
+  private final String comment;
   private final List<ForeignKeyColumn> foreignKeyColumns;
   private final Map<String, Column> columns = new LinkedHashMap<>();
   private final List<ForeignKeyConstraint> foreignKeys = new ArrayList<>();
 
-  Table(Schema schema, String tableName, List<Column> columns,
-        List<ForeignKeyColumn> foreignKeyColumns) {
+  Table(Schema schema, String tableName, String comment,
+        List<Column> columns, List<ForeignKeyColumn> foreignKeyColumns) {
     this.schema = requireNonNull(schema);
     this.tableName = requireNonNull(tableName);
+    this.comment = comment;
     this.foreignKeyColumns = requireNonNull(foreignKeyColumns);
     requireNonNull(columns).forEach(column -> this.columns.put(column.columnName(), column));
   }
@@ -40,6 +42,10 @@ public final class Table {
 
   public Schema schema() {
     return schema;
+  }
+
+  public String comment() {
+    return comment;
   }
 
   public List<Column> columns() {

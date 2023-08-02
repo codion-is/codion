@@ -25,11 +25,12 @@ final class TablePacker implements ResultPacker<Table> {
   @Override
   public Table get(ResultSet resultSet) throws SQLException {
     String tableName = resultSet.getString("TABLE_NAME");
+    String remarks = resultSet.getString("REMARKS");
     List<PrimaryKeyColumn> primaryKeyColumns = primaryKeyColumns(schema, metaData, catalog, tableName);
     List<ForeignKeyColumn> foreignKeyColumns = foreignKeyColumns(schema, metaData, catalog, tableName);
     List<Column> columns = columns(schema, metaData, catalog, tableName, primaryKeyColumns, foreignKeyColumns);
 
-    return new Table(schema, tableName, columns, foreignKeyColumns);
+    return new Table(schema, tableName, remarks, columns, foreignKeyColumns);
   }
 
   private static List<PrimaryKeyColumn> primaryKeyColumns(Schema schema, DatabaseMetaData metaData,

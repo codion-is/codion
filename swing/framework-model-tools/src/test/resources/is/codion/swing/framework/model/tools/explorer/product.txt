@@ -18,10 +18,12 @@ void product() {
 		foreignKeyProperty(Product.CATEGORYID_FK, "Category"),
 		columnProperty(Product.NAME, "Name")
 			.nullable(false)
-			.maximumLength(25),
+			.maximumLength(25)
+			.description("The product name"),
 		columnProperty(Product.DESCRIPTION, "Description")
 			.nullable(false)
 			.maximumLength(255),
 		columnProperty(Product.IMAGEURL, "Imageurl")
-			.maximumLength(55)));
+			.maximumLength(55))
+		.description("The available products"));
 }

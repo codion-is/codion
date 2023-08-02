@@ -9341,3 +9341,4 @@
   EntityPanelBuilder.createInsertControl() and createUpdateControl() functionality moved to EntityEditPanel
   EntityApplicationPanel.PERSIST_ENTITY_PANELS renamed CACHE_ENTITY_PANELS
   EntityEditPanel.UpdateEntityCommand, OK button now enabled only when the entity is modified
+  DatabaseDomain now uses the table comment as entity description, if one is available, column and table comments added to test

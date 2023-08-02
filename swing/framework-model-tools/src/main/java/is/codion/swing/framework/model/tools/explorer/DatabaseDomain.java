@@ -47,23 +47,26 @@ final class DatabaseDomain extends DefaultDomain {
               .map(ForeignKeyConstraint::referencedTable)
               .filter(referencedTable -> !referencedTable.equals(table))
               .forEach(this::defineEntity);
-      define(propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys())),
-              tableHasAutoIncrementPrimaryKeyColumn(table));
+      define(table, entityType);
     }
   }
 
-  private void define(List<Property.Builder<?, ?>> propertyBuilders, boolean autoIncrementedPrimarKeyColumn) {
+  private void define(Table table, EntityType entityType) {
+    List<Builder<?, ?>> propertyBuilders = propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
     if (!propertyBuilders.isEmpty()) {
       EntityDefinition.Builder definitionBuilder = definition(propertyBuilders.toArray(new Builder[0]));
-      if (autoIncrementedPrimarKeyColumn) {
+      if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
         definitionBuilder.keyGenerator(KeyGenerator.identity());
+      }
+      if (!nullOrEmpty(table.comment())) {
+        definitionBuilder.description(table.comment());
       }
       add(definitionBuilder);
     }
   }
 
   private List<Property.Builder<?, ?>> propertyBuilders(Table table, EntityType entityType,
-                                                        List<ForeignKeyConstraint> foreignKeyConstraints) {
+                                                        Collection<ForeignKeyConstraint> foreignKeyConstraints) {
     List<Property.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
       builders.add(columnPropertyBuilder(column, entityType));
