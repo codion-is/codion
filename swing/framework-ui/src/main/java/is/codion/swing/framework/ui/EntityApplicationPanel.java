@@ -140,13 +140,15 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
 
   /**
-   * Specifies if EntityPanels opened via the {@code EntityApplicationPanel.displayEntityPanel} method
-   * should be persisted, or kept in memory, when the dialog/frame is closed, instead of being created each time.<br>
+   * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)}
+   * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel.Builder)} should be cached,
+   * instead of being created each time the dialog/frame is shown.<br>
    * Value type: Boolean<br>
    * Default value: false
    * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)
+   * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel.Builder)
    */
-  public static final PropertyValue<Boolean> PERSIST_ENTITY_PANELS = Configuration.booleanValue("codion.swing.persistEntityPanels", false);
+  public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue("codion.swing.cacheEntityPanels", false);
 
   /**
    * Specifies the tab placement<br>
@@ -173,7 +175,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
 
-  private final Map<EntityPanel.Builder, EntityPanel> persistentEntityPanels = new HashMap<>();
+  private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
   private final Map<Object, State> logLevelStates = createLogLevelStateMap();
 
@@ -890,14 +892,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
-    if (PERSIST_ENTITY_PANELS.get() && persistentEntityPanels.containsKey(panelBuilder)) {
-      return persistentEntityPanels.get(panelBuilder);
+    if (CACHE_ENTITY_PANELS.get() && cachedEntityPanels.containsKey(panelBuilder)) {
+      return cachedEntityPanels.get(panelBuilder);
     }
 
     EntityPanel entityPanel = panelBuilder.buildPanel(applicationModel.connectionProvider());
     entityPanel.initialize();
-    if (PERSIST_ENTITY_PANELS.get()) {
-      persistentEntityPanels.put(panelBuilder, entityPanel);
+    if (CACHE_ENTITY_PANELS.get()) {
+      cachedEntityPanels.put(panelBuilder, entityPanel);
     }
 
     return entityPanel;
