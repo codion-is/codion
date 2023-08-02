@@ -1050,6 +1050,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       JDialog dialog = Dialogs.okCancelDialog(editPanel)
               .owner(component)
               .title(connectionProvider.entities().definition(editPanel.editModel().entityType()).caption())
+              .okEnabledState(editPanel.editModel().modifiedObserver())
               .onShown(d -> invalidAttribute.optional()
                       .ifPresent(editPanel::requestComponentFocus))
               .onCancel(() -> cancelled.set(true))
