@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
@@ -33,9 +32,8 @@ public final class PetEditPanel extends EntityEditPanel {
             createForeignKeyComboBox(Pet.PET_TYPE_FK)
                     .build();
 
-    Control newPetTypeControl = EntityPanel.builder(PetType.TYPE)
-            .editPanelClass(PetTypeEditPanel.class)
-            .createInsertControl(petTypeBox);
+    Control newPetTypeControl = createInsertControl(petTypeBox, () ->
+            new PetTypeEditPanel(new SwingEntityEditModel(PetType.TYPE, editModel().connectionProvider())));
     JPanel petTypePanel = createEastButtonPanel(petTypeBox, newPetTypeControl);
 
     setLayout(gridLayout(2, 2));

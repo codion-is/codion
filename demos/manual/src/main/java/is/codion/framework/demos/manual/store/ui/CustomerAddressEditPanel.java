@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
@@ -31,9 +30,8 @@ public class CustomerAddressEditPanel extends EntityEditPanel {
             createForeignKeyComboBox(CustomerAddress.ADDRESS_FK)
                     .preferredWidth(200)
                     .build();
-    Control newAddressControl = EntityPanel.builder(Address.TYPE)
-            .editPanelClass(AddressEditPanel.class)
-            .createInsertControl(addressComboBox);
+    Control newAddressControl = createInsertControl(addressComboBox, () ->
+            new AddressEditPanel(new SwingEntityEditModel(Address.TYPE, editModel().connectionProvider())));
     JPanel addressPanel = createEastButtonPanel(addressComboBox, newAddressControl);
 
     setLayout(new BorderLayout(5, 5));

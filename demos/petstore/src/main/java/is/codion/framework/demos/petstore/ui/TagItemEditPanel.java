@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;
 
@@ -28,8 +27,8 @@ public class TagItemEditPanel extends EntityEditPanel {
     setInitialFocusComponent(itemBox);
     addInputPanel(TagItem.ITEM_FK);
     EntityComboBox itemTagBox = createForeignKeyComboBox(TagItem.TAG_FK).build();
-    addInputPanel(TagItem.TAG_FK, createEastButtonPanel(itemTagBox, EntityPanel.builder(Tag.TYPE)
-            .editPanelClass(TagEditPanel.class)
-            .createInsertControl(itemTagBox)));
+    addInputPanel(TagItem.TAG_FK, createEastButtonPanel(itemTagBox,
+            createInsertControl(itemTagBox, () ->
+                    new TagEditPanel(new SwingEntityEditModel(Tag.TYPE, editModel().connectionProvider())))));
   }
 }

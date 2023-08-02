@@ -154,7 +154,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
     Arrays.stream(FlatAllIJThemes.INFOS)
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
     Completion.COMBO_BOX_COMPLETION_MODE.set(Completion.Mode.AUTOCOMPLETE);
-    EntityApplicationPanel.PERSIST_ENTITY_PANELS.set(true);
+    EntityApplicationPanel.CACHE_ENTITY_PANELS.set(true);
     EntityPanel.TOOLBAR_CONTROLS.set(true);
     EntityPanel.USE_FRAME_PANEL_DISPLAY.set(true);
     FilteredTable.AUTO_RESIZE_MODE.set(JTable.AUTO_RESIZE_ALL_COLUMNS);

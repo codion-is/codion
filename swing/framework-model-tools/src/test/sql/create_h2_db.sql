@@ -18,6 +18,9 @@ create table petstore.product (
  foreign key (categoryid) references petstore.category(categoryid)
 );
 
+comment on table petstore.product is 'The available products';
+comment on column petstore.product.name is 'The product name';
+
 create table petstore.address (
  addressid integer not null,
  street1 varchar(55) not null,

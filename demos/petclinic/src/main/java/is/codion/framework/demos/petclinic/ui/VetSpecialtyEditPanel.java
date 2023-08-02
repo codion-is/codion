@@ -9,7 +9,6 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
-import is.codion.swing.framework.ui.EntityPanel;
 
 import javax.swing.JPanel;
 
@@ -33,9 +32,8 @@ public final class VetSpecialtyEditPanel extends EntityEditPanel {
                     .preferredWidth(200)
                     .build();
 
-    Control newSpecialtyControl = EntityPanel.builder(Specialty.TYPE)
-            .editPanelClass(SpecialtyEditPanel.class)
-            .createInsertControl(specialtyComboBox);
+    Control newSpecialtyControl = createInsertControl(specialtyComboBox, () ->
+            new SpecialtyEditPanel(new SwingEntityEditModel(Specialty.TYPE, editModel().connectionProvider())));
     JPanel specialtyPanel = createEastButtonPanel(specialtyComboBox, newSpecialtyControl);
 
     setLayout(gridLayout(2, 1));
