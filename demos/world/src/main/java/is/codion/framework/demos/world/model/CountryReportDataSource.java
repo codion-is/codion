@@ -110,7 +110,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Entit
     @Override
     public void accept(Entity country) {
       progressReporter.publish(country.get(Country.NAME));
-      progressReporter.setProgress(100 * counter.incrementAndGet() / noOfCountries);
+      progressReporter.report(100 * counter.incrementAndGet() / noOfCountries);
     }
   }
 }
