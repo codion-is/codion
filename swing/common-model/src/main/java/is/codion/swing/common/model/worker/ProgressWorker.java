@@ -158,7 +158,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   }
 
   /**
-   * Reports progress for a ProgressWorker
+   * Reports progress and publishes intermediate results for a ProgressWorker
    * @param <V> the intermediate result type
    */
   public interface ProgressReporter<V> {
@@ -166,7 +166,7 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
     /**
      * @param progress the progress, 0 - 100.
      */
-    void setProgress(int progress);
+    void report(int progress);
 
     /**
      * @param chunks the chunks to publish
@@ -246,10 +246,13 @@ public final class ProgressWorker<T, V> extends SwingWorker<T, V> {
   private final class TaskProgressReporter implements ProgressReporter<V> {
 
     @Override
-    public void setProgress(int progress) {
-      ProgressWorker.this.setProgress(progress);
-      if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
-        SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+    public void report(int progress) {
+      int currentProgress = getProgress();
+      if (progress != currentProgress) {
+        setProgress(progress);
+        if (onProgress != DefaultBuilder.EMPTY_CONSUMER) {
+          SwingUtilities.invokeLater(() -> onProgress.accept(progress));
+        }
       }
     }
 
