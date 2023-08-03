@@ -147,7 +147,7 @@ public interface Property<T> {
   String beanProperty();
 
   /**
-   * Prepares the value according to the property configuration, such as rounding
+   * Prepares the value according to the property specification, such as rounding
    * to the correct number of fraction digits in case of doubles
    * @param value the value to prepare
    * @return the prepared value
@@ -260,7 +260,7 @@ public interface Property<T> {
 
   /**
    * Builds a Property instance
-   * @param <T> the property value type
+   * @param <T> the value type
    * @param <B> the builder type
    */
   interface Builder<T, B extends Builder<T, B>> {

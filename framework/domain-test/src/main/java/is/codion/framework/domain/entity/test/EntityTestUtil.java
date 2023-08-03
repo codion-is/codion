@@ -89,7 +89,7 @@ public final class EntityTestUtil {
    * Creates a random value for the given property.
    * @param property the property
    * @param referenceEntities entities referenced by the given property
-   * @param <T> the property type
+   * @param <T> the property value type
    * @return a random value
    */
   public static <T> T createRandomValue(Property<T> property, Map<ForeignKey, Entity> referenceEntities) {

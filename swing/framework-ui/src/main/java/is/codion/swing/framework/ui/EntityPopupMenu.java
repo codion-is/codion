@@ -55,7 +55,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   /**
-   * Populates the given root menu with the property values of the given entity
+   * Populates the given root menu with the values of the given entity
    * @param rootMenu the menu to populate
    * @param entity the entity
    * @param connection the connection to use when selecting foreign key references

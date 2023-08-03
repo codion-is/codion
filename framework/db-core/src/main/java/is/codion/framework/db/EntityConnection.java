@@ -346,8 +346,7 @@ public interface EntityConnection extends AutoCloseable {
   <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} in the blob field specified by the property identified by {@code attribute}
-   * for the given entity
+   * Writes {@code blobData} into the blob field specified by {@code attribute} for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobAttribute the blob attribute
    * @param blobData the blob data
@@ -357,7 +356,7 @@ public interface EntityConnection extends AutoCloseable {
   void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
 
   /**
-   * Reads the blob specified by the property identified by {@code attribute} from the given entity,
+   * Reads the blob value associated with {@code attribute} from the given entity,
    * returns null if no blob data is found.
    * @param primaryKey the primary key of the entity
    * @param blobAttribute the blob attribute

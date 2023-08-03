@@ -478,7 +478,7 @@ public class EntityEditComponentPanel extends JPanel {
    * The label text is the caption of the property based on {@code attribute}.
    * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
    * @param attribute the attribute from which property to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code attribute}
+   * @param inputComponent a component bound to the value of {@code attribute}
    * @return a panel containing a label and a component
    */
   protected final JPanel createInputPanel(Attribute<?> attribute, JComponent inputComponent) {
@@ -489,7 +489,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a panel containing a label and the component associated with the given attribute.
    * The label text is the caption of the property based on {@code attribute}.
    * @param attribute the attribute from which property to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code attribute}
+   * @param inputComponent a component bound to the value of {@code attribute}
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @return a panel containing a label and a component
@@ -503,7 +503,7 @@ public class EntityEditComponentPanel extends JPanel {
    * Creates a panel containing a label and the given component.
    * The label text is the caption of {@code attribute}.
    * @param attribute the attribute from which property to retrieve the label caption
-   * @param inputComponent a component bound to the property with id {@code attribute}
+   * @param inputComponent a component bound to the value of {@code attribute}
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
    * @param labelAlignment the label alignment
