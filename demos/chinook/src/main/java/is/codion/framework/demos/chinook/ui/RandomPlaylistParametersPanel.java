@@ -81,7 +81,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
     return new RandomPlaylistParameters(model.playlistNameValue.get(), model.noOfTracksValue.get(), model.genresValue.get());
   }
 
-  private DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
+  private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
     DefaultListModel<Entity> listModel = new DefaultListModel<>();
     try {
       connectionProvider.connection().select(condition(Genre.TYPE)
