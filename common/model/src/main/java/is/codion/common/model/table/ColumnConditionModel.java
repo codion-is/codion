@@ -208,7 +208,7 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return a ValueSet based on the equals values of this condition model
    */
-  ValueSet<T> equalValueSet();
+  ValueSet<T> equalValues();
 
   /**
    * @return a Value based on the upper bound value of this condition model

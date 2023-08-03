@@ -298,7 +298,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     }
 
     public JComponent createEqualField() {
-      return createField(columnConditionModel.equalValueSet().value());
+      return createField(columnConditionModel.equalValues().value());
     }
 
     @Override
