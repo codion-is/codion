@@ -196,7 +196,7 @@ public class EntityTablePanel extends JPanel {
     PRINT,
     DELETE_SELECTED,
     VIEW_DEPENDENCIES,
-    UPDATE_SELECTED,
+    EDIT_SELECTED,
     SELECT_COLUMNS,
     RESET_COLUMNS,
     SELECTION_MODE,
@@ -255,12 +255,12 @@ public class EntityTablePanel extends JPanel {
 
   private final Map<ControlCode, Control> controls = new EnumMap<>(ControlCode.class);
 
-  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> updateSelectedComponentFactories = new HashMap<>();
+  private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> editSelectedComponentFactories = new HashMap<>();
   private final Map<Attribute<?>, EntityComponentFactory<?, ?, ?>> tableCellEditorComponentFactories = new HashMap<>();
 
   private final List<Controls> additionalPopupControls = new ArrayList<>();
   private final List<Controls> additionalToolBarControls = new ArrayList<>();
-  private final Set<Attribute<?>> excludeFromUpdateMenu = new HashSet<>();
+  private final Set<Attribute<?>> excludeFromEditMenu = new HashSet<>();
 
   private final SwingEntityTableModel tableModel;
   private final EntityConditionPanelFactory conditionPanelFactory;
@@ -361,14 +361,14 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Specifies that the given property should be excluded from the update selected entities menu.
-   * @param attribute the id of the property to exclude from the update menu
+   * Specifies that the given attribute should be excluded from the edit selected entities menu.
+   * @param attribute the attribute to exclude from the edit menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromUpdateMenu(Attribute<?> attribute) {
+  public final void excludeFromEditMenu(Attribute<?> attribute) {
     checkIfInitialized();
     tableModel().entityDefinition().property(attribute);//just validating that the property exists
-    excludeFromUpdateMenu.add(attribute);
+    excludeFromEditMenu.add(attribute);
   }
 
   /**
@@ -523,17 +523,17 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Sets the component factory for the given attribute, used when updating entities via {@link #updateSelectedEntities(Attribute)}.
+   * Sets the component factory for the given attribute, used when editing entities via {@link #editSelectedEntities(Attribute)}.
    * @param attribute the attribute
    * @param componentFactory the component factory
    * @param <T> the value type
    * @param <A> the attribute type
    * @param <C> the component type
    */
-  public final <T, A extends Attribute<T>, C extends JComponent> void setUpdateSelectedComponentFactory(A attribute,
-                                                                                                        EntityComponentFactory<T, A, C> componentFactory) {
+  public final <T, A extends Attribute<T>, C extends JComponent> void setEditSelectedComponentFactory(A attribute,
+                                                                                                      EntityComponentFactory<T, A, C> componentFactory) {
     tableModel().entityDefinition().property(attribute);
-    updateSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
+    editSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
   /**
@@ -636,31 +636,31 @@ public class EntityTablePanel extends JPanel {
   /**
    * Retrieves a new value via input dialog and performs an update on the selected entities
    * assigning the value to the attribute
-   * @param attributeToUpdate the attribute to update
-   * @param <T> the property type
-   * @see #setUpdateSelectedComponentFactory(Attribute, EntityComponentFactory)
+   * @param attributeToEdit the attribute which value to edit
+   * @param <T> the property value type
+   * @see #setEditSelectedComponentFactory(Attribute, EntityComponentFactory)
    */
-  public final <T> void updateSelectedEntities(Attribute<T> attributeToUpdate) {
-    requireNonNull(attributeToUpdate);
+  public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
+    requireNonNull(attributeToEdit);
     if (tableModel.selectionModel().isSelectionEmpty()) {
       return;
     }
 
-    Property<T> property = tableModel.entityDefinition().property(attributeToUpdate);
+    Property<T> property = tableModel.entityDefinition().property(attributeToEdit);
     Collection<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
-    Collection<T> values = Entity.distinct(attributeToUpdate, selectedEntities);
+    Collection<T> values = Entity.distinct(attributeToEdit, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
-    ComponentValue<T, ?> componentValue = createUpdateSelectedComponentValue(attributeToUpdate, initialValue);
+    ComponentValue<T, ?> componentValue = editSelectedComponentValue(attributeToEdit, initialValue);
     ValidInputPredicate<T> validInputPredicate = new ValidInputPredicate<>(property, componentValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
-              .title(MESSAGES.getString("update"))
+              .title(FrameworkMessages.edit())
               .caption(property.caption())
               .validInputPredicate(validInputPredicate)
               .show();
-      Entity.put(attributeToUpdate, newValue, selectedEntities);
+      Entity.put(attributeToEdit, newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
     }
   }
@@ -966,7 +966,7 @@ public class EntityTablePanel extends JPanel {
     }
     addAdditionalControls(popupControls, additionalPopupMenuControls);
     State separatorRequired = State.state();
-    control(ControlCode.UPDATE_SELECTED).ifPresent(control -> {
+    control(ControlCode.EDIT_SELECTED).ifPresent(control -> {
       popupControls.add(control);
       separatorRequired.set(true);
     });
@@ -1072,7 +1072,7 @@ public class EntityTablePanel extends JPanel {
       return Optional.empty();
     }
 
-    return Optional.of(new EntityTableCellEditor<>(() -> createCellEditorComponentValue(attribute, null)));
+    return Optional.of(new EntityTableCellEditor<>(() -> cellEditorComponentValue(attribute, null)));
   }
 
   /**
@@ -1126,34 +1126,32 @@ public class EntityTablePanel extends JPanel {
   protected void beforeDelete() {}
 
   /**
-   * Creates a {@link Controls} containing controls for updating the value of a single property
+   * Creates a {@link Controls} containing controls for editing the value of a single attribute
    * for the selected entities. These controls are enabled as long as the selection is not empty
    * and {@link EntityEditModel#updateEnabledObserver()} is enabled.
-   * @return controls containing a control for each updatable property in the
-   * underlying entity, for performing an update on the selected entities
-   * @throws IllegalStateException in case the underlying edit model is read only or updating is not enabled
-   * @see #excludeFromUpdateMenu(Attribute)
+   * @return the edit controls
+   * @see #excludeFromEditMenu(Attribute)
    * @see EntityEditModel#updateEnabledObserver()
    */
-  private Controls createUpdateSelectedControls() {
+  private Controls createEditSelectedControls() {
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
     StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
-    Controls updateControls = Controls.builder()
-            .name(FrameworkMessages.update())
+    Controls editControls = Controls.builder()
+            .name(FrameworkMessages.edit())
             .enabledState(enabledState)
             .smallIcon(FrameworkIcons.instance().edit())
-            .description(FrameworkMessages.updateSelectedTip())
+            .description(FrameworkMessages.editSelectedTip())
             .build();
     tableModel.entityDefinition().updatableProperties().stream()
-            .filter(property -> !excludeFromUpdateMenu.contains(property.attribute()))
+            .filter(property -> !excludeFromEditMenu.contains(property.attribute()))
             .sorted(Property.propertyComparator())
-            .forEach(property -> updateControls.add(Control.builder(() -> updateSelectedEntities(property.attribute()))
+            .forEach(property -> editControls.add(Control.builder(() -> editSelectedEntities(property.attribute()))
                     .name(property.caption() == null ? property.attribute().name() : property.caption())
                     .enabledState(enabledState)
                     .build()));
 
-    return updateControls;
+    return editControls;
   }
 
   /**
@@ -1293,10 +1291,10 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private boolean includeUpdateSelectedControls() {
+  private boolean includeEditSelectedControls() {
     long updatableAttributeCount = tableModel.entityDefinition().updatableProperties().stream()
             .map(Property::attribute)
-            .filter(attribute -> !excludeFromUpdateMenu.contains(attribute))
+            .filter(attribute -> !excludeFromEditMenu.contains(attribute))
             .count();
 
     return updatableAttributeCount > 0 &&
@@ -1323,12 +1321,12 @@ public class EntityTablePanel extends JPanel {
             .build();
   }
 
-  private <T> ComponentValue<T, ? extends JComponent> createUpdateSelectedComponentValue(Attribute<T> attribute, T initialValue) {
-    return ((EntityComponentFactory<T, Attribute<T>, ?>) updateSelectedComponentFactories.computeIfAbsent(attribute, a ->
-            new UpdateSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
+  private <T> ComponentValue<T, ? extends JComponent> editSelectedComponentValue(Attribute<T> attribute, T initialValue) {
+    return ((EntityComponentFactory<T, Attribute<T>, ?>) editSelectedComponentFactories.computeIfAbsent(attribute, a ->
+            new EditSelectedComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
 
-  private <T> ComponentValue<T, ? extends JComponent> createCellEditorComponentValue(Attribute<T> attribute, T initialValue) {
+  private <T> ComponentValue<T, ? extends JComponent> cellEditorComponentValue(Attribute<T> attribute, T initialValue) {
     return ((EntityComponentFactory<T, Attribute<T>, ?>) tableCellEditorComponentFactories.computeIfAbsent(attribute, a ->
             new DefaultEntityComponentFactory<T, Attribute<T>, JComponent>())).createComponentValue(attribute, tableModel.editModel(), initialValue);
   }
@@ -1488,8 +1486,8 @@ public class EntityTablePanel extends JPanel {
     if (includeDeleteSelectedControl()) {
       controls.putIfAbsent(ControlCode.DELETE_SELECTED, createDeleteSelectedControl());
     }
-    if (includeUpdateSelectedControls()) {
-      controls.putIfAbsent(ControlCode.UPDATE_SELECTED, createUpdateSelectedControls());
+    if (includeEditSelectedControls()) {
+      controls.putIfAbsent(ControlCode.EDIT_SELECTED, createEditSelectedControls());
     }
     if (includeClearControl) {
       controls.putIfAbsent(ControlCode.CLEAR, createClearControl());
@@ -1893,7 +1891,7 @@ public class EntityTablePanel extends JPanel {
     @Override
     protected Controls createPopupMenuControls(List<Controls> additionalPopupMenuControls) {
       Controls popupMenuControls = Controls.controls();
-      control(ControlCode.UPDATE_SELECTED).ifPresent(popupMenuControls::add);
+      control(ControlCode.EDIT_SELECTED).ifPresent(popupMenuControls::add);
       control(ControlCode.DELETE_SELECTED).ifPresent(popupMenuControls::add);
       if (popupMenuControls.isNotEmpty()) {
         popupMenuControls.addSeparator();
@@ -1904,7 +1902,7 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final class UpdateSelectedComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
+  private static final class EditSelectedComponentFactory<T, A extends Attribute<T>, C extends JComponent> extends DefaultEntityComponentFactory<T, A, C> {
 
     @Override
     public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {

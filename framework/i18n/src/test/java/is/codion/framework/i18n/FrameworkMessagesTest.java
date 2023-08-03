@@ -22,7 +22,8 @@ public class FrameworkMessagesTest {
     FrameworkMessages.update();
     FrameworkMessages.updateMnemonic();
     FrameworkMessages.updateTip();
-    FrameworkMessages.updateSelectedTip();
+    FrameworkMessages.edit();
+    FrameworkMessages.editSelectedTip();
     FrameworkMessages.delete();
     FrameworkMessages.deleteMnemonic();
     FrameworkMessages.deleteCurrentTip();
