@@ -63,7 +63,7 @@ public final class CityTableModel extends SwingEntityTableModel {
       progressReporter.publish(city.country().name() + " - " + city.name());
       editModel.setLocation(city);
       updatedCities.add(city);
-      progressReporter.setProgress(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
+      progressReporter.report(100 * updatedCities.size() / selectedCitiesWithoutLocation.size());
       displayLocationEvent.accept(singletonList(city));
     }
     displayLocationEvent.accept(selectionModel().getSelectedItems());
