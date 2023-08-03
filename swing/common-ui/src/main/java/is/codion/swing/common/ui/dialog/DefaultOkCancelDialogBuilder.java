@@ -107,14 +107,14 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
       okAction = Control.builder(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
             .name(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabledState(okEnabledObserver)
+            .enabledObserver(okEnabledObserver)
             .build();
     }
     if (cancelAction == null) {
       cancelAction = Control.builder(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
             .name(Messages.cancel())
             .mnemonic(Messages.cancelMnemonic())
-            .enabledState(cancelEnabledObserver)
+            .enabledObserver(cancelEnabledObserver)
             .build();
     }
     okAction.putValue(Action.NAME, Messages.ok());

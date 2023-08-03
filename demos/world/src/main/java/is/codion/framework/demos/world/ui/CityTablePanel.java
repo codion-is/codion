@@ -32,7 +32,7 @@ final class CityTablePanel extends ChartTablePanel {
 
     return Control.builder(this::fetchLocation)
             .name("Fetch location")
-            .enabledState(cityTableModel.citiesWithoutLocationSelectedObserver())
+            .enabledObserver(cityTableModel.citiesWithoutLocationSelectedObserver())
             .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
             .build();
   }
@@ -47,7 +47,7 @@ final class CityTablePanel extends ChartTablePanel {
             .controls(Controls.builder()
                     .control(Control.builder(fetchLocationTask::cancel)
                             .name("Cancel")
-                            .enabledState(fetchLocationTask.isWorkingObserver()))
+                            .enabledObserver(fetchLocationTask.isWorkingObserver()))
                     .build())
             .onException(this::displayFetchException)
             .execute();

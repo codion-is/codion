@@ -1139,7 +1139,7 @@ public class EntityTablePanel extends JPanel {
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls editControls = Controls.builder()
             .name(FrameworkMessages.edit())
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
@@ -1148,7 +1148,7 @@ public class EntityTablePanel extends JPanel {
             .sorted(Property.propertyComparator())
             .forEach(property -> editControls.add(Control.builder(() -> editSelectedEntities(property.attribute()))
                     .name(property.caption() == null ? property.attribute().name() : property.caption())
-                    .enabledState(enabledState)
+                    .enabledObserver(enabledState)
                     .build()));
 
     return editControls;
@@ -1160,7 +1160,7 @@ public class EntityTablePanel extends JPanel {
   private Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
             .name(FrameworkMessages.dependencies())
-            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
             .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
@@ -1173,7 +1173,7 @@ public class EntityTablePanel extends JPanel {
   private Control createDeleteSelectedControl() {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
-            .enabledState(State.and(
+            .enabledObserver(State.and(
                     tableModel.editModel().deleteEnabledObserver(),
                     tableModel.selectionModel().selectionNotEmptyObserver()))
             .description(FrameworkMessages.deleteSelectedTip())
@@ -1190,7 +1190,7 @@ public class EntityTablePanel extends JPanel {
             .description(FrameworkMessages.refreshTip())
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
-            .enabledState(tableModel.refresher().refreshingObserver().reversedObserver())
+            .enabledObserver(tableModel.refresher().refreshingObserver().reversedObserver())
             .build();
   }
 
@@ -1229,7 +1229,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createClearSelectionControl() {
     return Control.builder(tableModel.selectionModel()::clearSelection)
-            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
             .smallIcon(FrameworkIcons.instance().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
@@ -1281,7 +1281,7 @@ public class EntityTablePanel extends JPanel {
   private Control createCopyCellControl() {
     return Control.builder(table::copySelectedCell)
             .name(FrameworkMessages.copyCell())
-            .enabledState(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
             .build();
   }
 
@@ -1316,7 +1316,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createConditionRefreshControl() {
     return Control.builder(tableModel::refresh)
-            .enabledState(tableModel.conditionChangedObserver())
+            .enabledObserver(tableModel.conditionChangedObserver())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
   }

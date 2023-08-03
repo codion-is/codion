@@ -40,7 +40,7 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.Sizes.*;
-import static is.codion.swing.common.ui.Utilities.linkToEnabledState;
+import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static java.awt.ComponentOrientation.getOrientation;
 import static java.util.Objects.requireNonNull;
 
@@ -78,7 +78,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   private Color foreground;
   private Color background;
   private ComponentOrientation componentOrientation = getOrientation(Locale.getDefault());
-  private StateObserver enabledState;
+  private StateObserver enabledObserver;
   private boolean enabled = true;
   private JPopupMenu popupMenu;
   private Value<T> linkedValue;
@@ -196,8 +196,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
   }
 
   @Override
-  public final B enabledState(StateObserver enabledState) {
-    this.enabledState = enabledState;
+  public final B enabledObserver(StateObserver enabledObserver) {
+    this.enabledObserver = enabledObserver;
     return (B) this;
   }
 
@@ -393,8 +393,8 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
     if (!enabled) {
       component.setEnabled(false);
     }
-    if (enabledState != null) {
-      linkToEnabledState(enabledState, component);
+    if (enabledObserver != null) {
+      linkToEnabledObserver(enabledObserver, component);
     }
     if (popupMenu != null) {
       component.setComponentPopupMenu(popupMenu);

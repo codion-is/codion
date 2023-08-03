@@ -9344,3 +9344,4 @@
   DatabaseDomain now uses the table comment as entity description, if one is available, column and table comments added to test
   EntityTablePanel, updateSelectedEntities() is now editSelectedEntities(), Update -> Edit
   InputDialogBuilder.validInputState() and validInputPredicate() renamed inputValidObserver() and inputValidator() respectively
+  ComponentBuilder, Control.Builder.enabledState() renamed enabledObserver()
