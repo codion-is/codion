@@ -9342,6 +9342,7 @@
   EntityApplicationPanel.PERSIST_ENTITY_PANELS renamed CACHE_ENTITY_PANELS
   EntityEditPanel.UpdateEntityCommand, OK button now enabled only when the entity is modified
   DatabaseDomain now uses the table comment as entity description, if one is available, column and table comments added to test
+  ProgressWorker.ProgressReporter.setProgress() renamed report(), no longer potentially reports the same progress value multiple times
   EntityTablePanel, updateSelectedEntities() is now editSelectedEntities(), Update -> Edit
   InputDialogBuilder.validInputState() and validInputPredicate() renamed inputValidObserver() and inputValidator() respectively
   ComponentBuilder, Control.Builder.enabledState() renamed enabledObserver()

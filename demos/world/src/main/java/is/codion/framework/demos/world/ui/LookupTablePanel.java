@@ -43,7 +43,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   private static final Dimension DEFAULT_MAP_SIZE = new Dimension(400, 400);
 
-  private final State columnSelectionPaneVisibleState = State.state(true);
+  private final State columnSelectionPanelVisibleState = State.state(true);
   private final State mapDialogVisibleState = State.state();
 
   private final Control toggleMapControl = ToggleControl.builder(mapDialogVisibleState)
@@ -59,7 +59,7 @@ final class LookupTablePanel extends EntityTablePanel {
 
   LookupTablePanel(SwingEntityTableModel lookupModel) {
     super(lookupModel);
-    columnSelectionPaneVisibleState.addDataListener(this::setColumnSelectionPanelVisible);
+    columnSelectionPanelVisibleState.addDataListener(this::setColumnSelectionPanelVisible);
     table().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
     setConditionPanelVisible(true);
     setShowRefreshProgressBar(true);
@@ -90,7 +90,7 @@ final class LookupTablePanel extends EntityTablePanel {
             .addSeparatorAt(5)
             .addAt(6, toggleMapControl)
             .addSeparatorAt(9)
-            .addAt(10, ToggleControl.builder(columnSelectionPaneVisibleState)
+            .addAt(10, ToggleControl.builder(columnSelectionPanelVisibleState)
                     .name("Columns")
                     .build());
   }
