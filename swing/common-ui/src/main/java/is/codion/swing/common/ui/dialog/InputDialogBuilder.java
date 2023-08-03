@@ -20,18 +20,18 @@ public interface InputDialogBuilder<T> extends DialogBuilder<InputDialogBuilder<
 
   /**
    * A StateObserver indicating whether the input is valid, this state controls the enabled state of the OK button.
-   * Overrides {@link #validInputPredicate(Predicate)}.
-   * @param validInputState a StateObserver indicating whether the input value is valid
+   * Overrides {@link #inputValidator(Predicate)}.
+   * @param inputValidObserver a StateObserver indicating whether the input value is valid
    * @return this builder instance
    */
-  InputDialogBuilder<T> validInputState(StateObserver validInputState);
+  InputDialogBuilder<T> inputValidObserver(StateObserver inputValidObserver);
 
   /**
-   * Sets the {@link #validInputState(StateObserver)} according to the given predicate.
+   * Sets the {@link #inputValidObserver(StateObserver)} according to the given predicate.
    * @param validInputPredicate the valid input predicate
    * @return this builder instance
    */
-  InputDialogBuilder<T> validInputPredicate(Predicate<T> validInputPredicate);
+  InputDialogBuilder<T> inputValidator(Predicate<T> validInputPredicate);
 
   /**
    * Shows the input dialog and returns the value if the user presses OK

@@ -88,14 +88,14 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
   }
 
   @Override
-  public InputDialogBuilder<T> validInputState(StateObserver validInputState) {
-    okCancelDialogBuilder.okEnabledState(validInputState);
+  public InputDialogBuilder<T> inputValidObserver(StateObserver inputValidObserver) {
+    okCancelDialogBuilder.okEnabledObserver(inputValidObserver);
     return this;
   }
 
   @Override
-  public InputDialogBuilder<T> validInputPredicate(Predicate<T> validInputPredicate) {
-    return validInputState(createValidInputState(requireNonNull(validInputPredicate)));
+  public InputDialogBuilder<T> inputValidator(Predicate<T> validInputPredicate) {
+    return inputValidObserver(createInputValidObserver(requireNonNull(validInputPredicate)));
   }
 
   @Override
@@ -118,9 +118,9 @@ final class DefaultInputDialogBuilder<T> implements InputDialogBuilder<T> {
     throw new CancelException();
   }
 
-  private StateObserver createValidInputState(Predicate<T> validInputPredicate) {
-    State validInputState = State.state(validInputPredicate.test(componentValue.get()));
-    componentValue.addListener(new InputValidStateListener<>(validInputState, validInputPredicate, componentValue));
+  private StateObserver createInputValidObserver(Predicate<T> inputValidator) {
+    State validInputState = State.state(inputValidator.test(componentValue.get()));
+    componentValue.addListener(new InputValidStateListener<>(validInputState, inputValidator, componentValue));
 
     return validInputState;
   }

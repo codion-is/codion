@@ -58,7 +58,7 @@ public final class TrackTablePanel extends EntityTablePanel {
     return Dialogs.inputDialog(amountValue)
             .owner(this)
             .title(BUNDLE.getString("amount"))
-            .validInputPredicate(Objects::nonNull)
+            .inputValidator(Objects::nonNull)
             .show();
   }
 

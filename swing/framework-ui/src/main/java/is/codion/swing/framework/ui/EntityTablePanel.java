@@ -651,14 +651,14 @@ public class EntityTablePanel extends JPanel {
     Collection<T> values = Entity.distinct(attributeToEdit, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = editSelectedComponentValue(attributeToEdit, initialValue);
-    ValidInputPredicate<T> validInputPredicate = new ValidInputPredicate<>(property, componentValue);
+    InputValidator<T> inputValidator = new InputValidator<>(property, componentValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(FrameworkMessages.edit())
               .caption(property.caption())
-              .validInputPredicate(validInputPredicate)
+              .inputValidator(inputValidator)
               .show();
       Entity.put(attributeToEdit, newValue, selectedEntities);
       updatePerformed = update(selectedEntities);
@@ -1921,12 +1921,12 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
-  private static final class ValidInputPredicate<T> implements Predicate<T> {
+  private static final class InputValidator<T> implements Predicate<T> {
 
     private final Property<T> property;
     private final ComponentValue<T, ?> componentValue;
 
-    private ValidInputPredicate(Property<T> property, ComponentValue<T, ?> componentValue) {
+    private InputValidator(Property<T> property, ComponentValue<T, ?> componentValue) {
       this.property = property;
       this.componentValue = componentValue;
     }
