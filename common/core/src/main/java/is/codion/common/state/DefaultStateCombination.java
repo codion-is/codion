@@ -39,7 +39,7 @@ final class DefaultStateCombination implements State.Combination {
       StringBuilder stringBuilder = new StringBuilder("Combination");
       stringBuilder.append(toString(conjunction)).append(observer);
       for (StateCombinationListener listener : stateListeners) {
-        stringBuilder.append(", ").append(listener.getState());
+        stringBuilder.append(", ").append(listener.state);
       }
 
       return stringBuilder.toString();
@@ -145,7 +145,7 @@ final class DefaultStateCombination implements State.Combination {
 
   private boolean get(Conjunction conjunction, StateObserver exclude, boolean excludeReplacement) {
     for (StateCombinationListener listener : stateListeners) {
-      StateObserver state = listener.getState();
+      StateObserver state = listener.state;
       boolean value = state.equals(exclude) ? excludeReplacement : state.get();
       if (conjunction == Conjunction.AND) {
         if (!value) {
@@ -162,7 +162,7 @@ final class DefaultStateCombination implements State.Combination {
 
   private Optional<StateCombinationListener> findListener(StateObserver state) {
     return stateListeners.stream()
-            .filter(listener -> listener.getState().equals(state))
+            .filter(listener -> listener.state.equals(state))
             .findFirst();
   }
 
@@ -183,10 +183,6 @@ final class DefaultStateCombination implements State.Combination {
       synchronized (observer) {
         return get(conjunction, excludeState, previousValue);
       }
-    }
-
-    private StateObserver getState() {
-      return state;
     }
   }
 
