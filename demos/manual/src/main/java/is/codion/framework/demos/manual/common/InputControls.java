@@ -46,7 +46,7 @@ public final class InputControls {
     Control control = Control.builder(() -> System.out.println("Doing something"))
             .name("Do something")
             .mnemonic('D')
-            .enabledState(somethingEnabledState)
+            .enabledObserver(somethingEnabledState)
             .build();
 
     JButton somethingButton = new JButton(control);

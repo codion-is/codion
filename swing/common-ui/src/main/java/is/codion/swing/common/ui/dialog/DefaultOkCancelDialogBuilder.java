@@ -16,8 +16,8 @@ import static java.util.Objects.requireNonNull;
 
 final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCancelDialogBuilder> implements OkCancelDialogBuilder {
 
-  private StateObserver okEnabledState;
-  private StateObserver cancelEnabledState;
+  private StateObserver okEnabledObserver;
+  private StateObserver cancelEnabledObserver;
   private Runnable onOk;
   private Runnable onCancel;
   private Action okAction;
@@ -43,21 +43,21 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
   }
 
   @Override
-  public OkCancelDialogBuilder okEnabledState(StateObserver okEnabledState) {
+  public OkCancelDialogBuilder okEnabledObserver(StateObserver okEnabledObserver) {
     if (okAction != null) {
       throw new IllegalStateException("OK action has already been set");
     }
-    this.okEnabledState = requireNonNull(okEnabledState);
+    this.okEnabledObserver = requireNonNull(okEnabledObserver);
 
     return this;
   }
 
   @Override
-  public OkCancelDialogBuilder cancelEnabledState(StateObserver cancelEnabledState) {
+  public OkCancelDialogBuilder cancelEnabledObserver(StateObserver cancelEnabledObserver) {
     if (cancelAction != null) {
       throw new IllegalStateException("Cancel action has already been set");
     }
-    this.cancelEnabledState = requireNonNull(cancelEnabledState);
+    this.cancelEnabledObserver = requireNonNull(cancelEnabledObserver);
 
     return this;
   }
@@ -107,14 +107,14 @@ final class DefaultOkCancelDialogBuilder extends DefaultActionDialogBuilder<OkCa
       okAction = Control.builder(onOk == null ? new DefaultOkCommand(component()) : new PerformAndCloseCommand(onOk, component()))
             .name(Messages.ok())
             .mnemonic(Messages.okMnemonic())
-            .enabledState(okEnabledState)
+            .enabledObserver(okEnabledObserver)
             .build();
     }
     if (cancelAction == null) {
       cancelAction = Control.builder(onCancel == null ? new DefaultCancelCommand(component()) : new PerformAndCloseCommand(onCancel, component()))
             .name(Messages.cancel())
             .mnemonic(Messages.cancelMnemonic())
-            .enabledState(cancelEnabledState)
+            .enabledObserver(cancelEnabledObserver)
             .build();
     }
     okAction.putValue(Action.NAME, Messages.ok());

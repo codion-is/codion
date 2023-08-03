@@ -29,7 +29,7 @@ public class CustomerEditPanel extends EntityEditPanel {
 
     setLayout(new GridLayout(4, 1));
     //the addInputPanel method creates and adds a panel containing the
-    //component associated with the property as well as a JLabel with the
+    //component associated with the attribute as well as a JLabel with the
     //property caption as defined in the domain model
     addInputPanel(Customer.FIRST_NAME);
     addInputPanel(Customer.LAST_NAME);

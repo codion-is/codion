@@ -11,8 +11,8 @@ import is.codion.framework.domain.entity.exception.ValidationException;
 public interface EntityValidator {
 
   /**
-   * Returns true if the property based on the given attribute accepts a null value for the given entity,
-   * by default this method simply returns the nullable state of the property.
+   * Returns true if the value based on the given attribute accepts a null value for the given entity,
+   * by default this method simply returns the nullable state of the underlying property.
    * @param entity the entity being validated
    * @param attribute the attribute
    * @param <T> the value type

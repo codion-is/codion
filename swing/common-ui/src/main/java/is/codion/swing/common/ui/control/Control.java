@@ -131,10 +131,10 @@ public interface Control extends Action {
   Font getFont();
 
   /**
-   * Unsupported, the enabled state of Controls is based on their {@code enabledState}
+   * Unsupported, the enabled state of Controls is based on their {@code enabledObserver}
    * @param enabled the enabled status
    * @throws UnsupportedOperationException always
-   * @see Builder#enabledState(StateObserver)
+   * @see Builder#enabledObserver(StateObserver)
    */
   @Override
   void setEnabled(boolean enabled);
@@ -231,10 +231,10 @@ public interface Control extends Action {
     Builder name(String name);
 
     /**
-     * @param enabledState the state which controls the enabled state of the control
+     * @param enabledObserver the state observer which controls the enabled state of the control
      * @return this Builder instance
      */
-    Builder enabledState(StateObserver enabledState);
+    Builder enabledObserver(StateObserver enabledObserver);
 
     /**
      * @param mnemonic the control mnemonic

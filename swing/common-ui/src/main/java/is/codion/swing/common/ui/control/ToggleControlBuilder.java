@@ -16,7 +16,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   private final Value<Boolean> value;
 
   private String name;
-  private StateObserver enabledState;
+  private StateObserver enabledObserver;
   private char mnemonic;
   private Icon smallIcon;
   private Icon largeIcon;
@@ -34,8 +34,8 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
   }
 
   @Override
-  public ToggleControl.Builder enabledState(StateObserver enabledState) {
-    this.enabledState = enabledState;
+  public ToggleControl.Builder enabledObserver(StateObserver enabledObserver) {
+    this.enabledObserver = enabledObserver;
     return this;
   }
 
@@ -71,7 +71,7 @@ final class ToggleControlBuilder implements ToggleControl.Builder {
 
   @Override
   public ToggleControl build() {
-    DefaultToggleControl toggleControl = new DefaultToggleControl(value, name, enabledState);
+    DefaultToggleControl toggleControl = new DefaultToggleControl(value, name, enabledObserver);
     toggleControl.setMnemonic(mnemonic);
     toggleControl.setSmallIcon(smallIcon);
     toggleControl.setLargeIcon(largeIcon);

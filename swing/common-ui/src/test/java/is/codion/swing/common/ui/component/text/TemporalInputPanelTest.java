@@ -4,7 +4,6 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.Utilities;
 
 import org.junit.jupiter.api.Test;
 
@@ -14,6 +13,7 @@ import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
+import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TemporalInputPanelTest {
@@ -62,7 +62,7 @@ public class TemporalInputPanelTest {
   void enabledState() throws InterruptedException {
     State enabledState = State.state();
     TemporalInputPanel<LocalDate> inputPanel = TemporalInputPanel.builder(LocalDate.class, "dd.MM.yyyy").build();
-    Utilities.linkToEnabledState(enabledState, inputPanel);
+    linkToEnabledObserver(enabledState, inputPanel);
     assertFalse(inputPanel.temporalField().isEnabled());
     Optional<JButton> calendarButton = inputPanel.calendarButton();
     assertTrue(calendarButton.isPresent());

@@ -73,7 +73,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
             .build(panel -> add(panel, BorderLayout.SOUTH));
   }
 
-  StateObserver parametersValidState() {
+  StateObserver parametersValidObserver() {
     return model.parametersValidState.observer();
   }
 

@@ -26,7 +26,7 @@ public interface DerivedProperty<T> extends Property<T> {
   Provider<T> valueProvider();
 
   /**
-   * Provides the source values from which to derive the property value.
+   * Provides the source values from which to derive the value.
    */
   interface SourceValues {
 

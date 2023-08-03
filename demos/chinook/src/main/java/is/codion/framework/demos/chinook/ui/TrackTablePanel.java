@@ -31,7 +31,7 @@ public final class TrackTablePanel extends EntityTablePanel {
 
   public TrackTablePanel(SwingEntityTableModel tableModel) {
     super(tableModel);
-    setUpdateSelectedComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
+    setEditSelectedComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(false));
     setTableCellEditorComponentFactory(Track.MILLISECONDS, new MinutesSecondsComponentFactory(true));
   }
 
@@ -40,7 +40,7 @@ public final class TrackTablePanel extends EntityTablePanel {
     return super.createPopupMenuControls(additionalPopupMenuControls)
             .addAt(0, Control.builder(this::raisePriceOfSelected)
                     .name(BUNDLE.getString("raise_price") + "...")
-                    .enabledState(tableModel().selectionModel().selectionNotEmptyObserver())
+                    .enabledObserver(tableModel().selectionModel().selectionNotEmptyObserver())
                     .build())
             .addSeparatorAt(1);
   }
@@ -58,7 +58,7 @@ public final class TrackTablePanel extends EntityTablePanel {
     return Dialogs.inputDialog(amountValue)
             .owner(this)
             .title(BUNDLE.getString("amount"))
-            .validInputPredicate(Objects::nonNull)
+            .inputValidator(Objects::nonNull)
             .show();
   }
 

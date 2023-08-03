@@ -66,10 +66,10 @@ public interface ToggleControl extends Control {
     Builder name(String name);
 
     /**
-     * @param enabledState the state which controls the enabled state of the control
+     * @param enabledObserver the state observer which controls the enabled state of the control
      * @return this Builder instance
      */
-    Builder enabledState(StateObserver enabledState);
+    Builder enabledObserver(StateObserver enabledObserver);
 
     /**
      * @param mnemonic the control mnemonic

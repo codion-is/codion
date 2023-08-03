@@ -313,7 +313,7 @@ public final class ComponentsTest {
     State enabledState = State.state(true);
     State state = State.state();
     ToggleControl toggleControl = ToggleControl.builder(state)
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .build();
     button = Components.checkBox()
             .toggleControl(toggleControl)
@@ -352,7 +352,7 @@ public final class ComponentsTest {
     State enabledState = State.state(true);
     State state = State.state();
     ToggleControl toggleControl = ToggleControl.builder(state)
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .build();
     button = Components.toggleButton()
             .toggleControl(toggleControl)
@@ -394,7 +394,7 @@ public final class ComponentsTest {
     State enabledState = State.state(true);
     State state = State.state();
     ToggleControl toggleControl = ToggleControl.builder(state)
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .build();
     button = Components.radioButton()
             .toggleControl(toggleControl)
@@ -425,7 +425,7 @@ public final class ComponentsTest {
     State enabledState = State.state(true);
     State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .build();
     JCheckBoxMenuItem checkBox = Components.checkBoxMenuItem()
             .toggleControl(toggleControl)
@@ -449,7 +449,7 @@ public final class ComponentsTest {
     State enabledState = State.state(true);
     State state = State.state(true);
     ToggleControl toggleControl = ToggleControl.builder(state)
-            .enabledState(enabledState)
+            .enabledObserver(enabledState)
             .build();
     JRadioButtonMenuItem button = Components.radioButtonMenuItem()
             .toggleControl(toggleControl)

@@ -889,7 +889,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   /**
    * Selects the given entities for update (if that is supported by the underlying dbms)
-   * and checks if they have been modified by comparing the property values to the current values in the database.
+   * and checks if they have been modified by comparing the attribute values to the current values in the database.
    * Note that this does not include BLOB properties or properties that are readOnly.
    * The calling method is responsible for releasing the select for update lock.
    * @param entitiesByEntityType the entities to check, mapped to entityType

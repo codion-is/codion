@@ -46,6 +46,7 @@ import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
+import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static is.codion.swing.common.ui.Utilities.parentOfType;
 import static is.codion.swing.common.ui.component.Components.*;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
@@ -518,7 +519,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    Utilities.linkToEnabledState(conditionModel.lockedObserver().reversedObserver(),
+    linkToEnabledObserver(conditionModel.lockedObserver().reversedObserver(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);

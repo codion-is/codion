@@ -378,7 +378,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
             .name(MESSAGES.getString(SELECT) + "...")
-            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
+            .enabledObserver(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
@@ -389,7 +389,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Controls createToggleColumnsControls() {
     return Controls.builder()
             .name(MESSAGES.getString(SELECT))
-            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
+            .enabledObserver(tableModel.columnModel().lockedState().reversedObserver())
             .controls(tableModel.columnModel().columns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -403,7 +403,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createResetColumnsControl() {
     return Control.builder(getModel().columnModel()::resetColumns)
             .name(MESSAGES.getString(RESET))
-            .enabledState(tableModel.columnModel().lockedState().reversedObserver())
+            .enabledObserver(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }

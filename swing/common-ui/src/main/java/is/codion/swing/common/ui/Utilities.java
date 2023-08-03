@@ -74,31 +74,31 @@ public final class Utilities {
   /**
    * Links the given action to the given StateObserver, so that the action is enabled
    * only when the observed state is active
-   * @param enabledState the StateObserver with which to link the action
+   * @param enabledObserver the StateObserver with which to link the action
    * @param action the action
    * @return the linked action
    */
-  public static Action linkToEnabledState(StateObserver enabledState, Action action) {
-    requireNonNull(enabledState, "enabledState");
+  public static Action linkToEnabledObserver(StateObserver enabledObserver, Action action) {
+    requireNonNull(enabledObserver, "enabledObserver");
     requireNonNull(action, "action");
-    action.setEnabled(enabledState.get());
-    enabledState.addListener(() -> action.setEnabled(enabledState.get()));
+    action.setEnabled(enabledObserver.get());
+    enabledObserver.addListener(() -> action.setEnabled(enabledObserver.get()));
 
     return action;
   }
 
   /**
    * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active
-   * @param enabledState the StateObserver with which to link the components
+   * @param enabledObserver the StateObserver with which to link the components
    * @param components the components
    */
-  public static void linkToEnabledState(StateObserver enabledState, JComponent... components) {
+  public static void linkToEnabledObserver(StateObserver enabledObserver, JComponent... components) {
     requireNonNull(components, "components");
-    requireNonNull(enabledState, "enabledState");
+    requireNonNull(enabledObserver, "enabledObserver");
     for (JComponent component : components) {
       if (component != null) {
-        component.setEnabled(enabledState.get());
-        enabledState.addDataListener(new EnableComponentListener(component));
+        component.setEnabled(enabledObserver.get());
+        enabledObserver.addDataListener(new EnableComponentListener(component));
       }
     }
   }

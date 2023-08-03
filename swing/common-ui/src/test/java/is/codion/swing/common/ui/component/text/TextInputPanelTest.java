@@ -4,10 +4,10 @@
 package is.codion.swing.common.ui.component.text;
 
 import is.codion.common.state.State;
-import is.codion.swing.common.ui.Utilities;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.swing.common.ui.Utilities.linkToEnabledObserver;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class TextInputPanelTest {
@@ -45,7 +45,7 @@ public class TextInputPanelTest {
     State enabledState = State.state();
     TextInputPanel inputPanel = TextInputPanel.builder()
             .build();
-    Utilities.linkToEnabledState(enabledState, inputPanel);
+    linkToEnabledObserver(enabledState, inputPanel);
     assertFalse(inputPanel.textField().isEnabled());
     assertFalse(inputPanel.button().isEnabled());
     enabledState.set(true);

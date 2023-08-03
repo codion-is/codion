@@ -23,7 +23,7 @@ final class ControlsBuilder implements Controls.Builder {
   private String name;
   private String description;
   private char mnemonic = 0;
-  private StateObserver enabledState;
+  private StateObserver enabledObserver;
   private Icon smallIcon;
   private Icon largeIcon;
   private KeyStroke keyStroke;
@@ -53,8 +53,8 @@ final class ControlsBuilder implements Controls.Builder {
   }
 
   @Override
-  public Controls.Builder enabledState(StateObserver enabledState) {
-    this.enabledState = enabledState;
+  public Controls.Builder enabledObserver(StateObserver enabledObserver) {
+    this.enabledObserver = enabledObserver;
     return this;
   }
 
@@ -116,7 +116,7 @@ final class ControlsBuilder implements Controls.Builder {
 
   @Override
   public Controls build() {
-    Controls defaultControls = new DefaultControls(name, enabledState, controls);
+    Controls defaultControls = new DefaultControls(name, enabledObserver, controls);
     defaultControls.setMnemonic(mnemonic);
     defaultControls.setSmallIcon(smallIcon);
     defaultControls.setLargeIcon(largeIcon);
