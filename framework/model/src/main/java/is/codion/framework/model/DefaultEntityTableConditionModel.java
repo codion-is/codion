@@ -182,7 +182,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
     ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
-    Collection<Entity> values = conditionModel.equalValueSet().get();
+    Collection<Entity> values = conditionModel.equalValues().get();
     ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:

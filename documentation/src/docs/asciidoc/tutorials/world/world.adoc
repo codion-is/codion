@@ -124,6 +124,11 @@ include::{dir-source}/is/codion/framework/demos/world/model/CountryReportDataSou
 
 [source,java]
 ----
+include::{dir-test-source}/is/codion/framework/demos/world/model/CountryReportDataSourceTest.java[tag=**]
+----
+
+[source,java]
+----
 include::{dir-source}/is/codion/framework/demos/world/model/CountryModel.java[tag=**]
 ----
 

@@ -41,7 +41,7 @@ public class DefaultColumnConditionModelTest {
     model.automaticWildcardValue().set(AutomaticWildcard.NONE);
 
     model.autoEnableState().set(false);
-    model.equalValueSet().value().addDataListener(equalToListener);
+    model.equalValues().value().addDataListener(equalToListener);
     model.upperBoundValue().addDataListener(upperBoundListener);
     model.lowerBoundValue().addDataListener(lowerBoundListener);
     model.addChangeListener(conditionChangedListener);
@@ -78,7 +78,7 @@ public class DefaultColumnConditionModelTest {
 
     model.clear();
 
-    model.equalValueSet().value().removeDataListener(equalToListener);
+    model.equalValues().value().removeDataListener(equalToListener);
     model.upperBoundValue().removeDataListener(upperBoundListener);
     model.lowerBoundValue().removeDataListener(lowerBoundListener);
     model.removeChangeListener(conditionChangedListener);

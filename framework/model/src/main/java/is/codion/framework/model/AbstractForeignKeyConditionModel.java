@@ -167,8 +167,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final ValueSet<Entity> equalValueSet() {
-    return conditionModel.equalValueSet();
+  public final ValueSet<Entity> equalValues() {
+    return conditionModel.equalValues();
   }
 
   @Override

@@ -9386,3 +9386,4 @@
   EntityTablePanel, updateSelectedEntities() is now editSelectedEntities(), Update -> Edit
   InputDialogBuilder.validInputState() and validInputPredicate() renamed inputValidObserver() and inputValidator() respectively
   ComponentBuilder, Control.Builder.enabledState() renamed enabledObserver()
+  ColumnConditionModel.equalValueSet() renamed equalValues()

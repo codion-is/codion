@@ -207,7 +207,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public ValueSet<T> equalValueSet() {
+  public ValueSet<T> equalValues() {
     return equalValues;
   }
 

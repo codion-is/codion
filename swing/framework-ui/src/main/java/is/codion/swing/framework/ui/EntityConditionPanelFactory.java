@@ -149,7 +149,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
     @Override
     public JComponent createEqualField() {
       return inputComponents.component(attribute)
-              .linkedValue(conditionModel.equalValueSet().value())
+              .linkedValue(conditionModel.equalValues().value())
               .onBuild(AttributeBoundFieldFactory::configureComponent)
               .build();
     }
