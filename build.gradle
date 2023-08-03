@@ -25,7 +25,7 @@ configure(project.frameworkModules) {
 
     dependencies {
         testImplementation(libs.junit.api)
-        testImplementation(libs.junit.engine)//testImplementation instead of testRuntimeOnly due to modules plugin issue
+        testRuntimeOnly(libs.junit.engine)
     }
 
     clean {
