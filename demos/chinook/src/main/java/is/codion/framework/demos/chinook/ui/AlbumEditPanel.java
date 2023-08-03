@@ -10,8 +10,8 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 
 import static is.codion.framework.demos.chinook.domain.Chinook.Album;
+import static is.codion.swing.common.ui.component.Components.gridLayoutPanel;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 
 public final class AlbumEditPanel extends EntityEditPanel {
 
@@ -27,9 +27,10 @@ public final class AlbumEditPanel extends EntityEditPanel {
     createForeignKeySearchField(Album.ARTIST_FK);
     createTextField(Album.TITLE);
 
-    JPanel northPanel = new JPanel(gridLayout(2, 1));
-    northPanel.add(createInputPanel(Album.ARTIST_FK));
-    northPanel.add(createInputPanel(Album.TITLE));
+    JPanel northPanel = gridLayoutPanel(2, 1)
+            .add(createInputPanel(Album.ARTIST_FK))
+            .add(createInputPanel(Album.TITLE))
+            .build();
 
     setLayout(borderLayout());
 
