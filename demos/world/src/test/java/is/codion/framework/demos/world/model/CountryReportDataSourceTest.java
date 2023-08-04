@@ -36,7 +36,7 @@ public final class CountryReportDataSourceTest {
     try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
       Value<Integer> progressCounter = Value.value();
       Value<String> publishedValue = Value.value();
-      ProgressReporter<String> progressReporter = new ProgressReporter<String>() {
+      ProgressReporter<String> progressReporter = new ProgressReporter<>() {
         @Override
         public void report(int progress) {
           progressCounter.set(progress);
