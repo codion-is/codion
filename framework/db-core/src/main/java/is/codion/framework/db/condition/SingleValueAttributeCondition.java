@@ -17,7 +17,6 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
   private static final long serialVersionUID = 1;
 
   private final T value;
-  private final boolean caseSensitive;
 
   SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator) {
     this(attribute, value, operator, true);
@@ -25,10 +24,9 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
 
   SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator,
                                 boolean caseSensitive) {
-    super(attribute, operator);
+    super(attribute, operator, caseSensitive);
     validateOperator(operator);
     this.value = value;
-    this.caseSensitive = caseSensitive;
   }
 
   @Override
@@ -61,12 +59,12 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
       return false;
     }
     SingleValueAttributeCondition<?> that = (SingleValueAttributeCondition<?>) object;
-    return caseSensitive == that.caseSensitive && Objects.equals(value, that.value);
+    return Objects.equals(value, that.value);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), value, caseSensitive);
+    return Objects.hash(super.hashCode(), value);
   }
 
   @Override
@@ -95,7 +93,7 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
       return identifier + (notEqual ? " is not null" : " is null");
     }
 
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive;
+    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }

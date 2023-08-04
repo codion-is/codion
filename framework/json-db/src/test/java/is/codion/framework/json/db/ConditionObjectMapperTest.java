@@ -42,18 +42,19 @@ public final class ConditionObjectMapperTest {
             .build();
 
     Condition entityCondition = Condition.where(Employee.DEPARTMENT_FK).notIn(dept1, dept2).and(
-            Condition.where(Employee.NAME).equalTo("Loc"),
+            Condition.where(Employee.NAME).equalToIgnoreCase("Loc"),
             Condition.where(Employee.EMPNO).between(10, 40),
             Condition.where(Employee.COMMISSION).isNotNull());
 
     String jsonString = mapper.writeValueAsString(entityCondition);
     Condition readCondition = mapper.readValue(jsonString, Condition.class);
 
+    assertEquals(entityCondition, readCondition);
     assertEquals(entityCondition.entityType(), readCondition.entityType());
     assertEquals(entityCondition.attributes(), readCondition.attributes());
     assertEquals(entityCondition.values(), readCondition.values());
 
-    assertEquals("(deptno not in (?, ?) and ename = ? and (empno >= ? and empno <= ?) and comm is not null)",
+    assertEquals("(deptno not in (?, ?) and upper(ename) = upper(?) and (empno >= ? and empno <= ?) and comm is not null)",
             entityCondition.toString(entities.definition(Employee.TYPE)));
   }
 

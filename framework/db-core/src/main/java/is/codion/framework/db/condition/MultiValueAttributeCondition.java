@@ -25,7 +25,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   private static final String NOT_IN_PREFIX = " not in (";
 
   private final List<T> values;
-  private final boolean caseSensitive;
 
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
     this(attribute, values, operator, true);
@@ -33,7 +32,7 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
                                boolean caseSensitive) {
-    super(attribute, operator);
+    super(attribute, operator, caseSensitive);
     if (requireNonNull(values).isEmpty()) {
       throw new IllegalArgumentException("One or more values required for condition");
     }
@@ -41,10 +40,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
       requireNonNull(value, "Condition values may not be null");
     }
     validateOperator(operator);
-    if (!caseSensitive && !attribute.isString()) {
-      throw new IllegalStateException("Case sensitivity only applies to String based attributes: " + attribute);
-    }
-    this.caseSensitive = caseSensitive;
     this.values = unmodifiableList(new ArrayList<>(values));
   }
 
@@ -74,20 +69,19 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
       return false;
     }
     MultiValueAttributeCondition<?> that = (MultiValueAttributeCondition<?>) object;
-    return caseSensitive == that.caseSensitive &&
-            values.equals(that.values);
+    return values.equals(that.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), values, caseSensitive);
+    return Objects.hash(super.hashCode(), values);
   }
 
   @Override
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive;
+    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }

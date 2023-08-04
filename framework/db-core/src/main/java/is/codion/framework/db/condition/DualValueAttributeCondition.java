@@ -19,7 +19,7 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
   private final T upperBound;
 
   DualValueAttributeCondition(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
-    super(attribute, operator);
+    super(attribute, operator, true);
     validateOperator(operator);
     this.lowerBound = lowerBound;
     this.upperBound = upperBound;

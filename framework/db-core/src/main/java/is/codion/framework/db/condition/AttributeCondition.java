@@ -25,6 +25,11 @@ public interface AttributeCondition<T> extends Condition {
   Operator operator();
 
   /**
+   * @return true if this condition is case sensitive, only applies to String based conditions
+   */
+  boolean caseSensitive();
+
+  /**
    * A builder for {@link AttributeCondition}.
    * @param <T> the attribute value type
    */
