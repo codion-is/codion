@@ -49,9 +49,12 @@ public final class CountryReportDataSourceTest {
       };
 
       EntityConnection connection = connectionProvider.connection();
-      List<Entity> countries = connection.select(where(Country.NAME).equalTo("Denmark", "Iceland").selectBuilder()
-              .orderBy(ascending(Country.NAME))
-              .build());
+      List<Entity> countries =
+              connection.select(where(Country.NAME)
+                      .in("Denmark", "Iceland")
+                      .selectBuilder()
+                      .orderBy(ascending(Country.NAME))
+                      .build());
       CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries, connection, progressReporter);
       assertThrows(IllegalStateException.class, countryReportDataSource::cityDataSource);
 

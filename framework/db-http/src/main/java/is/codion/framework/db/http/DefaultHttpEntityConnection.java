@@ -375,7 +375,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    return select(where(attribute).equalTo(values));
+    return select(where(attribute).in(values));
   }
 
   @Override

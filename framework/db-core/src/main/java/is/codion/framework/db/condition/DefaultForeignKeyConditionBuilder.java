@@ -40,19 +40,22 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
       return isNull();
     }
 
-    return equalTo(singletonList(value));
+    return in(singletonList(value));
   }
 
   @Override
-  public Condition equalTo(Entity... values) {
+  public Condition in(Entity... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return equalTo(Arrays.asList(values));
+    return in(Arrays.asList(values));
   }
 
   @Override
-  public Condition equalTo(Collection<? extends Entity> values) {
+  public Condition in(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return isNull();
+    }
 
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(ForeignKey.Reference::referencedAttribute)
@@ -69,19 +72,22 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
       return isNotNull();
     }
 
-    return notEqualTo(singletonList(value));
+    return notIn(singletonList(value));
   }
 
   @Override
-  public Condition notEqualTo(Entity... values) {
+  public Condition notIn(Entity... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return notEqualTo(Arrays.asList(values));
+    return notIn(Arrays.asList(values));
   }
 
   @Override
-  public Condition notEqualTo(Collection<? extends Entity> values) {
+  public Condition notIn(Collection<? extends Entity> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return isNotNull();
+    }
 
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(ForeignKey.Reference::referencedAttribute)
@@ -131,10 +137,10 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
             .map(map -> map.get(reference.referencedAttribute()))
             .collect(toList());
     if (operator == EQUAL) {
-      return Condition.where((Attribute<Object>) reference.attribute()).equalTo(values);
+      return Condition.where((Attribute<Object>) reference.attribute()).in(values);
     }
     if (operator == NOT_EQUAL) {
-      return Condition.where((Attribute<Object>) reference.attribute()).notEqualTo(values);
+      return Condition.where((Attribute<Object>) reference.attribute()).notIn(values);
     }
 
     throw new IllegalArgumentException("Unsupported operator: " + operator);

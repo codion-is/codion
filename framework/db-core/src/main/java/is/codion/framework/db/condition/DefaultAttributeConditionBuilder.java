@@ -9,8 +9,6 @@ import java.util.Collection;
 
 import static is.codion.common.Operator.*;
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Builder<T> {
@@ -29,19 +27,25 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
       return isNull();
     }
 
-    return equalTo(singletonList(value));
+    return new SingleValueAttributeCondition<>(attribute, value, EQUAL);
   }
 
   @Override
-  public AttributeCondition<T> equalTo(T... values) {
+  public AttributeCondition<T> in(T... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return equalTo(asList(values));
+    return in(asList(values));
   }
 
   @Override
-  public AttributeCondition<T> equalTo(Collection<? extends T> values) {
+  public AttributeCondition<T> in(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return isNull();
+    }
+    if (values.size() == 1) {
+      return equalTo(values.iterator().next());
+    }
 
     return new MultiValueAttributeCondition<>(attribute, values, EQUAL);
   }
@@ -52,19 +56,25 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
       return isNotNull();
     }
 
-    return notEqualTo(singletonList(value));
+    return new SingleValueAttributeCondition<>(attribute, value, NOT_EQUAL);
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(T... values) {
+  public AttributeCondition<T> notIn(T... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return notEqualTo(asList(values));
+    return notIn(asList(values));
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(Collection<? extends T> values) {
+  public AttributeCondition<T> notIn(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return isNotNull();
+    }
+    if (values.size() == 1) {
+      return notEqualTo(values.iterator().next());
+    }
 
     return new MultiValueAttributeCondition<>(attribute, values, NOT_EQUAL);
   }
@@ -75,19 +85,25 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
       return (AttributeCondition<String>) isNull();
     }
 
-    return equalToIgnoreCase(singletonList(value));
+    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, EQUAL, false);
   }
 
   @Override
-  public AttributeCondition<String> equalToIgnoreCase(String... values) {
+  public AttributeCondition<String> inIgnoreCase(String... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return equalToIgnoreCase(asList(values));
+    return inIgnoreCase(asList(values));
   }
 
   @Override
-  public AttributeCondition<String> equalToIgnoreCase(Collection<String> values) {
+  public AttributeCondition<String> inIgnoreCase(Collection<String> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return (AttributeCondition<String>) isNull();
+    }
+    if (values.size() == 1) {
+      return equalToIgnoreCase(values.iterator().next());
+    }
 
     return new MultiValueAttributeCondition<>((Attribute<String>) attribute, values, EQUAL, false);
   }
@@ -98,19 +114,25 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
       return (AttributeCondition<String>) isNotNull();
     }
 
-    return notEqualToIgnoreCase(singletonList(value));
+    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, NOT_EQUAL, false);
   }
 
   @Override
-  public AttributeCondition<String> notEqualToIgnoreCase(String... values) {
+  public AttributeCondition<String> notInIgnoreCase(String... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
-    return notEqualToIgnoreCase(asList(values));
+    return notInIgnoreCase(asList(values));
   }
 
   @Override
-  public AttributeCondition<String> notEqualToIgnoreCase(Collection<String> values) {
+  public AttributeCondition<String> notInIgnoreCase(Collection<String> values) {
     requireNonNull(values, VALUES_PARAMETER);
+    if (values.isEmpty()) {
+      return (AttributeCondition<String>) isNotNull();
+    }
+    if (values.size() == 1) {
+      return notEqualToIgnoreCase(values.iterator().next());
+    }
 
     return new MultiValueAttributeCondition<>((Attribute<String>) attribute, values, NOT_EQUAL, false);
   }
@@ -157,11 +179,11 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> isNull() {
-    return new MultiValueAttributeCondition<>(attribute, emptyList(), EQUAL);
+    return new SingleValueAttributeCondition<>(attribute, null, EQUAL);
   }
 
   @Override
   public AttributeCondition<T> isNotNull() {
-    return new MultiValueAttributeCondition<>(attribute, emptyList(), NOT_EQUAL);
+    return new SingleValueAttributeCondition<>(attribute, null, NOT_EQUAL);
   }
 }

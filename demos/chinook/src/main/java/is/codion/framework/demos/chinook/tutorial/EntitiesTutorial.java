@@ -164,13 +164,14 @@ public final class EntitiesTutorial {
     artistsStartingWithAn.forEach(System.out::println);
 
     // create a select condition
-    SelectCondition albumsCondition = where(Album.ARTIST_FK).equalTo(artistsStartingWithAn)
-            .selectBuilder()
-            .orderBy(OrderBy.builder()
-                    .ascending(Album.ARTIST_ID)
-                    .descending(Album.TITLE)
-                    .build())
-            .build();
+    SelectCondition albumsCondition =
+            where(Album.ARTIST_FK).in(artistsStartingWithAn)
+                    .selectBuilder()
+                    .orderBy(OrderBy.builder()
+                            .ascending(Album.ARTIST_ID)
+                            .descending(Album.TITLE)
+                            .build())
+                    .build();
 
     List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);
 

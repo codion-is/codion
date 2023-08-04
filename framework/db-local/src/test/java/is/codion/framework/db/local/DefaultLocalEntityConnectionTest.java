@@ -346,7 +346,7 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    assertEquals(4, connection.rowCount(where(Employee.ID).equalTo(asList(1, 2, 3, 4))));
+    assertEquals(4, connection.rowCount(where(Employee.ID).in(asList(1, 2, 3, 4))));
     assertEquals(0, connection.rowCount(where(Employee.DEPARTMENT).isNull()));
     assertEquals(0, connection.rowCount(where(Employee.DEPARTMENT_FK).isNull()));
     assertEquals(1, connection.rowCount(where(Employee.MGR).isNull()));

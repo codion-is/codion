@@ -20,20 +20,20 @@ public interface ForeignKeyConditionBuilder {
   Condition equalTo(Entity value);
 
   /**
-   * Returns a 'equalTo' {@link Condition} or 'isNull' in case values is empty.
+   * Returns a 'in' {@link Condition} or 'isNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
    * @throws NullPointerException in case {@code values} is null
    */
-  Condition equalTo(Entity... values);
+  Condition in(Entity... values);
 
   /**
-   * Returns a 'equalTo' {@link Condition} or 'isNull' in case values is empty.
+   * Returns a 'in' {@link Condition} or 'isNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
    * @throws NullPointerException in case {@code values} is null
    */
-  Condition equalTo(Collection<? extends Entity> values);
+  Condition in(Collection<? extends Entity> values);
 
   /**
    * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case the value is null.
@@ -43,20 +43,20 @@ public interface ForeignKeyConditionBuilder {
   Condition notEqualTo(Entity value);
 
   /**
-   * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case values is empty.
+   * Returns a 'notIn' {@link Condition} or 'isNotNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
    * @throws NullPointerException in case {@code values} is null
    */
-  Condition notEqualTo(Entity... values);
+  Condition notIn(Entity... values);
 
   /**
-   * Returns a 'notEqualTo' condition or 'isNotNull' in case values is empty.
+   * Returns a 'notIn' condition or 'isNotNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
    * @throws IllegalArgumentException in case {@code values} is null
    */
-  Condition notEqualTo(Collection<? extends Entity> values);
+  Condition notIn(Collection<? extends Entity> values);
 
   /**
    * Returns a 'isNull' {@link Condition}.

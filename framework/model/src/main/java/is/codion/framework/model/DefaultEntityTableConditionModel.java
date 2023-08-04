@@ -186,9 +186,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        return builder.equalTo(values);
+        return builder.in(values);
       case NOT_EQUAL:
-        return builder.notEqualTo(values);
+        return builder.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key conditions");
     }
@@ -201,9 +201,13 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     AttributeCondition.Builder<T> builder = Condition.where(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        return caseInsensitiveString ? (AttributeCondition<T>) builder.equalToIgnoreCase((Collection<String>) equalToValues) : builder.equalTo(equalToValues);
+        return caseInsensitiveString ?
+                (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
+                builder.in(equalToValues);
       case NOT_EQUAL:
-        return caseInsensitiveString ? (AttributeCondition<T>) builder.notEqualToIgnoreCase((Collection<String>) equalToValues) : builder.notEqualTo(equalToValues);
+        return caseInsensitiveString ?
+                (AttributeCondition<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
+                builder.notIn(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:

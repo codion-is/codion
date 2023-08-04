@@ -41,7 +41,7 @@ public final class ConditionObjectMapperTest {
             .with(Department.DEPTNO, 2)
             .build();
 
-    Condition entityCondition = Condition.where(Employee.DEPARTMENT_FK).notEqualTo(dept1, dept2).and(
+    Condition entityCondition = Condition.where(Employee.DEPARTMENT_FK).notIn(dept1, dept2).and(
             Condition.where(Employee.NAME).equalTo("Loc"),
             Condition.where(Employee.EMPNO).between(10, 40),
             Condition.where(Employee.COMMISSION).isNotNull());

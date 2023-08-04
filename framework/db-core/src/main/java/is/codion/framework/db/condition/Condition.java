@@ -26,7 +26,6 @@ import static is.codion.common.Operator.EQUAL;
 import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeCondition;
 import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeKeyCondition;
 import static java.util.Collections.emptyList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -124,7 +123,7 @@ public interface Condition {
       return compositeCondition(attributeMap, EQUAL, valueMap);
     }
 
-    return new MultiValueAttributeCondition<>(key.attribute(), singletonList(key.get()), EQUAL);
+    return where(key.attribute()).equalTo(key.get());
   }
 
   /**
@@ -151,7 +150,7 @@ public interface Condition {
       return compositeKeyCondition(attributeMap, EQUAL, valueMaps);
     }
 
-    return new MultiValueAttributeCondition<>((Attribute<?>) firstKey.attribute(), Entity.values(keys), EQUAL);
+    return where((Attribute<?>) firstKey.attribute()).in(Entity.values(keys));
   }
 
   /**

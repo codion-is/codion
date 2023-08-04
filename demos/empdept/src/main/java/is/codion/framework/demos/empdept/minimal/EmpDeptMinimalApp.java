@@ -148,7 +148,7 @@ public final class EmpDeptMinimalApp {
       EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
-                Condition.where(Employee.JOB).equalTo("MANAGER", "PRESIDENT"));
+                Condition.where(Employee.JOB).in("MANAGER", "PRESIDENT"));
       }
 
       return comboBoxModel;

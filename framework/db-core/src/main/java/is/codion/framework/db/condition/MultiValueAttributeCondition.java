@@ -34,10 +34,13 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
                                boolean caseSensitive) {
     super(attribute, operator);
-    validateOperator(operator);
-    for (Object value : requireNonNull(values)) {
-      requireNonNull(value, "Equal condition values may not be null");
+    if (requireNonNull(values).isEmpty()) {
+      throw new IllegalArgumentException("One or more values required for condition");
     }
+    for (Object value : values) {
+      requireNonNull(value, "Condition values may not be null");
+    }
+    validateOperator(operator);
     if (!caseSensitive && !attribute.isString()) {
       throw new IllegalStateException("Case sensitivity only applies to String based attributes: " + attribute);
     }
@@ -84,23 +87,13 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
-    if (values.isEmpty()) {
-      return identifier + (notEqual ? " is not null" : " is null");
-    }
-
     boolean caseInsensitiveString = attribute().isString() && !caseSensitive;
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
-    if (values.size() > 1) {
-      return createInList(identifier, valuePlaceholder, values.size(), notEqual);
-    }
-    if (attribute().isString() && containsWildcards((String) values.get(0))) {
-      return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
-    }
 
-    return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
+    return createInList(identifier, valuePlaceholder, values.size(), notEqual);
   }
 
   private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
@@ -120,10 +113,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     stringBuilder.append(")").append(exceedsLimit ? ")" : "");
 
     return stringBuilder.toString();
-  }
-
-  private static boolean containsWildcards(String value) {
-    return value.contains("%") || value.contains("_");
   }
 
   private static void validateOperator(Operator operator) {
