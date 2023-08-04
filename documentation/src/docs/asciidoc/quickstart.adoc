@@ -112,9 +112,29 @@ include::{dir-source-sql}/create_schema.sql[]
 ----
 ====
 
-First we define a *EntityType* constant for the table and a typed *Attribute* constant for each column. We wrap these in an interface for a convenient namespace. We create a *Property.Builder* instance for each *Attribute*, which allow further configuration, such as specifying a caption and maximum length. These *Property.Builder* instances we supply as parameters to the *EntityDefinition.definition()* method, which returns a *EntityDefinition.Builder* instance, allowing further configuration of the entity. Finally, we add the definition builder to the domain model.
+.View full domain source
+[%collapsible]
+====
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=store]
+----
+====
 
-NOTE: In this example the constants contain the actual table and column names, but these can be specified via the builder if that is preferred (see manual).
+To create a domain model we extend the *DefaultDomain* class and define a *DomainType* constant to identify the domain model.
+
+In the constructor we call methods adding entity definitions to this domain model.
+
+This class is continued below.
+
+[source,java,indent=0]
+----
+include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=storeDomain]
+----
+
+We create a namespace interface and define a *EntityType* constant based on the table and typed *Attribute* constants for each column, these constants specify the entity API, used when refererring to the entity type or its attributes.
+
+In the associated method we create *Property.Builder* instances based on each *Attribute*, providing further configuration options, such as specifying a caption and maximum length, using methods statically imported from the *Property* class. We supply these *Property.Builder* instances to the statically imported *EntityDefinition.definition()* method, which returns a *EntityDefinition.Builder* instance, providing further configuration options for the entity definition, such as the key generation strategy. Finally, we add the definition builder to the domain model.
 
 [source,java,indent=0]
 ----
@@ -185,8 +205,8 @@ The *EntityConnection* interface provides select, insert, update, and delete met
 [cols="2,4,2"]
 |===
 |Module|Artifact|Description
-|is.codion.framework.db.core|is.codion:codion-framework-db-core:{codion-version}|Database API
-|is.codion.framework.db.local|is.codion:codion-framework-db-local:{codion-version}|Local JDBC
+|is.codion.framework.db.core|is.codion:codion-framework-db-core:{codion-version}|Core database API
+|is.codion.framework.db.local|is.codion:codion-framework-db-local:{codion-version}|Local JDBC implementation
 |===
 
 ==== Selecting
