@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.Set;
 
 /**
- * A Value holding a set of values, including a possible null value.
+ * An observable wrapper for one or more values, including a possible null value.
  * A factory class for {@link ValueSet} instances.
  * @param <T> the value type
  */

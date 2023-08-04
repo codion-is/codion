@@ -13,12 +13,21 @@ import java.util.function.Supplier;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A wrapper class for setting and getting a value.
+ * An observable wrapper for a value.
  * A factory class for {@link Value} instances.
  * @param <T> the type of the wrapped value
  * @see #value()
  */
 public interface Value<T> extends ValueObserver<T>, Consumer<T> {
+
+  /**
+   * Sets the value
+   * @param value the value
+   * @throws IllegalArgumentException in case the given value is invalid
+   * @see #addValidator(Validator)
+   */
+  @Override
+  void accept(T value);
 
   /**
    * Sets the value
