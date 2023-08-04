@@ -9352,3 +9352,4 @@
   DateTimeParser is now an inner class of TemporalField
   ForeignKeyConditionBuilder and AttributeCondition.Builder.equalTo() and notEqualTo() with multiple values renamed in() and notIn() respectively
   AttributeConditionSerializer and AttributeConditionDeserializer bug fixed, caseSensitive was not serialized, related refactoring
+  ForeignKeyConditionBuilder and AttributeCondition.Builder.in() and notIn() with empty collection no longer result in isNull() and isNotNull() conditions

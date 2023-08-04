@@ -40,12 +40,18 @@ final class AttributeConditionDeserializer implements Serializable {
     AttributeCondition.Builder<T> builder = Condition.where(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
+        if (values.isEmpty()) {
+          return builder.isNull();
+        }
         if (caseSensitive) {
           return builder.in(values);
         }
 
         return (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) values);
       case NOT_EQUAL:
+        if (values.isEmpty()) {
+          return builder.isNotNull();
+        }
         if (caseSensitive) {
           return builder.notIn(values);
         }

@@ -59,25 +59,17 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> in(T... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return in(asList(values));
+    return in(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
   public AttributeCondition<T> notIn(T... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return notIn(asList(values));
+    return notIn(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
   public AttributeCondition<T> in(Collection<? extends T> values) {
-    requireNonNull(values, VALUES_PARAMETER);
-    if (values.isEmpty()) {
-      return isNull();
-    }
-    if (values.size() == 1) {
+    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
       return equalTo(values.iterator().next());
     }
 
@@ -86,11 +78,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> notIn(Collection<? extends T> values) {
-    requireNonNull(values, VALUES_PARAMETER);
-    if (values.isEmpty()) {
-      return isNotNull();
-    }
-    if (values.size() == 1) {
+    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
       return notEqualTo(values.iterator().next());
     }
 
@@ -99,25 +87,17 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<String> inIgnoreCase(String... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return inIgnoreCase(asList(values));
+    return inIgnoreCase(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
   public AttributeCondition<String> notInIgnoreCase(String... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return notInIgnoreCase(asList(values));
+    return notInIgnoreCase(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
   public AttributeCondition<String> inIgnoreCase(Collection<String> values) {
-    requireNonNull(values, VALUES_PARAMETER);
-    if (values.isEmpty()) {
-      return (AttributeCondition<String>) isNull();
-    }
-    if (values.size() == 1) {
+    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
       return equalToIgnoreCase(values.iterator().next());
     }
 
@@ -126,11 +106,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<String> notInIgnoreCase(Collection<String> values) {
-    requireNonNull(values, VALUES_PARAMETER);
-    if (values.isEmpty()) {
-      return (AttributeCondition<String>) isNotNull();
-    }
-    if (values.size() == 1) {
+    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
       return notEqualToIgnoreCase(values.iterator().next());
     }
 

@@ -23,7 +23,7 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import static is.codion.common.Operator.EQUAL;
-import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeCondition;
+import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeEqualCondition;
 import static is.codion.framework.db.condition.DefaultForeignKeyConditionBuilder.compositeKeyCondition;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
@@ -120,7 +120,7 @@ public interface Condition {
       Map<Attribute<?>, Object> valueMap = new HashMap<>();
       key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
 
-      return compositeCondition(attributeMap, EQUAL, valueMap);
+      return compositeEqualCondition(attributeMap, EQUAL, valueMap);
     }
 
     return where(key.attribute()).equalTo(key.get());

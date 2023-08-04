@@ -182,11 +182,17 @@ public final class ConditionTest {
     condition = where(Detail.MASTER_FK).notEqualTo(master1);
     assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.toString(detailDefinition));
 
+    condition = where(Detail.MASTER_FK).in(singletonList(master1));
+    assertEquals("(master_id = ? and master_id_2 = ?)", condition.toString(detailDefinition));
+
     condition = where(Detail.MASTER_FK).in(asList(master1, master2));
     assertEquals("((master_id = ? and master_id_2 = ?) or (master_id = ? and master_id_2 = ?))", condition.toString(detailDefinition));
 
     condition = where(Detail.MASTER_FK).notIn(asList(master1, master2));
     assertEquals("((master_id <> ? and master_id_2 <> ?) or (master_id <> ? and master_id_2 <> ?))", condition.toString(detailDefinition));
+
+    condition = where(Detail.MASTER_FK).notIn(singletonList(master1));
+    assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.toString(detailDefinition));
   }
 
   @Test
@@ -228,7 +234,7 @@ public final class ConditionTest {
     assertEquals("deptno is null", condition.toString(empDefinition));
 
     condition = where(Employee.DEPARTMENT_FK).in(emptyList());
-    assertEquals("deptno is null", condition.toString(empDefinition));
+    assertEquals("deptno in ()", condition.toString(empDefinition));
 
     condition = where(Employee.DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(empDefinition));
@@ -240,7 +246,7 @@ public final class ConditionTest {
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
     condition = where(Employee.DEPARTMENT_FK).notIn(emptyList());
-    assertEquals("deptno is not null", condition.toString(empDefinition));
+    assertEquals("deptno not in ()", condition.toString(empDefinition));
 
     Entity master1 = ENTITIES.builder(Master.TYPE)
             .with(Master.ID_1, null)
@@ -339,7 +345,7 @@ public final class ConditionTest {
     condition = where(Department.NAME).equalTo((String) null);
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
     condition = where(Department.NAME).in(emptyList());
-    assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
+    assertEquals(property.columnExpression() + " in ()", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).notEqualTo("upper%");
     assertEquals(property.columnExpression() + " not like ?", condition.toString(departmentDefinition));
@@ -347,10 +353,10 @@ public final class ConditionTest {
     assertEquals(property.columnExpression() + " <> ?", condition.toString(departmentDefinition));
     condition = where(Department.NAME).isNotNull();
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
-    condition = where(Department.NAME).notEqualTo((String) null);
+    condition = where(Department.NAME).notEqualTo(null);
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
     condition = where(Department.NAME).notIn(emptyList());
-    assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
+    assertEquals(property.columnExpression() + " not in ()", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).greaterThan("upper");
     assertEquals(property.columnExpression() + " > ?", condition.toString(departmentDefinition));

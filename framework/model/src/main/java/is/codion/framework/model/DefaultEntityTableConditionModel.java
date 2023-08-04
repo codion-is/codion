@@ -186,8 +186,16 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
+        if (values.isEmpty()) {
+          return builder.isNull();
+        }
+
         return builder.in(values);
       case NOT_EQUAL:
+        if (values.isEmpty()) {
+          return builder.isNotNull();
+        }
+
         return builder.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key conditions");
