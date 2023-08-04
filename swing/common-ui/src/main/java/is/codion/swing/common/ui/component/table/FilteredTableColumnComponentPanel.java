@@ -25,7 +25,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -99,21 +98,29 @@ public final class FilteredTableColumnComponentPanel<C, T extends JComponent> ex
   }
 
   private void resetPanel() {
-    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
-    if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) != null) {
+    Component childFocusOwner = childFocusOwner();
+    if (childFocusOwner != null) {
       basePanel.requestFocusInWindow();
     }
     basePanel.removeAll();
-    Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      basePanel.add(columnComponent((FilteredTableColumn<C>) columnEnumeration.nextElement()));
-    }
+    columnModel.visibleColumns().stream()
+            .map(this::columnComponent)
+            .forEach(basePanel::add);
     basePanel.add(scrollBarFiller);
     syncPanelWidths();
     repaint();
-    if (focusOwner != null) {
-      focusOwner.requestFocusInWindow();
+    if (childFocusOwner != null && childFocusOwner.isShowing()) {
+      childFocusOwner.requestFocusInWindow();
     }
+  }
+
+  private Component childFocusOwner() {
+    Component focusOwner = KeyboardFocusManager.getCurrentKeyboardFocusManager().getFocusOwner();
+    if (Utilities.parentOfType(FilteredTableColumnComponentPanel.class, focusOwner) == this) {
+      return focusOwner;
+    }
+
+    return null;
   }
 
   private void bindColumnAndComponentSizes() {

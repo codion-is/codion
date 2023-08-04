@@ -9348,3 +9348,4 @@
   ComponentBuilder, Control.Builder.enabledState() renamed enabledObserver()
   ColumnConditionModel.equalValueSet() renamed equalValues()
   EntityTablePanel bug fixed, EntityTablePopupMenuListener removed, table was stealing the focus from other components when popup menu was closed
+  FilteredTableColumnComponentPanel.resetPanel() focus restoration functionality improved a bit
