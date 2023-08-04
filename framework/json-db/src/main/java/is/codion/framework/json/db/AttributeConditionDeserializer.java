@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.JsonNode;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 final class AttributeConditionDeserializer implements Serializable {
@@ -30,6 +31,7 @@ final class AttributeConditionDeserializer implements Serializable {
   <T> AttributeCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String attributeName = conditionNode.get("attribute").asText();
     Property<T> property = definition.property(definition.attribute(attributeName));
+    boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {
@@ -38,9 +40,17 @@ final class AttributeConditionDeserializer implements Serializable {
     AttributeCondition.Builder<T> builder = Condition.where(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
-        return builder.equalTo(values);
+        if (caseSensitive) {
+          return builder.in(values);
+        }
+
+        return (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) values);
       case NOT_EQUAL:
-        return builder.notEqualTo(values);
+        if (caseSensitive) {
+          return builder.notIn(values);
+        }
+
+        return (AttributeCondition<T>) builder.notInIgnoreCase((Collection<String>) values);
       case LESS_THAN:
         return builder.lessThan(values.get(0));
       case LESS_THAN_OR_EQUAL:

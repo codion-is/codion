@@ -43,7 +43,7 @@ public final class InsertDeleteAlbum extends AbstractEntityUsageScenario<Chinook
     Entity insertedAlbum = albumEditModel.insert();
     SwingEntityEditModel trackEditModel = albumModel.detailModel(Track.TYPE).editModel();
     List<Entity> genres = trackEditModel.connectionProvider().connection()
-            .select(where(Genre.NAME).equalTo(GENRES));
+            .select(where(Genre.NAME).in(GENRES));
     EntityComboBoxModel mediaTypeComboBoxModel =
             trackEditModel.foreignKeyComboBoxModel(Track.MEDIATYPE_FK);
     selectRandomItem(mediaTypeComboBoxModel);

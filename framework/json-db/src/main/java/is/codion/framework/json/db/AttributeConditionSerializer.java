@@ -26,6 +26,7 @@ final class AttributeConditionSerializer implements Serializable {
     generator.writeStringField("type", "attribute");
     generator.writeStringField("attribute", condition.attribute().name());
     generator.writeStringField("operator", condition.operator().name());
+    generator.writeBooleanField("caseSensitive", condition.caseSensitive());
     generator.writeFieldName("values");
     generator.writeStartArray();
     for (Object value : condition.values()) {

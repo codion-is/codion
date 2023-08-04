@@ -524,10 +524,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
     requireNonNull(values, "values");
     if (attribute instanceof ForeignKey) {
-      return select(where((ForeignKey) attribute).equalTo((Collection<Entity>) values));
+      return select(where((ForeignKey) attribute).in((Collection<Entity>) values));
     }
 
-    return select(where(attribute).equalTo(values));
+    return select(where(attribute).in(values));
   }
 
   @Override
@@ -649,7 +649,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     for (ForeignKeyProperty foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
-      List<Entity> dependencies = select(where(foreignKeyReference.attribute()).equalTo(entities)
+      List<Entity> dependencies = select(where(foreignKeyReference.attribute()).in(entities)
               .selectBuilder()
               .fetchDepth(1)
               .build())

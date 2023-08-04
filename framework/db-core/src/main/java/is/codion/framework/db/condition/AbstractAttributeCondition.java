@@ -17,11 +17,16 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
 
   private final Attribute<T> attribute;
   private final Operator operator;
+  private final boolean caseSensitive;
 
-  protected AbstractAttributeCondition(Attribute<T> attribute, Operator operator) {
+  protected AbstractAttributeCondition(Attribute<T> attribute, Operator operator, boolean caseSensitive) {
     super(requireNonNull(attribute, "attribute").entityType());
+    if (!caseSensitive && !attribute.isString()) {
+      throw new IllegalStateException("Case insensitivity only applies to String based attributes: " + attribute);
+    }
     this.attribute = attribute;
     this.operator = requireNonNull(operator);
+    this.caseSensitive = caseSensitive;
   }
 
   @Override
@@ -32,6 +37,11 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   @Override
   public final Operator operator() {
     return operator;
+  }
+
+  @Override
+  public final boolean caseSensitive() {
+    return caseSensitive;
   }
 
   @Override
@@ -57,12 +67,13 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
     }
     AbstractAttributeCondition<?> that = (AbstractAttributeCondition<?>) object;
     return attribute.equals(that.attribute) &&
-            operator == that.operator;
+            operator == that.operator &&
+            caseSensitive == that.caseSensitive;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), attribute, operator);
+    return Objects.hash(super.hashCode(), attribute, operator, caseSensitive);
   }
 
   protected abstract String toString(String columnExpression);

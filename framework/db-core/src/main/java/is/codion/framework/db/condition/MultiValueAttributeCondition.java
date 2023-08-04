@@ -25,7 +25,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   private static final String NOT_IN_PREFIX = " not in (";
 
   private final List<T> values;
-  private final boolean caseSensitive;
 
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
     this(attribute, values, operator, true);
@@ -33,15 +32,14 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
 
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
                                boolean caseSensitive) {
-    super(attribute, operator);
+    super(attribute, operator, caseSensitive);
+    if (requireNonNull(values).isEmpty()) {
+      throw new IllegalArgumentException("One or more values required for condition");
+    }
+    for (Object value : values) {
+      requireNonNull(value, "Condition values may not be null");
+    }
     validateOperator(operator);
-    for (Object value : requireNonNull(values)) {
-      requireNonNull(value, "Equal condition values may not be null");
-    }
-    if (!caseSensitive && !attribute.isString()) {
-      throw new IllegalStateException("Case sensitivity only applies to String based attributes: " + attribute);
-    }
-    this.caseSensitive = caseSensitive;
     this.values = unmodifiableList(new ArrayList<>(values));
   }
 
@@ -71,36 +69,25 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
       return false;
     }
     MultiValueAttributeCondition<?> that = (MultiValueAttributeCondition<?>) object;
-    return caseSensitive == that.caseSensitive &&
-            values.equals(that.values);
+    return values.equals(that.values);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), values, caseSensitive);
+    return Objects.hash(super.hashCode(), values);
   }
 
   @Override
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
-    if (values.isEmpty()) {
-      return identifier + (notEqual ? " is not null" : " is null");
-    }
-
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive;
+    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
-    if (values.size() > 1) {
-      return createInList(identifier, valuePlaceholder, values.size(), notEqual);
-    }
-    if (attribute().isString() && containsWildcards((String) values.get(0))) {
-      return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
-    }
 
-    return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
+    return createInList(identifier, valuePlaceholder, values.size(), notEqual);
   }
 
   private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
@@ -120,10 +107,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     stringBuilder.append(")").append(exceedsLimit ? ")" : "");
 
     return stringBuilder.toString();
-  }
-
-  private static boolean containsWildcards(String value) {
-    return value.contains("%") || value.contains("_");
   }
 
   private static void validateOperator(Operator operator) {

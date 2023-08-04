@@ -49,7 +49,7 @@ public final class EntityConnectionDemo {
             where(Artist.NAME).equalTo("The %"));
 
     List<Entity> nonLiveAlbums = connection.select(
-            where(Album.ARTIST_FK).equalTo(artists)
+            where(Album.ARTIST_FK).in(artists)
                     .and(where(Album.TITLE).notEqualToIgnoreCase("%live%")));
     // end::selectCondition[]
   }
@@ -284,13 +284,13 @@ public final class EntityConnectionDemo {
             where(Album.ARTIST_FK).equalTo(aquaman));
 
     List<Long> aquamanTrackIds = connection.select(Track.ID,
-            where(Track.ALBUM_ID).equalTo(aquamanAlbumIds));
+            where(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int playlistTracksDeleted = connection.delete(
-            where(PlaylistTrack.TRACK_ID).equalTo(aquamanTrackIds));
+            where(PlaylistTrack.TRACK_ID).in(aquamanTrackIds));
 
     int tracksDeleted = connection.delete(
-            where(Track.ALBUM_ID).equalTo(aquamanAlbumIds));
+            where(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int albumsDeleted = connection.delete(
             where(Album.ARTIST_FK).equalTo(aquaman));
@@ -351,9 +351,8 @@ public final class EntityConnectionDemo {
 
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
-    Collection<Entity> playlistGenres =
-            connection.select(where(Genre.NAME)
-                    .equalTo("Classical", "Soundtrack"));
+    Collection<Entity> playlistGenres = connection.select(
+            where(Genre.NAME).in("Classical", "Soundtrack"));
 
     Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
             new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));

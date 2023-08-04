@@ -123,7 +123,7 @@ public final class ClientUserMonitor {
   /**
    * @return a TableModel for displaying the user connection history
    */
-  public FilteredTableModel<UserInfo, Integer> userHistoryTableModel() {
+  public FilteredTableModel<?, Integer> userHistoryTableModel() {
     return userHistoryTableModel;
   }
 

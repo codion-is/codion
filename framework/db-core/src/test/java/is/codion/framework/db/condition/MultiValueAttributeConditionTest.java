@@ -24,7 +24,8 @@ public final class MultiValueAttributeConditionTest {
 
   @Test
   void test() {
-    assertThrows(IllegalStateException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.emptyList(), Operator.BETWEEN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.emptyList(), Operator.BETWEEN));
+    assertThrows(IllegalStateException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.singletonList(1), Operator.BETWEEN));
     assertThrows(NullPointerException.class, () -> new MultiValueAttributeCondition<>(Employee.ID, Collections.singletonList(null), Operator.EQUAL));
   }
 

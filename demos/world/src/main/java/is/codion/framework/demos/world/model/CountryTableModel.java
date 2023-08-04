@@ -56,7 +56,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
     public Condition get() {
       EntityConnection connection = connectionProvider().connection();
       try {
-        return Condition.where(City.ID).equalTo(connection.select(Country.CAPITAL));
+        return Condition.where(City.ID).in(connection.select(Country.CAPITAL));
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

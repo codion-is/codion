@@ -141,7 +141,7 @@ public final class EntityTestUtil {
       return (T) randomBlob(property);
     }
     if (attribute.isEnum()) {
-      return (T) randomEnum(attribute);
+      return randomEnum(attribute);
     }
 
     return null;

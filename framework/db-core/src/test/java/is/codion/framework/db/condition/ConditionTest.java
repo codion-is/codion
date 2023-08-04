@@ -146,10 +146,10 @@ public final class ConditionTest {
     Entity department2 = ENTITIES.builder(Department.TYPE)
             .with(Department.ID, 11)
             .build();
-    condition = where(Employee.DEPARTMENT_FK).equalTo(asList(department, department2));
+    condition = where(Employee.DEPARTMENT_FK).in(asList(department, department2));
     assertEquals("deptno in (?, ?)", condition.toString(empDefinition));
 
-    condition = where(Employee.DEPARTMENT_FK).notEqualTo(asList(department, department2));
+    condition = where(Employee.DEPARTMENT_FK).notIn(asList(department, department2));
     assertEquals("deptno not in (?, ?)", condition.toString(empDefinition));
   }
 
@@ -182,10 +182,10 @@ public final class ConditionTest {
     condition = where(Detail.MASTER_FK).notEqualTo(master1);
     assertEquals("(master_id <> ? and master_id_2 <> ?)", condition.toString(detailDefinition));
 
-    condition = where(Detail.MASTER_FK).equalTo(asList(master1, master2));
+    condition = where(Detail.MASTER_FK).in(asList(master1, master2));
     assertEquals("((master_id = ? and master_id_2 = ?) or (master_id = ? and master_id_2 = ?))", condition.toString(detailDefinition));
 
-    condition = where(Detail.MASTER_FK).notEqualTo(asList(master1, master2));
+    condition = where(Detail.MASTER_FK).notIn(asList(master1, master2));
     assertEquals("((master_id <> ? and master_id_2 <> ?) or (master_id <> ? and master_id_2 <> ?))", condition.toString(detailDefinition));
   }
 
@@ -212,22 +212,22 @@ public final class ConditionTest {
   @Test
   void keyNullCondition() {
     assertThrows(NullPointerException.class, () ->
-            where(Employee.DEPARTMENT_FK).equalTo((Entity[]) null));
+            where(Employee.DEPARTMENT_FK).in((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(Employee.DEPARTMENT_FK).equalTo((Collection<Entity>) null));
+            where(Employee.DEPARTMENT_FK).in((Collection<Entity>) null));
     assertThrows(NullPointerException.class, () ->
-            where(Employee.DEPARTMENT_FK).notEqualTo((Entity[]) null));
+            where(Employee.DEPARTMENT_FK).notIn((Entity[]) null));
     assertThrows(NullPointerException.class, () ->
-            where(Employee.DEPARTMENT_FK).notEqualTo((Collection<Entity>) null));
+            where(Employee.DEPARTMENT_FK).notIn((Collection<Entity>) null));
 
     EntityDefinition empDefinition = ENTITIES.definition(Employee.TYPE);
     Condition condition = where(Employee.DEPARTMENT_FK).isNull();
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(Employee.DEPARTMENT_FK).equalTo((Entity) null);
+    condition = where(Employee.DEPARTMENT_FK).equalTo(null);
     assertEquals("deptno is null", condition.toString(empDefinition));
 
-    condition = where(Employee.DEPARTMENT_FK).equalTo(emptyList());
+    condition = where(Employee.DEPARTMENT_FK).in(emptyList());
     assertEquals("deptno is null", condition.toString(empDefinition));
 
     condition = where(Employee.DEPARTMENT_FK).isNull();
@@ -236,10 +236,10 @@ public final class ConditionTest {
     condition = where(Employee.DEPARTMENT_FK).isNotNull();
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
-    condition = where(Employee.DEPARTMENT_FK).notEqualTo((Entity) null);
+    condition = where(Employee.DEPARTMENT_FK).notEqualTo(null);
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
-    condition = where(Employee.DEPARTMENT_FK).notEqualTo(emptyList());
+    condition = where(Employee.DEPARTMENT_FK).notIn(emptyList());
     assertEquals("deptno is not null", condition.toString(empDefinition));
 
     Entity master1 = ENTITIES.builder(Master.TYPE)
@@ -319,11 +319,11 @@ public final class ConditionTest {
 
   @Test
   void conditionNullOrEmptyValues() {
-    assertThrows(NullPointerException.class, () -> where(Department.NAME).equalTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(Department.NAME).equalTo((Collection<String>) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).in((String[]) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).in((Collection<String>) null));
 
-    assertThrows(NullPointerException.class, () -> where(Department.NAME).notEqualTo((String[]) null));
-    assertThrows(NullPointerException.class, () -> where(Department.NAME).notEqualTo((Collection<String>) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).notIn((String[]) null));
+    assertThrows(NullPointerException.class, () -> where(Department.NAME).notIn((Collection<String>) null));
   }
 
   @Test
@@ -338,7 +338,7 @@ public final class ConditionTest {
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
     condition = where(Department.NAME).equalTo((String) null);
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
-    condition = where(Department.NAME).equalTo(emptyList());
+    condition = where(Department.NAME).in(emptyList());
     assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).notEqualTo("upper%");
@@ -349,7 +349,7 @@ public final class ConditionTest {
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
     condition = where(Department.NAME).notEqualTo((String) null);
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
-    condition = where(Department.NAME).notEqualTo(emptyList());
+    condition = where(Department.NAME).notIn(emptyList());
     assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
 
     condition = where(Department.NAME).greaterThan("upper");
@@ -495,8 +495,8 @@ public final class ConditionTest {
             .or(Condition.where(Employee.NAME).equalTo("Lukas"));
     assertNotEquals(condition1, condition2);
 
-    condition1 = Condition.where(Employee.NAME).equalTo("Luke", "John");
-    condition2 = Condition.where(Employee.NAME).equalTo("Luke", "John");
+    condition1 = Condition.where(Employee.NAME).in("Luke", "John");
+    condition2 = Condition.where(Employee.NAME).in("Luke", "John");
     assertEquals(condition1.selectBuilder().build(), condition2.selectBuilder().build());
     assertEquals(condition1.selectBuilder()
                     .orderBy(OrderBy.ascending(Employee.NAME))

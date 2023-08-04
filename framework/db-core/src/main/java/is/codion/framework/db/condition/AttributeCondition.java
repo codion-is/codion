@@ -25,6 +25,11 @@ public interface AttributeCondition<T> extends Condition {
   Operator operator();
 
   /**
+   * @return true if this condition is case sensitive, only applies to String based conditions
+   */
+  boolean caseSensitive();
+
+  /**
    * A builder for {@link AttributeCondition}.
    * @param <T> the attribute value type
    */
@@ -38,43 +43,11 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<T> equalTo(T value);
 
     /**
-     * Returns a 'equalTo' {@link AttributeCondition} or 'isNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<T> equalTo(T... values);
-
-    /**
-     * Returns a 'equalTo' {@link AttributeCondition} or 'isNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<T> equalTo(Collection<? extends T> values);
-
-    /**
      * Returns a 'equalTo' {@link AttributeCondition} or 'isNotNull' in case the value is null.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
      */
     AttributeCondition<T> notEqualTo(T value);
-
-    /**
-     * Returns a 'notEqualTo' {@link AttributeCondition} or 'isNotNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<T> notEqualTo(T... values);
-
-    /**
-     * Returns a 'notEqualTo' {@link AttributeCondition} or 'isNotNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<T> notEqualTo(Collection<? extends T> values);
 
     /**
      * Returns a case-insensitive 'equalTo' {@link AttributeCondition} or 'isNull' in case the value is null.
@@ -84,22 +57,6 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<String> equalToIgnoreCase(String value);
 
     /**
-     * Returns a case-insensitive 'equalTo' {@link AttributeCondition} or 'isNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<String> equalToIgnoreCase(String... values);
-
-    /**
-     * Returns a case-insensitive 'equalTo' {@link AttributeCondition} or 'isNull' in case values is empty.
-     * @param values the values to use in the condition
-     * @return a {@link AttributeCondition}
-     * @throws NullPointerException in case {@code values} is null
-     */
-    AttributeCondition<String> equalToIgnoreCase(Collection<String> values);
-
-    /**
      * Returns a case-insensitive 'notEqualTo' {@link AttributeCondition} or 'isNotNull' in case the value is null.
      * @param value the value to use in the condition
      * @return a {@link AttributeCondition}
@@ -107,20 +64,68 @@ public interface AttributeCondition<T> extends Condition {
     AttributeCondition<String> notEqualToIgnoreCase(String value);
 
     /**
-     * Returns a case-insensitive 'notEqualTo' {@link AttributeCondition} or 'isNotNull' in case values is empty.
+     * Returns a 'in' {@link AttributeCondition} or 'isNull' in case values is empty.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
      * @throws NullPointerException in case {@code values} is null
      */
-    AttributeCondition<String> notEqualToIgnoreCase(String... values);
+    AttributeCondition<T> in(T... values);
 
     /**
-     * Returns a case-insensitive 'notEqualTo' {@link AttributeCondition} or 'isNotNull' in case values is empty.
+     * Returns a 'notIn' {@link AttributeCondition} or 'isNotNull' in case values is empty.
      * @param values the values to use in the condition
      * @return a {@link AttributeCondition}
      * @throws NullPointerException in case {@code values} is null
      */
-    AttributeCondition<String> notEqualToIgnoreCase(Collection<String> values);
+    AttributeCondition<T> notIn(T... values);
+
+    /**
+     * Returns a 'in' {@link AttributeCondition} or 'isNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<T> in(Collection<? extends T> values);
+
+    /**
+     * Returns a 'notIn' {@link AttributeCondition} or 'isNotNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<T> notIn(Collection<? extends T> values);
+
+    /**
+     * Returns a case-insensitive 'in' {@link AttributeCondition} or 'isNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<String> inIgnoreCase(String... values);
+
+    /**
+     * Returns a case-insensitive 'notIn' {@link AttributeCondition} or 'isNotNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<String> notInIgnoreCase(String... values);
+
+    /**
+     * Returns a case-insensitive 'in' {@link AttributeCondition} or 'isNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<String> inIgnoreCase(Collection<String> values);
+
+    /**
+     * Returns a case-insensitive 'notIn' {@link AttributeCondition} or 'isNotNull' in case values is empty.
+     * @param values the values to use in the condition
+     * @return a {@link AttributeCondition}
+     * @throws NullPointerException in case {@code values} is null
+     */
+    AttributeCondition<String> notInIgnoreCase(Collection<String> values);
 
     /**
      * Returns a 'lessThan' {@link AttributeCondition}.
