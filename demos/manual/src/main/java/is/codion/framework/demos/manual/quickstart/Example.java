@@ -40,9 +40,11 @@ import static java.util.UUID.randomUUID;
 
 public final class Example {
 
+  // tag::store[]
+  // tag::storeDomain[]
   public static class Store extends DefaultDomain {
 
-    static final DomainType DOMAIN = domainType(Store.class);
+    public static final DomainType DOMAIN = domainType(Store.class);
 
     public Store() {
       super(DOMAIN);
@@ -50,6 +52,7 @@ public final class Example {
       address();
       customerAddress();
     }
+    // end::storeDomain[]
 
     // tag::customer[]
     public interface Customer {
@@ -137,6 +140,7 @@ public final class Example {
     }
     // end::customerAddress[]
   }
+  // end::store[]
 
   static void customerPanel() {
     // tag::customerPanel[]

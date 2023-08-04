@@ -3,7 +3,6 @@
  */
 package is.codion.swing.common.ui.component.text;
 
-import is.codion.common.DateTimeParser;
 import is.codion.common.state.State;
 import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.text.DocumentAdapter;
@@ -215,6 +214,22 @@ public final class TemporalField<T extends Temporal> extends JFormattedTextField
      * @see JFormattedTextField#PERSIST
      */
     Builder<T> focusLostBehaviour(int focusLostBehaviour);
+  }
+
+  /**
+   * Parses a Temporal value from text with a provided formatter
+   * @param <T> the Temporal type
+   */
+  public interface DateTimeParser<T extends Temporal> {
+
+    /**
+     * Parses the given text with the given formatter
+     * @param text the text to parse
+     * @param formatter the formatter to use
+     * @return the Temporal value
+     * @throws DateTimeParseException if unable to parse the text
+     */
+    T parse(CharSequence text, DateTimeFormatter formatter);
   }
 
   private static final class DefaultTemporalFieldBuilder<T extends Temporal>
