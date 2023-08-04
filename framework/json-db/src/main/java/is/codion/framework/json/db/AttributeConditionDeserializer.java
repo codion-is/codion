@@ -40,23 +40,9 @@ final class AttributeConditionDeserializer implements Serializable {
     AttributeCondition.Builder<T> builder = Condition.where(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
-        if (values.isEmpty()) {
-          return builder.isNull();
-        }
-        if (caseSensitive) {
-          return builder.in(values);
-        }
-
-        return (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) values);
+        return equalAttributeCondition(values, builder, caseSensitive);
       case NOT_EQUAL:
-        if (values.isEmpty()) {
-          return builder.isNotNull();
-        }
-        if (caseSensitive) {
-          return builder.notIn(values);
-        }
-
-        return (AttributeCondition<T>) builder.notInIgnoreCase((Collection<String>) values);
+        return notEqualAttributeCondition(values, builder, caseSensitive);
       case LESS_THAN:
         return builder.lessThan(values.get(0));
       case LESS_THAN_OR_EQUAL:
@@ -76,5 +62,61 @@ final class AttributeConditionDeserializer implements Serializable {
       default:
         throw new IllegalArgumentException("Unknown operator: " + Operator.valueOf(conditionNode.get("operator").asText()));
     }
+  }
+
+  private static <T> AttributeCondition<T> equalAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder,
+                                                                   boolean caseSensitive) {
+    if (values.isEmpty()) {
+      return builder.isNull();
+    }
+    if (caseSensitive) {
+      return caseSensitiveEqualAttributeCondition(values, builder);
+    }
+
+    return caseInsitiveEqualAttributeCondition(values, builder);
+  }
+
+  private static <T> AttributeCondition<T> notEqualAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder,
+                                                                      boolean caseSensitive) {
+    if (values.isEmpty()) {
+      return builder.isNotNull();
+    }
+    if (caseSensitive) {
+      return caseSensitiveNotEqualAttributeCondition(values, builder);
+    }
+
+    return caseInsensitiveNotEqualAttributeCondition(values, builder);
+  }
+
+  private static <T> AttributeCondition<T> caseSensitiveEqualAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder) {
+    if (values.size() == 1) {
+      return builder.equalTo(values.iterator().next());
+    }
+
+    return builder.in(values);
+  }
+
+  private static <T> AttributeCondition<T> caseSensitiveNotEqualAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder) {
+    if (values.size() == 1) {
+      return builder.notEqualTo(values.iterator().next());
+    }
+
+    return builder.notIn(values);
+  }
+
+  private static <T> AttributeCondition<T> caseInsitiveEqualAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder) {
+    if (values.size() == 1) {
+      return (AttributeCondition<T>) builder.equalToIgnoreCase((String) values.iterator().next());
+    }
+
+    return (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) values);
+  }
+
+  private static <T> AttributeCondition<T> caseInsensitiveNotEqualAttributeCondition(List<T> values, AttributeCondition.Builder<T> builder) {
+    if (values.size() == 1) {
+      return (AttributeCondition<T>) builder.notEqualToIgnoreCase((String) values.iterator().next());
+    }
+
+    return (AttributeCondition<T>) builder.notInIgnoreCase((Collection<String>) values);
   }
 }

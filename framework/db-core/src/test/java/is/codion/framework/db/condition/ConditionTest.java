@@ -278,13 +278,13 @@ public final class ConditionTest {
     EntityDefinition deptDefinition = ENTITIES.definition(Department.TYPE);
 
     Condition condition = Condition.condition(entity.primaryKey());
-    assertDepartmentKeyCondition(condition, deptDefinition);
-
-    condition = Condition.condition(entity.primaryKey());
-    assertDepartmentKeyCondition(condition, deptDefinition);
+    assertDepartmentKeyCondition(condition, deptDefinition, "deptno = ?");
 
     condition = where(Department.NAME).notEqualTo("DEPT");
-    assertDepartmentCondition(condition, deptDefinition);
+    assertDepartmentCondition(condition, deptDefinition, "dname <> ?", 1);
+
+    condition = where(Department.NAME).notIn("DEPT", "DEPT2");
+    assertDepartmentCondition(condition, deptDefinition, "dname not in (?, ?)", 2);
   }
 
   @Test
@@ -296,13 +296,13 @@ public final class ConditionTest {
     EntityDefinition deptDefinition = ENTITIES.definition(Department.TYPE);
 
     Condition condition = Condition.condition(entity.primaryKey());
-    assertDepartmentKeyCondition(condition, deptDefinition);
+    assertDepartmentKeyCondition(condition, deptDefinition, "deptno = ?");
 
     condition = Condition.condition(singletonList(entity.primaryKey()));
-    assertDepartmentKeyCondition(condition, deptDefinition);
+    assertDepartmentKeyCondition(condition, deptDefinition, "deptno in (?)");
 
     condition = where(Department.NAME).notEqualTo("DEPT");
-    assertDepartmentCondition(condition, deptDefinition);
+    assertDepartmentCondition(condition, deptDefinition, "dname <> ?", 1);
   }
 
   @Test
@@ -580,18 +580,20 @@ public final class ConditionTest {
     assertNotEquals(condition2, condition1);
   }
 
-  private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition) {
-    assertEquals("deptno = ?", condition.toString(departmentDefinition));
+  private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition,
+                                                   String conditionString) {
+    assertEquals(conditionString, condition.toString(departmentDefinition));
     assertEquals(1, condition.values().size());
     assertEquals(1, condition.attributes().size());
     assertEquals(10, condition.values().get(0));
     assertEquals(Department.ID, condition.attributes().get(0));
   }
 
-  private static void assertDepartmentCondition(Condition condition, EntityDefinition departmentDefinition) {
-    assertEquals("dname <> ?", condition.toString(departmentDefinition));
-    assertEquals(1, condition.values().size());
-    assertEquals(1, condition.attributes().size());
+  private static void assertDepartmentCondition(Condition condition, EntityDefinition departmentDefinition,
+                                                String conditionString, int valueCount) {
+    assertEquals(conditionString, condition.toString(departmentDefinition));
+    assertEquals(valueCount, condition.values().size());
+    assertEquals(valueCount, condition.attributes().size());
     assertEquals("DEPT", condition.values().get(0));
     assertEquals(Department.NAME, condition.attributes().get(0));
   }

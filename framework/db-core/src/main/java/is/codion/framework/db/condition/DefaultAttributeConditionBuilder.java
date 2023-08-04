@@ -69,7 +69,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> in(Collection<? extends T> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
+    if (singleStringValue(values)) {
       return equalTo(values.iterator().next());
     }
 
@@ -78,7 +78,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<T> notIn(Collection<? extends T> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
+    if (singleStringValue(values)) {
       return notEqualTo(values.iterator().next());
     }
 
@@ -97,7 +97,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<String> inIgnoreCase(Collection<String> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
+    if (singleStringValue(values)) {
       return equalToIgnoreCase(values.iterator().next());
     }
 
@@ -106,7 +106,7 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
 
   @Override
   public AttributeCondition<String> notInIgnoreCase(Collection<String> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
+    if (singleStringValue(values)) {
       return notEqualToIgnoreCase(values.iterator().next());
     }
 
@@ -161,5 +161,9 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   @Override
   public AttributeCondition<T> isNotNull() {
     return new SingleValueAttributeCondition<>(attribute, null, NOT_EQUAL);
+  }
+
+  private <T> boolean singleStringValue(Collection<T> values) {
+    return requireNonNull(values, VALUES_PARAMETER).size() == 1 && attribute.isString();
   }
 }

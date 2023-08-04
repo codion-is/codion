@@ -82,10 +82,6 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
 
   @Override
   public Condition in(Collection<? extends Entity> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
-      return equalTo(values.iterator().next());
-    }
-
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::referencedAttribute)
             .collect(toList());
@@ -97,10 +93,6 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
 
   @Override
   public Condition notIn(Collection<? extends Entity> values) {
-    if (requireNonNull(values, VALUES_PARAMETER).size() == 1) {
-      return notEqualTo(values.iterator().next());
-    }
-
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::referencedAttribute)
             .collect(toList());
