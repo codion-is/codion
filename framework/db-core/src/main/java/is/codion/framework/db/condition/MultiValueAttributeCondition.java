@@ -33,9 +33,6 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
                                boolean caseSensitive) {
     super(attribute, operator, caseSensitive);
-    if (requireNonNull(values).isEmpty()) {
-      throw new IllegalArgumentException("One or more values required for condition");
-    }
     for (Object value : values) {
       requireNonNull(value, "Condition values may not be null");
     }
