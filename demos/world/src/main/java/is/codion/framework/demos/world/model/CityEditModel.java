@@ -50,7 +50,7 @@ public final class CityEditModel extends SwingEntityEditModel {
     JSONArray jsonArray = toJSONArray(new URL(OPENSTREETMAP_ORG_SEARCH +
             URLEncoder.encode(city.name(), UTF_8.name()) + "," +
             URLEncoder.encode(city.country().name(), UTF_8.name()) + "?format=json"));
-    if (jsonArray.length() > 0) {
+    if (!jsonArray.isEmpty()) {
       JSONObject cityInformation = (JSONObject) jsonArray.get(0);
 
       return Optional.of(new Location(cityInformation.getDouble("lat"), cityInformation.getDouble("lon")));

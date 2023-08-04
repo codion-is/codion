@@ -241,7 +241,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   private Integer computeHashCode() {
-    if (values.size() == 0) {
+    if (values.isEmpty()) {
       return null;
     }
     if (attributes.size() > 1) {

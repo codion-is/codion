@@ -176,7 +176,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final String toString() {
-    return getClass().toString() + ", " + entity.type();
+    return getClass() + ", " + entity.type();
   }
 
   @Override

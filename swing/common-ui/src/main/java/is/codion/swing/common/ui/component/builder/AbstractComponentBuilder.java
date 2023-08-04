@@ -368,7 +368,7 @@ public abstract class AbstractComponentBuilder<T, C extends JComponent, B extend
 
   @Override
   public final B onBuild(Consumer<C> onBuild) {
-    buildEvent.addDataListener(requireNonNull(onBuild)::accept);
+    buildEvent.addDataListener(requireNonNull(onBuild));
     return (B) this;
   }
 
