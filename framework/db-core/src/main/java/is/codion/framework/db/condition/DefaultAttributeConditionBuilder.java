@@ -31,10 +31,44 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
+  public AttributeCondition<T> notEqualTo(T value) {
+    if (value == null) {
+      return isNotNull();
+    }
+
+    return new SingleValueAttributeCondition<>(attribute, value, NOT_EQUAL);
+  }
+
+  @Override
+  public AttributeCondition<String> equalToIgnoreCase(String value) {
+    if (value == null) {
+      return (AttributeCondition<String>) isNull();
+    }
+
+    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, EQUAL, false);
+  }
+
+  @Override
+  public AttributeCondition<String> notEqualToIgnoreCase(String value) {
+    if (value == null) {
+      return (AttributeCondition<String>) isNotNull();
+    }
+
+    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, NOT_EQUAL, false);
+  }
+
+  @Override
   public AttributeCondition<T> in(T... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return in(asList(values));
+  }
+
+  @Override
+  public AttributeCondition<T> notIn(T... values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return notIn(asList(values));
   }
 
   @Override
@@ -51,22 +85,6 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
-  public AttributeCondition<T> notEqualTo(T value) {
-    if (value == null) {
-      return isNotNull();
-    }
-
-    return new SingleValueAttributeCondition<>(attribute, value, NOT_EQUAL);
-  }
-
-  @Override
-  public AttributeCondition<T> notIn(T... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return notIn(asList(values));
-  }
-
-  @Override
   public AttributeCondition<T> notIn(Collection<? extends T> values) {
     requireNonNull(values, VALUES_PARAMETER);
     if (values.isEmpty()) {
@@ -80,19 +98,17 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
   }
 
   @Override
-  public AttributeCondition<String> equalToIgnoreCase(String value) {
-    if (value == null) {
-      return (AttributeCondition<String>) isNull();
-    }
-
-    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, EQUAL, false);
-  }
-
-  @Override
   public AttributeCondition<String> inIgnoreCase(String... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return inIgnoreCase(asList(values));
+  }
+
+  @Override
+  public AttributeCondition<String> notInIgnoreCase(String... values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return notInIgnoreCase(asList(values));
   }
 
   @Override
@@ -106,22 +122,6 @@ final class DefaultAttributeConditionBuilder<T> implements AttributeCondition.Bu
     }
 
     return new MultiValueAttributeCondition<>((Attribute<String>) attribute, values, EQUAL, false);
-  }
-
-  @Override
-  public AttributeCondition<String> notEqualToIgnoreCase(String value) {
-    if (value == null) {
-      return (AttributeCondition<String>) isNotNull();
-    }
-
-    return new SingleValueAttributeCondition<>((Attribute<String>) attribute, value, NOT_EQUAL, false);
-  }
-
-  @Override
-  public AttributeCondition<String> notInIgnoreCase(String... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return notInIgnoreCase(asList(values));
   }
 
   @Override

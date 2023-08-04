@@ -20,6 +20,13 @@ public interface ForeignKeyConditionBuilder {
   Condition equalTo(Entity value);
 
   /**
+   * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case the value is null.
+   * @param value the value to use in the condition
+   * @return a {@link Condition}
+   */
+  Condition notEqualTo(Entity value);
+
+  /**
    * Returns a 'in' {@link Condition} or 'isNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
@@ -28,27 +35,20 @@ public interface ForeignKeyConditionBuilder {
   Condition in(Entity... values);
 
   /**
-   * Returns a 'in' {@link Condition} or 'isNull' in case values is empty.
-   * @param values the values to use in the condition
-   * @return a {@link Condition}
-   * @throws NullPointerException in case {@code values} is null
-   */
-  Condition in(Collection<? extends Entity> values);
-
-  /**
-   * Returns a 'notEqualTo' {@link Condition} or 'isNotNull' in case the value is null.
-   * @param value the value to use in the condition
-   * @return a {@link Condition}
-   */
-  Condition notEqualTo(Entity value);
-
-  /**
    * Returns a 'notIn' {@link Condition} or 'isNotNull' in case values is empty.
    * @param values the values to use in the condition
    * @return a {@link Condition}
    * @throws NullPointerException in case {@code values} is null
    */
   Condition notIn(Entity... values);
+
+  /**
+   * Returns a 'in' {@link Condition} or 'isNull' in case values is empty.
+   * @param values the values to use in the condition
+   * @return a {@link Condition}
+   * @throws NullPointerException in case {@code values} is null
+   */
+  Condition in(Collection<? extends Entity> values);
 
   /**
    * Returns a 'notIn' condition or 'isNotNull' in case values is empty.

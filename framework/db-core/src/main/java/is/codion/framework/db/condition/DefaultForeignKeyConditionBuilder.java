@@ -44,10 +44,26 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
+  public Condition notEqualTo(Entity value) {
+    if (value == null) {
+      return isNotNull();
+    }
+
+    return notIn(singletonList(value));
+  }
+
+  @Override
   public Condition in(Entity... values) {
     requireNonNull(values, VALUES_PARAMETER);
 
     return in(Arrays.asList(values));
+  }
+
+  @Override
+  public Condition notIn(Entity... values) {
+    requireNonNull(values, VALUES_PARAMETER);
+
+    return notIn(Arrays.asList(values));
   }
 
   @Override
@@ -64,22 +80,6 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     return foreignKeyCondition(foreignKey, EQUAL, values.stream()
             .map(entity -> valueMap(entity, attributes))
             .collect(toList()));
-  }
-
-  @Override
-  public Condition notEqualTo(Entity value) {
-    if (value == null) {
-      return isNotNull();
-    }
-
-    return notIn(singletonList(value));
-  }
-
-  @Override
-  public Condition notIn(Entity... values) {
-    requireNonNull(values, VALUES_PARAMETER);
-
-    return notIn(Arrays.asList(values));
   }
 
   @Override
