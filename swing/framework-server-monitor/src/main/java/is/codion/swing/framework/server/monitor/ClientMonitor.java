@@ -4,7 +4,6 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
@@ -13,15 +12,10 @@ import is.codion.swing.common.model.component.table.FilteredTableModel;
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
-import java.util.Set;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -30,9 +24,6 @@ import static java.util.Objects.requireNonNull;
  * A ClientMonitor
  */
 public final class ClientMonitor {
-
-  private static final Comparator<RemoteClient> CLIENT_INFO_COMPARATOR = (c1, c2) ->
-          c1.user().username().compareToIgnoreCase(c2.user().username());
 
   private static final int CREATION_TIME = 8;
   private static final int TIMEZONE = 7;
@@ -46,9 +37,6 @@ public final class ClientMonitor {
 
   private final EntityServerAdmin server;
 
-  private final Collection<String> clientTypeIds = new ArrayList<>();
-  private final Collection<User> users = new ArrayList<>();
-
   private final FilteredTableModel<RemoteClient, Integer> clientInstanceTableModel =
           FilteredTableModel.builder(new RemoteClientColumnFactory(), new RemoteClientColumnValueProvider())
                   .itemSupplier(new RemoteClientItemSupplier())
@@ -60,14 +48,6 @@ public final class ClientMonitor {
    */
   public ClientMonitor(EntityServerAdmin server) {
     this.server = requireNonNull(server);
-    refresh();
-  }
-
-  public void setUsersClientTypeIds(Collection<User> users, Collection<String> clientTypeIds) {
-    this.users.clear();
-    this.clientTypeIds.clear();
-    this.users.addAll(users);
-    this.clientTypeIds.addAll(clientTypeIds);
     refresh();
   }
 
@@ -93,21 +73,8 @@ public final class ClientMonitor {
 
     @Override
     public Collection<RemoteClient> get() {
-      if (users.isEmpty() && clientTypeIds.isEmpty()) {
-        return Collections.emptyList();
-      }
       try {
-        Set<RemoteClient> clientSet = new HashSet<>();
-        for (User user : users) {
-          clientSet.addAll(server.clients(user));
-        }
-        for (String clientTypeId : clientTypeIds) {
-          clientSet.addAll(server.clients(clientTypeId));
-        }
-        List<RemoteClient> clients = new ArrayList<>(clientSet);
-        clients.sort(CLIENT_INFO_COMPARATOR);
-
-        return clients;
+        return server.clients();
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);

@@ -70,11 +70,6 @@ public class EntityServerMonitorTest {
     ServerMonitor serverMonitor = hostMonitor.serverMonitors().iterator().next();
     assertNotNull(serverMonitor);
     ClientUserMonitor clientUserMonitor = serverMonitor.clientMonitor();
-    clientUserMonitor.refresh();
-    assertEquals(1, clientUserMonitor.userTableModel().getRowCount());
-    assertEquals(1, clientUserMonitor.clientTypeTableModel().getRowCount());
-    assertEquals(clientTypeId, clientUserMonitor.clientTypeTableModel().itemAt(0));
-    clientUserMonitor.userTableModel().selectionModel().setSelectedIndex(0);
     ClientMonitor clientMonitor = clientUserMonitor.clientMonitor();
     clientMonitor.clientInstanceTableModel().refresh();
     assertEquals(1, clientMonitor.clientInstanceTableModel().getRowCount());
@@ -86,9 +81,6 @@ public class EntityServerMonitorTest {
 
     clientMonitor.refresh();
     assertEquals(0, clientMonitor.clientInstanceTableModel().getRowCount());
-    clientUserMonitor.refresh();
-    assertEquals(0, clientUserMonitor.userTableModel().getRowCount());
-    assertEquals(0, clientUserMonitor.clientTypeTableModel().getRowCount());
 
     serverMonitor.shutdown();
   }
