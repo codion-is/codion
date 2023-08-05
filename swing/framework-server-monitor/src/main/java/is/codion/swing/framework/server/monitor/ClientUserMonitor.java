@@ -25,15 +25,12 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.Temporal;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -52,23 +49,10 @@ public final class ClientUserMonitor {
   private static final int CLIENT_HOST_COLUMN = 4;
   private static final int LAST_SEEN_COLUMN = 5;
   private static final int CONNECTION_COUNT_COLUMN = 6;
-  private static final Comparator<User> USER_COMPARATOR = (u1, u2) -> u1.username().compareToIgnoreCase(u2.username());
 
   private final EntityServerAdmin server;
   private final Value<Integer> idleConnectionTimeoutValue;
   private final ClientMonitor clientMonitor;
-  private final FilteredTableModel<String, Integer> clientTypeTableModel =
-          FilteredTableModel.builder(() -> singletonList(FilteredTableColumn.builder(0)
-                          .headerValue("Client type id")
-                          .build()), new ClientTypeColumnValueProvider())
-                  .itemSupplier(new ClientTypeItemSupplier())
-                  .build();
-  private final FilteredTableModel<User, Integer> userTableModel =
-          FilteredTableModel.builder(() -> singletonList(FilteredTableColumn.builder(0)
-                          .headerValue("User")
-                          .build()), new UserColumnValueProvider())
-                  .itemSupplier(new UserItemSupplier())
-                  .build();
   private final FilteredTableModel<UserInfo, Integer> userHistoryTableModel =
           FilteredTableModel.builder(ClientUserMonitor::createUserHistoryColumns, new UserHistoryColumnValueProvider())
                   .itemSupplier(new UserHistoryItemSupplier())
@@ -91,8 +75,6 @@ public final class ClientUserMonitor {
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
     this.updateIntervalValue = Value.value(updateScheduler::getInterval, updateScheduler::setInterval, 0);
-    bindEvents();
-    refresh();
   }
 
   /**
@@ -107,32 +89,10 @@ public final class ClientUserMonitor {
   }
 
   /**
-   * @return a TableModel containing the connected client types
-   */
-  public FilteredTableModel<String, Integer> clientTypeTableModel() {
-    return clientTypeTableModel;
-  }
-
-  /**
-   * @return a TableModel containing the connected users
-   */
-  public FilteredTableModel<User, Integer> userTableModel() {
-    return userTableModel;
-  }
-
-  /**
    * @return a TableModel for displaying the user connection history
    */
   public FilteredTableModel<?, Integer> userHistoryTableModel() {
     return userHistoryTableModel;
-  }
-
-  /**
-   * Refreshes the user and client data from the server
-   */
-  public void refresh() {
-    clientTypeTableModel.refresh();
-    userTableModel.refresh();
   }
 
   /**
@@ -141,7 +101,7 @@ public final class ClientUserMonitor {
    */
   public void disconnectAll() throws RemoteException {
     server.disconnectAllClients();
-    refresh();
+    clientMonitor.refresh();
   }
 
   /**
@@ -150,7 +110,7 @@ public final class ClientUserMonitor {
    */
   public void disconnectTimedOut() throws RemoteException {
     server.disconnectTimedOutClients();
-    refresh();
+    clientMonitor.refresh();
   }
 
   /**
@@ -225,13 +185,6 @@ public final class ClientUserMonitor {
     }
   }
 
-  private void bindEvents() {
-    clientTypeTableModel.selectionModel().addSelectedItemsListener(clientTypeIds ->
-            clientMonitor.setUsersClientTypeIds(userTableModel.selectionModel().getSelectedItems(), clientTypeIds));
-    userTableModel.selectionModel().addSelectedItemsListener(users ->
-            clientMonitor.setUsersClientTypeIds(users, clientTypeTableModel.selectionModel().getSelectedItems()));
-  }
-
   private static List<FilteredTableColumn<Integer>> createUserHistoryColumns() {
     return asList(
             createColumn(USERNAME_COLUMN, "Username", String.class),
@@ -254,38 +207,6 @@ public final class ClientUserMonitor {
             .columnClass(columnClass)
             .cellRenderer(cellRenderer)
             .build();
-  }
-
-  private final class ClientTypeItemSupplier implements Supplier<Collection<String>> {
-
-    @Override
-    public Collection<String> get() {
-      try {
-        List<String> users = new ArrayList<>(server.clientTypes());
-        Collections.sort(users);
-
-        return users;
-      }
-      catch (RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
-
-  private final class UserItemSupplier implements Supplier<Collection<User>> {
-
-    @Override
-    public Collection<User> get() {
-      try {
-        List<User> users = new ArrayList<>(server.users());
-        users.sort(USER_COMPARATOR);
-
-        return users;
-      }
-      catch (RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
   }
 
   private final class UserHistoryItemSupplier implements Supplier<Collection<UserInfo>> {
@@ -317,30 +238,6 @@ public final class ClientUserMonitor {
       catch (RemoteException e) {
         throw new RuntimeException(e);
       }
-    }
-  }
-
-  private static final class ClientTypeColumnValueProvider implements ColumnValueProvider<String, Integer> {
-
-    @Override
-    public Object value(String row, Integer columnIdentifier) {
-      if (columnIdentifier == 0) {
-        return row;
-      }
-
-      throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
-    }
-  }
-
-  private static final class UserColumnValueProvider implements ColumnValueProvider<User, Integer> {
-
-    @Override
-    public Object value(User row, Integer columnIdentifier) {
-      if (columnIdentifier == 0) {
-        return row.username();
-      }
-
-      throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
     }
   }
 

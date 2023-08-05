@@ -125,9 +125,9 @@ public final class FilteredTable<R, C> extends JTable {
   private final FilteredTableModel<R, C> tableModel;
 
   /**
-   * The condition panel factory
+   * The filter panel factory
    */
-  private final ColumnConditionPanel.Factory<C> conditionPanelFactory;
+  private final ColumnConditionPanel.Factory<C> filterPanelFactory;
 
   /**
    * Fired each time the table is double-clicked
@@ -167,7 +167,7 @@ public final class FilteredTable<R, C> extends JTable {
   private FilteredTable(DefaultBuilder<R, C> builder) {
     super(builder.tableModel, builder.tableModel.columnModel(), builder.tableModel.selectionModel());
     this.tableModel = builder.tableModel;
-    this.conditionPanelFactory = builder.conditionPanelFactory;
+    this.filterPanelFactory = builder.filterPanelFactory;
     this.centerOnScroll = builder.centerOnScroll;
     this.doubleClickAction = builder.doubleClickAction;
     this.scrollToSelectedItem = builder.scrollToSelectedItem;
@@ -216,7 +216,7 @@ public final class FilteredTable<R, C> extends JTable {
    */
   public FilteredTableConditionPanel<C> filterPanel() {
     if (filterPanel == null) {
-      filterPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), conditionPanelFactory);
+      filterPanel = filteredTableConditionPanel(tableModel.filterModel(), tableModel.columnModel(), filterPanelFactory);
     }
 
     return filterPanel;
@@ -705,10 +705,10 @@ public final class FilteredTable<R, C> extends JTable {
   public interface Builder<R, C> extends ComponentBuilder<Void, FilteredTable<R, C>, Builder<R, C>> {
 
     /**
-     * @param conditionPanelFactory the column condition panel factory
+     * @param filterPanelFactory the column filter panel factory
      * @return this builder instance
      */
-    Builder<R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory);
+    Builder<R, C> filterPanelFactory(ColumnConditionPanel.Factory<C> filterPanelFactory);
 
     /**
      * Note that this factory is only used to create cell renderers for columns which do not already have a cell renderer set.
@@ -778,7 +778,7 @@ public final class FilteredTable<R, C> extends JTable {
 
     private final FilteredTableModel<R, C> tableModel;
 
-    private ColumnConditionPanel.Factory<C> conditionPanelFactory;
+    private ColumnConditionPanel.Factory<C> filterPanelFactory;
     private FilteredTableCellRendererFactory<C> cellRendererFactory;
     private boolean autoStartsEdit = false;
     private CenterOnScroll centerOnScroll = CenterOnScroll.NEITHER;
@@ -792,13 +792,13 @@ public final class FilteredTable<R, C> extends JTable {
 
     private DefaultBuilder(FilteredTableModel<R, C> tableModel) {
       this.tableModel = requireNonNull(tableModel);
-      this.conditionPanelFactory = new DefaultFilterPanelFactory<>();
+      this.filterPanelFactory = new DefaultFilterPanelFactory<>();
       this.cellRendererFactory = new DefaultFilteredTableCellRendererFactory<>(tableModel);
     }
 
     @Override
-    public Builder<R, C> conditionPanelFactory(ColumnConditionPanel.Factory<C> conditionPanelFactory) {
-      this.conditionPanelFactory = requireNonNull(conditionPanelFactory);
+    public Builder<R, C> filterPanelFactory(ColumnConditionPanel.Factory<C> filterPanelFactory) {
+      this.filterPanelFactory = requireNonNull(filterPanelFactory);
       return this;
     }
 

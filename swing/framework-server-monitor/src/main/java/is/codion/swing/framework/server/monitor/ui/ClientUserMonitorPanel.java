@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.server.monitor.ui;
 
-import is.codion.common.user.User;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.framework.server.monitor.ClientUserMonitor;
 
@@ -14,8 +13,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JSplitPane;
-import javax.swing.JTable;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
@@ -68,32 +65,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .build(), BorderLayout.CENTER);
   }
 
-  private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
-    FilteredTable<String, Integer> clientTypeTable = FilteredTable.builder(model.clientTypeTableModel())
-            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .build();
-    FilteredTable<User, Integer> userTable = FilteredTable.builder(model.userTableModel())
-            .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-            .build();
-
-    JScrollPane clientTypeScroller = scrollPane(clientTypeTable)
-            .border(createTitledBorder("Client types"))
-            .build();
-    JScrollPane userScroller = scrollPane(userTable)
-            .border(createTitledBorder("Users"))
-            .build();
-    JPanel clientUserBase = gridLayoutPanel(2, 1)
-            .add(clientTypeScroller)
-            .add(userScroller)
-            .build();
-
-    JPanel clientTypeBase = borderLayoutPanel()
-            .centerComponent(clientUserBase)
-            .southComponent(button(control(model::refresh))
-                    .text("Refresh")
-                    .build())
-            .build();
-
+  private JPanel createCurrentConnectionsPanel() throws RemoteException {
     JPanel actionBase = panel(flowLayout(FlowLayout.LEFT))
             .border(createTitledBorder("Remote connection controls"))
             .add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT))
@@ -112,17 +84,9 @@ public final class ClientUserMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    JPanel currentConnectionsPanel = borderLayoutPanel()
+    return borderLayoutPanel()
             .northComponent(actionBase)
             .centerComponent(clientTypeMonitorPanel)
-            .build();
-
-    return splitPane()
-            .orientation(JSplitPane.HORIZONTAL_SPLIT)
-            .oneTouchExpandable(true)
-            .continuousLayout(true)
-            .leftComponent(clientTypeBase)
-            .rightComponent(currentConnectionsPanel)
             .build();
   }
 

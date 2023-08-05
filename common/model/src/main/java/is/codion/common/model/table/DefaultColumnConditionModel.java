@@ -6,6 +6,7 @@ package is.codion.common.model.table;
 import is.codion.common.Operator;
 import is.codion.common.Text;
 import is.codion.common.event.Event;
+import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
@@ -540,7 +541,12 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     private List<Operator> operators = Arrays.asList(Operator.values());
     private char wildcard = Text.WILDCARD_CHARACTER.get();
     private Format format;
-    private String dateTimePattern;
+    private String dateTimePattern = LocaleDateTimePattern.builder()
+          .delimiterDash()
+          .yearFourDigits()
+          .hoursMinutesSeconds()
+          .build()
+          .dateTimePattern();
     private AutomaticWildcard automaticWildcard = ColumnConditionModel.AUTOMATIC_WILDCARD.get();
     private boolean caseSensitive = CASE_SENSITIVE.get();
     private boolean autoEnable = true;

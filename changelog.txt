@@ -9394,3 +9394,7 @@
   AttributeConditionSerializer and AttributeConditionDeserializer bug fixed, caseSensitive was not serialized, related refactoring
   ForeignKeyConditionBuilder and AttributeCondition.Builder.in() and notIn() with empty collection no longer result in isNull() and isNotNull() conditions
   DefaultAttributeConditionBuilder and DefaultForeignKeyConditionBuilder no longer translate single value in statements to equals statements unless it's a String attribute, where wildcards may be included
+  ClientUserMonitor, clientType and user tables removed
+  DefaultColumnConditionModel.DefaultBuilder.dateTimePattern now initialized with LocaleDateTimePattern
+  FilteredTable.Builder.conditionPanelFactory() renamed filterPanelFactory(), now consistent with FilteredTableModel.Builder.filterModelFactory()
+  ClientMonitorPanel, client table filtering added
