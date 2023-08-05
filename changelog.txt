@@ -9357,3 +9357,4 @@
   ClientUserMonitor, clientType and user tables removed
   DefaultColumnConditionModel.DefaultBuilder.dateTimePattern now initialized with LocaleDateTimePattern
   FilteredTable.Builder.conditionPanelFactory() renamed filterPanelFactory(), now consistent with FilteredTableModel.Builder.filterModelFactory()
+  ClientMonitorPanel, client table filtering added

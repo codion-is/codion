@@ -4,18 +4,15 @@
 package is.codion.swing.framework.server.monitor;
 
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.common.version.Version;
 import is.codion.framework.server.EntityServerAdmin;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 
 import java.rmi.RemoteException;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.Locale;
 import java.util.function.Supplier;
 
 import static java.util.Objects.requireNonNull;
@@ -28,7 +25,7 @@ public final class ClientMonitor {
   private static final int CREATION_TIME = 8;
   private static final int TIMEZONE = 7;
   private static final int LOCALE = 6;
-  private static final int CLEINT_ID = 5;
+  private static final int CLIENT_ID = 5;
   private static final int CODION_VERSION = 4;
   private static final int CLIENT_VERSION = 3;
   private static final int CLIENT_TYPE = 2;
@@ -101,23 +98,23 @@ public final class ClientMonitor {
                       .build(),
               FilteredTableColumn.builder(CLIENT_VERSION)
                       .headerValue("Version")
-                      .columnClass(Version.class)
+                      .columnClass(String.class)
                       .build(),
               FilteredTableColumn.builder(CODION_VERSION)
                       .headerValue("Framework version")
-                      .columnClass(Version.class)
+                      .columnClass(String.class)
                       .build(),
-              FilteredTableColumn.builder(CLEINT_ID)
+              FilteredTableColumn.builder(CLIENT_ID)
                       .headerValue("Id")
                       .columnClass(String.class)
                       .build(),
               FilteredTableColumn.builder(LOCALE)
                       .headerValue("Locale")
-                      .columnClass(Locale.class)
+                      .columnClass(String.class)
                       .build(),
               FilteredTableColumn.builder(TIMEZONE)
                       .headerValue("Timezone")
-                      .columnClass(ZoneId.class)
+                      .columnClass(String.class)
                       .build(),
               FilteredTableColumn.builder(CREATION_TIME)
                       .headerValue("Created")
@@ -139,15 +136,15 @@ public final class ClientMonitor {
         case CLIENT_TYPE:
           return row.clientTypeId();
         case CLIENT_VERSION:
-          return row.clientVersion();
+          return row.clientVersion() == null ? null : row.clientVersion().toString();
         case CODION_VERSION:
-          return row.frameworkVersion();
-        case CLEINT_ID:
-          return row.clientId();
+          return row.frameworkVersion().toString();
+        case CLIENT_ID:
+          return row.clientId().toString();
         case LOCALE:
-          return row.clientLocale();
+          return row.clientLocale().toString();
         case TIMEZONE:
-          return row.clientTimeZone();
+          return row.clientTimeZone().toString();
         case CREATION_TIME:
           return row.creationTime();
         default:
