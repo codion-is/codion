@@ -26,7 +26,7 @@ import java.awt.BorderLayout;
 import java.util.ResourceBundle;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
@@ -84,7 +84,7 @@ final class RandomPlaylistParametersPanel extends JPanel {
   private static DefaultListModel<Entity> createGenreListModel(EntityConnectionProvider connectionProvider) {
     DefaultListModel<Entity> listModel = new DefaultListModel<>();
     try {
-      connectionProvider.connection().select(condition(Genre.TYPE)
+      connectionProvider.connection().select(all(Genre.TYPE)
                       .selectBuilder()
                       .orderBy(ascending(Genre.NAME))
                       .build())

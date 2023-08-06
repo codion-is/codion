@@ -9398,3 +9398,6 @@
   DefaultColumnConditionModel.DefaultBuilder.dateTimePattern now initialized with LocaleDateTimePattern
   FilteredTable.Builder.conditionPanelFactory() renamed filterPanelFactory(), now consistent with FilteredTableModel.Builder.filterModelFactory()
   ClientMonitorPanel, client table filtering added
+  Condition.condition(entityType), condition(key) and condition(keys) renamed all(), key() and keys() respectively
+  Condition.or() and and() now static factory methods instead of instance methods
+  DefaultConditionCombination refactored, now extends AbstractCondition

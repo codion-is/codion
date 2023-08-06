@@ -30,6 +30,17 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a query condition. A factory class for {@link Condition} and it's descendants.
+ * @see #all(EntityType)
+ * @see #key(Key)
+ * @see #keys(Collection)
+ * @see #where(ForeignKey)
+ * @see #where(Attribute)
+ * @see #and(Condition...)
+ * @see #or(Condition...)
+ * @see #combination(Conjunction, Condition...)
+ * @see #combination(Conjunction, Collection)
+ * @see #customCondition(ConditionType)
+ * @see #customCondition(ConditionType, List, List)
  */
 public interface Condition {
 
@@ -50,20 +61,6 @@ public interface Condition {
    * An empty list is returned in case no values are specified.
    */
   List<Attribute<?>> attributes();
-
-  /**
-   * Returns a new Combination instance, combining this condition with the given one, AND'ing together.
-   * @param conditions the conditions to combine with this one
-   * @return a new condition combination
-   */
-  Combination and(Condition... conditions);
-
-  /**
-   * Returns a new Combination instance, combining this condition with the given one, OR'ing together.
-   * @param conditions the conditions to combine with this one
-   * @return a new condition combination
-   */
-  Combination or(Condition... conditions);
 
   /**
    * Returns a string representing this condition, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
@@ -100,12 +97,30 @@ public interface Condition {
   }
 
   /**
-   * Creates a {@link Condition} instance specifying all entities of the type identified by {@code entityType}
+   * Returns a new Combination instance, combining the given conditions with AND.
+   * @param conditions the conditions to combine
+   * @return a new condition combination
+   */
+  static Combination and(Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.AND, Arrays.asList(conditions));
+  }
+
+  /**
+   * Returns a new Combination instance, combining the given conditions with OR.
+   * @param conditions the conditions to combine
+   * @return a new condition combination
+   */
+  static Combination or(Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.OR, Arrays.asList(conditions));
+  }
+
+  /**
+   * Creates a {@link Condition} instance specifying all entities of type {@code entityType}
    * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  static Condition condition(EntityType entityType) {
-    return new DefaultCondition(entityType);
+  static Condition all(EntityType entityType) {
+    return new EmptyCondition(entityType);
   }
 
   /**
@@ -113,7 +128,7 @@ public interface Condition {
    * @param key the key
    * @return a condition based on the given key
    */
-  static Condition condition(Key key) {
+  static Condition key(Key key) {
     if (requireNonNull(key).attributes().size() > 1) {
       Map<Attribute<?>, Attribute<?>> attributeMap = key.attributes().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
@@ -132,7 +147,7 @@ public interface Condition {
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
-  static Condition condition(Collection<Key> keys) {
+  static Condition keys(Collection<Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
@@ -197,7 +212,7 @@ public interface Condition {
    * @throws IllegalArgumentException in case {@code conditions} is empty
    */
   static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
-    return new DefaultConditionCombination(conjunction, conditions);
+    return new DefaultConditionCombination(conjunction, new ArrayList<>(requireNonNull(conditions)));
   }
 
   /**

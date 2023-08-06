@@ -32,8 +32,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.combination;
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -287,7 +286,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
 
     return (additionalConditionSupplier == null ? conditionCombination :
-            additionalConditionSupplier.get().and(conditionCombination))
+            and(additionalConditionSupplier.get(), conditionCombination))
             .selectBuilder()
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();

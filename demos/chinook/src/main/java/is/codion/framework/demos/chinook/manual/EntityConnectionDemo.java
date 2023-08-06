@@ -30,8 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.condition;
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
 
@@ -49,8 +48,8 @@ public final class EntityConnectionDemo {
             where(Artist.NAME).equalTo("The %"));
 
     List<Entity> nonLiveAlbums = connection.select(
-            where(Album.ARTIST_FK).in(artists)
-                    .and(where(Album.TITLE).notEqualToIgnoreCase("%live%")));
+            and(where(Album.ARTIST_FK).in(artists),
+                    where(Album.TITLE).notEqualToIgnoreCase("%live%")));
     // end::selectCondition[]
   }
 
@@ -153,8 +152,8 @@ public final class EntityConnectionDemo {
             where(Artist.NAME).equalTo("Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(
-            where(Album.ARTIST_FK).equalTo(ironMaiden)
-                    .and(where(Album.TITLE).equalToIgnoreCase("%live after%")));
+            and(where(Album.ARTIST_FK).equalTo(ironMaiden),
+                    where(Album.TITLE).equalToIgnoreCase("%live after%")));
     // end::selectSingleCondition[]
   }
 
@@ -196,7 +195,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> employees = connection.select(condition(Employee.TYPE));
+    List<Entity> employees = connection.select(all(Employee.TYPE));
 
     Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 

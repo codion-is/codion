@@ -27,6 +27,8 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
+import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.combination;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -80,7 +82,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       }
     }
 
-    return conditions.isEmpty() ? Condition.condition(entityType) : Condition.combination(conjunction, conditions);
+    return conditions.isEmpty() ? all(entityType) : combination(conjunction, conditions);
   }
 
   @Override

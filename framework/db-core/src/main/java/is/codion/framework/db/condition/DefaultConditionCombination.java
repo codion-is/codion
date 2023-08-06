@@ -4,13 +4,13 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
+import is.codion.framework.db.condition.Condition.Combination;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
@@ -20,42 +20,23 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultConditionCombination implements Condition.Combination, Serializable {
+final class DefaultConditionCombination extends AbstractCondition implements Combination, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final String CONDITIONS = "conditions";
-
   private final List<Condition> conditions;
   private final Conjunction conjunction;
-  private final EntityType entityType;
-
-  DefaultConditionCombination(Conjunction conjunction, Condition condition, Condition... conditions) {
-    this(conjunction, combine(condition, conditions));
-  }
-
-  DefaultConditionCombination(Conjunction conjunction, Collection<Condition> conditions) {
-    this(conjunction, new ArrayList<>(requireNonNull(conditions, CONDITIONS)));
-  }
 
   DefaultConditionCombination(Conjunction conjunction, List<Condition> conditions) {
-    this.conjunction = requireNonNull(conjunction, "conjunction");
-    if (requireNonNull(conditions, CONDITIONS).isEmpty()) {
-      throw new IllegalArgumentException("One or more conditions must be specified for a condition combination");
-    }
+    super(entityType(conditions));
+    this.conjunction = requireNonNull(conjunction);
     this.conditions = new ArrayList<>(conditions);
-    this.entityType = conditions.get(0).entityType();
     for (int i = 1; i < this.conditions.size(); i++) {
       EntityType conditionEntityType = this.conditions.get(i).entityType();
-      if (!conditionEntityType.equals(this.entityType)) {
-        throw new IllegalArgumentException("EntityType " + this.entityType + " expected, got: " + conditionEntityType);
+      if (!conditionEntityType.equals(entityType())) {
+        throw new IllegalArgumentException("EntityType " + entityType() + " expected, got: " + conditionEntityType);
       }
     }
-  }
-
-  @Override
-  public EntityType entityType() {
-    return entityType;
   }
 
   @Override
@@ -83,16 +64,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public Condition.Combination and(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.AND, combine(this, conditions));
-  }
-
-  @Override
-  public Condition.Combination or(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.OR, combine(this, conditions));
-  }
-
-  @Override
   public String toString(EntityDefinition definition) {
     requireNonNull(definition);
     if (conditions.isEmpty()) {
@@ -109,21 +80,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   }
 
   @Override
-  public SelectCondition.Builder selectBuilder() {
-    return new DefaultSelectCondition.DefaultBuilder(this);
-  }
-
-  @Override
-  public UpdateCondition.Builder updateBuilder() {
-    return new DefaultUpdateCondition.DefaultBuilder(this);
-  }
-
-  @Override
-  public String toString() {
-    return getClass().getSimpleName() + ": " + entityType();
-  }
-
-  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;
@@ -131,24 +87,17 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     if (!(object instanceof DefaultConditionCombination)) {
       return false;
     }
+    if (!super.equals(object)) {
+      return false;
+    }
     DefaultConditionCombination that = (DefaultConditionCombination) object;
     return conjunction == that.conjunction &&
-            entityType.equals(that.entityType) &&
             conditions.equals(that.conditions);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(conditions, conjunction, entityType);
-  }
-
-  private static List<Condition> combine(Condition condition, Condition... conditions) {
-    requireNonNull(condition);
-    List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + 1);
-    list.add(condition);
-    list.addAll(Arrays.asList(conditions));
-
-    return list;
+    return Objects.hash(super.hashCode(), conditions, conjunction);
   }
 
   private static String toString(Conjunction conjunction) {
@@ -160,5 +109,13 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
       default:
         throw new IllegalArgumentException("Unknown conjunction: " + conjunction);
     }
+  }
+
+  private static EntityType entityType(List<Condition> conditions) {
+    if (requireNonNull(conditions).isEmpty()) {
+      throw new IllegalArgumentException("One or more conditions must be specified for a condition combination");
+    }
+
+    return conditions.get(0).entityType();
   }
 }
