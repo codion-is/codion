@@ -61,8 +61,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Condition.condition;
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
@@ -292,7 +291,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
               throw new SQLException("Unable to update entity " + entity.type() + ", no modified values found");
             }
 
-            Condition condition = condition(entity.originalPrimaryKey());
+            Condition condition = key(entity.originalPrimaryKey());
             updateQuery = updateQuery(entityDefinition.tableName(), statementProperties, condition.toString(entityDefinition));
             statement = prepareStatement(updateQuery);
             statementProperties.addAll(entityDefinition.columnProperties(condition.attributes()));
@@ -306,7 +305,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(condition(Entity.primaryKeys(entitiesToUpdate)).selectBuilder().build(), 0);//bypass caching
+          List<Entity> selected = doSelect(keys(Entity.primaryKeys(entitiesToUpdate)).selectBuilder().build(), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -432,7 +431,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         int deleteCount = 0;
         for (Map.Entry<EntityType, List<Key>> entityTypeKeys : keysByEntityType.entrySet()) {
           EntityDefinition entityDefinition = domainEntities.definition(entityTypeKeys.getKey());
-          condition = condition(entityTypeKeys.getValue());
+          condition = keys(entityTypeKeys.getValue());
           statementValues = condition.values();
           statementProperties = entityDefinition.columnProperties(condition.attributes());
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
@@ -472,7 +471,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Entity select(Key key) throws DatabaseException {
-    return selectSingle(condition(key));
+    return selectSingle(key(key));
   }
 
   @Override
@@ -498,7 +497,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         List<Entity> result = new ArrayList<>();
         for (List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
-          result.addAll(doSelect(condition(entityTypeKeys).selectBuilder().build()));
+          result.addAll(doSelect(keys(entityTypeKeys).selectBuilder().build()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -563,7 +562,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
-            condition(entityDefinition.type()).selectBuilder()
+            all(entityDefinition.type()).selectBuilder()
                     .orderBy(ascending(attribute))
                     .build() :
             condition.selectBuilder().build();
@@ -750,7 +749,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").type());
     checkIfReadOnly(entityDefinition.type());
     ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
-    Condition condition = condition(primaryKey);
+    Condition condition = key(primaryKey);
     String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(blobProperty), condition.toString(entityDefinition));
     List<Object> statementValues = new ArrayList<>();
     statementValues.add(null);//the blob value, binary stream set explicitly later
@@ -798,7 +797,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
-    Condition condition = condition(primaryKey);
+    Condition condition = key(primaryKey);
     List<ColumnProperty<?>> statementProperties = entityDefinition.columnProperties(condition.attributes());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns(blobProperty.columnExpression())
@@ -908,7 +907,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Key> originalKeys = Entity.originalPrimaryKeys(entities);
-    SelectCondition selectForUpdateCondition = condition(originalKeys)
+    SelectCondition selectForUpdateCondition = keys(originalKeys)
             .selectBuilder()
             .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
             .forUpdate()
@@ -1025,7 +1024,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
       List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
-      SelectCondition referencedEntitiesCondition = condition(keys)
+      SelectCondition referencedEntitiesCondition = keys(keys)
               .selectBuilder()
               .fetchDepth(conditionFetchDepthLimit)
               .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))

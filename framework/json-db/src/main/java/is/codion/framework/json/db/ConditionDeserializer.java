@@ -16,6 +16,8 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
+import static is.codion.framework.db.condition.Condition.all;
+
 final class ConditionDeserializer extends StdDeserializer<Condition> {
 
   private static final long serialVersionUID = 1;
@@ -56,7 +58,7 @@ final class ConditionDeserializer extends StdDeserializer<Condition> {
       return customConditionDeserializer.deserialize(definition, conditionNode);
     }
     else if ("empty".equals(typeString)) {
-      return Condition.condition(definition.type());
+      return all(definition.type());
     }
 
     throw new IllegalArgumentException("Unknown condition type: " + type);

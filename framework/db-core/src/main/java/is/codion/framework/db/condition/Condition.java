@@ -30,6 +30,15 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a query condition. A factory class for {@link Condition} and it's descendants.
+ * @see #all(EntityType)
+ * @see #key(Key)
+ * @see #keys(Collection)
+ * @see #where(ForeignKey)
+ * @see #where(Attribute)
+ * @see #combination(Conjunction, Condition...)
+ * @see #combination(Conjunction, Collection)
+ * @see #customCondition(ConditionType)
+ * @see #customCondition(ConditionType, List, List)
  */
 public interface Condition {
 
@@ -100,12 +109,12 @@ public interface Condition {
   }
 
   /**
-   * Creates a {@link Condition} instance specifying all entities of the type identified by {@code entityType}
+   * Creates a {@link Condition} instance specifying all entities of type {@code entityType}
    * @param entityType the entityType
    * @return a condition specifying all entities of the given type
    */
-  static Condition condition(EntityType entityType) {
-    return new DefaultCondition(entityType);
+  static Condition all(EntityType entityType) {
+    return new EmptyCondition(entityType);
   }
 
   /**
@@ -113,7 +122,7 @@ public interface Condition {
    * @param key the key
    * @return a condition based on the given key
    */
-  static Condition condition(Key key) {
+  static Condition key(Key key) {
     if (requireNonNull(key).attributes().size() > 1) {
       Map<Attribute<?>, Attribute<?>> attributeMap = key.attributes().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
@@ -132,7 +141,7 @@ public interface Condition {
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
-  static Condition condition(Collection<Key> keys) {
+  static Condition keys(Collection<Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }

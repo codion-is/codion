@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
@@ -196,7 +196,7 @@ public final class EntityConnectionDemo {
     // tag::selectDependencies[]
     EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> employees = connection.select(condition(Employee.TYPE));
+    List<Entity> employees = connection.select(all(Employee.TYPE));
 
     Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
 

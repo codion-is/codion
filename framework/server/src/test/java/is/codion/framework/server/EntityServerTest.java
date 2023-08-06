@@ -35,7 +35,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.all;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -123,7 +123,7 @@ public class EntityServerTest {
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, ConfigureDb.class.getSimpleName()).build();
     try (RemoteEntityConnection connection = server.connect(connectionRequestTwo)) {
       //throws exception if table does not exist, which is created during connection configuration
-      connection.select(condition(Configured.TYPE));
+      connection.select(all(Configured.TYPE));
     }
   }
 
@@ -182,7 +182,7 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = Condition.condition(Employee.TYPE)
+    SelectCondition selectCondition = all(Employee.TYPE)
             .selectBuilder()
             .orderBy(OrderBy.ascending(Employee.NAME))
             .build();

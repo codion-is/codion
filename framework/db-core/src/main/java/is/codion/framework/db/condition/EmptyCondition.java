@@ -15,11 +15,11 @@ import static java.util.Objects.requireNonNull;
 /**
  * A condition with no values or attributes, as in, no condition
  */
-final class DefaultCondition extends AbstractCondition {
+final class EmptyCondition extends AbstractCondition {
 
   private static final long serialVersionUID = 1;
 
-  DefaultCondition(EntityType entityType) {
+  EmptyCondition(EntityType entityType) {
     super(entityType);
   }
 

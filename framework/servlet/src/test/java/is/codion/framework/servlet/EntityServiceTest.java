@@ -60,6 +60,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static is.codion.framework.db.condition.Condition.keys;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -366,7 +367,7 @@ public class EntityServiceTest {
     List<Key> keys = new ArrayList<>();
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
-    Condition selectCondition = Condition.condition(keys);
+    Condition selectCondition = keys(keys);
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("select"));
