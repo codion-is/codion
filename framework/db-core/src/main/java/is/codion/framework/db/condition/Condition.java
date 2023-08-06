@@ -212,7 +212,7 @@ public interface Condition {
    * @throws IllegalArgumentException in case {@code conditions} is empty
    */
   static Combination combination(Conjunction conjunction, Collection<Condition> conditions) {
-    return new DefaultConditionCombination(conjunction, conditions);
+    return new DefaultConditionCombination(conjunction, new ArrayList<>(requireNonNull(conditions)));
   }
 
   /**
