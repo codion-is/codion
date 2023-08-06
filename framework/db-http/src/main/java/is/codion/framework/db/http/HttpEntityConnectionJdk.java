@@ -45,7 +45,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.condition;
+import static is.codion.framework.db.condition.Condition.key;
 import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -401,7 +401,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public Entity select(Key key) throws DatabaseException {
-    return selectSingle(condition(key));
+    return selectSingle(key(key));
   }
 
   @Override
