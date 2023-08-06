@@ -22,7 +22,8 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.attribute;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -371,7 +372,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public Collection<Entity> execute(EntityConnection connection,
                                       Collection<Long> invoiceIds) throws DatabaseException {
       return connection.update(Entity.castTo(Invoice.class,
-                      connection.select(where(Invoice.ID).in(invoiceIds)
+                      connection.select(attribute(Invoice.ID).in(invoiceIds)
                               .selectBuilder()
                               .forUpdate()
                               .fetchDepth(0)
@@ -429,7 +430,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
 
     private static List<Long> randomTrackIds(EntityConnection connection, int noOfTracks,
                                              Collection<Entity> genres) throws DatabaseException {
-      return connection.select(Track.ID, where(Track.GENRE_FK).in(genres)
+      return connection.select(Track.ID, foreignKey(Track.GENRE_FK).in(genres)
               .selectBuilder()
               .orderBy(ascending(Track.RANDOM))
               .limit(noOfTracks)
@@ -442,7 +443,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     @Override
     public Collection<Entity> execute(EntityConnection entityConnection,
                                       RaisePriceParameters parameters) throws DatabaseException {
-      SelectCondition selectCondition = where(Track.ID).in(parameters.trackIds())
+      SelectCondition selectCondition = attribute(Track.ID).in(parameters.trackIds())
               .selectBuilder()
               .forUpdate()
               .build();

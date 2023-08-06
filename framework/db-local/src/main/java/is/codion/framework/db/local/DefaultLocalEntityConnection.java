@@ -463,10 +463,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      return selectSingle(where((ForeignKey) attribute).equalTo((Entity) value));
+      return selectSingle(foreignKey((ForeignKey) attribute).equalTo((Entity) value));
     }
 
-    return selectSingle(where(attribute).equalTo(value));
+    return selectSingle(attribute(attribute).equalTo(value));
   }
 
   @Override
@@ -513,20 +513,20 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
     if (attribute instanceof ForeignKey) {
-      return select(where((ForeignKey) attribute).equalTo((Entity) value));
+      return select(foreignKey((ForeignKey) attribute).equalTo((Entity) value));
     }
 
-    return select(where(attribute).equalTo(value));
+    return select(attribute(attribute).equalTo(value));
   }
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
     requireNonNull(values, "values");
     if (attribute instanceof ForeignKey) {
-      return select(where((ForeignKey) attribute).in((Collection<Entity>) values));
+      return select(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values));
     }
 
-    return select(where(attribute).in(values));
+    return select(attribute(attribute).in(values));
   }
 
   @Override
@@ -573,7 +573,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .selectCondition(selectCondition, false)
             .columns(property.columnExpression())
-            .where(and(selectCondition, where(attribute).isNotNull()))
+            .where(and(selectCondition, attribute(attribute).isNotNull()))
             .groupBy(property.columnExpression())
             .build();
     PreparedStatement statement = null;
@@ -648,7 +648,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     for (ForeignKeyProperty foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
-      List<Entity> dependencies = select(where(foreignKeyReference.attribute()).in(entities)
+      List<Entity> dependencies = select(foreignKey(foreignKeyReference.attribute()).in(entities)
               .selectBuilder()
               .fetchDepth(1)
               .build())

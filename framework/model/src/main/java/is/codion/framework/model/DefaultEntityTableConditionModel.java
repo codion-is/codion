@@ -27,8 +27,7 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.combination;
+import static is.codion.framework.db.condition.Condition.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -185,7 +184,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
     ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValues().get();
-    ForeignKeyConditionBuilder builder = Condition.where(foreignKey);
+    ForeignKeyConditionBuilder builder = foreignKey(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         if (values.isEmpty()) {
@@ -208,7 +207,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
     boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
-    AttributeCondition.Builder<T> builder = Condition.where(attribute);
+    AttributeCondition.Builder<T> builder = attribute(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return caseInsensitiveString ?

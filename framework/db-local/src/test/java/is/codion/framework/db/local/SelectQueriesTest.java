@@ -4,7 +4,6 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
@@ -13,6 +12,7 @@ import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.framework.db.condition.Condition.attribute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SelectQueriesTest {
@@ -50,7 +50,7 @@ public final class SelectQueriesTest {
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
-    SelectCondition condition = Condition.where(QueryColumnsWhereClause.ENAME)
+    SelectCondition condition = attribute(QueryColumnsWhereClause.ENAME)
             .equalTo("SCOTT")
             .selectBuilder()
             .selectAttributes(QueryColumnsWhereClause.ENAME)

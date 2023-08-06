@@ -33,8 +33,8 @@ import static java.util.Objects.requireNonNull;
  * @see #all(EntityType)
  * @see #key(Key)
  * @see #keys(Collection)
- * @see #where(ForeignKey)
- * @see #where(Attribute)
+ * @see #foreignKey(ForeignKey)
+ * @see #attribute(Attribute)
  * @see #and(Condition...)
  * @see #or(Condition...)
  * @see #combination(Conjunction, Condition...)
@@ -138,7 +138,7 @@ public interface Condition {
       return compositeEqualCondition(attributeMap, EQUAL, valueMap);
     }
 
-    return where(key.attribute()).equalTo(key.get());
+    return attribute(key.attribute()).equalTo(key.get());
   }
 
   /**
@@ -165,7 +165,7 @@ public interface Condition {
       return compositeKeyCondition(attributeMap, EQUAL, valueMaps);
     }
 
-    return where((Attribute<?>) firstKey.attribute()).in(Entity.values(keys));
+    return attribute((Attribute<?>) firstKey.attribute()).in(Entity.values(keys));
   }
 
   /**
@@ -173,7 +173,7 @@ public interface Condition {
    * @param foreignKey the foreign key to base the condition on
    * @return a {@link ForeignKeyConditionBuilder} instance
    */
-  static ForeignKeyConditionBuilder where(ForeignKey foreignKey) {
+  static ForeignKeyConditionBuilder foreignKey(ForeignKey foreignKey) {
     return new DefaultForeignKeyConditionBuilder(foreignKey);
   }
 
@@ -183,11 +183,11 @@ public interface Condition {
    * @param <T> the attribute type
    * @return a {@link AttributeCondition.Builder} instance
    * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
-   * @see #where(ForeignKey)
+   * @see #foreignKey(ForeignKey)
    */
-  static <T> AttributeCondition.Builder<T> where(Attribute<T> attribute) {
+  static <T> AttributeCondition.Builder<T> attribute(Attribute<T> attribute) {
     if (attribute instanceof ForeignKey) {
-      throw new IllegalArgumentException("Use Conditions.where(ForeignKey foreignKey) to create a foreign key based where condition");
+      throw new IllegalArgumentException("Use Condition.foreignKey(ForeignKey foreignKey) to create a foreign key based where condition");
     }
 
     return new DefaultAttributeConditionBuilder<>(attribute);

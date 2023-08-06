@@ -6,7 +6,6 @@ package is.codion.framework.demos.empdept.minimal;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
@@ -27,6 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
+import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
@@ -148,7 +148,7 @@ public final class EmpDeptMinimalApp {
       EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
         comboBoxModel.setSelectConditionSupplier(() ->
-                Condition.where(Employee.JOB).in("MANAGER", "PRESIDENT"));
+                attribute(Employee.JOB).in("MANAGER", "PRESIDENT"));
       }
 
       return comboBoxModel;

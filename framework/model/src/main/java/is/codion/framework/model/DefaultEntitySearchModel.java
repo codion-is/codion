@@ -274,7 +274,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchString : searchStrings) {
-        AttributeCondition.Builder<String> builder = where(searchAttribute);
+        AttributeCondition.Builder<String> builder = attribute(searchAttribute);
         if (searchSettings.caseSensitiveState().get()) {
           conditions.add(builder.equalTo(prepareSearchString(rawSearchString, searchSettings)));
         }

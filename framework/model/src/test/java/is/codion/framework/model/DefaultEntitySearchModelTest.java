@@ -23,6 +23,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.framework.db.condition.Condition.attribute;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -193,8 +194,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
     searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
     searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
-    searchModel.setAdditionalConditionSupplier(() ->
-            Condition.where(Employee.JOB).notEqualTo("MANAGER"));
+    searchModel.setAdditionalConditionSupplier(() -> attribute(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));

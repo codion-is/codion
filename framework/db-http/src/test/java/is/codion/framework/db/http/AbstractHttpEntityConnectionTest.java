@@ -121,11 +121,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Condition selectCondition = where(Employee.COMMISSION).isNull();
+    Condition selectCondition = attribute(Employee.COMMISSION).isNull();
 
     List<Entity> entities = connection.select(selectCondition);
 
-    UpdateCondition updateCondition = where(Employee.COMMISSION).isNull().updateBuilder()
+    UpdateCondition updateCondition = attribute(Employee.COMMISSION).isNull().updateBuilder()
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();

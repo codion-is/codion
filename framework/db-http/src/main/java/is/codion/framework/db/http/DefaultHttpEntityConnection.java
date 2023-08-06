@@ -36,8 +36,8 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.key;
-import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
@@ -315,7 +315,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    return selectSingle(where(attribute).equalTo(value));
+    return selectSingle(attribute(attribute).equalTo(value));
   }
 
   @Override
@@ -370,12 +370,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    return select(where(attribute).equalTo(value));
+    return select(attribute(attribute).equalTo(value));
   }
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    return select(where(attribute).in(values));
+    return select(attribute(attribute).in(values));
   }
 
   @Override

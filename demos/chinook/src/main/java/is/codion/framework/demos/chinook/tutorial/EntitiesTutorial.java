@@ -25,7 +25,8 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.attribute;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -153,7 +154,7 @@ public final class EntitiesTutorial {
     // for more complex queries we use a SelectCondition, provided by the Condition class.
     // we create a condition, where we specify the attribute we're
     // searching by, the type of condition and the value.
-    SelectCondition artistsCondition = where(Artist.NAME).equalTo("An%")
+    SelectCondition artistsCondition = attribute(Artist.NAME).equalTo("An%")
             .selectBuilder()
             // and we set the order by clause
             .orderBy(OrderBy.ascending(Artist.NAME))
@@ -165,7 +166,7 @@ public final class EntitiesTutorial {
 
     // create a select condition
     SelectCondition albumsCondition =
-            where(Album.ARTIST_FK).in(artistsStartingWithAn)
+            foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn)
                     .selectBuilder()
                     .orderBy(OrderBy.builder()
                             .ascending(Album.ARTIST_ID)

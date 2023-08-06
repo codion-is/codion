@@ -45,11 +45,11 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> artists = connection.select(
-            where(Artist.NAME).equalTo("The %"));
+            attribute(Artist.NAME).equalTo("The %"));
 
     List<Entity> nonLiveAlbums = connection.select(and(
-            where(Album.ARTIST_FK).in(artists),
-            where(Album.TITLE).notEqualToIgnoreCase("%live%")));
+            foreignKey(Album.ARTIST_FK).in(artists),
+            attribute(Album.TITLE).notEqualToIgnoreCase("%live%")));
     // end::selectCondition[]
   }
 
@@ -76,7 +76,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            where(Track.NAME).equalTo("Bad%")
+            attribute(Track.NAME).equalTo("Bad%")
                     .selectBuilder()
                     .fetchDepth(0)
                     .build());
@@ -98,7 +98,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            where(Track.NAME).equalTo("Bad%")
+            attribute(Track.NAME).equalTo("Bad%")
                     .selectBuilder()
                     .fetchDepth(Track.ALBUM_FK, 0)
                     .build());
@@ -149,11 +149,11 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     Entity ironMaiden = connection.selectSingle(
-            where(Artist.NAME).equalTo("Iron Maiden"));
+            attribute(Artist.NAME).equalTo("Iron Maiden"));
 
     Entity liveAlbum = connection.selectSingle(and(
-            where(Album.ARTIST_FK).equalTo(ironMaiden),
-            where(Album.TITLE).equalToIgnoreCase("%live after%")));
+            foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
+            attribute(Album.TITLE).equalToIgnoreCase("%live after%")));
     // end::selectSingleCondition[]
   }
 
@@ -187,7 +187,7 @@ public final class EntityConnectionDemo {
 
     List<String> customerUsStates =
             connection.select(Customer.STATE,
-                    where(Customer.COUNTRY).equalTo("USA"));
+                    attribute(Customer.COUNTRY).equalTo("USA"));
     // end::selectValues[]
   }
 
@@ -207,7 +207,7 @@ public final class EntityConnectionDemo {
     // tag::rowCount[]
     EntityConnection connection = connectionProvider.connection();
 
-    int numberOfItStaff = connection.rowCount(where(Employee.TITLE).equalTo("IT Staff"));
+    int numberOfItStaff = connection.rowCount(attribute(Employee.TITLE).equalTo("IT Staff"));
     // end::rowCount[]
   }
 
@@ -247,7 +247,7 @@ public final class EntityConnectionDemo {
     connection.update(myBand);
 
     List<Entity> customersWithoutPhoneNo =
-            connection.select(where(Customer.PHONE).isNull());
+            connection.select(attribute(Customer.PHONE).isNull());
 
     Entity.put(Customer.PHONE, "<none>", customersWithoutPhoneNo);
 
@@ -260,13 +260,13 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     connection.update(
-            where(Artist.NAME).equalTo("Azymuth")
+            attribute(Artist.NAME).equalTo("Azymuth")
                     .updateBuilder()
                     .set(Artist.NAME, "Azymouth")
                     .build());
 
     int updateCount = connection.update(
-            where(Customer.EMAIL).isNull()
+            attribute(Customer.EMAIL).isNull()
                     .updateBuilder()
                     .set(Customer.EMAIL, "<none>")
                     .build());
@@ -280,19 +280,19 @@ public final class EntityConnectionDemo {
     Entity aquaman = connection.selectSingle(Artist.NAME, "Aquaman");
 
     List<Long> aquamanAlbumIds = connection.select(Album.ID,
-            where(Album.ARTIST_FK).equalTo(aquaman));
+            foreignKey(Album.ARTIST_FK).equalTo(aquaman));
 
     List<Long> aquamanTrackIds = connection.select(Track.ID,
-            where(Track.ALBUM_ID).in(aquamanAlbumIds));
+            attribute(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int playlistTracksDeleted = connection.delete(
-            where(PlaylistTrack.TRACK_ID).in(aquamanTrackIds));
+            attribute(PlaylistTrack.TRACK_ID).in(aquamanTrackIds));
 
     int tracksDeleted = connection.delete(
-            where(Track.ALBUM_ID).in(aquamanAlbumIds));
+            attribute(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int albumsDeleted = connection.delete(
-            where(Album.ARTIST_FK).equalTo(aquaman));
+            foreignKey(Album.ARTIST_FK).equalTo(aquaman));
     // end::deleteCondition[]
   }
 
@@ -323,7 +323,7 @@ public final class EntityConnectionDemo {
     LocalEntityConnection connection = connectionProvider.connection();
 
     try (ResultIterator<Entity> iterator =
-                 connection.iterator(where(Customer.EMAIL).isNotNull())) {
+                 connection.iterator(attribute(Customer.EMAIL).isNotNull())) {
       while (iterator.hasNext()) {
         System.out.println(iterator.next().get(Customer.EMAIL));
       }
@@ -351,7 +351,7 @@ public final class EntityConnectionDemo {
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
     Collection<Entity> playlistGenres = connection.select(
-            where(Genre.NAME).in("Classical", "Soundtrack"));
+            attribute(Genre.NAME).in("Classical", "Soundtrack"));
 
     Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
             new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));

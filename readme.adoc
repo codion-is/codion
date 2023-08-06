@@ -428,16 +428,16 @@ List<Entity> doesAddresses =
         connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-        connection.select(where(Customer.EMAIL).isNull());
+        connection.select(attribute(Customer.EMAIL).isNull());
 
 List<String> activeCustomerEmailAddresses =
         connection.select(Customer.EMAIL,
-                where(Customer.IS_ACTIVE).equalTo(true));
+                attribute(Customer.IS_ACTIVE).equalTo(true));
 
 List<Entity> activeCustomersWithEmailAddresses =
         connection.select(and(
-                where(Customer.IS_ACTIVE).equalTo(true),
-                where(Customer.EMAIL).isNotNull()));
+                attribute(Customer.IS_ACTIVE).equalTo(true),
+                attribute(Customer.EMAIL).isNotNull()));
 
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.entities();

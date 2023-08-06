@@ -35,7 +35,7 @@ import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -458,7 +458,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Consumer<Entity> listener = selected -> {
-      setSelectConditionSupplier(() -> where(foreignKey).equalTo(selected));
+      setSelectConditionSupplier(() -> foreignKey(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);

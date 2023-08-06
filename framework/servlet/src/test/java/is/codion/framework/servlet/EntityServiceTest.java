@@ -60,8 +60,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.keys;
-import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -300,13 +300,13 @@ public class EntityServiceTest {
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("count"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(where(Department.ID).equalTo(10))));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(attribute(Department.ID).equalTo(10))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("count"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(where(Department.ID).equalTo(10))));
+      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(attribute(Department.ID).equalTo(10))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(1, CONDITION_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));
@@ -316,7 +316,7 @@ public class EntityServiceTest {
 
   @Test
   void values() throws Exception {
-    Condition condition = where(Department.ID).equalTo(10);
+    Condition condition = attribute(Department.ID).equalTo(10);
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("values"));
@@ -470,7 +470,7 @@ public class EntityServiceTest {
 
   @Test
   void updateCondition() throws Exception {
-    UpdateCondition updateCondition = where(Department.ID).between(10, 20)
+    UpdateCondition updateCondition = attribute(Department.ID).between(10, 20)
             .updateBuilder()
             .set(Department.LOCATION, "aloc").build();
     try (CloseableHttpClient client = createClient()) {
@@ -493,7 +493,7 @@ public class EntityServiceTest {
 
   @Test
   void delete() throws Exception {
-    Condition deleteCondition = where(Department.ID).equalTo(40);
+    Condition deleteCondition = attribute(Department.ID).equalTo(40);
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("delete"));
