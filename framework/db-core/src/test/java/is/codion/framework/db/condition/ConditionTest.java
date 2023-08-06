@@ -106,11 +106,13 @@ public final class ConditionTest {
 
   @Test
   void combination() {
-    Combination combination1 = and(where(Detail.STRING).equalTo("value"),
+    Combination combination1 = and(
+            where(Detail.STRING).equalTo("value"),
             where(Detail.INT).equalTo(666));
     EntityDefinition detailDefinition = ENTITIES.definition(Detail.TYPE);
     assertEquals("(string = ? and int = ?)", combination1.toString(detailDefinition));
-    Combination combination2 = and(where(Detail.DOUBLE).equalTo(666.666),
+    Combination combination2 = and(
+            where(Detail.DOUBLE).equalTo(666.666),
             where(Detail.STRING).equalToIgnoreCase("valu%e2"));
     Combination combination3 = or(combination1, combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
