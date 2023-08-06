@@ -408,7 +408,7 @@ The *EntityConnection* interface defines the database layer. There are three imp
 
 [source,java]
 ----
-Database database = new H2DatabaseFactory()
+Database database = H2DatabaseFactory
         .createDatabase("jdbc:h2:mem:store",
                 "src/main/sql/create_schema_minimal.sql");
 
@@ -435,8 +435,9 @@ List<String> activeCustomerEmailAddresses =
                 where(Customer.IS_ACTIVE).equalTo(true));
 
 List<Entity> activeCustomersWithEmailAddresses =
-        connection.select(where(Customer.IS_ACTIVE).equalTo(true)
-                .and(where(Customer.EMAIL).isNotNull()));
+        connection.select(and(
+                where(Customer.IS_ACTIVE).equalTo(true),
+                where(Customer.EMAIL).isNotNull()));
 
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.entities();

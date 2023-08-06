@@ -31,9 +31,9 @@ public final class VetSpecialtyEditModel extends SwingEntityEditModel {
   public void validate(Entity entity) throws ValidationException {
     super.validate(entity);
     try {
-      int rowCount = connectionProvider().connection().rowCount(
-              and(where(VetSpecialty.SPECIALTY).equalTo(entity.get(VetSpecialty.SPECIALTY)),
-                      where(VetSpecialty.VET).equalTo(entity.get(VetSpecialty.VET))));
+      int rowCount = connectionProvider().connection().rowCount(and(
+              where(VetSpecialty.SPECIALTY).equalTo(entity.get(VetSpecialty.SPECIALTY)),
+              where(VetSpecialty.VET).equalTo(entity.get(VetSpecialty.VET))));
       if (rowCount > 0) {
         throw new ValidationException(VetSpecialty.SPECIALTY_FK,
                 entity.get(VetSpecialty.SPECIALTY_FK), "Vet/specialty combination already exists");

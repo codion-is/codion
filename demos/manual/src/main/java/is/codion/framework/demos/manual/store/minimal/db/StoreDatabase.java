@@ -53,7 +53,8 @@ public class StoreDatabase {
                     where(Customer.IS_ACTIVE).equalTo(true));
 
     List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(and(where(Customer.IS_ACTIVE).equalTo(true),
+            connection.select(and(
+                    where(Customer.IS_ACTIVE).equalTo(true),
                     where(Customer.EMAIL).isNotNull()));
 
     //The domain model entities, a factory for Entity instances.
