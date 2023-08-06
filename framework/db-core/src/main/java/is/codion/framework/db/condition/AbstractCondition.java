@@ -3,7 +3,6 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -30,16 +29,6 @@ public abstract class AbstractCondition implements Condition, Serializable {
   @Override
   public final EntityType entityType() {
     return entityType;
-  }
-
-  @Override
-  public final Condition.Combination and(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.AND, this, conditions);
-  }
-
-  @Override
-  public final Condition.Combination or(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.OR, this, conditions);
   }
 
   @Override

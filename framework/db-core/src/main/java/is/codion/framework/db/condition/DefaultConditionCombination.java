@@ -30,10 +30,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   private final Conjunction conjunction;
   private final EntityType entityType;
 
-  DefaultConditionCombination(Conjunction conjunction, Condition condition, Condition... conditions) {
-    this(conjunction, combine(condition, conditions));
-  }
-
   DefaultConditionCombination(Conjunction conjunction, Collection<Condition> conditions) {
     this(conjunction, new ArrayList<>(requireNonNull(conditions, CONDITIONS)));
   }
@@ -80,16 +76,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
     return unmodifiableList(conditions.stream()
             .flatMap(condition -> condition.attributes().stream())
             .collect(toList()));
-  }
-
-  @Override
-  public Condition.Combination and(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.AND, combine(this, conditions));
-  }
-
-  @Override
-  public Condition.Combination or(Condition... conditions) {
-    return new DefaultConditionCombination(Conjunction.OR, combine(this, conditions));
   }
 
   @Override
@@ -140,15 +126,6 @@ final class DefaultConditionCombination implements Condition.Combination, Serial
   @Override
   public int hashCode() {
     return Objects.hash(conditions, conjunction, entityType);
-  }
-
-  private static List<Condition> combine(Condition condition, Condition... conditions) {
-    requireNonNull(condition);
-    List<Condition> list = new ArrayList<>(requireNonNull(conditions, CONDITIONS).length + 1);
-    list.add(condition);
-    list.addAll(Arrays.asList(conditions));
-
-    return list;
   }
 
   private static String toString(Conjunction conjunction) {

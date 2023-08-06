@@ -116,8 +116,8 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       //scott, james, adams
-      assertEquals(3, connection.delete(where(Employee.NAME).equalTo("%S%")
-              .and(where(Employee.JOB).equalTo("CLERK"))));
+      assertEquals(3, connection.delete(and(where(Employee.NAME).equalTo("%S%"),
+              where(Employee.JOB).equalTo("CLERK"))));
     }
     finally {
       connection.rollbackTransaction();
@@ -1038,8 +1038,8 @@ public class DefaultLocalEntityConnectionTest {
   void entityWithoutPrimaryKey() throws DatabaseException {
     List<Entity> entities = connection.select(all(NoPrimaryKey.TYPE));
     assertEquals(6, entities.size());
-    entities = connection.select(where(NoPrimaryKey.COL_1).equalTo(2)
-            .or(where(NoPrimaryKey.COL_3).equalTo("5")));
+    entities = connection.select(or(where(NoPrimaryKey.COL_1).equalTo(2),
+            where(NoPrimaryKey.COL_3).equalTo("5")));
     assertEquals(4, entities.size());
   }
 

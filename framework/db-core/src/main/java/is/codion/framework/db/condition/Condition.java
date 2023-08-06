@@ -35,6 +35,8 @@ import static java.util.Objects.requireNonNull;
  * @see #keys(Collection)
  * @see #where(ForeignKey)
  * @see #where(Attribute)
+ * @see #and(Condition...)
+ * @see #or(Condition...)
  * @see #combination(Conjunction, Condition...)
  * @see #combination(Conjunction, Collection)
  * @see #customCondition(ConditionType)
@@ -59,20 +61,6 @@ public interface Condition {
    * An empty list is returned in case no values are specified.
    */
   List<Attribute<?>> attributes();
-
-  /**
-   * Returns a new Combination instance, combining this condition with the given one, AND'ing together.
-   * @param conditions the conditions to combine with this one
-   * @return a new condition combination
-   */
-  Combination and(Condition... conditions);
-
-  /**
-   * Returns a new Combination instance, combining this condition with the given one, OR'ing together.
-   * @param conditions the conditions to combine with this one
-   * @return a new condition combination
-   */
-  Combination or(Condition... conditions);
 
   /**
    * Returns a string representing this condition, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
@@ -106,6 +94,24 @@ public interface Condition {
      * @return the conjunction
      */
     Conjunction conjunction();
+  }
+
+  /**
+   * Returns a new Combination instance, combining the given conditions with AND.
+   * @param conditions the conditions to combine
+   * @return a new condition combination
+   */
+  static Combination and(Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.AND, Arrays.asList(conditions));
+  }
+
+  /**
+   * Returns a new Combination instance, combining the given conditions with OR.
+   * @param conditions the conditions to combine
+   * @return a new condition combination
+   */
+  static Combination or(Condition... conditions) {
+    return new DefaultConditionCombination(Conjunction.OR, Arrays.asList(conditions));
   }
 
   /**

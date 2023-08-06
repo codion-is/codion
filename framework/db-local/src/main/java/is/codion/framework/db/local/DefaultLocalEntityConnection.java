@@ -573,7 +573,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .selectCondition(selectCondition, false)
             .columns(property.columnExpression())
-            .where(selectCondition.and(where(attribute).isNotNull()))
+            .where(and(selectCondition, where(attribute).isNotNull()))
             .groupBy(property.columnExpression())
             .build();
     PreparedStatement statement = null;
