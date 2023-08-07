@@ -9363,3 +9363,4 @@
   DefaultConditionCombination refactored, now extends AbstractCondition
   Condition.where(Attribute) and where(ForeignKey) renamed attribute() and foreignKey() respectively
   Major refactoring/redesign of Condition and friends
+  AbstractCriteria now public
