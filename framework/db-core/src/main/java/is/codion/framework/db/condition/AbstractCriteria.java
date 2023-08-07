@@ -14,7 +14,10 @@ import java.util.Objects;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractCriteria implements Criteria, Serializable {
+/**
+ * A base class for Criteria implementations.
+ */
+public abstract class AbstractCriteria implements Criteria, Serializable {
 
   private final EntityType entityType;
   private final List<Attribute<?>> attributes;
