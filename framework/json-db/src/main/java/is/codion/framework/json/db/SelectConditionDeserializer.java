@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.OrderBy.NullOrder;
-import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
@@ -23,17 +22,19 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static is.codion.framework.db.condition.Condition.where;
+
 final class SelectConditionDeserializer extends StdDeserializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionDeserializer conditionDeserializer;
+  private final CriteriaDeserializer criteriaDeserializer;
   private final Entities entities;
 
-  SelectConditionDeserializer(EntityObjectMapper entityObjectMapper) {
+  SelectConditionDeserializer(CriteriaDeserializer criteriaDeserializer) {
     super(SelectCondition.class);
-    this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    this.entities = entityObjectMapper.entities();
+    this.criteriaDeserializer = criteriaDeserializer;
+    this.entities = criteriaDeserializer.entities;
   }
 
   @Override
@@ -42,10 +43,10 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
-    JsonNode conditionNode = jsonNode.get("condition");
-    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    JsonNode criteriaNode = jsonNode.get("criteria");
+    Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    SelectCondition.Builder selectCondition = condition.selectBuilder();
+    SelectCondition.Builder selectCondition = where(criteria).selectBuilder();
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectCondition.orderBy(deserializeOrderBy(definition, orderBy));

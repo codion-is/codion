@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -90,7 +90,7 @@ final class SelectQueries {
       }
       //default from clause is handled by from()
       if (setWhereClause) {
-        where(condition);
+        where(condition.criteria());
       }
       if (groupBy == null) {
         groupBy(definition.groupByClause());
@@ -142,8 +142,8 @@ final class SelectQueries {
       return this;
     }
 
-    Builder where(Condition condition) {
-      String conditionString = condition.toString(definition);
+    Builder where(Criteria criteria) {
+      String conditionString = criteria.toString(definition);
       if (!conditionString.isEmpty()) {
         where(conditionString);
       }

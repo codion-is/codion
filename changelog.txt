@@ -9362,3 +9362,4 @@
   Condition.or() and and() now static factory methods instead of instance methods
   DefaultConditionCombination refactored, now extends AbstractCondition
   Condition.where(Attribute) and where(ForeignKey) renamed attribute() and foreignKey() respectively
+  Major refactoring/redesign of Condition and friends

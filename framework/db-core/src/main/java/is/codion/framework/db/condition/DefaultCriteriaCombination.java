@@ -4,8 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.db.condition.Condition.Combination;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.db.condition.Criteria.Combination;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -20,19 +19,23 @@ import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultConditionCombination extends AbstractCondition implements Combination, Serializable {
+final class DefaultCriteriaCombination extends AbstractCriteria implements Combination, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final List<Condition> conditions;
+  private final List<Criteria> criteria;
   private final Conjunction conjunction;
 
-  DefaultConditionCombination(Conjunction conjunction, List<Condition> conditions) {
-    super(entityType(conditions));
+  DefaultCriteriaCombination(Conjunction conjunction, List<Criteria> criteria) {
+    super(entityType(criteria), unmodifiableList(criteria.stream()
+            .flatMap(condition -> condition.attributes().stream())
+            .collect(toList())), unmodifiableList(criteria.stream()
+            .flatMap(condition -> condition.values().stream())
+            .collect(toList())));
     this.conjunction = requireNonNull(conjunction);
-    this.conditions = new ArrayList<>(conditions);
-    for (int i = 1; i < this.conditions.size(); i++) {
-      EntityType conditionEntityType = this.conditions.get(i).entityType();
+    this.criteria = unmodifiableList(new ArrayList<>(criteria));
+    for (int i = 1; i < this.criteria.size(); i++) {
+      EntityType conditionEntityType = this.criteria.get(i).entityType();
       if (!conditionEntityType.equals(entityType())) {
         throw new IllegalArgumentException("EntityType " + entityType() + " expected, got: " + conditionEntityType);
       }
@@ -40,8 +43,8 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
   }
 
   @Override
-  public Collection<Condition> conditions() {
-    return unmodifiableList(conditions);
+  public Collection<Criteria> criteria() {
+    return criteria;
   }
 
   @Override
@@ -50,30 +53,16 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
   }
 
   @Override
-  public List<?> values() {
-    return unmodifiableList(conditions.stream()
-            .flatMap(condition -> condition.values().stream())
-            .collect(toList()));
-  }
-
-  @Override
-  public List<Attribute<?>> attributes() {
-    return unmodifiableList(conditions.stream()
-            .flatMap(condition -> condition.attributes().stream())
-            .collect(toList()));
-  }
-
-  @Override
   public String toString(EntityDefinition definition) {
     requireNonNull(definition);
-    if (conditions.isEmpty()) {
+    if (criteria.isEmpty()) {
       return "";
     }
-    if (conditions.size() == 1) {
-      return conditions.get(0).toString(definition);
+    if (criteria.size() == 1) {
+      return criteria.get(0).toString(definition);
     }
 
-    return conditions.stream()
+    return criteria.stream()
             .map(condition -> condition.toString(definition))
             .filter(string -> !string.isEmpty())
             .collect(joining(toString(conjunction), "(", ")"));
@@ -84,20 +73,20 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DefaultConditionCombination)) {
+    if (!(object instanceof DefaultCriteriaCombination)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    DefaultConditionCombination that = (DefaultConditionCombination) object;
+    DefaultCriteriaCombination that = (DefaultCriteriaCombination) object;
     return conjunction == that.conjunction &&
-            conditions.equals(that.conditions);
+            criteria.equals(that.criteria);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), conditions, conjunction);
+    return Objects.hash(super.hashCode(), criteria, conjunction);
   }
 
   private static String toString(Conjunction conjunction) {
@@ -111,11 +100,11 @@ final class DefaultConditionCombination extends AbstractCondition implements Com
     }
   }
 
-  private static EntityType entityType(List<Condition> conditions) {
-    if (requireNonNull(conditions).isEmpty()) {
-      throw new IllegalArgumentException("One or more conditions must be specified for a condition combination");
+  private static EntityType entityType(List<Criteria> criteria) {
+    if (requireNonNull(criteria).isEmpty()) {
+      throw new IllegalArgumentException("One or more criteria must be specified for a criteria combination");
     }
 
-    return conditions.get(0).entityType();
+    return criteria.get(0).entityType();
   }
 }

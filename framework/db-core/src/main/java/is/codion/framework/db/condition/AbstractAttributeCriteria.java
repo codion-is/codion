@@ -7,11 +7,14 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 
+import static java.util.Collections.nCopies;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractAttributeCondition<T> extends AbstractCondition implements AttributeCondition<T> {
+abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements AttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -19,17 +22,19 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
   private final Operator operator;
   private final boolean caseSensitive;
 
-  protected AbstractAttributeCondition(Attribute<T> attribute, Operator operator, boolean caseSensitive) {
-    super(requireNonNull(attribute, "attribute").entityType());
+  protected AbstractAttributeCriteria(Attribute<T> attribute, Operator operator, Collection<? extends T> values,
+                                      boolean caseSensitive) {
+    super(requireNonNull(attribute).entityType(), nCopies(requireNonNull(values).size(),
+            requireNonNull(attribute)), new ArrayList<>(values));
     if (!caseSensitive && !attribute.isString()) {
       throw new IllegalStateException("Case insensitivity only applies to String based attributes: " + attribute);
     }
+    validateOperator(requireNonNull(operator));
     this.attribute = attribute;
-    this.operator = requireNonNull(operator);
+    this.operator = operator;
     this.caseSensitive = caseSensitive;
   }
 
-  @Override
   public final Attribute<T> attribute() {
     return attribute;
   }
@@ -59,22 +64,23 @@ abstract class AbstractAttributeCondition<T> extends AbstractCondition implement
     if (this == object) {
       return true;
     }
-    if (!(object instanceof AbstractAttributeCondition)) {
+    if (!(object instanceof AbstractAttributeCriteria)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    AbstractAttributeCondition<?> that = (AbstractAttributeCondition<?>) object;
-    return attribute.equals(that.attribute) &&
-            operator == that.operator &&
+    AbstractAttributeCriteria<?> that = (AbstractAttributeCriteria<?>) object;
+    return Objects.equals(operator, that.operator) &&
             caseSensitive == that.caseSensitive;
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), attribute, operator, caseSensitive);
+    return Objects.hash(super.hashCode(), operator, caseSensitive);
   }
 
   protected abstract String toString(String columnExpression);
+
+  protected abstract void validateOperator(Operator operator);
 }

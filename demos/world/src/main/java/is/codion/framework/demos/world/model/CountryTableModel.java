@@ -4,7 +4,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.model.EntitySearchModelConditionModel;
@@ -49,12 +49,12 @@ public final class CountryTableModel extends SwingEntityTableModel {
     ((EntitySearchModelConditionModel) conditionModel()
             .attributeModel(Country.CAPITAL_FK))
             .entitySearchModel()
-            .setAdditionalConditionSupplier(new CapitalConditionSupplier());
+            .setAdditionalCriteriaSupplier(new CapitalConditionSupplier());
   }
 
-  private final class CapitalConditionSupplier implements Supplier<Condition> {
+  private final class CapitalConditionSupplier implements Supplier<Criteria> {
     @Override
-    public Condition get() {
+    public Criteria get() {
       EntityConnection connection = connectionProvider().connection();
       try {
         return attribute(City.ID).in(connection.select(Country.CAPITAL));

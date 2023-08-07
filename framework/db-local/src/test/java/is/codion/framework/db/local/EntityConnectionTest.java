@@ -10,6 +10,7 @@ import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.local.TestDomain.Department;
 import is.codion.framework.db.local.TestDomain.Employee;
 import is.codion.framework.domain.Domain;
@@ -78,13 +79,13 @@ public class EntityConnectionTest {
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
-            .condition(all(Department.TYPE)));
+            .criteria(Criteria.all(Department.TYPE)));
 
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
             .batchSize(2)
             .includePrimaryKeys(false)
-            .condition(attribute(Employee.SALARY).greaterThan(1000d))
+            .criteria(attribute(Employee.SALARY).greaterThan(1000d))
             .execute();
     assertEquals(13, DESTINATION_CONNECTION.rowCount(all(Employee.TYPE)));
 

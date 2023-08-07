@@ -4,9 +4,9 @@
 package is.codion.framework.domain.entity;
 
 /**
- * Defines a custom condition type.
+ * Defines a custom criteria type.
  */
-public interface ConditionType {
+public interface CriteriaType {
 
   /**
    * @return the entity type
@@ -19,12 +19,12 @@ public interface ConditionType {
   String name();
 
   /**
-   * Instantiates a new {@link ConditionType} for the given entity type
+   * Instantiates a new {@link CriteriaType} for the given entity type
    * @param entityType the entityType
    * @param name the name
-   * @return a new condition type
+   * @return a new criteria type
    */
-  static ConditionType conditionType(EntityType entityType, String name) {
-    return new DefaultConditionType(entityType, name);
+  static CriteriaType criteriaType(EntityType entityType, String name) {
+    return new DefaultCriteriaType(entityType, name);
   }
 }

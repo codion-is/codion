@@ -6,45 +6,26 @@ package is.codion.framework.db.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.util.List;
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
+final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
   private final T value;
 
-  SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator) {
+  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator) {
     this(attribute, value, operator, true);
   }
 
-  SingleValueAttributeCondition(Attribute<T> attribute, T value, Operator operator,
-                                boolean caseSensitive) {
-    super(attribute, operator, caseSensitive);
+  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator,
+                               boolean caseSensitive) {
+    super(attribute, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
     validateOperator(operator);
     this.value = value;
-  }
-
-  @Override
-  public List<?> values() {
-    if (value == null) {
-      return emptyList();
-    }
-
-    return singletonList(value);
-  }
-
-  @Override
-  public List<Attribute<?>> attributes() {
-    if (value == null) {
-      return emptyList();
-    }
-
-    return singletonList(attribute());
   }
 
   @Override
@@ -52,13 +33,13 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
     if (this == object) {
       return true;
     }
-    if (!(object instanceof SingleValueAttributeCondition)) {
+    if (!(object instanceof SingleValueAttributeCriteria)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    SingleValueAttributeCondition<?> that = (SingleValueAttributeCondition<?>) object;
+    SingleValueAttributeCriteria<?> that = (SingleValueAttributeCriteria<?>) object;
     return Objects.equals(value, that.value);
   }
 
@@ -109,7 +90,7 @@ final class SingleValueAttributeCondition<T> extends AbstractAttributeCondition<
     return value.contains("%") || value.contains("_");
   }
 
-  private static void validateOperator(Operator operator) {
+  protected void validateOperator(Operator operator) {
     switch (operator) {
       case EQUAL:
       case NOT_EQUAL:

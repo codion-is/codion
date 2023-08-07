@@ -4,14 +4,12 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,11 +19,10 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectCondition extends AbstractCondition implements SelectCondition {
+final class DefaultSelectCondition extends DefaultCondition implements SelectCondition {
 
   private static final long serialVersionUID = 1;
 
-  private final Condition condition;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private final Collection<Attribute<?>> selectAttributes;
   private final OrderBy orderBy;
@@ -36,8 +33,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
   private final int queryTimeout;
 
   private DefaultSelectCondition(DefaultBuilder builder) {
-    super(builder.condition.entityType());
-    this.condition = builder.condition;
+    super(builder.criteria);
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
     this.selectAttributes = builder.selectAttributes;
     this.orderBy = builder.orderBy;
@@ -46,26 +42,6 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     this.limit = builder.limit;
     this.offset = builder.offset;
     this.queryTimeout = builder.queryTimeout;
-  }
-
-  @Override
-  public List<?> values() {
-    return condition.values();
-  }
-
-  @Override
-  public List<Attribute<?>> attributes() {
-    return condition.attributes();
-  }
-
-  @Override
-  public String toString(EntityDefinition definition) {
-    return condition.toString(definition);
-  }
-
-  @Override
-  public Condition condition() {
-    return condition;
   }
 
   @Override
@@ -128,7 +104,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     return forUpdate == that.forUpdate &&
             limit == that.limit &&
             offset == that.offset &&
-            condition.equals(that.condition) &&
+            criteria().equals(that.criteria()) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
             selectAttributes.equals(that.selectAttributes) &&
             Objects.equals(orderBy, that.orderBy) &&
@@ -137,13 +113,13 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), condition, foreignKeyFetchDepths,
+    return Objects.hash(super.hashCode(), criteria(), foreignKeyFetchDepths,
             selectAttributes, orderBy, fetchDepth, forUpdate, limit, offset);
   }
 
   static final class DefaultBuilder implements SelectCondition.Builder {
 
-    private final Condition condition;
+    private final Criteria criteria;
 
     private Map<ForeignKey, Integer> foreignKeyFetchDepths;
     private Collection<Attribute<?>> selectAttributes = emptyList();
@@ -156,7 +132,7 @@ final class DefaultSelectCondition extends AbstractCondition implements SelectCo
     private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Condition condition) {
-      this.condition = requireNonNull(condition);
+      this.criteria = requireNonNull(condition).criteria();
       if (condition instanceof DefaultSelectCondition) {
         DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;
         foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;

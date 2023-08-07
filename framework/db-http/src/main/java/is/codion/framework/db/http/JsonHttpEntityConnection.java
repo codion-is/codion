@@ -48,8 +48,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.attribute;
-import static is.codion.framework.db.condition.Condition.key;
+import static is.codion.framework.db.condition.Condition.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -347,12 +346,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    return selectSingle(attribute(attribute).equalTo(value));
+    return selectSingle(where(attribute(attribute).equalTo(value)));
   }
 
   @Override
   public Entity select(Key key) throws DatabaseException {
-    return selectSingle(key(key));
+    return selectSingle(where(key(key)));
   }
 
   @Override
@@ -406,12 +405,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    return select(attribute(attribute).equalTo(value));
+    return select(where(attribute(attribute).equalTo(value)));
   }
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    return select(attribute(attribute).in(values));
+    return select(where(attribute(attribute).in(values)));
   }
 
   @Override

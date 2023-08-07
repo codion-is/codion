@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AttributeCondition;
+import is.codion.framework.db.condition.AttributeCriteria;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -11,17 +11,19 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import java.io.IOException;
 import java.io.Serializable;
 
-final class AttributeConditionSerializer implements Serializable {
+import static java.util.Objects.requireNonNull;
+
+final class AttributeCriteriaSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  AttributeConditionSerializer(EntityObjectMapper entityObjectMapper) {
-    this.entityObjectMapper = entityObjectMapper;
+  AttributeCriteriaSerializer(EntityObjectMapper entityObjectMapper) {
+    this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  void serialize(AttributeCondition<?> condition, JsonGenerator generator) throws IOException {
+  void serialize(AttributeCriteria<?> condition, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "attribute");
     generator.writeStringField("attribute", condition.attribute().name());

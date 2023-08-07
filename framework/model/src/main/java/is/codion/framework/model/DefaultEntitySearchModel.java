@@ -11,8 +11,9 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.AttributeCondition;
+import is.codion.framework.db.condition.AttributeCriteria;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -79,7 +80,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private Function<Entity, String> toStringProvider;
   private Comparator<Entity> resultSorter;
   private String description;
-  private Supplier<Condition> additionalConditionSupplier;
+  private Supplier<Criteria> additionalCriteriaSupplier;
 
   private DefaultEntitySearchModel(DefaultBuilder builder) {
     this.entityType = builder.entityType;
@@ -171,8 +172,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
-    this.additionalConditionSupplier = additionalConditionSupplier;
+  public void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier) {
+    this.additionalCriteriaSupplier = additionalCriteriaSupplier;
   }
 
   @Override
@@ -262,32 +263,33 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * @return a condition based on this search model including any additional search condition
    * @throws IllegalStateException in case no search properties are specified
-   * @see #setAdditionalConditionProvider(Condition.Provider)
+   * @see #setAdditionalCriteriaSupplier(Supplier)
    */
   private SelectCondition selectCondition() {
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes provided for search model: " + entityType);
     }
-    Collection<Condition> conditions = new ArrayList<>();
+    Collection<Criteria> criteria = new ArrayList<>();
     String[] searchStrings = singleSelectionState.get() ?
             new String[] {searchStringValue.get()} : searchStringValue.get().split(multipleItemSeparatorValue.get());
     for (Attribute<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchString : searchStrings) {
-        AttributeCondition.Builder<String> builder = attribute(searchAttribute);
+        AttributeCriteria.Builder<String> builder = attribute(searchAttribute);
         if (searchSettings.caseSensitiveState().get()) {
-          conditions.add(builder.equalTo(prepareSearchString(rawSearchString, searchSettings)));
+          criteria.add(builder.equalTo(prepareSearchString(rawSearchString, searchSettings)));
         }
         else {
-          conditions.add(builder.equalToIgnoreCase(prepareSearchString(rawSearchString, searchSettings)));
+          criteria.add(builder.equalToIgnoreCase(prepareSearchString(rawSearchString, searchSettings)));
         }
       }
     }
-    Condition.Combination conditionCombination = combination(Conjunction.OR, conditions);
+    Criteria criteriaCombination = combination(Conjunction.OR, criteria);
+    Condition condition = additionalCriteriaSupplier == null ?
+            where(criteriaCombination) :
+            where(and(additionalCriteriaSupplier.get(), criteriaCombination));
 
-    return (additionalConditionSupplier == null ? conditionCombination :
-            and(additionalConditionSupplier.get(), conditionCombination))
-            .selectBuilder()
+    return condition.selectBuilder()
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();
   }

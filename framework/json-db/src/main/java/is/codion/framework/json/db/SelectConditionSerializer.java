@@ -21,12 +21,12 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionSerializer conditionSerializer;
+  private final CriteriaSerializer criteriaSerializer;
   private final Entities entities;
 
   SelectConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(SelectCondition.class);
-    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
+    this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
     this.entities = entityObjectMapper.entities();
   }
 
@@ -34,9 +34,10 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   public void serialize(SelectCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
+    generator.writeStringField("type", "select");
     generator.writeStringField("entityType", condition.entityType().name());
-    generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.condition(), generator);
+    generator.writeFieldName("criteria");
+    criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeFieldName("orderBy");
     OrderBy orderBy = condition.orderBy().orElse(null);
     if (orderBy == null) {

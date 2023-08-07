@@ -9,7 +9,7 @@ import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ConditionType;
+import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
@@ -132,17 +132,17 @@ public class DomainTest {
 
   @Test
   void conditionProvider() {
-    EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
-    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider1.integerAttribute("id")))
-            .conditionProvider(null, (attributes, values) -> null)));
-    EntityType nullConditionProvider2 = DOMAIN.entityType("nullConditionProvider2");
-    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider2.integerAttribute("id")))
-            .conditionProvider(nullConditionProvider2.conditionType("id"), null)));
+    EntityType nullCriteriaProvider1 = DOMAIN.entityType("nullCriteriaProvider1");
+    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCriteriaProvider1.integerAttribute("id")))
+            .criteriaProvider(null, (attributes, values) -> null)));
+    EntityType nullCritieraProvider2 = DOMAIN.entityType("nullCritieraProvider2");
+    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCritieraProvider2.integerAttribute("id")))
+            .criteriaProvider(nullCritieraProvider2.criteriaType("id"), null)));
     EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
-    ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
+    CriteriaType nullCriteriaType = nullConditionProvider3.criteriaType("id");
     assertThrows(IllegalStateException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
-            .conditionProvider(nullConditionType, (attributes, values) -> null)
-            .conditionProvider(nullConditionType, (attributes, values) -> null)));
+            .criteriaProvider(nullCriteriaType, (attributes, values) -> null)
+            .criteriaProvider(nullCriteriaType, (attributes, values) -> null)));
   }
 
   @Test

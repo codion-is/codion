@@ -18,11 +18,6 @@ public interface SelectCondition extends Condition {
   int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
 
   /**
-   * @return the underlying condition
-   */
-  Condition condition();
-
-  /**
    * @return the OrderBy for this condition, an empty Optional if none is specified
    */
   Optional<OrderBy> orderBy();
@@ -65,15 +60,6 @@ public interface SelectCondition extends Condition {
    * an empty Collection if all should be included
    */
   Collection<Attribute<?>> selectAttributes();
-
-  /**
-   * Returns a {@link SelectCondition.Builder} instance based on the given condition
-   * @param condition the condition
-   * @return a {@link SelectCondition.Builder} instance
-   */
-  static Builder builder(Condition condition) {
-    return new DefaultSelectCondition.DefaultBuilder(condition);
-  }
 
   /**
    * Builds a {@link SelectCondition}.

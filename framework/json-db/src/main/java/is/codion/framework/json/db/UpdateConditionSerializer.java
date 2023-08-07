@@ -18,12 +18,12 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionSerializer conditionSerializer;
   private final EntityObjectMapper entityObjectMapper;
+  private final CriteriaSerializer criteriaSerializer;
 
   UpdateConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(UpdateCondition.class);
-    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
+    this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
   }
 
@@ -31,9 +31,10 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
   public void serialize(UpdateCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
+    generator.writeStringField("type", "update");
     generator.writeStringField("entityType", condition.entityType().name());
-    generator.writeFieldName("condition");
-    conditionSerializer.serialize(condition.condition(), generator);
+    generator.writeFieldName("criteria");
+    criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
     for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {

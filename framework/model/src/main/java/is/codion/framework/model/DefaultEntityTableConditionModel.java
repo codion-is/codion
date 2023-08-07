@@ -9,9 +9,10 @@ import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.AttributeCondition;
+import is.codion.framework.db.condition.AttributeCriteria;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.ForeignKeyConditionBuilder;
+import is.codion.framework.db.condition.Criteria;
+import is.codion.framework.db.condition.ForeignKeyCriteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -39,7 +40,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private final EntityConnectionProvider connectionProvider;
   private final TableConditionModel<C> conditionModel;
   private final Event<Condition> conditionChangedEvent = Event.event();
-  private Supplier<Condition> additionalConditionSupplier;
+  private Supplier<Criteria> additionalCriteriaSupplier;
   private Conjunction conjunction = Conjunction.AND;
 
   DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
@@ -70,28 +71,28 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   @Override
   public Condition condition() {
-    Collection<Condition> conditions = conditionModel.conditionModels().values().stream()
+    Collection<Criteria> criteria = conditionModel.conditionModels().values().stream()
             .filter(ColumnConditionModel::isEnabled)
-            .map(DefaultEntityTableConditionModel::condition)
+            .map(DefaultEntityTableConditionModel::criteria)
             .collect(Collectors.toCollection(ArrayList::new));
-    if (additionalConditionSupplier != null) {
-      Condition additionalCondition = additionalConditionSupplier.get();
-      if (additionalCondition != null) {
-        conditions.add(additionalCondition);
+    if (additionalCriteriaSupplier != null) {
+      Criteria additionalCriteria = additionalCriteriaSupplier.get();
+      if (additionalCriteria != null) {
+        criteria.add(additionalCriteria);
       }
     }
 
-    return conditions.isEmpty() ? all(entityType) : combination(conjunction, conditions);
+    return criteria.isEmpty() ? all(entityType) : where(combination(conjunction, criteria));
   }
 
   @Override
-  public Supplier<Condition> getAdditionalConditionSupplier() {
-    return additionalConditionSupplier;
+  public Supplier<Criteria> getAdditionalCriteriaSupplier() {
+    return additionalCriteriaSupplier;
   }
 
   @Override
-  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
-    this.additionalConditionSupplier = additionalConditionSupplier;
+  public void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier) {
+    this.additionalCriteriaSupplier = additionalCriteriaSupplier;
   }
 
   @Override
@@ -173,18 +174,18 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
             .collect(Collectors.toList());
   }
 
-  private static Condition condition(ColumnConditionModel<?, ?> conditionModel) {
+  private static Criteria criteria(ColumnConditionModel<?, ?> conditionModel) {
     if (conditionModel.columnIdentifier() instanceof ForeignKey) {
-      return foreignKeyCondition((ColumnConditionModel<?, Entity>) conditionModel);
+      return foreignKeyCriteria((ColumnConditionModel<?, Entity>) conditionModel);
     }
 
-    return attributeCondition(conditionModel);
+    return attributeCriteria(conditionModel);
   }
 
-  private static Condition foreignKeyCondition(ColumnConditionModel<?, Entity> conditionModel) {
+  private static Criteria foreignKeyCriteria(ColumnConditionModel<?, Entity> conditionModel) {
     ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValues().get();
-    ForeignKeyConditionBuilder builder = foreignKey(foreignKey);
+    ForeignKeyCriteria.Builder builder = foreignKey(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         if (values.isEmpty()) {
@@ -203,19 +204,19 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
   }
 
-  private static <T> AttributeCondition<T> attributeCondition(ColumnConditionModel<?, T> conditionModel) {
+  private static <T> AttributeCriteria<T> attributeCriteria(ColumnConditionModel<?, T> conditionModel) {
     Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
     boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
-    AttributeCondition.Builder<T> builder = attribute(attribute);
+    AttributeCriteria.Builder<T> builder = attribute(attribute);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return caseInsensitiveString ?
-                (AttributeCondition<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
+                (AttributeCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
                 builder.in(equalToValues);
       case NOT_EQUAL:
         return caseInsensitiveString ?
-                (AttributeCondition<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
+                (AttributeCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
                 builder.notIn(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());

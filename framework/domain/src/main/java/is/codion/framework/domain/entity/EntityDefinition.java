@@ -46,12 +46,12 @@ public interface EntityDefinition {
   String tableName();
 
   /**
-   * Returns the {@link ConditionProvider} associated with the given type
-   * @param conditionType the condition type
-   * @return the condition provider associated with the given id
-   * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
+   * Returns the {@link CriteriaProvider} associated with the given type
+   * @param criteriaType the criteria type
+   * @return the criteria provider associated with the given type
+   * @throws IllegalArgumentException in case no CriteriaProvider is associated with the given criteriaType
    */
-  ConditionProvider conditionProvider(ConditionType conditionType);
+  CriteriaProvider criteriaProvider(CriteriaType criteriaType);
 
   /**
    * @return the name of the domain this entity type belongs to
@@ -424,14 +424,14 @@ public interface EntityDefinition {
     Builder validator(EntityValidator validator);
 
     /**
-     * Adds a {@link ConditionProvider} which provides a dynamic query condition string.
-     * The condition string should not include the WHERE keyword and use the ?
+     * Adds a {@link CriteriaProvider} which provides a dynamic query criteria string.
+     * The criteria string should not include the WHERE keyword and use the ?
      * substitution character where values should be inserted.
-     * @param conditionType the condition type
-     * @param conditionProvider the condition provider
+     * @param criteriaType the criteria type
+     * @param criteriaProvider the criteria provider
      * @return this {@link Builder} instance
      */
-    Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider);
+    Builder criteriaProvider(CriteriaType criteriaType, CriteriaProvider criteriaProvider);
 
     /**
      * @param backgroundColorProvider the background color provider

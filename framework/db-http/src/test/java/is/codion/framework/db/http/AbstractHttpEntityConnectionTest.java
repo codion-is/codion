@@ -121,11 +121,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Condition selectCondition = attribute(Employee.COMMISSION).isNull();
+    Condition selectCondition = where(attribute(Employee.COMMISSION).isNull());
 
     List<Entity> entities = connection.select(selectCondition);
 
-    UpdateCondition updateCondition = attribute(Employee.COMMISSION).isNull().updateBuilder()
+    UpdateCondition updateCondition = where(attribute(Employee.COMMISSION).isNull()).updateBuilder()
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();
@@ -226,7 +226,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void deleteDepartmentWithEmployees() throws DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key(department.primaryKey())));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(where(key(department.primaryKey()))));
   }
 
   @Test

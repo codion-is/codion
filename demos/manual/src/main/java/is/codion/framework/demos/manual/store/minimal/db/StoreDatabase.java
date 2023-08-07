@@ -17,8 +17,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.and;
-import static is.codion.framework.db.condition.Condition.attribute;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;
@@ -46,16 +45,16 @@ public class StoreDatabase {
             connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
     List<Entity> customersWithoutEmail =
-            connection.select(attribute(Customer.EMAIL).isNull());
+            connection.select(where(attribute(Customer.EMAIL).isNull()));
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
-                    attribute(Customer.IS_ACTIVE).equalTo(true));
+                    where(attribute(Customer.IS_ACTIVE).equalTo(true)));
 
     List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(and(
+            connection.select(where(and(
                     attribute(Customer.IS_ACTIVE).equalTo(true),
-                    attribute(Customer.EMAIL).isNotNull()));
+                    attribute(Customer.EMAIL).isNotNull())));
 
     //The domain model entities, a factory for Entity instances.
     Entities entities = connection.entities();

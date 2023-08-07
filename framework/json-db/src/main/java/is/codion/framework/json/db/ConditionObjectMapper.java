@@ -4,6 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -14,7 +15,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule;
 import static java.util.Objects.requireNonNull;
 
 /**
- * ObjectMapper implementation for {@link Condition} and it's subclasses.
+ * ObjectMapper implementation for {@link Criteria} and it's subclasses.
  * For instances use the {@link #conditionObjectMapper(EntityObjectMapper)} factory method.
  */
 public final class ConditionObjectMapper extends ObjectMapper {
@@ -26,12 +27,15 @@ public final class ConditionObjectMapper extends ObjectMapper {
   private ConditionObjectMapper(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
     SimpleModule module = new SimpleModule();
+    CriteriaDeserializer criteriaDeserializer = new CriteriaDeserializer(entityObjectMapper);
+    module.addSerializer(Criteria.class, new CriteriaSerializer(entityObjectMapper));
+    module.addDeserializer(Criteria.class, criteriaDeserializer);
     module.addSerializer(Condition.class, new ConditionSerializer(entityObjectMapper));
     module.addDeserializer(Condition.class, new ConditionDeserializer(entityObjectMapper));
     module.addSerializer(SelectCondition.class, new SelectConditionSerializer(entityObjectMapper));
-    module.addDeserializer(SelectCondition.class, new SelectConditionDeserializer(entityObjectMapper));
+    module.addDeserializer(SelectCondition.class, new SelectConditionDeserializer(criteriaDeserializer));
     module.addSerializer(UpdateCondition.class, new UpdateConditionSerializer(entityObjectMapper));
-    module.addDeserializer(UpdateCondition.class, new UpdateConditionDeserializer(entityObjectMapper));
+    module.addDeserializer(UpdateCondition.class, new UpdateConditionDeserializer(criteriaDeserializer));
     registerModule(module);
   }
 
