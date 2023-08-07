@@ -4916,6 +4916,8 @@
   EntityConnectionProvider and subclasses refactored for parameterless instantiation
   RemoteEntityConnectionProvider no longer crashes on parameterless instantiation due to missing configuration parameter
   CONNECTION_VALIDITY_CHECK_TIMEOUT configuration value moved from EntityConnection to DatabaseConnection
+  ConnectionPoolProvider now service based
+  LoggerProxy now service based
   Package org.jminor.common.server renamed to org.jminor.common.remote
   Modules common-server and common-server-http renamed to common-remote and common-remote-http respectively
   Module directories renamed to reflect the above
@@ -4926,12 +4928,17 @@
   EntityConnectionProvider generified
   AbstractEntityConnectionProvider.setClientId() bug fixed, did not use parameter, a few methods made final, disconnect() generified
   AbstractRemoteEntityConnection.RemoteEntityConnectionHandler.ACTIVE_CONNECTIONS is now a Set
+  DefaultEntityConnectionServer, SerializationWhitelist enabled for Java > 8
   PetstoreApplicationModel constructor now adds all entity models so that the load test works
   SerializationWhitelist.SerializationFilter.allowedClassnames is now a Set instead of a List
   DefaultProperty.DefaultColumnProperty serialVersionUID added
+  HttpEntityConnection now uses java.net.http instead of apache http client
+  EntityServletServerTest now uses java.net.http instead of apache http client
   DefaultEntityDefinition constructor simplified, relevant methods moved from Entities, Entities.DefaultStringProvider added
   EntityService, now invalidates session on invalid header client id
+  HttpEntityConnection bug fixed, did not set the cookieHandler on the HttpClient which caused a server side session pile-up (also set in EntityServletServerTest)
   CredentialsProvider added along with a default implementation CredentialServer.DefaultCredentialsProvider
+  CredentialServer now provides CredentialsProvider as a service, org.jminor.swing.framework.ui no longer depends on org.jminor.common.remote
   AbstractRemoteEntityConnection, minor refactoring
   AbstractServer.containsConnection() removed, some javadoc improvements
   org/jminor/common/version.properties file added, used by Version class and gradle build
@@ -4955,14 +4962,17 @@
   NavigableImagePanel.centerImage(Point) and centerImage(Coordinates) added
   Controls.toggleControl() overloaded with name parameter
   SerializationWhitelist now supports simple wildcard entries org.jminor.* or org.jminor.common.Value*
+  JavaFX upgraded to 11
+  EmpDept JavaFX demo module-info fixed, run configuration added
   A couple of third party dependencies upgraded
+  Module org.jminor.swing.framework.ui now uses org.jminor.common.CredentialsProvider
   EntityUiUtil.createEastButtonPanel() moved to UiUtil, button size now follows preferred size of centerComponent
   UiUtil.prepareScrollPanelDialog() no longer adds a double click action to the component
   EntityLookupField.setSelectionProvider() added, now supports EntityTablePanel based selection via EntityLookupField.TableSelectionProvider
   LocalEntityConnectionProvider and HttpEntityConnectionProvider can now be instantiated without the required system properties, fail on connect if those are missing
-0.12.0 [client/server incompatible with earlier versions due to date based data type changes]
   Minor code cleanup
   FilteredTablePanel, EntityTablePanel, ColumnConditionPanel, disappearing horizontal scroll bar bug fixed, focus related bugs fixed
+0.12.0 [client/server incompatible with earlier versions due to date based data type changes]
   Migrate from java.util.Date to java.time
   IntelliJ code analysis, Sonar run
   DateUtil, removed methods that have become redundant with the new java.time api
@@ -5027,6 +5037,7 @@
 0.12.1
   org.jminor.common.db.dbms package broken up into seperate dbms modules, projects must now include dbms module dependency
   dbms modules no longer include jdbc dependencies
+  Database now service based
   jminor-dbms-h2 module renamed to jminor-dbms-h2database
   jminor-framework-domain module split from jminor-framework-db-core
   DatabasesTest coverage improved a bit
@@ -5125,6 +5136,7 @@
   PropertyValue.toString() overridden, now returns the property name
   Module jminor-framework-db-test renamed to jminor-framework-domain-test
   Package names org.jminor.framework.domain.testing and org.jminor.swing.framework.ui.testing to .test to reflect module names
+  org.jminor.common.core module now has a requires transitive dependency on slf4j, slf4j requires clause removed from other modules
   AbstractTableColumnSyncPanel now uses FlexibleGridLayout instead of FlowLayout, which stretches the component to fill all available vertical space
   Documentation migrated from markdown to asciidoc
   EntityTestUnit refactored, demo domain unit tests fixed
@@ -5150,6 +5162,7 @@
   EntityTestUnit, special equals handling for BigDecimal property values, plus some minor refactoring and javadoc improvements
   Entities.getValues() and getDistinctValues() now return List instead of Collection
   h2database module removed from a few testRuntimeOnly configurations where it was unnecessary
+  Demo module-infos and builds fixed for running tests
   Static import added for Collections.singletonList(), Collections.emptyList() and Arrays.asList()
   Support for Types.JAVA_OBJECT added, useful for UUID primary key columns for example
   Entity.KeyGenerator.returnPrimaryKeyValues() added for custom primary key generation strategies
@@ -5224,16 +5237,21 @@
   SwingEntityTableModel.selectDependentEntities() removed
 0.12.5
   Plugin modules renamed from jminor-framework-plugins... to jminor-plugin...
+  Java modules renamed to reflect Gradle module names
   Plugin packages renamed to reflect module names
+  Plugin module-info files updated to reflect package name changes
+  Java 11 version now has groupId org.jminor.jdk11
   Java 8 version now has groupId org.jminor.jdk8
   ServerMonitorPanel, environment info text area now uses word wrap
   Util.PropertyWriter added, getSystemProperties() overloaded with one of these as a parameter
   DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the classpath as one item per line
+  DefaultEntityConnectionServerAdmin.getSystemProperties() now writes the module path as one item per line
   DefaultEntity.prepareValue() now strips trailing zeros on BigDecimals as well as setting the scale
   ServiceLoader used throughout
   Minima 2.5.1 Jekyll theme files added to documentation
   CredentialServer.DefaultCredentialsProvider moved up, made ServiceLoader compatible
   CredentialServer moved to new plugin module
+  Credentials server module-info added
   CredentialServer renamed to CredentialsServer along with related classes
   EntityBeanMapper disassembled, functionality moved to Domain
   Domain bean transformation now handles foreign key properties
@@ -5247,6 +5265,7 @@
   DefaultConnectionPool removed, a bug from the above fixed
   H2Database, tomcat connection pool, jaxrs-ri, commons-beanutils and jasperreports dependencies upgraded
   DatabaseProvider interface added, implemented in dbms modules. Database interface did not lend itself to ServiceLoader usage, since initializing a Database (H2Database f.ex) performed some actions, like initializing a in-memory database
+  Provides clauses in module-info.java updated according to the last change
   Property.ColumnProperty.isSelectable() added, useful for properties that are only used in conditions
   Property.isDateOrTime() renamed to isTemporal(), DefaultProperty no longer caches isDouble
   DefaultEntityConnectionServer, bug fixed, initializeConnectionPools() only checked for null on startupPoolUsers, not if empty
@@ -5261,6 +5280,7 @@
   Entity.Definition, setters removed, now private in DefaultEntityDefinition
   Domain, most getters moved to Entity.Definition, Domain.getDefinition() public
   Major refactoring, domain.property package added
+  domain.property package exported
   EntityEditModel.getEntityDefinition() and EntityTableModel.getEntityDefinition() added
   DefaultEntityDefinition.EntityDefinitionBuilder renamed to DefaultDefinitionBuilder and refactored
   PropertyBuilder now inner classe of relevant Property
@@ -5305,6 +5325,8 @@
   Domain.Validator moved up to DefaultValidator
   DefaultValueMap.DefaultValidator moved up and renamed DefaultValueMapValidator
   domain.DefaultValidator renamed to DefaultEntityValidator
+  HttpEntityConnection reverted back to apache httpcomponents, Jdk HttpClient unusable due to Thread leakage during load testing
+  HttpEntityConnectionJdk added to hold on to Jdk implementation, unused
   ServerException moved to common.remote.exception, inner classes moved up
   Removed unnecessary writeObject() and readObject() implementations
   Event, State and Value moved to common.event, common.state and common.value packages respectively
@@ -5432,6 +5454,7 @@
   PropertyComboBoxModel removed
   EntityEditModel.update(), insert() and delete() now return a single entity instead of a list
   Java.util.logging JulProxy plugin added
+  JulProxy module-info.java added
   Util.join removed, simple to do with streams
   Entity.ToString removed, replaced with Function<Entity, String>
   DefaultEntityLookupModel, minor refactoring
@@ -5445,6 +5468,7 @@
   Parameters in interfaces and abstract methods no longer final
   Code cleanup
   Chinook demo code restructured, EmpDept demo code restructured, Petstore demo code restructured, World demo code restructured
+  Demo module-info.java fixed after restructuring
   Petclinic demo added, unfinished
   EntityTestUnit.testEntity() renamed to test()
   FilteredComboBoxModel.replaceItem() added
@@ -5929,11 +5953,14 @@
   org.jminor.common.remote.server.http package renamed org.jminor.common.http.server
   Module jminor-common-remote-http renamed to jminor-common-http
   HttpServerConfiguration no longer fluid
+  jminor-common-http jpms module renamed to reflect module name
   RemoteEntityConnectionProvider now caches the remote method handles
   org.jminor.common.remote package renamed org.jminor.common.rmi
   common-remote module renamed to common-rmi
+  jminor-common-remote jpms module renamed to reflect module name
   org.jminor.framework.db.remote package renamed org.jminor.framework.db.rmi
   framework-db-remote module renamed to framework-db-rmi
+  framework-db-remote jpms module renamed to reflect module name
 0.14.7
   Domain.toBeans() added V type parameter
   Added entity to beans example to EmployeeService, some documentation code cleanup
@@ -6268,6 +6295,7 @@
   DefaultProperty.underscoreToCamelCase() bug fixed, now returns if string contains no underscore
   Entity.getOptional() and Key.getOptional() added
   DomainType.extendDomain() added
+  DefaultEntityDefinition.createDefaultMethodHandle() updated to work with modules, requires some massaging of the module system, with --add-reads for testing and running and --add-module in the server
   SwingEntityTableModel.isCellEditable() now handles ForeignKeyProperty as well
   DefaultEntityDefinition.resolveEntityClassMethods(), simplified foreign key property handling, setters witout 'set' prefix and getters returning Optional supported
   EntityServerAdmin.getEntityDefinitions() no longer returns the actual entity definitions, may require domain model classes on receiving side, now just strings
@@ -6420,6 +6448,7 @@
   Client side configuration values TRUSTSTORE, TRUSTSTORE_PASSWORD and SERVER_HOST_NAME moved from ServerConfiguration to Clients
   EntityConnectionHandler.EntityArgumentToString now translates null values to 'null' in method logger output
   DefaultEntityDefinition.EntityProperties.validate() error message improved
+  Incorrectly named module is.codion.framework.db.test renamed to is.codion.framework.domain.test
   DefaultForeignKeyProperty, references now final
   EntityApplicationPanel bug fixed, now sets parent window title on EDT
   DefaultProperty.getAttribute() and formatValue() now final
@@ -6509,6 +6538,7 @@
   EntityDefinition.entity(key), key can be any key, not just the primary key
   Domain and LoginProxy are now ServiceLoader based, reducing module voes
   AbstractServer.addLoginProxy() added for easier testing
+  module-info.java updated with Domain and LoginProxy services
   AbstractServer now shuts down on startup error
   SelectConditionDeserializer bug fixed, did not set forUpdate correctly
 0.17.2
@@ -6852,6 +6882,7 @@
   Components.selectLookAndFeel() bug fixed, now wraps LookAndFeelProvider in Item, using getName() as caption
   Components.selectLookAndFeel() refactored
   SerializationWhitelist, comments in whitelist file supported, # prefix
+  kordamp.ikonli upgraded to 12.2.0
   servlet dependency on jersey, common-rmi and common-http is now implementation instead of api, jerseyVersion centralized
   ColumnConditionPanel bug fixed, could not initialize when model was locked, lock now temporarily disabled during initialization, minor refactoring, one constructor removed
   Entity.put(destination, source) added
@@ -7250,6 +7281,7 @@
   EntityEditModel.initialize(ForeignKey, Entity) and setInitializeForeignKeyToNull() added along with INITIALIZE_FOREIGN_KEY_TO_NULL configuration value, default false
   DefaultEntityModel.onInitialization() now uses the above
   Chinook demo now uses the above for invoice lines, minor domain model fix, nullable(false) moved to respective column properties
+  slf4j and logback downgraded due to temporary removal of SiftingAppender and module related errors
   CalendarPanel, mouse wheel scrolling added to spinners
   SpinnerMouseWheelListener added, mouseWheelScrolling() added to spinner builders
   SliderBuilder.orientation() added
@@ -7264,6 +7296,7 @@
   TextInputPanel.setTransferFocusOnEnter() added
   MySQLDatabaseFactory '.jdbc' postfix removed from package name, recent driver did not include it
   MetaDataModel now handles MySQL and MariaDB, uses catalogs for schemas, run task for MariaDB added to framework-tools-ui build script
+  slf4j downgraded back to 2.0.0-alpha1
   TextInputPanel.Builder and TextInputPanelBuilder, dialogTitle() added, caption now used for a titled border around the input field if specified
   EntityTestUtil, private constructor added, createRandomValue() added type parameter
   SearchHighlighter extracted from ClientInstanceMonitor, related refactoring
@@ -7593,6 +7626,7 @@
   DefaultEntities now validates that all attributes referenced via foreign key actually exist in the referenced entity
   DefaultEntityDefinition, added primary key index check for misconfigured primary key indexes
   DefaultIcons and DefaultFrameworkIcons now based on Ikonli, legacy icons removed, Ikonli foundation plugin module removed
+  Modular issues regarding the above icon replacement fixed
   Icons.ICON_SIZE configuration value added, EntityTablePanel no longer sets the toolbar button sizes to textfield square
   DefaultIcons.filter() and configure() overloaded with size parameter
   Icons.ICON_COLOR configuration value added
@@ -7865,6 +7899,7 @@
   DefaultEntityTableCellRenderer, handle invalid null values for ItemProperty by displaying an empty string instead of throwing an exception
   DefaultEntityTableCellRenderer, handle invalid values for ItemProperty by displaying an empty string instead of throwing an exception
   HttpEntityConnection, HttpJsonEntityConnection, AbstractHttpEntityConnection bug fixed, synchronization improved and moved to subclasses, http client errors appeared with async client refresh enabled
+  HttpEntityConnectionJdk synchronization updated
   DefaultEntity, minor optimization in isModified()
   DefaultProperty, DefaultPropertyBuilder renamed AbstractProperty and AbstractPropertyBuilder
   Property.Builder, P property type parameter added, get() removed, build() added, one step towards a proper builder implementation
@@ -8109,7 +8144,9 @@
   NumberDocument, NumberField.getValue() and setValue() renamed back to getNumber() and setNumber(), more consistent with TemporalField (which can't use getValue() and setValue() due to extending JFormattedField)
   Property.getMinimumValue() and getMaximumValue() now Number based
   jdt compiler downgraded, versions > 3.26.0 are built with Java > 8
+  module is.codion.framework.model.tests renamed is.codion.framework.model.test, name now consistent with other test modules
   Asciidoc documentation properties added for javadoc module names, since modular javadocs must be able to include the module name
+  Documentation, combinedJavadocs finally fixed, quite an ugly workaround, but it works, asciidoc documentation module properties updated
   Asciidoc javadoc link syntax properties added, opar (open paranthesis), cpar (close paranthesis) and comma, since it changes in later java versions, from a hyphen denoting open paranthesis, close parenthesis and comma, to actual paranthesis and commas
   AbstractComponentValue, AbstractTextComponentValue, constructors now protected, minor javadoc improvements
   JavaFX framework module moved to separate sub-folder
@@ -8133,6 +8170,7 @@
   DefaultFileSelectionDialogBuilder bug fixed, did not update UI of cached file selection dialogs on look and feel change
   DefaultComboBoxBuilder, DefaultItemComboBoxBuilder bug fixed, did not set the SteppedComboBoxUI in case cross platform look and feel was enabled
   LookAndFeelProvider.isSystemLookAndFeelEnabled() is now isSystemOrCrossPlatformLookAndFeelEnabled()
+  Servlet module dependencies upgraded, moving from javax to jakarta, jersey 3.0.4 and jetty 11
   HttpServerConfiguration.Builder and HTTP_SERVER_CLASSPATH_KEYSTORE configuration value added
   Property.formatValue(value) renamed toString(value), consistent with Entity.toString(property), DefaultItemProperty now handles displaying item captions
   DefaultEntityTableCellRenderer.DefaultDisplayValueProvider now uses to Property.toString()
@@ -9162,6 +9200,7 @@
   ButtonBuilder.control(Control.Builder), ToggleButtonBuilder.toggleControl() and ToggleMenuItem.toggleControl() added, related refactoring
   MenuBuilder, ToolBarBuilder and ButtonPanelBuilder, overloaded for Controls.Builder
   EntityService, HttpEntityConnection, https functionality reintroduced, but disabled in jdk8, due to missing javalin ssl plugin
+  EntityService, redundant module dependencies removed
   EntityService bug fixed, did not supply the port to javalin when started
   AuxiliaryServer.serverInformation() added, used for startup logging in EntityServer
   EntityEditPanel.createControlPanelControls() renamed createControls(), bug fixed, did not take NULL_CONTROL into account, now throws exception if the panel has not been initialized, isPanelInitialized() added
@@ -9338,6 +9377,7 @@
   LoadTestModel, LoadTestPanel, automatic refresh of applications table added
   EventListener and EventDataListener removed, replaced with Runnable and Consumer respectively
   DefaultColumnProperty.OffsetTimeFetcher added, missing valueFetcher error message improved
+  combinedJavadoc task now uses the Toolchain javadoc executable
   EntityPanelBuilder.createInsertControl() and createUpdateControl() functionality moved to EntityEditPanel
   EntityApplicationPanel.PERSIST_ENTITY_PANELS renamed CACHE_ENTITY_PANELS
   EntityEditPanel.UpdateEntityCommand, OK button now enabled only when the entity is modified

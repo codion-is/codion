@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 dependencies {
     implementation project(":codion-common-core")
     implementation project(":codion-common-db")
@@ -10,6 +14,7 @@ dependencies {
     implementation project(":codion-framework-json-db")
 
     implementation(libs.javalin)
+    implementation(libs.javalin.ssl)
 
     implementation(libs.slf4j.api)
 
@@ -22,3 +27,6 @@ dependencies {
     testRuntimeOnly project(":codion-dbms-h2database")
     testRuntimeOnly(libs.h2)
 }
+
+apply from: "extra-module-info-javalin.gradle"
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"

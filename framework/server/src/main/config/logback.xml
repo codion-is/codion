@@ -34,4 +34,7 @@
   <root level="DEBUG">
     <appender-ref ref="SIFT" />
   </root>
+
+  <!--No need for all the jetty debug output-->
+  <logger name="org.eclipse" level="ERROR"/>
 </configuration>

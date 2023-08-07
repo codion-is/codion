@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 apply from: "../demos.gradle"
 
 dependencies {
@@ -25,6 +29,9 @@ dependencies {
 
     runtimeOnly(libs.h2)
 }
+
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
 runClientLocal {
     mainClass.set("is.codion.framework.demos.manual.store.ui.StoreAppPanel")

@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 apply from: "../demos.gradle"
 
 apply plugin: BuildReportsPlugin
@@ -20,7 +24,6 @@ dependencies {
     testImplementation project(":codion-swing-framework-ui-test")
 
     implementation(libs.flatlaf.intellij.themes)
-    implementation "javax.ws.rs:jsr311-api:1.1.1"
 
     runtimeOnly project(":codion-plugin-logback-proxy")
 
@@ -31,6 +34,9 @@ dependencies {
     runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
 }
+
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 buildReports {
     sourceDir = file("src/main/reports")

@@ -7,8 +7,8 @@ import is.codion.common.Serializer;
 import is.codion.common.rmi.server.SerializationWhitelist.SerializationFilter;
 
 import org.junit.jupiter.api.Test;
-import sun.misc.ObjectInputFilter;
 
+import java.io.ObjectInputFilter;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -50,10 +50,10 @@ public final class SerializationWhitelistTest {
             "is.codion.common.state.StateObserver"
     );
     SerializationFilter filter = new SerializationFilter(whitelistItems);
-    assertEquals(filter.checkInput("is.codion.common.value.Value"), sun.misc.ObjectInputFilter.Status.ALLOWED);
-    assertEquals(filter.checkInput("is.codion.common.state.State"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("is.codion.common.value.Value"), ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("is.codion.common.state.State"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.state.States"), ObjectInputFilter.Status.REJECTED);
-    assertEquals(filter.checkInput("is.codion.common.state.StateObserver"), sun.misc.ObjectInputFilter.Status.ALLOWED);
+    assertEquals(filter.checkInput("is.codion.common.state.StateObserver"), ObjectInputFilter.Status.ALLOWED);
     assertEquals(filter.checkInput("is.codion.common.event.Event"), ObjectInputFilter.Status.REJECTED);
     assertEquals(filter.checkInput("is.codion.common.i18n.Messages"), ObjectInputFilter.Status.REJECTED);
   }

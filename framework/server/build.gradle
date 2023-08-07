@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 configurations {
     serverRuntime {
         extendsFrom runtimeClasspath
@@ -36,6 +40,8 @@ dependencies {
     serverRuntime project(":codion-dbms-h2database")
     serverRuntime(libs.h2)
 }
+
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
 
 tasks.register("runServer", JavaExec) {
     dependsOn createServerKeystore

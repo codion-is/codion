@@ -1,8 +1,11 @@
 apply plugin: "java"
 apply plugin: "jacoco"
 
-sourceCompatibility = JavaVersion.VERSION_1_8
-targetCompatibility = JavaVersion.VERSION_1_8
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(11)
+    }
+}
 
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"

@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.ObjectInputFilter;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -27,7 +28,7 @@ import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 /**
- * Implements a serialization whitelist for Java 8
+ * Implements a serialization whitelist
  */
 public final class SerializationWhitelist {
 
@@ -44,7 +45,7 @@ public final class SerializationWhitelist {
    */
   public static void configure(String whitelistFile) {
     if (!nullOrEmpty(whitelistFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
+      ObjectInputFilter.Config.setSerialFilter(new SerializationFilter(whitelistFile));
       LOG.info("Serialization filter whitelist set: " + whitelistFile);
     }
   }
@@ -57,7 +58,7 @@ public final class SerializationWhitelist {
    */
   public static void configureDryRun(String dryRunFile) {
     if (!nullOrEmpty(dryRunFile)) {
-      sun.misc.ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
+      ObjectInputFilter.Config.setSerialFilter(new SerializationFilterDryRun(dryRunFile));
       LOG.info("Serialization filter whitelist set for dry-run: " + dryRunFile);
     }
   }
@@ -67,7 +68,7 @@ public final class SerializationWhitelist {
    * @return true if a dry-run is active.
    */
   public static boolean isSerializationDryRunActive() {
-    return sun.misc.ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
+    return ObjectInputFilter.Config.getSerialFilter() instanceof SerializationFilterDryRun;
   }
 
   /**
@@ -75,13 +76,13 @@ public final class SerializationWhitelist {
    * If dry-run was not active this method has no effect.
    */
   public static void writeDryRunWhitelist() {
-    sun.misc.ObjectInputFilter serialFilter = sun.misc.ObjectInputFilter.Config.getSerialFilter();
+    ObjectInputFilter serialFilter = ObjectInputFilter.Config.getSerialFilter();
     if (serialFilter instanceof SerializationFilterDryRun) {
       ((SerializationFilterDryRun) serialFilter).writeToFile();
     }
   }
 
-  private static final class SerializationFilterDryRun implements sun.misc.ObjectInputFilter {
+  private static final class SerializationFilterDryRun implements ObjectInputFilter {
 
     private final String whitelistFile;
     private final Set<Class<?>> deserializedClasses = new HashSet<>();
@@ -124,7 +125,7 @@ public final class SerializationWhitelist {
     }
   }
 
-  static final class SerializationFilter implements sun.misc.ObjectInputFilter {
+  static final class SerializationFilter implements ObjectInputFilter {
 
     private static final String COMMENT = "#";
     private static final String WILDCARD = "*";

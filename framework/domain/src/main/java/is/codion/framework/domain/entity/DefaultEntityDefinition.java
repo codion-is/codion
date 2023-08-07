@@ -18,7 +18,7 @@ import java.io.ObjectInputStream;
 import java.io.Serializable;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
-import java.lang.reflect.Constructor;
+import java.lang.invoke.MethodType;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -680,12 +680,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    */
   private static MethodHandle createDefaultMethodHandle(Method method) {
     try {
-      Class<?> declaringClass = method.getDeclaringClass();
-      Constructor<MethodHandles.Lookup> constructor =
-              MethodHandles.Lookup.class.getDeclaredConstructor(Class.class, int.class);
-      constructor.setAccessible(true);
+      Method privateLookupIn = MethodHandles.class.getMethod("privateLookupIn", Class.class, MethodHandles.Lookup.class);
 
-      return constructor.newInstance(declaringClass, MethodHandles.Lookup.PRIVATE).unreflectSpecial(method, declaringClass);
+      MethodHandles.Lookup lookup = (MethodHandles.Lookup) privateLookupIn.invoke(MethodHandles.class,
+              method.getDeclaringClass(), MethodHandles.lookup());
+
+			return lookup.findSpecial(method.getDeclaringClass(), method.getName(),
+              MethodType.methodType(method.getReturnType(), method.getParameterTypes()), method.getDeclaringClass());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

@@ -510,7 +510,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
         startServer();
         break;
       default:
-        throw new IllegalArgumentException("Unknown argument '" + argument + "'");
+        startServer();
     }
   }
 

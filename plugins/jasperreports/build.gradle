@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 apply plugin: BuildReportsPlugin
 
 dependencies {
@@ -24,6 +28,9 @@ dependencies {
     testImplementation(libs.javalin)
     testRuntimeOnly(libs.h2)
 }
+
+apply from: "extra-module-info-jasperreports.gradle"
+apply from: "../../framework/servlet/extra-module-info-javalin.gradle"
 
 buildReports {
     sourceDir = file("src/test/reports")

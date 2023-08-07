@@ -41,7 +41,7 @@ The {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class is
 
 The associated {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] instance can not trigger the event and can be safely passed around.
 
-Event listeners must implement either https://docs.oracle.com/javase/8/docs/api/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/javase/8/docs/api/java/util/function/Consumer.html[Consumer], depending on whether data is associated with the event.
+Event listeners must implement either https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/lang/Runnable.html[Runnable] or https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/util/function/Consumer.html[Consumer], depending on whether data is associated with the event.
 
 Events are instantiated via factory methods in the {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event] class.
 

@@ -52,7 +52,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
-  private static final boolean OBJECT_INPUT_FILTER_ON_CLASSPATH = onClasspath("sun.misc.ObjectInputFilter");
   private static final String CLIENT_ID = "clientId";
 
   private final Map<UUID, ClientConnection<T>> connections = new ConcurrentHashMap<>();
@@ -230,7 +229,7 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     sharedLoginProxies.forEach(AbstractServer::closeLoginProxy);
     loginProxies.values().forEach(AbstractServer::closeLoginProxy);
     auxiliaryServers.forEach(AbstractServer::stopAuxiliaryServer);
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH && isSerializationDryRunActive()) {
+    if (isSerializationDryRunActive()) {
       writeDryRunWhitelist();
     }
     shutdownEvent.run();
@@ -415,13 +414,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
   }
 
   private static void configureSerializationWhitelist(ServerConfiguration configuration) {
-    if (OBJECT_INPUT_FILTER_ON_CLASSPATH) {
-      if (configuration.isSerializationFilterDryRun()) {
-        SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
-      }
-      else {
-        SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
-      }
+    if (configuration.isSerializationFilterDryRun()) {
+      SerializationWhitelist.configureDryRun(configuration.serializationFilterWhitelist());
+    }
+    else {
+      SerializationWhitelist.configure(configuration.serializationFilterWhitelist());
     }
   }
 
@@ -479,16 +476,6 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     }
 
     return requestParameterHost;
-  }
-
-  private static boolean onClasspath(String className) {
-    try {
-      Class.forName(className);
-      return true;
-    }
-    catch (ClassNotFoundException e) {
-      return false;
-    }
   }
 
   private void loadLoginProxies() {

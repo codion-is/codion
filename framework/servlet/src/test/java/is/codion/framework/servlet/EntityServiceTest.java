@@ -36,6 +36,10 @@ import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.protocol.HttpClientContext;
 import org.apache.http.client.utils.URIBuilder;
+import org.apache.http.config.RegistryBuilder;
+import org.apache.http.conn.socket.ConnectionSocketFactory;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
 import org.apache.http.entity.ByteArrayEntity;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.auth.BasicScheme;
@@ -48,11 +52,13 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
+import javax.net.ssl.SSLContext;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -86,9 +92,9 @@ public class EntityServiceTest {
   public static void setUp() throws Exception {
     EntityServerConfiguration configuration = configure();
     HOSTNAME = Clients.SERVER_HOSTNAME.get();
-    TARGET_HOST = new HttpHost(HOSTNAME, EntityService.HTTP_SERVER_PORT.get(), "http");
-    SERVER_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/ser";
-    SERVER_JSON_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_PORT.get() + "/entities/json";
+    TARGET_HOST = new HttpHost(HOSTNAME, EntityService.HTTP_SERVER_SECURE_PORT.get(), "https");
+    SERVER_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_SECURE_PORT.get() + "/entities/ser";
+    SERVER_JSON_BASEURL = HOSTNAME + ":" + EntityService.HTTP_SERVER_SECURE_PORT.get() + "/entities/json";
     server = EntityServer.startServer(configuration);
   }
 
@@ -548,11 +554,11 @@ public class EntityServiceTest {
   }
 
   private static URI createSerURI(String path) throws URISyntaxException {
-    return new URIBuilder().setScheme("http").setHost(SERVER_BASEURL).setPath(path).build();
+    return new URIBuilder().setScheme("https").setHost(SERVER_BASEURL).setPath(path).build();
   }
 
   private static URI createJsonURI(String path) throws URISyntaxException {
-    return new URIBuilder().setScheme("http").setHost(SERVER_JSON_BASEURL).setPath(path).build();
+    return new URIBuilder().setScheme("https").setHost(SERVER_JSON_BASEURL).setPath(path).build();
   }
 
   private static HttpClientContext createHttpContext(User user, HttpHost targetHost) {
@@ -572,17 +578,16 @@ public class EntityServiceTest {
   }
 
   private static BasicHttpClientConnectionManager createConnectionManager() {
-    return new BasicHttpClientConnectionManager();
-//    try {
-//      SSLContext sslContext = SSLContext.getDefault();
-//
-//      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
-//                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
-//              .build());
-//    }
-//    catch (NoSuchAlgorithmException e) {
-//      throw new RuntimeException(e);
-//    }
+    try {
+      SSLContext sslContext = SSLContext.getDefault();
+
+      return new BasicHttpClientConnectionManager(RegistryBuilder.<ConnectionSocketFactory>create().register("https",
+                      new SSLConnectionSocketFactory(sslContext, NoopHostnameVerifier.INSTANCE))
+              .build());
+    }
+    catch (NoSuchAlgorithmException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static EntityServerConfiguration configure() {
@@ -593,7 +598,7 @@ public class EntityServiceTest {
     ServerConfiguration.RMI_SERVER_HOSTNAME.set("localhost");
     EntityService.HTTP_SERVER_KEYSTORE_PATH.set("../../framework/server/src/main/config/keystore.jks");
     EntityService.HTTP_SERVER_KEYSTORE_PASSWORD.set("crappypass");
-    EntityService.HTTP_SERVER_SECURE.set(false);
+    EntityService.HTTP_SERVER_SECURE.set(true);
     System.setProperty("java.security.policy", "../../framework/server/src/main/config/all_permissions.policy");
 
     return EntityServerConfiguration.builder(3223, 3221)

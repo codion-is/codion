@@ -1,3 +1,7 @@
+plugins {
+    id "org.gradlex.extra-java-module-info"
+}
+
 apply from: "../demos.gradle"
 
 apply plugin: BuildReportsPlugin
@@ -10,7 +14,7 @@ dependencies {
     implementation(libs.jfreechart)
     implementation(libs.json)
     implementation "org.jxmapviewer:jxmapviewer2:2.6"
-    implementation "org.kordamp.ikonli:ikonli-foundation-pack:2.6.0"
+    implementation "org.kordamp.ikonli:ikonli-foundation-pack:12.3.1"
 
     testImplementation project(":codion-framework-domain-test")
     testImplementation project(":codion-swing-framework-ui-test")
@@ -29,14 +33,14 @@ dependencies {
         transitive = false
     }
 
-    runtimeOnly(libs.commons.logging)
-    runtimeOnly(libs.commons.digester)
-    runtimeOnly(libs.commons.collections4)
-    runtimeOnly(libs.commons.beanutils)
-    runtimeOnly(libs.jdt.core.compiler)
-
     runtimeOnly project(":codion-dbms-h2database")
     runtimeOnly(libs.h2)
+}
+
+apply from: "../../plugins/jasperreports/extra-module-info-jasperreports.gradle"
+
+extraJavaModuleInfo {
+    automaticModule("org.jxmapviewer:jxmapviewer2", "jxmapviewer2")
 }
 
 buildReports {
