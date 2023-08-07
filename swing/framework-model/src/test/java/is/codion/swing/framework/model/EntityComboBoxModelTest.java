@@ -30,6 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -277,7 +278,7 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_3_TYPE));
+    comboBoxModel.setSelectConditionSupplier(() -> where(Condition.customCriteria(Employee.CRITERIA_3_TYPE)));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

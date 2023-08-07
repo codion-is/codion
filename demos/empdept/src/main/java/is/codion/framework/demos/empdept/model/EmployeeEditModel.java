@@ -12,6 +12,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 import java.util.Objects;
 
 import static is.codion.framework.db.condition.Condition.attribute;
+import static is.codion.framework.db.condition.Condition.where;
 
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
@@ -37,7 +38,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectConditionSupplier(() ->
-              attribute(Employee.JOB).in("MANAGER", "PRESIDENT"));
+              where(attribute(Employee.JOB).in("MANAGER", "PRESIDENT")));
     }
 
     return comboBoxModel;

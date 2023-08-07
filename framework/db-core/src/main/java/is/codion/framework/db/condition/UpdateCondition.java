@@ -13,23 +13,9 @@ import java.util.Map;
 public interface UpdateCondition extends Condition {
 
   /**
-   * @return the underlying condition
-   */
-  Condition condition();
-
-  /**
    * @return an unmodifiable view of the new values mapped to their respective attributes
    */
   Map<Attribute<?>, Object> attributeValues();
-
-  /**
-   * Returns a {@link UpdateCondition.Builder} instance based on the given condition
-   * @param condition the condition
-   * @return a {@link UpdateCondition.Builder} instance
-   */
-  static Builder builder(Condition condition) {
-    return new DefaultUpdateCondition.DefaultBuilder(condition);
-  }
 
   /**
    * Builds an {@link UpdateCondition}.

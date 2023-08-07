@@ -1,26 +1,29 @@
-/*
- * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package is.codion.framework.db.condition;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
+import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-/**
- * A condition with no values or attributes, as in, no condition
- */
-final class EmptyCondition extends AbstractCondition {
+final class AllCriteria implements Criteria, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  EmptyCondition(EntityType entityType) {
-    super(entityType);
+  private final EntityType entityType;
+
+  AllCriteria(EntityType entityType) {
+    this.entityType = requireNonNull(entityType);
+  }
+
+  @Override
+  public EntityType entityType() {
+    return entityType;
   }
 
   @Override
@@ -44,10 +47,15 @@ final class EmptyCondition extends AbstractCondition {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof EmptyCondition)) {
+    if (!(object instanceof AllCriteria)) {
       return false;
     }
+    AllCriteria that = (AllCriteria) object;
+    return Objects.equals(entityType, that.entityType);
+  }
 
-    return super.equals(object);
+  @Override
+  public int hashCode() {
+    return Objects.hash(entityType);
   }
 }

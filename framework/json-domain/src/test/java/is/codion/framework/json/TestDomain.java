@@ -6,7 +6,7 @@ package is.codion.framework.json;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ConditionType;
+import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -44,7 +44,7 @@ public final class TestDomain extends DefaultDomain {
     Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
     Attribute<LocalTime> TIME = TYPE.localTimeAttribute("time");
     Attribute<Entity> ENTITY = TYPE.entityAttribute("entity");
-    ConditionType CONDITION_TYPE = TYPE.conditionType("entityConditionId");
+    CriteriaType CRITERIA_TYPE = TYPE.criteriaType("entityCriteriaType");
   }
 
   void testEntity() {
@@ -58,7 +58,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(TestEntity.BOOLEAN),
             columnProperty(TestEntity.TIME),
             columnProperty(TestEntity.ENTITY))
-            .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
+            .criteriaProvider(TestEntity.CRITERIA_TYPE, (attributes, values) -> "1 = 2"));
   }
 
   public interface Department {

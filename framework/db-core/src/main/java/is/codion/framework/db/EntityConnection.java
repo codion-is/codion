@@ -11,6 +11,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -427,12 +428,12 @@ public interface EntityConnection extends AutoCloseable {
       Builder includePrimaryKeys(boolean includePrimaryKeys);
 
       /**
-       * Specifies a condition to use when determining which entities of the given type to copy,
+       * Specifies a criteria to use when determining which entities of the given type to copy,
        * by default all entities are copied.
-       * @param condition the condition to use
+       * @param criteria the criteria to use
        * @return this builder instance
        */
-      Builder condition(Condition condition);
+      Builder criteria(Criteria criteria);
 
       /**
        * Builds and executes this copy operation

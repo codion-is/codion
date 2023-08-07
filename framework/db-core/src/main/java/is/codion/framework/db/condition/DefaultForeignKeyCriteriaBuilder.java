@@ -23,18 +23,18 @@ import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuilder {
+final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Builder {
 
   private static final String VALUES_PARAMETER = "values";
 
   private final ForeignKey foreignKey;
 
-  DefaultForeignKeyConditionBuilder(ForeignKey foreignKey) {
+  DefaultForeignKeyCriteriaBuilder(ForeignKey foreignKey) {
     this.foreignKey = requireNonNull(foreignKey, "foreignKey");
   }
 
   @Override
-  public Condition equalTo(Entity value) {
+  public Criteria equalTo(Entity value) {
     if (value == null) {
       return isNull();
     }
@@ -42,17 +42,17 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultAttributeConditionBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute()));
+      return new DefaultAttributeCriteriaBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute()));
     }
 
-    return new DefaultConditionCombination(AND, references.stream()
+    return new DefaultCriteriaCombination(AND, references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultAttributeConditionBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute())))
+            .map(reference -> new DefaultAttributeCriteriaBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute())))
             .collect(toList()));
   }
 
   @Override
-  public Condition notEqualTo(Entity value) {
+  public Criteria notEqualTo(Entity value) {
     if (value == null) {
       return isNotNull();
     }
@@ -61,27 +61,27 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultAttributeConditionBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute()));
+      return new DefaultAttributeCriteriaBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute()));
     }
 
-    return new DefaultConditionCombination(AND, references.stream()
+    return new DefaultCriteriaCombination(AND, references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultAttributeConditionBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute())))
+            .map(reference -> new DefaultAttributeCriteriaBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute())))
             .collect(toList()));
   }
 
   @Override
-  public Condition in(Entity... values) {
+  public Criteria in(Entity... values) {
     return in(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
-  public Condition notIn(Entity... values) {
+  public Criteria notIn(Entity... values) {
     return notIn(asList(requireNonNull(values, VALUES_PARAMETER)));
   }
 
   @Override
-  public Condition in(Collection<? extends Entity> values) {
+  public Criteria in(Collection<? extends Entity> values) {
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::referencedAttribute)
             .collect(toList());
@@ -92,7 +92,7 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
-  public Condition notIn(Collection<? extends Entity> values) {
+  public Criteria notIn(Collection<? extends Entity> values) {
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::referencedAttribute)
             .collect(toList());
@@ -103,64 +103,64 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
   }
 
   @Override
-  public Condition isNull() {
+  public Criteria isNull() {
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::attribute)
             .collect(toList());
     if (attributes.size() == 1) {
       Attribute<Object> attribute = (Attribute<Object>) attributes.get(0);
 
-      return new DefaultAttributeConditionBuilder<>(attribute).isNull();
+      return new DefaultAttributeCriteriaBuilder<>(attribute).isNull();
     }
 
-    return new DefaultConditionCombination(AND, attributes.stream()
+    return new DefaultCriteriaCombination(AND, attributes.stream()
             .map(attribute -> (Attribute<Object>) attribute)
-            .map(attribute -> new DefaultAttributeConditionBuilder<>(attribute).isNull())
+            .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNull())
             .collect(toList()));
   }
 
   @Override
-  public Condition isNotNull() {
+  public Criteria isNotNull() {
     List<Attribute<?>> attributes = foreignKey.references().stream()
             .map(Reference::attribute)
             .collect(toList());
     if (attributes.size() == 1) {
       Attribute<Object> attribute = (Attribute<Object>) attributes.get(0);
 
-      return new DefaultAttributeConditionBuilder<>(attribute).isNotNull();
+      return new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull();
     }
 
-    return new DefaultConditionCombination(AND, attributes.stream()
+    return new DefaultCriteriaCombination(AND, attributes.stream()
             .map(attribute -> (Attribute<Object>) attribute)
-            .map(attribute -> new DefaultAttributeConditionBuilder<>(attribute).isNotNull())
+            .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull())
             .collect(toList()));
   }
 
-  static Condition compositeKeyCondition(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
-                                         List<Map<Attribute<?>, ?>> valueMaps) {
+  static Criteria compositeKeyCriteria(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
+                                       List<Map<Attribute<?>, ?>> valueMaps) {
     if (valueMaps.size() == 1) {
-      return compositeEqualCondition(attributes, operator, valueMaps.get(0));
+      return compositeEqualCriteria(attributes, operator, valueMaps.get(0));
     }
 
-    return new DefaultConditionCombination(OR, valueMaps.stream()
-            .map(valueMap -> compositeEqualCondition(attributes, operator, valueMap))
+    return new DefaultCriteriaCombination(OR, valueMaps.stream()
+            .map(valueMap -> compositeEqualCriteria(attributes, operator, valueMap))
             .collect(toList()));
   }
 
-  static Condition compositeEqualCondition(Map<Attribute<?>, Attribute<?>> attributes,
-                                           Operator operator, Map<Attribute<?>, ?> valueMap) {
-    return new DefaultConditionCombination(AND, attributes.entrySet().stream()
-            .map(entry -> equalCondition(entry.getKey(), operator, valueMap.get(entry.getValue())))
+  static Criteria compositeEqualCriteria(Map<Attribute<?>, Attribute<?>> attributes,
+                                         Operator operator, Map<Attribute<?>, ?> valueMap) {
+    return new DefaultCriteriaCombination(AND, attributes.entrySet().stream()
+            .map(entry -> equalCriteria(entry.getKey(), operator, valueMap.get(entry.getValue())))
             .collect(toList()));
   }
 
-  private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
-                                               List<Map<Attribute<?>, ?>> valueMaps) {
+  private static Criteria foreignKeyCondition(ForeignKey foreignKey, Operator operator,
+                                              List<Map<Attribute<?>, ?>> valueMaps) {
     if (foreignKey.references().size() > 1) {
-      return compositeKeyCondition(attributeMap(foreignKey.references()), operator, valueMaps);
+      return compositeKeyCriteria(attributeMap(foreignKey.references()), operator, valueMaps);
     }
 
-    return inCondition(foreignKey.references().get(0), operator, valueMaps.stream()
+    return inCriteria(foreignKey.references().get(0), operator, valueMaps.stream()
             .map(map -> map.get(foreignKey.references().get(0).referencedAttribute()))
             .collect(toList()));
   }
@@ -179,25 +179,25 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyConditionBuil
     return values;
   }
 
-  private static AttributeCondition<Object> inCondition(Reference<?> reference, Operator operator, List<Object> values) {
-    AttributeCondition.Builder<Object> conditionBuilder = new DefaultAttributeConditionBuilder<>((Attribute<Object>) reference.attribute());
+  private static AttributeCriteria<Object> inCriteria(Reference<?> reference, Operator operator, List<Object> values) {
+    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Attribute<Object>) reference.attribute());
     switch (operator) {
       case EQUAL:
-        return conditionBuilder.in(values);
+        return criteriaBuilder.in(values);
       case NOT_EQUAL:
-        return conditionBuilder.notIn(values);
+        return criteriaBuilder.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + operator);
     }
   }
 
-  private static Condition equalCondition(Attribute<?> conditionAttribute, Operator operator, Object value) {
-    AttributeCondition.Builder<Object> conditionBuilder = new DefaultAttributeConditionBuilder<>((Attribute<Object>) conditionAttribute);
+  private static Criteria equalCriteria(Attribute<?> conditionAttribute, Operator operator, Object value) {
+    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Attribute<Object>) conditionAttribute);
     switch (operator) {
       case EQUAL:
-        return conditionBuilder.equalTo(value);
+        return criteriaBuilder.equalTo(value);
       case NOT_EQUAL:
-        return conditionBuilder.notEqualTo(value);
+        return criteriaBuilder.notEqualTo(value);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + operator);
     }

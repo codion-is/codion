@@ -6,33 +6,15 @@ package is.codion.framework.db.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Arrays;
 
-import static java.util.Arrays.asList;
-
-final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
+final class DualValueAttributeCondition<T> extends AbstractAttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final T lowerBound;
-  private final T upperBound;
-
   DualValueAttributeCondition(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
-    super(attribute, operator, true);
+    super(attribute, operator, Arrays.asList(lowerBound, upperBound), true);
     validateOperator(operator);
-    this.lowerBound = lowerBound;
-    this.upperBound = upperBound;
-  }
-
-  @Override
-  public List<?> values() {
-    return asList(lowerBound, upperBound);
-  }
-
-  @Override
-  public List<Attribute<?>> attributes() {
-    return asList(attribute(), attribute());
   }
 
   @Override
@@ -43,17 +25,13 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
     if (!(object instanceof DualValueAttributeCondition)) {
       return false;
     }
-    if (!super.equals(object)) {
-      return false;
-    }
-    DualValueAttributeCondition<?> that = (DualValueAttributeCondition<?>) object;
-    return Objects.equals(lowerBound, that.lowerBound) &&
-            Objects.equals(upperBound, that.upperBound);
+
+    return super.equals(object);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), lowerBound, upperBound);
+    return super.hashCode();
   }
 
   @Override
@@ -72,7 +50,7 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCondition<T>
     }
   }
 
-  private static void validateOperator(Operator operator) {
+  protected void validateOperator(Operator operator) {
     switch (operator) {
       case BETWEEN:
       case NOT_BETWEEN:

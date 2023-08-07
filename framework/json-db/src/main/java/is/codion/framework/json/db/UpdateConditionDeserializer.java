@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -20,19 +20,21 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
+import static is.codion.framework.db.condition.Condition.where;
+
 final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition> {
 
   private static final long serialVersionUID = 1;
 
-  private final ConditionDeserializer conditionDeserializer;
   private final EntityObjectMapper entityObjectMapper;
+  private final CriteriaDeserializer criteriaDeserializer;
   private final Entities entities;
 
-  UpdateConditionDeserializer(EntityObjectMapper entityObjectMapper) {
+  UpdateConditionDeserializer(CriteriaDeserializer criteriaDeserializer) {
     super(UpdateCondition.class);
-    this.conditionDeserializer = new ConditionDeserializer(entityObjectMapper);
-    this.entityObjectMapper = entityObjectMapper;
-    this.entities = entityObjectMapper.entities();
+    this.criteriaDeserializer = criteriaDeserializer;
+    this.entityObjectMapper = criteriaDeserializer.entityObjectMapper;
+    this.entities = criteriaDeserializer.entities;
   }
 
   @Override
@@ -41,10 +43,10 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
-    JsonNode conditionNode = jsonNode.get("condition");
-    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    JsonNode criteriaNode = jsonNode.get("criteria");
+    Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    UpdateCondition.Builder updateCondition = condition.updateBuilder();
+    UpdateCondition.Builder updateCondition = where(criteria).updateBuilder();
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {

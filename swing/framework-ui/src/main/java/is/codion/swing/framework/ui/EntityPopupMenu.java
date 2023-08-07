@@ -32,6 +32,7 @@ import java.util.List;
 import java.util.Set;
 
 import static is.codion.framework.db.condition.Condition.key;
+import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.swing.common.ui.Utilities.setClipboard;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -180,7 +181,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static Entity selectEntity(Key primaryKey, EntityConnection connection) {
     try {
-      return connection.selectSingle(key(primaryKey)
+      return connection.selectSingle(where(key(primaryKey))
               .selectBuilder()
               .fetchDepth(0)
               .build());

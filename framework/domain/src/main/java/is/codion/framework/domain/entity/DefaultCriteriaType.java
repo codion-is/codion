@@ -8,14 +8,14 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultConditionType implements ConditionType, Serializable {
+final class DefaultCriteriaType implements CriteriaType, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityType entityType;
   private final String name;
 
-  DefaultConditionType(EntityType entityType, String name) {
+  DefaultCriteriaType(EntityType entityType, String name) {
     this.entityType = requireNonNull(entityType);
     this.name = requireNonNull(name);
   }
@@ -38,8 +38,7 @@ final class DefaultConditionType implements ConditionType, Serializable {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    DefaultConditionType that = (DefaultConditionType) object;
-
+    DefaultCriteriaType that = (DefaultCriteriaType) object;
     return entityType.equals(that.entityType) && name.equals(that.name);
   }
 

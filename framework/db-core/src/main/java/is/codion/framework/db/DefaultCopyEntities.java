@@ -5,7 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -16,7 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.Criteria.all;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCopyEntities implements CopyEntities {
@@ -24,7 +25,7 @@ final class DefaultCopyEntities implements CopyEntities {
   private final EntityConnection source;
   private final EntityConnection destination;
   private final Collection<EntityType> entityTypes = new ArrayList<>();
-  private final Map<EntityType, Condition> conditions = new HashMap<>();
+  private final Map<EntityType, Criteria> criteria = new HashMap<>();
   private final int batchSize;
   private final boolean includePrimaryKeys;
 
@@ -32,7 +33,7 @@ final class DefaultCopyEntities implements CopyEntities {
     this.source = builder.source;
     this.destination = builder.destination;
     this.entityTypes.addAll(builder.entityTypes);
-    this.conditions.putAll(builder.conditions);
+    this.criteria.putAll(builder.criteria);
     this.batchSize = builder.batchSize;
     this.includePrimaryKeys = builder.includePrimaryKeys;
   }
@@ -40,7 +41,7 @@ final class DefaultCopyEntities implements CopyEntities {
   @Override
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
-      List<Entity> entities = source.select(conditions.getOrDefault(entityType, all(entityType))
+      List<Entity> entities = source.select(where(criteria.getOrDefault(entityType, all(entityType)))
               .selectBuilder()
               .fetchDepth(0)
               .build());
@@ -58,7 +59,7 @@ final class DefaultCopyEntities implements CopyEntities {
     private final EntityConnection source;
     private final EntityConnection destination;
     private final Collection<EntityType> entityTypes = new ArrayList<>();
-    private final Map<EntityType, Condition> conditions = new HashMap<>();
+    private final Map<EntityType, Criteria> criteria = new HashMap<>();
 
     private boolean includePrimaryKeys = true;
     private int batchSize = 100;
@@ -90,11 +91,11 @@ final class DefaultCopyEntities implements CopyEntities {
     }
 
     @Override
-    public Builder condition(Condition condition) {
-      if (!entityTypes.contains(requireNonNull(condition).entityType())) {
-        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + condition.entityType());
+    public Builder criteria(Criteria criteria) {
+      if (!entityTypes.contains(requireNonNull(criteria).entityType())) {
+        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + criteria.entityType());
       }
-      this.conditions.put(condition.entityType(), condition);
+      this.criteria.put(criteria.entityType(), criteria);
       return this;
     }
 

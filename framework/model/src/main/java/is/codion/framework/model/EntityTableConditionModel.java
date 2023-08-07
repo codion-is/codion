@@ -8,6 +8,7 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -47,14 +48,14 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   /**
    * @return supplies any additional search condition, not based on any individual property condition
    */
-  Supplier<Condition> getAdditionalConditionSupplier();
+  Supplier<Criteria> getAdditionalCriteriaSupplier();
 
   /**
    * Sets the additional condition supplier, one not based on any individual property condition.
    * This condition supplier may return null in case of no condition.
-   * @param additionalConditionSupplier the condition supplier
+   * @param additionalCriteriaSupplier the condition supplier
    */
-  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
+  void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier);
 
   /**
    * @return the conjunction to be used when multiple column condition are active,

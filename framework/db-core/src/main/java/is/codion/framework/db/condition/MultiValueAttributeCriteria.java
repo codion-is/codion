@@ -6,17 +6,11 @@ package is.codion.framework.db.condition;
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
-import static java.util.Collections.singletonList;
-import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T> {
+final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -24,34 +18,17 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
 
-  private final List<T> values;
-
-  MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
+  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
     this(attribute, values, operator, true);
   }
 
-  MultiValueAttributeCondition(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
-                               boolean caseSensitive) {
-    super(attribute, operator, caseSensitive);
+  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
+                              boolean caseSensitive) {
+    super(attribute, operator, values, caseSensitive);
     for (Object value : values) {
       requireNonNull(value, "Condition values may not be null");
     }
     validateOperator(operator);
-    this.values = unmodifiableList(new ArrayList<>(values));
-  }
-
-  @Override
-  public List<?> values() {
-    return values;
-  }
-
-  @Override
-  public List<Attribute<?>> attributes() {
-    if (values.size() == 1) {
-      return singletonList(attribute());
-    }
-
-    return Collections.nCopies(values.size(), attribute());
   }
 
   @Override
@@ -59,19 +36,16 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     if (this == object) {
       return true;
     }
-    if (!(object instanceof MultiValueAttributeCondition)) {
+    if (!(object instanceof MultiValueAttributeCriteria)) {
       return false;
     }
-    if (!super.equals(object)) {
-      return false;
-    }
-    MultiValueAttributeCondition<?> that = (MultiValueAttributeCondition<?>) object;
-    return values.equals(that.values);
+
+    return super.equals(object);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), values);
+    return super.hashCode();
   }
 
   @Override
@@ -84,7 +58,7 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
 
-    return createInList(identifier, valuePlaceholder, values.size(), notEqual);
+    return createInList(identifier, valuePlaceholder, values().size(), notEqual);
   }
 
   private static String createInList(String columnIdentifier, String valuePlaceholder, int valueCount, boolean negated) {
@@ -106,7 +80,7 @@ final class MultiValueAttributeCondition<T> extends AbstractAttributeCondition<T
     return stringBuilder.toString();
   }
 
-  private static void validateOperator(Operator operator) {
+  protected void validateOperator(Operator operator) {
     switch (operator) {
       case EQUAL:
       case NOT_EQUAL:

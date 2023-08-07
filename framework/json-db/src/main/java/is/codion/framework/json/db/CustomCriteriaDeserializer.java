@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.CustomCondition;
+import is.codion.framework.db.condition.CustomCriteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
@@ -18,20 +18,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
 
-final class CustomConditionDeserializer implements Serializable {
+final class CustomCriteriaDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  CustomConditionDeserializer(EntityObjectMapper entityObjectMapper) {
-    this.entityObjectMapper = entityObjectMapper;
+  CustomCriteriaDeserializer(EntityObjectMapper entityObjectMapper) {
+    this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  CustomCondition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
-    String conditionTypeName = conditionNode.get("conditionTypeName").asText();
+  CustomCriteria deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+    String criteriaTypeName = conditionNode.get("criteriaType").asText();
     JsonNode attributesNode = conditionNode.get("attributes");
     List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
     List<Attribute<?>> attributes = attributeNames.stream()
@@ -45,6 +46,6 @@ final class CustomConditionDeserializer implements Serializable {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
 
-    return Condition.customCondition(definition.type().conditionType(conditionTypeName), attributes, values);
+    return Condition.customCriteria(definition.type().criteriaType(criteriaTypeName), attributes, values);
   }
 }
