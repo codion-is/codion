@@ -17,6 +17,9 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 import is.codion.framework.domain.property.ItemProperty;
 import is.codion.framework.domain.property.Property;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -35,6 +38,8 @@ import static java.util.Objects.requireNonNull;
  * Utility methods for creating and manipulating Entity instances for testing purposes.
  */
 public final class EntityTestUtil {
+
+  private static final Logger LOG = LoggerFactory.getLogger(EntityTestUtil.class);
 
   private static final int MININUM_RANDOM_NUMBER = -10_000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10_000;
@@ -94,66 +99,72 @@ public final class EntityTestUtil {
    */
   public static <T> T createRandomValue(Property<T> property, Map<ForeignKey, Entity> referenceEntities) {
     requireNonNull(property, "property");
-    if (property instanceof ForeignKeyProperty) {
-      return (T) referenceEntity(((ForeignKeyProperty) property).attribute(), referenceEntities);
-    }
-    if (property instanceof ItemProperty) {
-      return randomItem((ItemProperty<T>) property);
-    }
-    Attribute<?> attribute = property.attribute();
-    if (attribute.isBoolean()) {
-      return (T) Boolean.valueOf(RANDOM.nextBoolean());
-    }
-    if (attribute.isCharacter()) {
-      return (T) Character.valueOf((char) RANDOM.nextInt());
-    }
-    if (attribute.isLocalDate()) {
-      return (T) LocalDate.now();
-    }
-    if (attribute.isLocalDateTime()) {
-      return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
-    if (attribute.isOffsetDateTime()) {
-      return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
-    if (attribute.isLocalTime()) {
-      return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
-    }
-    if (attribute.isDouble()) {
-      return (T) Double.valueOf(randomDouble(property));
-    }
-    if (attribute.isBigDecimal()) {
-      return (T) BigDecimal.valueOf(randomDouble(property));
-    }
-    if (attribute.isInteger()) {
-      return (T) Integer.valueOf(randomInteger(property));
-    }
-    if (attribute.isLong()) {
-      return (T) Long.valueOf(randomInteger(property));
-    }
-    if (attribute.isShort()) {
-      return (T) Short.valueOf(randomShort(property));
-    }
-    if (attribute.isString()) {
-      return (T) randomString(property);
-    }
-    if (attribute.isByteArray()) {
-      return (T) randomBlob(property);
-    }
-    if (attribute.isEnum()) {
-      return randomEnum(attribute);
-    }
+    try {
+      if (property instanceof ForeignKeyProperty) {
+        return (T) referenceEntity(((ForeignKeyProperty) property).attribute(), referenceEntities);
+      }
+      if (property instanceof ItemProperty) {
+        return randomItem((ItemProperty<T>) property);
+      }
+      Attribute<?> attribute = property.attribute();
+      if (attribute.isBoolean()) {
+        return (T) Boolean.valueOf(RANDOM.nextBoolean());
+      }
+      if (attribute.isCharacter()) {
+        return (T) Character.valueOf((char) RANDOM.nextInt());
+      }
+      if (attribute.isLocalDate()) {
+        return (T) LocalDate.now();
+      }
+      if (attribute.isLocalDateTime()) {
+        return (T) LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      }
+      if (attribute.isOffsetDateTime()) {
+        return (T) OffsetDateTime.now().truncatedTo(ChronoUnit.SECONDS);
+      }
+      if (attribute.isLocalTime()) {
+        return (T) LocalTime.now().truncatedTo(ChronoUnit.SECONDS);
+      }
+      if (attribute.isDouble()) {
+        return (T) Double.valueOf(randomDouble(property));
+      }
+      if (attribute.isBigDecimal()) {
+        return (T) BigDecimal.valueOf(randomDouble(property));
+      }
+      if (attribute.isInteger()) {
+        return (T) Integer.valueOf(randomInteger(property));
+      }
+      if (attribute.isLong()) {
+        return (T) Long.valueOf(randomLong(property));
+      }
+      if (attribute.isShort()) {
+        return (T) Short.valueOf(randomShort(property));
+      }
+      if (attribute.isString()) {
+        return (T) randomString(property);
+      }
+      if (attribute.isByteArray()) {
+        return (T) randomBlob(property);
+      }
+      if (attribute.isEnum()) {
+        return randomEnum(attribute);
+      }
 
-    return null;
+      return null;
+    }
+    catch (RuntimeException e) {
+      LOG.error("Exception while creating random value for: " + property.attribute(), e);
+      throw e;
+    }
   }
 
   private static void populateEntity(Entity entity, Collection<ColumnProperty<?>> properties,
                                      Function<Property<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entity.definition();
-    for (@SuppressWarnings("rawtypes") ColumnProperty property : properties) {
+    for (ColumnProperty<?> property : properties) {
       if (!definition.isForeignKeyAttribute(property.attribute())) {
-        entity.put(property.attribute(), valueProvider.apply(property));
+        entity.put((Attribute<Object>) property.attribute(), valueProvider.apply(property));
       }
     }
     for (ForeignKeyProperty property : entity.definition().foreignKeyProperties()) {
@@ -207,6 +218,13 @@ public final class EntityTestUtil {
     int max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : Math.min(property.maximumValue().intValue(), MAXIMUM_RANDOM_NUMBER);
 
     return RANDOM.nextInt((max - min) + 1) + min;
+  }
+
+  private static long randomLong(Property<?> property) {
+    long min = property.minimumValue() == null ? MININUM_RANDOM_NUMBER : Math.max(property.minimumValue().longValue(), MININUM_RANDOM_NUMBER);
+    long max = property.maximumValue() == null ? MAXIMUM_RANDOM_NUMBER : Math.min(property.maximumValue().longValue(), MAXIMUM_RANDOM_NUMBER);
+
+    return RANDOM.nextLong() % (max - min) + min;
   }
 
   private static short randomShort(Property<?> property) {
