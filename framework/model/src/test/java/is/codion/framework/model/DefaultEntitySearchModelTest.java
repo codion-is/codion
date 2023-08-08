@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.attribute;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -209,7 +209,7 @@ public final class DefaultEntitySearchModelTest {
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
     searchModel.setAdditionalCriteriaSupplier(() ->
-            Condition.customCriteria(Employee.CRITERIA_1_TYPE));
+            Criteria.customCriteria(Employee.CRITERIA_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();
     assertTrue(result.isEmpty());

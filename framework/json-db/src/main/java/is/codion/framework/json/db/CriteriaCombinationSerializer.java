@@ -3,9 +3,9 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AttributeCriteria;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.Criteria.Combination;
+import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.Criteria.Combination;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 
@@ -18,10 +18,10 @@ final class CriteriaCombinationSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final AttributeCriteriaSerializer attributeConditionSerializer;
+  private final AttributeCriteriaSerializer attributeCriteriaSerializer;
 
-  CriteriaCombinationSerializer(AttributeCriteriaSerializer attributeConditionSerializer) {
-    this.attributeConditionSerializer = requireNonNull(attributeConditionSerializer);
+  CriteriaCombinationSerializer(AttributeCriteriaSerializer attributeCriteriaSerializer) {
+    this.attributeCriteriaSerializer = requireNonNull(attributeCriteriaSerializer);
   }
 
   void serialize(Combination combination, JsonGenerator generator) throws IOException {
@@ -34,7 +34,7 @@ final class CriteriaCombinationSerializer implements Serializable {
         serialize((Combination) criteria, generator);
       }
       else if (criteria instanceof AttributeCriteria) {
-        attributeConditionSerializer.serialize((AttributeCriteria<?>) criteria, generator);
+        attributeCriteriaSerializer.serialize((AttributeCriteria<?>) criteria, generator);
       }
     }
     generator.writeEndArray();

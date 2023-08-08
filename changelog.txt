@@ -9404,3 +9404,6 @@
   Condition.where(Attribute) and where(ForeignKey) renamed attribute() and foreignKey() respectively
   Major refactoring/redesign of Condition and friends
   AbstractCriteria now public
+  Code cleanup and test improvements
+  EntityTestUtil bug fixed, randomInt() not usable for creating random longs, randomLong() added, now logs exceptions during random value creation
+  Critiera moved to criteria package

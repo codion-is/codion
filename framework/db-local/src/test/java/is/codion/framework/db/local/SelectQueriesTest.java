@@ -12,8 +12,8 @@ import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SelectQueriesTest {

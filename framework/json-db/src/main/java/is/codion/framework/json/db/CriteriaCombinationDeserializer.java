@@ -4,9 +4,8 @@
 package is.codion.framework.json.db;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.Criteria.Combination;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.Criteria.Combination;
 import is.codion.framework.domain.entity.EntityDefinition;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,6 +32,6 @@ final class CriteriaCombinationDeserializer {
       criteria.add(criteriaDeserializer.deserialize(definition, conditionNode));
     }
 
-    return Condition.combination(conjunction, criteria);
+    return Criteria.combination(conjunction, criteria);
   }
 }

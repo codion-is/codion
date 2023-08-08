@@ -1,19 +1,21 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
+import static java.util.Objects.requireNonNull;
 
-final class DualValueAttributeCondition<T> extends AbstractAttributeCriteria<T> {
+final class DualValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
-  DualValueAttributeCondition(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
-    super(attribute, operator, Arrays.asList(lowerBound, upperBound), true);
+  DualValueAttributeCriteria(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
+    super(attribute, operator, asList(requireNonNull(lowerBound, "lowerBound"),
+            requireNonNull(upperBound, "upperBound")), true);
     validateOperator(operator);
   }
 
@@ -22,7 +24,7 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCriteria<T> 
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DualValueAttributeCondition)) {
+    if (!(object instanceof DualValueAttributeCriteria)) {
       return false;
     }
 
@@ -58,7 +60,7 @@ final class DualValueAttributeCondition<T> extends AbstractAttributeCriteria<T> 
       case NOT_BETWEEN_EXCLUSIVE:
         break;
       default:
-        throw new IllegalStateException("Unsupported dual value operator: " + operator);
+        throw new IllegalArgumentException("Unsupported dual value operator: " + operator);
     }
   }
 }

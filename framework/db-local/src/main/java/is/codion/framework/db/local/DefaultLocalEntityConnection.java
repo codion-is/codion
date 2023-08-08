@@ -24,9 +24,9 @@ import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Criteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -62,7 +62,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
@@ -563,7 +564,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
-            all(entityDefinition.type()).selectBuilder()
+            where(all(entityDefinition.type())).selectBuilder()
                     .orderBy(ascending(attribute))
                     .build() :
             condition.selectBuilder().build();

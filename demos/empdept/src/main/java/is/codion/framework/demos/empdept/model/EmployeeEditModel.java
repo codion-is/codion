@@ -11,8 +11,8 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {

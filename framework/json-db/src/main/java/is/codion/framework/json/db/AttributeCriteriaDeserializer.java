@@ -4,8 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.common.Operator;
-import is.codion.framework.db.condition.AttributeCriteria;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -18,6 +17,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static java.util.Objects.requireNonNull;
 
 final class AttributeCriteriaDeserializer implements Serializable {
@@ -39,7 +39,7 @@ final class AttributeCriteriaDeserializer implements Serializable {
     for (JsonNode valueNode : valuesNode) {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
-    AttributeCriteria.Builder<T> builder = Condition.attribute(property.attribute());
+    AttributeCriteria.Builder<T> builder = attribute(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return equalAttributeCondition(values, builder, caseSensitive);

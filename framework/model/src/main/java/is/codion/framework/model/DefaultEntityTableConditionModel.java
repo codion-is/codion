@@ -9,10 +9,10 @@ import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.AttributeCriteria;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.ForeignKeyCriteria;
+import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.ForeignKeyCriteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -82,7 +83,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       }
     }
 
-    return criteria.isEmpty() ? all(entityType) : where(combination(conjunction, criteria));
+    return criteria.isEmpty() ? where(all(entityType)) : where(combination(conjunction, criteria));
   }
 
   @Override

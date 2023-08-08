@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.CriteriaType;
@@ -18,8 +18,7 @@ final class DefaultCustomCriteria extends AbstractCriteria implements CustomCrit
 
   private final CriteriaType criteriaType;
 
-  DefaultCustomCriteria(CriteriaType criteriaType, List<Attribute<?>> attributes,
-                        List<Object> values) {
+  DefaultCustomCriteria(CriteriaType criteriaType, List<Attribute<?>> attributes, List<Object> values) {
     super(requireNonNull(criteriaType).entityType(), attributes, values);
     this.criteriaType = criteriaType;
   }

@@ -3,10 +3,10 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AttributeCriteria;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.Criteria.Combination;
-import is.codion.framework.db.condition.CustomCriteria;
+import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.Criteria.Combination;
+import is.codion.framework.db.criteria.CustomCriteria;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -62,7 +62,7 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
       generator.writeEndObject();
     }
     else {
-      throw new IllegalArgumentException("Unknown Condition type: " + criteria.getClass());
+      throw new IllegalArgumentException("Unknown criteria type: " + criteria.getClass());
     }
   }
 }

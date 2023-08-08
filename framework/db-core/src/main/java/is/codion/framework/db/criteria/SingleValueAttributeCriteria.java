@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
@@ -100,7 +100,7 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
       case GREATER_THAN_OR_EQUAL:
         break;
       default:
-        throw new IllegalStateException("Unsupported single value operator: " + operator);
+        throw new IllegalArgumentException("Unsupported single value operator: " + operator);
     }
   }
 }

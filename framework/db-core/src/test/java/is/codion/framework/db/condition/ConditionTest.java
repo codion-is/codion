@@ -9,6 +9,7 @@ import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Detail;
 import is.codion.framework.db.TestDomain.Employee;
 import is.codion.framework.db.TestDomain.Master;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -22,8 +23,8 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
-import static is.codion.framework.db.condition.Condition.*;
-import static is.codion.framework.db.condition.Criteria.Combination;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -46,7 +47,7 @@ public final class ConditionTest {
             .build();
     assertEquals(-1, condition.limit());
 
-    condition = all(Department.TYPE).selectBuilder()
+    condition = where(all(Department.TYPE)).selectBuilder()
             .limit(10)
             .build();
     assertEquals(10, condition.limit());
@@ -64,14 +65,21 @@ public final class ConditionTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> all(Employee.TYPE).updateBuilder()
+    assertThrows(IllegalArgumentException.class, () -> where(all(Employee.TYPE)).updateBuilder()
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
 
   @Test
   void combinationEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> Condition.combination(Conjunction.AND));
+    assertThrows(IllegalArgumentException.class, () -> Criteria.combination(Conjunction.AND));
+  }
+
+  @Test
+  void combinationEntityTypeMismatch() {
+    assertThrows(IllegalArgumentException.class, () -> and(
+            attribute(Employee.ID).equalTo(8),
+            attribute(Department.NAME).equalTo("name")));
   }
 
   @Test
@@ -298,11 +306,11 @@ public final class ConditionTest {
 
   @Test
   void selectAllCondition() {
-    Condition selectCondition = all(Department.TYPE);
+    Condition selectCondition = where(all(Department.TYPE));
     assertTrue(selectCondition.values().isEmpty());
     assertTrue(selectCondition.attributes().isEmpty());
 
-    Condition condition = all(Department.TYPE);
+    Condition condition = where(all(Department.TYPE));
     assertTrue(condition.values().isEmpty());
     assertTrue(condition.attributes().isEmpty());
   }
@@ -376,10 +384,10 @@ public final class ConditionTest {
 
   @Test
   void equals() {
-    Condition condition1 = all(Department.TYPE);
-    Condition condition2 = all(Department.TYPE);
+    Condition condition1 = where(all(Department.TYPE));
+    Condition condition2 = where(all(Department.TYPE));
     assertEquals(condition1, condition2);
-    condition2 = all(Employee.TYPE);
+    condition2 = where(all(Employee.TYPE));
     assertNotEquals(condition1, condition2);
 
     Key key1 = ENTITIES.primaryKey(Employee.TYPE, 1);

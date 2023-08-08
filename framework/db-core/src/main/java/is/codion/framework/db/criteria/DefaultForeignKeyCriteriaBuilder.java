@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2021 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;

@@ -4,10 +4,10 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.CustomCriteria;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.CustomCriteria;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -24,8 +24,8 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -44,8 +44,8 @@ public final class ConditionObjectMapperTest {
             .with(Department.DEPTNO, 2)
             .build();
 
-    Condition condition = where(Condition.and(
-            Condition.foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
+    Condition condition = where(and(
+            foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
             attribute(Employee.NAME).equalToIgnoreCase("Loc"),
             attribute(Employee.EMPNO).between(10, 40),
             attribute(Employee.COMMISSION).isNotNull()));
@@ -79,7 +79,7 @@ public final class ConditionObjectMapperTest {
   void customCondition() throws JsonProcessingException {
     ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
 
-    CustomCriteria customedCriteria = Condition.customCriteria(TestEntity.CRITERIA_TYPE,
+    CustomCriteria customedCriteria = customCriteria(TestEntity.CRITERIA_TYPE,
             asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
     Condition condition = where(customedCriteria);
