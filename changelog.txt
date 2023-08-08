@@ -9369,3 +9369,5 @@
   Critiera moved to criteria package
   FilteredTable.resizeSelectedColumn() bug fixed, now works when auto resize is enabled
   ItemComboBoxModel.SelectedItemTranslator bug fixed, now returns the same equal from the model, instead of returning the argument, which could be caption-less
+  FilteredTable.createAutoResizeModeControl() added
+  EntityTablePanel, auto resize mode control added to column controls
