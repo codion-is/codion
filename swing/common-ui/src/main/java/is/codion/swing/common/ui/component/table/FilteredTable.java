@@ -920,7 +920,8 @@ public final class FilteredTable<R, C> extends JTable {
       int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
         TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
-        column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
+        tableHeader.setResizingColumn(column);
+        column.setWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
       }
     }
   }

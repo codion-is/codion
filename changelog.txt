@@ -9367,3 +9367,4 @@
   Code cleanup and test improvements
   EntityTestUtil bug fixed, randomInt() not usable for creating random longs, randomLong() added, now logs exceptions during random value creation
   Critiera moved to criteria package
+  FilteredTable.resizeSelectedColumn() bug fixed, now works when auto resize is enabled
