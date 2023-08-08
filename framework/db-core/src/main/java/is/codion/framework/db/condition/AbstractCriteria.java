@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
@@ -23,9 +24,9 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
   private final List<Attribute<?>> attributes;
   private final List<?> values;
 
-  protected AbstractCriteria(EntityType entityType, List<Attribute<?>> attributes, List<?> values) {
+  protected AbstractCriteria(EntityType entityType, List<Attribute<?>> attributes, Collection<?> values) {
     this.entityType = requireNonNull(entityType);
-    this.attributes = unmodifiableList(new ArrayList<>(attributes));
+    this.attributes = validateAttributes(unmodifiableList(new ArrayList<>(attributes)));
     this.values = unmodifiableList(new ArrayList<>(values));
   }
 
@@ -61,5 +62,16 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(entityType, attributes, values);
+  }
+
+  private List<Attribute<?>> validateAttributes(List<Attribute<?>> attributes) {
+    for (Attribute<?> attribute : attributes) {
+      if (!attribute.entityType().equals(entityType)) {
+        throw new IllegalArgumentException("Criteria attribute entityType mismatch, " +
+                entityType + " expected, got: " + attribute.entityType());
+      }
+    }
+
+    return attributes;
   }
 }

@@ -49,10 +49,10 @@ public final class CountryTableModel extends SwingEntityTableModel {
     ((EntitySearchModelConditionModel) conditionModel()
             .attributeModel(Country.CAPITAL_FK))
             .entitySearchModel()
-            .setAdditionalCriteriaSupplier(new CapitalConditionSupplier());
+            .setAdditionalCriteriaSupplier(new CapitalCriteriaSupplier());
   }
 
-  private final class CapitalConditionSupplier implements Supplier<Criteria> {
+  private final class CapitalCriteriaSupplier implements Supplier<Criteria> {
     @Override
     public Criteria get() {
       EntityConnection connection = connectionProvider().connection();

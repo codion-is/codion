@@ -34,8 +34,7 @@ final class CustomCriteriaDeserializer implements Serializable {
   CustomCriteria deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String criteriaTypeName = conditionNode.get("criteriaType").asText();
     JsonNode attributesNode = conditionNode.get("attributes");
-    List<String> attributeNames = Arrays.asList(entityObjectMapper.readValue(attributesNode.toString(), String[].class));
-    List<Attribute<?>> attributes = attributeNames.stream()
+    List<Attribute<?>> attributes = Arrays.stream(entityObjectMapper.readValue(attributesNode.toString(), String[].class))
             .map(definition::attribute)
             .collect(toList());
     JsonNode valuesNode = conditionNode.get("values");

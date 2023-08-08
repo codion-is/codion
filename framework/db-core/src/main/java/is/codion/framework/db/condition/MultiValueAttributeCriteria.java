@@ -86,7 +86,7 @@ final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> 
       case NOT_EQUAL:
         break;
       default:
-        throw new IllegalStateException("Unsupported multi value operator: " + operator);
+        throw new IllegalArgumentException("Unsupported multi value operator: " + operator);
     }
   }
 }

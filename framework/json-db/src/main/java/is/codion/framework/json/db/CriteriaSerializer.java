@@ -62,7 +62,7 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
       generator.writeEndObject();
     }
     else {
-      throw new IllegalArgumentException("Unknown Condition type: " + criteria.getClass());
+      throw new IllegalArgumentException("Unknown criteria type: " + criteria.getClass());
     }
   }
 }

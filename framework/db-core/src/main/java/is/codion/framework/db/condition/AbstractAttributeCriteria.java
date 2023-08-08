@@ -7,7 +7,6 @@ import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Objects;
 
@@ -24,8 +23,7 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
 
   protected AbstractAttributeCriteria(Attribute<T> attribute, Operator operator, Collection<? extends T> values,
                                       boolean caseSensitive) {
-    super(requireNonNull(attribute).entityType(), nCopies(requireNonNull(values).size(),
-            requireNonNull(attribute)), new ArrayList<>(values));
+    super(requireNonNull(attribute).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(attribute)), values);
     if (!caseSensitive && !attribute.isString()) {
       throw new IllegalStateException("Case insensitivity only applies to String based attributes: " + attribute);
     }
@@ -80,7 +78,15 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
     return Objects.hash(super.hashCode(), operator, caseSensitive);
   }
 
+  /**
+   * @param columnExpression the column expression
+   * @return a condition string based on this criteria
+   */
   protected abstract String toString(String columnExpression);
 
+  /**
+   * @param operator the operator
+   * @throws IllegalArgumentException in case the operator is not supported
+   */
   protected abstract void validateOperator(Operator operator);
 }

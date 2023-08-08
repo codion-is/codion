@@ -24,7 +24,14 @@ public final class MultiValueAttributeCriteriaTest {
 
   @Test
   void test() {
-    assertThrows(IllegalStateException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.BETWEEN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.GREATER_THAN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.GREATER_THAN_OR_EQUAL));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.LESS_THAN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.LESS_THAN_OR_EQUAL));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.BETWEEN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.BETWEEN_EXCLUSIVE));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.NOT_BETWEEN));
+    assertThrows(IllegalArgumentException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(1), Operator.NOT_BETWEEN_EXCLUSIVE));
     assertThrows(NullPointerException.class, () -> new MultiValueAttributeCriteria<>(Employee.ID, singletonList(null), Operator.EQUAL));
   }
 

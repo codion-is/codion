@@ -5,6 +5,7 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.db.condition.Criteria.Combination;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -27,19 +28,9 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
   private final Conjunction conjunction;
 
   DefaultCriteriaCombination(Conjunction conjunction, List<Criteria> criteria) {
-    super(entityType(criteria), unmodifiableList(criteria.stream()
-            .flatMap(condition -> condition.attributes().stream())
-            .collect(toList())), unmodifiableList(criteria.stream()
-            .flatMap(condition -> condition.values().stream())
-            .collect(toList())));
+    super(entityType(criteria), attributes(criteria), values(criteria));
     this.conjunction = requireNonNull(conjunction);
     this.criteria = unmodifiableList(new ArrayList<>(criteria));
-    for (int i = 1; i < this.criteria.size(); i++) {
-      EntityType conditionEntityType = this.criteria.get(i).entityType();
-      if (!conditionEntityType.equals(entityType())) {
-        throw new IllegalArgumentException("EntityType " + entityType() + " expected, got: " + conditionEntityType);
-      }
-    }
   }
 
   @Override
@@ -106,5 +97,17 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
     }
 
     return criteria.get(0).entityType();
+  }
+
+  private static List<?> values(List<Criteria> criteria) {
+    return criteria.stream()
+            .flatMap(condition -> condition.values().stream())
+            .collect(toList());
+  }
+
+  private static List<Attribute<?>> attributes(List<Criteria> criteria) {
+    return criteria.stream()
+            .flatMap(condition -> condition.attributes().stream())
+            .collect(toList());
   }
 }

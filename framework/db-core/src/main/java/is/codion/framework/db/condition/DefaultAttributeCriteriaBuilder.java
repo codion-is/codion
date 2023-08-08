@@ -135,22 +135,22 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
 
   @Override
   public AttributeCriteria<T> betweenExclusive(T lowerBound, T upperBound) {
-    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, BETWEEN_EXCLUSIVE);
+    return new DualValueAttributeCriteria<>(attribute, lowerBound, upperBound, BETWEEN_EXCLUSIVE);
   }
 
   @Override
   public AttributeCriteria<T> between(T lowerBound, T upperBound) {
-    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, BETWEEN);
+    return new DualValueAttributeCriteria<>(attribute, lowerBound, upperBound, BETWEEN);
   }
 
   @Override
   public AttributeCriteria<T> notBetweenExclusive(T lowerBound, T upperBound) {
-    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, NOT_BETWEEN_EXCLUSIVE);
+    return new DualValueAttributeCriteria<>(attribute, lowerBound, upperBound, NOT_BETWEEN_EXCLUSIVE);
   }
 
   @Override
   public AttributeCriteria<T> notBetween(T lowerBound, T upperBound) {
-    return new DualValueAttributeCondition<>(attribute, lowerBound, upperBound, NOT_BETWEEN);
+    return new DualValueAttributeCriteria<>(attribute, lowerBound, upperBound, NOT_BETWEEN);
   }
 
   @Override

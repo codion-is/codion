@@ -100,7 +100,7 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
       case GREATER_THAN_OR_EQUAL:
         break;
       default:
-        throw new IllegalStateException("Unsupported single value operator: " + operator);
+        throw new IllegalArgumentException("Unsupported single value operator: " + operator);
     }
   }
 }
