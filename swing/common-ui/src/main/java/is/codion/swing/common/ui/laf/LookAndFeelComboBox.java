@@ -47,13 +47,13 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
   private LookAndFeelComboBox(FilteredComboBoxModel<Item<LookAndFeelProvider>> comboBoxModel, boolean changeOnSelection) {
     super(requireNonNull(comboBoxModel));
     Item<LookAndFeelProvider> selectedValue = comboBoxModel.selectedValue();
-    originalLookAndFeel = selectedValue == null ? null : selectedValue.value();
+    originalLookAndFeel = selectedValue == null ? null : selectedValue.get();
     setRenderer(new LookAndFeelRenderer());
     setEditor(new LookAndFeelEditor());
     enableMouseWheelSelection(this);
     if (changeOnSelection) {
       comboBoxModel.addSelectionListener(lookAndFeelProvider ->
-              SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.value())));
+              SwingUtilities.invokeLater(() -> enableLookAndFeel(lookAndFeelProvider.get())));
     }
   }
 
@@ -66,7 +66,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
    * @return the currently selected look and feel
    */
   public LookAndFeelProvider selectedLookAndFeel() {
-    return getModel().selectedValue().value();
+    return getModel().selectedValue().get();
   }
 
   /**
@@ -127,7 +127,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
     public void setItem(Object item) {
       this.item = (Item<LookAndFeelProvider>) item;
       if (this.item != null) {
-        panel.setLookAndFeel(this.item.value(), false);
+        panel.setLookAndFeel(this.item.get(), false);
       }
     }
   }
@@ -140,7 +140,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
     public Component getListCellRendererComponent(JList<? extends Item<LookAndFeelProvider>> list, Item<LookAndFeelProvider> value,
                                                   int index, boolean isSelected, boolean cellHasFocus) {
       if (value != null) {
-        panel.setLookAndFeel(value.value(), isSelected);
+        panel.setLookAndFeel(value.get(), isSelected);
       }
 
       return panel;
@@ -166,7 +166,7 @@ public final class LookAndFeelComboBox extends JComboBox<Item<LookAndFeelProvide
     String currentLookAndFeelClassName = UIManager.getLookAndFeel().getClass().getName();
 
     return comboBoxModel.items().stream()
-            .filter(item -> item.value().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
+            .filter(item -> item.get().lookAndFeelInfo().getClassName().equals(currentLookAndFeelClassName))
             .findFirst();
   }
 }

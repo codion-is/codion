@@ -46,7 +46,7 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
    */
   public int indexOf(T value) {
     for (int i = 0; i < getSize(); i++) {
-      if (Objects.equals(getElementAt(i).value(), value)) {
+      if (Objects.equals(getElementAt(i).get(), value)) {
         return i;
       }
     }

@@ -494,9 +494,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .maximumRowCount(operators.size())
-            .toolTipText(operatorComboBoxModel.selectedValue().value().description())
+            .toolTipText(operatorComboBoxModel.selectedValue().get().description())
             .onBuild(comboBox -> operatorComboBoxModel.addSelectionListener(selectedOperator ->
-                    comboBox.setToolTipText(selectedOperator.value().description())))
+                    comboBox.setToolTipText(selectedOperator.get().description())))
             .build();
   }
 

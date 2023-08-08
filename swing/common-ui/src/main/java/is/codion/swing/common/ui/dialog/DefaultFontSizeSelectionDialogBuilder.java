@@ -93,7 +93,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
     }
 
     private int selectedFontSize() {
-      return fontSizeComboBoxModel.selectedValue().value();
+      return fontSizeComboBoxModel.selectedValue().get();
     }
 
     private static List<Item<Integer>> initializeValues() {
@@ -122,7 +122,7 @@ final class DefaultFontSizeSelectionDialogBuilder implements FontSizeSelectionDi
         Component component = defaultListCellRenderer.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
         if (index >= 0) {
           Font font = component.getFont();
-          int newSize = Math.round(font.getSize() * (values.get(index).value() / (float) currentFontSize.doubleValue()));
+          int newSize = Math.round(font.getSize() * (values.get(index).get() / (float) currentFontSize.doubleValue()));
           component.setFont(new Font(font.getName(), font.getStyle(), newSize));
         }
 

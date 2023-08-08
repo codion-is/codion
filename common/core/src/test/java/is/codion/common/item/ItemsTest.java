@@ -18,7 +18,7 @@ public class ItemsTest {
   @Test
   void item() throws IOException, ClassNotFoundException {
     Item<String> item = Item.item("hello", "world");
-    assertEquals("hello", item.value());
+    assertEquals("hello", item.get());
     assertEquals("world", item.caption());
     assertEquals("world", item.toString());
 
