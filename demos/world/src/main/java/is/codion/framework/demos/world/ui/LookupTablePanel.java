@@ -197,6 +197,7 @@ final class LookupTablePanel extends EntityTablePanel {
     //Get rid of the default column menu
     setControl(ControlCode.SELECT_COLUMNS, null);
     setControl(ControlCode.RESET_COLUMNS, null);
+    setControl(ControlCode.COLUMN_AUTO_RESIZE_MODE, null);
   }
 
   private void clearTableAndConditions() {

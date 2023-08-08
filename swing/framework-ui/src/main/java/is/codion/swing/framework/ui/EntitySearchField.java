@@ -374,7 +374,7 @@ public final class EntitySearchField extends HintTextField {
       }
       JPanel propertyBasePanel = propertyBasePanelBuilder.build();
       if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.addSelectionListener(selected -> cardLayout.show(propertyBasePanel, selected.value().name()));
+        propertyComboBoxModel.addSelectionListener(selected -> cardLayout.show(propertyBasePanel, selected.get().name()));
         propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 

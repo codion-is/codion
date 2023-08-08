@@ -9407,3 +9407,8 @@
   Code cleanup and test improvements
   EntityTestUtil bug fixed, randomInt() not usable for creating random longs, randomLong() added, now logs exceptions during random value creation
   Critiera moved to criteria package
+  FilteredTable.resizeSelectedColumn() bug fixed, now works when auto resize is enabled
+  ItemComboBoxModel.SelectedItemTranslator bug fixed, now returns the equal item from the model, instead of returning the argument, which could be caption-less
+  FilteredTable.createAutoResizeModeControl() added
+  EntityTablePanel, auto resize mode control added to column controls
+  Item now extends Supplier, value() replaced with get()

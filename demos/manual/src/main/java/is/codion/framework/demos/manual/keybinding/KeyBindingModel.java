@@ -214,7 +214,7 @@ final class KeyBindingModel {
         return emptyList();
       }
 
-      LookAndFeelProvider lookAndFeelProvider = selectedItem.value();
+      LookAndFeelProvider lookAndFeelProvider = selectedItem.get();
       try {
         return lookAndFeelProvider.lookAndFeel().getDefaults().keySet().stream()
                 .map(Object::toString)

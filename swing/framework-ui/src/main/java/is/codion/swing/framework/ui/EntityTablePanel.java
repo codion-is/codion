@@ -196,6 +196,7 @@ public class EntityTablePanel extends JPanel {
     EDIT_SELECTED,
     SELECT_COLUMNS,
     RESET_COLUMNS,
+    COLUMN_AUTO_RESIZE_MODE,
     SELECTION_MODE,
     CLEAR,
     REFRESH,
@@ -1251,6 +1252,7 @@ public class EntityTablePanel extends JPanel {
             .name(MESSAGES.getString("columns"));
     control(ControlCode.SELECT_COLUMNS).ifPresent(builder::control);
     control(ControlCode.RESET_COLUMNS).ifPresent(builder::control);
+    control(ControlCode.COLUMN_AUTO_RESIZE_MODE).ifPresent(builder::control);
 
     return builder.build();
   }
@@ -1493,6 +1495,7 @@ public class EntityTablePanel extends JPanel {
     controls.putIfAbsent(ControlCode.SELECT_COLUMNS, columnSelection == ColumnSelection.DIALOG ?
             table.createSelectColumnsControl() : table.createToggleColumnsControls());
     controls.putIfAbsent(ControlCode.RESET_COLUMNS, table.createResetColumnsControl());
+    controls.putIfAbsent(ControlCode.COLUMN_AUTO_RESIZE_MODE, table.createAutoResizeModeControl());
     if (includeViewDependenciesControl()) {
       controls.putIfAbsent(ControlCode.VIEW_DEPENDENCIES, createViewDependenciesControl());
     }

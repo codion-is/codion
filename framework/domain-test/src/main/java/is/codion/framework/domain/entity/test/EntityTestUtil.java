@@ -210,7 +210,7 @@ public final class EntityTestUtil {
     List<Item<T>> items = property.items();
     Item<T> item = items.get(RANDOM.nextInt(items.size()));
 
-    return item.value();
+    return item.get();
   }
 
   private static int randomInteger(Property<?> property) {

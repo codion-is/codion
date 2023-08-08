@@ -9,6 +9,7 @@ import is.codion.common.event.Event;
 import is.codion.common.i18n.Messages;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.property.PropertyValue;
+import is.codion.swing.common.model.component.combobox.ItemComboBoxModel;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
@@ -17,6 +18,7 @@ import is.codion.swing.common.model.component.table.FilteredTableSearchModel.Row
 import is.codion.swing.common.model.component.table.FilteredTableSortModel;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
+import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
@@ -51,7 +53,11 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.function.Consumer;
 
+import static is.codion.common.item.Item.item;
+import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.itemComboBoxModel;
 import static is.codion.swing.common.model.component.table.FilteredTableSortModel.nextSortOrder;
+import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
+import static is.codion.swing.common.ui.component.Components.itemComboBox;
 import static is.codion.swing.common.ui.component.table.ColumnConditionPanel.columnConditionPanel;
 import static is.codion.swing.common.ui.component.table.FilteredTableConditionPanel.filteredTableConditionPanel;
 import static is.codion.swing.common.ui.control.Control.control;
@@ -115,6 +121,12 @@ public final class FilteredTable<R, C> extends JTable {
   private static final String RESET = "reset";
   private static final String RESET_COLUMNS_DESCRIPTION = "reset_columns_description";
   private static final String SINGLE_SELECTION_MODE = "single_selection_mode";
+  private static final String AUTO_RESIZE = "auto_resize";
+  private static final String RESIZE_OFF = "resize_off";
+  private static final String RESIZE_NEXT_COLUMN = "resize_next_column";
+  private static final String RESIZE_SUBSEQUENT_COLUMNS = "resize_subsequent_columns";
+  private static final String RESIZE_LAST_COLUMN = "resize_last_column";
+  private static final String RESIZE_ALL_COLUMNS = "resize_all_columns";
   private static final int SEARCH_FIELD_COLUMNS = 8;
   private static final int COLUMN_RESIZE_AMOUNT = 10;
   private static final List<Integer> RESIZE_KEYS = asList(VK_PLUS, VK_ADD, VK_MINUS, VK_SUBTRACT);
@@ -313,6 +325,21 @@ public final class FilteredTable<R, C> extends JTable {
   }
 
   /**
+   * Displays a dialog for selecting the column auto-resize mode
+   */
+  public void selectAutoResizeMode() {
+    ItemComboBoxModel<Integer> autoResizeComboBoxModel = createAutoResizeModeComboBoxModel();
+    Dialogs.okCancelDialog(borderLayoutPanel()
+                    .centerComponent(itemComboBox(autoResizeComboBoxModel).build())
+                    .border(Borders.createEmptyBorder())
+                    .build())
+            .owner(getParent())
+            .title(MESSAGES.getString(AUTO_RESIZE))
+            .onOk(() -> setAutoResizeMode(autoResizeComboBoxModel.selectedValue().get()))
+            .show();
+  }
+
+  /**
    * Returns true if the given cell is visible.
    * @param row the row
    * @param column the column
@@ -405,6 +432,16 @@ public final class FilteredTable<R, C> extends JTable {
             .name(MESSAGES.getString(RESET))
             .enabledObserver(tableModel.columnModel().lockedState().reversedObserver())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
+            .build();
+  }
+
+  /**
+   * @return a Control for selecting the auto-resize mode
+   */
+  public Control createAutoResizeModeControl() {
+    return Control.builder(this::selectAutoResizeMode)
+            .name(MESSAGES.getString(AUTO_RESIZE) + "...")
+            .enabledObserver(tableModel.columnModel().lockedState().reversedObserver())
             .build();
   }
 
@@ -595,6 +632,19 @@ public final class FilteredTable<R, C> extends JTable {
     header.setAutoscrolls(true);
     header.addMouseMotionListener(new ColumnDragMouseHandler());
     header.addMouseListener(new MouseSortHandler());
+  }
+
+  private ItemComboBoxModel<Integer> createAutoResizeModeComboBoxModel() {
+    ItemComboBoxModel<Integer> autoResizeComboBoxModel = itemComboBoxModel(asList(
+            item(AUTO_RESIZE_OFF, MESSAGES.getString(RESIZE_OFF)),
+            item(AUTO_RESIZE_NEXT_COLUMN, MESSAGES.getString(RESIZE_NEXT_COLUMN)),
+            item(AUTO_RESIZE_SUBSEQUENT_COLUMNS, MESSAGES.getString(RESIZE_SUBSEQUENT_COLUMNS)),
+            item(AUTO_RESIZE_LAST_COLUMN, MESSAGES.getString(RESIZE_LAST_COLUMN)),
+            item(AUTO_RESIZE_ALL_COLUMNS, MESSAGES.getString(RESIZE_ALL_COLUMNS))
+    ));
+    autoResizeComboBoxModel.setSelectedItem(item(getAutoResizeMode()));
+
+    return autoResizeComboBoxModel;
   }
 
   private void bindEvents() {
@@ -920,7 +970,8 @@ public final class FilteredTable<R, C> extends JTable {
       int selectedColumnIndex = getSelectedColumn();
       if (selectedColumnIndex != -1) {
         TableColumn column = getColumnModel().getColumn(selectedColumnIndex);
-        column.setPreferredWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
+        tableHeader.setResizingColumn(column);
+        column.setWidth(column.getWidth() + (enlarge ? COLUMN_RESIZE_AMOUNT : -COLUMN_RESIZE_AMOUNT));
       }
     }
   }
