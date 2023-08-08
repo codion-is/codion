@@ -143,10 +143,23 @@ public final class ItemComboBoxModel<T> extends FilteredComboBoxModel<Item<T>> {
     @Override
     public Item<T> apply(Object item) {
       if (item instanceof Item) {
-        return (Item<T>) item;
+        return findItem((Item<T>) item);
       }
 
-      int index = indexOf((T) item);
+      return findItem((T) item);
+    }
+
+    private Item<T> findItem(Item<T> item) {
+      int index = visibleItems().indexOf(item);
+      if (index >= 0) {
+        return getElementAt(index);
+      }
+
+      return null;
+    }
+
+    private Item<T> findItem(T value) {
+      int index = indexOf(value);
       if (index >= 0) {
         return getElementAt(index);
       }
