@@ -28,7 +28,8 @@ import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Specifies a query condition. A factory class for {@link Condition}, {@link Criteria} and it's descendants.
+ * Specifies a query condition, based on a {@link Criteria}.
+ * A factory class for {@link Condition}, {@link Criteria} and it's descendants.
  * @see #all(EntityType)
  * @see #key(Key)
  * @see #keys(Collection)

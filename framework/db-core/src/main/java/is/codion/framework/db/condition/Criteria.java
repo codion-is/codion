@@ -24,21 +24,21 @@ public interface Criteria {
 
   /**
    * @return a list of the values this criteria is based on, in the order they appear
-   * in the condition clause. An empty list is returned in case no values are specified.
+   * in the criteria clause. An empty list is returned in case no values are specified.
    */
   List<?> values();
 
   /**
    * @return a list of the attributes this criteria is based on, in the same
-   * order as their respective values appear in the condition clause.
+   * order as their respective values appear in the criteria clause.
    * An empty list is returned in case no values are specified.
    */
   List<Attribute<?>> attributes();
 
   /**
-   * Returns a string representing this condition, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
+   * Returns a string representing this criteria, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
    * @param definition the entity definition
-   * @return a condition string
+   * @return a criteria string
    */
   String toString(EntityDefinition definition);
 
@@ -49,7 +49,7 @@ public interface Criteria {
   interface Combination extends Criteria {
 
     /**
-     * @return the Conditions comprising this Combination
+     * @return the criteria comprising this Combination
      */
     Collection<Criteria> criteria();
 
