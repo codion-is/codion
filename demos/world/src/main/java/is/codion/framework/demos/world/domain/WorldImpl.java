@@ -14,8 +14,8 @@ import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;

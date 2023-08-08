@@ -3,9 +3,9 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AttributeCriteria;
-import is.codion.framework.db.condition.Criteria;
-import is.codion.framework.db.condition.Criteria.Combination;
+import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.Criteria.Combination;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 

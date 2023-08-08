@@ -5,7 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
-import is.codion.framework.db.condition.Criteria;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.condition.Criteria.all;
+import static is.codion.framework.db.criteria.Criteria.all;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCopyEntities implements CopyEntities {

@@ -19,7 +19,9 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.and;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;

@@ -10,7 +10,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.and;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 
 public final class VetSpecialtyEditModel extends SwingEntityEditModel {
 

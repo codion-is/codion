@@ -9366,3 +9366,4 @@
   AbstractCriteria now public
   Code cleanup and test improvements
   EntityTestUtil bug fixed, randomInt() not usable for creating random longs, randomLong() added, now logs exceptions during random value creation
+  Critiera moved to criteria package

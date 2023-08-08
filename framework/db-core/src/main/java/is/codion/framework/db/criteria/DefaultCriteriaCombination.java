@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.db.condition.Criteria.Combination;
+import is.codion.framework.db.criteria.Criteria.Combination;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;

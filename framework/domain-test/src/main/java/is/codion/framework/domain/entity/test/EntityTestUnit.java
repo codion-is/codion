@@ -32,7 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.all;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -221,7 +222,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.type() + " failed equals comparison");
     }
     else {
-      connection.select(all(entityType)
+      connection.select(where(all(entityType))
               .selectBuilder()
               .limit(SELECT_LIMIT)
               .build());

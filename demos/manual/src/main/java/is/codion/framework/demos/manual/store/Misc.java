@@ -23,7 +23,8 @@ import net.sf.jasperreports.engine.JasperPrint;
 import java.util.Iterator;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.all;
 import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
 
 public final class Misc {
@@ -43,7 +44,7 @@ public final class Misc {
             connection.entities().definition(Customer.TYPE);
 
     Iterator<Entity> customerIterator =
-            connection.select(all(Customer.TYPE)).iterator();
+            connection.select(where(all(Customer.TYPE))).iterator();
 
     JasperReportsDataSource<Entity> dataSource =
             new JasperReportsDataSource<>(customerIterator,

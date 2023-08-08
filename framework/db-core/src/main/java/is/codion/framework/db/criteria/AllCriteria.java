@@ -1,4 +1,4 @@
-package is.codion.framework.db.condition;
+package is.codion.framework.db.criteria;
 
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;

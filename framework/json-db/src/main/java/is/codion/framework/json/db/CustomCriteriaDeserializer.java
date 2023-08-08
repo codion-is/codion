@@ -3,8 +3,8 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.CustomCriteria;
+import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.criteria.CustomCriteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
@@ -45,6 +45,6 @@ final class CustomCriteriaDeserializer implements Serializable {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
 
-    return Condition.customCriteria(definition.type().criteriaType(criteriaTypeName), attributes, values);
+    return Criteria.customCriteria(definition.type().criteriaType(criteriaTypeName), attributes, values);
   }
 }

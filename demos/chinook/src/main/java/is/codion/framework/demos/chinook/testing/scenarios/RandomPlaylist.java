@@ -19,8 +19,8 @@ import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static java.util.Arrays.asList;
 
 public final class RandomPlaylist extends AbstractEntityUsageScenario<ChinookAppModel> {

@@ -23,7 +23,8 @@ import java.lang.reflect.Proxy;
 import java.rmi.registry.Registry;
 import java.util.Collection;
 
-import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.all;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -60,13 +61,13 @@ public class DefaultRemoteEntityConnectionTest {
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
-    Condition condition = all(Employee.TYPE);
+    Condition condition = where(all(Employee.TYPE));
     connection.beginTransaction();
     connection.delete(condition);
     assertTrue(connection.select(condition).isEmpty());
     connection.close();
     connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
-    assertTrue(connection.select(condition).size() > 0);
+    assertTrue(!connection.select(condition).isEmpty());
     connection.close();
   }
 
@@ -98,7 +99,7 @@ public class DefaultRemoteEntityConnectionTest {
                 }
               });
 
-      Condition condition = all(Employee.TYPE);
+      Condition condition = where(all(Employee.TYPE));
       proxy.beginTransaction();
       proxy.select(condition);
       proxy.delete(condition);

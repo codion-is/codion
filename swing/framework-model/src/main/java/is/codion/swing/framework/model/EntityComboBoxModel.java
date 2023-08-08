@@ -34,7 +34,9 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -385,7 +387,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
-    Condition condition = selectConditionSupplier == null ? all(entityType) : selectConditionSupplier.get();
+    Condition condition = selectConditionSupplier == null ? where(all(entityType)) : selectConditionSupplier.get();
     try {
       return connectionProvider.connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)

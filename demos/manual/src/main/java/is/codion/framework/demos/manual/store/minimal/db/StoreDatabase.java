@@ -17,7 +17,9 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.*;
+import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.and;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;

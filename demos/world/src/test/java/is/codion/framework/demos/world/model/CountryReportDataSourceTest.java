@@ -21,8 +21,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.attribute;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;

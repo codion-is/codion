@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 

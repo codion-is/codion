@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.CustomCriteria;
+import is.codion.framework.db.criteria.CustomCriteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
