@@ -28,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a query criteria.
- * @see #all(EntityType) *
+ * @see #all(EntityType)
  * @see #key(Key)
  * @see #keys(Collection)
  * @see #foreignKey(ForeignKey)

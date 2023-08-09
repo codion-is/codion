@@ -4,11 +4,9 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,16 +32,6 @@ class DefaultCondition implements Condition, Serializable {
   @Override
   public final Criteria criteria() {
     return criteria;
-  }
-
-  @Override
-  public final List<?> values() {
-    return criteria.values();
-  }
-
-  @Override
-  public final List<Attribute<?>> attributes() {
-    return criteria.attributes();
   }
 
   @Override
