@@ -16,8 +16,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.all;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCopyEntities implements CopyEntities {
@@ -41,7 +41,8 @@ final class DefaultCopyEntities implements CopyEntities {
   @Override
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
-      List<Entity> entities = source.select(where(criteria.getOrDefault(entityType, all(entityType)))
+      Criteria entityCriteria = criteria.get(entityType);
+      List<Entity> entities = source.select((entityCriteria == null ? all(entityType) : where(entityCriteria))
               .selectBuilder()
               .fetchDepth(0)
               .build());

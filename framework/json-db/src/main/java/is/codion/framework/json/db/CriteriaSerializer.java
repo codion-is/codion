@@ -7,7 +7,6 @@ import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.Criteria.Combination;
 import is.codion.framework.db.criteria.CustomCriteria;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -23,14 +22,12 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
   private final AttributeCriteriaSerializer attributeCriteriaSerializer;
   private final CriteriaCombinationSerializer criteriaCombinationSerializer;
   private final CustomCriteriaSerializer customCriteriaSerializer;
-  private final Entities entities;
 
   CriteriaSerializer(EntityObjectMapper entityObjectMapper) {
     super(Criteria.class);
     this.attributeCriteriaSerializer = new AttributeCriteriaSerializer(entityObjectMapper);
     this.criteriaCombinationSerializer = new CriteriaCombinationSerializer(attributeCriteriaSerializer);
     this.customCriteriaSerializer = new CustomCriteriaSerializer(entityObjectMapper);
-    this.entities = entityObjectMapper.entities();
   }
 
   @Override
@@ -55,11 +52,6 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
     else if (criteria instanceof CustomCriteria) {
       CustomCriteria customCriteria = (CustomCriteria) criteria;
       customCriteriaSerializer.serialize(customCriteria, generator);
-    }
-    else if (criteria.toString(entities.definition(criteria.entityType())).isEmpty()) {
-      generator.writeStartObject();
-      generator.writeStringField("type", "all");
-      generator.writeEndObject();
     }
     else {
       throw new IllegalArgumentException("Unknown criteria type: " + criteria.getClass());

@@ -8,8 +8,9 @@ import is.codion.framework.domain.entity.EntityType;
 
 /**
  * Specifies a query condition, based on a {@link Criteria}.
- * A factory class for {@link Condition} via {@link #where(Criteria)}.
+ * A factory class for {@link Condition} via {@link #all(EntityType)} and {@link #where(Criteria)}.
  * For {@link Criteria} instances use the factory methods provided by the {@link Criteria} class.
+ * @see #all(EntityType)
  * @see #where(Criteria)
  */
 public interface Condition {
@@ -33,6 +34,15 @@ public interface Condition {
    * @return a {@link UpdateCondition.Builder} instance based on this condition
    */
   UpdateCondition.Builder updateBuilder();
+
+  /**
+   * Creates a condition specifying all entities of the given type
+   * @param entityType the entity type
+   * @return a condition for all entities
+   */
+  static Condition all(EntityType entityType) {
+    return new AllCondition(entityType);
+  }
 
   /**
    * @param criteria the criteria

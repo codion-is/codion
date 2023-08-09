@@ -23,6 +23,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Arrays.asList;
@@ -47,7 +48,8 @@ public final class ConditionTest {
             .build();
     assertEquals(-1, condition.limit());
 
-    condition = where(all(Department.TYPE)).selectBuilder()
+    condition = all(Department.TYPE)
+            .selectBuilder()
             .limit(10)
             .build();
     assertEquals(10, condition.limit());
@@ -65,7 +67,8 @@ public final class ConditionTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> where(all(Employee.TYPE)).updateBuilder()
+    assertThrows(IllegalArgumentException.class, () -> all(Employee.TYPE)
+            .updateBuilder()
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
@@ -306,11 +309,11 @@ public final class ConditionTest {
 
   @Test
   void selectAllCondition() {
-    Condition selectCondition = where(all(Department.TYPE));
+    Condition selectCondition = all(Department.TYPE);
     assertTrue(selectCondition.criteria().values().isEmpty());
     assertTrue(selectCondition.criteria().attributes().isEmpty());
 
-    Condition condition = where(all(Department.TYPE));
+    Condition condition = all(Department.TYPE);
     assertTrue(condition.criteria().values().isEmpty());
     assertTrue(condition.criteria().attributes().isEmpty());
   }
@@ -384,10 +387,10 @@ public final class ConditionTest {
 
   @Test
   void equals() {
-    Condition condition1 = where(all(Department.TYPE));
-    Condition condition2 = where(all(Department.TYPE));
+    Condition condition1 = all(Department.TYPE);
+    Condition condition2 = all(Department.TYPE);
     assertEquals(condition1, condition2);
-    condition2 = where(all(Employee.TYPE));
+    condition2 = all(Employee.TYPE);
     assertNotEquals(condition1, condition2);
 
     Key key1 = ENTITIES.primaryKey(Employee.TYPE, 1);
