@@ -26,7 +26,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -148,8 +147,8 @@ public final class EmpDeptMinimalApp {
     public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
       EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKey);
       if (foreignKey.equals(Employee.MGR_FK)) {
-        comboBoxModel.setSelectConditionSupplier(() ->
-                where(attribute(Employee.JOB).in("MANAGER", "PRESIDENT")));
+        comboBoxModel.setSelectCriteriaSupplier(() ->
+                attribute(Employee.JOB).in("MANAGER", "PRESIDENT"));
       }
 
       return comboBoxModel;

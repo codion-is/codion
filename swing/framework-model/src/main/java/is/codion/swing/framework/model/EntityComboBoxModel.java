@@ -8,6 +8,7 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -63,7 +64,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private Supplier<Condition> selectConditionSupplier;
+  private Supplier<Criteria> selectCriteriaSupplier;
   private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
   private boolean listenToEditEvents = true;
@@ -228,18 +229,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the condition provider to use when querying data, set to null to fetch all underlying entities.
-   * @param selectConditionSupplier the condition supplier
+   * Sets the criteria provider to use when querying data, set to null to fetch all underlying entities.
+   * @param selectCriteriaSupplier the criteria supplier
    */
-  public final void setSelectConditionSupplier(Supplier<Condition> selectConditionSupplier) {
-    this.selectConditionSupplier = selectConditionSupplier;
+  public final void setSelectCriteriaSupplier(Supplier<Criteria> selectCriteriaSupplier) {
+    this.selectCriteriaSupplier = selectCriteriaSupplier;
   }
 
   /**
-   * @return the select condition supplier, null if none is specified
+   * @return the select criteria supplier, null if none is specified
    */
-  public final Supplier<Condition> getSelectConditionSupplier() {
-    return this.selectConditionSupplier;
+  public final Supplier<Criteria> getSelectCriteriaSupplier() {
+    return this.selectCriteriaSupplier;
   }
 
   /**
@@ -379,15 +380,15 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the select condition supplier ({@link #getSelectConditionSupplier()}) as well as the
+   * the select condition supplier ({@link #getSelectCriteriaSupplier()}) as well as the
    * select attributes ({@link #getSelectAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getSelectConditionSupplier()
+   * @see #getSelectCriteriaSupplier()
    * @see #getSelectAttributes()
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
-    Condition condition = selectConditionSupplier == null ? all(entityType) : selectConditionSupplier.get();
+    Condition condition = selectCriteriaSupplier == null ? all(entityType) : where(selectCriteriaSupplier.get());
     try {
       return connectionProvider.connection().select(condition.selectBuilder()
               .selectAttributes(selectAttributes)
@@ -432,7 +433,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       linkFilter(foreignKey, foreignKeyModel);
     }
     else {
-      linkCondition(foreignKey, foreignKeyModel);
+      linkCriteria(foreignKey, foreignKeyModel);
     }
     addSelectionListener(selected -> {
       if (selected != null && !selected.isNull(foreignKey)) {
@@ -457,9 +458,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     });
   }
 
-  private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+  private void linkCriteria(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Consumer<Entity> listener = selected -> {
-      setSelectConditionSupplier(() -> where(foreignKey(foreignKey).equalTo(selected)));
+      setSelectCriteriaSupplier(() -> foreignKey(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);
