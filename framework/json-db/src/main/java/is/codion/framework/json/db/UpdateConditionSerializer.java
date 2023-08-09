@@ -31,7 +31,6 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
   public void serialize(UpdateCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("type", "update");
     generator.writeStringField("entityType", condition.entityType().name());
     generator.writeFieldName("criteria");
     criteriaSerializer.serialize(condition.criteria(), generator);

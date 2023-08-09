@@ -16,7 +16,6 @@ import is.codion.framework.json.TestDomain;
 import is.codion.framework.json.TestDomain.Department;
 import is.codion.framework.json.TestDomain.Employee;
 import is.codion.framework.json.TestDomain.TestEntity;
-import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.junit.jupiter.api.Test;
@@ -26,17 +25,18 @@ import java.time.LocalDateTime;
 
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.json.db.ConditionObjectMapper.conditionObjectMapper;
+import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class ConditionObjectMapperTest {
 
   private final Entities entities = new TestDomain().entities();
+  private final ConditionObjectMapper mapper = conditionObjectMapper(entityObjectMapper(entities));
 
   @Test
   void condition() throws JsonProcessingException {
-    ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
-
     Entity dept1 = entities.builder(Department.TYPE)
             .with(Department.DEPTNO, 1)
             .build();
@@ -60,7 +60,6 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void nullCondition() throws JsonProcessingException {
-    ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
     Criteria criteria = attribute(Employee.COMMISSION).isNotNull();
 
     String jsonString = mapper.writeValueAsString(criteria);
@@ -73,8 +72,6 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void customCondition() throws JsonProcessingException {
-    ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
-
     CustomCriteria customedCriteria = customCriteria(TestEntity.CRITERIA_TYPE,
             asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
@@ -91,8 +88,6 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void selectCondition() throws JsonProcessingException {
-    ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
-
     SelectCondition selectCondition = where(attribute(Employee.EMPNO).equalTo(1))
             .selectBuilder()
             .orderBy(OrderBy.builder()
@@ -141,8 +136,6 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void updateCondition() throws JsonProcessingException {
-    ConditionObjectMapper mapper = ConditionObjectMapper.conditionObjectMapper(EntityObjectMapper.entityObjectMapper(entities));
-
     UpdateCondition condition = where(attribute(Department.DEPTNO)
             .between(1, 2))
             .updateBuilder()
@@ -155,5 +148,28 @@ public final class ConditionObjectMapperTest {
 
     assertEquals(condition.criteria(), readCondition.criteria());
     assertEquals(condition.attributeValues(), readCondition.attributeValues());
+  }
+
+  @Test
+  void allCondition() throws JsonProcessingException {
+    Condition condition = where(all(Department.TYPE));
+
+    String jsonString = mapper.writeValueAsString(condition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(condition, readCondition);
+  }
+
+  @Test
+  void combinationOfCombinations() throws JsonProcessingException {
+    Condition condition = where(and(
+            attribute(Employee.COMMISSION).equalTo(100d),
+            or(attribute(Employee.JOB).notEqualTo("test"),
+                    attribute(Employee.JOB).isNotNull())));
+
+    String jsonString = mapper.writeValueAsString(condition);
+    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+
+    assertEquals(condition, readCondition);
   }
 }

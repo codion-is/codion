@@ -9373,3 +9373,4 @@
   EntityTablePanel, auto resize mode control added to column controls
   Item now extends Supplier, value() replaced with get()
   Condition.attributes() and values() removed, related refactoring
+  ConditionDeserializer simplified along with related classes, tests added

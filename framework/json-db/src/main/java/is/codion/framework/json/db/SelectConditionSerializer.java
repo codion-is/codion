@@ -34,7 +34,6 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   public void serialize(SelectCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("type", "select");
     generator.writeStringField("entityType", condition.entityType().name());
     generator.writeFieldName("criteria");
     criteriaSerializer.serialize(condition.criteria(), generator);
