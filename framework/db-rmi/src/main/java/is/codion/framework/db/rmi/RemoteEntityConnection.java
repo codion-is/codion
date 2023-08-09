@@ -13,6 +13,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -218,14 +219,14 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   void delete(Collection<Key> entityKeys) throws RemoteException, DatabaseException;
 
   /**
-   * Deletes the entities specified by the given condition
+   * Deletes the entities specified by the given criteria
    * Performs a commit unless a transaction is open.
-   * @param condition the condition specifying the entities to delete
+   * @param criteria the criteria specifying the entities to delete
    * @return the number of deleted rows
    * @throws DatabaseException in case of a db exception
-   * @throws RemoteException in case of a remote exception
+   * @throws RemoteException   in case of a remote exception
    */
-  int delete(Condition condition) throws RemoteException, DatabaseException;
+  int delete(Criteria criteria) throws RemoteException, DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -341,13 +342,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given condition
-   * @param condition the search condition
-   * @return the number of rows fitting the given condition
+   * Selects the number of rows returned based on the given criteria
+   * @param criteria the search criteria
+   * @return the number of rows fitting the given criteria
    * @throws DatabaseException in case of a db exception
-   * @throws RemoteException in case of a remote exception
+   * @throws RemoteException   in case of a remote exception
    */
-  int rowCount(Condition condition) throws RemoteException, DatabaseException;
+  int rowCount(Criteria criteria) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object

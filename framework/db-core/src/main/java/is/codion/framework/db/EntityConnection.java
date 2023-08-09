@@ -212,13 +212,13 @@ public interface EntityConnection extends AutoCloseable {
   void delete(Collection<Key> entityKeys) throws DatabaseException;
 
   /**
-   * Deletes the entities specified by the given condition.
+   * Deletes the entities specified by the given criteria.
    * Performs a commit unless a transaction is open.
-   * @param condition the condition specifying the entities to delete
+   * @param criteria the criteria specifying the entities to delete
    * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
-  int delete(Condition condition) throws DatabaseException;
+  int delete(Criteria criteria) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given attribute, note that the attribute
@@ -325,12 +325,12 @@ public interface EntityConnection extends AutoCloseable {
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given condition
-   * @param condition the search condition
-   * @return the number of rows fitting the given condition
+   * Selects the number of rows returned based on the given criteria
+   * @param criteria the search criteria
+   * @return the number of rows fitting the given criteria
    * @throws DatabaseException in case of a database exception
    */
-  int rowCount(Condition condition) throws DatabaseException;
+  int rowCount(Criteria criteria) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object

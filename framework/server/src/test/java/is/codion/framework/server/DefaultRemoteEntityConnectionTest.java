@@ -11,6 +11,7 @@ import is.codion.common.rmi.server.Server;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.server.TestDomain.Employee;
@@ -24,9 +25,9 @@ import java.rmi.registry.Registry;
 import java.util.Collection;
 
 import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Arrays.asList;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultRemoteEntityConnectionTest {
 
@@ -60,13 +61,13 @@ public class DefaultRemoteEntityConnectionTest {
             .clientTypeId("DefaultRemoteEntityConnectionTestClient")
             .build());
     DefaultRemoteEntityConnection connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
-    Condition condition = all(Employee.TYPE);
+    Criteria criteria = Criteria.all(Employee.TYPE);
     connection.beginTransaction();
-    connection.delete(condition);
-    assertTrue(connection.select(condition).isEmpty());
+    connection.delete(criteria);
+    assertTrue(connection.select(where(criteria)).isEmpty());
     connection.close();
     connection = new DefaultRemoteEntityConnection(DOMAIN, Database.instance(), client, 1238);
-    assertTrue(!connection.select(condition).isEmpty());
+    assertFalse(connection.select(where(criteria)).isEmpty());
     connection.close();
   }
 
@@ -101,7 +102,7 @@ public class DefaultRemoteEntityConnectionTest {
       Condition condition = all(Employee.TYPE);
       proxy.beginTransaction();
       proxy.select(condition);
-      proxy.delete(condition);
+      proxy.delete(condition.criteria());
       proxy.select(condition);
       proxy.rollbackTransaction();
       proxy.select(condition);

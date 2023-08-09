@@ -15,6 +15,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -301,12 +302,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int delete(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int delete(Criteria criteria) throws DatabaseException {
+    Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("delete",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(criteria)))),
                 entityObjectMapper, Integer.class);
       }
     }
@@ -440,12 +441,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int rowCount(Criteria criteria) throws DatabaseException {
+    Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("count",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(criteria)))),
                 entityObjectMapper, Integer.class);
       }
     }

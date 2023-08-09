@@ -209,7 +209,7 @@ public final class EntityConnectionDemo {
     // tag::rowCount[]
     EntityConnection connection = connectionProvider.connection();
 
-    int numberOfItStaff = connection.rowCount(where(attribute(Employee.TITLE).equalTo("IT Staff")));
+    int numberOfItStaff = connection.rowCount(attribute(Employee.TITLE).equalTo("IT Staff"));
     // end::rowCount[]
   }
 
@@ -286,13 +286,13 @@ public final class EntityConnectionDemo {
             where(attribute(Track.ALBUM_ID).in(aquamanAlbumIds)));
 
     int playlistTracksDeleted = connection.delete(
-            where(attribute(PlaylistTrack.TRACK_ID).in(aquamanTrackIds)));
+            attribute(PlaylistTrack.TRACK_ID).in(aquamanTrackIds));
 
     int tracksDeleted = connection.delete(
-            where(attribute(Track.ALBUM_ID).in(aquamanAlbumIds)));
+            attribute(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int albumsDeleted = connection.delete(
-            where(foreignKey(Album.ARTIST_FK).equalTo(aquaman)));
+            foreignKey(Album.ARTIST_FK).equalTo(aquaman));
     // end::deleteCondition[]
   }
 

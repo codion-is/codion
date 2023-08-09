@@ -10,6 +10,7 @@ import is.codion.common.user.User;
 import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.TestDomain.Department;
 import is.codion.framework.db.local.TestDomain.Employee;
 import is.codion.framework.domain.Domain;
@@ -48,8 +49,8 @@ public class EntityConnectionTest {
       Database destinationDatabase = H2DatabaseFactory.createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
       DESTINATION_CONNECTION.databaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
-      DESTINATION_CONNECTION.delete(all(Employee.TYPE));
-      DESTINATION_CONNECTION.delete(all(Department.TYPE));
+      DESTINATION_CONNECTION.delete(Criteria.all(Employee.TYPE));
+      DESTINATION_CONNECTION.delete(Criteria.all(Department.TYPE));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -69,8 +70,8 @@ public class EntityConnectionTest {
             .batchSize(2)
             .execute();
 
-    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
+    assertEquals(sourceConnection.rowCount(Criteria.all(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(Criteria.all(Department.TYPE)));
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
@@ -82,10 +83,10 @@ public class EntityConnectionTest {
             .includePrimaryKeys(false)
             .criteria(attribute(Employee.SALARY).greaterThan(1000d))
             .execute();
-    assertEquals(13, DESTINATION_CONNECTION.rowCount(all(Employee.TYPE)));
+    assertEquals(13, DESTINATION_CONNECTION.rowCount(Criteria.all(Employee.TYPE)));
 
-    DESTINATION_CONNECTION.delete(all(Employee.TYPE));
-    DESTINATION_CONNECTION.delete(all(Department.TYPE));
+    DESTINATION_CONNECTION.delete(Criteria.all(Employee.TYPE));
+    DESTINATION_CONNECTION.delete(Criteria.all(Department.TYPE));
   }
 
   @Test
@@ -102,13 +103,13 @@ public class EntityConnectionTest {
               .onInsert(keys -> {})
               .execute();
     }
-    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
+    assertEquals(sourceConnection.rowCount(Criteria.all(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(Criteria.all(Department.TYPE)));
 
     EntityConnection.insertEntities(DESTINATION_CONNECTION, Collections.emptyIterator())
             .batchSize(10)
             .execute();
-    DESTINATION_CONNECTION.delete(all(Department.TYPE));
+    DESTINATION_CONNECTION.delete(Criteria.all(Department.TYPE));
   }
 
   @Test
