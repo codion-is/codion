@@ -62,8 +62,8 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.SelectCondition.selectCondition;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -308,7 +308,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(where(keys(Entity.primaryKeys(entitiesToUpdate))).selectBuilder().build(), 0);//bypass caching
+          List<Entity> selected = doSelect(selectCondition(where(keys(Entity.primaryKeys(entitiesToUpdate)))), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -500,7 +500,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         List<Entity> result = new ArrayList<>();
         for (List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
-          result.addAll(doSelect(where(keys(entityTypeKeys)).selectBuilder().build()));
+          result.addAll(doSelect(selectCondition(where(keys(entityTypeKeys)))));
         }
         commitIfTransactionIsNotOpen();
 
@@ -535,8 +535,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION);
-    SelectCondition selectCondition = condition instanceof SelectCondition ?
-            (SelectCondition) condition : condition.selectBuilder().build();
+    SelectCondition selectCondition = selectCondition(condition);
     synchronized (connection) {
       try {
         List<Entity> result = doSelect(selectCondition);
@@ -565,10 +564,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
-            all(entityDefinition.type()).selectBuilder()
+            SelectCondition.builder(entityDefinition.type())
                     .orderBy(ascending(attribute))
                     .build() :
-            condition.selectBuilder().build();
+            selectCondition(condition);
     if (!selectCondition.entityType().equals(attribute.entityType())) {
       throw new IllegalArgumentException("Condition entity type " + attribute.entityType() + " required, got " + selectCondition.entityType());
     }
@@ -611,9 +610,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .selectCondition(condition.selectBuilder()
-                            .selectAttributes(entityDefinition.primaryKeyAttributes())
-                            .build())
+                    .selectCondition(SelectCondition.builder(condition)
+                              .selectAttributes(entityDefinition.primaryKeyAttributes())
+                              .build())
                     .build())
             .build();
     PreparedStatement statement = null;
@@ -653,8 +652,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     for (ForeignKeyProperty foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
-      List<Entity> dependencies = select(where(foreignKey(foreignKeyReference.attribute()).in(entities))
-              .selectBuilder()
+      List<Entity> dependencies = select(SelectCondition.builder(foreignKey(foreignKeyReference.attribute()).in(entities))
               .fetchDepth(1)
               .build())
               .stream()
@@ -912,8 +910,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Key> originalKeys = Entity.originalPrimaryKeys(entities);
-    SelectCondition selectForUpdateCondition = where(keys(originalKeys))
-            .selectBuilder()
+    SelectCondition selectForUpdateCondition = SelectCondition.builder(keys(originalKeys))
             .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
             .forUpdate()
             .build();
@@ -1029,8 +1026,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
       List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
-      SelectCondition referencedEntitiesCondition = where(keys(keys))
-              .selectBuilder()
+      SelectCondition referencedEntitiesCondition = SelectCondition.builder(keys(keys))
               .fetchDepth(conditionFetchDepthLimit)
               .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))
               .build();
@@ -1056,8 +1052,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
     requireNonNull(condition, CONDITION);
-    SelectCondition selectCondition = condition instanceof SelectCondition ?
-            (SelectCondition) condition : condition.selectBuilder().build();
+    SelectCondition selectCondition = selectCondition(condition);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;

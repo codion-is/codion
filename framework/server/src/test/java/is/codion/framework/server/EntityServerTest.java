@@ -183,8 +183,7 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = all(Employee.TYPE)
-            .selectBuilder()
+    SelectCondition selectCondition = SelectCondition.builder(Employee.TYPE)
             .orderBy(OrderBy.ascending(Employee.NAME))
             .build();
     remoteConnectionTwo.select(selectCondition);

@@ -477,8 +477,7 @@ public class EntityServiceTest {
 
   @Test
   void updateCondition() throws Exception {
-    UpdateCondition updateCondition = where(attribute(Department.ID).between(10, 20))
-            .updateBuilder()
+    UpdateCondition updateCondition = UpdateCondition.builder(attribute(Department.ID).between(10, 20))
             .set(Department.LOCATION, "aloc").build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);

@@ -42,14 +42,12 @@ public final class ConditionTest {
 
   @Test
   void selectCondition() {
-    SelectCondition condition = where(attribute(Department.LOCATION).equalTo("New York"))
-            .selectBuilder()
+    SelectCondition condition = SelectCondition.builder(attribute(Department.LOCATION).equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertEquals(-1, condition.limit());
 
-    condition = all(Department.TYPE)
-            .selectBuilder()
+    condition = SelectCondition.builder(Department.TYPE)
             .limit(10)
             .build();
     assertEquals(10, condition.limit());
@@ -57,8 +55,7 @@ public final class ConditionTest {
 
   @Test
   void customCriteriaTest() {
-    SelectCondition condition = where(customCriteria(Department.NAME_NOT_NULL_CRITERIA))
-            .selectBuilder()
+    SelectCondition condition = SelectCondition.builder(customCriteria(Department.NAME_NOT_NULL_CRITERIA))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertTrue(condition.criteria().values().isEmpty());
@@ -67,8 +64,7 @@ public final class ConditionTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> all(Employee.TYPE)
-            .updateBuilder()
+    assertThrows(IllegalArgumentException.class, () -> UpdateCondition.builder(Employee.TYPE)
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
@@ -505,47 +501,47 @@ public final class ConditionTest {
 
     condition1 = where(attribute(Employee.NAME).in("Luke", "John"));
     condition2 = where(attribute(Employee.NAME).in("Luke", "John"));
-    assertEquals(condition1.selectBuilder().build(), condition2.selectBuilder().build());
-    assertEquals(condition1.selectBuilder()
+    assertEquals(SelectCondition.builder(condition1).build(), SelectCondition.builder(condition2).build());
+    assertEquals(SelectCondition.builder(condition1)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
-            condition2.selectBuilder()
+            SelectCondition.builder(condition2)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build());
-    assertNotEquals(condition1.selectBuilder()
+    assertNotEquals(SelectCondition.builder(condition1)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
-            condition2.selectBuilder()
-                    .build());
-
-    assertEquals(condition1.selectBuilder()
-                    .selectAttributes(Employee.NAME)
-                    .build(),
-            condition2.selectBuilder()
-                    .selectAttributes(Employee.NAME)
+            SelectCondition.builder(condition2)
                     .build());
 
-    assertEquals(condition1.selectBuilder()
+    assertEquals(SelectCondition.builder(condition1)
+                    .selectAttributes(Employee.NAME)
+                    .build(),
+            SelectCondition.builder(condition2)
+                    .selectAttributes(Employee.NAME)
+                    .build());
+
+    assertEquals(SelectCondition.builder(condition1)
                     .selectAttributes(Employee.NAME)
                     .offset(10)
                     .build(),
-            condition2.selectBuilder()
-                    .selectAttributes(Employee.NAME)
-                    .offset(10)
-                    .build());
-
-    assertNotEquals(condition1.selectBuilder()
-                    .selectAttributes(Employee.NAME)
-                    .build(),
-            condition2.selectBuilder()
+            SelectCondition.builder(condition2)
                     .selectAttributes(Employee.NAME)
                     .offset(10)
                     .build());
 
-    assertNotEquals(condition1.selectBuilder()
+    assertNotEquals(SelectCondition.builder(condition1)
                     .selectAttributes(Employee.NAME)
                     .build(),
-            condition2.selectBuilder()
+            SelectCondition.builder(condition2)
+                    .selectAttributes(Employee.NAME)
+                    .offset(10)
+                    .build());
+
+    assertNotEquals(SelectCondition.builder(condition1)
+                    .selectAttributes(Employee.NAME)
+                    .build(),
+            SelectCondition.builder(condition2)
                     .selectAttributes(Employee.ID)
                     .build());
 

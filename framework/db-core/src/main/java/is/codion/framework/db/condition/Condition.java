@@ -26,16 +26,6 @@ public interface Condition {
   Criteria criteria();
 
   /**
-   * @return a {@link SelectCondition.Builder} instance based on this condition
-   */
-  SelectCondition.Builder selectBuilder();
-
-  /**
-   * @return a {@link UpdateCondition.Builder} instance based on this condition
-   */
-  UpdateCondition.Builder updateBuilder();
-
-  /**
    * Creates a condition specifying all entities of the given type
    * @param entityType the entity type
    * @return a condition for all entities

@@ -3,12 +3,16 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
 import java.util.Collection;
 import java.util.Optional;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class encapsulating select query parameters.
@@ -135,5 +139,41 @@ public interface SelectCondition extends Condition {
      * @return a new {@link SelectCondition} instance based on this builder
      */
     SelectCondition build();
+  }
+
+  /**
+   * @param condition the condition
+   * @return a {@link SelectCondition} instance based on the given condition
+   */
+  static SelectCondition selectCondition(Condition condition) {
+    if (requireNonNull(condition) instanceof SelectCondition) {
+      return (SelectCondition) condition;
+    }
+
+    return builder(condition).build();
+  }
+
+  /**
+   * @param entityType the entity type
+   * @return a {@link SelectCondition.Builder} instance
+   */
+  static Builder builder(EntityType entityType) {
+    return new DefaultSelectCondition.DefaultBuilder(new AllCondition(entityType));
+  }
+
+  /**
+   * @param criteria the criteria
+   * @return a {@link SelectCondition.Builder} instance
+   */
+  static Builder builder(Criteria criteria) {
+    return new DefaultSelectCondition.DefaultBuilder(new DefaultCondition(criteria));
+  }
+
+  /**
+   * @param condition the condition
+   * @return a {@link SelectCondition.Builder} instance
+   */
+  static Builder builder(Condition condition) {
+    return new DefaultSelectCondition.DefaultBuilder(condition);
   }
 }

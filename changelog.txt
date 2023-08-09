@@ -9416,3 +9416,5 @@
   ConditionDeserializer simplified along with related classes, tests added
   Criteria.all() removed, Condition.all() reintroduced, related refactoring
   CalendarPanel refactored
+  EntityComboBoxModel.selectConditionSupplier is now selectCriteriaSupplier
+  Condition.selectBuilder() and updateBuilder() replaced with SelectCondition.builder() and UpdateCondition.builder() respectively, related refactoring

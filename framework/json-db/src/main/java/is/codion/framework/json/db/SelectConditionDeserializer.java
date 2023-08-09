@@ -22,7 +22,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.SelectCondition.builder;
 
 final class SelectConditionDeserializer extends StdDeserializer<SelectCondition> {
 
@@ -46,7 +46,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     JsonNode criteriaNode = jsonNode.get("criteria");
     Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    SelectCondition.Builder selectCondition = where(criteria).selectBuilder();
+    SelectCondition.Builder selectCondition = builder(criteria);
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectCondition.orderBy(deserializeOrderBy(definition, orderBy));

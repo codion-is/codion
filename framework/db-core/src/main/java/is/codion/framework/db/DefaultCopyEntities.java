@@ -5,6 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -16,8 +17,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.where;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultCopyEntities implements CopyEntities {
@@ -42,8 +41,10 @@ final class DefaultCopyEntities implements CopyEntities {
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
       Criteria entityCriteria = criteria.get(entityType);
-      List<Entity> entities = source.select((entityCriteria == null ? all(entityType) : where(entityCriteria))
-              .selectBuilder()
+      SelectCondition.Builder conditionBuilder = entityCriteria == null ?
+              SelectCondition.builder(entityType) :
+              SelectCondition.builder(entityCriteria);
+      List<Entity> entities = source.select(conditionBuilder
               .fetchDepth(0)
               .build());
       if (!includePrimaryKeys) {

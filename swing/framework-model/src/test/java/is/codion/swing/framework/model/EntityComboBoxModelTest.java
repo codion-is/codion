@@ -29,7 +29,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.customCriteria;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -278,13 +277,13 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectConditionSupplier(() -> where(customCriteria(Employee.CRITERIA_3_TYPE)));
+    comboBoxModel.setSelectCriteriaSupplier(() -> customCriteria(Employee.CRITERIA_3_TYPE));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
-    comboBoxModel.setSelectConditionSupplier(null);
+    comboBoxModel.setSelectCriteriaSupplier(null);
     comboBoxModel.forceRefresh();
     assertEquals(16, comboBoxModel.getSize());
     assertEquals(3, refreshed.get());

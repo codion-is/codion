@@ -3,7 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Map;
 
@@ -35,5 +37,21 @@ public interface UpdateCondition extends Condition {
      * @return a new {@link UpdateCondition} instance based on this builder
      */
     UpdateCondition build();
+  }
+
+  /**
+   * @param entityType the entity type
+   * @return a {@link UpdateCondition.Builder} instance
+   */
+  static Builder builder(EntityType entityType) {
+    return new DefaultUpdateCondition.DefaultBuilder(new AllCondition(entityType));
+  }
+
+  /**
+   * @param criteria the criteria
+   * @return a {@link UpdateCondition.Builder} instance
+   */
+  static Builder builder(Criteria criteria) {
+    return new DefaultUpdateCondition.DefaultBuilder(new DefaultCondition(criteria));
   }
 }
