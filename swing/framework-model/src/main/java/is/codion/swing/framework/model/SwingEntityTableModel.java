@@ -16,6 +16,7 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -993,7 +994,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private List<Entity> queryItems(Condition condition) throws DatabaseException {
-    List<Entity> items = editModel.connectionProvider().connection().select(condition.selectBuilder()
+    List<Entity> items = editModel.connectionProvider().connection().select(SelectCondition.builder(condition)
               .selectAttributes(selectAttributes())
               .limit(getLimit())
               .orderBy(orderBy())

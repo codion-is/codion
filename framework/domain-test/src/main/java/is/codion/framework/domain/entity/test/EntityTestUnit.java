@@ -10,6 +10,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Condition.all;
 import static java.util.Collections.singletonList;
 import static java.util.Objects.requireNonNull;
 import static org.junit.jupiter.api.Assertions.*;
@@ -221,8 +221,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.type() + " failed equals comparison");
     }
     else {
-      connection.select(all(entityType)
-              .selectBuilder()
+      connection.select(SelectCondition.builder(entityType)
               .limit(SELECT_LIMIT)
               .build());
     }

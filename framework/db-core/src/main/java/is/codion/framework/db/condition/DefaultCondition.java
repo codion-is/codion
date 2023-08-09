@@ -35,16 +35,6 @@ class DefaultCondition implements Condition, Serializable {
   }
 
   @Override
-  public final SelectCondition.Builder selectBuilder() {
-    return new DefaultSelectCondition.DefaultBuilder(this);
-  }
-
-  @Override
-  public final UpdateCondition.Builder updateBuilder() {
-    return new DefaultUpdateCondition.DefaultBuilder(this);
-  }
-
-  @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + entityType();
   }

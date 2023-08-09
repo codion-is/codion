@@ -35,16 +35,6 @@ public final class AllCondition implements Condition, Serializable {
   }
 
   @Override
-  public SelectCondition.Builder selectBuilder() {
-    return new DefaultSelectCondition.DefaultBuilder(this);
-  }
-
-  @Override
-  public UpdateCondition.Builder updateBuilder() {
-    return new DefaultUpdateCondition.DefaultBuilder(this);
-  }
-
-  @Override
   public boolean equals(Object object) {
     if (this == object) {
       return true;

@@ -7,7 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -35,8 +35,6 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -388,9 +386,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
-    Condition condition = selectCriteriaSupplier == null ? all(entityType) : where(selectCriteriaSupplier.get());
+    SelectCondition.Builder conditionBuilder = selectCriteriaSupplier == null ?
+            SelectCondition.builder(entityType) :
+            SelectCondition.builder(selectCriteriaSupplier.get());
     try {
-      return connectionProvider.connection().select(condition.selectBuilder()
+      return connectionProvider.connection().select(conditionBuilder
               .selectAttributes(selectAttributes)
               .orderBy(orderBy)
               .build());

@@ -5,6 +5,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.world.domain.WorldImpl;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -21,7 +22,6 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -51,9 +51,8 @@ public final class CountryReportDataSourceTest {
 
       EntityConnection connection = connectionProvider.connection();
       List<Entity> countries =
-              connection.select(where(attribute(Country.NAME)
+              connection.select(SelectCondition.builder(attribute(Country.NAME)
                       .in("Denmark", "Iceland"))
-                      .selectBuilder()
                       .orderBy(ascending(Country.NAME))
                       .build());
       CountryReportDataSource countryReportDataSource = new CountryReportDataSource(countries, connection, progressReporter);

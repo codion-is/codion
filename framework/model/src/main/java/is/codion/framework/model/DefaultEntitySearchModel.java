@@ -11,7 +11,6 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
@@ -33,7 +32,6 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -286,11 +284,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       }
     }
     Criteria criteriaCombination = combination(Conjunction.OR, criteria);
-    Condition condition = additionalCriteriaSupplier == null ?
-            where(criteriaCombination) :
-            where(and(additionalCriteriaSupplier.get(), criteriaCombination));
+    SelectCondition.Builder conditionBuilder = additionalCriteriaSupplier == null ?
+            SelectCondition.builder(criteriaCombination) :
+            SelectCondition.builder(and(additionalCriteriaSupplier.get(), criteriaCombination));
 
-    return condition.selectBuilder()
+    return conditionBuilder
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();
   }

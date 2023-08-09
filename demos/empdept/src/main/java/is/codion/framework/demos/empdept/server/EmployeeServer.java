@@ -6,6 +6,7 @@ package is.codion.framework.demos.empdept.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.server.RemoteClient;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.Domain;
@@ -56,8 +57,7 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public Collection<Employee> employeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        List<Entity> employees = connectionProxy.select(all(Employee.TYPE)
-                .selectBuilder()
+        List<Entity> employees = connectionProxy.select(SelectCondition.builder(Employee.TYPE)
                 .fetchDepth(-1)
                 .build());
 

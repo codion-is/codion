@@ -10,6 +10,8 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
@@ -78,8 +80,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            where(attribute(Track.NAME).equalTo("Bad%"))
-                    .selectBuilder()
+            SelectCondition.builder(attribute(Track.NAME).equalTo("Bad%"))
                     .fetchDepth(0)
                     .build());
 
@@ -100,8 +101,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            where(attribute(Track.NAME).equalTo("Bad%"))
-                    .selectBuilder()
+            SelectCondition.builder(attribute(Track.NAME).equalTo("Bad%"))
                     .fetchDepth(Track.ALBUM_FK, 0)
                     .build());
 
@@ -262,14 +262,12 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     connection.update(
-            where(attribute(Artist.NAME).equalTo("Azymuth"))
-                    .updateBuilder()
+            UpdateCondition.builder(attribute(Artist.NAME).equalTo("Azymuth"))
                     .set(Artist.NAME, "Azymouth")
                     .build());
 
     int updateCount = connection.update(
-            where(attribute(Customer.EMAIL).isNull())
-                    .updateBuilder()
+            UpdateCondition.builder(attribute(Customer.EMAIL).isNull())
                     .set(Customer.EMAIL, "<none>")
                     .build());
     // end::updateCondition[]

@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.condition.UpdateCondition.builder;
 
 final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition> {
 
@@ -46,7 +46,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     JsonNode criteriaNode = jsonNode.get("criteria");
     Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    UpdateCondition.Builder updateCondition = where(criteria).updateBuilder();
+    UpdateCondition.Builder updateCondition = builder(criteria);
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {

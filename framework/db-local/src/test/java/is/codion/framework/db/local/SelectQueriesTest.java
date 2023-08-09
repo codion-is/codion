@@ -12,7 +12,6 @@ import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -51,8 +50,7 @@ public final class SelectQueriesTest {
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
-    SelectCondition condition = where(attribute(QueryColumnsWhereClause.ENAME).equalTo("SCOTT"))
-            .selectBuilder()
+    SelectCondition condition = SelectCondition.builder(attribute(QueryColumnsWhereClause.ENAME).equalTo("SCOTT"))
             .selectAttributes(QueryColumnsWhereClause.ENAME)
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
