@@ -59,8 +59,8 @@ public final class ConditionTest {
             .selectBuilder()
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
-    assertTrue(condition.values().isEmpty());
-    assertTrue(condition.attributes().isEmpty());
+    assertTrue(condition.criteria().values().isEmpty());
+    assertTrue(condition.criteria().attributes().isEmpty());
   }
 
   @Test
@@ -307,12 +307,12 @@ public final class ConditionTest {
   @Test
   void selectAllCondition() {
     Condition selectCondition = where(all(Department.TYPE));
-    assertTrue(selectCondition.values().isEmpty());
-    assertTrue(selectCondition.attributes().isEmpty());
+    assertTrue(selectCondition.criteria().values().isEmpty());
+    assertTrue(selectCondition.criteria().attributes().isEmpty());
 
     Condition condition = where(all(Department.TYPE));
-    assertTrue(condition.values().isEmpty());
-    assertTrue(condition.attributes().isEmpty());
+    assertTrue(condition.criteria().values().isEmpty());
+    assertTrue(condition.criteria().attributes().isEmpty());
   }
 
   @Test
