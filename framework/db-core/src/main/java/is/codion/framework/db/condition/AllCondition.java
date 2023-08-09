@@ -3,16 +3,11 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.db.criteria.AbstractCriteria;
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.Objects;
-
-import static java.util.Collections.emptyList;
-import static java.util.Objects.requireNonNull;
 
 public final class AllCondition implements Condition, Serializable {
 
@@ -21,7 +16,7 @@ public final class AllCondition implements Condition, Serializable {
   private final Criteria criteria;
 
   AllCondition(EntityType entityType) {
-    this.criteria = new AllCriteria(entityType);
+    this.criteria = Criteria.all(entityType);
   }
 
   @Override
@@ -49,20 +44,5 @@ public final class AllCondition implements Condition, Serializable {
   @Override
   public int hashCode() {
     return Objects.hash(entityType());
-  }
-
-  private static final class AllCriteria extends AbstractCriteria {
-
-    private static final long serialVersionUID = 1;
-
-    private AllCriteria(EntityType entityType) {
-      super(entityType, emptyList(), emptyList());
-    }
-
-    @Override
-    public String toString(EntityDefinition definition) {
-      requireNonNull(definition);
-      return "";
-    }
   }
 }

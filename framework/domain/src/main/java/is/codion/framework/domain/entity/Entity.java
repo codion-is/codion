@@ -153,24 +153,22 @@ public interface Entity extends Comparable<Entity> {
   boolean contains(Attribute<?> attribute);
 
   /**
-   * Returns the Entity instance referenced by the given foreign key attribute.
-   * If the underlying reference attribute contains a value, that is,
+   * Returns the Entity instance referenced by the given {@link ForeignKey}.
+   * If the underlying reference contains a value, that is,
    * a foreign key value exists but the actual referenced entity has not
-   * been loaded, an "empty" entity is returned, containing only the reference
-   * key value(s). Null is returned only if the actual reference attribute is null.
+   * been loaded, an "empty" entity is returned, containing only the referenced
+   * key value(s). Null is returned only if the actual foreign key is null.
    * @param foreignKey the foreign key for which to retrieve the value
-   * @return the value of {@code foreignKey},
-   * assuming it is an Entity
-   * @throws IllegalArgumentException if the attribute is not a foreign key attribute
+   * @return the entity associated with {@code foreignKey}
    * @see #isLoaded(ForeignKey)
    */
   Entity referencedEntity(ForeignKey foreignKey);
 
   /**
-   * Returns the primary key of the entity referenced by the given {@link Attribute},
+   * Returns the key referenced by the given {@link ForeignKey},
    * if the reference is null this method returns null.
    * @param foreignKey the foreign key for which to retrieve the underlying {@link Key}
-   * @return the primary key of the underlying entity, null if no entity is referenced
+   * @return the key for the underlying entity, null if no entity is referenced
    */
   Key referencedKey(ForeignKey foreignKey);
 

@@ -10,8 +10,8 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.db.criteria.Criteria.key;
@@ -131,9 +130,9 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Condition selectCondition = where(attribute(Employee.COMMISSION).isNull());
+    Criteria criteria = attribute(Employee.COMMISSION).isNull();
 
-    List<Entity> entities = connection.select(selectCondition);
+    List<Entity> entities = connection.select(where(criteria));
 
     UpdateCondition updateCondition = UpdateCondition.builder(attribute(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
@@ -142,7 +141,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(updateCondition);
-      assertEquals(0, connection.rowCount(selectCondition));
+      assertEquals(0, connection.rowCount(criteria));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -195,7 +194,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.rowCount(all(Department.TYPE)));
+    assertEquals(4, connection.rowCount(Criteria.all(Department.TYPE)));
   }
 
   @Test
@@ -236,7 +235,7 @@ abstract class AbstractHttpEntityConnectionTest {
   @Test
   void deleteDepartmentWithEmployees() throws DatabaseException {
     Entity department = connection.selectSingle(Department.NAME, "SALES");
-    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(where(key(department.primaryKey()))));
+    assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key(department.primaryKey())));
   }
 
   @Test

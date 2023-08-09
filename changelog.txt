@@ -9418,3 +9418,5 @@
   CalendarPanel refactored
   EntityComboBoxModel.selectConditionSupplier is now selectCriteriaSupplier
   Condition.selectBuilder() and updateBuilder() replaced with SelectCondition.builder() and UpdateCondition.builder() respectively, related refactoring
+  AllCriteria reintroduced, Criteria.all() added
+  EntityConnection.rowCount() and delete() argument changed from Condition to Criteria

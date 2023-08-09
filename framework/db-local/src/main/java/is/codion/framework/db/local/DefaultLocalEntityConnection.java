@@ -383,17 +383,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int delete(Condition condition) throws DatabaseException {
-    checkIfReadOnly(requireNonNull(condition, CONDITION).entityType());
+  public int delete(Criteria criteria) throws DatabaseException {
+    checkIfReadOnly(requireNonNull(criteria, "criteria").entityType());
 
-    EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
-    List<?> statementValues = condition.criteria().values();
-    List<ColumnProperty<?>> statementProperties = entityDefinition.columnProperties(condition.criteria().attributes());
+    EntityDefinition entityDefinition = domainEntities.definition(criteria.entityType());
+    List<?> statementValues = criteria.values();
+    List<ColumnProperty<?>> statementProperties = entityDefinition.columnProperties(criteria.attributes());
     PreparedStatement statement = null;
     String deleteQuery = null;
     synchronized (connection) {
       try {
-        deleteQuery = deleteQuery(entityDefinition.tableName(), condition.criteria().toString(entityDefinition));
+        deleteQuery = deleteQuery(entityDefinition.tableName(), criteria.toString(entityDefinition));
         statement = prepareStatement(deleteQuery);
         int deleteCount = executeStatement(statement, deleteQuery, statementProperties, statementValues);
         commitIfTransactionIsNotOpen();
@@ -605,12 +605,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(condition, CONDITION).entityType());
+  public int rowCount(Criteria criteria) throws DatabaseException {
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(criteria, "criteria").entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .selectCondition(SelectCondition.builder(condition)
+                    .selectCondition(SelectCondition.builder(criteria)
                               .selectAttributes(entityDefinition.primaryKeyAttributes())
                               .build())
                     .build())
@@ -618,7 +618,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     synchronized (connection) {
-      Criteria criteria = condition.criteria();
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, criteria, entityDefinition);

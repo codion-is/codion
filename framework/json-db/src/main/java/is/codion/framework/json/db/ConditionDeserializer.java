@@ -6,7 +6,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
-import com.fasterxml.jackson.core.JacksonException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -31,7 +30,7 @@ public class ConditionDeserializer extends StdDeserializer<Condition> {
   }
 
   @Override
-  public Condition deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException, JacksonException {
+  public Condition deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);

@@ -13,6 +13,7 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
@@ -77,9 +78,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int rowCount(Criteria criteria) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.rowCount(condition);
+      return connectionProxy.rowCount(criteria);
     }
   }
 
@@ -206,9 +207,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int delete(Condition condition) throws DatabaseException {
+  public int delete(Criteria criteria) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.delete(condition);
+      return connectionProxy.delete(criteria);
     }
   }
 

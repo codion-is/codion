@@ -19,6 +19,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -105,7 +106,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       Key key = ENTITIES.primaryKey(Department.TYPE, 40);
-      assertEquals(1, connection.delete(where(key(key))));
+      assertEquals(1, connection.delete(key(key)));
       try {
         connection.select(key);
         fail();
@@ -118,9 +119,9 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       //scott, james, adams
-      assertEquals(3, connection.delete(where(and(
+      assertEquals(3, connection.delete(and(
               attribute(Employee.NAME).equalTo("%S%"),
-              attribute(Employee.JOB).equalTo("CLERK")))));
+              attribute(Employee.JOB).equalTo("CLERK"))));
     }
     finally {
       connection.rollbackTransaction();
@@ -197,7 +198,7 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void deleteByConditionWithForeignKeys() {
     assertThrows(ReferentialIntegrityException.class, () ->
-            connection.delete(where(attribute(Department.DNAME).equalTo("ACCOUNTING"))));
+            connection.delete(attribute(Department.DNAME).equalTo("ACCOUNTING")));
   }
 
   @Test
@@ -348,11 +349,11 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    assertEquals(4, connection.rowCount(where(attribute(Employee.ID).in(asList(1, 2, 3, 4)))));
-    assertEquals(0, connection.rowCount(where(attribute(Employee.DEPARTMENT).isNull())));
-    assertEquals(0, connection.rowCount(where(foreignKey(Employee.DEPARTMENT_FK).isNull())));
-    assertEquals(1, connection.rowCount(where(attribute(Employee.MGR).isNull())));
-    assertEquals(1, connection.rowCount(where(foreignKey(Employee.MGR_FK).isNull())));
+    assertEquals(4, connection.rowCount(attribute(Employee.ID).in(asList(1, 2, 3, 4))));
+    assertEquals(0, connection.rowCount(attribute(Employee.DEPARTMENT).isNull()));
+    assertEquals(0, connection.rowCount(foreignKey(Employee.DEPARTMENT_FK).isNull()));
+    assertEquals(1, connection.rowCount(attribute(Employee.MGR).isNull()));
+    assertEquals(1, connection.rowCount(foreignKey(Employee.MGR_FK).isNull()));
 
     assertFalse(connection.select(Employee.DEPARTMENT_FK, connection.select(where(attribute(Department.DEPTNO).equalTo(20)))).isEmpty());
 
@@ -444,19 +445,19 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void rowCount() throws Exception {
-    int rowCount = connection.rowCount(all(Department.TYPE));
+    int rowCount = connection.rowCount(Criteria.all(Department.TYPE));
     assertEquals(4, rowCount);
-    Condition deptNoCondition = where(attribute(Department.DEPTNO).greaterThanOrEqualTo(30));
-    rowCount = connection.rowCount(deptNoCondition);
+    Criteria deptNoCriteria = attribute(Department.DEPTNO).greaterThanOrEqualTo(30);
+    rowCount = connection.rowCount(deptNoCriteria);
     assertEquals(2, rowCount);
 
-    rowCount = connection.rowCount(all(EmpnoDeptno.TYPE));
+    rowCount = connection.rowCount(Criteria.all(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
-    deptNoCondition = where(attribute(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30));
-    rowCount = connection.rowCount(deptNoCondition);
+    deptNoCriteria = attribute(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
+    rowCount = connection.rowCount(deptNoCriteria);
     assertEquals(4, rowCount);
 
-    rowCount = connection.rowCount(all(Job.TYPE));
+    rowCount = connection.rowCount(Criteria.all(Job.TYPE));
     assertEquals(4, rowCount);
   }
 
@@ -646,9 +647,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithCondition() throws DatabaseException {
-    Condition condition = where(attribute(Employee.COMMISSION).isNull());
+    Criteria criteria = attribute(Employee.COMMISSION).isNull();
 
-    List<Entity> entities = connection.select(condition);
+    List<Entity> entities = connection.select(where(criteria));
 
     UpdateCondition updateCondition = UpdateCondition.builder(attribute(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
@@ -657,7 +658,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(updateCondition);
-      assertEquals(0, connection.rowCount(condition));
+      assertEquals(0, connection.rowCount(criteria));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -862,8 +863,8 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void iterator() throws Exception {
     try (LocalEntityConnection connection = createConnection()) {
-      Condition condition = all(Employee.TYPE);
-      Iterator<Entity> iterator = connection.iterator(condition).iterator();
+      Criteria criteria = Criteria.all(Employee.TYPE);
+      Iterator<Entity> iterator = connection.iterator(where(criteria)).iterator();
       //calling hasNext() should be idempotent and not lose rows
       assertTrue(iterator.hasNext());
       assertTrue(iterator.hasNext());
@@ -875,9 +876,9 @@ public class DefaultLocalEntityConnectionTest {
         counter++;
       }
       assertThrows(NoSuchElementException.class, iterator::next);
-      int rowCount = connection.rowCount(condition);
+      int rowCount = connection.rowCount(criteria);
       assertEquals(rowCount, counter);
-      iterator = connection.iterator(condition).iterator();
+      iterator = connection.iterator(where(criteria)).iterator();
       counter = 0;
       try {
         while (true) {

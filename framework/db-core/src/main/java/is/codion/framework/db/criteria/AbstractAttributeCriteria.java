@@ -27,9 +27,8 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
     if (!caseSensitive && !attribute.isString()) {
       throw new IllegalStateException("Case insensitivity only applies to String based attributes: " + attribute);
     }
-    validateOperator(requireNonNull(operator));
     this.attribute = attribute;
-    this.operator = operator;
+    this.operator = requireNonNull(operator);
     this.caseSensitive = caseSensitive;
   }
 

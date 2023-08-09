@@ -23,15 +23,15 @@ final class AttributeCriteriaSerializer implements Serializable {
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  void serialize(AttributeCriteria<?> condition, JsonGenerator generator) throws IOException {
+  void serialize(AttributeCriteria<?> criteria, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "attribute");
-    generator.writeStringField("attribute", condition.attribute().name());
-    generator.writeStringField("operator", condition.operator().name());
-    generator.writeBooleanField("caseSensitive", condition.caseSensitive());
+    generator.writeStringField("attribute", criteria.attribute().name());
+    generator.writeStringField("operator", criteria.operator().name());
+    generator.writeBooleanField("caseSensitive", criteria.caseSensitive());
     generator.writeFieldName("values");
     generator.writeStartArray();
-    for (Object value : condition.values()) {
+    for (Object value : criteria.values()) {
       entityObjectMapper.writeValue(generator, value);
     }
     generator.writeEndArray();

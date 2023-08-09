@@ -3,6 +3,7 @@
  */
 package is.codion.framework.json.db;
 
+import is.codion.framework.db.criteria.AllCriteria;
 import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.Criteria.Combination;
@@ -22,12 +23,14 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
   private final AttributeCriteriaSerializer attributeCriteriaSerializer;
   private final CriteriaCombinationSerializer criteriaCombinationSerializer;
   private final CustomCriteriaSerializer customCriteriaSerializer;
+  private final AllCriteriaSerializer allCriteriaSerializer;
 
   CriteriaSerializer(EntityObjectMapper entityObjectMapper) {
     super(Criteria.class);
     this.attributeCriteriaSerializer = new AttributeCriteriaSerializer(entityObjectMapper);
     this.criteriaCombinationSerializer = new CriteriaCombinationSerializer(attributeCriteriaSerializer);
     this.customCriteriaSerializer = new CustomCriteriaSerializer(entityObjectMapper);
+    this.allCriteriaSerializer = new AllCriteriaSerializer();
   }
 
   @Override
@@ -52,6 +55,10 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
     else if (criteria instanceof CustomCriteria) {
       CustomCriteria customCriteria = (CustomCriteria) criteria;
       customCriteriaSerializer.serialize(customCriteria, generator);
+    }
+    else if (criteria instanceof AllCriteria) {
+      AllCriteria allCriteria = (AllCriteria) criteria;
+      allCriteriaSerializer.serialize(allCriteria, generator);
     }
     else {
       throw new IllegalArgumentException("Unknown criteria type: " + criteria.getClass());

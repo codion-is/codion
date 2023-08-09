@@ -15,6 +15,8 @@ import java.io.IOException;
 
 public class ConditionSerializer extends StdSerializer<Condition> {
 
+  private static final long serialVersionUID = 1;
+
   private final CriteriaSerializer criteriaSerializer;
 
   ConditionSerializer(EntityObjectMapper entityObjectMapper) {
