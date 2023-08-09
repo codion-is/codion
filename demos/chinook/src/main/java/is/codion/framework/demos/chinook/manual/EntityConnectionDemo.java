@@ -89,7 +89,7 @@ public final class EntityConnectionDemo {
     // fetch depth is 0, so this 'genre' instance is null
     Entity genre = track.get(Track.GENRE_FK);
 
-    // using track.getForeignKey(Track.GENRE_FK) you get a 'genre'
+    // using track.referencedEntity(Track.GENRE_FK) you get a 'genre'
     // instance containing only the primary key, since the condition
     // fetch depth limit prevented it from being selected
     genre = track.referencedEntity(Track.GENRE_FK);
@@ -114,7 +114,7 @@ public final class EntityConnectionDemo {
     // fetch depth limit prevented it from being selected
     Entity album = track.get(Track.ALBUM_FK);
 
-    // using track.getForeignKey(Track.ALBUM_FK) you get a 'album'
+    // using track.referencedEntity(Track.ALBUM_FK) you get a 'album'
     // instance containing only the primary key, since the condition
     // fetch depth limit prevented it from being selected
     album = track.referencedEntity(Track.ALBUM_FK);
