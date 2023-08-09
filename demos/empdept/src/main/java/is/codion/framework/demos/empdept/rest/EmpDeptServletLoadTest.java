@@ -21,8 +21,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.condition.Condition.all;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {
@@ -68,7 +67,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(where(all(Department.TYPE)));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
       Entity entity = departments.get(new Random().nextInt(departments.size()));
       entity.put(Department.LOCATION, Text.randomString(10, 13));
       client.connection().update(entity);
@@ -99,7 +98,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(where(all(Department.TYPE)));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
 
       client.connection().select(Employee.DEPARTMENT,
               departments.get(new Random().nextInt(departments.size())).get(Department.ID));
@@ -136,7 +135,7 @@ public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnection
 
     @Override
     protected void perform(EntityConnectionProvider client) throws Exception {
-      List<Entity> departments = client.connection().select(where(all(Department.TYPE)));
+      List<Entity> departments = client.connection().select(all(Department.TYPE));
       Entity department = departments.get(random.nextInt(departments.size()));
       client.connection().insert(client.entities().builder(Employee.TYPE)
               .with(Employee.DEPARTMENT_FK, department)

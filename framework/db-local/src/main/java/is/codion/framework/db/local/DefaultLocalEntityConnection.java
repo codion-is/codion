@@ -62,6 +62,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.Queries.*;
@@ -564,7 +565,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
-            where(all(entityDefinition.type())).selectBuilder()
+            all(entityDefinition.type()).selectBuilder()
                     .orderBy(ascending(attribute))
                     .build() :
             condition.selectBuilder().build();

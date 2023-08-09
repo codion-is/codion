@@ -22,8 +22,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collections;
 import java.util.function.Consumer;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -49,8 +48,8 @@ public class EntityConnectionTest {
       Database destinationDatabase = H2DatabaseFactory.createDatabase("jdbc:h2:mem:TempDB", "src/test/sql/create_h2_db.sql");
       DESTINATION_CONNECTION = localEntityConnection(destinationDatabase, DOMAIN, User.user("sa"));
       DESTINATION_CONNECTION.databaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
-      DESTINATION_CONNECTION.delete(where(all(Employee.TYPE)));
-      DESTINATION_CONNECTION.delete(where(all(Department.TYPE)));
+      DESTINATION_CONNECTION.delete(all(Employee.TYPE));
+      DESTINATION_CONNECTION.delete(all(Department.TYPE));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -70,16 +69,12 @@ public class EntityConnectionTest {
             .batchSize(2)
             .execute();
 
-    assertEquals(sourceConnection.rowCount(where(all(Department.TYPE))),
-            DESTINATION_CONNECTION.rowCount(where(all(Department.TYPE))));
+    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
             .batchSize(-10));
-
-    assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
-            .entityTypes(Employee.TYPE)
-            .criteria(all(Department.TYPE)));
 
     EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
@@ -87,16 +82,16 @@ public class EntityConnectionTest {
             .includePrimaryKeys(false)
             .criteria(attribute(Employee.SALARY).greaterThan(1000d))
             .execute();
-    assertEquals(13, DESTINATION_CONNECTION.rowCount(where(all(Employee.TYPE))));
+    assertEquals(13, DESTINATION_CONNECTION.rowCount(all(Employee.TYPE)));
 
-    DESTINATION_CONNECTION.delete(where(all(Employee.TYPE)));
-    DESTINATION_CONNECTION.delete(where(all(Department.TYPE)));
+    DESTINATION_CONNECTION.delete(all(Employee.TYPE));
+    DESTINATION_CONNECTION.delete(all(Department.TYPE));
   }
 
   @Test
   void insertEntities() throws DatabaseException {
     LocalEntityConnection sourceConnection = CONNECTION_PROVIDER.connection();
-    try (ResultIterator<Entity> iterator = sourceConnection.iterator(where(all(Department.TYPE)))) {
+    try (ResultIterator<Entity> iterator = sourceConnection.iterator(all(Department.TYPE))) {
       assertThrows(IllegalArgumentException.class, () -> EntityConnection.insertEntities(DESTINATION_CONNECTION, iterator.iterator())
               .batchSize(-10));
 
@@ -107,13 +102,13 @@ public class EntityConnectionTest {
               .onInsert(keys -> {})
               .execute();
     }
-    assertEquals(sourceConnection.rowCount(where(all(Department.TYPE))),
-            DESTINATION_CONNECTION.rowCount(where(all(Department.TYPE))));
+    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
+            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
 
     EntityConnection.insertEntities(DESTINATION_CONNECTION, Collections.emptyIterator())
             .batchSize(10)
             .execute();
-    DESTINATION_CONNECTION.delete(where(all(Department.TYPE)));
+    DESTINATION_CONNECTION.delete(all(Department.TYPE));
   }
 
   @Test

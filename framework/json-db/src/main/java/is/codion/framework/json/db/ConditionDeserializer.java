@@ -1,7 +1,6 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -15,6 +14,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 
 public class ConditionDeserializer extends StdDeserializer<Condition> {
@@ -36,8 +36,10 @@ public class ConditionDeserializer extends StdDeserializer<Condition> {
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
     JsonNode criteriaNode = jsonNode.get("criteria");
-    Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
+    if (criteriaNode == null) {
+      return all(entityType);
+    }
 
-    return where(criteria);
+    return where(criteriaDeserializer.deserialize(definition, criteriaNode));
   }
 }

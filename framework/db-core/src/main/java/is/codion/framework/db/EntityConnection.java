@@ -429,7 +429,7 @@ public interface EntityConnection extends AutoCloseable {
 
       /**
        * Specifies a criteria to use when determining which entities of the given type to copy,
-       * by default all entities are copied.
+       * if none is specified all entities are copied.
        * @param criteria the criteria to use
        * @return this builder instance
        */

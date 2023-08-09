@@ -39,8 +39,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
+import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -193,7 +195,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.rowCount(where(all(Department.TYPE))));
+    assertEquals(4, connection.rowCount(all(Department.TYPE)));
   }
 
   @Test

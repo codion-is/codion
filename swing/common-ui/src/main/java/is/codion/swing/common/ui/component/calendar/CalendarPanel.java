@@ -142,12 +142,11 @@ public final class CalendarPanel extends JPanel {
    */
   public void setLocalDateTime(LocalDateTime dateTime) {
     requireNonNull(dateTime);
-    yearValue.set(dateTime.getYear());
-    monthValue.set(dateTime.getMonth());
-    dayValue.set(dateTime.getDayOfMonth());
     if (includeTime) {
-      hourValue.set(dateTime.getHour());
-      minuteValue.set(dateTime.getMinute());
+      setYearMonthDayHourMinute(dateTime);
+    }
+    else {
+      setYearMonthDay(dateTime.toLocalDate());
     }
   }
 
@@ -208,84 +207,74 @@ public final class CalendarPanel extends JPanel {
   }
 
   void previousMonth() {
-    LocalDate previousMonth = getLocalDate().minus(1, ChronoUnit.MONTHS);
-    monthValue.set(previousMonth.getMonth());
-    yearValue.set(previousMonth.getYear());
+    subtractOne(ChronoUnit.MONTHS);
   }
 
   void nextMonth() {
-    LocalDate nextMonth = getLocalDate().plus(1, ChronoUnit.MONTHS);
-    monthValue.set(nextMonth.getMonth());
-    yearValue.set(nextMonth.getYear());
+    addOne(ChronoUnit.MONTHS);
   }
 
   void previousYear() {
-    yearValue.set(yearValue.get() - 1);
+    subtractOne(ChronoUnit.YEARS);
   }
 
   void nextYear() {
-    yearValue.set(yearValue.get() + 1);
+    addOne(ChronoUnit.YEARS);
   }
 
   void previousWeek() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDay(getLocalDate().minus(1, ChronoUnit.WEEKS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    subtractOne(ChronoUnit.WEEKS);
   }
 
   void nextWeek() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDay(getLocalDate().plus(1, ChronoUnit.WEEKS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    addOne(ChronoUnit.WEEKS);
   }
 
   void previousDay() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDay(getLocalDate().minus(1, ChronoUnit.DAYS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    subtractOne(ChronoUnit.DAYS);
   }
 
   void nextDay() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDay(getLocalDate().plus(1, ChronoUnit.DAYS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    addOne(ChronoUnit.DAYS);
   }
 
   void previousHour() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDayHourMinute(getLocalDateTime().minus(1, ChronoUnit.HOURS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    subtractOne(ChronoUnit.HOURS);
   }
 
   void nextHour() {
-    boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDayHourMinute(getLocalDateTime().plus(1, ChronoUnit.HOURS));
-    if (dayPanelHasFocus) {
-      requestCurrentDayButtonFocus();
-    }
+    addOne(ChronoUnit.HOURS);
   }
 
   void previousMinute() {
+    subtractOne(ChronoUnit.MINUTES);
+  }
+
+  void nextMinute() {
+    addOne(ChronoUnit.MINUTES);
+  }
+
+  private void subtractOne(ChronoUnit unit) {
     boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDayHourMinute(getLocalDateTime().minus(1, ChronoUnit.MINUTES));
+    if (unit.isDateBased()) {
+      setYearMonthDay(getLocalDate().minus(1, unit));
+    }
+    else {
+      setYearMonthDayHourMinute(getLocalDateTime().minus(1, unit));
+    }
     if (dayPanelHasFocus) {
       requestCurrentDayButtonFocus();
     }
   }
 
-  void nextMinute() {
+  private void addOne(ChronoUnit unit) {
     boolean dayPanelHasFocus = dayPanelHasFocus();
-    setYearMonthDayHourMinute(getLocalDateTime().plus(1, ChronoUnit.MINUTES));
+    if (unit.isDateBased()) {
+      setYearMonthDay(getLocalDate().plus(1, unit));
+    }
+    else {
+      setYearMonthDayHourMinute(getLocalDateTime().plus(1, unit));
+    }
     if (dayPanelHasFocus) {
       requestCurrentDayButtonFocus();
     }

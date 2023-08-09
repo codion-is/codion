@@ -59,9 +59,6 @@ final class CriteriaDeserializer extends StdDeserializer<Criteria> {
     else if ("custom".equals(typeString)) {
       return customCriteriaDeserializer.deserialize(definition, criteriaNode);
     }
-    else if ("all".equals(typeString)) {
-      return Criteria.all(definition.type());
-    }
 
     throw new IllegalArgumentException("Unknown condition type: " + type);
   }

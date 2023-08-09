@@ -20,8 +20,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.condition.Condition.all;
 
 public final class EmployeeServer extends EntityServer {
 
@@ -50,14 +49,14 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public Collection<Entity> employees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.select(where(all(Employee.TYPE)));
+        return connectionProxy.select(all(Employee.TYPE));
       }
     }
 
     @Override
     public Collection<Employee> employeeBeans() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        List<Entity> employees = connectionProxy.select(where(all(Employee.TYPE))
+        List<Entity> employees = connectionProxy.select(all(Employee.TYPE)
                 .selectBuilder()
                 .fetchDepth(-1)
                 .build());
