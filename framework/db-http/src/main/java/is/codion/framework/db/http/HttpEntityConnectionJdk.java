@@ -15,6 +15,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -357,11 +358,11 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int delete(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int delete(Criteria criteria) throws DatabaseException {
+    Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("delete", condition)));
+        return handleResponse(execute(createRequest("delete", criteria)));
       }
     }
     catch (DatabaseException e) {
@@ -480,11 +481,11 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int rowCount(Criteria criteria) throws DatabaseException {
+    Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("count", condition)));
+        return handleResponse(execute(createRequest("count", criteria)));
       }
     }
     catch (DatabaseException e) {
