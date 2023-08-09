@@ -304,14 +304,10 @@ public final class ConditionTest {
   }
 
   @Test
-  void selectAllCondition() {
-    Condition selectCondition = all(Department.TYPE);
-    assertTrue(selectCondition.criteria().values().isEmpty());
-    assertTrue(selectCondition.criteria().attributes().isEmpty());
-
-    Condition condition = all(Department.TYPE);
-    assertTrue(condition.criteria().values().isEmpty());
-    assertTrue(condition.criteria().attributes().isEmpty());
+  void allCriteria() {
+    Criteria criteria = Criteria.all(Department.TYPE);
+    assertTrue(criteria.values().isEmpty());
+    assertTrue(criteria.attributes().isEmpty());
   }
 
   @Test

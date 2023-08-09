@@ -25,16 +25,16 @@ final class CustomCriteriaSerializer implements Serializable {
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  void serialize(CustomCriteria condition, JsonGenerator generator) throws IOException {
+  void serialize(CustomCriteria criteria, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("type", "custom");
-    generator.writeStringField("criteriaType", condition.criteriaType().name());
+    generator.writeStringField("criteriaType", criteria.criteriaType().name());
     generator.writeFieldName("attributes");
-    entityObjectMapper.writeValue(generator, condition.attributes().stream()
+    entityObjectMapper.writeValue(generator, criteria.attributes().stream()
             .map(Attribute::name)
             .collect(toList()));
     generator.writeFieldName("values");
-    entityObjectMapper.writeValue(generator, condition.values());
+    entityObjectMapper.writeValue(generator, criteria.values());
     generator.writeEndObject();
   }
 }

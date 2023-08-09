@@ -28,6 +28,7 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies a query criteria.
+ * @see #all(EntityType)
  * @see #key(Key)
  * @see #keys(Collection)
  * @see #foreignKey(ForeignKey)
@@ -81,6 +82,14 @@ public interface Criteria {
      * @return the conjunction
      */
     Conjunction conjunction();
+  }
+
+  /**
+   * @param entityType the entity type
+   * @return a Criteria specifying all entities of the given type
+   */
+  static Criteria all(EntityType entityType) {
+    return new AllCriteria(entityType);
   }
 
   /**
