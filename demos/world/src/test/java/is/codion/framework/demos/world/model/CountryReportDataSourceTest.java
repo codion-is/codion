@@ -51,7 +51,7 @@ public final class CountryReportDataSourceTest {
 
       EntityConnection connection = connectionProvider.connection();
       List<Entity> countries =
-              connection.select(SelectCondition.builder(attribute(Country.NAME)
+              connection.select(SelectCondition.where(attribute(Country.NAME)
                       .in("Denmark", "Iceland"))
                       .orderBy(ascending(Country.NAME))
                       .build());

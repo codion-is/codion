@@ -10,32 +10,28 @@ import java.io.Serializable;
 
 import static java.util.Objects.requireNonNull;
 
-/**
- * A base class for Condition.
- * Remember to override {@link #equals(Object)} and {@link #hashCode()} if query caching is being used.
- */
-class DefaultCondition implements Condition, Serializable {
+final class DefaultCondition implements Condition, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final Criteria criteria;
 
-  protected DefaultCondition(Criteria criteria) {
+  DefaultCondition(Criteria criteria) {
     this.criteria = requireNonNull(criteria);
   }
 
   @Override
-  public final EntityType entityType() {
+  public EntityType entityType() {
     return criteria.entityType();
   }
 
   @Override
-  public final Criteria criteria() {
+  public Criteria criteria() {
     return criteria;
   }
 
   @Override
-  public final String toString() {
+  public String toString() {
     return getClass().getSimpleName() + ": " + entityType();
   }
 

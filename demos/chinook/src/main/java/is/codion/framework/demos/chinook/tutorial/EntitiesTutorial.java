@@ -151,11 +151,11 @@ public final class EntitiesTutorial {
 
     albums.forEach(System.out::println);
 
-    // for more complex queries we use a SelectCondition, provided by the Condition class.
-    // we create a condition, where we specify the attribute we're
-    // searching by, the type of condition and the value.
+    // for queries requiring further configuration, such as order by, we use
+    // a SelectCondition.Builder initialized with a criteria specifying
+    // the attribute we're searching by, the operator and value.
     SelectCondition artistsCondition =
-            SelectCondition.builder(attribute(Artist.NAME).equalTo("An%"))
+            SelectCondition.where(attribute(Artist.NAME).equalTo("An%"))
                     // and we set the order by clause
                     .orderBy(OrderBy.ascending(Artist.NAME))
                     .build();
@@ -166,7 +166,7 @@ public final class EntitiesTutorial {
 
     // create a select condition
     SelectCondition albumsCondition =
-            SelectCondition.builder(foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn))
+            SelectCondition.where(foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn))
                     .orderBy(OrderBy.builder()
                             .ascending(Album.ARTIST_ID)
                             .descending(Album.TITLE)

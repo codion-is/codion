@@ -22,8 +22,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import static is.codion.framework.db.condition.SelectCondition.builder;
-
 final class SelectConditionDeserializer extends StdDeserializer<SelectCondition> {
 
   private static final long serialVersionUID = 1;
@@ -46,7 +44,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     JsonNode criteriaNode = jsonNode.get("criteria");
     Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    SelectCondition.Builder selectCondition = builder(criteria);
+    SelectCondition.Builder selectCondition = SelectCondition.where(criteria);
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectCondition.orderBy(deserializeOrderBy(definition, orderBy));

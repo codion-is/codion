@@ -22,6 +22,7 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.framework.db.condition.SelectCondition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -372,7 +373,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public Collection<Entity> execute(EntityConnection connection,
                                       Collection<Long> invoiceIds) throws DatabaseException {
       return connection.update(Entity.castTo(Invoice.class,
-                      connection.select(SelectCondition.builder(attribute(Invoice.ID).in(invoiceIds))
+                      connection.select(where(attribute(Invoice.ID).in(invoiceIds))
                               .forUpdate()
                               .fetchDepth(0)
                               .build()))
@@ -430,7 +431,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     private static List<Long> randomTrackIds(EntityConnection connection, int noOfTracks,
                                              Collection<Entity> genres) throws DatabaseException {
       return connection.select(Track.ID,
-              SelectCondition.builder(foreignKey(Track.GENRE_FK).in(genres))
+              where(foreignKey(Track.GENRE_FK).in(genres))
                       .orderBy(ascending(Track.RANDOM))
                       .limit(noOfTracks)
                       .build());
@@ -443,7 +444,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
     public Collection<Entity> execute(EntityConnection entityConnection,
                                       RaisePriceParameters parameters) throws DatabaseException {
       SelectCondition selectCondition =
-              SelectCondition.builder(attribute(Track.ID).in(parameters.trackIds()))
+              where(attribute(Track.ID).in(parameters.trackIds()))
                       .forUpdate()
                       .build();
 

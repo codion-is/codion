@@ -9420,3 +9420,6 @@
   Condition.selectBuilder() and updateBuilder() replaced with SelectCondition.builder() and UpdateCondition.builder() respectively, related refactoring
   AllCriteria reintroduced, Criteria.all() added
   EntityConnection.rowCount() and delete() argument changed from Condition to Criteria
+  DefaultSelectCondition and DefaultUpdateCondition no longer extends DefaultCondition
+  SelectCondition and UpdateCondition.builder(entityType) and builder(criteria) renamed all() and where() respectively
+  DefaultLocalEntityConnection.select(attribute) refactored

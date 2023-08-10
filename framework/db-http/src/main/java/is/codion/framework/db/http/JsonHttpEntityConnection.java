@@ -14,6 +14,7 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
@@ -52,6 +53,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.attribute;
 import static is.codion.framework.db.criteria.Criteria.key;
+import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 
@@ -321,20 +323,20 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
-    return select(attribute, (Condition) null);
+    return select(Objects.requireNonNull(attribute), SelectCondition.all(attribute.entityType())
+            .orderBy(ascending(attribute))
+            .build());
   }
 
   @Override
   public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
+    Objects.requireNonNull(condition);
     try {
       ObjectNode node = entityObjectMapper.createObjectNode();
       node.set("attribute", conditionObjectMapper.valueToTree(attribute.name()));
       node.set("entityType", conditionObjectMapper.valueToTree(attribute.entityType().name()));
-      if (condition != null) {
-        node.set("condition", conditionObjectMapper.valueToTree(condition));
-      }
-
+      node.set("condition", conditionObjectMapper.valueToTree(condition));
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
       }

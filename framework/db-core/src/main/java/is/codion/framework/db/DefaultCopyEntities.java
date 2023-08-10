@@ -42,8 +42,8 @@ final class DefaultCopyEntities implements CopyEntities {
     for (EntityType entityType : entityTypes) {
       Criteria entityCriteria = criteria.get(entityType);
       SelectCondition.Builder conditionBuilder = entityCriteria == null ?
-              SelectCondition.builder(entityType) :
-              SelectCondition.builder(entityCriteria);
+              SelectCondition.all(entityType) :
+              SelectCondition.where(entityCriteria);
       List<Entity> entities = source.select(conditionBuilder
               .fetchDepth(0)
               .build());

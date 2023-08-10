@@ -387,8 +387,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    */
   protected Collection<Entity> performQuery() {
     SelectCondition.Builder conditionBuilder = selectCriteriaSupplier == null ?
-            SelectCondition.builder(entityType) :
-            SelectCondition.builder(selectCriteriaSupplier.get());
+            SelectCondition.all(entityType) :
+            SelectCondition.where(selectCriteriaSupplier.get());
     try {
       return connectionProvider.connection().select(conditionBuilder
               .selectAttributes(selectAttributes)

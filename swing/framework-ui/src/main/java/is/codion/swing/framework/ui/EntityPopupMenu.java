@@ -8,7 +8,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.exception.RecordNotFoundException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -32,6 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import static is.codion.framework.db.condition.SelectCondition.where;
 import static is.codion.framework.db.criteria.Criteria.key;
 import static is.codion.swing.common.ui.Utilities.setClipboard;
 import static java.util.Objects.requireNonNull;
@@ -181,7 +181,7 @@ final class EntityPopupMenu extends JPopupMenu {
 
   private static Entity selectEntity(Key primaryKey, EntityConnection connection) {
     try {
-      return connection.selectSingle(SelectCondition.builder(key(primaryKey))
+      return connection.selectSingle(where(key(primaryKey))
               .fetchDepth(0)
               .build());
     }

@@ -20,8 +20,6 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.UpdateCondition.builder;
-
 final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition> {
 
   private static final long serialVersionUID = 1;
@@ -46,7 +44,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     JsonNode criteriaNode = jsonNode.get("criteria");
     Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    UpdateCondition.Builder updateCondition = builder(criteria);
+    UpdateCondition.Builder updateCondition = UpdateCondition.where(criteria);
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {

@@ -11,6 +11,9 @@ import java.util.Map;
 
 /**
  * A condition specifying a where clause along with attributes and their associated values for update.
+ * A factory class for {@link UpdateCondition.Builder} instances via
+ * {@link UpdateCondition#all(EntityType)}, {@link UpdateCondition#where(Criteria)} and
+ * {@link UpdateCondition#builder(Condition)}.
  */
 public interface UpdateCondition extends Condition {
 
@@ -43,15 +46,23 @@ public interface UpdateCondition extends Condition {
    * @param entityType the entity type
    * @return a {@link UpdateCondition.Builder} instance
    */
-  static Builder builder(EntityType entityType) {
-    return new DefaultUpdateCondition.DefaultBuilder(new AllCondition(entityType));
+  static Builder all(EntityType entityType) {
+    return new DefaultUpdateCondition.DefaultBuilder(Criteria.all(entityType));
   }
 
   /**
    * @param criteria the criteria
    * @return a {@link UpdateCondition.Builder} instance
    */
-  static Builder builder(Criteria criteria) {
-    return new DefaultUpdateCondition.DefaultBuilder(new DefaultCondition(criteria));
+  static Builder where(Criteria criteria) {
+    return new DefaultUpdateCondition.DefaultBuilder(criteria);
+  }
+
+  /**
+   * @param condition the condition
+   * @return a {@link UpdateCondition.Builder} instance
+   */
+  static Builder builder(Condition condition) {
+    return new DefaultUpdateCondition.DefaultBuilder(condition);
   }
 }

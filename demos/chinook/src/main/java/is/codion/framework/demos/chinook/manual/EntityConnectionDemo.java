@@ -80,7 +80,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.builder(attribute(Track.NAME).equalTo("Bad%"))
+            SelectCondition.where(attribute(Track.NAME).equalTo("Bad%"))
                     .fetchDepth(0)
                     .build());
 
@@ -101,7 +101,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.builder(attribute(Track.NAME).equalTo("Bad%"))
+            SelectCondition.where(attribute(Track.NAME).equalTo("Bad%"))
                     .fetchDepth(Track.ALBUM_FK, 0)
                     .build());
 
@@ -262,12 +262,12 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     connection.update(
-            UpdateCondition.builder(attribute(Artist.NAME).equalTo("Azymuth"))
+            UpdateCondition.where(attribute(Artist.NAME).equalTo("Azymuth"))
                     .set(Artist.NAME, "Azymouth")
                     .build());
 
     int updateCount = connection.update(
-            UpdateCondition.builder(attribute(Customer.EMAIL).isNull())
+            UpdateCondition.where(attribute(Customer.EMAIL).isNull())
                     .set(Customer.EMAIL, "<none>")
                     .build());
     // end::updateCondition[]

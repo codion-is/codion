@@ -88,7 +88,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void selectCondition() throws JsonProcessingException {
-    SelectCondition selectCondition = SelectCondition.builder(attribute(Employee.EMPNO).equalTo(1))
+    SelectCondition selectCondition = SelectCondition.where(attribute(Employee.EMPNO).equalTo(1))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descendingNullsLast(Employee.NAME)
@@ -119,7 +119,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(42, readCondition.queryTimeout());
     assertEquals(selectCondition, readCondition);
 
-    selectCondition = SelectCondition.builder(attribute(Employee.EMPNO).equalTo(1)).build();
+    selectCondition = SelectCondition.where(attribute(Employee.EMPNO).equalTo(1)).build();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -135,7 +135,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void updateCondition() throws JsonProcessingException {
-    UpdateCondition condition = UpdateCondition.builder(attribute(Department.DEPTNO)
+    UpdateCondition condition = UpdateCondition.where(attribute(Department.DEPTNO)
             .between(1, 2))
             .set(Department.LOCATION, "loc")
             .set(Department.DEPTNO, 3)
