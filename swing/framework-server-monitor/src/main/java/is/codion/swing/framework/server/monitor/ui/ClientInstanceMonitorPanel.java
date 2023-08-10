@@ -33,7 +33,6 @@ import static is.codion.swing.common.ui.component.text.SearchHighlighter.searchH
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.fileSelectionDialog;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 
@@ -74,12 +73,12 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    JPanel creationDatePanel = panel(flowLayout(FlowLayout.LEFT))
+    JPanel creationDatePanel = flowLayoutPanel(FlowLayout.LEFT)
             .add(new JLabel("Creation time"))
             .add(creationDateField)
             .build();
 
-    JPanel settingsPanel = panel(flowLayout(FlowLayout.LEFT))
+    JPanel settingsPanel = flowLayoutPanel(FlowLayout.LEFT)
             .add(checkBox(model.loggingEnabledState())
                     .text("Logging enabled")
                     .build())

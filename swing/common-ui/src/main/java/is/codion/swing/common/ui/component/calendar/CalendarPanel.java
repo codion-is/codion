@@ -45,7 +45,8 @@ import java.util.stream.IntStream;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.*;
+import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
+import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.awt.event.InputEvent.*;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -321,7 +322,7 @@ public final class CalendarPanel extends JPanel {
                     .centerComponent(formattedDateLabel)
                     .border(createTitledBorder(""))
                     .build())
-            .centerComponent(panel(flowLayout(FlowLayout.CENTER))
+            .centerComponent(flowLayoutPanel(FlowLayout.CENTER)
                     .add(createYearMonthHourMinutePanel())
                     .border(createTitledBorder(""))
                     .build())

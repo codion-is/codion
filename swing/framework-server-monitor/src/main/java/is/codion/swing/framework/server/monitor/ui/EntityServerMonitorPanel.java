@@ -47,7 +47,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.dialog.Dialogs.*;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static javax.swing.BorderFactory.createEtchedBorder;
 
 /**
@@ -226,7 +225,7 @@ public final class EntityServerMonitorPanel extends JPanel {
             .selectAllOnFocusGained(true)
             .build();
 
-    okCancelDialog(panel(new FlowLayout(FlowLayout.CENTER))
+    okCancelDialog(flowLayoutPanel(FlowLayout.CENTER)
             .add(field)
             .build())
             .owner(this)
@@ -251,7 +250,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private static JPanel createSouthPanel() {
-    return panel(flowLayout(FlowLayout.TRAILING))
+    return flowLayoutPanel(FlowLayout.TRAILING)
             .border(createEtchedBorder())
             .add(new JLabel("Memory usage:"))
             .add(new MemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS))

@@ -12,7 +12,6 @@ import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
 import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
@@ -58,7 +57,6 @@ import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.button.ToggleButtonType.CHECKBOX;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static is.codion.swing.framework.ui.EntityPanel.Direction.*;
 import static is.codion.swing.framework.ui.EntityPanel.PanelState.*;
 import static java.awt.event.InputEvent.*;
@@ -1091,7 +1089,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) ||
             controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
 
-    return Components.panel(flowLayout(alignment))
+    return flowLayoutPanel(alignment)
             .add(editPanel)
             .build();
   }
@@ -1119,7 +1117,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
 
     if (horizontalLayout) {
-      return panel(flowLayout(FlowLayout.CENTER))
+      return flowLayoutPanel(FlowLayout.CENTER)
               .add(buttonPanel(controls)
                       .toggleButtonType(CHECKBOX)
                       .build())
@@ -1391,7 +1389,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the horizontal split pane
    */
   private JSplitPane createTableDetailSplitPane() {
-    return Components.splitPane()
+    return splitPane()
             .orientation(JSplitPane.HORIZONTAL_SPLIT)
             .continuousLayout(true)
             .oneTouchExpandable(true)
@@ -1407,7 +1405,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * @return the JTabbedPane for holding detail panels
    */
   private JTabbedPane createDetailTabbedPane() {
-    TabbedPaneBuilder builder = Components.tabbedPane()
+    TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
             .changeListener(e -> selectedDetailPanel().activatePanel());
     detailEntityPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption, detailPanel)

@@ -235,7 +235,11 @@ final class SelectQueries {
     }
 
     private String from() {
-      return from == null ? forUpdate ? definition.tableName() : definition.selectTableName() : from;
+      if (from == null) {
+        return forUpdate ? definition.tableName() : definition.selectTableName();
+      }
+
+      return from;
     }
 
     private List<ColumnProperty<?>> propertiesToSelect(Collection<Attribute<?>> selectAttributes) {

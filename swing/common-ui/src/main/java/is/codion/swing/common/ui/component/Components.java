@@ -71,8 +71,7 @@ import java.time.temporal.Temporal;
 import java.util.List;
 
 import static is.codion.swing.common.model.component.combobox.ItemComboBoxModel.booleanItemComboBoxModel;
-import static is.codion.swing.common.ui.layout.Layouts.flexibleGridLayout;
-import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
+import static is.codion.swing.common.ui.layout.Layouts.*;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -1039,6 +1038,17 @@ public final class Components {
    */
   public static PanelBuilder flexibleGridLayoutPanel(int rows, int columns) {
     return panel(flexibleGridLayout(rows, columns));
+  }
+
+  /**
+   * Creates a new {@link PanelBuilder} instance using a new {@link java.awt.FlowLayout} with the default
+   * horizontal and vertical gap.
+   * @param alignment the flow layout alignment
+   * @return a flow layout panel builder
+   * @see Layouts#HORIZONTAL_VERTICAL_GAP
+   */
+  public static PanelBuilder flowLayoutPanel(int alignment) {
+    return panel(flowLayout(alignment));
   }
 
   /**

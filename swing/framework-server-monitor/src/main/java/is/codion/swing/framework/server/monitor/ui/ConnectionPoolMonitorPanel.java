@@ -30,7 +30,6 @@ import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.component.text.TextComponents.preferredTextFieldSize;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -203,7 +202,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
                     .build())
             .build();
 
-    return panel(flowLayout(RIGHT))
+    return flowLayoutPanel(RIGHT)
             .add(configBase)
             .build();
   }
