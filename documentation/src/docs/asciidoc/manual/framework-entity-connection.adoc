@@ -99,7 +99,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.condition.Condition{cpar}[select(Attribute<T> attribute, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.criteria.Criteria{cpar}[select(Attribute<T> attribute, Criteria criteria)]
 
 [source,java,indent=0]
 ----
@@ -132,7 +132,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the row count given a condition.
 
-{url-entity-connection}#rowCount{opar}is.codion.framework.db.condition.Condition{cpar}[rowCount(Condition condition)]
+{url-entity-connection}#rowCount{opar}is.codion.framework.db.criteria.Criteria{cpar}[rowCount(Criteria criteria)]
 
 [source,java,indent=0]
 ----
