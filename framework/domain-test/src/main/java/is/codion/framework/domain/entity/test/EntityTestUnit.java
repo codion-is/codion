@@ -221,7 +221,7 @@ public class EntityTestUnit {
               "Entity of type " + testEntity.type() + " failed equals comparison");
     }
     else {
-      connection.select(SelectCondition.builder(entityType)
+      connection.select(SelectCondition.all(entityType)
               .limit(SELECT_LIMIT)
               .build());
     }

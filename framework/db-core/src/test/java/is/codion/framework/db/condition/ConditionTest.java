@@ -42,12 +42,12 @@ public final class ConditionTest {
 
   @Test
   void selectCondition() {
-    SelectCondition condition = SelectCondition.builder(attribute(Department.LOCATION).equalTo("New York"))
+    SelectCondition condition = SelectCondition.where(attribute(Department.LOCATION).equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertEquals(-1, condition.limit());
 
-    condition = SelectCondition.builder(Department.TYPE)
+    condition = SelectCondition.all(Department.TYPE)
             .limit(10)
             .build();
     assertEquals(10, condition.limit());
@@ -55,7 +55,7 @@ public final class ConditionTest {
 
   @Test
   void customCriteriaTest() {
-    SelectCondition condition = SelectCondition.builder(customCriteria(Department.NAME_NOT_NULL_CRITERIA))
+    SelectCondition condition = SelectCondition.where(customCriteria(Department.NAME_NOT_NULL_CRITERIA))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
     assertTrue(condition.criteria().values().isEmpty());
@@ -64,7 +64,7 @@ public final class ConditionTest {
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> UpdateCondition.builder(Employee.TYPE)
+    assertThrows(IllegalArgumentException.class, () -> UpdateCondition.all(Employee.TYPE)
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }

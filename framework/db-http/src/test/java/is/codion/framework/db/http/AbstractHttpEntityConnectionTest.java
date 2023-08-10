@@ -127,7 +127,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
     List<Entity> entities = connection.select(where(criteria));
 
-    UpdateCondition updateCondition = UpdateCondition.builder(attribute(Employee.COMMISSION).isNull())
+    UpdateCondition updateCondition = UpdateCondition.where(attribute(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();

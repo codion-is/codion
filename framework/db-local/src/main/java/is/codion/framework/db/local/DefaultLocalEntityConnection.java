@@ -63,7 +63,6 @@ import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.condition.SelectCondition.selectCondition;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -564,7 +563,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
     SelectCondition selectCondition = condition == null ?
-            SelectCondition.builder(entityDefinition.type())
+            SelectCondition.all(entityDefinition.type())
                     .orderBy(ascending(attribute))
                     .build() :
             selectCondition(condition);
@@ -610,7 +609,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .selectCondition(SelectCondition.builder(criteria)
+                    .selectCondition(SelectCondition.where(criteria)
                               .selectAttributes(entityDefinition.primaryKeyAttributes())
                               .build())
                     .build())
@@ -651,7 +650,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
     for (ForeignKeyProperty foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
-      List<Entity> dependencies = select(SelectCondition.builder(foreignKey(foreignKeyReference.attribute()).in(entities))
+      List<Entity> dependencies = select(SelectCondition.where(foreignKey(foreignKeyReference.attribute()).in(entities))
               .fetchDepth(1)
               .build())
               .stream()
@@ -909,7 +908,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Key> originalKeys = Entity.originalPrimaryKeys(entities);
-    SelectCondition selectForUpdateCondition = SelectCondition.builder(keys(originalKeys))
+    SelectCondition selectForUpdateCondition = SelectCondition.where(keys(originalKeys))
             .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
             .forUpdate()
             .build();
@@ -1025,7 +1024,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
       List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
-      SelectCondition referencedEntitiesCondition = SelectCondition.builder(keys(keys))
+      SelectCondition referencedEntitiesCondition = SelectCondition.where(keys(keys))
               .fetchDepth(conditionFetchDepthLimit)
               .selectAttributes(attributesToSelect(foreignKeyProperty, keyAttributes))
               .build();
@@ -1463,6 +1462,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       default:
         return string;
     }
+  }
+
+  private static SelectCondition selectCondition(Condition condition) {
+    if (condition instanceof SelectCondition) {
+      return (SelectCondition) condition;
+    }
+
+    return SelectCondition.builder(condition).build();
   }
 
   static Database configureDatabase(Database database, Domain domain) throws DatabaseException {

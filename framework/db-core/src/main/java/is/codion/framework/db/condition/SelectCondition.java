@@ -12,10 +12,11 @@ import is.codion.framework.domain.entity.OrderBy;
 import java.util.Collection;
 import java.util.Optional;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * A class encapsulating select query parameters.
+ * A factory class for {@link SelectCondition.Builder} instances via
+ * {@link SelectCondition#all(EntityType)}, {@link SelectCondition#where(Criteria)} and
+ * {@link SelectCondition#builder(Condition)}.
  */
 public interface SelectCondition extends Condition {
 
@@ -142,22 +143,10 @@ public interface SelectCondition extends Condition {
   }
 
   /**
-   * @param condition the condition
-   * @return a {@link SelectCondition} instance based on the given condition
-   */
-  static SelectCondition selectCondition(Condition condition) {
-    if (requireNonNull(condition) instanceof SelectCondition) {
-      return (SelectCondition) condition;
-    }
-
-    return builder(condition).build();
-  }
-
-  /**
    * @param entityType the entity type
    * @return a {@link SelectCondition.Builder} instance
    */
-  static Builder builder(EntityType entityType) {
+  static Builder all(EntityType entityType) {
     return new DefaultSelectCondition.DefaultBuilder(Criteria.all(entityType));
   }
 
@@ -165,7 +154,7 @@ public interface SelectCondition extends Condition {
    * @param criteria the criteria
    * @return a {@link SelectCondition.Builder} instance
    */
-  static Builder builder(Criteria criteria) {
+  static Builder where(Criteria criteria) {
     return new DefaultSelectCondition.DefaultBuilder(criteria);
   }
 

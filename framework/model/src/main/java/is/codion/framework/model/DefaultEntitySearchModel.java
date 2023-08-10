@@ -285,8 +285,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
     Criteria criteriaCombination = combination(Conjunction.OR, criteria);
     SelectCondition.Builder conditionBuilder = additionalCriteriaSupplier == null ?
-            SelectCondition.builder(criteriaCombination) :
-            SelectCondition.builder(and(additionalCriteriaSupplier.get(), criteriaCombination));
+            SelectCondition.where(criteriaCombination) :
+            SelectCondition.where(and(additionalCriteriaSupplier.get(), criteriaCombination));
 
     return conditionBuilder
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())

@@ -2,7 +2,6 @@ package is.codion.framework.demos.world.model;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
@@ -18,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
+import static is.codion.framework.db.condition.SelectCondition.where;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 
@@ -37,7 +37,7 @@ public final class CountryReportDataSource extends JasperReportsDataSource<Count
     Country country = currentItem();
     try {
       Collection<City> largestCities = Entity.castTo(City.class,
-              connection.select(SelectCondition.builder(foreignKey(City.COUNTRY_FK).equalTo(country))
+              connection.select(where(foreignKey(City.COUNTRY_FK).equalTo(country))
                       .selectAttributes(City.NAME, City.POPULATION)
                       .orderBy(descending(City.POPULATION))
                       .limit(5)
