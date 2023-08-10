@@ -9382,3 +9382,4 @@
   EntityConnection.rowCount() and delete() argument changed from Condition to Criteria
   DefaultSelectCondition and DefaultUpdateCondition no longer extends DefaultCondition
   SelectCondition and UpdateCondition.builder(entityType) and builder(criteria) renamed all() and where() respectively
+  DefaultLocalEntityConnection.select(attribute) refactored

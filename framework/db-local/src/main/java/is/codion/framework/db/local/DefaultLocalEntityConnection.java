@@ -553,7 +553,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
-    return select(attribute, (Condition) null);
+    return select(requireNonNull(attribute), SelectCondition.all(attribute.entityType())
+            .orderBy(ascending(attribute))
+            .build());
   }
 
   @Override
@@ -562,11 +564,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (entityDefinition.selectQuery() != null) {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
     }
-    SelectCondition selectCondition = condition == null ?
-            SelectCondition.all(entityDefinition.type())
-                    .orderBy(ascending(attribute))
-                    .build() :
-            selectCondition(condition);
+    SelectCondition selectCondition = selectCondition(requireNonNull(condition, CONDITION));
     if (!selectCondition.entityType().equals(attribute.entityType())) {
       throw new IllegalArgumentException("Condition entity type " + attribute.entityType() + " required, got " + selectCondition.entityType());
     }
@@ -610,8 +608,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
                     .selectCondition(SelectCondition.where(criteria)
-                              .selectAttributes(entityDefinition.primaryKeyAttributes())
-                              .build())
+                            .selectAttributes(entityDefinition.primaryKeyAttributes())
+                            .build())
                     .build())
             .build();
     PreparedStatement statement = null;
