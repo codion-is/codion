@@ -9,7 +9,6 @@ import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.ForeignKeyCriteria;
@@ -28,8 +27,6 @@ import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.common.model.table.TableConditionModel.tableConditionModel;
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static java.util.Objects.requireNonNull;
 
@@ -41,7 +38,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final TableConditionModel<C> conditionModel;
-  private final Event<Condition> conditionChangedEvent = Event.event();
+  private final Event<Criteria> criteriaChangedEvent = Event.event();
   private Supplier<Criteria> additionalCriteriaSupplier;
   private Conjunction conjunction = Conjunction.AND;
 
@@ -60,7 +57,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   @Override
   public <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values) {
-    Condition condition = condition();
+    Criteria criteria = criteria();
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
     if (columnConditionModel != null) {
       columnConditionModel.setOperator(Operator.EQUAL);
@@ -68,11 +65,11 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       columnConditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
       columnConditionModel.setEnabled(!nullOrEmpty(values));
     }
-    return !condition.equals(condition());
+    return !criteria.equals(criteria());
   }
 
   @Override
-  public Condition condition() {
+  public Criteria criteria() {
     Collection<Criteria> criteria = conditionModel.conditionModels().values().stream()
             .filter(ColumnConditionModel::isEnabled)
             .map(DefaultEntityTableConditionModel::criteria)
@@ -84,7 +81,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       }
     }
 
-    return criteria.isEmpty() ? all(entityType) : where(combination(conjunction, criteria));
+    return criteria.isEmpty() ? Criteria.all(entityType) : combination(conjunction, criteria);
   }
 
   @Override
@@ -148,18 +145,18 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public void addChangeListener(Consumer<Condition> listener) {
-    conditionChangedEvent.addDataListener(listener);
+  public void addChangeListener(Consumer<Criteria> listener) {
+    criteriaChangedEvent.addDataListener(listener);
   }
 
   @Override
-  public void removeChangeListener(Consumer<Condition> listener) {
-    conditionChangedEvent.removeDataListener(listener);
+  public void removeChangeListener(Consumer<Criteria> listener) {
+    criteriaChangedEvent.removeDataListener(listener);
   }
 
   private void bindEvents() {
     conditionModel.conditionModels().values().forEach(columnConditionModel ->
-            columnConditionModel.addChangeListener(() -> conditionChangedEvent.accept(condition())));
+            columnConditionModel.addChangeListener(() -> criteriaChangedEvent.accept(criteria())));
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,

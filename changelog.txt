@@ -9384,3 +9384,4 @@
   SelectCondition and UpdateCondition.builder(entityType) and builder(criteria) renamed all() and where() respectively
   DefaultLocalEntityConnection.select(attribute) refactored
   AllCondition removed
+  EntityTableConditionModel is now Criteria based, condition() replaced with criteria()
