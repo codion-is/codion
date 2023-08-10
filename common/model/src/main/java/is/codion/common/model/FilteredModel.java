@@ -117,7 +117,7 @@ public interface FilteredModel<T> {
    * Note that this method only throws exceptions when run synchronously off the user interface thread.
    * Use {@link Refresher#addRefreshFailedListener(Consumer)} to listen for exceptions that happen during asynchronous refresh.
    * @param afterRefresh called after a successful refresh, may be null
-   * @see Refresher#refreshingObserver()
+   * @see Refresher#observer()
    * @see Refresher#addRefreshListener(Runnable)
    * @see Refresher#addRefreshFailedListener(Consumer)
    * @see Refresher#setAsyncRefresh(boolean)
@@ -171,7 +171,7 @@ public interface FilteredModel<T> {
      * Use {@link #addRefreshFailedListener(Consumer)} to listen for exceptions that happen during asynchronous refresh.
      * @param afterRefresh called after a successful refresh, may be null
      * @throws RuntimeException in case of an exception when running synchronously.
-     * @see #refreshingObserver()
+     * @see #observer()
      * @see #addRefreshListener(Runnable)
      * @see #addRefreshFailedListener(Consumer)
      * @see #setAsyncRefresh(boolean)
@@ -181,7 +181,7 @@ public interface FilteredModel<T> {
     /**
      * @return an observer active while a refresh is in progress
      */
-    StateObserver refreshingObserver();
+    StateObserver observer();
 
     /**
      * @param listener a listener to be notified each time this model has been successfully refreshed
@@ -264,7 +264,7 @@ public interface FilteredModel<T> {
     }
 
     @Override
-    public final StateObserver refreshingObserver() {
+    public final StateObserver observer() {
       return refreshingState.observer();
     }
 

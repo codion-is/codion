@@ -282,14 +282,14 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
   private EntityComboBoxModel createAndInitializeForeignKeyComboBoxModel(ForeignKey foreignKey) {
     EntityComboBoxModel comboBoxModel = createForeignKeyComboBoxModel(foreignKey);
-    refreshingObserver.add(comboBoxModel.refresher().refreshingObserver());
+    refreshingObserver.add(comboBoxModel.refresher().observer());
 
     return comboBoxModel;
   }
 
   private <T> FilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
-    refreshingObserver.add(comboBoxModel.refresher().refreshingObserver());
+    refreshingObserver.add(comboBoxModel.refresher().observer());
 
     return comboBoxModel;
   }
