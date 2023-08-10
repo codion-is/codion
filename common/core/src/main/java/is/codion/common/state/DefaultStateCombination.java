@@ -99,8 +99,8 @@ final class DefaultStateCombination implements State.Combination {
   }
 
   @Override
-  public StateObserver reversedObserver() {
-    return observer.reversedObserver();
+  public StateObserver reversed() {
+    return observer.reversed();
   }
 
   @Override

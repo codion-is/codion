@@ -13,14 +13,14 @@ import static java.util.Objects.requireNonNull;
 final class DefaultStateObserver implements StateObserver {
 
   private final Object lock = new Object();
-  private final StateObserver stateObserver;
+  private final StateObserver observedState;
   private final boolean reversed;
 
   private Event<Boolean> stateChangedEvent;
-  private DefaultStateObserver reversedStateObserver;
+  private DefaultStateObserver reversedObserver;
 
-  DefaultStateObserver(StateObserver stateObserver, boolean reversed) {
-    this.stateObserver = requireNonNull(stateObserver);
+  DefaultStateObserver(StateObserver observedState, boolean reversed) {
+    this.observedState = requireNonNull(observedState);
     this.reversed = reversed;
   }
 
@@ -32,7 +32,7 @@ final class DefaultStateObserver implements StateObserver {
   @Override
   public Boolean get() {
     synchronized (lock) {
-      return reversed ? !stateObserver.get() : stateObserver.get();
+      return reversed ? !observedState.get() : observedState.get();
     }
   }
 
@@ -52,16 +52,16 @@ final class DefaultStateObserver implements StateObserver {
   }
 
   @Override
-  public StateObserver reversedObserver() {
+  public StateObserver reversed() {
     if (reversed) {
-      return stateObserver;
+      return observedState;
     }
     synchronized (lock) {
-      if (reversedStateObserver == null) {
-        reversedStateObserver = new DefaultStateObserver(this, true);
+      if (reversedObserver == null) {
+        reversedObserver = new DefaultStateObserver(this, true);
       }
 
-      return reversedStateObserver;
+      return reversedObserver;
     }
   }
 
@@ -111,8 +111,8 @@ final class DefaultStateObserver implements StateObserver {
         if (stateChangedEvent != null) {
           stateChangedEvent.accept(newValue);
         }
-        if (reversedStateObserver != null) {
-          reversedStateObserver.notifyObservers(previousValue, newValue);
+        if (reversedObserver != null) {
+          reversedObserver.notifyObservers(previousValue, newValue);
         }
       }
     }

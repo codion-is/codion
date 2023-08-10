@@ -340,7 +340,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
             .popupMenuControl(Control.builder(model().applicationTableModel()::refresh)
                     .name("Refresh")
-                    .enabledObserver(model().autoRefreshApplicationsState().reversedObserver())
+                    .enabledObserver(model().autoRefreshApplicationsState().reversed())
                     .build())
             .build();
   }

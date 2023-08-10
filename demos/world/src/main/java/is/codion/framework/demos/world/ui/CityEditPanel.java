@@ -79,7 +79,7 @@ public final class CityEditPanel extends EntityEditPanel {
             .addAt(4, Control.builder(this::setLocation)
                     .enabledObserver(State.and(activeObserver(),
                             editModel().nullObserver(City.LOCATION),
-                            editModel().entityNewObserver().reversedObserver()))
+                            editModel().entityNewObserver().reversed()))
                     .smallIcon(FrameworkIcons.instance().icon(Foundation.MAP))
                     .build());
   }
