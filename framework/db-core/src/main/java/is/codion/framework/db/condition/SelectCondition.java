@@ -158,7 +158,7 @@ public interface SelectCondition extends Condition {
    * @return a {@link SelectCondition.Builder} instance
    */
   static Builder builder(EntityType entityType) {
-    return new DefaultSelectCondition.DefaultBuilder(new AllCondition(entityType));
+    return new DefaultSelectCondition.DefaultBuilder(Criteria.all(entityType));
   }
 
   /**
@@ -166,7 +166,7 @@ public interface SelectCondition extends Condition {
    * @return a {@link SelectCondition.Builder} instance
    */
   static Builder builder(Criteria criteria) {
-    return new DefaultSelectCondition.DefaultBuilder(new DefaultCondition(criteria));
+    return new DefaultSelectCondition.DefaultBuilder(criteria);
   }
 
   /**

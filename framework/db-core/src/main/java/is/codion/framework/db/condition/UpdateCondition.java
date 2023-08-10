@@ -44,7 +44,7 @@ public interface UpdateCondition extends Condition {
    * @return a {@link UpdateCondition.Builder} instance
    */
   static Builder builder(EntityType entityType) {
-    return new DefaultUpdateCondition.DefaultBuilder(new AllCondition(entityType));
+    return new DefaultUpdateCondition.DefaultBuilder(Criteria.all(entityType));
   }
 
   /**
@@ -52,6 +52,14 @@ public interface UpdateCondition extends Condition {
    * @return a {@link UpdateCondition.Builder} instance
    */
   static Builder builder(Criteria criteria) {
-    return new DefaultUpdateCondition.DefaultBuilder(new DefaultCondition(criteria));
+    return new DefaultUpdateCondition.DefaultBuilder(criteria);
+  }
+
+  /**
+   * @param condition the condition
+   * @return a {@link UpdateCondition.Builder} instance
+   */
+  static Builder builder(Condition condition) {
+    return new DefaultUpdateCondition.DefaultBuilder(condition);
   }
 }

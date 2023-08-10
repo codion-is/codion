@@ -5,9 +5,11 @@ package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -20,10 +22,11 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectCondition extends DefaultCondition implements SelectCondition {
+final class DefaultSelectCondition implements SelectCondition, Serializable {
 
   private static final long serialVersionUID = 1;
 
+  private final Criteria criteria;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private final Collection<Attribute<?>> selectAttributes;
   private final OrderBy orderBy;
@@ -34,7 +37,7 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
   private final int queryTimeout;
 
   private DefaultSelectCondition(DefaultBuilder builder) {
-    super(builder.criteria);
+    this.criteria = builder.criteria;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
     this.selectAttributes = builder.selectAttributes;
     this.orderBy = builder.orderBy;
@@ -43,6 +46,16 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
     this.limit = builder.limit;
     this.offset = builder.offset;
     this.queryTimeout = builder.queryTimeout;
+  }
+
+  @Override
+  public EntityType entityType() {
+    return criteria.entityType();
+  }
+
+  @Override
+  public Criteria criteria() {
+    return criteria;
   }
 
   @Override
@@ -98,14 +111,11 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
     if (!(object instanceof DefaultSelectCondition)) {
       return false;
     }
-    if (!super.equals(object)) {
-      return false;
-    }
     DefaultSelectCondition that = (DefaultSelectCondition) object;
     return forUpdate == that.forUpdate &&
             limit == that.limit &&
             offset == that.offset &&
-            criteria().equals(that.criteria()) &&
+            criteria.equals(that.criteria) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
             selectAttributes.equals(that.selectAttributes) &&
             Objects.equals(orderBy, that.orderBy) &&
@@ -114,8 +124,7 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
 
   @Override
   public int hashCode() {
-    return Objects.hash(super.hashCode(), criteria(), foreignKeyFetchDepths,
-            selectAttributes, orderBy, fetchDepth, forUpdate, limit, offset);
+    return Objects.hash(forUpdate, limit, offset, criteria, foreignKeyFetchDepths, selectAttributes, orderBy, fetchDepth);
   }
 
   static final class DefaultBuilder implements SelectCondition.Builder {
@@ -133,7 +142,7 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
     private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Condition condition) {
-      this.criteria = requireNonNull(condition).criteria();
+      this(requireNonNull(condition).criteria());
       if (condition instanceof DefaultSelectCondition) {
         DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;
         foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
@@ -145,6 +154,10 @@ final class DefaultSelectCondition extends DefaultCondition implements SelectCon
         offset = selectCondition.offset;
         queryTimeout = selectCondition.queryTimeout;
       }
+    }
+
+    DefaultBuilder(Criteria criteria) {
+      this.criteria = requireNonNull(criteria);
     }
 
     @Override
