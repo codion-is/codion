@@ -173,7 +173,7 @@ dependencyResolutionManagement {
     versionCatalogs {
         libs {
             version("slf4j.api", "2.0.7")
-            version("logback", "1.4.9")
+            version("logback", "1.4.11")
             version("h2", "2.2.220")
             version("json", "20230618")
             //jfreechart
