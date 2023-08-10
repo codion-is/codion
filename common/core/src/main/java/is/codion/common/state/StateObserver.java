@@ -13,5 +13,5 @@ public interface StateObserver extends ValueObserver<Boolean> {
   /**
    * @return A {@link StateObserver} instance that is always the reverse of this {@link StateObserver} instance
    */
-  StateObserver reversedObserver();
+  StateObserver reversed();
 }

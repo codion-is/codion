@@ -587,7 +587,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(editPanelSupplier);
 
     return createUpdateControl(new UpdateEntityCommand(searchField, editPanelSupplier), searchField,
-            searchField.model().selectionEmptyObserver().reversedObserver());
+            searchField.model().selectionEmptyObserver().reversed());
   }
 
   /**
@@ -695,7 +695,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createRefreshControl() {
     return Control.builder(editModel()::refresh)
             .name(FrameworkMessages.refresh())
-            .enabledObserver(State.and(activeState, editModel().refreshingObserver().reversedObserver()))
+            .enabledObserver(State.and(activeState, editModel().refreshingObserver().reversed()))
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())
@@ -707,7 +707,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.delete())
             .enabledObserver(State.and(activeState,
                     editModel().deleteEnabledObserver(),
-                    editModel().entityNewObserver().reversedObserver()))
+                    editModel().entityNewObserver().reversed()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
             .smallIcon(FrameworkIcons.instance().delete())
@@ -729,7 +729,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
             .name(FrameworkMessages.update())
             .enabledObserver(State.and(activeState,
                     editModel().updateEnabledObserver(),
-                    editModel().entityNewObserver().reversedObserver(),
+                    editModel().entityNewObserver().reversed(),
                     editModel().modifiedObserver()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
             .mnemonic(FrameworkMessages.updateMnemonic())

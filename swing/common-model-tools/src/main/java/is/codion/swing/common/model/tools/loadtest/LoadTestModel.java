@@ -72,9 +72,9 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   private final State collectChartDataState = State.state();
   private final State autoRefreshApplicationsState = State.state();
   private final StateObserver chartUpdateSchedulerEnabledState =
-          State.and(pausedState.reversedObserver(), collectChartDataState);
+          State.and(pausedState.reversed(), collectChartDataState);
   private final StateObserver applicationsRefreshSchedulerEnabledState =
-          State.and(pausedState.reversedObserver(), autoRefreshApplicationsState);
+          State.and(pausedState.reversed(), autoRefreshApplicationsState);
 
   private final Value<Integer> loginDelayFactorValue;
   private final Value<Integer> applicationBatchSizeValue;

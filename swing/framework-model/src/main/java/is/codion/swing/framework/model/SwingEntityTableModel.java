@@ -975,7 +975,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addAfterDeleteListener(this::onDelete);
     editModel.addRefreshListener(this::refresh);
     editModel.addEntityListener(this::onEntitySet);
-    editModel.addRefreshingObserver(refresher().refreshingObserver());
+    editModel.addRefreshingObserver(refresher().observer());
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
     Runnable statusListener = () -> statusMessageValue.set(statusMessage());
