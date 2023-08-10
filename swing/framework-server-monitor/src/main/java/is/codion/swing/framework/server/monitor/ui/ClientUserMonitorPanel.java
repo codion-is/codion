@@ -22,7 +22,6 @@ import java.rmi.RemoteException;
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
 import static is.codion.swing.common.ui.dialog.Dialogs.exceptionDialog;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createTitledBorder;
 import static javax.swing.JOptionPane.showConfirmDialog;
@@ -66,7 +65,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JPanel createCurrentConnectionsPanel() throws RemoteException {
-    JPanel actionBase = panel(flowLayout(FlowLayout.LEFT))
+    JPanel actionBase = flowLayoutPanel(FlowLayout.LEFT)
             .border(createTitledBorder("Remote connection controls"))
             .add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT))
             .add(createMaintenanceIntervalComponent())
@@ -91,7 +90,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JPanel createConnectionHistoryPanel() {
-    JPanel configPanel = panel(flowLayout(FlowLayout.LEFT))
+    JPanel configPanel = flowLayoutPanel(FlowLayout.LEFT)
             .add(new JLabel("Update interval (s)"))
             .add(integerSpinner(model.updateIntervalValue())
                     .minimum(1)

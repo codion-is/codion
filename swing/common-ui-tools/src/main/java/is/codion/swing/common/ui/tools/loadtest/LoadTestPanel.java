@@ -54,7 +54,6 @@ import static is.codion.swing.common.ui.icon.Logos.logoTransparent;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.defaultLookAndFeelName;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
 import static javax.swing.BorderFactory.createTitledBorder;
@@ -205,7 +204,7 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel createApplicationsPanel() {
     return borderLayoutPanel()
             .northComponent(borderLayoutPanel()
-                    .centerComponent(panel(flowLayout(FlowLayout.LEADING))
+                    .centerComponent(flowLayoutPanel(FlowLayout.LEADING)
                             .add(new JLabel("Batch size"))
                             .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
                                     .editable(false)
@@ -390,7 +389,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
 
     return borderLayoutPanel()
-            .northComponent(panel(flowLayout(FlowLayout.LEADING))
+            .northComponent(flowLayoutPanel(FlowLayout.LEADING)
                     .add(refreshButton)
                     .add(clearButton)
                     .build())
@@ -412,7 +411,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private static JPanel createSouthPanel() {
-    return panel(flowLayout(FlowLayout.TRAILING))
+    return flowLayoutPanel(FlowLayout.TRAILING)
             .add(new JLabel("Memory usage:"))
             .add(new MemoryUsageField(DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS))
             .build();

@@ -9,7 +9,6 @@ import is.codion.common.value.ValueObserver;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.ui.KeyEvents;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.AbstractDialogBuilder;
 import is.codion.swing.common.ui.dialog.DialogBuilder;
@@ -32,7 +31,7 @@ import java.util.Optional;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.component.Components.button;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
+import static is.codion.swing.common.ui.component.Components.flowLayoutPanel;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.awt.event.KeyEvent.VK_ESCAPE;
 import static java.util.Collections.singletonList;
@@ -82,7 +81,7 @@ public final class EntitySelectionDialog extends JDialog {
             .action(cancelControl)
             .enable(getRootPane());
     JButton okButton = button(okControl).build();
-    JPanel buttonPanel = Components.panel(flowLayout(FlowLayout.RIGHT))
+    JPanel buttonPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(okButton)
             .add(button(cancelControl).build())
             .add(button(searchControl).build())

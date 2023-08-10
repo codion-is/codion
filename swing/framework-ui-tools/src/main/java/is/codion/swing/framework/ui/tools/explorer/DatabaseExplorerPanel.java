@@ -9,7 +9,6 @@ import is.codion.common.model.CancelException;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -33,9 +32,8 @@ import java.awt.Font;
 import java.awt.event.InputEvent;
 import java.util.function.Consumer;
 
-import static is.codion.swing.common.ui.component.Components.button;
+import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.awt.event.KeyEvent.VK_ENTER;
 import static java.util.Objects.requireNonNull;
 
@@ -66,14 +64,14 @@ public final class DatabaseExplorerPanel extends JPanel {
                     .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
                     .build();
 
-    JSplitPane schemaTableSplitPane = Components.splitPane()
+    JSplitPane schemaTableSplitPane = splitPane()
             .orientation(JSplitPane.VERTICAL_SPLIT)
             .resizeWeight(RESIZE_WEIGHT)
             .topComponent(new JScrollPane(schemaTable))
             .bottomComponent(new JScrollPane(domainTable))
             .build();
 
-    JTextArea textArea = Components.textArea()
+    JTextArea textArea = textArea()
             .rowsColumns(40, 60)
             .editable(false)
             .build();
@@ -81,16 +79,16 @@ public final class DatabaseExplorerPanel extends JPanel {
     Font font = textArea.getFont();
     textArea.setFont(new Font(Font.MONOSPACED, font.getStyle(), font.getSize()));
 
-    JPanel textAreaCopyPanel = Components.borderLayoutPanel()
+    JPanel textAreaCopyPanel = borderLayoutPanel()
             .centerComponent(new JScrollPane(textArea))
-            .southComponent(Components.panel(flowLayout(FlowLayout.RIGHT))
+            .southComponent(flowLayoutPanel(FlowLayout.RIGHT)
                     .add(button(Control.builder(() -> Utilities.setClipboard(textArea.getText()))
                             .name(Messages.copy()))
                             .build())
                     .build())
             .build();
 
-    JSplitPane splitPane = Components.splitPane()
+    JSplitPane splitPane = splitPane()
             .resizeWeight(RESIZE_WEIGHT)
             .leftComponent(schemaTableSplitPane)
             .rightComponent(textAreaCopyPanel)
@@ -114,7 +112,7 @@ public final class DatabaseExplorerPanel extends JPanel {
 
   private void populateSchema() {
     JLabel schemaLabel = new JLabel("Testing", SwingConstants.CENTER);
-    JPanel northPanel = Components.borderLayoutPanel()
+    JPanel northPanel = borderLayoutPanel()
             .centerComponent(schemaLabel)
             .build();
     Consumer<String> schemaNotifier = schema -> SwingUtilities.invokeLater(() -> schemaLabel.setText(schema));

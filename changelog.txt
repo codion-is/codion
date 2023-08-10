@@ -9390,3 +9390,4 @@
   EntityComboBoxModel.DefaultSelectCriteriaSupplier added, related refactoring
   LookAndFeelProvider, default method implementations removed, enabler now Consumer instead of Runnable, DefaultEnabler added
   LoadTestPanel UI layout improved
+  Components.flowLayoutPanel() added, used throughout

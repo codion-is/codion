@@ -33,7 +33,6 @@ import java.util.List;
 
 import static is.codion.swing.common.ui.component.Components.*;
 import static is.codion.swing.common.ui.control.Control.control;
-import static is.codion.swing.common.ui.layout.Layouts.flowLayout;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.BorderFactory.createEtchedBorder;
@@ -110,7 +109,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    JPanel serverPanel = panel(flowLayout(FlowLayout.LEFT))
+    JPanel serverPanel = flowLayoutPanel(FlowLayout.LEFT)
             .add(new JLabel("Connections", SwingConstants.RIGHT))
             .add(createConnectionCountField())
             .add(new JLabel("limit", SwingConstants.RIGHT))
@@ -218,7 +217,7 @@ public final class ServerMonitorPanel extends JPanel {
     JTable table = new JTable(model.operationTableModel());
     table.setRowSorter(new TableRowSorter<>(model.operationTableModel()));
 
-    JPanel refreshPanel = panel(flowLayout(FlowLayout.RIGHT))
+    JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::refreshOperationList))
                     .text("Refresh")
                     .build())
@@ -234,7 +233,7 @@ public final class ServerMonitorPanel extends JPanel {
     JTable table = new JTable(model.reportTableModel());
     table.setRowSorter(new TableRowSorter<>(model.reportTableModel()));
 
-    JPanel clearCacheAndRefreshPanel = panel(flowLayout(FlowLayout.RIGHT))
+    JPanel clearCacheAndRefreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::clearReportCache))
                     .text("Clear Cache")
                     .build())
@@ -253,7 +252,7 @@ public final class ServerMonitorPanel extends JPanel {
     JTable table = new JTable(model.domainTableModel());
     table.setRowSorter(new TableRowSorter<>(model.domainTableModel()));
 
-    JPanel refreshPanel = panel(flowLayout(FlowLayout.RIGHT))
+    JPanel refreshPanel = flowLayoutPanel(FlowLayout.RIGHT)
             .add(button(control(model::refreshDomainList))
                     .text("Refresh")
                     .build())
