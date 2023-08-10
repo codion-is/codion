@@ -3,7 +3,6 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AllCondition;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -28,10 +27,8 @@ public class ConditionSerializer extends StdSerializer<Condition> {
   public void serialize(Condition condition, JsonGenerator generator, SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.entityType().name());
-    if (!(condition instanceof AllCondition)) {
-      generator.writeFieldName("criteria");
-      criteriaSerializer.serialize(condition.criteria(), generator);
-    }
+    generator.writeFieldName("criteria");
+    criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeEndObject();
   }
 }

@@ -13,7 +13,6 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 
 public class ConditionDeserializer extends StdDeserializer<Condition> {
@@ -35,9 +34,6 @@ public class ConditionDeserializer extends StdDeserializer<Condition> {
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
     JsonNode criteriaNode = jsonNode.get("criteria");
-    if (criteriaNode == null) {
-      return all(entityType);
-    }
 
     return where(criteriaDeserializer.deserialize(definition, criteriaNode));
   }
