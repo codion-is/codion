@@ -7,7 +7,6 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -35,6 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
+import static is.codion.framework.db.condition.SelectCondition.where;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -76,6 +76,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
     this.orderBy = this.entities.definition(entityType).orderBy();
+    this.selectCriteriaSupplier = new DefaultSelectCriteriaSupplier();
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
     setItemValidator(new ItemValidator());
@@ -231,11 +232,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param selectCriteriaSupplier the criteria supplier
    */
   public final void setSelectCriteriaSupplier(Supplier<Criteria> selectCriteriaSupplier) {
-    this.selectCriteriaSupplier = selectCriteriaSupplier;
+    this.selectCriteriaSupplier = selectCriteriaSupplier == null ? new DefaultSelectCriteriaSupplier() : selectCriteriaSupplier;
   }
 
   /**
-   * @return the select criteria supplier, null if none is specified
+   * @return the select criteria supplier
    */
   public final Supplier<Criteria> getSelectCriteriaSupplier() {
     return this.selectCriteriaSupplier;
@@ -386,11 +387,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
-    SelectCondition.Builder conditionBuilder = selectCriteriaSupplier == null ?
-            SelectCondition.all(entityType) :
-            SelectCondition.where(selectCriteriaSupplier.get());
     try {
-      return connectionProvider.connection().select(conditionBuilder
+      return connectionProvider.connection().select(where(selectCriteriaSupplier.get())
               .selectAttributes(selectAttributes)
               .orderBy(orderBy)
               .build());
@@ -560,6 +558,14 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       }
 
       return true;
+    }
+  }
+
+  private final class DefaultSelectCriteriaSupplier implements Supplier<Criteria> {
+
+    @Override
+    public Criteria get() {
+      return Criteria.all(entityType);
     }
   }
 

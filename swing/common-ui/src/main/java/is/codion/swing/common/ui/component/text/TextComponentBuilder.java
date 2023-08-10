@@ -5,6 +5,7 @@ package is.codion.swing.common.ui.component.text;
 
 import is.codion.swing.common.ui.component.builder.ComponentBuilder;
 
+import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
@@ -99,6 +100,12 @@ public interface TextComponentBuilder<T, C extends JTextComponent, B extends Tex
    * @return this builder instance
    */
   B moveCaretToStartOnFocusGained(boolean moveCaretToStartOnFocusGained);
+
+  /**
+   * @param caretListener the caret listener to add
+   * @return this builder instance
+   */
+  B caretListener(CaretListener caretListener);
 
   /**
    * @param onTextChanged called when the text changes

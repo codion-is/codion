@@ -533,6 +533,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       boolean requestFocus = boundFieldHasFocus();
       clearInputPanel(requestFocus);
       inputPanel.add(boundField, BorderLayout.CENTER);
+      if (!isAdvancedView()) {
+        inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
+      }
       if (requestFocus) {
         boundField.requestFocusInWindow();
       }
@@ -546,6 +549,9 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       rangePanel.add(lowerBoundField);
       rangePanel.add(upperBoundField);
       inputPanel.add(rangePanel, BorderLayout.CENTER);
+      if (!isAdvancedView()) {
+        inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
+      }
       if (requestFocus) {
         lowerBoundField.requestFocusInWindow();
       }

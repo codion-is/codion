@@ -31,7 +31,7 @@ public interface Condition {
    * @return a condition for all entities
    */
   static Condition all(EntityType entityType) {
-    return new AllCondition(entityType);
+    return where(Criteria.all(entityType));
   }
 
   /**

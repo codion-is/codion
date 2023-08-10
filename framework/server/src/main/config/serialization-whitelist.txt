@@ -100,7 +100,6 @@ is.codion.common.db.report.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
-is.codion.framework.db.condition.AllCondition
 is.codion.framework.db.condition.DefaultCondition
 is.codion.framework.db.condition.DefaultSelectCondition
 is.codion.framework.db.condition.DefaultUpdateCondition

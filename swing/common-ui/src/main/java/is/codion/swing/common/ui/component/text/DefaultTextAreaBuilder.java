@@ -91,10 +91,4 @@ final class DefaultTextAreaBuilder extends AbstractTextComponentBuilder<String, 
   protected ComponentValue<String, JTextArea> createComponentValue(JTextArea component) {
     return new DefaultTextComponentValue<>(component, null, updateOn);
   }
-
-  @Override
-  protected void setInitialValue(JTextArea component, String initialValue) {
-    component.setText(initialValue);
-    component.setCaretPosition(0);
-  }
 }

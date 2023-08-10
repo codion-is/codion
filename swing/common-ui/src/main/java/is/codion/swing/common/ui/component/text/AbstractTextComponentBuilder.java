@@ -8,9 +8,12 @@ import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.component.builder.AbstractComponentBuilder;
 import is.codion.swing.common.ui.component.text.CaseDocumentFilter.DocumentCase;
 
+import javax.swing.event.CaretListener;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.Insets;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.function.Consumer;
 
 import static java.awt.event.InputEvent.CTRL_DOWN_MASK;
@@ -22,6 +25,8 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
         extends AbstractComponentBuilder<T, C, B> implements TextComponentBuilder<T, C, B> {
 
   protected UpdateOn updateOn = UpdateOn.KEYSTROKE;
+
+  private final List<CaretListener> caretListeners = new ArrayList<>();
 
   private boolean editable = true;
   private boolean upperCase;
@@ -134,6 +139,12 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
   }
 
   @Override
+  public final B caretListener(CaretListener caretListener) {
+    this.caretListeners.add(requireNonNull(caretListener));
+    return (B) this;
+  }
+
+  @Override
   public final B onTextChanged(Consumer<String> onTextChanged) {
     this.onTextChanged = requireNonNull(onTextChanged);
     return (B) this;
@@ -156,6 +167,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     C textComponent = createTextComponent();
     textComponent.setEditable(editable);
     textComponent.setDragEnabled(dragEnabled);
+    caretListeners.forEach(textComponent::addCaretListener);
     if (focusAcceleratorKey != null) {
       textComponent.setFocusAccelerator(focusAcceleratorKey);
     }
@@ -215,6 +227,7 @@ abstract class AbstractTextComponentBuilder<T, C extends JTextComponent, B exten
     else if (initialValue != null) {
       throw new IllegalArgumentException("Unsupported type: " + initialValue.getClass());
     }
+    component.setCaretPosition(0);
   }
 
   /**
