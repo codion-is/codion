@@ -81,7 +81,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       }
     }
 
-    return criteria.isEmpty() ? Criteria.all(entityType) : combination(conjunction, criteria);
+    return criteria.isEmpty() ? all(entityType) : combination(conjunction, criteria);
   }
 
   @Override

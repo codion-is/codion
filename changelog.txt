@@ -9387,3 +9387,4 @@
   EntityTableConditionModel is now Criteria based, condition() replaced with criteria()
   TextComponentBuilder.caretListener() added
   ColumnConditionPanel bug fixed, toggleEnabledButton no longer disappears when switching operators with simple view enabled
+  EntityComboBoxModel.DefaultSelectCriteriaSupplier added, related refactoring

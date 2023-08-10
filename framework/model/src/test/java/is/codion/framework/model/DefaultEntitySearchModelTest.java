@@ -201,7 +201,7 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void setAdditionalConditionProvider() {
+  void setAdditionalCriteriaProvider() {
     searchModel.singleSelectionState().set(true);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("johnson");
