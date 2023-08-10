@@ -10,11 +10,13 @@ import is.codion.swing.common.model.tools.loadtest.LoadTest.Application;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
 import is.codion.swing.common.model.tools.randomizer.ItemRandomizer.RandomItem;
+import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.component.text.MemoryUsageField;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
+import is.codion.swing.common.ui.control.ToggleControl;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.common.ui.tools.randomizer.ItemRandomizerPanel;
@@ -67,7 +69,7 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
-  private static final int USERNAME_PASSWORD_COLUMNS = 8;
+  private static final int USERNAME_PASSWORD_COLUMNS = 6;
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
   private static final double RESIZE_WEIGHT = 0.8;
@@ -117,11 +119,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .menuBar(menu(createMainMenuControls()).createMenuBar())
             .title("Codion - " + loadTestModel.title())
             .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-            .onClosing(windowEvent -> {
-              JFrame frame = (JFrame) windowEvent.getWindow();
-              frame.setTitle(frame.getTitle() + " - Closing...");
-              loadTestModel.shutdown();
-            })
+            .onClosing(windowEvent -> exit())
             .size(screenSizeRatio(DEFAULT_SCREEN_SIZE_RATIO))
             .centerFrame(true)
             .show();
@@ -129,66 +127,30 @@ public final class LoadTestPanel<T> extends JPanel {
 
   private Controls createMainMenuControls() {
     return Controls.builder()
-            .control(Controls.builder()
+            .controls(Controls.builder()
+                    .name("File")
+                    .mnemonic('F')
+                    .control(Control.builder(this::exit)
+                            .name("Exit")
+                            .mnemonic('X')))
+            .controls(Controls.builder()
                     .name("View")
                     .mnemonic('V')
                     .control(lookAndFeelSelectionDialog()
                             .owner(this)
                             .userPreferencePropertyName(LoadTestPanel.class.getName())
-                            .createControl()))
+                            .createControl())
+                    .control(ToggleControl.builder(loadTestModel.collectChartDataState())
+                            .name("Collect chart data"))
+                    .control(Control.builder(loadTestModel::clearChartData)
+                            .name("Clear charts")))
             .build();
   }
 
   private void initializeUI() {
     setLayout(borderLayout());
-    add(borderLayoutPanel()
-            .northComponent(flexibleGridLayoutPanel(5, 1)
-                    .add(createApplicationPanel())
-                    .add(createActivityPanel())
-                    .add(createScenarioPanel())
-                    .add(createUserPanel())
-                    .add(createChartControlPanel())
-                    .build())
-            .build(), BorderLayout.WEST);
     add(createCenterPanel(), BorderLayout.CENTER);
     add(createSouthPanel(), BorderLayout.SOUTH);
-  }
-
-  private JPanel createApplicationPanel() {
-    return borderLayoutPanel()
-            .border(createTitledBorder("Applications"))
-            .northComponent(borderLayoutPanel()
-                    .westComponent(flexibleGridLayoutPanel(1, 2)
-                            .add(new JLabel("Batch size"))
-                            .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
-                                    .editable(false)
-                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                                    .toolTipText("Application batch size")
-                                    .build())
-                            .build())
-                    .centerComponent(createAddRemoveApplicationPanel())
-                    .build())
-            .build();
-  }
-
-  private JPanel createActivityPanel() {
-    return flexibleGridLayoutPanel(4, 2)
-            .add(new JLabel("Max. think time", SwingConstants.CENTER))
-            .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
-                    .stepSize(SPINNER_STEP_SIZE)
-                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                    .build())
-            .add(new JLabel("Min. think time", SwingConstants.CENTER))
-            .add(integerSpinner(loadTestModel.minimumThinkTimeValue())
-                    .stepSize(SPINNER_STEP_SIZE)
-                    .columns(SMALL_TEXT_FIELD_COLUMNS)
-                    .build())
-            .add(toggleButton(loadTestModel.pausedState())
-                    .text("Pause")
-                    .mnemonic('P')
-                    .build())
-            .border(createTitledBorder("Activity"))
-            .build();
   }
 
   private ItemRandomizerPanel<UsageScenario<T>> createScenarioPanel() {
@@ -197,41 +159,6 @@ public final class LoadTestPanel<T> extends JPanel {
     panel.addSelectedItemListener(this::onScenarioSelectionChanged);
 
     return panel;
-  }
-
-  private JPanel createUserPanel() {
-    User user = loadTestModel.userValue().get();
-    JTextField usernameField = textField()
-            .initialValue(user.username())
-            .columns(USERNAME_PASSWORD_COLUMNS)
-            .build();
-    JPasswordField passwordField = passwordField()
-            .initialValue(String.valueOf(user.password()))
-            .columns(USERNAME_PASSWORD_COLUMNS)
-            .build();
-    ActionListener userInfoListener = e -> loadTestModel.userValue().set(User.user(usernameField.getText(), passwordField.getPassword()));
-    usernameField.addActionListener(userInfoListener);
-    passwordField.addActionListener(userInfoListener);
-
-    return flexibleGridLayoutPanel(2, 2)
-            .border(createTitledBorder("User"))
-            .add(new JLabel("Username"))
-            .add(usernameField)
-            .add(new JLabel("Password"))
-            .add(passwordField)
-            .build();
-  }
-
-  private JPanel createChartControlPanel() {
-    return flexibleGridLayoutPanel(1, 2)
-            .border(createTitledBorder("Charts"))
-            .add(checkBox(loadTestModel.collectChartDataState())
-                    .text("Collect chart data")
-                    .build())
-            .add(button(Control.control(loadTestModel::clearChartData))
-                    .text("Clear")
-                    .build())
-            .build();
   }
 
   private JPanel createAddRemoveApplicationPanel() {
@@ -257,27 +184,78 @@ public final class LoadTestPanel<T> extends JPanel {
   private JPanel createCenterPanel() {
     return borderLayoutPanel()
             .centerComponent(tabbedPane()
-                    .tab("Overview", splitPane()
-                            .orientation(JSplitPane.VERTICAL_SPLIT)
-                            .oneTouchExpandable(true)
-                            .topComponent(createScenarioOverviewChartPanel())
-                            .bottomComponent(createSouthChartPanel())
-                            .resizeWeight(RESIZE_WEIGHT)
+                    .tab("Overview", borderLayoutPanel()
+                            .centerComponent(splitPane()
+                                    .orientation(JSplitPane.VERTICAL_SPLIT)
+                                    .oneTouchExpandable(true)
+                                    .topComponent(createScenarioOverviewChartPanel())
+                                    .bottomComponent(createSouthChartPanel())
+                                    .resizeWeight(RESIZE_WEIGHT)
+                                    .build())
                             .build())
-                    .tab("Scenarios", scenarioBase)
                     .tab("Applications", createApplicationsPanel())
+                    .tab("Scenarios", borderLayoutPanel()
+                            .westComponent(createScenarioPanel())
+                            .centerComponent(scenarioBase)
+                            .build())
                     .build())
             .build();
   }
 
   private JPanel createApplicationsPanel() {
     return borderLayoutPanel()
-            .northComponent(panel(flowLayout(FlowLayout.LEADING))
-                    .add(checkBox(loadTestModel.autoRefreshApplicationsState())
+            .northComponent(borderLayoutPanel()
+                    .centerComponent(panel(flowLayout(FlowLayout.LEADING))
+                            .add(new JLabel("Batch size"))
+                            .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
+                                    .editable(false)
+                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                                    .toolTipText("Application batch size")
+                                    .build())
+                            .add(createAddRemoveApplicationPanel())
+                            .add(createUserPanel())
+                            .add(new JLabel("Min. think time", SwingConstants.CENTER))
+                            .add(integerSpinner(loadTestModel.minimumThinkTimeValue())
+                                    .stepSize(SPINNER_STEP_SIZE)
+                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                                    .build())
+                            .add(new JLabel("Max. think time", SwingConstants.CENTER))
+                            .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
+                                    .stepSize(SPINNER_STEP_SIZE)
+                                    .columns(SMALL_TEXT_FIELD_COLUMNS)
+                                    .build())
+                            .add(toggleButton(loadTestModel.pausedState())
+                                    .text("Pause")
+                                    .mnemonic('P')
+                                    .build())
+                            .build())
+                    .eastComponent(checkBox(loadTestModel.autoRefreshApplicationsState())
                             .text("Automatic refresh")
                             .build())
                     .build())
             .centerComponent(scrollPane(createApplicationsTable()).build())
+            .build();
+  }
+
+  private JPanel createUserPanel() {
+    User user = loadTestModel.userValue().get();
+    JTextField usernameField = textField()
+            .initialValue(user.username())
+            .columns(USERNAME_PASSWORD_COLUMNS)
+            .build();
+    JPasswordField passwordField = passwordField()
+            .initialValue(String.valueOf(user.password()))
+            .columns(USERNAME_PASSWORD_COLUMNS)
+            .build();
+    ActionListener userInfoListener = e -> loadTestModel.userValue().set(User.user(usernameField.getText(), passwordField.getPassword()));
+    usernameField.addActionListener(userInfoListener);
+    passwordField.addActionListener(userInfoListener);
+
+    return flexibleGridLayoutPanel(1, 4)
+            .add(new JLabel("Username"))
+            .add(usernameField)
+            .add(new JLabel("Password"))
+            .add(passwordField)
             .build();
   }
 
@@ -412,16 +390,25 @@ public final class LoadTestPanel<T> extends JPanel {
             .build();
 
     return borderLayoutPanel()
-            .centerComponent(scrollPane(exceptionsArea).build())
-            .eastComponent(borderLayoutPanel()
-                    .northComponent(refreshButton)
-                    .southComponent(clearButton)
+            .northComponent(panel(flowLayout(FlowLayout.LEADING))
+                    .add(refreshButton)
+                    .add(clearButton)
                     .build())
+            .centerComponent(scrollPane(exceptionsArea).build())
             .build();
   }
 
   private void setColors(JFreeChart chart) {
     ChartUtil.linkColors(this, chart);
+  }
+
+  private void exit() {
+    JFrame frame = Utilities.parentFrame(this);
+    if (frame != null) {
+      frame.setTitle(frame.getTitle() + " - Closing...");
+    }
+    loadTestModel.shutdown();
+    System.exit(0);
   }
 
   private static JPanel createSouthPanel() {
