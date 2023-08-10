@@ -14,6 +14,7 @@ import java.awt.Window;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
@@ -29,24 +30,14 @@ public interface LookAndFeelProvider {
 
   /**
    * Configures and enables this LookAndFeel.
-   * Calls {@link UIManager#setLookAndFeel(String)} by default, override to add any custom configuration.
    */
-  default void enable() {
-    try {
-      UIManager.setLookAndFeel(lookAndFeelInfo().getClassName());
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
+  void enable();
 
   /**
    * @return the LookAndFeel instance represented by this provider
    * @throws Exception in case an instance could not be created
    */
-  default LookAndFeel lookAndFeel() throws Exception {
-    return (LookAndFeel) Class.forName(lookAndFeelInfo().getClassName()).getDeclaredConstructor().newInstance();
-  }
+  LookAndFeel lookAndFeel() throws Exception;
 
   /**
    * Instantiates a new LookAndFeelProvider, using {@link UIManager#setLookAndFeel(String)} to enable.
@@ -54,14 +45,7 @@ public interface LookAndFeelProvider {
    * @return a look and feel provider
    */
   static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo) {
-    return lookAndFeelProvider(lookAndFeelInfo, () -> {
-      try {
-        UIManager.setLookAndFeel(lookAndFeelInfo.getClassName());
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+    return new DefaultLookAndFeelProvider(lookAndFeelInfo);
   }
 
   /**
@@ -70,7 +54,7 @@ public interface LookAndFeelProvider {
    * @param enabler configures and enables this look and feel
    * @return a look and feel provider
    */
-  static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Runnable enabler) {
+  static LookAndFeelProvider lookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
     return new DefaultLookAndFeelProvider(lookAndFeelInfo, enabler);
   }
 
@@ -87,7 +71,7 @@ public interface LookAndFeelProvider {
    * @param lookAndFeelInfo the look and feel info
    * @param enabler configures and enables this look and feel
    */
-  static void addLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Runnable enabler) {
+  static void addLookAndFeelProvider(LookAndFeelInfo lookAndFeelInfo, Consumer<LookAndFeelInfo> enabler) {
     addLookAndFeelProvider(lookAndFeelProvider(lookAndFeelInfo, enabler));
   }
 
