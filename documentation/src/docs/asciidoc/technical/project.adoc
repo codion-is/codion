@@ -33,7 +33,7 @@ gradlew codion-demos-chinook:runClientLocal
 
 === Remote database connection
 
-In order to run a client with a remote connection we must first start the remote server.
+In order to run a client with a remote or http connection the remote server must be started first.
 
 [source,shell]
 ----

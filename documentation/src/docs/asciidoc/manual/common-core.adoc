@@ -95,12 +95,13 @@ skinparam genericDisplay old
 
 interface State {
     +void set(Boolean value)
-    +ValueObserver<Boolean> observer()
+    +StateObserver observer()
     +void link(Value<Boolean> value)
 }
 
 interface StateObserver {
     +Boolean get()
+    +StateObserver reversed()
 }
 
 interface Value<Boolean> {}
