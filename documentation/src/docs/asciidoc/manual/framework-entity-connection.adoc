@@ -99,7 +99,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.criteria.Criteria{cpar}[select(Attribute<T> attribute, Criteria criteria)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.condition.Condition{cpar}[select(Attribute<T> attribute, Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -184,7 +184,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For deleting existing rows.
 
-** {url-entity-connection}#delete{opar}is.codion.framework.db.condition.Condition{cpar}[delete(Condition condition)]
+** {url-entity-connection}#delete{opar}is.codion.framework.db.criteria.Criteria{cpar}[delete(Criteria criteria)]
 
 [source,java,indent=0]
 ----
