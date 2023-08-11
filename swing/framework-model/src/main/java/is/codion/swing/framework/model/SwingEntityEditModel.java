@@ -3,7 +3,6 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
@@ -34,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class SwingEntityEditModel extends AbstractEntityEditModel {
 
-  private final State.Combination refreshingObserver = State.combination(Conjunction.OR);
+  private final State.Combination refreshingObserver = State.or();
   private final Map<Attribute<?>, FilteredComboBoxModel<?>> comboBoxModels = new HashMap<>();
 
   /**
@@ -246,11 +245,6 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       }
       clearForeignKeyReferences(foreignKey, entities);
     }
-  }
-
-  @Override
-  public final void addRefreshingObserver(StateObserver refreshingObserver) {
-    this.refreshingObserver.add(refreshingObserver);
   }
 
   @Override

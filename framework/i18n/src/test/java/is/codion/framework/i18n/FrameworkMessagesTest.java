@@ -43,7 +43,7 @@ public class FrameworkMessagesTest {
     FrameworkMessages.unsavedDataWarning();
     FrameworkMessages.unsavedDataWarningTitle();
     FrameworkMessages.confirmUpdate();
-    FrameworkMessages.confirmDeleteSelected();
+    FrameworkMessages.confirmDeleteSelected(42);
     FrameworkMessages.confirmDelete();
     FrameworkMessages.confirmInsert();
     FrameworkMessages.show();

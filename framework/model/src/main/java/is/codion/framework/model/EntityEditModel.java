@@ -552,16 +552,9 @@ public interface EntityEditModel {
   StateObserver insertEnabledObserver();
 
   /**
-   * @return a {@link StateObserver} which is active while data models are being refreshed
+   * @return a {@link StateObserver} active while data models (such as combo box models) are being refreshed
    */
   StateObserver refreshingObserver();
-
-  /**
-   * Adds a {@link StateObserver} instance to this edit models refreshing observer
-   * @param refreshingObserver the refreshing observer to add
-   * @see #refreshingObserver()
-   */
-  void addRefreshingObserver(StateObserver refreshingObserver);
 
   /**
    * Adds a listener notified each time the value associated with the given attribute is edited via

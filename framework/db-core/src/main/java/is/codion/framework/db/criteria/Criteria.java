@@ -34,7 +34,9 @@ import static java.util.Objects.requireNonNull;
  * @see #foreignKey(ForeignKey)
  * @see #attribute(Attribute)
  * @see #and(Criteria...)
+ * @see #and(Collection)
  * @see #or(Criteria...)
+ * @see #or(Collection)
  * @see #combination(Conjunction, Criteria...)
  * @see #combination(Conjunction, Criteria...)
  * @see #customCriteria(CriteriaType)
@@ -90,24 +92,6 @@ public interface Criteria {
    */
   static Criteria all(EntityType entityType) {
     return new AllCriteria(entityType);
-  }
-
-  /**
-   * Returns a new {@link Combination} instance, combining the given criteria with AND.
-   * @param criteria the criteria to combine
-   * @return a new criteria combination
-   */
-  static Combination and(Criteria... criteria) {
-    return new DefaultCriteriaCombination(Conjunction.AND, Arrays.asList(criteria));
-  }
-
-  /**
-   * Returns a new {@link Combination} instance, combining the given criteria with OR.
-   * @param criteria the criteria to combine
-   * @return a new criteria combination
-   */
-  static Combination or(Criteria... criteria) {
-    return new DefaultCriteriaCombination(Conjunction.OR, Arrays.asList(criteria));
   }
 
   /**
@@ -178,6 +162,42 @@ public interface Criteria {
     }
 
     return new DefaultAttributeCriteriaBuilder<>(attribute);
+  }
+
+  /**
+   * Returns a new {@link Combination} instance, combining the given criteria with AND.
+   * @param criteria the criteria to combine
+   * @return a new criteria combination
+   */
+  static Combination and(Criteria... criteria) {
+    return and(Arrays.asList(criteria));
+  }
+
+  /**
+   * Returns a new {@link Combination} instance, combining the given criteria with AND.
+   * @param criteria the criteria to combine
+   * @return a new criteria combination
+   */
+  static Combination and(Collection<Criteria> criteria) {
+    return combination(Conjunction.AND, criteria);
+  }
+
+  /**
+   * Returns a new {@link Combination} instance, combining the given criteria with OR.
+   * @param criteria the criteria to combine
+   * @return a new criteria combination
+   */
+  static Combination or(Criteria... criteria) {
+    return or(Arrays.asList(criteria));
+  }
+
+  /**
+   * Returns a new {@link Combination} instance, combining the given criteria with OR.
+   * @param criteria the criteria to combine
+   * @return a new criteria combination
+   */
+  static Combination or(Collection<Criteria> criteria) {
+    return combination(Conjunction.OR, criteria);
   }
 
   /**
