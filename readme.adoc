@@ -86,18 +86,18 @@ image::documentation/src/docs/asciidoc/images/chinook-client.png[Chinook client]
 |is.codion.framework.domain|is.codion:codion-framework-domain:{version}
 |===
 
-Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object Relational Mapping] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities*, *attributes* and *properties*, eliminating most of the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
+Codion is not an https://en.wikipedia.org/wiki/Object-relational_mapping[Object Relational Mapping] based framework, instead the domain model is based on concepts from entity relationship diagrams, *entities*, *columns* and *foreign keys*, eliminating most of the problems associated with https://en.wikipedia.org/wiki/Object-relational_impedance_mismatch[object-relational impedance mismatch].
 
-An *Entity* represents a row in a table (or query), an *Attribute* identifies a column and its type, allowing for type safe access to the associated value, whereas a *Property* encapsulates the metadata required for the framework to present and persist the value.
+An *Entity* represents a row in a table (or query), a *Column* identifies a column and its type, allowing for type safe access to the associated value, whereas a *Property* encapsulates the metadata required for the framework to present and persist the value.
 
 In the below example, we define a domain model with two entities, *Customer* and *Address*, with a master/detail retionship, using the following steps:
 
 . Extend the *DefaultDomain* class and create a *DomainType* constant identifying the domain model.
 . Create a namespace interface for each *Entity* and use the *DomainType* to create *EntityType* constants.
-. Use the *EntityType* to create *Attribute* constants for each column and a *ForeignKey* constant for the foreign key relationship.
-. Create two *Entity* definitions using properties based on the *Attribute* constants, and add them to the domain model.
+. Use the *EntityType* to create *Column* constants for each column and a *ForeignKey* constant for the foreign key relationship.
+. Create two *Entity* definitions using properties based on the *Column* constants, and add them to the domain model.
 
-NOTE: The *EntityType* and *Attribute* constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the *Entity* and its values
+NOTE: The *EntityType* and *Column* constants are wrapped in an interface for a convenient namespace and are used whenever we need to refer to the *Entity* and its values
 
 [source,java]
 ----
@@ -113,20 +113,20 @@ public class Store extends DefaultDomain {
   public interface Customer {
     EntityType TYPE = DOMAIN.entityType("store.customer");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
-    Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
-    Attribute<String> EMAIL = TYPE.stringAttribute("email");
-    Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+    Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+    Column<String> EMAIL = TYPE.stringColumn("email");
+    Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
   }
 
   public interface Address {
     EntityType TYPE = DOMAIN.entityType("store.address");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customer_id");
-    Attribute<String> STREET = TYPE.stringAttribute("street");
-    Attribute<String> CITY = TYPE.stringAttribute("city");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+    Column<String> STREET = TYPE.stringColumn("street");
+    Column<String> CITY = TYPE.stringColumn("city");
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
   }
@@ -228,7 +228,7 @@ add(address);
 
 === Using entities
 
-An *Entity* instance maps Attributes to their respective values and keeps track of modifications, that is, values that have been modified since they were first set.
+An *Entity* instance maps *Columns* to their respective values and keeps track of modifications, that is, values that have been modified since they were first set.
 
 For persistance see <<Database access, Database access>> below.
 
@@ -428,16 +428,16 @@ List<Entity> doesAddresses =
         connection.select(Address.CUSTOMER_FK, customersNamedDoe);
 
 List<Entity> customersWithoutEmail =
-        connection.select(where(attribute(Customer.EMAIL).isNull()));
+        connection.select(where(column(Customer.EMAIL).isNull()));
 
 List<String> activeCustomerEmailAddresses =
         connection.select(Customer.EMAIL,
-                where(attribute(Customer.IS_ACTIVE).equalTo(true)));
+                where(column(Customer.IS_ACTIVE).equalTo(true)));
 
 List<Entity> activeCustomersWithEmailAddresses =
         connection.select(where(and(
-                attribute(Customer.IS_ACTIVE).equalTo(true),
-                attribute(Customer.EMAIL).isNotNull())));
+                column(Customer.IS_ACTIVE).equalTo(true),
+                column(Customer.EMAIL).isNotNull())));
 
 //The domain model entities, a factory for Entity instances.
 Entities entities = connection.entities();

@@ -132,9 +132,9 @@ This class is continued below.
 include::{dir-source}/is/codion/framework/demos/manual/quickstart/Example.java[tags=storeDomain]
 ----
 
-We create a namespace interface and define a *EntityType* constant based on the table and typed *Attribute* constants for each column, these constants specify the entity API, used when refererring to the entity type or its attributes.
+We create a namespace interface and define a *EntityType* constant based on the table and typed *Column* constants for each column, these constants specify the entity API, used when refererring to the entity type or its columns.
 
-In the associated method we create *Property.Builder* instances based on each *Attribute*, providing further configuration options, such as specifying a caption and maximum length, using methods statically imported from the *Property* class. We supply these *Property.Builder* instances to the statically imported *EntityDefinition.definition()* method, which returns a *EntityDefinition.Builder* instance, providing further configuration options for the entity definition, such as the key generation strategy. Finally, we add the definition builder to the domain model.
+In the associated method we create *Property.Builder* instances based on each *Column*, providing further configuration options, such as specifying a caption and maximum length, using methods statically imported from the *Property* class. We supply these *Property.Builder* instances to the statically imported *EntityDefinition.definition()* method, which returns a *EntityDefinition.Builder* instance, providing further configuration options for the entity definition, such as the key generation strategy. Finally, we add the definition builder to the domain model.
 
 [source,java,indent=0]
 ----
