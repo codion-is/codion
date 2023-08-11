@@ -163,9 +163,9 @@ public final class EntitySerializerTest {
   interface TestTable {
     EntityType TYPE = DOMAIN.entityType("test");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<String> EXTRA = TYPE.stringAttribute("extra");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> EXTRA = TYPE.stringColumn("extra");
   }
 
   private static final class SerialDomain extends DefaultDomain {

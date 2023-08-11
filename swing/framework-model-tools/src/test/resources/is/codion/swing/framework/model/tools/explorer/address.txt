@@ -1,15 +1,15 @@
 public interface Address {
 	EntityType TYPE = DOMAIN.entityType("petstore.address");
 
-	Attribute<Integer> ADDRESSID = TYPE.integerAttribute("addressid");
-	Attribute<String> STREET1 = TYPE.stringAttribute("street1");
-	Attribute<String> STREET2 = TYPE.stringAttribute("street2");
-	Attribute<String> CITY = TYPE.stringAttribute("city");
-	Attribute<String> STATE = TYPE.stringAttribute("state");
-	Attribute<Integer> ZIP = TYPE.integerAttribute("zip");
-	Attribute<Double> LATITUDE = TYPE.doubleAttribute("latitude");
-	Attribute<Double> LONGITUDE = TYPE.doubleAttribute("longitude");
-	Attribute<byte[]> IMAGE = TYPE.byteArrayAttribute("image");
+	Column<Integer> ADDRESSID = TYPE.integerColumn("addressid");
+	Column<String> STREET1 = TYPE.stringColumn("street1");
+	Column<String> STREET2 = TYPE.stringColumn("street2");
+	Column<String> CITY = TYPE.stringColumn("city");
+	Column<String> STATE = TYPE.stringColumn("state");
+	Column<Integer> ZIP = TYPE.integerColumn("zip");
+	Column<Double> LATITUDE = TYPE.doubleColumn("latitude");
+	Column<Double> LONGITUDE = TYPE.doubleColumn("longitude");
+	Column<byte[]> IMAGE = TYPE.byteArrayColumn("image");
 }
 
 void address() {

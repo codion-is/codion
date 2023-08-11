@@ -4,7 +4,7 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Objects;
 
@@ -17,11 +17,11 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
 
   private final T value;
 
-  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator) {
+  SingleValueAttributeCriteria(Column<T> attribute, T value, Operator operator) {
     this(attribute, value, operator, true);
   }
 
-  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator,
+  SingleValueAttributeCriteria(Column<T> attribute, T value, Operator operator,
                                boolean caseSensitive) {
     super(attribute, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
     validateOperator(operator);

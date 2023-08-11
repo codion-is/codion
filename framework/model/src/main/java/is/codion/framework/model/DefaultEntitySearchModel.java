@@ -14,6 +14,7 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -52,7 +53,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * The attributes to use when doing the search
    */
-  private final Collection<Attribute<String>> searchAttributes;
+  private final Collection<Column<String>> searchAttributes;
 
   /**
    * The selected entities
@@ -104,7 +105,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Collection<Attribute<String>> searchAttributes() {
+  public Collection<Column<String>> searchAttributes() {
     return searchAttributes;
   }
 
@@ -270,7 +271,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     Collection<Criteria> criteria = new ArrayList<>();
     String[] searchStrings = singleSelectionState.get() ?
             new String[] {searchStringValue.get()} : searchStringValue.get().split(multipleItemSeparatorValue.get());
-    for (Attribute<String> searchAttribute : searchAttributes) {
+    for (Column<String> searchAttribute : searchAttributes) {
       SearchSettings searchSettings = attributeSearchSettings.get(searchAttribute);
       for (String rawSearchString : searchStrings) {
         AttributeCriteria.Builder<String> builder = attribute(searchAttribute);
@@ -360,7 +361,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
     private final EntityType entityType;
     private final EntityConnectionProvider connectionProvider;
-    private Collection<Attribute<String>> searchAttributes;
+    private Collection<Column<String>> searchAttributes;
     private Function<Entity, String> toStringProvider = DEFAULT_TO_STRING;
     private Comparator<Entity> resultSorter = new EntityComparator();
     private String description;
@@ -374,7 +375,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     }
 
     @Override
-    public Builder searchAttributes(Collection<Attribute<String>> searchAttributes) {
+    public Builder searchAttributes(Collection<Column<String>> searchAttributes) {
       if (requireNonNull(searchAttributes).isEmpty()) {
         throw new IllegalArgumentException("One or more search attribute is required");
       }
@@ -418,8 +419,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       return new DefaultEntitySearchModel(this);
     }
 
-    private void validateSearchAttributes(Collection<Attribute<String>> searchAttributes) {
-      for (Attribute<String> attribute : searchAttributes) {
+    private void validateSearchAttributes(Collection<Column<String>> searchAttributes) {
+      for (Column<String> attribute : searchAttributes) {
         if (!entityType.equals(attribute.entityType())) {
           throw new IllegalArgumentException("Attribute '" + attribute + "' is not part of entity " + entityType);
         }

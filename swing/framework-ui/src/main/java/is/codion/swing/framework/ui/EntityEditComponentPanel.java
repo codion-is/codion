@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -870,7 +871,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute) {
+  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 

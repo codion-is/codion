@@ -8,6 +8,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -448,7 +449,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Attribute<T> attribute) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Column<T> attribute) {
     return columnProperty(attribute, null);
   }
 
@@ -460,7 +461,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Attribute<T> attribute, String caption) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Column<T> attribute, String caption) {
     return new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(attribute, caption);
   }
 
@@ -472,7 +473,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Column<T> attribute) {
     return primaryKeyProperty(attribute, null);
   }
 
@@ -485,7 +486,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Column<T> attribute, String caption) {
     return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
   }
 
@@ -581,7 +582,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Attribute<T> attribute, String subquery) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Column<T> attribute, String subquery) {
     return subqueryProperty(attribute, null, subquery);
   }
 
@@ -594,7 +595,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Attribute<T> attribute, String caption,
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Column<T> attribute, String caption,
                                                                                                    String subquery) {
     return new DefaultColumnProperty.DefaultSubqueryPropertyBuilder<>(attribute, caption, subquery);
   }
@@ -608,7 +609,7 @@ public interface Property<T> {
    * @return a new {@link ColumnProperty.Builder}
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Attribute<T> attribute, List<Item<T>> validItems) {
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Column<T> attribute, List<Item<T>> validItems) {
     return itemProperty(attribute, null, validItems);
   }
 
@@ -622,7 +623,7 @@ public interface Property<T> {
    * @return a new {@link ColumnProperty.Builder}
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Attribute<T> attribute, String caption,
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Column<T> attribute, String caption,
                                                                                                List<Item<T>> validItems) {
     return new DefaultItemProperty.DefaultItemPropertyBuilder<>(attribute, caption, validItems);
   }
@@ -660,7 +661,7 @@ public interface Property<T> {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Attribute<Boolean> attribute, Class<C> columnClass,
+  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Column<Boolean> attribute, Class<C> columnClass,
                                                                                                               C trueValue, C falseValue) {
     return booleanProperty(attribute, null, columnClass, trueValue, falseValue);
   }
@@ -676,7 +677,7 @@ public interface Property<T> {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Attribute<Boolean> attribute, String caption,
+  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Column<Boolean> attribute, String caption,
                                                                                                               Class<C> columnClass, C trueValue, C falseValue) {
     return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(attribute, caption)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
@@ -687,7 +688,7 @@ public interface Property<T> {
    * @param attribute the attribute
    * @return a new {@link BlobProperty.Builder}
    */
-  static BlobProperty.Builder blobProperty(Attribute<byte[]> attribute) {
+  static BlobProperty.Builder blobProperty(Column<byte[]> attribute) {
     return blobProperty(attribute, null);
   }
 
@@ -697,7 +698,7 @@ public interface Property<T> {
    * @param caption the property caption
    * @return a new {@link BlobProperty.Builder}
    */
-  static BlobProperty.Builder blobProperty(Attribute<byte[]> attribute, String caption) {
+  static BlobProperty.Builder blobProperty(Column<byte[]> attribute, String caption) {
     return new DefaultBlobProperty.DefaultBlobPropertyBuilder(attribute, caption);
   }
 
@@ -708,7 +709,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Attribute<T> attribute) {
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Column<T> attribute) {
     return auditInsertTimeProperty(attribute, null);
   }
 
@@ -720,7 +721,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Attribute<T> attribute, String caption) {
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Column<T> attribute, String caption) {
     return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
   }
 
@@ -731,7 +732,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Attribute<T> attribute) {
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Column<T> attribute) {
     return auditUpdateTimeProperty(attribute, null);
   }
 
@@ -743,7 +744,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Attribute<T> attribute, String caption) {
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Column<T> attribute, String caption) {
     return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
   }
 
@@ -753,7 +754,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Attribute<String> attribute) {
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Column<String> attribute) {
     return auditInsertUserProperty(attribute, null);
   }
 
@@ -764,7 +765,7 @@ public interface Property<T> {
    * @param caption the property caption
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Attribute<String> attribute, String caption) {
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Column<String> attribute, String caption) {
     return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
   }
 
@@ -774,7 +775,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Attribute<String> attribute) {
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Column<String> attribute) {
     return auditUpdateUserProperty(attribute, null);
   }
 
@@ -785,7 +786,7 @@ public interface Property<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Attribute<String> attribute, String caption) {
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Column<String> attribute, String caption) {
     return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
   }
 

@@ -52,9 +52,9 @@ public final class DefaultEntityBuilderTest {
   void defaultValues() {
     DomainType domainType = domainType("domainType");
     EntityType entityType = domainType.entityType("entityWithDefaultValues");
-    Attribute<Integer> id = entityType.integerAttribute("id");
-    Attribute<String> name = entityType.stringAttribute("name");
-    Attribute<Integer> value = entityType.integerAttribute("value");
+    Column<Integer> id = entityType.integerColumn("id");
+    Column<String> name = entityType.stringColumn("name");
+    Column<Integer> value = entityType.integerColumn("value");
     Attribute<Integer> derivedValue = entityType.integerAttribute("derivedValue");
 
     class TestDomain extends DefaultDomain {

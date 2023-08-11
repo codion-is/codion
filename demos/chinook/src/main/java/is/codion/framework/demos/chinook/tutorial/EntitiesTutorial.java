@@ -12,7 +12,7 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -53,8 +53,8 @@ public final class EntitiesTutorial {
     public interface Artist {
       EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
-      Attribute<Long> ID = TYPE.longAttribute("artistid");
-      Attribute<String> NAME = TYPE.stringAttribute("name");
+      Column<Long> ID = TYPE.longColumn("artistid");
+      Column<String> NAME = TYPE.stringColumn("name");
     }
 
     // EntityType constant for the table entityType and an Attribute
@@ -62,9 +62,9 @@ public final class EntitiesTutorial {
     public interface Album {
       EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-      Attribute<Long> ID = TYPE.longAttribute("albumid");
-      Attribute<String> TITLE = TYPE.stringAttribute("title");
-      Attribute<Long> ARTIST_ID = TYPE.longAttribute("artistid");
+      Column<Long> ID = TYPE.longColumn("albumid");
+      Column<String> TITLE = TYPE.stringColumn("title");
+      Column<Long> ARTIST_ID = TYPE.longColumn("artistid");
 
       // create a foreign key attribute referencing the Artist.TYPE, via the Album.ARTIST_ID attribute
       ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);

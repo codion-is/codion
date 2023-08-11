@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -40,9 +41,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Master {
     EntityType TYPE = DOMAIN.entityType("domain.master_entity");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<Integer> CODE = TYPE.integerAttribute("code");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<Integer> CODE = TYPE.integerColumn("code");
   }
 
   void master() {
@@ -58,26 +59,26 @@ public final class TestDomain extends DefaultDomain {
   public interface Detail {
     EntityType TYPE = DOMAIN.entityType("domain.detail_entity");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<Integer> INT = TYPE.integerAttribute("int");
-    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
-    Attribute<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalAttribute("big_decimal");
-    Attribute<String> STRING = TYPE.stringAttribute("string");
-    Attribute<LocalTime> TIME = TYPE.localTimeAttribute("time");
-    Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
-    Attribute<LocalDateTime> TIMESTAMP = TYPE.localDateTimeAttribute("timestamp");
-    Attribute<OffsetDateTime> OFFSET = TYPE.offsetDateTimeAttribute("offset");
-    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
-    Attribute<Long> MASTER_ID = TYPE.longAttribute("master_id");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Integer> INT = TYPE.integerColumn("int");
+    Column<Double> DOUBLE = TYPE.doubleColumn("double");
+    Column<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalColumn("big_decimal");
+    Column<String> STRING = TYPE.stringColumn("string");
+    Column<LocalTime> TIME = TYPE.localTimeColumn("time");
+    Column<LocalDate> DATE = TYPE.localDateColumn("date");
+    Column<LocalDateTime> TIMESTAMP = TYPE.localDateTimeColumn("timestamp");
+    Column<OffsetDateTime> OFFSET = TYPE.offsetDateTimeColumn("offset");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean_nullable");
+    Column<Long> MASTER_ID = TYPE.longColumn("master_id");
     ForeignKey MASTER_FK = TYPE.foreignKey("master_fk", MASTER_ID, Master.ID);
-    Attribute<Long> DETAIL_ID = TYPE.longAttribute("detail_id");
+    Column<Long> DETAIL_ID = TYPE.longColumn("detail_id");
     ForeignKey DETAIL_FK = TYPE.foreignKey("detail_fk", DETAIL_ID, ID);
-    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
-    Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
-    Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
+    Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
+    Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
+    Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
-    Attribute<EnumType> ENUM_TYPE = TYPE.attribute("enum_type", EnumType.class);
+    Column<EnumType> ENUM_TYPE = TYPE.column("enum_type", EnumType.class);
 
     enum EnumType {
       ONE, TWO, THREE
@@ -133,9 +134,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("scott.dept");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
   }
 
   void department() {
@@ -158,15 +159,15 @@ public final class TestDomain extends DefaultDomain {
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
 
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);

@@ -28,7 +28,7 @@ final class TablePacker implements ResultPacker<Table> {
     String remarks = resultSet.getString("REMARKS");
     List<PrimaryKeyColumn> primaryKeyColumns = primaryKeyColumns(schema, metaData, catalog, tableName);
     List<ForeignKeyColumn> foreignKeyColumns = foreignKeyColumns(schema, metaData, catalog, tableName);
-    List<Column> columns = columns(schema, metaData, catalog, tableName, primaryKeyColumns, foreignKeyColumns);
+    List<MetadataColumn> columns = columns(schema, metaData, catalog, tableName, primaryKeyColumns, foreignKeyColumns);
 
     return new Table(schema, tableName, remarks, columns, foreignKeyColumns);
   }
@@ -47,9 +47,9 @@ final class TablePacker implements ResultPacker<Table> {
     }
   }
 
-  private static List<Column> columns(Schema schema, DatabaseMetaData metaData, String catalog,
-                                      String tableName, List<PrimaryKeyColumn> primaryKeyColumns,
-                                      List<ForeignKeyColumn> foreignKeyColumns) throws SQLException {
+  private static List<MetadataColumn> columns(Schema schema, DatabaseMetaData metaData, String catalog,
+                                              String tableName, List<PrimaryKeyColumn> primaryKeyColumns,
+                                              List<ForeignKeyColumn> foreignKeyColumns) throws SQLException {
     try (ResultSet resultSet = metaData.getColumns(catalog, schema.name(), tableName, null)) {
       return new ColumnPacker(primaryKeyColumns, foreignKeyColumns).pack(resultSet);
     }

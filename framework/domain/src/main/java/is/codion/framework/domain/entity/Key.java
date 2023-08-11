@@ -25,7 +25,7 @@ public interface Key {
   /**
    * @return the attributes comprising this key
    */
-  List<Attribute<?>> attributes();
+  List<Column<?>> attributes();
 
   /**
    * @return true if this key represents a primary key for an entity, note that this is true
@@ -64,7 +64,7 @@ public interface Key {
    * @throws IllegalStateException in case this is a composite key
    * @throws NoSuchElementException in case this key contains no values
    */
-  <T> Attribute<T> attribute();
+  <T> Column<T> attribute();
 
   /**
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
@@ -89,14 +89,14 @@ public interface Key {
    * @param <T> the value type
    * @return the value associated with the given attribute
    */
-  <T> T get(Attribute<T> attribute);
+  <T> T get(Column<T> attribute);
 
   /**
    * @param attribute the attribute
    * @param <T> the value type
    * @return the value associated with the given attribute, wrapped in an {@link Optional}
    */
-  <T> Optional<T> optional(Attribute<T> attribute);
+  <T> Optional<T> optional(Column<T> attribute);
 
   /**
    * Creates a new {@link Key.Builder} instance, initialized with the values in this key.
@@ -118,7 +118,7 @@ public interface Key {
      * @param <T> the value type
      * @return this builder instance
      */
-    <T> Builder with(Attribute<T> attribute, T value);
+    <T> Builder with(Column<T> attribute, T value);
 
     /**
      * Builds the key instance

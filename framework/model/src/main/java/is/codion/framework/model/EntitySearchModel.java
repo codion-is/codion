@@ -9,6 +9,7 @@ import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -74,7 +75,7 @@ public interface EntitySearchModel {
   /**
    * @return the attributes used when performing a search
    */
-  Collection<Attribute<String>> searchAttributes();
+  Collection<Column<String>> searchAttributes();
 
   /**
    * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
@@ -205,7 +206,7 @@ public interface EntitySearchModel {
      * @return this builder
      * @throws IllegalArgumentException in case {@code searchAttributes} is empty
      */
-    Builder searchAttributes(Collection<Attribute<String>> searchAttributes);
+    Builder searchAttributes(Collection<Column<String>> searchAttributes);
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model

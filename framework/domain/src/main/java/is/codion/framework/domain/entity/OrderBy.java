@@ -7,8 +7,8 @@ import java.util.List;
 
 /**
  * Specifies an order by clause.
- * @see #ascending(Attribute[])
- * @see #descending(Attribute[])
+ * @see #ascending(Column[])
+ * @see #descending(Column[])
  * @see #builder()
  */
 public interface OrderBy {
@@ -26,7 +26,7 @@ public interface OrderBy {
     /**
      * @return the attribute to order by
      */
-    Attribute<?> attribute();
+    Column<?> attribute();
 
     /**
      * @return true if the order is ascending, false for descending
@@ -71,7 +71,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder ascending(Attribute<?>... attributes);
+    Builder ascending(Column<?>... attributes);
 
     /**
      * Adds an 'ascending' order by for the given attributes with nulls appearing first
@@ -79,7 +79,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder ascendingNullsFirst(Attribute<?>... attributes);
+    Builder ascendingNullsFirst(Column<?>... attributes);
 
     /**
      * Adds an 'ascending' order by for the given attributes with nulls appearing last
@@ -87,7 +87,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder ascendingNullsLast(Attribute<?>... attributes);
+    Builder ascendingNullsLast(Column<?>... attributes);
 
     /**
      * Adds a 'descending' order by for the given attributes
@@ -95,7 +95,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder descending(Attribute<?>... attributes);
+    Builder descending(Column<?>... attributes);
 
     /**
      * Adds a 'descending' order by for the given attributes with nulls appearing first
@@ -103,7 +103,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder descendingNullsFirst(Attribute<?>... attributes);
+    Builder descendingNullsFirst(Column<?>... attributes);
 
     /**
      * Adds a 'descending' order by for the given attributes with nulls appearing last
@@ -111,7 +111,7 @@ public interface OrderBy {
      * @return this builder instance
      * @throws IllegalArgumentException in case {@code attributes} is empty
      */
-    Builder descendingNullsLast(Attribute<?>... attributes);
+    Builder descendingNullsLast(Column<?>... attributes);
 
     /**
      * @return a new {@link OrderBy} instance based on this builder
@@ -131,7 +131,7 @@ public interface OrderBy {
    * @param attributes the attributes to order by ascending
    * @return a new ascending OrderBy instance based on the given attributes
    */
-  static OrderBy ascending(Attribute<?>... attributes) {
+  static OrderBy ascending(Column<?>... attributes) {
     return builder().ascending(attributes).build();
   }
 
@@ -139,7 +139,7 @@ public interface OrderBy {
    * @param attributes the attributes to order by descending
    * @return a new descending OrderBy instance based on the given attributes
    */
-  static OrderBy descending(Attribute<?>... attributes) {
+  static OrderBy descending(Column<?>... attributes) {
     return builder().descending(attributes).build();
   }
 }

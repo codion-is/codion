@@ -142,28 +142,98 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public <A> ForeignKey foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute) {
-    return foreignKey(name, singletonList(reference(attribute, referencedAttribute)));
+  public <T> Column<T> column(String name, Class<T> valueClass) {
+    return Column.column(this, name, valueClass);
+  }
+
+  @Override
+  public Column<Long> longColumn(String name) {
+    return column(name, Long.class);
+  }
+
+  @Override
+  public Column<Integer> integerColumn(String name) {
+    return column(name, Integer.class);
+  }
+
+  @Override
+  public Column<Short> shortColumn(String name) {
+    return column(name, Short.class);
+  }
+
+  @Override
+  public Column<Double> doubleColumn(String name) {
+    return column(name, Double.class);
+  }
+
+  @Override
+  public Column<BigDecimal> bigDecimalColumn(String name) {
+    return column(name, BigDecimal.class);
+  }
+
+  @Override
+  public Column<LocalDate> localDateColumn(String name) {
+    return column(name, LocalDate.class);
+  }
+
+  @Override
+  public Column<LocalTime> localTimeColumn(String name) {
+    return column(name, LocalTime.class);
+  }
+
+  @Override
+  public Column<LocalDateTime> localDateTimeColumn(String name) {
+    return column(name, LocalDateTime.class);
+  }
+
+  @Override
+  public Column<OffsetDateTime> offsetDateTimeColumn(String name) {
+    return column(name, OffsetDateTime.class);
+  }
+
+  @Override
+  public Column<String> stringColumn(String name) {
+    return column(name, String.class);
+  }
+
+  @Override
+  public Column<Character> characterColumn(String name) {
+    return column(name, Character.class);
+  }
+
+  @Override
+  public Column<Boolean> booleanColumn(String name) {
+    return column(name, Boolean.class);
+  }
+
+  @Override
+  public Column<byte[]> byteArrayColumn(String name) {
+    return column(name, byte[].class);
+  }
+
+  @Override
+  public <A> ForeignKey foreignKey(String name, Column<A> column, Column<A> referencedColumn) {
+    return foreignKey(name, singletonList(reference(column, referencedColumn)));
   }
 
   @Override
   public <A, B> ForeignKey foreignKey(String name,
-                                      Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
-                                      Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute) {
+                                      Column<A> firstColumn, Column<A> firstReferencedColumn,
+                                      Column<B> secondColumn, Column<B> secondReferencedColumn) {
     return foreignKey(name, asList(
-            reference(firstAttribute, firstReferencedAttribute),
-            reference(secondAttribute, secondReferencedAttribute)));
+            reference(firstColumn, firstReferencedColumn),
+            reference(secondColumn, secondReferencedColumn)));
   }
 
   @Override
   public <A, B, C> ForeignKey foreignKey(String name,
-                                         Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
-                                         Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
-                                         Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute) {
+                                         Column<A> firstColumn, Column<A> firstReferencedColumn,
+                                         Column<B> secondColumn, Column<B> secondReferencedColumn,
+                                         Column<C> thirdColumn, Column<C> thirdReferencedColumn) {
     return foreignKey(name, asList(
-            reference(firstAttribute, firstReferencedAttribute),
-            reference(secondAttribute, secondReferencedAttribute),
-            reference(thirdAttribute, thirdReferencedAttribute)));
+            reference(firstColumn, firstReferencedColumn),
+            reference(secondColumn, secondReferencedColumn),
+            reference(thirdColumn, thirdReferencedColumn)));
   }
 
   @Override

@@ -19,8 +19,10 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import org.apache.http.HttpEntity;
@@ -39,8 +41,7 @@ import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.attribute;
-import static is.codion.framework.db.criteria.Criteria.key;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -297,14 +298,14 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
+  public <T> List<T> select(Column<T> attribute) throws DatabaseException {
     return select(requireNonNull(attribute), SelectCondition.all(attribute.entityType())
             .orderBy(ascending(attribute))
             .build());
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException {
     Objects.requireNonNull(attribute);
     Objects.requireNonNull(condition);
     try {
@@ -322,7 +323,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    return selectSingle(where(attribute(attribute).equalTo(value)));
+    if (attribute instanceof ForeignKey) {
+      return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
+    }
+
+    return selectSingle(where(attribute((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -377,12 +382,20 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    return select(where(attribute(attribute).equalTo(value)));
+    if (attribute instanceof ForeignKey) {
+      return select(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
+    }
+
+    return select(where(attribute((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    return select(where(attribute(attribute).in(values)));
+    if (attribute instanceof ForeignKey) {
+      return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
+    }
+
+    return select(where(attribute((Column<T>) attribute).in(values)));
   }
 
   @Override
@@ -434,7 +447,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData)
+  public void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
@@ -453,7 +466,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobAttribute, "blobAttribute");
     try {

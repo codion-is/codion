@@ -16,5 +16,5 @@ public interface CriteriaProvider {
    * @param values the values
    * @return a query criteria string
    */
-  String toString(List<Attribute<?>> attributes, List<?> values);
+  String toString(List<Column<?>> attributes, List<?> values);
 }

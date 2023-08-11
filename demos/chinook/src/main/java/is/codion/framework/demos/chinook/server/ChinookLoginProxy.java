@@ -16,7 +16,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.framework.db.criteria.Criteria.and;
@@ -110,9 +110,9 @@ public final class ChinookLoginProxy implements LoginProxy {
 
     interface User {
       EntityType TYPE = DOMAIN.entityType("chinook.users");
-      Attribute<Integer> ID = TYPE.integerAttribute("userid");
-      Attribute<String> USERNAME = TYPE.stringAttribute("username");
-      Attribute<Integer> PASSWORD_HASH = TYPE.integerAttribute("passwordhash");
+      Column<Integer> ID = TYPE.integerColumn("userid");
+      Column<String> USERNAME = TYPE.stringColumn("username");
+      Column<Integer> PASSWORD_HASH = TYPE.integerColumn("passwordhash");
     }
 
     private Authentication() {

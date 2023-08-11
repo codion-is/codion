@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.StringFactory;
@@ -48,17 +48,17 @@ public final class ClientTutorial {
     public interface Artist {
       EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("artistid");
-      Attribute<String> NAME = TYPE.stringAttribute("name");
-      Attribute<Integer> NUMBER_OF_ALBUMS = TYPE.integerAttribute("number_of_albums");
+      Column<Integer> ID = TYPE.integerColumn("artistid");
+      Column<String> NAME = TYPE.stringColumn("name");
+      Column<Integer> NUMBER_OF_ALBUMS = TYPE.integerColumn("number_of_albums");
     }
 
     public interface Album {
       EntityType TYPE = DOMAIN.entityType("chinook.album");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("albumid");
-      Attribute<String> TITLE = TYPE.stringAttribute("title");
-      Attribute<Integer> ARTIST_ID = TYPE.integerAttribute("artistid");
+      Column<Integer> ID = TYPE.integerColumn("albumid");
+      Column<String> TITLE = TYPE.stringColumn("title");
+      Column<Integer> ARTIST_ID = TYPE.integerColumn("artistid");
 
       ForeignKey ARTIST_FK = TYPE.foreignKey("artist_fk", ARTIST_ID, Artist.ID);
     }

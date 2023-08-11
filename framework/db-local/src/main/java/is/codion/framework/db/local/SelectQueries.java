@@ -7,6 +7,7 @@ import is.codion.common.db.database.Database;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -249,8 +250,8 @@ final class SelectQueries {
           ((ForeignKey) attribute).references().forEach(reference ->
                   propertiesToSelect.add(definition.columnProperty(reference.attribute())));
         }
-        else {
-          propertiesToSelect.add(definition.columnProperty(attribute));
+        else if (attribute instanceof Column) {
+          propertiesToSelect.add(definition.columnProperty((Column<?>) attribute));
         }
       });
 

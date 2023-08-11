@@ -34,7 +34,7 @@ class DefaultKey implements Key, Serializable {
   /**
    * The attributes comprising this key
    */
-  List<Attribute<?>> attributes;
+  List<Column<?>> attributes;
 
   /**
    * True if this key represents a primary key
@@ -44,7 +44,7 @@ class DefaultKey implements Key, Serializable {
   /**
    * Holds the values contained in this key.
    */
-  Map<Attribute<?>, Object> values;
+  Map<Column<?>, Object> values;
 
   /**
    * true if this key consists of a single integer value
@@ -72,7 +72,7 @@ class DefaultKey implements Key, Serializable {
    * @param attributes the attributes comprising this key
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(EntityDefinition definition, List<Attribute<?>> attributes, boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, List<Column<?>> attributes, boolean primaryKey) {
     this(definition, createNullValueMap(attributes), primaryKey);
     this.hashCodeDirty = false;
   }
@@ -83,7 +83,7 @@ class DefaultKey implements Key, Serializable {
    * @param value the value
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(EntityDefinition definition, Attribute<?> attribute, Object value, boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, Column<?> attribute, Object value, boolean primaryKey) {
     this(definition, singletonMap(attribute, value), primaryKey);
   }
 
@@ -93,7 +93,7 @@ class DefaultKey implements Key, Serializable {
    * @param values the values associated with their respective attributes
    * @param primaryKey true if this key represents a primary key
    */
-  DefaultKey(EntityDefinition definition, Map<Attribute<?>, Object> values, boolean primaryKey) {
+  DefaultKey(EntityDefinition definition, Map<Column<?>, Object> values, boolean primaryKey) {
     values.forEach((attribute, value) -> ((Attribute<Object>) attribute).validateType(value));
     this.values = unmodifiableMap(values);
     this.attributes = unmodifiableList(new ArrayList<>(values.keySet()));
@@ -115,7 +115,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public List<Attribute<?>> attributes() {
+  public List<Column<?>> attributes() {
     return attributes;
   }
 
@@ -125,10 +125,10 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Attribute<T> attribute() {
+  public <T> Column<T> attribute() {
     assertSingleValueKey();
 
-    return (Attribute<T>) attributes.get(0);
+    return (Column<T>) attributes.get(0);
   }
 
   @Override
@@ -144,7 +144,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> T get(Attribute<T> attribute) {
+  public <T> T get(Column<T> attribute) {
     if (!values.containsKey(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of key: " + definition.type());
     }
@@ -153,7 +153,7 @@ class DefaultKey implements Key, Serializable {
   }
 
   @Override
-  public <T> Optional<T> optional(Attribute<T> attribute) {
+  public <T> Optional<T> optional(Column<T> attribute) {
     return Optional.ofNullable(get(attribute));
   }
 
@@ -297,9 +297,9 @@ class DefaultKey implements Key, Serializable {
     serializerForDomain((String) stream.readObject()).deserialize(this, stream);
   }
 
-  private static Map<Attribute<?>, Object> createNullValueMap(List<Attribute<?>> attributes) {
-    Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
-    for (Attribute<?> attribute : attributes) {
+  private static Map<Column<?>, Object> createNullValueMap(List<Column<?>> attributes) {
+    Map<Column<?>, Object> values = new HashMap<>(attributes.size());
+    for (Column<?> attribute : attributes) {
       values.put(attribute, null);
     }
 

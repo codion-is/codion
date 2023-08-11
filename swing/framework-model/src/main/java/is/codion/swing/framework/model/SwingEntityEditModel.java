@@ -9,6 +9,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
@@ -61,7 +62,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * In case of {@link ForeignKey} a foreign key combo box model and in
    * case of a {@link Attribute} a attribute combo box model.
    * @param attributes the attributes for which to initialize combo box models
-   * @see #createComboBoxModel(Attribute)
+   * @see #createComboBoxModel(Column)
    * @see #createForeignKeyComboBoxModel(ForeignKey)
    */
   public final void initializeComboBoxModels(Attribute<?>... attributes) {
@@ -70,8 +71,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
       if (attribute instanceof ForeignKey) {
         foreignKeyComboBoxModel((ForeignKey) attribute).refresh();
       }
-      else {
-        comboBoxModel(attribute).refresh();
+      else if (attribute instanceof Column<?>) {
+        comboBoxModel((Column<?>) attribute).refresh();
       }
     }
   }
@@ -138,9 +139,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @param attribute the attribute
    * @param <T> the value type
    * @return a {@link FilteredComboBoxModel} for the given attribute
-   * @see #createComboBoxModel(Attribute)
+   * @see #createComboBoxModel(Column)
    */
-  public final <T> FilteredComboBoxModel<T> comboBoxModel(Attribute<T> attribute) {
+  public final <T> FilteredComboBoxModel<T> comboBoxModel(Column<T> attribute) {
     entityDefinition().property(attribute);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
@@ -198,7 +199,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @param <T> the value type
    * @return a combo box model based on the given attribute
    */
-  public <T> FilteredComboBoxModel<T> createComboBoxModel(Attribute<T> attribute) {
+  public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> attribute) {
     requireNonNull(attribute, "attribute");
     FilteredComboBoxModel<T> model = createAttributeComboBoxModel(attribute);
     if (isNullable(attribute)) {
@@ -281,14 +282,14 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     return comboBoxModel;
   }
 
-  private <T> FilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Attribute<T> attribute) {
+  private <T> FilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Column<T> attribute) {
     FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
     refreshingObserver.add(comboBoxModel.refresher().observer());
 
     return comboBoxModel;
   }
 
-  private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Attribute<T> attribute) {
+  private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Column<T> attribute) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
     model.setItemSupplier(attribute.isEnum() ?
             new EnumAttributeItemSupplier<>(attribute) :
@@ -314,9 +315,9 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   private static final class AttributeItemSupplier<T> implements Supplier<Collection<T>> {
 
     private final EntityConnectionProvider connectionProvider;
-    private final Attribute<T> attribute;
+    private final Column<T> attribute;
 
-    private AttributeItemSupplier(EntityConnectionProvider connectionProvider, Attribute<T> attribute) {
+    private AttributeItemSupplier(EntityConnectionProvider connectionProvider, Column<T> attribute) {
       this.connectionProvider = connectionProvider;
       this.attribute = attribute;
     }

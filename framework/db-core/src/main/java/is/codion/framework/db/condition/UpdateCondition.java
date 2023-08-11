@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.util.Map;
@@ -20,7 +20,7 @@ public interface UpdateCondition extends Condition {
   /**
    * @return an unmodifiable view of the new values mapped to their respective attributes
    */
-  Map<Attribute<?>, Object> attributeValues();
+  Map<Column<?>, Object> attributeValues();
 
   /**
    * Builds an {@link UpdateCondition}.
@@ -34,7 +34,7 @@ public interface UpdateCondition extends Condition {
      * @param <T> the value type
      * @return this builder
      */
-    <T> Builder set(Attribute<?> attribute, T value);
+    <T> Builder set(Column<?> attribute, T value);
 
     /**
      * @return a new {@link UpdateCondition} instance based on this builder

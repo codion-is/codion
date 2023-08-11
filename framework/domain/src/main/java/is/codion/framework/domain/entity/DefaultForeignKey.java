@@ -32,7 +32,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
-  public <T> Reference<T> reference(Attribute<T> attribute) {
+  public <T> Reference<T> reference(Column<T> attribute) {
     requireNonNull(attribute);
     for (int i = 0; i < references.size(); i++) {
       Reference<?> reference = references.get(i);
@@ -73,10 +73,10 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
     private static final long serialVersionUID = 1;
 
-    private final Attribute<T> attribute;
-    private final Attribute<T> referencedAttribute;
+    private final Column<T> attribute;
+    private final Column<T> referencedAttribute;
 
-    DefaultReference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
+    DefaultReference(Column<T> attribute, Column<T> referencedAttribute) {
       if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
         throw new IllegalArgumentException("attribute and referencedAttribute can not be the same");
       }
@@ -85,12 +85,12 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     }
 
     @Override
-    public Attribute<T> attribute() {
+    public Column<T> attribute() {
       return attribute;
     }
 
     @Override
-    public Attribute<T> referencedAttribute() {
+    public Column<T> referencedAttribute() {
       return referencedAttribute;
     }
   }

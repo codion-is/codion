@@ -431,7 +431,7 @@ public final class EntitiesTest {
   @Test
   void searchAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
-    Collection<Attribute<String>> searchAttributes = definition.searchAttributes();
+    Collection<Column<String>> searchAttributes = definition.searchAttributes();
     assertTrue(searchAttributes.contains(TestDomain.Employee.JOB));
     assertTrue(searchAttributes.contains(TestDomain.Employee.NAME));
 

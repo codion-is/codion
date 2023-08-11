@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -21,9 +21,9 @@ public final class TestKeysDomain extends DefaultDomain {
   public interface TestPrimaryKey {
     EntityType TYPE = DOMAIN.entityType("TestPrimaryKey");
 
-    Attribute<Integer> ID1 = TYPE.integerAttribute("id1");
-    Attribute<Integer> ID2 = TYPE.integerAttribute("id2");
-    Attribute<Integer> ID3 = TYPE.integerAttribute("id3");
+    Column<Integer> ID1 = TYPE.integerColumn("id1");
+    Column<Integer> ID2 = TYPE.integerColumn("id2");
+    Column<Integer> ID3 = TYPE.integerColumn("id3");
   }
 
   public void testPrimaryKeyIndexes1() {
@@ -61,16 +61,16 @@ public final class TestKeysDomain extends DefaultDomain {
   public interface TestFkMaster {
     EntityType TYPE = DOMAIN.entityType("TestFKMaster");
 
-    Attribute<Integer> ID1 = TYPE.integerAttribute("id1");
-    Attribute<Integer> ID2 = TYPE.integerAttribute("id2");
+    Column<Integer> ID1 = TYPE.integerColumn("id1");
+    Column<Integer> ID2 = TYPE.integerColumn("id2");
   }
 
   public interface TestFkDetail {
     EntityType TYPE = DOMAIN.entityType("TestFKMaster");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> MASTER_ID1 = TYPE.integerAttribute("master_id1");
-    Attribute<Integer> MASTER_ID2 = TYPE.integerAttribute("master_id2");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> MASTER_ID1 = TYPE.integerColumn("master_id1");
+    Column<Integer> MASTER_ID2 = TYPE.integerColumn("master_id2");
     ForeignKey MASTER_FK = TYPE.foreignKey("master",
             MASTER_ID1, TestFkMaster.ID1,
             MASTER_ID2, TestFkMaster.ID2);

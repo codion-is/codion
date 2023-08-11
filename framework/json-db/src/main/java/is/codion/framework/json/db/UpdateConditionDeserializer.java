@@ -5,7 +5,7 @@ package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -49,7 +49,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Attribute<Object> attribute = definition.property(definition.attribute(field.getKey())).attribute();
+      Column<Object> attribute = definition.columnProperty((Column<Object>) definition.attribute(field.getKey())).attribute();
       updateCondition.set(attribute, entityObjectMapper.readValue(field.getValue().toString(), attribute.valueClass()));
     }
 

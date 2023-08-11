@@ -5,7 +5,7 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -30,20 +30,20 @@ public class Store extends DefaultDomain {
   public interface Customer {
     EntityType TYPE = DOMAIN.entityType("store.customer");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
-    Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
-    Attribute<String> EMAIL = TYPE.stringAttribute("email");
-    Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+    Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+    Column<String> EMAIL = TYPE.stringColumn("email");
+    Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
   }
 
   public interface Address {
     EntityType TYPE = DOMAIN.entityType("store.address");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<Long> CUSTOMER_ID = TYPE.longAttribute("customer_id");
-    Attribute<String> STREET = TYPE.stringAttribute("street");
-    Attribute<String> CITY = TYPE.stringAttribute("city");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Long> CUSTOMER_ID = TYPE.longColumn("customer_id");
+    Column<String> STREET = TYPE.stringColumn("street");
+    Column<String> CITY = TYPE.stringColumn("city");
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
   }

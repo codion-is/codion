@@ -201,13 +201,13 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     }
 
     @Override
-    public Builder selectAttributes(Attribute<?>... attributes) {
+    public <T extends Attribute<?>> Builder selectAttributes(T... attributes) {
       selectAttributes = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
       return this;
     }
 
     @Override
-    public Builder selectAttributes(Collection<Attribute<?>> attributes) {
+    public Builder selectAttributes(Collection<? extends Attribute<?>> attributes) {
       selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
       return this;
     }

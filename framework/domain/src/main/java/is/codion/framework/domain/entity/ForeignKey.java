@@ -22,7 +22,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @param <T> the attribute type
    * @return the reference that is based on the given attribute
    */
-  <T> Reference<T> reference(Attribute<T> attribute);
+  <T> Reference<T> reference(Column<T> attribute);
 
   /**
    * Represents a foreign key reference between attributes.
@@ -33,12 +33,12 @@ public interface ForeignKey extends Attribute<Entity> {
     /**
      * @return the attribute in the detail entity
      */
-    Attribute<T> attribute();
+    Column<T> attribute();
 
     /**
      * @return the attribute in the master entity
      */
-    Attribute<T> referencedAttribute();
+    Column<T> referencedAttribute();
   }
 
   /**
@@ -48,7 +48,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @param <T> the attribute type
    * @return a new {@link Reference} based on the given attributes
    */
-  static <T> Reference<T> reference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
+  static <T> Reference<T> reference(Column<T> attribute, Column<T> referencedAttribute) {
     return new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute);
   }
 
@@ -58,7 +58,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @param name the attribute name
    * @param references the references
    * @return a new {@link ForeignKey}
-   * @see ForeignKey#reference(Attribute, Attribute)
+   * @see ForeignKey#reference(Column, Column)
    */
   static ForeignKey foreignKey(EntityType entityType, String name, List<ForeignKey.Reference<?>> references) {
     return new DefaultForeignKey(name, entityType, references);

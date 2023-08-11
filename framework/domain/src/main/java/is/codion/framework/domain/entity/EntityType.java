@@ -147,55 +147,155 @@ public interface EntityType {
   Attribute<byte[]> byteArrayAttribute(String name);
 
   /**
+   * Creates a new {@link Column}, associated with this EntityType.
+   * @param name the column name
+   * @param valueClass the class representing the column value type
+   * @param <T> the column type
+   * @return a new {@link Column}
+   */
+  <T> Column<T> column(String name, Class<T> valueClass);
+
+  /**
+   * Creates a new Long based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Long based column.
+   */
+  Column<Long> longColumn(String name);
+
+  /**
+   * Creates a new Integer based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Integer based column.
+   */
+  Column<Integer> integerColumn(String name);
+
+  /**
+   * Creates a new Short based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Short based column.
+   */
+  Column<Short> shortColumn(String name);
+
+  /**
+   * Creates a new Double based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Double based column.
+   */
+  Column<Double> doubleColumn(String name);
+
+  /**
+   * Creates a new BigDecimal based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new BigDecimal based column.
+   */
+  Column<BigDecimal> bigDecimalColumn(String name);
+
+  /**
+   * Creates a new LocalDate based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new LocalDate based column.
+   */
+  Column<LocalDate> localDateColumn(String name);
+
+  /**
+   * Creates a new LocalTime based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new LocalTime based column.
+   */
+  Column<LocalTime> localTimeColumn(String name);
+
+  /**
+   * Creates a new LocalDateTime based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new LocalDateTime based column.
+   */
+  Column<LocalDateTime> localDateTimeColumn(String name);
+
+  /**
+   * Creates a new OffsetDateTime based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new OffsetDateTime based column.
+   */
+  Column<OffsetDateTime> offsetDateTimeColumn(String name);
+
+  /**
+   * Creates a new String based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new String based column.
+   */
+  Column<String> stringColumn(String name);
+
+  /**
+   * Creates a new Character based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Character based column.
+   */
+  Column<Character> characterColumn(String name);
+
+  /**
+   * Creates a new Boolean based column, associated with this EntityType.
+   * @param name the column name.
+   * @return a new Boolean based column.
+   */
+  Column<Boolean> booleanColumn(String name);
+
+  /**
+   * Creates a new {@link Column}, associated with this EntityType.
+   * @param name the column name
+   * @return a new {@link Column}
+   */
+  Column<byte[]> byteArrayColumn(String name);
+
+  /**
    * Creates a new {@link ForeignKey} based on the given attributes.
    * @param name the attribute name
-   * @param attribute the attribute
-   * @param referencedAttribute the referenced attribute
+   * @param column the column
+   * @param referencedColumn the referenced column
    * @param <A> the attribute type
    * @return a new {@link ForeignKey}
    */
-  <A> ForeignKey foreignKey(String name, Attribute<A> attribute, Attribute<A> referencedAttribute);
+  <A> ForeignKey foreignKey(String name, Column<A> column, Column<A> referencedColumn);
 
   /**
-   * Creates a new {@link ForeignKey} based on the given attributes.
-   * @param name the attribute name
-   * @param firstAttribute the first attribute
-   * @param firstReferencedAttribute the first referenced attribute
-   * @param secondAttribute the second attribute
-   * @param secondReferencedAttribute the second referenced attribute
-   * @param <A> the first attribute type
-   * @param <B> the second attribute type
+   * Creates a new {@link ForeignKey} based on the given columns.
+   * @param name the column name
+   * @param firstColumn the first column
+   * @param firstReferencedColumn the first referenced column
+   * @param secondColumn the second column
+   * @param secondReferencedColumn the second referenced column
+   * @param <A> the first column type
+   * @param <B> the second column type
    * @return a new {@link ForeignKey}
    */
   <A, B> ForeignKey foreignKey(String name,
-                               Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
-                               Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute);
+                               Column<A> firstColumn, Column<A> firstReferencedColumn,
+                               Column<B> secondColumn, Column<B> secondReferencedColumn);
 
   /**
-   * Creates a new {@link ForeignKey} based on the given attributes.
-   * @param name the attribute name
-   * @param firstAttribute the first attribute
-   * @param firstReferencedAttribute the first referenced attribute
-   * @param secondAttribute the second attribute
-   * @param secondReferencedAttribute the third referenced attribute
-   * @param thirdAttribute the second attribute
-   * @param thirdReferencedAttribute the third referenced attribute
-   * @param <A> the first attribute type
-   * @param <B> the second attribute type
-   * @param <C> the third attribute type
+   * Creates a new {@link ForeignKey} based on the given columns.
+   * @param name the column name
+   * @param firstColumn the first column
+   * @param firstReferencedColumn the first referenced column
+   * @param secondColumn the second column
+   * @param secondReferencedColumn the third referenced column
+   * @param thirdColumn the second column
+   * @param thirdReferencedColumn the third referenced column
+   * @param <A> the first column type
+   * @param <B> the second column type
+   * @param <C> the third column type
    * @return a new {@link ForeignKey}
    */
   <A, B, C> ForeignKey foreignKey(String name,
-                                  Attribute<A> firstAttribute, Attribute<A> firstReferencedAttribute,
-                                  Attribute<B> secondAttribute, Attribute<B> secondReferencedAttribute,
-                                  Attribute<C> thirdAttribute, Attribute<C> thirdReferencedAttribute);
+                                  Column<A> firstColumn, Column<A> firstReferencedColumn,
+                                  Column<B> secondColumn, Column<B> secondReferencedColumn,
+                                  Column<C> thirdColumn, Column<C> thirdReferencedColumn);
 
   /**
    * Creates a new {@link ForeignKey} based on the given references.
    * @param name the attribute name
    * @param references the references
    * @return a new {@link ForeignKey}
-   * @see ForeignKey#reference(Attribute, Attribute)
+   * @see ForeignKey#reference(Column, Column)
    */
   ForeignKey foreignKey(String name, List<ForeignKey.Reference<?>> references);
 

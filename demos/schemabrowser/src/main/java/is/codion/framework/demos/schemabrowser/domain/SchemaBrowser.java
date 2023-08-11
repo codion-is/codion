@@ -6,7 +6,7 @@ package is.codion.framework.demos.schemabrowser.domain;
 import is.codion.common.db.database.DatabaseFactory;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -43,7 +43,7 @@ public final class SchemaBrowser extends DefaultDomain {
     super(DOMAIN);
     schema();
     table();
-    column();
+    tableColumn();
     constraint();
     constraintColumn();
   }
@@ -51,7 +51,7 @@ public final class SchemaBrowser extends DefaultDomain {
   public interface Schema {
     EntityType TYPE = DOMAIN.entityType("schema");
 
-    Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("schema_name"));
+    Column<String> NAME = TYPE.stringColumn(bundle.getString("schema_name"));
   }
 
   void schema() {
@@ -66,8 +66,8 @@ public final class SchemaBrowser extends DefaultDomain {
   public interface Table {
     EntityType TYPE = DOMAIN.entityType("table");
 
-    Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("table_name"));
-    Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("table_schema"));
+    Column<String> NAME = TYPE.stringColumn(bundle.getString("table_name"));
+    Column<String> SCHEMA = TYPE.stringColumn(bundle.getString("table_schema"));
 
     ForeignKey SCHEMA_FK = TYPE.foreignKey(bundle.getString("table_schema_ref"), SCHEMA, Schema.NAME);
   }
@@ -101,37 +101,37 @@ public final class SchemaBrowser extends DefaultDomain {
     add(tableBuilder);
   }
 
-  public interface Column {
+  public interface TableColumn {
     EntityType TYPE = DOMAIN.entityType("column");
 
-    Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_schema"));
-    Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_table_name"));
-    Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("column_name"));
-    Attribute<String> DATA_TYPE = TYPE.stringAttribute(bundle.getString("column_data_type"));
+    Column<String> SCHEMA = TYPE.stringColumn(bundle.getString("column_schema"));
+    Column<String> TABLE_NAME = TYPE.stringColumn(bundle.getString("column_table_name"));
+    Column<String> NAME = TYPE.stringColumn(bundle.getString("column_name"));
+    Column<String> DATA_TYPE = TYPE.stringColumn(bundle.getString("column_data_type"));
 
     ForeignKey TABLE_FK = TYPE.foreignKey(bundle.getString("column_table_ref"),
-            Column.SCHEMA, Table.SCHEMA,
-            Column.TABLE_NAME, Table.NAME);
+            TableColumn.SCHEMA, Table.SCHEMA,
+            TableColumn.TABLE_NAME, Table.NAME);
   }
 
-  void column() {
+  void tableColumn() {
     add(definition(
-            columnProperty(Column.SCHEMA)
+            columnProperty(TableColumn.SCHEMA)
                     .primaryKeyIndex(0),
-            columnProperty(Column.TABLE_NAME)
+            columnProperty(TableColumn.TABLE_NAME)
                     .primaryKeyIndex(1),
-            foreignKeyProperty(Column.TABLE_FK, "Table")
+            foreignKeyProperty(TableColumn.TABLE_FK, "Table")
                     .fetchDepth(2),
-            primaryKeyProperty(Column.NAME, "Column name")
+            primaryKeyProperty(TableColumn.NAME, "Column name")
                     .primaryKeyIndex(2),
-            columnProperty(Column.DATA_TYPE, "Data type"))
+            columnProperty(TableColumn.DATA_TYPE, "Data type"))
             .tableName(bundle.getString("t_column"))
-            .orderBy(ascending(Column.SCHEMA, Column.TABLE_NAME, Column.NAME))
+            .orderBy(ascending(TableColumn.SCHEMA, TableColumn.TABLE_NAME, TableColumn.NAME))
             .readOnly(true)
             .stringFactory(StringFactory.builder()
-                    .value(Column.TABLE_FK)
+                    .value(TableColumn.TABLE_FK)
                     .text(".")
-                    .value(Column.NAME)
+                    .value(TableColumn.NAME)
                     .build())
             .caption("Columns"));
   }
@@ -139,10 +139,10 @@ public final class SchemaBrowser extends DefaultDomain {
   public interface Constraint {
     EntityType TYPE = DOMAIN.entityType("constraint");
 
-    Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("constraint_schema"));
-    Attribute<String> NAME = TYPE.stringAttribute(bundle.getString("constraint_name"));
-    Attribute<String> CONSTRAINT_TYPE = TYPE.stringAttribute(bundle.getString("constraint_type"));
-    Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("constraint_table_name"));
+    Column<String> SCHEMA = TYPE.stringColumn(bundle.getString("constraint_schema"));
+    Column<String> NAME = TYPE.stringColumn(bundle.getString("constraint_name"));
+    Column<String> CONSTRAINT_TYPE = TYPE.stringColumn(bundle.getString("constraint_type"));
+    Column<String> TABLE_NAME = TYPE.stringColumn(bundle.getString("constraint_table_name"));
 
     ForeignKey TABLE_FK = TYPE.foreignKey(bundle.getString("constraint_table_ref"),
             Constraint.SCHEMA, Table.SCHEMA,
@@ -174,11 +174,11 @@ public final class SchemaBrowser extends DefaultDomain {
   public interface ConstraintColumn {
     EntityType TYPE = DOMAIN.entityType("column_constraint");
 
-    Attribute<String> SCHEMA = TYPE.stringAttribute(bundle.getString("column_constraint_schema"));
-    Attribute<String> CONSTRAINT_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_constraint_name"));
-    Attribute<String> TABLE_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_table_name"));
-    Attribute<String> COLUMN_NAME = TYPE.stringAttribute(bundle.getString("column_constraint_column_name"));
-    Attribute<Integer> POSITION = TYPE.integerAttribute(bundle.getString("column_constraint_position"));
+    Column<String> SCHEMA = TYPE.stringColumn(bundle.getString("column_constraint_schema"));
+    Column<String> CONSTRAINT_NAME = TYPE.stringColumn(bundle.getString("column_constraint_constraint_name"));
+    Column<String> TABLE_NAME = TYPE.stringColumn(bundle.getString("column_constraint_table_name"));
+    Column<String> COLUMN_NAME = TYPE.stringColumn(bundle.getString("column_constraint_column_name"));
+    Column<Integer> POSITION = TYPE.integerColumn(bundle.getString("column_constraint_position"));
 
     ForeignKey CONSTRAINT_FK = TYPE.foreignKey(bundle.getString("column_constraint_constraint_ref"),
             ConstraintColumn.SCHEMA, Constraint.SCHEMA,

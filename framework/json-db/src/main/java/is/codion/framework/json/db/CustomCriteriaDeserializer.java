@@ -5,7 +5,7 @@ package is.codion.framework.json.db;
 
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.CustomCriteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -34,8 +34,9 @@ final class CustomCriteriaDeserializer implements Serializable {
   CustomCriteria deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String criteriaTypeName = conditionNode.get("criteriaType").asText();
     JsonNode attributesNode = conditionNode.get("attributes");
-    List<Attribute<?>> attributes = Arrays.stream(entityObjectMapper.readValue(attributesNode.toString(), String[].class))
+    List<Column<?>> attributes = Arrays.stream(entityObjectMapper.readValue(attributesNode.toString(), String[].class))
             .map(definition::attribute)
+            .map(attribute -> (Column<?>) attribute)
             .collect(toList());
     JsonNode valuesNode = conditionNode.get("values");
     List<Object> values = new ArrayList<>();

@@ -11,7 +11,7 @@ import java.util.Map;
 final class DefaultKeyBuilder implements Key.Builder {
 
   private final EntityDefinition definition;
-  private final Map<Attribute<?>, Object> attributeValues = new HashMap<>();
+  private final Map<Column<?>, Object> attributeValues = new HashMap<>();
 
   private boolean primaryKey = true;
 
@@ -26,7 +26,7 @@ final class DefaultKeyBuilder implements Key.Builder {
   }
 
   @Override
-  public <T> Key.Builder with(Attribute<T> attribute, T value) {
+  public <T> Key.Builder with(Column<T> attribute, T value) {
     ColumnProperty<T> property = definition.columnProperty(attribute);
     if (!property.isPrimaryKeyColumn()) {
       primaryKey = false;
@@ -41,7 +41,7 @@ final class DefaultKeyBuilder implements Key.Builder {
     return new DefaultKey(definition, initializeValues(new HashMap<>(attributeValues)), primaryKey);
   }
 
-  private Map<Attribute<?>, Object> initializeValues(Map<Attribute<?>, Object> values) {
+  private Map<Column<?>, Object> initializeValues(Map<Column<?>, Object> values) {
     if (primaryKey && !values.isEmpty()) {
       //populate any missing primary key attributes with null values,
       //DefaultKey.equals() relies on the key attributes being present

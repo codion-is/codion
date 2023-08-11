@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -78,7 +79,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @param referenceAttribute the reference attribute
      * @return this instance
      */
-    ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute);
+    ForeignKeyProperty.Builder readOnly(Column<?> referenceAttribute);
 
     /**
      * Specifies the attributes from the referenced entity to select. Note that the primary key attributes

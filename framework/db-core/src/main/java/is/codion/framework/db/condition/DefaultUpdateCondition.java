@@ -4,7 +4,7 @@
 package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -20,7 +20,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   private static final long serialVersionUID = 1;
 
   private final Criteria criteria;
-  private final Map<Attribute<?>, Object> propertyValues;
+  private final Map<Column<?>, Object> propertyValues;
 
   private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
     this.criteria = builder.criteria;
@@ -38,7 +38,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   }
 
   @Override
-  public Map<Attribute<?>, Object> attributeValues() {
+  public Map<Column<?>, Object> attributeValues() {
     return unmodifiableMap(propertyValues);
   }
 
@@ -63,7 +63,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   static final class DefaultBuilder implements UpdateCondition.Builder {
 
     private final Criteria criteria;
-    private final Map<Attribute<?>, Object> propertyValues = new LinkedHashMap<>();
+    private final Map<Column<?>, Object> propertyValues = new LinkedHashMap<>();
 
     DefaultBuilder(Condition condition) {
       this(requireNonNull(condition).criteria());
@@ -78,7 +78,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     }
 
     @Override
-    public <T> Builder set(Attribute<?> attribute, T value) {
+    public <T> Builder set(Column<?> attribute, T value) {
       requireNonNull(attribute, "attribute");
       if (propertyValues.containsKey(attribute)) {
         throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);

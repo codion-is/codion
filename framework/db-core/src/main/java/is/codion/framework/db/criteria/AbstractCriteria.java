@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.criteria;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -21,10 +21,10 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractCriteria implements Criteria, Serializable {
 
   private final EntityType entityType;
-  private final List<Attribute<?>> attributes;
+  private final List<Column<?>> attributes;
   private final List<?> values;
 
-  protected AbstractCriteria(EntityType entityType, List<Attribute<?>> attributes, Collection<?> values) {
+  protected AbstractCriteria(EntityType entityType, List<Column<?>> attributes, Collection<?> values) {
     this.entityType = requireNonNull(entityType);
     this.attributes = validateAttributes(unmodifiableList(new ArrayList<>(attributes)));
     this.values = unmodifiableList(new ArrayList<>(values));
@@ -36,7 +36,7 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
   }
 
   @Override
-  public final List<Attribute<?>> attributes() {
+  public final List<Column<?>> attributes() {
     return attributes;
   }
 
@@ -64,8 +64,8 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
     return Objects.hash(entityType, attributes, values);
   }
 
-  private List<Attribute<?>> validateAttributes(List<Attribute<?>> attributes) {
-    for (Attribute<?> attribute : attributes) {
+  private List<Column<?>> validateAttributes(List<Column<?>> attributes) {
+    for (Column<?> attribute : attributes) {
       if (!attribute.entityType().equals(entityType)) {
         throw new IllegalArgumentException("Criteria attribute entityType mismatch, " +
                 entityType + " expected, got: " + attribute.entityType());

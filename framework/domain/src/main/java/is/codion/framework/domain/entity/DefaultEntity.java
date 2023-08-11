@@ -474,8 +474,9 @@ class DefaultEntity implements Entity, Serializable {
       if (((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
         primaryKey = null;
       }
-      if (definition.isForeignKeyAttribute(attribute)) {
-        removeInvalidForeignKeyValues(attribute, newValue);
+      Column<T> column = (Column<T>) attribute;
+      if (definition.isForeignKeyAttribute(column)) {
+        removeInvalidForeignKeyValues(column, newValue);
       }
     }
     toString = null;
@@ -550,7 +551,7 @@ class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private <T> void removeInvalidForeignKeyValues(Attribute<T> attribute, T value) {
+  private <T> void removeInvalidForeignKeyValues(Column<T> attribute, T value) {
     for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties(attribute)) {
       Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
@@ -579,7 +580,7 @@ class DefaultEntity implements Entity, Serializable {
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
       if (!foreignKeyProperty.isReadOnly(reference.attribute())) {
-        Property<Object> columnProperty = definition.columnProperty((Attribute<Object>) reference.attribute());
+        Property<Object> columnProperty = definition.columnProperty((Column<Object>) reference.attribute());
         put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedAttribute()));
       }
     }
@@ -603,7 +604,7 @@ class DefaultEntity implements Entity, Serializable {
   private Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
                                                   List<ForeignKey.Reference<?>> references,
                                                   EntityDefinition referencedEntityDefinition) {
-    Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
+    Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
       ColumnProperty<?> referencedProperty = referencedEntityDefinition.columnProperty(reference.referencedAttribute());
@@ -613,8 +614,8 @@ class DefaultEntity implements Entity, Serializable {
       }
       keyValues.put(reference.referencedAttribute(), value);
     }
-    Set<Attribute<?>> referencedAttributes = keyValues.keySet();
-    List<Attribute<?>> primaryKeyAttributes = referencedEntityDefinition.primaryKeyAttributes();
+    Set<Column<?>> referencedAttributes = keyValues.keySet();
+    List<Column<?>> primaryKeyAttributes = referencedEntityDefinition.primaryKeyAttributes();
     boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
 
     return cacheReferencedKey(foreignKey, new DefaultKey(referencedEntityDefinition, keyValues, isPrimaryKey));
@@ -670,7 +671,7 @@ class DefaultEntity implements Entity, Serializable {
     if (!definition.hasPrimaryKey()) {
       return new DefaultKey(definition, emptyList(), true);
     }
-    List<Attribute<?>> primaryKeyAttributes = definition.primaryKeyAttributes();
+    List<Column<?>> primaryKeyAttributes = definition.primaryKeyAttributes();
     if (primaryKeyAttributes.size() == 1) {
       return createSingleAttributePrimaryKey(primaryKeyAttributes.get(0), originalValues);
     }
@@ -678,14 +679,14 @@ class DefaultEntity implements Entity, Serializable {
     return createMultiAttributePrimaryKey(primaryKeyAttributes, originalValues);
   }
 
-  private DefaultKey createSingleAttributePrimaryKey(Attribute<?> attribute, boolean originalValues) {
+  private DefaultKey createSingleAttributePrimaryKey(Column<?> attribute, boolean originalValues) {
     return new DefaultKey(definition, attribute, originalValues ? original(attribute) : values.get(attribute), true);
   }
 
-  private DefaultKey createMultiAttributePrimaryKey(List<Attribute<?>> primaryKeyAttributes, boolean originalValues) {
-    Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
+  private DefaultKey createMultiAttributePrimaryKey(List<Column<?>> primaryKeyAttributes, boolean originalValues) {
+    Map<Column<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
     for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-      Attribute<?> attribute = primaryKeyAttributes.get(i);
+      Column<?> attribute = primaryKeyAttributes.get(i);
       keyValues.put(attribute, originalValues ? original(attribute) : values.get(attribute));
     }
 
@@ -804,9 +805,9 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private static Map<Attribute<?>, Object> createValueMap(Key key) {
-    Collection<Attribute<?>> attributes = key.attributes();
+    Collection<Column<?>> attributes = key.attributes();
     Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
-    for (Attribute<?> attribute : attributes) {
+    for (Column<?> attribute : attributes) {
       values.put(attribute, key.get(attribute));
     }
 

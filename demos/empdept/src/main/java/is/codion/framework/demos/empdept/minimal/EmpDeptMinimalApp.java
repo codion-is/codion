@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.framework.model.EntityComboBoxModel;
@@ -48,9 +48,9 @@ public final class EmpDeptMinimalApp {
   interface Department {
     EntityType TYPE = DOMAIN.entityType("scott.dept");
 
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
-    Attribute<String> DNAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOC = TYPE.stringAttribute("loc");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> DNAME = TYPE.stringColumn("dname");
+    Column<String> LOC = TYPE.stringColumn("loc");
   }
 
   /*
@@ -59,14 +59,14 @@ public final class EmpDeptMinimalApp {
   interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> ENAME = TYPE.stringAttribute("ename");
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Double> SAL = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMM = TYPE.doubleAttribute("comm");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> ENAME = TYPE.stringColumn("ename");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Double> SAL = TYPE.doubleColumn("sal");
+    Column<Double> COMM = TYPE.doubleColumn("comm");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
 
     ForeignKey DEPT_FK = TYPE.foreignKey("dept_fk", DEPTNO, Department.DEPTNO);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.EMPNO);

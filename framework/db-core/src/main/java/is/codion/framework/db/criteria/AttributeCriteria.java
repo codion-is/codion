@@ -5,6 +5,7 @@ package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Collection;
 
@@ -17,7 +18,7 @@ public interface AttributeCriteria<T> extends Criteria {
   /**
    * @return the attribute
    */
-  Attribute<T> attribute();
+  Column<T> attribute();
 
   /**
    * @return the condition operator

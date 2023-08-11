@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -107,7 +108,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     }
 
     @Override
-    public ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute) {
+    public ForeignKeyProperty.Builder readOnly(Column<?> referenceAttribute) {
       if (((ForeignKey) attribute).reference(referenceAttribute) == null) {
         throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + attribute);
       }

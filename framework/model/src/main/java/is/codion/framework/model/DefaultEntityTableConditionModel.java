@@ -13,6 +13,7 @@ import is.codion.framework.db.criteria.AttributeCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.ForeignKeyCriteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -204,7 +205,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   private static <T> AttributeCriteria<T> attributeCriteria(ColumnConditionModel<?, T> conditionModel) {
-    Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
+    Column<T> attribute = (Column<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
     boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
     AttributeCriteria.Builder<T> builder = attribute(attribute);

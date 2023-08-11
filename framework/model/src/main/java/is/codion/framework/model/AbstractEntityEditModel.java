@@ -12,6 +12,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -591,7 +592,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
-    Collection<Attribute<String>> searchAttributes = entities()
+    Collection<Column<String>> searchAttributes = entities()
             .definition(property.referencedType()).searchAttributes();
     if (searchAttributes.isEmpty()) {
       throw new IllegalStateException("No search attributes defined for entity: " + property.referencedType());

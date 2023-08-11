@@ -5,6 +5,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -30,13 +31,13 @@ public interface World {
   interface City extends Entity {
     EntityType TYPE = DOMAIN.entityType("world.city", City.class);
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    Attribute<String> DISTRICT = TYPE.stringAttribute("district");
-    Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> COUNTRY_CODE = TYPE.stringColumn("countrycode");
+    Column<String> DISTRICT = TYPE.stringColumn("district");
+    Column<Integer> POPULATION = TYPE.integerColumn("population");
     // tag::customType[]
-    Attribute<Location> LOCATION = TYPE.attribute("location", Location.class);
+    Column<Location> LOCATION = TYPE.column("location", Location.class);
     // end::customType[]
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country", COUNTRY_CODE, Country.CODE);
@@ -61,26 +62,26 @@ public interface World {
   interface Country extends Entity {
     EntityType TYPE = DOMAIN.entityType("world.country", Country.class);
 
-    Attribute<String> CODE = TYPE.stringAttribute("code");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
-    Attribute<String> REGION = TYPE.stringAttribute("region");
-    Attribute<Double> SURFACEAREA = TYPE.doubleAttribute("surfacearea");
-    Attribute<Integer> INDEPYEAR = TYPE.integerAttribute("indepyear");
-    Attribute<String> INDEPYEAR_SEARCHABLE = TYPE.stringAttribute("indepyear_searchable");
-    Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
-    Attribute<Double> LIFE_EXPECTANCY = TYPE.doubleAttribute("lifeexpectancy");
-    Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
-    Attribute<Double> GNPOLD = TYPE.doubleAttribute("gnpold");
-    Attribute<String> LOCALNAME = TYPE.stringAttribute("localname");
-    Attribute<String> GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
-    Attribute<String> HEADOFSTATE = TYPE.stringAttribute("headofstate");
-    Attribute<Integer> CAPITAL = TYPE.integerAttribute("capital");
-    Attribute<String> CODE_2 = TYPE.stringAttribute("code2");
-    Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
-    Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
-    Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
-    Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
+    Column<String> CODE = TYPE.stringColumn("code");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> CONTINENT = TYPE.stringColumn("continent");
+    Column<String> REGION = TYPE.stringColumn("region");
+    Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+    Column<Integer> INDEPYEAR = TYPE.integerColumn("indepyear");
+    Column<String> INDEPYEAR_SEARCHABLE = TYPE.stringColumn("indepyear_searchable");
+    Column<Integer> POPULATION = TYPE.integerColumn("population");
+    Column<Double> LIFE_EXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
+    Column<Double> GNP = TYPE.doubleColumn("gnp");
+    Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
+    Column<String> LOCALNAME = TYPE.stringColumn("localname");
+    Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
+    Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
+    Column<Integer> CAPITAL = TYPE.integerColumn("capital");
+    Column<String> CODE_2 = TYPE.stringColumn("code2");
+    Column<Integer> CAPITAL_POPULATION = TYPE.integerColumn("capital_population");
+    Column<Integer> NO_OF_CITIES = TYPE.integerColumn("no_of_cities");
+    Column<Integer> NO_OF_LANGUAGES = TYPE.integerColumn("no_of_languages");
+    Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
 
     // tag::foreignKeyCapital[]
     ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
@@ -102,10 +103,10 @@ public interface World {
   interface CountryLanguage extends Entity {
     EntityType TYPE = DOMAIN.entityType("world.countrylanguage", CountryLanguage.class);
 
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
-    Attribute<Boolean> IS_OFFICIAL = TYPE.booleanAttribute("isofficial");
-    Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
+    Column<String> COUNTRY_CODE = TYPE.stringColumn("countrycode");
+    Column<String> LANGUAGE = TYPE.stringColumn("language");
+    Column<Boolean> IS_OFFICIAL = TYPE.booleanColumn("isofficial");
+    Column<Double> PERCENTAGE = TYPE.doubleColumn("percentage");
     Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
@@ -118,14 +119,14 @@ public interface World {
   interface Continent extends Entity {
     EntityType TYPE = DOMAIN.entityType("continent", Continent.class);
 
-    Attribute<String> NAME = TYPE.stringAttribute("continent");
-    Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("surface_area");
-    Attribute<Long> POPULATION = TYPE.longAttribute("population");
-    Attribute<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleAttribute("min_life_expectancy");
-    Attribute<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleAttribute("max_life_expectancy");
-    Attribute<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerAttribute("min_indep_year");
-    Attribute<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerAttribute("max_indep_year");
-    Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
+    Column<String> NAME = TYPE.stringColumn("continent");
+    Column<Integer> SURFACE_AREA = TYPE.integerColumn("surface_area");
+    Column<Long> POPULATION = TYPE.longColumn("population");
+    Column<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleColumn("min_life_expectancy");
+    Column<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleColumn("max_life_expectancy");
+    Column<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerColumn("min_indep_year");
+    Column<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerColumn("max_indep_year");
+    Column<Double> GNP = TYPE.doubleColumn("gnp");
 
     String name();
 
@@ -143,26 +144,26 @@ public interface World {
   interface Lookup {
     EntityType TYPE = DOMAIN.entityType("world.country_city_lookup");
 
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("country.code");
-    Attribute<String> COUNTRY_NAME = TYPE.stringAttribute("country.name");
-    Attribute<String> COUNTRY_CONTINENT = TYPE.stringAttribute("country.continent");
-    Attribute<String> COUNTRY_REGION = TYPE.stringAttribute("country.region");
-    Attribute<Double> COUNTRY_SURFACEAREA = TYPE.doubleAttribute("country.surfacearea");
-    Attribute<Integer> COUNTRY_INDEPYEAR = TYPE.integerAttribute("country.indepyear");
-    Attribute<Integer> COUNTRY_POPULATION = TYPE.integerAttribute("country.population");
-    Attribute<Double> COUNTRY_LIFEEXPECTANCY = TYPE.doubleAttribute("country.lifeexpectancy");
-    Attribute<Double> COUNTRY_GNP = TYPE.doubleAttribute("country.gnp");
-    Attribute<Double> COUNTRY_GNPOLD = TYPE.doubleAttribute("country.gnpold");
-    Attribute<String> COUNTRY_LOCALNAME = TYPE.stringAttribute("country.localname");
-    Attribute<String> COUNTRY_GOVERNMENTFORM = TYPE.stringAttribute("country.governmentform");
-    Attribute<String> COUNTRY_HEADOFSTATE = TYPE.stringAttribute("country.headofstate");
-    Attribute<String> COUNTRY_CODE2 = TYPE.stringAttribute("country.code2");
-    Attribute<byte[]> COUNTRY_FLAG = TYPE.byteArrayAttribute("country.flag");
-    Attribute<Integer> CITY_ID = TYPE.integerAttribute("city.id");
-    Attribute<String> CITY_NAME = TYPE.stringAttribute("city.name");
-    Attribute<String> CITY_DISTRICT = TYPE.stringAttribute("city.district");
-    Attribute<Integer> CITY_POPULATION = TYPE.integerAttribute("city.population");
-    Attribute<Location> CITY_LOCATION = TYPE.attribute("city.location", Location.class);
+    Column<String> COUNTRY_CODE = TYPE.stringColumn("country.code");
+    Column<String> COUNTRY_NAME = TYPE.stringColumn("country.name");
+    Column<String> COUNTRY_CONTINENT = TYPE.stringColumn("country.continent");
+    Column<String> COUNTRY_REGION = TYPE.stringColumn("country.region");
+    Column<Double> COUNTRY_SURFACEAREA = TYPE.doubleColumn("country.surfacearea");
+    Column<Integer> COUNTRY_INDEPYEAR = TYPE.integerColumn("country.indepyear");
+    Column<Integer> COUNTRY_POPULATION = TYPE.integerColumn("country.population");
+    Column<Double> COUNTRY_LIFEEXPECTANCY = TYPE.doubleColumn("country.lifeexpectancy");
+    Column<Double> COUNTRY_GNP = TYPE.doubleColumn("country.gnp");
+    Column<Double> COUNTRY_GNPOLD = TYPE.doubleColumn("country.gnpold");
+    Column<String> COUNTRY_LOCALNAME = TYPE.stringColumn("country.localname");
+    Column<String> COUNTRY_GOVERNMENTFORM = TYPE.stringColumn("country.governmentform");
+    Column<String> COUNTRY_HEADOFSTATE = TYPE.stringColumn("country.headofstate");
+    Column<String> COUNTRY_CODE2 = TYPE.stringColumn("country.code2");
+    Column<byte[]> COUNTRY_FLAG = TYPE.byteArrayColumn("country.flag");
+    Column<Integer> CITY_ID = TYPE.integerColumn("city.id");
+    Column<String> CITY_NAME = TYPE.stringColumn("city.name");
+    Column<String> CITY_DISTRICT = TYPE.stringColumn("city.district");
+    Column<Integer> CITY_POPULATION = TYPE.integerColumn("city.population");
+    Column<Location> CITY_LOCATION = TYPE.column("city.location", Location.class);
   }
 
   // tag::customTypeClass[]

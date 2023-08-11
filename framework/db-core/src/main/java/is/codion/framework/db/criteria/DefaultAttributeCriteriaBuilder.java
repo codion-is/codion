@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.criteria;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Collection;
 
@@ -15,9 +15,9 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
 
   private static final String VALUES_PARAMETER = "values";
 
-  private final Attribute<T> attribute;
+  private final Column<T> attribute;
 
-  DefaultAttributeCriteriaBuilder(Attribute<T> attribute) {
+  DefaultAttributeCriteriaBuilder(Column<T> attribute) {
     this.attribute = requireNonNull(attribute, "attribute");
   }
 
@@ -45,7 +45,7 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
       return (AttributeCriteria<String>) isNull();
     }
 
-    return new SingleValueAttributeCriteria<>((Attribute<String>) attribute, value, EQUAL, false);
+    return new SingleValueAttributeCriteria<>((Column<String>) attribute, value, EQUAL, false);
   }
 
   @Override
@@ -54,7 +54,7 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
       return (AttributeCriteria<String>) isNotNull();
     }
 
-    return new SingleValueAttributeCriteria<>((Attribute<String>) attribute, value, NOT_EQUAL, false);
+    return new SingleValueAttributeCriteria<>((Column<String>) attribute, value, NOT_EQUAL, false);
   }
 
   @Override
@@ -101,7 +101,7 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
       return equalToIgnoreCase(values.iterator().next());
     }
 
-    return new MultiValueAttributeCriteria<>((Attribute<String>) attribute, values, EQUAL, false);
+    return new MultiValueAttributeCriteria<>((Column<String>) attribute, values, EQUAL, false);
   }
 
   @Override
@@ -110,7 +110,7 @@ final class DefaultAttributeCriteriaBuilder<T> implements AttributeCriteria.Buil
       return notEqualToIgnoreCase(values.iterator().next());
     }
 
-    return new MultiValueAttributeCriteria<>((Attribute<String>) attribute, values, NOT_EQUAL, false);
+    return new MultiValueAttributeCriteria<>((Column<String>) attribute, values, NOT_EQUAL, false);
   }
 
   @Override

@@ -6,6 +6,7 @@ package is.codion.framework.domain;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -53,9 +54,9 @@ public final class TestDomain extends DefaultDomain {
   public interface CompositeMaster {
     EntityType TYPE = DOMAIN.entityType("domain.composite_master");
 
-    Attribute<Integer> COMPOSITE_MASTER_ID_3 = TYPE.integerAttribute("id3");
-    Attribute<Integer> COMPOSITE_MASTER_ID_2 = TYPE.integerAttribute("id2");
-    Attribute<Integer> COMPOSITE_MASTER_ID = TYPE.integerAttribute("id");
+    Column<Integer> COMPOSITE_MASTER_ID_3 = TYPE.integerColumn("id3");
+    Column<Integer> COMPOSITE_MASTER_ID_2 = TYPE.integerColumn("id2");
+    Column<Integer> COMPOSITE_MASTER_ID = TYPE.integerColumn("id");
   }
 
   void compositeMaster() {
@@ -68,9 +69,9 @@ public final class TestDomain extends DefaultDomain {
   public interface CompositeDetail {
     EntityType TYPE = DOMAIN.entityType("domain.composite_detail");
 
-    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID = TYPE.integerAttribute("master_id");
-    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = TYPE.integerAttribute("master_id2");
-    Attribute<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = TYPE.integerAttribute("master_id3");
+    Column<Integer> COMPOSITE_DETAIL_MASTER_ID = TYPE.integerColumn("master_id");
+    Column<Integer> COMPOSITE_DETAIL_MASTER_ID_2 = TYPE.integerColumn("master_id2");
+    Column<Integer> COMPOSITE_DETAIL_MASTER_ID_3 = TYPE.integerColumn("master_id3");
     ForeignKey COMPOSITE_DETAIL_MASTER_FK = TYPE.foreignKey("master_fk",
             COMPOSITE_DETAIL_MASTER_ID, CompositeMaster.COMPOSITE_MASTER_ID,
             COMPOSITE_DETAIL_MASTER_ID_2, CompositeMaster.COMPOSITE_MASTER_ID_2,
@@ -88,10 +89,10 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Master extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.master_entity", Master.class);
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<Integer> CODE = TYPE.integerAttribute("code");
-    Attribute<Integer> READ_ONLY = TYPE.integerAttribute("read_only");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<Integer> CODE = TYPE.integerColumn("code");
+    Column<Integer> READ_ONLY = TYPE.integerColumn("read_only");
 
     Long getId();
 
@@ -123,24 +124,24 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Detail extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.detail_entity", Detail.class);
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<Short> SHORT = TYPE.shortAttribute("short");
-    Attribute<Integer> INT = TYPE.integerAttribute("int");
-    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
-    Attribute<String> STRING = TYPE.stringAttribute("string");
-    Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
-    Attribute<LocalDateTime> TIMESTAMP = TYPE.localDateTimeAttribute("timestamp");
-    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
-    Attribute<Long> MASTER_ID = TYPE.longAttribute("master_id");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Short> SHORT = TYPE.shortColumn("short");
+    Column<Integer> INT = TYPE.integerColumn("int");
+    Column<Double> DOUBLE = TYPE.doubleColumn("double");
+    Column<String> STRING = TYPE.stringColumn("string");
+    Column<LocalDate> DATE = TYPE.localDateColumn("date");
+    Column<LocalDateTime> TIMESTAMP = TYPE.localDateTimeColumn("timestamp");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean_nullable");
+    Column<Long> MASTER_ID = TYPE.longColumn("master_id");
     ForeignKey MASTER_FK = TYPE.foreignKey("master2_fk", MASTER_ID, Master.ID);
-    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
-    Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
-    Attribute<Integer> MASTER_CODE_NON_DENORM = TYPE.integerAttribute("master_code_non_denorm");
+    Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
+    Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
+    Column<Integer> MASTER_CODE_NON_DENORM = TYPE.integerColumn("master_code_non_denorm");
     ForeignKey MASTER_VIA_CODE_FK = TYPE.foreignKey("master_via_code_fk", MASTER_CODE_NON_DENORM, Master.CODE);
-    Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
+    Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
-    Attribute<byte[]> BYTES = TYPE.byteArrayAttribute("bytes");
+    Column<byte[]> BYTES = TYPE.byteArrayColumn("bytes");
 
     Optional<Long> getId();
 
@@ -218,11 +219,11 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.scott.dept", Department.class);
-    Attribute<Integer> NO = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
-    Attribute<Boolean> ACTIVE = TYPE.booleanAttribute("active");
-    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
+    Column<Integer> NO = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
+    Column<Boolean> ACTIVE = TYPE.booleanColumn("active");
+    Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 
     int deptNo();
 
@@ -263,19 +264,19 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Employee extends Entity {
     EntityType TYPE = DOMAIN.entityType("domain.scott.emp", Employee.class);
-    Attribute<Integer> ID = TYPE.integerAttribute("emp_id");
-    Attribute<String> NAME = TYPE.stringAttribute("emp_name");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDateTime> HIREDATE = TYPE.localDateTimeAttribute("hiredate");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT_NO = TYPE.integerAttribute("deptno");
+    Column<Integer> ID = TYPE.integerColumn("emp_id");
+    Column<String> NAME = TYPE.stringColumn("emp_name");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDateTime> HIREDATE = TYPE.localDateTimeColumn("hiredate");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT_NO = TYPE.integerColumn("deptno");
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT_NO, Department.NO);
     ForeignKey MANAGER_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
-    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
     Attribute<String> DEPARTMENT_NAME = TYPE.stringAttribute("department_name");
-    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
+    Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 
     Integer getId();
 
@@ -364,9 +365,9 @@ public final class TestDomain extends DefaultDomain {
   public interface KeyTest {
     EntityType TYPE = DOMAIN.entityType("KeyTest");
 
-    Attribute<Integer> ID1 = TYPE.integerAttribute("id1");
-    Attribute<Integer> ID2 = TYPE.integerAttribute("id2");
-    Attribute<Integer> ID3 = TYPE.integerAttribute("id3");
+    Column<Integer> ID1 = TYPE.integerColumn("id1");
+    Column<Integer> ID2 = TYPE.integerColumn("id2");
+    Column<Integer> ID3 = TYPE.integerColumn("id3");
   }
 
   void keyTest() {
@@ -382,9 +383,9 @@ public final class TestDomain extends DefaultDomain {
 
   public interface NoPk {
     EntityType TYPE = DOMAIN.entityType("no_pk");
-    Attribute<Integer> COL1 = TYPE.integerAttribute("col1");
-    Attribute<Integer> COL2 = TYPE.integerAttribute("col2");
-    Attribute<Integer> COL3 = TYPE.integerAttribute("col3");
+    Column<Integer> COL1 = TYPE.integerColumn("col1");
+    Column<Integer> COL2 = TYPE.integerColumn("col2");
+    Column<Integer> COL3 = TYPE.integerColumn("col3");
   }
 
   void noPKEntity() {
@@ -397,7 +398,7 @@ public final class TestDomain extends DefaultDomain {
   public interface TransModifies {
     EntityType TYPE = DOMAIN.entityType("trans_modifies");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Column<Integer> ID = TYPE.integerColumn("id");
     Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
   }
 
@@ -410,7 +411,7 @@ public final class TestDomain extends DefaultDomain {
   public interface TransModifiesNot {
     EntityType TYPE = DOMAIN.entityType("trans_modifies_not");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Column<Integer> ID = TYPE.integerColumn("id");
     Attribute<Integer> TRANS = TYPE.integerAttribute("trans");
   }
 
@@ -424,9 +425,9 @@ public final class TestDomain extends DefaultDomain {
   public interface NullString {
     EntityType TYPE = DOMAIN.entityType("null_string");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> ATTR = TYPE.integerAttribute("attr");
-    Attribute<Integer> ATTR2 = TYPE.integerAttribute("attr2");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> ATTR = TYPE.integerColumn("attr");
+    Column<Integer> ATTR2 = TYPE.integerColumn("attr2");
   }
 
   void nullString() {
@@ -440,8 +441,8 @@ public final class TestDomain extends DefaultDomain {
   public interface InvalidDerived {
     EntityType TYPE = DOMAIN.entityType("invalid_derived");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> INT = TYPE.integerAttribute("int");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> INT = TYPE.integerColumn("int");
     Attribute<Integer> INVALID_DERIVED = TYPE.integerAttribute("invalid_derived");
   }
 

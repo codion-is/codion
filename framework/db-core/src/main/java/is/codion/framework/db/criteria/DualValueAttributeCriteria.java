@@ -4,7 +4,7 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
@@ -13,7 +13,7 @@ final class DualValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
-  DualValueAttributeCriteria(Attribute<T> attribute, T lowerBound, T upperBound, Operator operator) {
+  DualValueAttributeCriteria(Column<T> attribute, T lowerBound, T upperBound, Operator operator) {
     super(attribute, operator, asList(requireNonNull(lowerBound, "lowerBound"),
             requireNonNull(upperBound, "upperBound")), true);
     validateOperator(operator);

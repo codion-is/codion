@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -37,7 +37,7 @@ final class EntityKeySerializer extends StdSerializer<Key> {
 
   private void writeValues(Key key, JsonGenerator generator) throws IOException {
     generator.writeStartObject();
-    for (Attribute<?> attribute : key.attributes()) {
+    for (Column<?> attribute : key.attributes()) {
       generator.writeFieldName(attribute.name());
       entityObjectMapper.writeValue(generator, key.get(attribute));
     }

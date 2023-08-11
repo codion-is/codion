@@ -1,7 +1,7 @@
 package is.codion.framework.demos.manual.world.domain;
 
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -16,11 +16,11 @@ public interface World {
   interface City {
     EntityType TYPE = DOMAIN.entityType("world.city");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    Attribute<String> DISTRICT = TYPE.stringAttribute("district");
-    Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> COUNTRY_CODE = TYPE.stringColumn("countrycode");
+    Column<String> DISTRICT = TYPE.stringColumn("district");
+    Column<Integer> POPULATION = TYPE.integerColumn("population");
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
   }
@@ -28,25 +28,25 @@ public interface World {
   interface Country {
     EntityType TYPE = DOMAIN.entityType("world.country");
 
-    Attribute<String> CODE = TYPE.stringAttribute("code");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<String> CONTINENT = TYPE.stringAttribute("continent");
-    Attribute<String> REGION = TYPE.stringAttribute("region");
-    Attribute<Double> SURFACEAREA = TYPE.doubleAttribute("surfacearea");
-    Attribute<Integer> INDEPYEAR = TYPE.integerAttribute("indepyear");
-    Attribute<Integer> POPULATION = TYPE.integerAttribute("population");
-    Attribute<Double> LIFE_EXPECTANCY = TYPE.doubleAttribute("lifeexpectancy");
-    Attribute<Double> GNP = TYPE.doubleAttribute("gnp");
-    Attribute<Double> GNPOLD = TYPE.doubleAttribute("gnpold");
-    Attribute<String> LOCALNAME = TYPE.stringAttribute("localname");
-    Attribute<String> GOVERNMENTFORM = TYPE.stringAttribute("governmentform");
-    Attribute<String> HEADOFSTATE = TYPE.stringAttribute("headofstate");
-    Attribute<Integer> CAPITAL = TYPE.integerAttribute("capital");
-    Attribute<String> CODE_2 = TYPE.stringAttribute("code2");
-    Attribute<Integer> CAPITAL_POPULATION = TYPE.integerAttribute("capital_population");
-    Attribute<Integer> NO_OF_CITIES = TYPE.integerAttribute("no_of_cities");
-    Attribute<Integer> NO_OF_LANGUAGES = TYPE.integerAttribute("no_of_languages");
-    Attribute<byte[]> FLAG = TYPE.byteArrayAttribute("flag");
+    Column<String> CODE = TYPE.stringColumn("code");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<String> CONTINENT = TYPE.stringColumn("continent");
+    Column<String> REGION = TYPE.stringColumn("region");
+    Column<Double> SURFACEAREA = TYPE.doubleColumn("surfacearea");
+    Column<Integer> INDEPYEAR = TYPE.integerColumn("indepyear");
+    Column<Integer> POPULATION = TYPE.integerColumn("population");
+    Column<Double> LIFE_EXPECTANCY = TYPE.doubleColumn("lifeexpectancy");
+    Column<Double> GNP = TYPE.doubleColumn("gnp");
+    Column<Double> GNPOLD = TYPE.doubleColumn("gnpold");
+    Column<String> LOCALNAME = TYPE.stringColumn("localname");
+    Column<String> GOVERNMENTFORM = TYPE.stringColumn("governmentform");
+    Column<String> HEADOFSTATE = TYPE.stringColumn("headofstate");
+    Column<Integer> CAPITAL = TYPE.integerColumn("capital");
+    Column<String> CODE_2 = TYPE.stringColumn("code2");
+    Column<Integer> CAPITAL_POPULATION = TYPE.integerColumn("capital_population");
+    Column<Integer> NO_OF_CITIES = TYPE.integerColumn("no_of_cities");
+    Column<Integer> NO_OF_LANGUAGES = TYPE.integerColumn("no_of_languages");
+    Column<byte[]> FLAG = TYPE.byteArrayColumn("flag");
 
     ForeignKey CAPITAL_FK = TYPE.foreignKey("capital_fk", CAPITAL, City.ID);
   }
@@ -54,11 +54,11 @@ public interface World {
   interface CountryLanguage {
     EntityType TYPE = DOMAIN.entityType("world.countrylanguage");
 
-    Attribute<String> COUNTRY_CODE = TYPE.stringAttribute("countrycode");
-    Attribute<String> LANGUAGE = TYPE.stringAttribute("language");
-    Attribute<Boolean> IS_OFFICIAL = TYPE.booleanAttribute("isofficial");
-    Attribute<Double> PERCENTAGE = TYPE.doubleAttribute("percentage");
-    Attribute<Integer> NO_OF_SPEAKERS = TYPE.integerAttribute("noOfSpeakers");
+    Column<String> COUNTRY_CODE = TYPE.stringColumn("countrycode");
+    Column<String> LANGUAGE = TYPE.stringColumn("language");
+    Column<Boolean> IS_OFFICIAL = TYPE.booleanColumn("isofficial");
+    Column<Double> PERCENTAGE = TYPE.doubleColumn("percentage");
+    Column<Integer> NO_OF_SPEAKERS = TYPE.integerColumn("noOfSpeakers");
 
     ForeignKey COUNTRY_FK = TYPE.foreignKey("country_fk", COUNTRY_CODE, Country.CODE);
   }
@@ -66,14 +66,14 @@ public interface World {
   interface Continent {
     EntityType TYPE = DOMAIN.entityType("continent");
 
-    Attribute<String> NAME = TYPE.stringAttribute("continent");
-    Attribute<Integer> SURFACE_AREA = TYPE.integerAttribute("sum(surfacearea)");
-    Attribute<Long> POPULATION = TYPE.longAttribute("sum(population)");
-    Attribute<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleAttribute("min(lifeexpectancy)");
-    Attribute<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleAttribute("max(lifeexpectancy)");
-    Attribute<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerAttribute("min(indepyear)");
-    Attribute<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerAttribute("max(indepyear)");
-    Attribute<Double> GNP = TYPE.doubleAttribute("sum(gnp)");
+    Column<String> NAME = TYPE.stringColumn("continent");
+    Column<Integer> SURFACE_AREA = TYPE.integerColumn("sum(surfacearea)");
+    Column<Long> POPULATION = TYPE.longColumn("sum(population)");
+    Column<Double> MIN_LIFE_EXPECTANCY = TYPE.doubleColumn("min(lifeexpectancy)");
+    Column<Double> MAX_LIFE_EXPECTANCY = TYPE.doubleColumn("max(lifeexpectancy)");
+    Column<Integer> MIN_INDEPENDENCE_YEAR = TYPE.integerColumn("min(indepyear)");
+    Column<Integer> MAX_INDEPENDENCE_YEAR = TYPE.integerColumn("max(indepyear)");
+    Column<Double> GNP = TYPE.doubleColumn("sum(gnp)");
   }
 }
 // end::entityTypesAndAttributes[]

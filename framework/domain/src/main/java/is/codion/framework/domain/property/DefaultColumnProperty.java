@@ -5,6 +5,7 @@ package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -64,6 +65,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     this.groupingColumn = builder.groupingColumn;
     this.aggregateColumn = builder.aggregateColumn;
     this.selectable = builder.selectable;
+  }
+
+  @Override
+  public final Column<T> attribute() {
+    return (Column<T>) super.attribute();
   }
 
   @Override
@@ -263,7 +269,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     private boolean aggregateColumn;
     private boolean selectable;
 
-    DefaultColumnPropertyBuilder(Attribute<T> attribute, String caption) {
+    DefaultColumnPropertyBuilder(Column<T> attribute, String caption) {
       super(attribute, caption);
       this.primaryKeyIndex = -1;
       this.columnType = sqlType(attribute.valueClass());
@@ -403,7 +409,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   abstract static class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
-    protected AbstractReadOnlyColumnPropertyBuilder(Attribute<T> attribute, String caption) {
+    protected AbstractReadOnlyColumnPropertyBuilder(Column<T> attribute, String caption) {
       super(attribute, caption);
       super.readOnly(true);
     }
@@ -427,7 +433,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
-    DefaultSubqueryPropertyBuilder(Attribute<T> attribute, String caption, String subquery) {
+    DefaultSubqueryPropertyBuilder(Column<T> attribute, String caption, String subquery) {
       super(attribute, caption);
       super.columnExpression("(" + subquery + ")");
     }

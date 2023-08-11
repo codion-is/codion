@@ -118,9 +118,10 @@ public interface SelectCondition extends Condition {
      * Note that primary key attribute values are always included.
      * Note that these must be ColumnProperty attributes
      * @param attributes the attributes to include
+     * @param <T> the attribute type
      * @return a new {@link SelectCondition} instance with the given select attributes
      */
-    Builder selectAttributes(Attribute<?>... attributes);
+    <T extends Attribute<?>> Builder selectAttributes(T... attributes);
 
     /**
      * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
@@ -128,7 +129,7 @@ public interface SelectCondition extends Condition {
      * @param attributes the attributes to include
      * @return a new {@link SelectCondition} instance with the given select attributes
      */
-    Builder selectAttributes(Collection<Attribute<?>> attributes);
+    Builder selectAttributes(Collection<? extends Attribute<?>> attributes);
 
     /**
      * @param queryTimeout the query timeout, 0 for no timeout

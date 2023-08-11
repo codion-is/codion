@@ -4,7 +4,7 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 
 import java.util.Collection;
@@ -17,11 +17,11 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
 
   private static final long serialVersionUID = 1;
 
-  private final Attribute<T> attribute;
+  private final Column<T> attribute;
   private final Operator operator;
   private final boolean caseSensitive;
 
-  protected AbstractAttributeCriteria(Attribute<T> attribute, Operator operator, Collection<? extends T> values,
+  protected AbstractAttributeCriteria(Column<T> attribute, Operator operator, Collection<? extends T> values,
                                       boolean caseSensitive) {
     super(requireNonNull(attribute).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(attribute)), values);
     if (!caseSensitive && !attribute.isString()) {
@@ -32,7 +32,7 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
     this.caseSensitive = caseSensitive;
   }
 
-  public final Attribute<T> attribute() {
+  public final Column<T> attribute() {
     return attribute;
   }
 

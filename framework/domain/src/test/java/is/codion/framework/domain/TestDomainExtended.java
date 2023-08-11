@@ -7,7 +7,7 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -22,9 +22,9 @@ public final class TestDomainExtended extends DefaultDomain {
   public static final DomainType DOMAIN = DomainType.domainType(TestDomainExtended.class);
 
   public static final EntityType T_EXTENDED = DOMAIN.entityType("extended.entity");
-  public static final Attribute<Integer> EXTENDED_ID = T_EXTENDED.integerAttribute("id");
-  public static final Attribute<String> EXTENDED_NAME = T_EXTENDED.stringAttribute("name");
-  public static final Attribute<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerAttribute("dept_id");
+  public static final Column<Integer> EXTENDED_ID = T_EXTENDED.integerColumn("id");
+  public static final Column<String> EXTENDED_NAME = T_EXTENDED.stringColumn("name");
+  public static final Column<Integer> EXTENDED_DEPT_ID = T_EXTENDED.integerColumn("dept_id");
   public static final ForeignKey EXTENDED_DEPT_FK = T_EXTENDED.foreignKey("dept_fk", EXTENDED_DEPT_ID, TestDomain.Department.NO);
 
   public static final ProcedureType<?, ?> PROC_TYPE = ProcedureType.procedureType("proc");
@@ -79,8 +79,8 @@ public final class TestDomainExtended extends DefaultDomain {
     public static final DomainType DOMAIN = DomainType.domainType(TestDomainSecondExtension.class);
 
     public static final EntityType T_SECOND_EXTENDED = DOMAIN.entityType("extended.second_entity");
-    public static final Attribute<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerAttribute("id");
-    public static final Attribute<String> EXTENDED_NAME = T_SECOND_EXTENDED.stringAttribute("name");
+    public static final Column<Integer> EXTENDED_ID = T_SECOND_EXTENDED.integerColumn("id");
+    public static final Column<String> EXTENDED_NAME = T_SECOND_EXTENDED.stringColumn("name");
 
     public TestDomainSecondExtension() {
       super(DOMAIN);
@@ -100,8 +100,8 @@ public final class TestDomainExtended extends DefaultDomain {
     public static final DomainType DOMAIN = DomainType.domainType(TestDomainThirdExtension.class);
 
     public static final EntityType T_THIRD_EXTENDED = DOMAIN.entityType("extended.second_entity");
-    public static final Attribute<Integer> EXTENDED_ID = T_THIRD_EXTENDED.integerAttribute("id");
-    public static final Attribute<String> EXTENDED_NAME = T_THIRD_EXTENDED.stringAttribute("name");
+    public static final Column<Integer> EXTENDED_ID = T_THIRD_EXTENDED.integerColumn("id");
+    public static final Column<String> EXTENDED_NAME = T_THIRD_EXTENDED.stringColumn("name");
 
     public TestDomainThirdExtension() {
       super(DOMAIN);

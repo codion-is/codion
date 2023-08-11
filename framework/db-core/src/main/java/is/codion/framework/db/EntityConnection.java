@@ -15,6 +15,7 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -230,7 +231,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Attribute<T> attribute) throws DatabaseException;
+  <T> List<T> select(Column<T> attribute) throws DatabaseException;
 
   /**
    * Selects distinct non-null values of the given attribute, note that the attribute
@@ -244,7 +245,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws IllegalArgumentException in case the given property is not a column based attribute
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException;
+  <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
@@ -354,7 +355,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
+  void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob value associated with {@code attribute} from the given entity,
@@ -364,7 +365,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
+  byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException;
 
   /**
    * Creates a new {@link CopyEntities.Builder} instance for copying entities from source to destination, with a default batch size of 100.

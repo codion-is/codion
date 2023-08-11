@@ -23,8 +23,8 @@ class ForeignKeyDomain extends DefaultDomain {
 
   public interface Species {
     EntityType TYPE = DOMAIN.entityType("species");
-    Attribute<Integer> NO = TYPE.integerAttribute("no");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Column<Integer> NO = TYPE.integerColumn("no");
+    Column<String> NAME = TYPE.stringColumn("name");
   }
 
   void species() {
@@ -36,8 +36,8 @@ class ForeignKeyDomain extends DefaultDomain {
 
   public interface Maturity {
     EntityType TYPE = DOMAIN.entityType("species_maturity");
-    Attribute<Integer> NO = TYPE.integerAttribute("no");
-    Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
+    Column<Integer> NO = TYPE.integerColumn("no");
+    Column<Integer> SPECIES_NO = TYPE.integerColumn("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Maturity.SPECIES_NO, Species.NO);
   }
 
@@ -52,8 +52,8 @@ class ForeignKeyDomain extends DefaultDomain {
 
   public interface OtolithCategory {
     EntityType TYPE = DOMAIN.entityType("otolith_category");
-    Attribute<Integer> NO = TYPE.integerAttribute("no");
-    Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
+    Column<Integer> NO = TYPE.integerColumn("no");
+    Column<Integer> SPECIES_NO = TYPE.integerColumn("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", OtolithCategory.SPECIES_NO, Species.NO);
   }
 
@@ -68,14 +68,14 @@ class ForeignKeyDomain extends DefaultDomain {
 
   public interface Otolith {
     EntityType TYPE = DOMAIN.entityType("otolith");
-    Attribute<Integer> STATION_ID = TYPE.integerAttribute("station_id");
-    Attribute<Integer> SPECIES_NO = TYPE.integerAttribute("species_no");
+    Column<Integer> STATION_ID = TYPE.integerColumn("station_id");
+    Column<Integer> SPECIES_NO = TYPE.integerColumn("species_no");
     ForeignKey SPECIES_FK = TYPE.foreignKey("species_fk", Otolith.SPECIES_NO, Species.NO);
-    Attribute<Integer> MATURITY_NO = TYPE.integerAttribute("maturity_no");
+    Column<Integer> MATURITY_NO = TYPE.integerColumn("maturity_no");
     ForeignKey MATURITY_FK = TYPE.foreignKey("maturity_fk",
             Otolith.MATURITY_NO, Maturity.NO,
             Otolith.SPECIES_NO, Maturity.SPECIES_NO);
-    Attribute<Integer> OTOLITH_CATEGORY_NO = TYPE.integerAttribute("otolith_category_no");
+    Column<Integer> OTOLITH_CATEGORY_NO = TYPE.integerColumn("otolith_category_no");
     ForeignKey OTOLITH_CATEGORY_FK = TYPE.foreignKey("otolith_category_fk",
             Otolith.OTOLITH_CATEGORY_NO, OtolithCategory.NO,
             Otolith.SPECIES_NO, OtolithCategory.SPECIES_NO);

@@ -75,7 +75,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
     key.attributes = new ArrayList<>(valueCount);
     key.values = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
-      Attribute<Object> attribute = attributeByName(key.definition, (String) stream.readObject());
+      Column<Object> attribute = (Column<Object>) attributeByName(key.definition, (String) stream.readObject());
       Object value = stream.readObject();
       if (attribute != null) {
         key.attributes.add(attribute);

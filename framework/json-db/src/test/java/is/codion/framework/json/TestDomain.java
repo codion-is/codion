@@ -6,6 +6,7 @@ package is.codion.framework.json;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -36,13 +37,13 @@ public final class TestDomain extends DefaultDomain {
 
   public interface TestEntity {
     EntityType TYPE = DOMAIN.entityType("test.entity");
-    Attribute<BigDecimal> DECIMAL = TYPE.bigDecimalAttribute("id");
-    Attribute<LocalDateTime> DATE_TIME = TYPE.localDateTimeAttribute("date_time");
-    Attribute<OffsetDateTime> OFFSET_DATE_TIME = TYPE.offsetDateTimeAttribute("offset_date_time");
-    Attribute<byte[]> BLOB = TYPE.byteArrayAttribute("blob");
-    Attribute<String> READ_ONLY = TYPE.stringAttribute("read_only");
-    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<LocalTime> TIME = TYPE.localTimeAttribute("time");
+    Column<BigDecimal> DECIMAL = TYPE.bigDecimalColumn("id");
+    Column<LocalDateTime> DATE_TIME = TYPE.localDateTimeColumn("date_time");
+    Column<OffsetDateTime> OFFSET_DATE_TIME = TYPE.offsetDateTimeColumn("offset_date_time");
+    Column<byte[]> BLOB = TYPE.byteArrayColumn("blob");
+    Column<String> READ_ONLY = TYPE.stringColumn("read_only");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<LocalTime> TIME = TYPE.localTimeColumn("time");
     Attribute<Entity> ENTITY = TYPE.entityAttribute("entity");
     CriteriaType CRITERIA_TYPE = TYPE.criteriaType("entityCriteriaType");
   }
@@ -57,16 +58,16 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true),
             columnProperty(TestEntity.BOOLEAN),
             columnProperty(TestEntity.TIME),
-            columnProperty(TestEntity.ENTITY))
+            transientProperty(TestEntity.ENTITY))
             .criteriaProvider(TestEntity.CRITERIA_TYPE, (attributes, values) -> "1 = 2"));
   }
 
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("scott.dept");
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
-    Attribute<byte[]> LOGO = TYPE.byteArrayAttribute("logo");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
+    Column<byte[]> LOGO = TYPE.byteArrayColumn("logo");
   }
 
   void department() {
@@ -86,17 +87,17 @@ public final class TestDomain extends DefaultDomain {
 
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<BigDecimal> SALARY = TYPE.bigDecimalAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<BigDecimal> SALARY = TYPE.bigDecimalColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, EMPNO);
-    Attribute<String> EMP_DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Column<String> EMP_DEPARTMENT_LOCATION = TYPE.stringColumn("location");
   }
 
   void employee() {

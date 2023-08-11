@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -561,7 +562,7 @@ public final class EntitySearchField extends HintTextField {
               .action(Control.control(table.searchField()::requestFocusInWindow))
               .enable(table);
       tableModel.columnModel().columns().forEach(this::configureColumn);
-      Collection<Attribute<String>> searchAttributes = searchModel.searchAttributes();
+      Collection<Column<String>> searchAttributes = searchModel.searchAttributes();
       tableModel.columnModel().setVisibleColumns(searchAttributes.toArray(new Attribute[0]));
       tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
       scrollPane = new JScrollPane(table);

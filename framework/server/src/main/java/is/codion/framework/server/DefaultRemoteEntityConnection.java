@@ -17,6 +17,7 @@ import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -214,14 +215,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute) throws RemoteException, DatabaseException {
+  public <T> List<T> select(Column<T> attribute) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute);
     }
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.select(attribute, condition);
     }
@@ -284,14 +285,14 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
+  public void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
       connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.readBlob(primaryKey, blobAttribute);
     }

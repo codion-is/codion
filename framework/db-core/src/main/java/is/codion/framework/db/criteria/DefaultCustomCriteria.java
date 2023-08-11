@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.criteria;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.EntityDefinition;
 
@@ -18,7 +18,7 @@ final class DefaultCustomCriteria extends AbstractCriteria implements CustomCrit
 
   private final CriteriaType criteriaType;
 
-  DefaultCustomCriteria(CriteriaType criteriaType, List<Attribute<?>> attributes, List<Object> values) {
+  DefaultCustomCriteria(CriteriaType criteriaType, List<Column<?>> attributes, List<Object> values) {
     super(requireNonNull(criteriaType).entityType(), attributes, values);
     this.criteriaType = criteriaType;
   }

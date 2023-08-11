@@ -4,7 +4,7 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Collection;
 
@@ -18,11 +18,11 @@ final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> 
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
 
-  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
+  MultiValueAttributeCriteria(Column<T> attribute, Collection<? extends T> values, Operator operator) {
     this(attribute, values, operator, true);
   }
 
-  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
+  MultiValueAttributeCriteria(Column<T> attribute, Collection<? extends T> values, Operator operator,
                               boolean caseSensitive) {
     super(attribute, operator, values, caseSensitive);
     for (Object value : values) {

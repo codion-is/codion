@@ -360,7 +360,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Collection<Attribute<String>> searchAttributes() {
+  public Collection<Column<String>> searchAttributes() {
     return entityProperties.columnProperties.stream()
             .filter(ColumnProperty::isSearchProperty)
             .map(property -> ((ColumnProperty<String>) property).attribute())
@@ -373,7 +373,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> ColumnProperty<T> columnProperty(Attribute<T> attribute) {
+  public <T> ColumnProperty<T> columnProperty(Column<T> attribute) {
     Property<T> property = property(attribute);
     if (!(property instanceof ColumnProperty)) {
       throw new IllegalArgumentException("Property based on " + attribute + " is not a ColumnProperty");
@@ -393,7 +393,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute) {
+  public <T> ColumnProperty<T> primaryKeyProperty(Column<T> attribute) {
     ColumnProperty<T> property = (ColumnProperty<T>) entityProperties.primaryKeyPropertyMap.get(requireNonNull(attribute, ATTRIBUTE));
     if (property == null) {
       throw new IllegalArgumentException("Primary key property based on " + attribute + " not found in entity: " + entityType);
@@ -410,7 +410,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes) {
+  public List<ColumnProperty<?>> columnProperties(List<Column<?>> attributes) {
     List<ColumnProperty<?>> propertyList = new ArrayList<>(requireNonNull(attributes, ATTRIBUTES).size());
     for (int i = 0; i < attributes.size(); i++) {
       propertyList.add(columnProperty(attributes.get(i)));
@@ -503,7 +503,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<Attribute<?>> primaryKeyAttributes() {
+  public List<Column<?>> primaryKeyAttributes() {
     return entityProperties.primaryKeyAttribues;
   }
 
@@ -597,7 +597,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     if (primaryKeyAttributes().size() > 1) {
       throw new IllegalStateException(entityType + " has a composite primary key");
     }
-    Attribute<T> attribute = (Attribute<T>) primaryKeyAttributes().get(0);
+    Column<T> attribute = (Column<T>) primaryKeyAttributes().get(0);
     attribute.validateType(value);
 
     return new DefaultKey(this, attribute, value, true);
@@ -777,13 +777,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<Property<?>> properties;
     private final List<ColumnProperty<?>> columnProperties;
     private final List<ColumnProperty<?>> lazyLoadedBlobProperties;
-    private final List<Attribute<?>> primaryKeyAttribues;
+    private final List<Column<?>> primaryKeyAttribues;
     private final List<ColumnProperty<?>> primaryKeyProperties;
     private final Map<Attribute<?>, ColumnProperty<?>> primaryKeyPropertyMap;
     private final List<ForeignKeyProperty> foreignKeyProperties;
     private final Map<ForeignKey, ForeignKeyProperty> foreignKeyPropertyMap;
     private final Map<Attribute<?>, Collection<ForeignKeyProperty>> columnPropertyForeignKeyProperties;
-    private final Set<Attribute<?>> foreignKeyColumnAttributes = new HashSet<>();
+    private final Set<Column<?>> foreignKeyColumnAttributes = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
     private final List<Attribute<?>> defaultSelectAttributes;
@@ -853,7 +853,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .map(ForeignKey.class::cast)
               .collect(toMap(Function.identity(), foreignKey -> foreignKeyColumnProperties(foreignKey, propertyMap)));
       foreignKeyColumnAttributes.addAll(foreignKeyColumnProperties.values().stream()
-              .flatMap(properties -> properties.stream().map(Property::attribute))
+              .flatMap(properties -> properties.stream().map(ColumnProperty::attribute))
               .collect(toSet()));
       foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnProperties));
     }
@@ -928,9 +928,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private List<Attribute<?>> primaryKeyAttributes() {
+    private List<Column<?>> primaryKeyAttributes() {
       return primaryKeyProperties.stream()
-              .map(Property::attribute)
+              .map(ColumnProperty::attribute)
               .collect(toList());
     }
 

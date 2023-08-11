@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import static java.util.Objects.requireNonNull;
 
@@ -28,7 +28,7 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
 
     private final AuditAction auditAction;
 
-    DefaultAuditPropertyBuilder(Attribute<T> attribute, String caption, AuditAction auditAction) {
+    DefaultAuditPropertyBuilder(Column<T> attribute, String caption, AuditAction auditAction) {
       super(attribute, caption);
       this.auditAction = requireNonNull(auditAction);
     }

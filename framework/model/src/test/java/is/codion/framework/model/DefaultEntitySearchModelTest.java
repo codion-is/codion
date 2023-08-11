@@ -7,7 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
@@ -42,7 +42,7 @@ public final class DefaultEntitySearchModelTest {
           .build();
 
   private EntitySearchModel searchModel;
-  private Collection<Attribute<String>> searchAttributes;
+  private Collection<Column<String>> searchAttributes;
 
   @Test
   void constructorNullEntityType() {

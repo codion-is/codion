@@ -15,6 +15,7 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -239,7 +240,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> select(Attribute<T> attribute) throws RemoteException, DatabaseException;
+  <T> List<T> select(Column<T> attribute) throws RemoteException, DatabaseException;
 
   /**
    * Selects distinct non-null values of the given attribute, note that the attribute
@@ -254,7 +255,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> select(Attribute<T> attribute, Condition condition) throws RemoteException, DatabaseException;
+  <T> List<T> select(Column<T> attribute, Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity
@@ -373,7 +374,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
    * Reads the blob value associated with {@code attribute} from the given entity,
@@ -384,5 +385,5 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws RemoteException, DatabaseException;
+  byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws RemoteException, DatabaseException;
 }

@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
+import is.codion.framework.domain.entity.Column;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,6 +15,9 @@ import java.sql.Statement;
  * @param <T> the underlying type
  */
 public interface ColumnProperty<T> extends Property<T> {
+
+  @Override
+  Column<T> attribute();
 
   /**
    * @return the column name

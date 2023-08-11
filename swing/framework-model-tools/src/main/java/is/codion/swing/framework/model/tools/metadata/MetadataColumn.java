@@ -8,7 +8,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A database metadata column.
  */
-public final class Column {
+public final class MetadataColumn {
 
   private final String columnName;
   private final Class<?> columnClass;
@@ -23,9 +23,9 @@ public final class Column {
   private final boolean autoIncrement;
   private final boolean generated;
 
-  Column(String columnName, Class<?> columnClass, int position, int columnSize,
-         int decimalDigits, int nullable, String defaultValue, String comment,
-         int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
+  MetadataColumn(String columnName, Class<?> columnClass, int position, int columnSize,
+                 int decimalDigits, int nullable, String defaultValue, String comment,
+                 int primaryKeyIndex, boolean foreignKeyColumn, boolean autoIncrement, boolean generated) {
     this.columnName = requireNonNull(columnName);
     this.columnClass = requireNonNull(columnClass);
     this.position = position;
@@ -105,7 +105,7 @@ public final class Column {
     if (object == null || getClass() != object.getClass()) {
       return false;
     }
-    Column column = (Column) object;
+    MetadataColumn column = (MetadataColumn) object;
 
     return columnName.equals(column.columnName);
   }

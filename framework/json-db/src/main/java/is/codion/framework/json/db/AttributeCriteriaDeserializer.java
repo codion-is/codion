@@ -5,8 +5,9 @@ package is.codion.framework.json.db;
 
 import is.codion.common.Operator;
 import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -32,7 +33,7 @@ final class AttributeCriteriaDeserializer implements Serializable {
 
   <T> AttributeCriteria<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String attributeName = conditionNode.get("attribute").asText();
-    Property<T> property = definition.property(definition.attribute(attributeName));
+    ColumnProperty<T> property = definition.columnProperty((Column<T>) definition.attribute(attributeName));
     boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();

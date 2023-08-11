@@ -6,6 +6,7 @@ package is.codion.framework.json.db;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -94,7 +95,7 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     OrderBy.Builder builder = OrderBy.builder();
     for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
-      Attribute<Object> attribute = definition.attribute(split[0]);
+      Column<Object> attribute = (Column<Object>) definition.attribute(split[0]);
       String order = split[1];
       NullOrder nullOrder = NullOrder.valueOf(split[2]);
       if ("asc".equals(order)) {

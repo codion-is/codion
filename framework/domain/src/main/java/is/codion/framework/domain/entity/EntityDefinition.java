@@ -174,7 +174,7 @@ public interface EntityDefinition {
    * If the entity has no primary key attributes defined, an empty list is returned.
    * @return the primary key attributes of this entity type, sorted by primary key column index
    */
-  List<Attribute<?>> primaryKeyAttributes();
+  List<Column<?>> primaryKeyAttributes();
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
@@ -239,7 +239,7 @@ public interface EntityDefinition {
    * @return the attributes to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<Attribute<String>> searchAttributes();
+  Collection<Column<String>> searchAttributes();
 
   /**
    * Returns the attributes selected by default for this entity type.
@@ -255,7 +255,7 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
    * @throws NullPointerException in case {@code attribute} is null
    */
-  <T> ColumnProperty<T> columnProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> columnProperty(Column<T> attribute);
 
   /**
    * @param attribute the attribute
@@ -273,7 +273,7 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case no such property exists
    * @throws NullPointerException in case {@code attribute} is null
    */
-  <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> primaryKeyProperty(Column<T> attribute);
 
   /**
    * Returns the {@link Property}s based on the given attributes
@@ -287,7 +287,7 @@ public interface EntityDefinition {
    * @param attributes the attributes which properties to retrieve
    * @return a list of column properties
    */
-  List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes);
+  List<ColumnProperty<?>> columnProperties(List<Column<?>> attributes);
 
   /**
    * Retrieves the writable (non-read-only) column properties comprising this entity type

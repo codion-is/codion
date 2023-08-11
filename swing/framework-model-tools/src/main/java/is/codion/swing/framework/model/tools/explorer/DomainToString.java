@@ -61,9 +61,9 @@ final class DomainToString {
     if (property instanceof ColumnProperty) {
       ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       String valueClassName = columnProperty.attribute().valueClass().getSimpleName();
-      builder.append(INDENT).append("Attribute<").append(valueClassName).append("> ")
+      builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
               .append(columnProperty.columnName().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
-              .append("Attribute(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+              .append("Column(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
       ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;

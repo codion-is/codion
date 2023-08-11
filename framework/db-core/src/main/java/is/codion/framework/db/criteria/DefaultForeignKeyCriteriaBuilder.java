@@ -5,6 +5,7 @@ package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.ForeignKey.Reference;
@@ -104,34 +105,34 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
 
   @Override
   public Criteria isNull() {
-    List<Attribute<?>> attributes = foreignKey.references().stream()
+    List<Column<?>> attributes = foreignKey.references().stream()
             .map(Reference::attribute)
             .collect(toList());
     if (attributes.size() == 1) {
-      Attribute<Object> attribute = (Attribute<Object>) attributes.get(0);
+      Column<Object> attribute = (Column<Object>) attributes.get(0);
 
       return new DefaultAttributeCriteriaBuilder<>(attribute).isNull();
     }
 
     return new DefaultCriteriaCombination(AND, attributes.stream()
-            .map(attribute -> (Attribute<Object>) attribute)
+            .map(attribute -> (Column<Object>) attribute)
             .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNull())
             .collect(toList()));
   }
 
   @Override
   public Criteria isNotNull() {
-    List<Attribute<?>> attributes = foreignKey.references().stream()
+    List<Column<?>> attributes = foreignKey.references().stream()
             .map(Reference::attribute)
             .collect(toList());
     if (attributes.size() == 1) {
-      Attribute<Object> attribute = (Attribute<Object>) attributes.get(0);
+      Column<Object> attribute = (Column<Object>) attributes.get(0);
 
       return new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull();
     }
 
     return new DefaultCriteriaCombination(AND, attributes.stream()
-            .map(attribute -> (Attribute<Object>) attribute)
+            .map(attribute -> (Column<Object>) attribute)
             .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull())
             .collect(toList()));
   }
@@ -180,7 +181,7 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
   }
 
   private static AttributeCriteria<Object> inCriteria(Reference<?> reference, Operator operator, List<Object> values) {
-    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Attribute<Object>) reference.attribute());
+    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Column<Object>) reference.attribute());
     switch (operator) {
       case EQUAL:
         return criteriaBuilder.in(values);
@@ -192,7 +193,7 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
   }
 
   private static Criteria equalCriteria(Attribute<?> conditionAttribute, Operator operator, Object value) {
-    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Attribute<Object>) conditionAttribute);
+    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Column<Object>) conditionAttribute);
     switch (operator) {
       case EQUAL:
         return criteriaBuilder.equalTo(value);

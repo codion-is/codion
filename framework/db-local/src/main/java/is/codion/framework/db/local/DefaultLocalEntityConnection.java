@@ -29,6 +29,7 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -353,8 +354,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
-        for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
-          ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Attribute<Object>) attributeValue.getKey());
+        for (Map.Entry<Column<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
+          ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Column<Object>) attributeValue.getKey());
           if (!columnProperty.isUpdatable()) {
             throw new UpdateException("Attribute is not updatable: " + columnProperty.attribute());
           }
@@ -468,7 +469,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
     }
 
-    return selectSingle(where(attribute(attribute).equalTo(value)));
+    return selectSingle(where(attribute((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -518,7 +519,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return select(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
     }
 
-    return select(where(attribute(attribute).equalTo(value)));
+    return select(where(attribute((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -528,7 +529,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
     }
 
-    return select(where(attribute(attribute).in(values)));
+    return select(where(attribute((Column<T>) attribute).in(values)));
   }
 
   @Override
@@ -552,14 +553,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
+  public <T> List<T> select(Column<T> attribute) throws DatabaseException {
     return select(requireNonNull(attribute), SelectCondition.all(attribute.entityType())
             .orderBy(ascending(attribute))
             .build());
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(attribute, "attribute").entityType());
     if (entityDefinition.selectQuery() != null) {
       throw new UnsupportedOperationException("Selecting attribute values is not implemented for entities with custom select queries");
@@ -743,7 +744,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
+  public void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").type());
     checkIfReadOnly(entityDefinition.type());
@@ -790,7 +791,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").type());
     ColumnProperty<byte[]> blobProperty = entityDefinition.columnProperty(blobAttribute);
     PreparedStatement statement = null;
@@ -1017,7 +1018,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private Map<Key, Entity> selectReferencedEntities(ForeignKeyProperty foreignKeyProperty, List<Key> referencedKeys,
                                                     int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
     Key referencedKey = referencedKeys.get(0);
-    List<Attribute<?>> keyAttributes = referencedKey.attributes();
+    List<Column<?>> keyAttributes = referencedKey.attributes();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
@@ -1039,9 +1040,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toMap(entity -> createKey(entity, keyAttributes), Function.identity()));
   }
 
-  private Key createKey(Entity entity, List<Attribute<?>> keyAttributes) {
+  private Key createKey(Entity entity, List<Column<?>> keyAttributes) {
     Key.Builder keyBuilder = entities().keyBuilder(entity.type());
-    keyAttributes.forEach(attribute -> keyBuilder.with((Attribute<Object>) attribute, entity.get(attribute)));
+    keyAttributes.forEach(attribute -> keyBuilder.with((Column<Object>) attribute, entity.get(attribute)));
 
     return keyBuilder.build();
   }
@@ -1412,7 +1413,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static Collection<Attribute<?>> attributesToSelect(ForeignKeyProperty foreignKeyProperty,
-                                                             List<Attribute<?>> referencedAttributes) {
+                                                             List<? extends Attribute<?>> referencedAttributes) {
     if (foreignKeyProperty.selectAttributes().isEmpty()) {
       return emptyList();
     }

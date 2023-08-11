@@ -16,7 +16,7 @@ import java.time.OffsetTime;
 import java.util.Collection;
 import java.util.List;
 
-final class ColumnPacker implements ResultPacker<Column> {
+final class ColumnPacker implements ResultPacker<MetadataColumn> {
 
   private static final String YES = "YES";
 
@@ -29,7 +29,7 @@ final class ColumnPacker implements ResultPacker<Column> {
   }
 
   @Override
-  public Column get(ResultSet resultSet) throws SQLException {
+  public MetadataColumn get(ResultSet resultSet) throws SQLException {
     int dataType = resultSet.getInt("DATA_TYPE");
     int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
     if (resultSet.wasNull()) {
@@ -39,7 +39,7 @@ final class ColumnPacker implements ResultPacker<Column> {
     if (columnClass != null) {
       String columnName = resultSet.getString("COLUMN_NAME");
       try {
-        return new Column(columnName, columnClass,
+        return new MetadataColumn(columnName, columnClass,
                 resultSet.getInt("ORDINAL_POSITION"),
                 resultSet.getInt("COLUMN_SIZE"), decimalDigits,
                 resultSet.getInt("NULLABLE"),

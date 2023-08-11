@@ -5,6 +5,7 @@ package is.codion.framework.db.criteria;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaProvider;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.Entity;
@@ -32,7 +33,7 @@ import static java.util.Objects.requireNonNull;
  * @see #key(Key)
  * @see #keys(Collection)
  * @see #foreignKey(ForeignKey)
- * @see #attribute(Attribute)
+ * @see #attribute(Column)
  * @see #and(Criteria...)
  * @see #and(Collection)
  * @see #or(Criteria...)
@@ -60,7 +61,7 @@ public interface Criteria {
    * order as their respective values appear in the criteria clause.
    * An empty list is returned in case no values are specified.
    */
-  List<Attribute<?>> attributes();
+  List<Column<?>> attributes();
 
   /**
    * Returns a string representing this criteria, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
@@ -136,7 +137,7 @@ public interface Criteria {
       return DefaultForeignKeyCriteriaBuilder.compositeKeyCriteria(attributeMap, EQUAL, valueMaps);
     }
 
-    return attribute((Attribute<?>) firstKey.attribute()).in(Entity.values(keys));
+    return attribute((Column<?>) firstKey.attribute()).in(Entity.values(keys));
   }
 
   /**
@@ -156,11 +157,7 @@ public interface Criteria {
    * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
    * @see #foreignKey(ForeignKey)
    */
-  static <T> AttributeCriteria.Builder<T> attribute(Attribute<T> attribute) {
-    if (attribute instanceof ForeignKey) {
-      throw new IllegalArgumentException("Use Condition.foreignKey(ForeignKey foreignKey) to create a foreign key based criteria");
-    }
-
+  static <T> AttributeCriteria.Builder<T> attribute(Column<T> attribute) {
     return new DefaultAttributeCriteriaBuilder<>(attribute);
   }
 
@@ -242,7 +239,7 @@ public interface Criteria {
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#criteriaProvider(CriteriaType, CriteriaProvider)
    */
-  static CustomCriteria customCriteria(CriteriaType criteriaType, List<Attribute<?>> attributes,
+  static CustomCriteria customCriteria(CriteriaType criteriaType, List<Column<?>> attributes,
                                        List<Object> values) {
     return new DefaultCustomCriteria(criteriaType, attributes, values);
   }
