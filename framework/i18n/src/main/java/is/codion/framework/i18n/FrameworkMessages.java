@@ -5,6 +5,8 @@ package is.codion.framework.i18n;
 
 import java.util.ResourceBundle;
 
+import static java.text.MessageFormat.format;
+
 /**
  * A class containing shared i18n messages used by the framework.
  */
@@ -304,10 +306,11 @@ public final class FrameworkMessages {
   }
 
   /**
+   * @param selectionCount the number of selected records
    * @return confirm delete selected
    */
-  public static String confirmDeleteSelected() {
-    return get(CONFIRM_DELETE_SELECTED);
+  public static String confirmDeleteSelected(int selectionCount) {
+    return format(get(CONFIRM_DELETE_SELECTED), selectionCount);
   }
 
   /**

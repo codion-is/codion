@@ -244,7 +244,6 @@ public class EntityTablePanel extends JPanel {
   }
 
   private static final int FONT_SIZE_TO_ROW_HEIGHT = 4;
-  private static final Confirmer DEFAULT_DELETE_CONFIRMER = new DeleteConfirmer();
   private static final Control NULL_CONTROL = Control.control(() -> {});
 
   private final State conditionPanelVisibleState = State.state();
@@ -266,7 +265,7 @@ public class EntityTablePanel extends JPanel {
   private final StatusPanel statusPanel;
   private final JPanel southPanel = new JPanel(new BorderLayout());
 
-  private Confirmer deleteConfirmer = DEFAULT_DELETE_CONFIRMER;
+  private Confirmer deleteConfirmer = new DeleteConfirmer();
   private JScrollPane tableScrollPane;
   private FilteredTableConditionPanel<Attribute<?>> conditionPanel;
   private JScrollPane conditionPanelScrollPane;
@@ -613,7 +612,7 @@ public class EntityTablePanel extends JPanel {
    * @param deleteConfirmer the delete confirmer, null for the default one
    */
   public final void setDeleteConfirmer(Confirmer deleteConfirmer) {
-    this.deleteConfirmer = deleteConfirmer == null ? DEFAULT_DELETE_CONFIRMER : deleteConfirmer;
+    this.deleteConfirmer = deleteConfirmer == null ? new DeleteConfirmer() : deleteConfirmer;
   }
 
   @Override
@@ -1849,6 +1848,15 @@ public class EntityTablePanel extends JPanel {
     }
   }
 
+  private final class DeleteConfirmer implements Confirmer {
+
+    @Override
+    public boolean confirm(JComponent dialogOwner) {
+      return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(
+              tableModel.selectionModel().selectionCount()), FrameworkMessages.delete());
+    }
+  }
+
   private static final class StaticSwingEntityTableModel extends SwingEntityTableModel {
 
     private final Collection<Entity> entities;
@@ -1927,14 +1935,6 @@ public class EntityTablePanel extends JPanel {
       }
 
       return true;
-    }
-  }
-
-  private static final class DeleteConfirmer implements Confirmer {
-
-    @Override
-    public boolean confirm(JComponent dialogOwner) {
-      return confirm(dialogOwner, FrameworkMessages.confirmDeleteSelected(), FrameworkMessages.delete());
     }
   }
 
