@@ -695,7 +695,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   private Control createRefreshControl() {
     return Control.builder(editModel()::refresh)
             .name(FrameworkMessages.refresh())
-            .enabledObserver(State.and(activeState, editModel().refreshingObserver().reversed()))
+            .enabledObserver(activeState)
             .description(FrameworkMessages.refreshTip() + ALT_PREFIX + FrameworkMessages.refreshMnemonic() + ")")
             .mnemonic(FrameworkMessages.refreshMnemonic())
             .smallIcon(FrameworkIcons.instance().refresh())

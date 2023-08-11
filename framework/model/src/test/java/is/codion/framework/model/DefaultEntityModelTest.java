@@ -64,8 +64,6 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     public StateObserver refreshingObserver() {
       return null;
     }
-    @Override
-    public void addRefreshingObserver(StateObserver refreshingObserver) {}
   }
 
   public static final class TestEntityModel extends DefaultEntityModel<TestEntityModel, TestEntityEditModel, TestEntityTableModel> {

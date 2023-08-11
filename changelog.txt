@@ -9394,3 +9394,4 @@
   FilteredModel.Refresher.refreshingObserver() renamed observer()
   StateObserver.reversedObserver() renamed reversed()
   EntityServer startup time included in startup output
+  EntityEditPanel, refresh control enabled state no longer connected to the table model refreshing observer

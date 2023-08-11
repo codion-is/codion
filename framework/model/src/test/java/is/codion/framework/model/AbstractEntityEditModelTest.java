@@ -689,9 +689,6 @@ public final class AbstractEntityEditModelTest {
     public StateObserver refreshingObserver() {
       return null;
     }
-
-    @Override
-    public void addRefreshingObserver(StateObserver refreshingObserver) {}
   }
 
   private static final class DetailEditModel extends AbstractEntityEditModel {
@@ -710,8 +707,5 @@ public final class AbstractEntityEditModelTest {
     public StateObserver refreshingObserver() {
       return null;
     }
-
-    @Override
-    public void addRefreshingObserver(StateObserver refreshingObserver) {}
   }
 }
