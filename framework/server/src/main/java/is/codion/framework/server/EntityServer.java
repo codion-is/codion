@@ -93,7 +93,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       setClientTypeIdleConnectionTimeouts(configuration.clientTypeIdleConnectionTimeouts());
       createConnectionPools(configuration.database(), configuration.connectionPoolProvider(), configuration.connectionPoolUsers());
       setConnectionLimit(configuration.connectionLimit());
-      bindToRegistry(configuration.registryPort(), configuration.adminPort());
+      registry().rebind(serverInformation().serverName(), this);
     }
     catch (Throwable t) {
       throw logShutdownAndReturn(new RuntimeException(t));
@@ -342,24 +342,6 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
     return null;
   }
 
-  private void bindToRegistry(int registryPort, int adminPort) throws RemoteException {
-    registry().rebind(serverInformation().serverName(), this);
-    String startupInfo = serverInformation().serverName()
-            + " started on port: " + serverInformation().serverPort()
-            + ", registryPort: " + registryPort
-            + ", adminPort: " + adminPort
-            + ", hostname: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
-            + auxiliaryServerInfo();
-    LOG.info(startupInfo);
-    System.out.println(startupInfo);
-  }
-
-  private String auxiliaryServerInfo() {
-    return auxiliaryServers().stream()
-            .map(AuxiliaryServer::serverInformation)
-            .collect(Collectors.joining("\n", "\n", ""));
-  }
-
   private boolean hasConnectionTimedOut(AbstractRemoteEntityConnection connection) {
     Integer timeout = clientTypeIdleConnectionTimeouts.get(connection.remoteClient().clientTypeId());
     if (timeout == null) {
@@ -443,8 +425,12 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
    */
   public static synchronized EntityServer startServer(EntityServerConfiguration configuration) throws RemoteException {
     requireNonNull(configuration, "configuration");
+    long currentTime = System.currentTimeMillis();
     try {
-      return new EntityServer(configuration);
+      EntityServer server = new EntityServer(configuration);
+      printStartupInfo(server, System.currentTimeMillis() - currentTime);
+
+      return server;
     }
     catch (RuntimeException e) {
       throw e;
@@ -453,6 +439,24 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       LOG.error("Exception when starting server", e);
       throw new RuntimeException(e);
     }
+  }
+
+  private static void printStartupInfo(EntityServer server, long startTime) {
+    String startupInfo = server.serverInformation().serverName()
+            + " started on port: " + server.serverInformation().serverPort()
+            + ", registryPort: " + server.configuration.registryPort()
+            + ", adminPort: " + server.configuration.adminPort()
+            + ", hostname: " + ServerConfiguration.RMI_SERVER_HOSTNAME.get()
+            + auxiliaryServerInfo(server.auxiliaryServers())
+            + "Server started in " + startTime + " ms";
+    LOG.info(startupInfo);
+    System.out.println(startupInfo);
+  }
+
+  private static String auxiliaryServerInfo(Collection<AuxiliaryServer> auxiliaryServers) {
+    return auxiliaryServers.stream()
+            .map(AuxiliaryServer::serverInformation)
+            .collect(Collectors.joining("\n", !auxiliaryServers.isEmpty() ? "\n" : "", "\n"));
   }
 
   /**
