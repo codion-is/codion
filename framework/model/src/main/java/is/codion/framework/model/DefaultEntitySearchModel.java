@@ -274,11 +274,13 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       SearchSettings searchSettings = columnSearchSettings.get(searchColumn);
       for (String rawSearchString : searchStrings) {
         ColumnCriteria.Builder<String> builder = column(searchColumn);
+        String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
+        boolean containsWildcards = containsWildcards(preparedSearchString);
         if (searchSettings.caseSensitiveState().get()) {
-          criteria.add(builder.equalTo(prepareSearchString(rawSearchString, searchSettings)));
+          criteria.add(containsWildcards ? builder.like(preparedSearchString) : builder.equalTo(preparedSearchString));
         }
         else {
-          criteria.add(builder.equalToIgnoreCase(prepareSearchString(rawSearchString, searchSettings)));
+          criteria.add(containsWildcards ? builder.likeIgnoreCase(preparedSearchString) : builder.equalToIgnoreCase(preparedSearchString));
         }
       }
     }
@@ -324,6 +326,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     if (!entity.type().equals(entityType)) {
       throw new IllegalArgumentException("Entities of type " + entityType + " exptected, got " + entity.type());
     }
+  }
+
+  private static boolean containsWildcards(String value) {
+    return value.contains("%") || value.contains("_");
   }
 
   private static final class DefaultSearchSettings implements SearchSettings {

@@ -49,11 +49,11 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> artists = connection.select(
-            where(column(Artist.NAME).equalTo("The %")));
+            where(column(Artist.NAME).like("The %")));
 
     List<Entity> nonLiveAlbums = connection.select(where(and(
             foreignKey(Album.ARTIST_FK).in(artists),
-            column(Album.TITLE).notEqualToIgnoreCase("%live%"))));
+            column(Album.TITLE).likeIgnoreCase("%live%"))));
     // end::selectCondition[]
   }
 
@@ -61,7 +61,7 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthEntity[]
     EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> tracks = connection.select(Track.NAME, "Bad%");
+    List<Entity> tracks = connection.select(where(column(Track.NAME).like("Bad%")));
 
     Entity track = tracks.get(0);
 
@@ -80,7 +80,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.where(column(Track.NAME).equalTo("Bad%"))
+            SelectCondition.where(column(Track.NAME).like("Bad%"))
                     .fetchDepth(0)
                     .build());
 
@@ -101,7 +101,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.where(column(Track.NAME).equalTo("Bad%"))
+            SelectCondition.where(column(Track.NAME).like("Bad%"))
                     .fetchDepth(Track.ALBUM_FK, 0)
                     .build());
 
@@ -155,7 +155,7 @@ public final class EntityConnectionDemo {
 
     Entity liveAlbum = connection.selectSingle(where(and(
             foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
-            column(Album.TITLE).equalToIgnoreCase("%live after%"))));
+            column(Album.TITLE).likeIgnoreCase("%live after%"))));
     // end::selectSingleCondition[]
   }
 

@@ -121,7 +121,7 @@ public final class ConditionTest {
     assertEquals("(string = ? and int = ?)", combination1.toString(detailDefinition));
     Combination combination2 = and(
             column(Detail.DOUBLE).equalTo(666.666),
-            column(Detail.STRING).equalToIgnoreCase("valu%e2"));
+            column(Detail.STRING).likeIgnoreCase("valu%e2"));
     Combination combination3 = or(combination1, combination2);
     assertEquals("((string = ? and int = ?) or (double = ? and upper(string) like upper(?)))",
             combination3.toString(detailDefinition));
@@ -330,7 +330,9 @@ public final class ConditionTest {
   void whereClause() {
     EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
     ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(Department.NAME);
-    Criteria criteria = column(Department.NAME).equalTo("upper%");
+    Criteria criteria = column(Department.NAME).equalTo("upper");
+    assertEquals(property.columnExpression() + " = ?", criteria.toString(departmentDefinition));
+    criteria = column(Department.NAME).like("upper%");
     assertEquals(property.columnExpression() + " like ?", criteria.toString(departmentDefinition));
     criteria = column(Department.NAME).equalTo("upper");
     assertEquals(property.columnExpression() + " = ?", criteria.toString(departmentDefinition));
@@ -341,7 +343,9 @@ public final class ConditionTest {
     criteria = column(Department.NAME).in(emptyList());
     assertEquals(property.columnExpression() + " in ()", criteria.toString(departmentDefinition));
 
-    criteria = column(Department.NAME).notEqualTo("upper%");
+    criteria = column(Department.NAME).notEqualTo("upper");
+    assertEquals(property.columnExpression() + " <> ?", criteria.toString(departmentDefinition));
+    criteria = column(Department.NAME).notLike("upper%");
     assertEquals(property.columnExpression() + " not like ?", criteria.toString(departmentDefinition));
     criteria = column(Department.NAME).notEqualTo("upper");
     assertEquals(property.columnExpression() + " <> ?", criteria.toString(departmentDefinition));
@@ -371,9 +375,13 @@ public final class ConditionTest {
     criteria = column(Department.NAME).notBetween("upper", "lower");
     assertEquals("(" + property.columnExpression() + " < ? or " + property.columnExpression() + " > ?)", criteria.toString(departmentDefinition));
 
-    criteria = column(Department.NAME).equalTo("%upper%");
+    criteria = column(Department.NAME).equalTo("upper");
+    assertEquals(property.columnExpression() + " = ?", criteria.toString(departmentDefinition));
+    criteria = column(Department.NAME).like("%upper%");
     assertEquals(property.columnExpression() + " like ?", criteria.toString(departmentDefinition));
-    criteria = column(Department.NAME).notEqualTo("%upper%");
+    criteria = column(Department.NAME).notEqualTo("upper");
+    assertEquals(property.columnExpression() + " <> ?", criteria.toString(departmentDefinition));
+    criteria = column(Department.NAME).notLike("%upper%");
     assertEquals(property.columnExpression() + " not like ?", criteria.toString(departmentDefinition));
   }
 

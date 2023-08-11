@@ -120,7 +120,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       //scott, james, adams
       assertEquals(3, connection.delete(and(
-              column(Employee.NAME).equalTo("%S%"),
+              column(Employee.NAME).like("%S%"),
               column(Employee.JOB).equalTo("CLERK"))));
     }
     finally {

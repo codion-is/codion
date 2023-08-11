@@ -16,16 +16,18 @@ final class SingleValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
   private static final long serialVersionUID = 1;
 
   private final T value;
+  private final boolean useLikeOperator;
 
   SingleValueColumnCriteria(Column<T> column, T value, Operator operator) {
-    this(column, value, operator, true);
+    this(column, value, operator, true, false);
   }
 
   SingleValueColumnCriteria(Column<T> column, T value, Operator operator,
-                            boolean caseSensitive) {
+                            boolean caseSensitive, boolean useLikeOperator) {
     super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
     validateOperator(operator);
     this.value = value;
+    this.useLikeOperator = useLikeOperator;
   }
 
   @Override
@@ -74,20 +76,17 @@ final class SingleValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
       return identifier + (notEqual ? " is not null" : " is null");
     }
 
-    boolean caseInsensitiveString = column().isString() && !caseSensitive();
+    boolean isString = column().isString();
+    boolean caseInsensitiveString = isString && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
-    if (column().isString() && containsWildcards((String) value)) {
+    if (isString && useLikeOperator) {
       return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
     }
 
     return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
-  }
-
-  private static boolean containsWildcards(String value) {
-    return value.contains("%") || value.contains("_");
   }
 
   protected void validateOperator(Operator operator) {

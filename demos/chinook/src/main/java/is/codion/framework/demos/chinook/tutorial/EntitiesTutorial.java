@@ -155,7 +155,7 @@ public final class EntitiesTutorial {
     // a SelectCondition.Builder initialized with a criteria specifying
     // the attribute we're searching by, the operator and value.
     SelectCondition artistsCondition =
-            SelectCondition.where(column(Artist.NAME).equalTo("An%"))
+            SelectCondition.where(column(Artist.NAME).like("An%"))
                     // and we set the order by clause
                     .orderBy(OrderBy.ascending(Artist.NAME))
                     .build();

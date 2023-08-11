@@ -64,6 +64,34 @@ public interface ColumnCriteria<T> extends Criteria {
     ColumnCriteria<String> notEqualToIgnoreCase(String value);
 
     /**
+     * Returns a 'like' {@link ColumnCriteria} or 'isNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCriteria}
+     */
+    ColumnCriteria<String> like(String value);
+
+    /**
+     * Returns a 'like' {@link ColumnCriteria} or 'isNotNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCriteria}
+     */
+    ColumnCriteria<String> notLike(String value);
+
+    /**
+     * Returns a case-insensitive 'like' {@link ColumnCriteria} or 'isNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCriteria}
+     */
+    ColumnCriteria<String> likeIgnoreCase(String value);
+
+    /**
+     * Returns a case-insensitive 'notLike' {@link ColumnCriteria} or 'isNotNull' in case the value is null.
+     * @param value the value to use in the condition
+     * @return a {@link ColumnCriteria}
+     */
+    ColumnCriteria<String> notLikeIgnoreCase(String value);
+
+    /**
      * Returns a 'in' {@link ColumnCriteria}.
      * @param values the values to use in the condition
      * @return a {@link ColumnCriteria}

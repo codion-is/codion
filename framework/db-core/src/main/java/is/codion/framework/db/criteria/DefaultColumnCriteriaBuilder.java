@@ -45,7 +45,7 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
       return (ColumnCriteria<String>) isNull();
     }
 
-    return new SingleValueColumnCriteria<>((Column<String>) column, value, EQUAL, false);
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, EQUAL, false, false);
   }
 
   @Override
@@ -54,7 +54,43 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
       return (ColumnCriteria<String>) isNotNull();
     }
 
-    return new SingleValueColumnCriteria<>((Column<String>) column, value, NOT_EQUAL, false);
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, NOT_EQUAL, false, false);
+  }
+
+  @Override
+  public ColumnCriteria<String> like(String value) {
+    if (value == null) {
+      return (ColumnCriteria<String>) isNotNull();
+    }
+
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, EQUAL, true, true);
+  }
+
+  @Override
+  public ColumnCriteria<String> notLike(String value) {
+    if (value == null) {
+      return (ColumnCriteria<String>) isNotNull();
+    }
+
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, NOT_EQUAL, true, true);
+  }
+
+  @Override
+  public ColumnCriteria<String> likeIgnoreCase(String value) {
+    if (value == null) {
+      return (ColumnCriteria<String>) isNull();
+    }
+
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, EQUAL, false, true);
+  }
+
+  @Override
+  public ColumnCriteria<String> notLikeIgnoreCase(String value) {
+    if (value == null) {
+      return (ColumnCriteria<String>) isNotNull();
+    }
+
+    return new SingleValueColumnCriteria<>((Column<String>) column, value, NOT_EQUAL, false, true);
   }
 
   @Override

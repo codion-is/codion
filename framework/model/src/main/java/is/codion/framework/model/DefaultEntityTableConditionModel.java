@@ -207,14 +207,31 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   private static <T> ColumnCriteria<T> columnCriteria(ColumnConditionModel<?, T> conditionModel) {
     Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    boolean caseInsensitiveString = column.isString() && !conditionModel.caseSensitiveState().get();
+    boolean isString = column.isString();
+    boolean singleStringWithWildcards = isString && equalToValues.size() == 1 &&
+            containsWildcards((String) equalToValues.iterator().next());
+    boolean caseInsensitiveString = isString && !conditionModel.caseSensitiveState().get();
     ColumnCriteria.Builder<T> builder = column(column);
     switch (conditionModel.getOperator()) {
       case EQUAL:
+        if (singleStringWithWildcards) {
+          String equalValue = (String) conditionModel.getEqualValue();
+
+          return caseInsensitiveString ?
+                (ColumnCriteria<T>) builder.likeIgnoreCase(equalValue) :
+                  (ColumnCriteria<T>) builder.like(equalValue);
+        }
         return caseInsensitiveString ?
                 (ColumnCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
                 builder.in(equalToValues);
       case NOT_EQUAL:
+        if (singleStringWithWildcards) {
+          String equalValue = (String) conditionModel.getEqualValue();
+
+          return caseInsensitiveString ?
+                (ColumnCriteria<T>) builder.notLikeIgnoreCase(equalValue) :
+                  (ColumnCriteria<T>) builder.notLike(equalValue);
+        }
         return caseInsensitiveString ?
                 (ColumnCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
                 builder.notIn(equalToValues);
@@ -237,5 +254,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
+  }
+
+  private static boolean containsWildcards(String value) {
+    return value != null && value.contains("%") || value.contains("_");
   }
 }

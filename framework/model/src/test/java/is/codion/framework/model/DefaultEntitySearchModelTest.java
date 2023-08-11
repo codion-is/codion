@@ -114,7 +114,7 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.selectionEmptyObserver().get());
     assertFalse(searchModel.searchStringRepresentsSelected());
     List<Entity> result = searchModel.performQuery();
-    assertTrue(result.size() > 0);
+    assertTrue(!result.isEmpty());
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertFalse(contains(result, "Andy"));
