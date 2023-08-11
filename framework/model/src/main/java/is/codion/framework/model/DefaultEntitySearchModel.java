@@ -3,7 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.Conjunction;
 import is.codion.common.Text;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.event.Event;
@@ -283,7 +282,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
         }
       }
     }
-    Criteria criteriaCombination = combination(Conjunction.OR, criteria);
+    Criteria criteriaCombination = or(criteria);
     SelectCondition.Builder conditionBuilder = additionalCriteriaSupplier == null ?
             SelectCondition.where(criteriaCombination) :
             SelectCondition.where(and(additionalCriteriaSupplier.get(), criteriaCombination));

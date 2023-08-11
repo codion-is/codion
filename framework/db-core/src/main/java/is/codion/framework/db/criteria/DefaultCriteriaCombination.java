@@ -27,7 +27,7 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
   private final List<Criteria> criteria;
   private final Conjunction conjunction;
 
-  DefaultCriteriaCombination(Conjunction conjunction, List<Criteria> criteria) {
+  DefaultCriteriaCombination(Conjunction conjunction, Collection<Criteria> criteria) {
     super(entityType(criteria), attributes(criteria), values(criteria));
     this.conjunction = requireNonNull(conjunction);
     this.criteria = unmodifiableList(new ArrayList<>(criteria));
@@ -91,21 +91,21 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
     }
   }
 
-  private static EntityType entityType(List<Criteria> criteria) {
+  private static EntityType entityType(Collection<Criteria> criteria) {
     if (requireNonNull(criteria).isEmpty()) {
       throw new IllegalArgumentException("One or more criteria must be specified for a criteria combination");
     }
 
-    return criteria.get(0).entityType();
+    return criteria.iterator().next().entityType();
   }
 
-  private static List<?> values(List<Criteria> criteria) {
+  private static List<?> values(Collection<Criteria> criteria) {
     return criteria.stream()
             .flatMap(condition -> condition.values().stream())
             .collect(toList());
   }
 
-  private static List<Attribute<?>> attributes(List<Criteria> criteria) {
+  private static List<Attribute<?>> attributes(Collection<Criteria> criteria) {
     return criteria.stream()
             .flatMap(condition -> condition.attributes().stream())
             .collect(toList());

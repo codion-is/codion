@@ -9396,3 +9396,4 @@
   EntityServer startup time included in startup output
   EntityEditPanel, refresh control enabled state no longer connected to the table model refreshing observer
   FrameworkMessages.confirmDeleteSelected() now includes the number of selected records via MessageFormat and choice
+  Criteria.and() and or() overloaded with a Collection parameter
