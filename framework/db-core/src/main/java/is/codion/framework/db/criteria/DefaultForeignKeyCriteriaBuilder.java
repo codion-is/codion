@@ -4,7 +4,6 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -43,12 +42,12 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultAttributeCriteriaBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute()));
+      return new DefaultColumnCriteriaBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn()));
     }
 
     return new DefaultCriteriaCombination(AND, references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultAttributeCriteriaBuilder<>(reference.attribute()).equalTo(value.get(reference.referencedAttribute())))
+            .map(reference -> new DefaultColumnCriteriaBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn())))
             .collect(toList()));
   }
 
@@ -62,12 +61,12 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
     if (references.size() == 1) {
       Reference<Object> reference = (Reference<Object>) references.get(0);
 
-      return new DefaultAttributeCriteriaBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute()));
+      return new DefaultColumnCriteriaBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn()));
     }
 
     return new DefaultCriteriaCombination(AND, references.stream()
             .map(reference -> (Reference<Object>) reference)
-            .map(reference -> new DefaultAttributeCriteriaBuilder<>(reference.attribute()).notEqualTo(value.get(reference.referencedAttribute())))
+            .map(reference -> new DefaultColumnCriteriaBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn())))
             .collect(toList()));
   }
 
@@ -83,8 +82,8 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
 
   @Override
   public Criteria in(Collection<? extends Entity> values) {
-    List<Attribute<?>> attributes = foreignKey.references().stream()
-            .map(Reference::referencedAttribute)
+    List<Column<?>> attributes = foreignKey.references().stream()
+            .map(Reference::referencedColumn)
             .collect(toList());
 
     return foreignKeyCondition(foreignKey, EQUAL, values.stream()
@@ -94,8 +93,8 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
 
   @Override
   public Criteria notIn(Collection<? extends Entity> values) {
-    List<Attribute<?>> attributes = foreignKey.references().stream()
-            .map(Reference::referencedAttribute)
+    List<Column<?>> attributes = foreignKey.references().stream()
+            .map(Reference::referencedColumn)
             .collect(toList());
 
     return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream()
@@ -105,40 +104,40 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
 
   @Override
   public Criteria isNull() {
-    List<Column<?>> attributes = foreignKey.references().stream()
-            .map(Reference::attribute)
+    List<Column<?>> columns = foreignKey.references().stream()
+            .map(Reference::column)
             .collect(toList());
-    if (attributes.size() == 1) {
-      Column<Object> attribute = (Column<Object>) attributes.get(0);
+    if (columns.size() == 1) {
+      Column<Object> column = (Column<Object>) columns.get(0);
 
-      return new DefaultAttributeCriteriaBuilder<>(attribute).isNull();
+      return new DefaultColumnCriteriaBuilder<>(column).isNull();
     }
 
-    return new DefaultCriteriaCombination(AND, attributes.stream()
-            .map(attribute -> (Column<Object>) attribute)
-            .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNull())
+    return new DefaultCriteriaCombination(AND, columns.stream()
+            .map(column -> (Column<Object>) column)
+            .map(column -> new DefaultColumnCriteriaBuilder<>(column).isNull())
             .collect(toList()));
   }
 
   @Override
   public Criteria isNotNull() {
-    List<Column<?>> attributes = foreignKey.references().stream()
-            .map(Reference::attribute)
+    List<Column<?>> columns = foreignKey.references().stream()
+            .map(Reference::column)
             .collect(toList());
-    if (attributes.size() == 1) {
-      Column<Object> attribute = (Column<Object>) attributes.get(0);
+    if (columns.size() == 1) {
+      Column<Object> column = (Column<Object>) columns.get(0);
 
-      return new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull();
+      return new DefaultColumnCriteriaBuilder<>(column).isNotNull();
     }
 
-    return new DefaultCriteriaCombination(AND, attributes.stream()
-            .map(attribute -> (Column<Object>) attribute)
-            .map(attribute -> new DefaultAttributeCriteriaBuilder<>(attribute).isNotNull())
+    return new DefaultCriteriaCombination(AND, columns.stream()
+            .map(column -> (Column<Object>) column)
+            .map(column -> new DefaultColumnCriteriaBuilder<>(column).isNotNull())
             .collect(toList()));
   }
 
-  static Criteria compositeKeyCriteria(Map<Attribute<?>, Attribute<?>> attributes, Operator operator,
-                                       List<Map<Attribute<?>, ?>> valueMaps) {
+  static Criteria compositeKeyCriteria(Map<Column<?>, Column<?>> attributes, Operator operator,
+                                       List<Map<Column<?>, ?>> valueMaps) {
     if (valueMaps.size() == 1) {
       return compositeEqualCriteria(attributes, operator, valueMaps.get(0));
     }
@@ -148,40 +147,40 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
             .collect(toList()));
   }
 
-  static Criteria compositeEqualCriteria(Map<Attribute<?>, Attribute<?>> attributes,
-                                         Operator operator, Map<Attribute<?>, ?> valueMap) {
+  static Criteria compositeEqualCriteria(Map<Column<?>, Column<?>> attributes,
+                                         Operator operator, Map<Column<?>, ?> valueMap) {
     return new DefaultCriteriaCombination(AND, attributes.entrySet().stream()
             .map(entry -> equalCriteria(entry.getKey(), operator, valueMap.get(entry.getValue())))
             .collect(toList()));
   }
 
   private static Criteria foreignKeyCondition(ForeignKey foreignKey, Operator operator,
-                                              List<Map<Attribute<?>, ?>> valueMaps) {
+                                              List<Map<Column<?>, ?>> valueMaps) {
     if (foreignKey.references().size() > 1) {
       return compositeKeyCriteria(attributeMap(foreignKey.references()), operator, valueMaps);
     }
 
     return inCriteria(foreignKey.references().get(0), operator, valueMaps.stream()
-            .map(map -> map.get(foreignKey.references().get(0).referencedAttribute()))
+            .map(map -> map.get(foreignKey.references().get(0).referencedColumn()))
             .collect(toList()));
   }
 
-  private static Map<Attribute<?>, Attribute<?>> attributeMap(List<Reference<?>> references) {
-    Map<Attribute<?>, Attribute<?>> map = new LinkedHashMap<>(references.size());
-    references.forEach(reference -> map.put(reference.attribute(), reference.referencedAttribute()));
+  private static Map<Column<?>, Column<?>> attributeMap(List<Reference<?>> references) {
+    Map<Column<?>, Column<?>> map = new LinkedHashMap<>(references.size());
+    references.forEach(reference -> map.put(reference.column(), reference.referencedColumn()));
 
     return map;
   }
 
-  private static Map<Attribute<?>, Object> valueMap(Entity entity, List<Attribute<?>> attributes) {
-    Map<Attribute<?>, Object> values = new HashMap<>();
+  private static Map<Column<?>, Object> valueMap(Entity entity, List<Column<?>> attributes) {
+    Map<Column<?>, Object> values = new HashMap<>();
     attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
 
     return values;
   }
 
-  private static AttributeCriteria<Object> inCriteria(Reference<?> reference, Operator operator, List<Object> values) {
-    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Column<Object>) reference.attribute());
+  private static ColumnCriteria<Object> inCriteria(Reference<?> reference, Operator operator, List<Object> values) {
+    ColumnCriteria.Builder<Object> criteriaBuilder = new DefaultColumnCriteriaBuilder<>((Column<Object>) reference.column());
     switch (operator) {
       case EQUAL:
         return criteriaBuilder.in(values);
@@ -192,8 +191,8 @@ final class DefaultForeignKeyCriteriaBuilder implements ForeignKeyCriteria.Build
     }
   }
 
-  private static Criteria equalCriteria(Attribute<?> conditionAttribute, Operator operator, Object value) {
-    AttributeCriteria.Builder<Object> criteriaBuilder = new DefaultAttributeCriteriaBuilder<>((Column<Object>) conditionAttribute);
+  private static Criteria equalCriteria(Column<?> conditionColumn, Operator operator, Object value) {
+    ColumnCriteria.Builder<Object> criteriaBuilder = new DefaultColumnCriteriaBuilder<>((Column<Object>) conditionColumn);
     switch (operator) {
       case EQUAL:
         return criteriaBuilder.equalTo(value);

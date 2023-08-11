@@ -9,7 +9,7 @@ import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.ForeignKeyCriteria;
 import is.codion.framework.domain.entity.Attribute;
@@ -179,7 +179,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       return foreignKeyCriteria((ColumnConditionModel<?, Entity>) conditionModel);
     }
 
-    return attributeCriteria(conditionModel);
+    return columnCriteria(conditionModel);
   }
 
   private static Criteria foreignKeyCriteria(ColumnConditionModel<?, Entity> conditionModel) {
@@ -204,19 +204,19 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
   }
 
-  private static <T> AttributeCriteria<T> attributeCriteria(ColumnConditionModel<?, T> conditionModel) {
-    Column<T> attribute = (Column<T>) conditionModel.columnIdentifier();
+  private static <T> ColumnCriteria<T> columnCriteria(ColumnConditionModel<?, T> conditionModel) {
+    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
-    AttributeCriteria.Builder<T> builder = attribute(attribute);
+    boolean caseInsensitiveString = column.isString() && !conditionModel.caseSensitiveState().get();
+    ColumnCriteria.Builder<T> builder = column(column);
     switch (conditionModel.getOperator()) {
       case EQUAL:
         return caseInsensitiveString ?
-                (AttributeCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
+                (ColumnCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
                 builder.in(equalToValues);
       case NOT_EQUAL:
         return caseInsensitiveString ?
-                (AttributeCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
+                (ColumnCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
                 builder.notIn(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());

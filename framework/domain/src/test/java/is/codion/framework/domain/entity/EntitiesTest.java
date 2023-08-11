@@ -193,13 +193,13 @@ public final class EntitiesTest {
   void key() {
     Key key = entities.keyBuilder(KeyTest.TYPE).build();
     assertEquals(0, key.hashCode());
-    assertTrue(key.attributes().isEmpty());
+    assertTrue(key.columns().isEmpty());
     assertTrue(key.isNull());
 
     assertThrows(IllegalStateException.class, () -> entities.primaryKey(KeyTest.TYPE, 1));
     assertThrows(NoSuchElementException.class, key::get);
     assertThrows(NoSuchElementException.class, key::optional);
-    assertThrows(NoSuchElementException.class, key::attribute);
+    assertThrows(NoSuchElementException.class, key::column);
 
     key = key.copyBuilder()
             .with(KeyTest.ID1, 1)
@@ -429,15 +429,15 @@ public final class EntitiesTest {
   }
 
   @Test
-  void searchAttributes() {
+  void searchColumns() {
     EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
-    Collection<Column<String>> searchAttributes = definition.searchAttributes();
-    assertTrue(searchAttributes.contains(TestDomain.Employee.JOB));
-    assertTrue(searchAttributes.contains(TestDomain.Employee.NAME));
+    Collection<Column<String>> searchColumns = definition.searchColumns();
+    assertTrue(searchColumns.contains(TestDomain.Employee.JOB));
+    assertTrue(searchColumns.contains(TestDomain.Employee.NAME));
 
-    searchAttributes = entities.definition(TestDomain.Department.TYPE).searchAttributes();
+    searchColumns = entities.definition(TestDomain.Department.TYPE).searchColumns();
     //should contain all string based properties
-    assertTrue(searchAttributes.contains(TestDomain.Department.NAME));
+    assertTrue(searchColumns.contains(TestDomain.Department.NAME));
   }
 
   @Test

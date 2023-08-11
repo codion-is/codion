@@ -135,20 +135,20 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * Returns the {@link FilteredComboBoxModel} for the given attribute. If one does not exist one is created.
-   * @param attribute the attribute
+   * Returns the {@link FilteredComboBoxModel} for the given column. If one does not exist one is created.
+   * @param column the column
    * @param <T> the value type
-   * @return a {@link FilteredComboBoxModel} for the given attribute
+   * @return a {@link FilteredComboBoxModel} for the given column
    * @see #createComboBoxModel(Column)
    */
-  public final <T> FilteredComboBoxModel<T> comboBoxModel(Column<T> attribute) {
-    entityDefinition().property(attribute);
+  public final <T> FilteredComboBoxModel<T> comboBoxModel(Column<T> column) {
+    entityDefinition().property(column);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
-      FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(attribute);
+      FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(column);
       if (comboBoxModel == null) {
-        comboBoxModel = createAndInitializeAttributeComboBoxModel(attribute);
-        comboBoxModels.put(attribute, comboBoxModel);
+        comboBoxModel = createAndInitializeColumnComboBoxModel(column);
+        comboBoxModels.put(column, comboBoxModel);
       }
 
       return comboBoxModel;
@@ -192,20 +192,20 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   /**
-   * Creates a combo box model containing the current values of the given attribute.
+   * Creates a combo box model containing the current values of the given column.
    * This default implementation returns a sorted {@link FilteredComboBoxModel} with the default nullValueItem
-   * if the underlying attribute is nullable
-   * @param attribute the attribute
+   * if the underlying column is nullable
+   * @param column the column
    * @param <T> the value type
-   * @return a combo box model based on the given attribute
+   * @return a combo box model based on the given column
    */
-  public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> attribute) {
-    requireNonNull(attribute, "attribute");
-    FilteredComboBoxModel<T> model = createAttributeComboBoxModel(attribute);
-    if (isNullable(attribute)) {
+  public <T> FilteredComboBoxModel<T> createComboBoxModel(Column<T> column) {
+    requireNonNull(column, "column");
+    FilteredComboBoxModel<T> model = createColumnComboBoxModel(column);
+    if (isNullable(column)) {
       model.setIncludeNull(true);
-      if (attribute.valueClass().isInterface()) {
-        model.setNullItem(ProxyBuilder.builder(attribute.valueClass())
+      if (column.valueClass().isInterface()) {
+        model.setNullItem(ProxyBuilder.builder(column.valueClass())
                 .method("toString", parameters -> FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get())
                 .build());
       }
@@ -282,18 +282,18 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     return comboBoxModel;
   }
 
-  private <T> FilteredComboBoxModel<T> createAndInitializeAttributeComboBoxModel(Column<T> attribute) {
-    FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(attribute);
+  private <T> FilteredComboBoxModel<T> createAndInitializeColumnComboBoxModel(Column<T> column) {
+    FilteredComboBoxModel<T> comboBoxModel = createComboBoxModel(column);
     refreshingObserver.add(comboBoxModel.refresher().observer());
 
     return comboBoxModel;
   }
 
-  private <T> FilteredComboBoxModel<T> createAttributeComboBoxModel(Column<T> attribute) {
+  private <T> FilteredComboBoxModel<T> createColumnComboBoxModel(Column<T> column) {
     FilteredComboBoxModel<T> model = new FilteredComboBoxModel<>();
-    model.setItemSupplier(attribute.isEnum() ?
-            new EnumAttributeItemSupplier<>(attribute) :
-            new AttributeItemSupplier<>(connectionProvider(), attribute));
+    model.setItemSupplier(column.isEnum() ?
+            new EnumAttributeItemSupplier<>(column) :
+            new ColumnItemSupplier<>(connectionProvider(), column));
 
     return model;
   }
@@ -302,8 +302,8 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
 
     private final Collection<T> items;
 
-    private EnumAttributeItemSupplier(Attribute<T> attribute) {
-      items = asList(attribute.valueClass().getEnumConstants());
+    private EnumAttributeItemSupplier(Column<T> column) {
+      items = asList(column.valueClass().getEnumConstants());
     }
 
     @Override
@@ -312,20 +312,20 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
     }
   }
 
-  private static final class AttributeItemSupplier<T> implements Supplier<Collection<T>> {
+  private static final class ColumnItemSupplier<T> implements Supplier<Collection<T>> {
 
     private final EntityConnectionProvider connectionProvider;
-    private final Column<T> attribute;
+    private final Column<T> column;
 
-    private AttributeItemSupplier(EntityConnectionProvider connectionProvider, Column<T> attribute) {
+    private ColumnItemSupplier(EntityConnectionProvider connectionProvider, Column<T> column) {
       this.connectionProvider = connectionProvider;
-      this.attribute = attribute;
+      this.column = column;
     }
 
     @Override
     public Collection<T> get() {
       try {
-        return connectionProvider.connection().select(attribute);
+        return connectionProvider.connection().select(column);
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

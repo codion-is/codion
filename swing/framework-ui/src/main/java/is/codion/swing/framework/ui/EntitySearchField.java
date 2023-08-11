@@ -368,8 +368,8 @@ public final class EntitySearchField extends HintTextField {
       PanelBuilder propertyBasePanelBuilder = Components.panel(cardLayout);
       FilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
-      for (Map.Entry<Attribute<String>, EntitySearchModel.SearchSettings> entry :
-              searchModel.attributeSearchSettings().entrySet()) {
+      for (Map.Entry<Column<String>, EntitySearchModel.SearchSettings> entry :
+              searchModel.columnSearchSettings().entrySet()) {
         propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.property(entry.getKey()).caption()));
         propertyBasePanelBuilder.add(createPropertyPanel(entry.getValue()), entry.getKey().name());
       }
@@ -562,9 +562,9 @@ public final class EntitySearchField extends HintTextField {
               .action(Control.control(table.searchField()::requestFocusInWindow))
               .enable(table);
       tableModel.columnModel().columns().forEach(this::configureColumn);
-      Collection<Column<String>> searchAttributes = searchModel.searchAttributes();
-      tableModel.columnModel().setVisibleColumns(searchAttributes.toArray(new Attribute[0]));
-      tableModel.sortModel().setSortOrder(searchAttributes.iterator().next(), SortOrder.ASCENDING);
+      Collection<Column<String>> searchColumns = searchModel.searchColumns();
+      tableModel.columnModel().setVisibleColumns(searchColumns.toArray(new Attribute[0]));
+      tableModel.sortModel().setSortOrder(searchColumns.iterator().next(), SortOrder.ASCENDING);
       scrollPane = new JScrollPane(table);
       searchPanel.add(table.searchField(), BorderLayout.WEST);
       basePanel.add(scrollPane, BorderLayout.CENTER);

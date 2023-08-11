@@ -28,8 +28,8 @@ class DefaultAuditProperty<T> extends DefaultColumnProperty<T> implements AuditP
 
     private final AuditAction auditAction;
 
-    DefaultAuditPropertyBuilder(Column<T> attribute, String caption, AuditAction auditAction) {
-      super(attribute, caption);
+    DefaultAuditPropertyBuilder(Column<T> column, String caption, AuditAction auditAction) {
+      super(column, caption);
       this.auditAction = requireNonNull(auditAction);
     }
 

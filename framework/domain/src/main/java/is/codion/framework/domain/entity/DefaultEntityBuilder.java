@@ -19,7 +19,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   DefaultEntityBuilder(Key key) {
     this(requireNonNull(key).definition());
-    key.attributes().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
+    key.columns().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
 
   DefaultEntityBuilder(EntityDefinition definition) {

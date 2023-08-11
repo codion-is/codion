@@ -46,9 +46,9 @@ public final class ConditionObjectMapperTest {
 
     Condition condition = where(and(
             foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
-            attribute(Employee.NAME).equalToIgnoreCase("Loc"),
-            attribute(Employee.EMPNO).between(10, 40),
-            attribute(Employee.COMMISSION).isNotNull()));
+            column(Employee.NAME).equalToIgnoreCase("Loc"),
+            column(Employee.EMPNO).between(10, 40),
+            column(Employee.COMMISSION).isNotNull()));
 
     String jsonString = mapper.writeValueAsString(condition);
     Condition readCondition = mapper.readValue(jsonString, Condition.class);
@@ -60,13 +60,13 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void nullCondition() throws JsonProcessingException {
-    Criteria criteria = attribute(Employee.COMMISSION).isNotNull();
+    Criteria criteria = column(Employee.COMMISSION).isNotNull();
 
     String jsonString = mapper.writeValueAsString(criteria);
     Criteria readCriteria = mapper.readValue(jsonString, Criteria.class);
 
     assertEquals(criteria.entityType(), readCriteria.entityType());
-    assertEquals(criteria.attributes(), readCriteria.attributes());
+    assertEquals(criteria.columns(), readCriteria.columns());
     assertEquals(criteria.values(), readCriteria.values());
   }
 
@@ -82,13 +82,13 @@ public final class ConditionObjectMapperTest {
     CustomCriteria readCriteria = (CustomCriteria) readCondition.criteria();
 
     assertEquals(customedCriteria.criteriaType(), readCriteria.criteriaType());
-    assertEquals(customedCriteria.attributes(), readCriteria.attributes());
+    assertEquals(customedCriteria.columns(), readCriteria.columns());
     assertEquals(customedCriteria.values(), readCriteria.values());
   }
 
   @Test
   void selectCondition() throws JsonProcessingException {
-    SelectCondition selectCondition = SelectCondition.where(attribute(Employee.EMPNO).equalTo(1))
+    SelectCondition selectCondition = SelectCondition.where(column(Employee.EMPNO).equalTo(1))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
                     .descendingNullsLast(Employee.NAME)
@@ -107,7 +107,7 @@ public final class ConditionObjectMapperTest {
     SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(selectCondition.criteria(), readCondition.criteria());
-    assertEquals(selectCondition.orderBy().orElse(null).orderByAttributes(), readCondition.orderBy().get().orderByAttributes());
+    assertEquals(selectCondition.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
     assertEquals(selectCondition.limit(), readCondition.limit());
     assertEquals(selectCondition.offset(), readCondition.offset());
     assertEquals(selectCondition.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
@@ -119,7 +119,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(42, readCondition.queryTimeout());
     assertEquals(selectCondition, readCondition);
 
-    selectCondition = SelectCondition.where(attribute(Employee.EMPNO).equalTo(1)).build();
+    selectCondition = SelectCondition.where(column(Employee.EMPNO).equalTo(1)).build();
 
     jsonString = mapper.writeValueAsString(selectCondition);
     readCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -127,7 +127,7 @@ public final class ConditionObjectMapperTest {
     assertFalse(readCondition.orderBy().isPresent());
     assertFalse(readCondition.fetchDepth().isPresent());
 
-    Condition condition = where(attribute(Employee.EMPNO).equalTo(2));
+    Condition condition = where(column(Employee.EMPNO).equalTo(2));
     jsonString = mapper.writeValueAsString(condition);
 
     selectCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -135,7 +135,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void updateCondition() throws JsonProcessingException {
-    UpdateCondition condition = UpdateCondition.where(attribute(Department.DEPTNO)
+    UpdateCondition condition = UpdateCondition.where(column(Department.DEPTNO)
             .between(1, 2))
             .set(Department.LOCATION, "loc")
             .set(Department.DEPTNO, 3)
@@ -145,7 +145,7 @@ public final class ConditionObjectMapperTest {
     UpdateCondition readCondition = mapper.readValue(jsonString, UpdateCondition.class);
 
     assertEquals(condition.criteria(), readCondition.criteria());
-    assertEquals(condition.attributeValues(), readCondition.attributeValues());
+    assertEquals(condition.columnValues(), readCondition.columnValues());
   }
 
   @Test
@@ -161,9 +161,9 @@ public final class ConditionObjectMapperTest {
   @Test
   void combinationOfCombinations() throws JsonProcessingException {
     Condition condition = where(and(
-            attribute(Employee.COMMISSION).equalTo(100d),
-            or(attribute(Employee.JOB).notEqualTo("test"),
-                    attribute(Employee.JOB).isNotNull())));
+            column(Employee.COMMISSION).equalTo(100d),
+            or(column(Employee.JOB).notEqualTo("test"),
+                    column(Employee.JOB).isNotNull())));
 
     String jsonString = mapper.writeValueAsString(condition);
     Condition readCondition = mapper.readValue(jsonString, Condition.class);

@@ -23,9 +23,9 @@ public interface Key {
   EntityDefinition definition();
 
   /**
-   * @return the attributes comprising this key
+   * @return the columns comprising this key
    */
-  List<Column<?>> attributes();
+  List<Column<?>> columns();
 
   /**
    * @return true if this key represents a primary key for an entity, note that this is true
@@ -58,13 +58,13 @@ public interface Key {
   boolean isNotNull(Attribute<?> attribute);
 
   /**
-   * Returns this keys attribute. Note that this method throws an exception if this key is a composite key.
-   * @param <T> the attribute type
-   * @return the key attribute, useful for single attribute keys
+   * Returns this keys column. Note that this method throws an exception if this key is a composite key.
+   * @param <T> the column type
+   * @return the key column, useful for single column keys
    * @throws IllegalStateException in case this is a composite key
    * @throws NoSuchElementException in case this key contains no values
    */
-  <T> Column<T> attribute();
+  <T> Column<T> column();
 
   /**
    * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
@@ -85,18 +85,18 @@ public interface Key {
   <T> Optional<T> optional();
 
   /**
-   * @param attribute the attribute
+   * @param column the column
    * @param <T> the value type
-   * @return the value associated with the given attribute
+   * @return the value associated with the given column
    */
-  <T> T get(Column<T> attribute);
+  <T> T get(Column<T> column);
 
   /**
-   * @param attribute the attribute
+   * @param column the column
    * @param <T> the value type
-   * @return the value associated with the given attribute, wrapped in an {@link Optional}
+   * @return the value associated with the given column, wrapped in an {@link Optional}
    */
-  <T> Optional<T> optional(Column<T> attribute);
+  <T> Optional<T> optional(Column<T> column);
 
   /**
    * Creates a new {@link Key.Builder} instance, initialized with the values in this key.
@@ -107,18 +107,18 @@ public interface Key {
   /**
    * A builder for {@link Key} instances.
    * Note that the resulting key is assumed to be a primary key
-   * if any of the values is associated with a primary key attribute.
+   * if any of the values is associated with a primary key column.
    */
   interface Builder {
 
     /**
-     * Adds the given attribute value to this builder
-     * @param attribute the attribute
+     * Adds the given column value to this builder
+     * @param column the column
      * @param value the value
      * @param <T> the value type
      * @return this builder instance
      */
-    <T> Builder with(Column<T> attribute, T value);
+    <T> Builder with(Column<T> column, T value);
 
     /**
      * Builds the key instance

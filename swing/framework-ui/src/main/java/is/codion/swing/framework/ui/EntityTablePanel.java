@@ -1672,7 +1672,7 @@ public class EntityTablePanel extends JPanel {
       ForeignKey foreignKey = (ForeignKey) attribute;
 
       return foreignKey.references().stream()
-              .map(ForeignKey.Reference::attribute)
+              .map(ForeignKey.Reference::column)
               .map(referenceAttribute -> tableModel.entityDefinition().property(referenceAttribute))
               .filter(ColumnProperty.class::isInstance)
               .map(ColumnProperty.class::cast)

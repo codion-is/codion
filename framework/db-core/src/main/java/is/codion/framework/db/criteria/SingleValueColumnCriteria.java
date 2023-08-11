@@ -11,19 +11,19 @@ import java.util.Objects;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
+final class SingleValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
   private final T value;
 
-  SingleValueAttributeCriteria(Column<T> attribute, T value, Operator operator) {
-    this(attribute, value, operator, true);
+  SingleValueColumnCriteria(Column<T> column, T value, Operator operator) {
+    this(column, value, operator, true);
   }
 
-  SingleValueAttributeCriteria(Column<T> attribute, T value, Operator operator,
-                               boolean caseSensitive) {
-    super(attribute, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
+  SingleValueColumnCriteria(Column<T> column, T value, Operator operator,
+                            boolean caseSensitive) {
+    super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
     validateOperator(operator);
     this.value = value;
   }
@@ -33,13 +33,13 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
     if (this == object) {
       return true;
     }
-    if (!(object instanceof SingleValueAttributeCriteria)) {
+    if (!(object instanceof SingleValueColumnCriteria)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    SingleValueAttributeCriteria<?> that = (SingleValueAttributeCriteria<?>) object;
+    SingleValueColumnCriteria<?> that = (SingleValueColumnCriteria<?>) object;
     return Objects.equals(value, that.value);
   }
 
@@ -74,12 +74,12 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
       return identifier + (notEqual ? " is not null" : " is null");
     }
 
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
+    boolean caseInsensitiveString = column().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
-    if (attribute().isString() && containsWildcards((String) value)) {
+    if (column().isString() && containsWildcards((String) value)) {
       return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
     }
 

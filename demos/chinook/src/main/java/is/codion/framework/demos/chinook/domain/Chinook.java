@@ -381,23 +381,23 @@ public interface Chinook {
     private static final Pattern EMAIL_PATTERN = Pattern.compile("^(.+)@(.+)$");
     private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Chinook.class.getName());
 
-    private final Column<String> emailAttribute;
+    private final Column<String> emailColumn;
 
-    public EmailValidator(Column<String> emailAttribute) {
-      this.emailAttribute = emailAttribute;
+    public EmailValidator(Column<String> emailColumn) {
+      this.emailColumn = emailColumn;
     }
 
     @Override
     public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
       super.validate(entity, attribute);
-      if (attribute.equals(emailAttribute)) {
-        validateEmail(entity.get(emailAttribute));
+      if (attribute.equals(emailColumn)) {
+        validateEmail(entity.get(emailColumn));
       }
     }
 
     private void validateEmail(String email) throws ValidationException {
       if (!EMAIL_PATTERN.matcher(email).matches()) {
-        throw new ValidationException(emailAttribute, email, BUNDLE.getString("invalid_email"));
+        throw new ValidationException(emailColumn, email, BUNDLE.getString("invalid_email"));
       }
     }
   }

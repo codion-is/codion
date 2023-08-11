@@ -9398,3 +9398,4 @@
   FrameworkMessages.confirmDeleteSelected() now includes the number of selected records via MessageFormat and choice
   Criteria.and() and or() overloaded with a Collection parameter
   Column introduced
+  Bunch of renaming related to Column

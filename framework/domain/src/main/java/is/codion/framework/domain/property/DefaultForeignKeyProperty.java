@@ -24,7 +24,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
   private static final long serialVersionUID = 1;
 
-  private final Set<Attribute<?>> readOnlyAttributes;
+  private final Set<Column<?>> readOnlyColumns;
   private final EntityType referencedEntityType;
   private final List<Attribute<?>> selectAttributes;
   private final int fetchDepth;
@@ -32,7 +32,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
   private DefaultForeignKeyProperty(DefaultForeignKeyPropertyBuilder builder) {
     super(builder);
-    this.readOnlyAttributes = builder.readOnlyAttributes;
+    this.readOnlyColumns = builder.readOnlyColumns;
     this.referencedEntityType = builder.referencedEntityType;
     this.selectAttributes = builder.selectAttributes;
     this.fetchDepth = builder.fetchDepth;
@@ -60,8 +60,8 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public boolean isReadOnly(Attribute<?> referenceAttribute) {
-    return readOnlyAttributes.contains(referenceAttribute);
+  public boolean isReadOnly(Column<?> referenceColumn) {
+    return readOnlyColumns.contains(referenceColumn);
   }
 
   @Override
@@ -77,7 +77,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   static final class DefaultForeignKeyPropertyBuilder extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder>
           implements ForeignKeyProperty.Builder {
 
-    private final Set<Attribute<?>> readOnlyAttributes = new HashSet<>(1);
+    private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
     private final EntityType referencedEntityType;
     private List<Attribute<?>> selectAttributes = emptyList();
     private int fetchDepth;
@@ -108,11 +108,11 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     }
 
     @Override
-    public ForeignKeyProperty.Builder readOnly(Column<?> referenceAttribute) {
-      if (((ForeignKey) attribute).reference(referenceAttribute) == null) {
-        throw new IllegalArgumentException("Attribute " + referenceAttribute + " is not part of foreign key: " + attribute);
+    public ForeignKeyProperty.Builder readOnly(Column<?> referenceColumn) {
+      if (((ForeignKey) attribute).reference(referenceColumn) == null) {
+        throw new IllegalArgumentException("Column " + referenceColumn + " is not part of foreign key: " + attribute);
       }
-      this.readOnlyAttributes.add(referenceAttribute);
+      this.readOnlyColumns.add(referenceColumn);
       return this;
     }
 

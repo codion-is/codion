@@ -91,45 +91,45 @@ final class DatabaseDomain extends DefaultDomain {
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.references().entrySet().stream()
-                    .map(entry -> reference(attribute(entityType, entry.getKey()), attribute(referencedEntityType, entry.getValue())))
+                    .map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
     return foreignKeyProperty(foreignKey, caption(referencedTable.tableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(MetadataColumn column, EntityType entityType) {
-    String caption = caption(column.columnName());
-    Column<?> attribute = attribute(entityType, column);
+  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(MetadataColumn metadataColumn, EntityType entityType) {
+    String caption = caption(metadataColumn.columnName());
+    Column<?> column = column(entityType, metadataColumn);
     ColumnProperty.Builder<?, ?> builder;
-    if (attribute.isByteArray()) {
-      builder = blobProperty((Column<byte[]>) attribute, caption);
+    if (column.isByteArray()) {
+      builder = blobProperty((Column<byte[]>) column, caption);
     }
     else {
-      builder = columnProperty(attribute, caption);
+      builder = columnProperty(column, caption);
     }
-    if (column.isPrimaryKeyColumn()) {
-      builder.primaryKeyIndex(column.primaryKeyIndex() - 1);
+    if (metadataColumn.isPrimaryKeyColumn()) {
+      builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);
     }
-    if (!column.isPrimaryKeyColumn() && column.nullable() == DatabaseMetaData.columnNoNulls) {
+    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
-    if (attribute.isString() && column.columnSize() > 0) {
-      builder.maximumLength(column.columnSize());
+    if (column.isString() && metadataColumn.columnSize() > 0) {
+      builder.maximumLength(metadataColumn.columnSize());
     }
-    if (attribute.isDecimal() && column.decimalDigits() >= 1) {
-      builder.maximumFractionDigits(column.decimalDigits());
+    if (column.isDecimal() && metadataColumn.decimalDigits() >= 1) {
+      builder.maximumFractionDigits(metadataColumn.decimalDigits());
     }
-    if (!column.isPrimaryKeyColumn() && column.defaultValue() != null) {
+    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.defaultValue() != null) {
       builder.columnHasDefaultValue(true);
     }
-    if (!nullOrEmpty(column.comment())) {
-      builder.description(column.comment());
+    if (!nullOrEmpty(metadataColumn.comment())) {
+      builder.description(metadataColumn.comment());
     }
 
     return builder;
   }
 
-  private static <T> Column<T> attribute(EntityType entityType, MetadataColumn column) {
+  private static <T> Column<T> column(EntityType entityType, MetadataColumn column) {
     return (Column<T>) entityType.column(column.columnName(), column.columnClass());
   }
 

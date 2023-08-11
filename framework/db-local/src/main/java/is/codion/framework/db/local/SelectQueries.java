@@ -248,7 +248,7 @@ final class SelectQueries {
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
-                  propertiesToSelect.add(definition.columnProperty(reference.attribute())));
+                  propertiesToSelect.add(definition.columnProperty(reference.column())));
         }
         else if (attribute instanceof Column) {
           propertiesToSelect.add(definition.columnProperty((Column<?>) attribute));
@@ -294,23 +294,23 @@ final class SelectQueries {
     }
 
     private String createOrderByClause(OrderBy orderBy) {
-      List<OrderBy.OrderByAttribute> orderByAttributes = orderBy.orderByAttributes();
-      if (orderByAttributes.isEmpty()) {
-        throw new IllegalArgumentException("An order by clause must contain at least a single attribute");
+      List<OrderBy.OrderByColumn> orderByColumns = orderBy.orderByColumns();
+      if (orderByColumns.isEmpty()) {
+        throw new IllegalArgumentException("An order by clause must contain at least a single column");
       }
-      if (orderByAttributes.size() == 1) {
-        return columnOrderByClause(definition, orderByAttributes.get(0));
+      if (orderByColumns.size() == 1) {
+        return columnOrderByClause(definition, orderByColumns.get(0));
       }
 
-      return orderByAttributes.stream()
-              .map(orderByAttribute -> columnOrderByClause(definition, orderByAttribute))
+      return orderByColumns.stream()
+              .map(orderByColumn -> columnOrderByClause(definition, orderByColumn))
               .collect(joining(", "));
     }
 
-    private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByAttribute orderByAttribute) {
-      return entityDefinition.columnProperty(orderByAttribute.attribute()).columnExpression() +
-              (orderByAttribute.isAscending() ? "" : " desc") +
-              nullOrderString(orderByAttribute.nullOrder());
+    private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
+      return entityDefinition.columnProperty(orderByColumn.column()).columnExpression() +
+              (orderByColumn.isAscending() ? "" : " desc") +
+              nullOrderString(orderByColumn.nullOrder());
     }
 
     private String nullOrderString(OrderBy.NullOrder nullOrder) {

@@ -163,7 +163,7 @@ public final class EntityTestUtil {
     requireNonNull(valueProvider, "valueProvider");
     EntityDefinition definition = entity.definition();
     for (ColumnProperty<?> property : properties) {
-      if (!definition.isForeignKeyAttribute(property.attribute())) {
+      if (!definition.isForeignKeyColumn(property.attribute())) {
         entity.put((Attribute<Object>) property.attribute(), valueProvider.apply(property));
       }
     }

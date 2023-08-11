@@ -95,32 +95,32 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     OrderBy.Builder builder = OrderBy.builder();
     for (JsonNode node : jsonNode) {
       String[] split = node.asText().split(":");
-      Column<Object> attribute = (Column<Object>) definition.attribute(split[0]);
+      Column<Object> column = (Column<Object>) definition.attribute(split[0]);
       String order = split[1];
       NullOrder nullOrder = NullOrder.valueOf(split[2]);
       if ("asc".equals(order)) {
         switch (nullOrder) {
           case NULLS_FIRST:
-            builder.ascendingNullsFirst(attribute);
+            builder.ascendingNullsFirst(column);
             break;
           case NULLS_LAST:
-            builder.ascendingNullsLast(attribute);
+            builder.ascendingNullsLast(column);
             break;
           default:
-            builder.ascending(attribute);
+            builder.ascending(column);
             break;
         }
       }
       else {
         switch (nullOrder) {
           case NULLS_FIRST:
-            builder.descendingNullsFirst(attribute);
+            builder.descendingNullsFirst(column);
             break;
           case NULLS_LAST:
-            builder.descendingNullsLast(attribute);
+            builder.descendingNullsLast(column);
             break;
           default:
-            builder.descending(attribute);
+            builder.descending(column);
             break;
         }
       }

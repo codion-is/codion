@@ -70,8 +70,8 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
 
     private final List<Item<T>> items;
 
-    DefaultItemPropertyBuilder(Column<T> attribute, String caption, List<Item<T>> items) {
-      super(attribute, caption);
+    DefaultItemPropertyBuilder(Column<T> column, String caption, List<Item<T>> items) {
+      super(column, caption);
       validateItems(items);
       this.items = items;
     }

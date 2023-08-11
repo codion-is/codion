@@ -12,9 +12,9 @@ public interface CriteriaProvider {
 
   /**
    * Creates a query criteria string for the given values
-   * @param attributes the criteria attributes
+   * @param columns the criteria columns
    * @param values the values
    * @return a query criteria string
    */
-  String toString(List<Column<?>> attributes, List<?> values);
+  String toString(List<Column<?>> columns, List<?> values);
 }

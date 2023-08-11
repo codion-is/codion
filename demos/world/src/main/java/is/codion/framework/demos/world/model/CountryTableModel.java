@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.model.JasperReports.fillReport;
 import static java.util.Collections.singletonMap;
@@ -57,7 +57,7 @@ public final class CountryTableModel extends SwingEntityTableModel {
     public Criteria get() {
       EntityConnection connection = connectionProvider().connection();
       try {
-        return attribute(City.ID).in(connection.select(Country.CAPITAL));
+        return column(City.ID).in(connection.select(Country.CAPITAL));
       }
       catch (DatabaseException e) {
         throw new RuntimeException(e);

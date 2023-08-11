@@ -33,8 +33,8 @@ final class CustomCriteriaDeserializer implements Serializable {
 
   CustomCriteria deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String criteriaTypeName = conditionNode.get("criteriaType").asText();
-    JsonNode attributesNode = conditionNode.get("attributes");
-    List<Column<?>> attributes = Arrays.stream(entityObjectMapper.readValue(attributesNode.toString(), String[].class))
+    JsonNode columnsNode = conditionNode.get("columns");
+    List<Column<?>> columns = Arrays.stream(entityObjectMapper.readValue(columnsNode.toString(), String[].class))
             .map(definition::attribute)
             .map(attribute -> (Column<?>) attribute)
             .collect(toList());
@@ -42,10 +42,10 @@ final class CustomCriteriaDeserializer implements Serializable {
     List<Object> values = new ArrayList<>();
     int attributeIndex = 0;
     for (JsonNode valueNode : valuesNode) {
-      Property<?> property = definition.property(attributes.get(attributeIndex++));
+      Property<?> property = definition.property(columns.get(attributeIndex++));
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
 
-    return Criteria.customCriteria(definition.type().criteriaType(criteriaTypeName), attributes, values);
+    return Criteria.customCriteria(definition.type().criteriaType(criteriaTypeName), columns, values);
   }
 }

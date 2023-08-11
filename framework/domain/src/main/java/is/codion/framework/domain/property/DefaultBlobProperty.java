@@ -27,8 +27,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
 
     private boolean eagerlyLoaded = false;
 
-    DefaultBlobPropertyBuilder(Column<byte[]> attribute, String caption) {
-      super(attribute, caption);
+    DefaultBlobPropertyBuilder(Column<byte[]> column, String caption) {
+      super(column, caption);
     }
 
     @Override

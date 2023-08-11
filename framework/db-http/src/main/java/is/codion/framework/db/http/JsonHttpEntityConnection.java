@@ -323,20 +323,20 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(Column<T> attribute) throws DatabaseException {
-    return select(Objects.requireNonNull(attribute), SelectCondition.all(attribute.entityType())
-            .orderBy(ascending(attribute))
+  public <T> List<T> select(Column<T> column) throws DatabaseException {
+    return select(Objects.requireNonNull(column), SelectCondition.all(column.entityType())
+            .orderBy(ascending(column))
             .build());
   }
 
   @Override
-  public <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException {
-    Objects.requireNonNull(attribute);
+  public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+    Objects.requireNonNull(column);
     Objects.requireNonNull(condition);
     try {
       ObjectNode node = entityObjectMapper.createObjectNode();
-      node.set("attribute", conditionObjectMapper.valueToTree(attribute.name()));
-      node.set("entityType", conditionObjectMapper.valueToTree(attribute.entityType().name()));
+      node.set("column", conditionObjectMapper.valueToTree(column.name()));
+      node.set("entityType", conditionObjectMapper.valueToTree(column.entityType().name()));
       node.set("condition", conditionObjectMapper.valueToTree(condition));
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
@@ -356,7 +356,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
       return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
     }
 
-    return selectSingle(where(attribute((Column<T>) attribute).equalTo(value)));
+    return selectSingle(where(column((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -419,7 +419,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
       return select(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
     }
 
-    return select(where(attribute((Column<T>) attribute).equalTo(value)));
+    return select(where(column((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -428,7 +428,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
       return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
     }
 
-    return select(where(attribute((Column<T>) attribute).in(values)));
+    return select(where(column((Column<T>) attribute).in(values)));
   }
 
   @Override
@@ -490,14 +490,14 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData)
+  public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobAttribute, "blobAttribute");
+    Objects.requireNonNull(blobColumn, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
       synchronized (this.entities) {
-        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
+        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobColumn, blobData)))));
       }
     }
     catch (DatabaseException e) {
@@ -509,12 +509,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobAttribute, "blobAttribute");
+    Objects.requireNonNull(blobColumn, "blobAttribute");
     try {
       synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
+        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobColumn)))));
       }
     }
     catch (DatabaseException e) {

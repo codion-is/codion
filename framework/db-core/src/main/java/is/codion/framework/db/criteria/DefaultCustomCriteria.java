@@ -18,8 +18,8 @@ final class DefaultCustomCriteria extends AbstractCriteria implements CustomCrit
 
   private final CriteriaType criteriaType;
 
-  DefaultCustomCriteria(CriteriaType criteriaType, List<Column<?>> attributes, List<Object> values) {
-    super(requireNonNull(criteriaType).entityType(), attributes, values);
+  DefaultCustomCriteria(CriteriaType criteriaType, List<Column<?>> columns, List<Object> values) {
+    super(requireNonNull(criteriaType).entityType(), columns, values);
     this.criteriaType = criteriaType;
   }
 
@@ -30,7 +30,7 @@ final class DefaultCustomCriteria extends AbstractCriteria implements CustomCrit
 
   @Override
   public String toString(EntityDefinition definition) {
-    return requireNonNull(definition).criteriaProvider(criteriaType).toString(attributes(), values());
+    return requireNonNull(definition).criteriaProvider(criteriaType).toString(columns(), values());
   }
 
   @Override

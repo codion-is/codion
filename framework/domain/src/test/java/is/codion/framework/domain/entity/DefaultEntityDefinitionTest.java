@@ -301,8 +301,8 @@ public class DefaultEntityDefinitionTest {
 
     Entity entity = entities.entity(entityType);
     EntityDefinition definition = entities.definition(entityType);
-    assertEquals(colorBlue, definition.backgroundColorProvider().color(entity, entity.primaryKey().attribute()));
-    assertEquals(colorYellow, definition.foregroundColorProvider().color(entity, entity.primaryKey().attribute()));
+    assertEquals(colorBlue, definition.backgroundColorProvider().color(entity, entity.primaryKey().column()));
+    assertEquals(colorYellow, definition.foregroundColorProvider().color(entity, entity.primaryKey().column()));
   }
 
   @Test

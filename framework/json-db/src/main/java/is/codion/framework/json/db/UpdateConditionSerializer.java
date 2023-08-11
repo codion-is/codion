@@ -36,9 +36,9 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
     criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
-    for (Map.Entry<Column<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
-      generator.writeFieldName(attributeValue.getKey().name());
-      entityObjectMapper.writeValue(generator, attributeValue.getValue());
+    for (Map.Entry<Column<?>, Object> columnValue : condition.columnValues().entrySet()) {
+      generator.writeFieldName(columnValue.getKey().name());
+      entityObjectMapper.writeValue(generator, columnValue.getValue());
     }
     generator.writeEndObject();
     generator.writeEndObject();

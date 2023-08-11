@@ -21,12 +21,12 @@ import static java.util.Objects.requireNonNull;
 public abstract class AbstractCriteria implements Criteria, Serializable {
 
   private final EntityType entityType;
-  private final List<Column<?>> attributes;
+  private final List<Column<?>> columns;
   private final List<?> values;
 
-  protected AbstractCriteria(EntityType entityType, List<Column<?>> attributes, Collection<?> values) {
+  protected AbstractCriteria(EntityType entityType, List<Column<?>> columns, Collection<?> values) {
     this.entityType = requireNonNull(entityType);
-    this.attributes = validateAttributes(unmodifiableList(new ArrayList<>(attributes)));
+    this.columns = validateColumns(unmodifiableList(new ArrayList<>(columns)));
     this.values = unmodifiableList(new ArrayList<>(values));
   }
 
@@ -36,8 +36,8 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
   }
 
   @Override
-  public final List<Column<?>> attributes() {
-    return attributes;
+  public final List<Column<?>> columns() {
+    return columns;
   }
 
   @Override
@@ -55,23 +55,23 @@ public abstract class AbstractCriteria implements Criteria, Serializable {
     }
     AbstractCriteria that = (AbstractCriteria) object;
     return entityType.equals(that.entityType()) &&
-            Objects.equals(attributes, that.attributes()) &&
+            Objects.equals(columns, that.columns()) &&
             Objects.equals(values, that.values());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(entityType, attributes, values);
+    return Objects.hash(entityType, columns, values);
   }
 
-  private List<Column<?>> validateAttributes(List<Column<?>> attributes) {
-    for (Column<?> attribute : attributes) {
-      if (!attribute.entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Criteria attribute entityType mismatch, " +
-                entityType + " expected, got: " + attribute.entityType());
+  private List<Column<?>> validateColumns(List<Column<?>> columns) {
+    for (Column<?> column : columns) {
+      if (!column.entityType().equals(entityType)) {
+        throw new IllegalArgumentException("Criteria column entityType mismatch, " +
+                entityType + " expected, got: " + column.entityType());
       }
     }
 
-    return attributes;
+    return columns;
   }
 }

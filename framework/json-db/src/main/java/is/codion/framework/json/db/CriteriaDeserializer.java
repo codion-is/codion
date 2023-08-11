@@ -25,14 +25,14 @@ final class CriteriaDeserializer extends StdDeserializer<Criteria> {
   final EntityObjectMapper entityObjectMapper;
   final Entities entities;
 
-  private final AttributeCriteriaDeserializer attributeCriteriaDeserializer;
+  private final ColumnCriteriaDeserializer columnCriteriaDeserializer;
   private final CriteriaCombinationDeserializer criteriaCombinationDeserializer;
   private final CustomCriteriaDeserializer customCriteriaDeserializer;
 
   CriteriaDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Criteria.class);
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
-    this.attributeCriteriaDeserializer = new AttributeCriteriaDeserializer(entityObjectMapper);
+    this.columnCriteriaDeserializer = new ColumnCriteriaDeserializer(entityObjectMapper);
     this.criteriaCombinationDeserializer = new CriteriaCombinationDeserializer(this);
     this.customCriteriaDeserializer = new CustomCriteriaDeserializer(entityObjectMapper);
     this.entities = entityObjectMapper.entities();
@@ -53,8 +53,8 @@ final class CriteriaDeserializer extends StdDeserializer<Criteria> {
     if ("combination".equals(typeString)) {
       return criteriaCombinationDeserializer.deserialize(definition, criteriaNode);
     }
-    else if ("attribute".equals(typeString)) {
-      return attributeCriteriaDeserializer.deserialize(definition, criteriaNode);
+    else if ("column".equals(typeString)) {
+      return columnCriteriaDeserializer.deserialize(definition, criteriaNode);
     }
     else if ("custom".equals(typeString)) {
       return customCriteriaDeserializer.deserialize(definition, criteriaNode);

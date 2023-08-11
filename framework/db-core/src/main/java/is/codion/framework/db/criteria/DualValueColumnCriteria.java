@@ -9,12 +9,12 @@ import is.codion.framework.domain.entity.Column;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 
-final class DualValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
+final class DualValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
-  DualValueAttributeCriteria(Column<T> attribute, T lowerBound, T upperBound, Operator operator) {
-    super(attribute, operator, asList(requireNonNull(lowerBound, "lowerBound"),
+  DualValueColumnCriteria(Column<T> column, T lowerBound, T upperBound, Operator operator) {
+    super(column, operator, asList(requireNonNull(lowerBound, "lowerBound"),
             requireNonNull(upperBound, "upperBound")), true);
     validateOperator(operator);
   }
@@ -24,7 +24,7 @@ final class DualValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DualValueAttributeCriteria)) {
+    if (!(object instanceof DualValueColumnCriteria)) {
       return false;
     }
 

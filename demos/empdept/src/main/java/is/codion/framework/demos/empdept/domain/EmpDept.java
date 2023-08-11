@@ -7,6 +7,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -41,7 +42,7 @@ public final class EmpDept extends DefaultDomain {
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
-    /** Attributes for the columns in the scott.dept table */
+    /** Columns for the columns in the scott.dept table */
     Column<Integer> ID = TYPE.integerColumn("deptno");
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
@@ -67,7 +68,7 @@ public final class EmpDept extends DefaultDomain {
   public interface Employee extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
 
-    /** Attributes for the columns in the scott.emp table */
+    /** Columns for the columns in the scott.emp table */
     Column<Integer> ID = TYPE.integerColumn("empno");
     Column<String> NAME = TYPE.stringColumn("ename");
     Column<String> JOB = TYPE.stringColumn("job");
@@ -82,7 +83,7 @@ public final class EmpDept extends DefaultDomain {
     /** Foreign key attribute for the MGR column in the table scott.emp */
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, Employee.ID);
     /** Attribute for the denormalized department location property */
-    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
+    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
 
     JRReportType EMPLOYEE_REPORT = JasperReports.reportType("employee_report");
 

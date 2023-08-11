@@ -24,7 +24,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
 
   private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
     this.criteria = builder.criteria;
-    this.propertyValues = builder.propertyValues;
+    this.propertyValues = builder.columnValues;
   }
 
   @Override
@@ -38,7 +38,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   }
 
   @Override
-  public Map<Column<?>, Object> attributeValues() {
+  public Map<Column<?>, Object> columnValues() {
     return unmodifiableMap(propertyValues);
   }
 
@@ -63,13 +63,13 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   static final class DefaultBuilder implements UpdateCondition.Builder {
 
     private final Criteria criteria;
-    private final Map<Column<?>, Object> propertyValues = new LinkedHashMap<>();
+    private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
 
     DefaultBuilder(Condition condition) {
       this(requireNonNull(condition).criteria());
       if (condition instanceof DefaultUpdateCondition) {
         DefaultUpdateCondition updateCondition = (DefaultUpdateCondition) condition;
-        propertyValues.putAll(updateCondition.propertyValues);
+        columnValues.putAll(updateCondition.propertyValues);
       }
     }
 
@@ -78,12 +78,12 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     }
 
     @Override
-    public <T> Builder set(Column<?> attribute, T value) {
-      requireNonNull(attribute, "attribute");
-      if (propertyValues.containsKey(attribute)) {
-        throw new IllegalArgumentException("Update condition already contains a value for attribute: " + attribute);
+    public <T> Builder set(Column<?> column, T value) {
+      requireNonNull(column, "column");
+      if (columnValues.containsKey(column)) {
+        throw new IllegalArgumentException("Update condition already contains a value for column: " + column);
       }
-      propertyValues.put(attribute, value);
+      columnValues.put(column, value);
 
       return this;
     }

@@ -18,9 +18,9 @@ import java.util.Map;
 public interface UpdateCondition extends Condition {
 
   /**
-   * @return an unmodifiable view of the new values mapped to their respective attributes
+   * @return an unmodifiable view of the new values mapped to their respective columns
    */
-  Map<Column<?>, Object> attributeValues();
+  Map<Column<?>, Object> columnValues();
 
   /**
    * Builds an {@link UpdateCondition}.
@@ -28,13 +28,13 @@ public interface UpdateCondition extends Condition {
   interface Builder {
 
     /**
-     * Adds a attribute value to update
-     * @param attribute the attribute
+     * Adds a column value to update
+     * @param column the column
      * @param value the new value
      * @param <T> the value type
      * @return this builder
      */
-    <T> Builder set(Column<?> attribute, T value);
+    <T> Builder set(Column<?> column, T value);
 
     /**
      * @return a new {@link UpdateCondition} instance based on this builder

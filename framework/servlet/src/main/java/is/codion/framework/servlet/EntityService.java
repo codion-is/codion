@@ -563,13 +563,13 @@ public final class EntityService implements AuxiliaryServer {
         ConditionObjectMapper mapper = conditionObjectMapper(entities);
         JsonNode jsonNode = mapper.readTree(context.req.getInputStream());
         EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-        Column<?> attribute = (Column<?>) entities.definition(entityType).attribute(jsonNode.get("attribute").textValue());
+        Column<?> column = (Column<?>) entities.definition(entityType).attribute(jsonNode.get("column").textValue());
         Condition condition = null;
         JsonNode conditionNode = jsonNode.get("condition");
         if (conditionNode != null) {
           condition = mapper.readValue(conditionNode.toString(), Condition.class);
         }
-        List<?> values = connection.select(attribute, condition);
+        List<?> values = connection.select(column, condition);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(mapper.entityObjectMapper().writeValueAsString(values));
@@ -840,9 +840,9 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req);
         Key key = (Key) parameters.get(0);
-        Column<byte[]> attribute = (Column<byte[]>) parameters.get(1);
+        Column<byte[]> column = (Column<byte[]>) parameters.get(1);
         byte[] data = (byte[]) parameters.get(2);
-        connection.writeBlob(key, attribute, data);
+        connection.writeBlob(key, column, data);
         context.status(HttpStatus.OK_200);
       }
       catch (Exception e) {
@@ -859,8 +859,8 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req);
         Key key = (Key) parameters.get(0);
-        Column<byte[]> attribute = (Column<byte[]>) parameters.get(1);
-        byte[] data = connection.readBlob(key, attribute);
+        Column<byte[]> column = (Column<byte[]>) parameters.get(1);
+        byte[] data = connection.readBlob(key, column);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
                 .result(Serializer.serialize(data));

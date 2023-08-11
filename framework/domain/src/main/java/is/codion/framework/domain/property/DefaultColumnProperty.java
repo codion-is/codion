@@ -4,7 +4,6 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 
 import java.math.BigDecimal;
@@ -269,16 +268,16 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     private boolean aggregateColumn;
     private boolean selectable;
 
-    DefaultColumnPropertyBuilder(Column<T> attribute, String caption) {
-      super(attribute, caption);
+    DefaultColumnPropertyBuilder(Column<T> column, String caption) {
+      super(column, caption);
       this.primaryKeyIndex = -1;
-      this.columnType = sqlType(attribute.valueClass());
+      this.columnType = sqlType(column.valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       this.updatable = true;
       this.searchProperty = false;
-      this.columnName = attribute.name();
-      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute);
+      this.columnName = column.name();
+      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
       this.groupingColumn = false;
       this.aggregateColumn = false;
@@ -294,7 +293,7 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     public final <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter) {
       this.columnType = sqlType(columnClass);
       this.valueConverter = (ValueConverter<T, Object>) requireNonNull(valueConverter, "valueConverter");
-      this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, attribute);
+      this.valueFetcher = valueFetcher(this.columnType, (Column<Object>) attribute);
       return (B) this;
     }
 
@@ -393,13 +392,13 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
       return TYPE_MAP.getOrDefault(requireNonNull(clazz, "clazz"), Types.OTHER);
     }
 
-    private static <T> ValueFetcher<T> valueFetcher(int columnType, Attribute<T> attribute) {
+    private static <T> ValueFetcher<T> valueFetcher(int columnType, Column<T> column) {
       if (columnType == Types.OTHER) {
-        return (ValueFetcher<T>) new ObjectFetcher(attribute.valueClass());
+        return (ValueFetcher<T>) new ObjectFetcher(column.valueClass());
       }
       if (!VALUE_FETCHERS.containsKey(columnType)) {
         throw new IllegalArgumentException("Unsupported SQL value type: " + columnType +
-                ", attribute: " + attribute + ", valueClass: " + attribute.valueClass());
+                ", column: " + column + ", valueClass: " + column.valueClass());
       }
 
       return (ValueFetcher<T>) VALUE_FETCHERS.get(columnType);
@@ -409,8 +408,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   abstract static class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
-    protected AbstractReadOnlyColumnPropertyBuilder(Column<T> attribute, String caption) {
-      super(attribute, caption);
+    protected AbstractReadOnlyColumnPropertyBuilder(Column<T> column, String caption) {
+      super(column, caption);
       super.readOnly(true);
     }
 
@@ -433,8 +432,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
           extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
 
-    DefaultSubqueryPropertyBuilder(Column<T> attribute, String caption, String subquery) {
-      super(attribute, caption);
+    DefaultSubqueryPropertyBuilder(Column<T> column, String caption, String subquery) {
+      super(column, caption);
       super.columnExpression("(" + subquery + ")");
     }
 

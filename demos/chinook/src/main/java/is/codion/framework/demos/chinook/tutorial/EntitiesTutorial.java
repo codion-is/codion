@@ -25,7 +25,7 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
@@ -49,7 +49,7 @@ public final class EntitiesTutorial {
     static final DomainType DOMAIN = domainType(Chinook.class);
 
     // EntityType constant for the table entityType
-    // and an Attribute for each column
+    // and a Column for each column
     public interface Artist {
       EntityType TYPE = DOMAIN.entityType("chinook.artist");
 
@@ -57,7 +57,7 @@ public final class EntitiesTutorial {
       Column<String> NAME = TYPE.stringColumn("name");
     }
 
-    // EntityType constant for the table entityType and an Attribute
+    // EntityType constant for the table entityType and a Column
     // for each column and one for the foreign key relation
     public interface Album {
       EntityType TYPE = DOMAIN.entityType("chinook.album");
@@ -155,7 +155,7 @@ public final class EntitiesTutorial {
     // a SelectCondition.Builder initialized with a criteria specifying
     // the attribute we're searching by, the operator and value.
     SelectCondition artistsCondition =
-            SelectCondition.where(attribute(Artist.NAME).equalTo("An%"))
+            SelectCondition.where(column(Artist.NAME).equalTo("An%"))
                     // and we set the order by clause
                     .orderBy(OrderBy.ascending(Artist.NAME))
                     .build();

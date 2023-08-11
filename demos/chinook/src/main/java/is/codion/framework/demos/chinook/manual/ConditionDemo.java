@@ -17,7 +17,7 @@ final class ConditionDemo {
   private static void criteria() {
     // tag::criteria[]
     Criteria liveAlbums =
-            Criteria.attribute(Album.TITLE).equalTo("Live%");
+            Criteria.column(Album.TITLE).equalTo("Live%");
 
     Entity metallica = selectArtist("Metallica");
 

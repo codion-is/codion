@@ -97,7 +97,7 @@ class ManualDomainModel {
 
     EntityDefinition cityDefinition = customerDefinition.referencedDefinition(Customer.CITY_FK);
 
-    List<Column<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
+    List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKeyColumns();
     // end::domainUsage[]
   }
 }

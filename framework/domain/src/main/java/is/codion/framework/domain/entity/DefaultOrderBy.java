@@ -15,15 +15,15 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final List<OrderByAttribute> orderByAttributes;
+  private final List<OrderByColumn> orderByColumns;
 
   private DefaultOrderBy(DefaultOrderByBuilder builder) {
-    this.orderByAttributes = unmodifiableList(builder.orderByAttributes);
+    this.orderByColumns = unmodifiableList(builder.orderByColumns);
   }
 
   @Override
-  public List<OrderByAttribute> orderByAttributes() {
-    return orderByAttributes;
+  public List<OrderByColumn> orderByColumns() {
+    return orderByColumns;
   }
 
   @Override
@@ -35,31 +35,31 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       return false;
     }
     DefaultOrderBy that = (DefaultOrderBy) object;
-    return orderByAttributes.equals(that.orderByAttributes);
+    return orderByColumns.equals(that.orderByColumns);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(orderByAttributes);
+    return Objects.hash(orderByColumns);
   }
 
-  private static final class DefaultOrderByAttribute implements OrderByAttribute, Serializable {
+  private static final class DefaultOrderByAttribute implements OrderByColumn, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    private final Column<?> attribute;
+    private final Column<?> column;
     private final NullOrder nullOrder;
     private final boolean ascending;
 
-    private DefaultOrderByAttribute(Column<?> attribute, NullOrder nullOrder, boolean ascending) {
-      this.attribute = requireNonNull(attribute, "attribute");
+    private DefaultOrderByAttribute(Column<?> column, NullOrder nullOrder, boolean ascending) {
+      this.column = requireNonNull(column, "column");
       this.nullOrder = requireNonNull(nullOrder, "nullOrder");
       this.ascending = ascending;
     }
 
     @Override
-    public Column<?> attribute() {
-      return attribute;
+    public Column<?> column() {
+      return column;
     }
 
     @Override
@@ -81,7 +81,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
         return false;
       }
       DefaultOrderByAttribute that = (DefaultOrderByAttribute) object;
-      return attribute.equals(that.attribute) &&
+      return column.equals(that.column) &&
               //backwards compatability, nullOrder could be null after deserialization from older version
               Objects.equals(nullOrder, that.nullOrder) &&
               ascending == that.ascending;
@@ -89,47 +89,47 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
     @Override
     public int hashCode() {
-      return Objects.hash(attribute, nullOrder, ascending);
+      return Objects.hash(column, nullOrder, ascending);
     }
   }
 
   static final class DefaultOrderByBuilder implements Builder {
 
-    private final List<OrderByAttribute> orderByAttributes = new ArrayList<>(1);
+    private final List<OrderByColumn> orderByColumns = new ArrayList<>(1);
 
     @Override
-    public Builder ascending(Column<?>... attributes) {
-      add(true, NullOrder.DEFAULT, requireNonNull(attributes));
+    public Builder ascending(Column<?>... columns) {
+      add(true, NullOrder.DEFAULT, requireNonNull(columns));
       return this;
     }
 
     @Override
-    public Builder ascendingNullsFirst(Column<?>... attributes) {
-      add(true, NullOrder.NULLS_FIRST, requireNonNull(attributes));
+    public Builder ascendingNullsFirst(Column<?>... columns) {
+      add(true, NullOrder.NULLS_FIRST, requireNonNull(columns));
       return this;
     }
 
     @Override
-    public Builder ascendingNullsLast(Column<?>... attributes) {
-      add(true, NullOrder.NULLS_LAST, requireNonNull(attributes));
+    public Builder ascendingNullsLast(Column<?>... columns) {
+      add(true, NullOrder.NULLS_LAST, requireNonNull(columns));
       return this;
     }
 
     @Override
-    public Builder descending(Column<?>... attributes) {
-      add(false, NullOrder.DEFAULT, requireNonNull(attributes));
+    public Builder descending(Column<?>... columns) {
+      add(false, NullOrder.DEFAULT, requireNonNull(columns));
       return this;
     }
 
     @Override
-    public Builder descendingNullsFirst(Column<?>... attributes) {
-      add(false, NullOrder.NULLS_FIRST, requireNonNull(attributes));
+    public Builder descendingNullsFirst(Column<?>... columns) {
+      add(false, NullOrder.NULLS_FIRST, requireNonNull(columns));
       return this;
     }
 
     @Override
-    public Builder descendingNullsLast(Column<?>... attributes) {
-      add(false, NullOrder.NULLS_LAST, requireNonNull(attributes));
+    public Builder descendingNullsLast(Column<?>... columns) {
+      add(false, NullOrder.NULLS_LAST, requireNonNull(columns));
       return this;
     }
 
@@ -138,17 +138,17 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       return new DefaultOrderBy(this);
     }
 
-    private void add(boolean ascending, NullOrder nullOrder, Column<?>... attributes) {
-      if (attributes.length == 0) {
-        throw new IllegalArgumentException("One or more attributes required for order by");
+    private void add(boolean ascending, NullOrder nullOrder, Column<?>... columns) {
+      if (columns.length == 0) {
+        throw new IllegalArgumentException("One or more columns required for order by");
       }
-      for (Column<?> attribute : attributes) {
-        for (OrderByAttribute orderByColumn : orderByAttributes) {
-          if (requireNonNull(attribute).equals(orderByColumn.attribute())) {
-            throw new IllegalArgumentException("Order by already contains attribute: " + attribute);
+      for (Column<?> column : columns) {
+        for (OrderByColumn orderByColumn : orderByColumns) {
+          if (requireNonNull(column).equals(orderByColumn.column())) {
+            throw new IllegalArgumentException("Order by already contains column: " + column);
           }
         }
-        orderByAttributes.add(new DefaultOrderByAttribute(attribute, nullOrder, ascending));
+        orderByColumns.add(new DefaultOrderByAttribute(column, nullOrder, ascending));
       }
     }
   }

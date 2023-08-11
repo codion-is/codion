@@ -13,27 +13,27 @@ import java.util.Objects;
 import static java.util.Collections.nCopies;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements AttributeCriteria<T> {
+abstract class AbstractColumnCriteria<T> extends AbstractCriteria implements ColumnCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
-  private final Column<T> attribute;
+  private final Column<T> column;
   private final Operator operator;
   private final boolean caseSensitive;
 
-  protected AbstractAttributeCriteria(Column<T> attribute, Operator operator, Collection<? extends T> values,
-                                      boolean caseSensitive) {
-    super(requireNonNull(attribute).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(attribute)), values);
-    if (!caseSensitive && !attribute.isString()) {
-      throw new IllegalStateException("Case insensitivity only applies to String based attributes: " + attribute);
+  protected AbstractColumnCriteria(Column<T> column, Operator operator, Collection<? extends T> values,
+                                   boolean caseSensitive) {
+    super(requireNonNull(column).entityType(), nCopies(requireNonNull(values).size(), requireNonNull(column)), values);
+    if (!caseSensitive && !column.isString()) {
+      throw new IllegalStateException("Case insensitivity only applies to String based columns: " + column);
     }
-    this.attribute = attribute;
+    this.column = column;
     this.operator = requireNonNull(operator);
     this.caseSensitive = caseSensitive;
   }
 
-  public final Column<T> attribute() {
-    return attribute;
+  public final Column<T> column() {
+    return column;
   }
 
   @Override
@@ -48,12 +48,12 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
 
   @Override
   public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).columnProperty(attribute).columnExpression());
+    return toString(requireNonNull(definition).columnProperty(column).columnExpression());
   }
 
   @Override
   public final String toString() {
-    return super.toString() + ": " + attribute;
+    return super.toString() + ": " + column;
   }
 
   @Override
@@ -61,13 +61,13 @@ abstract class AbstractAttributeCriteria<T> extends AbstractCriteria implements 
     if (this == object) {
       return true;
     }
-    if (!(object instanceof AbstractAttributeCriteria)) {
+    if (!(object instanceof AbstractColumnCriteria)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    AbstractAttributeCriteria<?> that = (AbstractAttributeCriteria<?>) object;
+    AbstractColumnCriteria<?> that = (AbstractColumnCriteria<?>) object;
     return Objects.equals(operator, that.operator) &&
             caseSensitive == that.caseSensitive;
   }

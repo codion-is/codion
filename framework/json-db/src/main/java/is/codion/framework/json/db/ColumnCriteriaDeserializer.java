@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.common.Operator;
-import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.ColumnProperty;
@@ -18,34 +18,34 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static java.util.Objects.requireNonNull;
 
-final class AttributeCriteriaDeserializer implements Serializable {
+final class ColumnCriteriaDeserializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
 
-  AttributeCriteriaDeserializer(EntityObjectMapper entityObjectMapper) {
+  ColumnCriteriaDeserializer(EntityObjectMapper entityObjectMapper) {
     this.entityObjectMapper = requireNonNull(entityObjectMapper);
   }
 
-  <T> AttributeCriteria<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
-    String attributeName = conditionNode.get("attribute").asText();
-    ColumnProperty<T> property = definition.columnProperty((Column<T>) definition.attribute(attributeName));
+  <T> ColumnCriteria<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+    String columnName = conditionNode.get("column").asText();
+    ColumnProperty<T> property = definition.columnProperty((Column<T>) definition.attribute(columnName));
     boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
-    AttributeCriteria.Builder<T> builder = attribute(property.attribute());
+    ColumnCriteria.Builder<T> builder = column(property.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
-        return equalAttributeCondition(values, builder, caseSensitive);
+        return equalColumnCondition(values, builder, caseSensitive);
       case NOT_EQUAL:
-        return notEqualAttributeCondition(values, builder, caseSensitive);
+        return notEqualColumnCondition(values, builder, caseSensitive);
       case LESS_THAN:
         return builder.lessThan(values.get(0));
       case LESS_THAN_OR_EQUAL:
@@ -67,31 +67,31 @@ final class AttributeCriteriaDeserializer implements Serializable {
     }
   }
 
-  private static <T> AttributeCriteria<T> equalAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder,
-                                                                  boolean caseSensitive) {
+  private static <T> ColumnCriteria<T> equalColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder,
+                                                            boolean caseSensitive) {
     if (values.isEmpty()) {
       return builder.isNull();
     }
     if (caseSensitive) {
-      return caseSensitiveEqualAttributeCondition(values, builder);
+      return caseSensitiveEqualColumnCondition(values, builder);
     }
 
-    return caseInsitiveEqualAttributeCondition(values, builder);
+    return caseInsitiveEqualColumnCondition(values, builder);
   }
 
-  private static <T> AttributeCriteria<T> notEqualAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder,
-                                                                     boolean caseSensitive) {
+  private static <T> ColumnCriteria<T> notEqualColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder,
+                                                               boolean caseSensitive) {
     if (values.isEmpty()) {
       return builder.isNotNull();
     }
     if (caseSensitive) {
-      return caseSensitiveNotEqualAttributeCondition(values, builder);
+      return caseSensitiveNotEqualColumnCondition(values, builder);
     }
 
-    return caseInsensitiveNotEqualAttributeCondition(values, builder);
+    return caseInsensitiveNotEqualColumnCondition(values, builder);
   }
 
-  private static <T> AttributeCriteria<T> caseSensitiveEqualAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder) {
+  private static <T> ColumnCriteria<T> caseSensitiveEqualColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder) {
     if (values.size() == 1) {
       return builder.equalTo(values.iterator().next());
     }
@@ -99,7 +99,7 @@ final class AttributeCriteriaDeserializer implements Serializable {
     return builder.in(values);
   }
 
-  private static <T> AttributeCriteria<T> caseSensitiveNotEqualAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder) {
+  private static <T> ColumnCriteria<T> caseSensitiveNotEqualColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder) {
     if (values.size() == 1) {
       return builder.notEqualTo(values.iterator().next());
     }
@@ -107,19 +107,19 @@ final class AttributeCriteriaDeserializer implements Serializable {
     return builder.notIn(values);
   }
 
-  private static <T> AttributeCriteria<T> caseInsitiveEqualAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder) {
+  private static <T> ColumnCriteria<T> caseInsitiveEqualColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder) {
     if (values.size() == 1) {
-      return (AttributeCriteria<T>) builder.equalToIgnoreCase((String) values.iterator().next());
+      return (ColumnCriteria<T>) builder.equalToIgnoreCase((String) values.iterator().next());
     }
 
-    return (AttributeCriteria<T>) builder.inIgnoreCase((Collection<String>) values);
+    return (ColumnCriteria<T>) builder.inIgnoreCase((Collection<String>) values);
   }
 
-  private static <T> AttributeCriteria<T> caseInsensitiveNotEqualAttributeCondition(List<T> values, AttributeCriteria.Builder<T> builder) {
+  private static <T> ColumnCriteria<T> caseInsensitiveNotEqualColumnCondition(List<T> values, ColumnCriteria.Builder<T> builder) {
     if (values.size() == 1) {
-      return (AttributeCriteria<T>) builder.notEqualToIgnoreCase((String) values.iterator().next());
+      return (ColumnCriteria<T>) builder.notEqualToIgnoreCase((String) values.iterator().next());
     }
 
-    return (AttributeCriteria<T>) builder.notInIgnoreCase((Collection<String>) values);
+    return (ColumnCriteria<T>) builder.notInIgnoreCase((Collection<String>) values);
   }
 }

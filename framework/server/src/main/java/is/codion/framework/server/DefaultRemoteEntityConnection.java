@@ -215,16 +215,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> select(Column<T> attribute) throws RemoteException, DatabaseException {
+  public <T> List<T> select(Column<T> column) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(attribute);
+      return connectionProxy.select(column);
     }
   }
 
   @Override
-  public <T> List<T> select(Column<T> attribute, Condition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(attribute, condition);
+      return connectionProxy.select(column, condition);
     }
   }
 
@@ -285,16 +285,16 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Column<byte[]> blobAttribute, byte[] blobData) throws DatabaseException {
+  public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.writeBlob(primaryKey, blobAttribute, blobData);
+      connectionProxy.writeBlob(primaryKey, blobColumn, blobData);
     }
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Column<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.readBlob(primaryKey, blobAttribute);
+      return connectionProxy.readBlob(primaryKey, blobColumn);
     }
   }
 }

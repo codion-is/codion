@@ -11,7 +11,7 @@ import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Objects;
 
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 
 // tag::constructor[]
 public final class EmployeeEditModel extends SwingEntityEditModel {
@@ -37,7 +37,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
       comboBoxModel.setFilterSelectedItem(false);
       //Only select the president and managers from the database
       comboBoxModel.setSelectCriteriaSupplier(() ->
-              attribute(Employee.JOB).in("MANAGER", "PRESIDENT"));
+              column(Employee.JOB).in("MANAGER", "PRESIDENT"));
     }
 
     return comboBoxModel;

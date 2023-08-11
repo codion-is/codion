@@ -140,7 +140,7 @@ public final class EntityObjectMapperTest {
     assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
     Key keyParsed = mapper.deserializeKeys(keyJSON).get(0);
     assertEquals(key.type(), keyParsed.type());
-    assertEquals(key.attribute(), keyParsed.attribute());
+    assertEquals(key.column(), keyParsed.column());
     assertEquals((Integer) key.get(), keyParsed.get());
   }
 

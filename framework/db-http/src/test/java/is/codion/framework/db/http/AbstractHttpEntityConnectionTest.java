@@ -33,7 +33,7 @@ import java.util.Map;
 import java.util.Random;
 
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -123,11 +123,11 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Criteria criteria = attribute(Employee.COMMISSION).isNull();
+    Criteria criteria = column(Employee.COMMISSION).isNull();
 
     List<Entity> entities = connection.select(where(criteria));
 
-    UpdateCondition updateCondition = UpdateCondition.where(attribute(Employee.COMMISSION).isNull())
+    UpdateCondition updateCondition = UpdateCondition.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();

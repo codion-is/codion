@@ -29,8 +29,8 @@ final class CustomCriteriaSerializer implements Serializable {
     generator.writeStartObject();
     generator.writeStringField("type", "custom");
     generator.writeStringField("criteriaType", criteria.criteriaType().name());
-    generator.writeFieldName("attributes");
-    entityObjectMapper.writeValue(generator, criteria.attributes().stream()
+    generator.writeFieldName("columns");
+    entityObjectMapper.writeValue(generator, criteria.columns().stream()
             .map(Attribute::name)
             .collect(toList()));
     generator.writeFieldName("values");
