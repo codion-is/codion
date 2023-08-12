@@ -225,10 +225,10 @@ public final class EntityComboBoxModelTest {
   }
 
   @Test
-  void selectAttributes() {
+  void attributes() {
     List<Attribute<?>> selectAttributes = Arrays.asList(Employee.NAME, Employee.DEPARTMENT_FK);
-    comboBoxModel.setSelectAttributes(selectAttributes);
-    assertTrue(comboBoxModel.getSelectAttributes().containsAll(selectAttributes));
+    comboBoxModel.setAttributes(selectAttributes);
+    assertTrue(comboBoxModel.getAttributes().containsAll(selectAttributes));
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));
@@ -241,7 +241,7 @@ public final class EntityComboBoxModelTest {
       assertFalse(emp.contains(Employee.HIREDATE));
       assertFalse(emp.contains(Employee.SALARY));
     }
-    comboBoxModel.setSelectAttributes(emptyList());
+    comboBoxModel.setAttributes(emptyList());
     comboBoxModel.refresh();
     for (Entity emp : comboBoxModel.items()) {
       assertTrue(emp.contains(Employee.ID));

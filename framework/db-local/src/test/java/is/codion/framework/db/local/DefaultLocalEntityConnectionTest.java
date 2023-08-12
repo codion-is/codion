@@ -408,9 +408,9 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectAttributes() throws Exception {
+  void attributes() throws Exception {
     List<Entity> emps = connection.select(SelectCondition.all(Employee.TYPE)
-            .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT)
+            .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT)
             .build());
     for (Entity emp : emps) {
       assertTrue(emp.contains(Employee.ID));
@@ -423,7 +423,7 @@ public class DefaultLocalEntityConnectionTest {
       assertFalse(emp.contains(Employee.SALARY));
     }
     for (Entity emp : connection.select(SelectCondition.all(Employee.TYPE)
-            .selectAttributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK, Employee.MGR, Employee.COMMISSION)
+            .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK, Employee.MGR, Employee.COMMISSION)
             .build())) {
       assertTrue(emp.contains(Employee.ID));//pk automatically included
       assertTrue(emp.contains(Employee.JOB));
@@ -968,7 +968,7 @@ public class DefaultLocalEntityConnectionTest {
 
     //overrides lazy loading
     scottFromDb = connection.selectSingle(SelectCondition.where(key(scott.primaryKey()))
-            .selectAttributes(Employee.DATA_LAZY)
+            .attributes(Employee.DATA_LAZY)
             .build());
     assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
   }

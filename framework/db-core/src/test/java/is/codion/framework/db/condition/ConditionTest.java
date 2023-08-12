@@ -519,34 +519,34 @@ public final class ConditionTest {
                     .build());
 
     assertEquals(SelectCondition.builder(condition1)
-                    .selectAttributes(Employee.NAME)
+                    .attributes(Employee.NAME)
                     .build(),
             SelectCondition.builder(condition2)
-                    .selectAttributes(Employee.NAME)
+                    .attributes(Employee.NAME)
                     .build());
 
     assertEquals(SelectCondition.builder(condition1)
-                    .selectAttributes(Employee.NAME)
+                    .attributes(Employee.NAME)
                     .offset(10)
                     .build(),
             SelectCondition.builder(condition2)
-                    .selectAttributes(Employee.NAME)
-                    .offset(10)
-                    .build());
-
-    assertNotEquals(SelectCondition.builder(condition1)
-                    .selectAttributes(Employee.NAME)
-                    .build(),
-            SelectCondition.builder(condition2)
-                    .selectAttributes(Employee.NAME)
+                    .attributes(Employee.NAME)
                     .offset(10)
                     .build());
 
     assertNotEquals(SelectCondition.builder(condition1)
-                    .selectAttributes(Employee.NAME)
+                    .attributes(Employee.NAME)
                     .build(),
             SelectCondition.builder(condition2)
-                    .selectAttributes(Employee.ID)
+                    .attributes(Employee.NAME)
+                    .offset(10)
+                    .build());
+
+    assertNotEquals(SelectCondition.builder(condition1)
+                    .attributes(Employee.NAME)
+                    .build(),
+            SelectCondition.builder(condition2)
+                    .attributes(Employee.ID)
                     .build());
 
     condition1 = where(column(Employee.NAME).equalTo("Luke"));

@@ -172,7 +172,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(Employee.DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name())
-                    .selectAttributes(Department.NAME),
+                    .attributes(Department.NAME),
             itemProperty(Employee.JOB, Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchProperty(true),

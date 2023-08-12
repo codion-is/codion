@@ -47,7 +47,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   /** The attributes to include when selecting the entities for this combo box model, an empty list indicates all attributes */
-  private final Collection<Attribute<?>> selectAttributes = new ArrayList<>(0);
+  private final Collection<Attribute<?>> attributes = new ArrayList<>(0);
   private final Entities entities;
   /** A map of keys used to filter the contents of this model by foreign key value. */
   private final Map<ForeignKey, Set<Key>> foreignKeyFilterKeys = new HashMap<>();
@@ -152,25 +152,25 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * Specifies the attributes to include when selecting the entities to populate this model with.
    * Note that the primary key attribute values are always included.
    * An empty Collection indicates that all attributes should be selected.
-   * @param selectAttributes the attributes to select, an empty Collection for all available attributes
+   * @param attributes the attributes to select, an empty Collection for all available attributes
    * @throws IllegalArgumentException in case any of the given attributes is not part of the underlying entity type
    */
-  public final void setSelectAttributes(Collection<Attribute<?>> selectAttributes) {
-    for (Attribute<?> attribute : requireNonNull(selectAttributes)) {
+  public final void setAttributes(Collection<Attribute<?>> attributes) {
+    for (Attribute<?> attribute : requireNonNull(attributes)) {
       if (!attribute.entityType().equals(entityType)) {
-        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity type: " + entityType);
+        throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType);
       }
     }
-    this.selectAttributes.clear();
-    this.selectAttributes.addAll(selectAttributes);
+    this.attributes.clear();
+    this.attributes.addAll(attributes);
   }
 
   /**
    * @return an unmodifiable view of the attributes to include when selecting entities for this model,
    * an empty Collection indicates all available attributes
    */
-  public final Collection<Attribute<?>> getSelectAttributes() {
-    return unmodifiableCollection(selectAttributes);
+  public final Collection<Attribute<?>> getAttributes() {
+    return unmodifiableCollection(attributes);
   }
 
   /**
@@ -380,16 +380,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
    * the select condition supplier ({@link #getSelectCriteriaSupplier()}) as well as the
-   * select attributes ({@link #getSelectAttributes()}) and order by clause ({@link #getOrderBy()}.
+   * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #getSelectCriteriaSupplier()
-   * @see #getSelectAttributes()
+   * @see #getAttributes()
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
       return connectionProvider.connection().select(where(selectCriteriaSupplier.get())
-              .selectAttributes(selectAttributes)
+              .attributes(attributes)
               .orderBy(orderBy)
               .build());
     }

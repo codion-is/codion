@@ -224,13 +224,13 @@ final class SelectQueries {
     }
 
     private void setColumns(SelectCondition condition) {
-      Collection<Attribute<?>> selectAttributes = condition.selectAttributes();
-      if (selectAttributes.isEmpty()) {
+      Collection<Attribute<?>> attributes = condition.attributes();
+      if (attributes.isEmpty()) {
         this.selectedProperties = selectableProperties();
         columns(allColumnsClause());
       }
       else {
-        this.selectedProperties = propertiesToSelect(selectAttributes);
+        this.selectedProperties = propertiesToSelect(attributes);
         columns(columnsClause(selectedProperties));
       }
     }

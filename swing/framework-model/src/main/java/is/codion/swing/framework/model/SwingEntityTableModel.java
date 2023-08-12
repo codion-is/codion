@@ -855,7 +855,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Queries the data used to populate this EntityTableModel when it is refreshed.
    * This method should take into account the condition ({EntityTableConditionModel#condition()}),
    * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
-   * ({@link #selectAttributes()}) when querying.
+   * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
    * @see #conditionRequiredState()
    * @see #isConditionEnabled()
@@ -936,7 +936,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @return the attributes to select when querying data, an empty Collection if all should be selected.
    * @see #isQueryHiddenColumns()
    */
-  protected Collection<Attribute<?>> selectAttributes() {
+  protected Collection<Attribute<?>> attributes() {
     if (queryHiddenColumns || columnModel().hiddenColumns().isEmpty()) {
       return emptyList();
     }
@@ -995,7 +995,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private List<Entity> queryItems(Criteria criteria) throws DatabaseException {
     List<Entity> items = editModel.connectionProvider().connection().select(where(criteria)
-              .selectAttributes(selectAttributes())
+              .attributes(attributes())
               .limit(getLimit())
               .orderBy(orderBy())
               .build());
