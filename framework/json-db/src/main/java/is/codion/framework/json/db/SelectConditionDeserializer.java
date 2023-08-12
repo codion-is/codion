@@ -75,9 +75,9 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     if (forUpdate != null && !forUpdate.isNull() && forUpdate.asBoolean()) {
       selectCondition.forUpdate();
     }
-    JsonNode selectAttributes = jsonNode.get("selectAttributes");
-    if (selectAttributes != null && !selectAttributes.isNull()) {
-      selectCondition.selectAttributes(deserializeSelectAttributes(definition, selectAttributes));
+    JsonNode attributes = jsonNode.get("attributes");
+    if (attributes != null && !attributes.isNull()) {
+      selectCondition.attributes(deserializeAttributes(definition, attributes));
     }
     JsonNode queryTimeout = jsonNode.get("queryTimeout");
     if (queryTimeout != null && !queryTimeout.isNull()) {
@@ -129,12 +129,12 @@ final class SelectConditionDeserializer extends StdDeserializer<SelectCondition>
     return builder.build();
   }
 
-  private static Attribute<?>[] deserializeSelectAttributes(EntityDefinition definition, JsonNode jsonNode) {
+  private static List<Attribute<?>> deserializeAttributes(EntityDefinition definition, JsonNode jsonNode) {
     List<Attribute<?>> attributes = new ArrayList<>(jsonNode.size());
     for (JsonNode node : jsonNode) {
       attributes.add(definition.attribute(node.asText()));
     }
 
-    return attributes.toArray(new Attribute[0]);
+    return attributes;
   }
 }

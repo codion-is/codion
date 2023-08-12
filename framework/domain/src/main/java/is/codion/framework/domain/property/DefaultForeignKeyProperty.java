@@ -26,7 +26,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
   private final Set<Column<?>> readOnlyColumns;
   private final EntityType referencedEntityType;
-  private final List<Attribute<?>> selectAttributes;
+  private final List<Attribute<?>> attributes;
   private final int fetchDepth;
   private final boolean softReference;
 
@@ -34,7 +34,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     super(builder);
     this.readOnlyColumns = builder.readOnlyColumns;
     this.referencedEntityType = builder.referencedEntityType;
-    this.selectAttributes = builder.selectAttributes;
+    this.attributes = builder.attributes;
     this.fetchDepth = builder.fetchDepth;
     this.softReference = builder.softReference;
   }
@@ -70,8 +70,8 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   }
 
   @Override
-  public List<Attribute<?>> selectAttributes() {
-    return selectAttributes;
+  public List<Attribute<?>> attributes() {
+    return attributes;
   }
 
   static final class DefaultForeignKeyPropertyBuilder extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder>
@@ -79,7 +79,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
 
     private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
     private final EntityType referencedEntityType;
-    private List<Attribute<?>> selectAttributes = emptyList();
+    private List<Attribute<?>> attributes = emptyList();
     private int fetchDepth;
     private boolean softReference;
 
@@ -117,15 +117,15 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     }
 
     @Override
-    public ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes) {
-      Set<Attribute<?>> selectAttributeSet = new HashSet<>();
+    public ForeignKeyProperty.Builder attributes(Attribute<?>... attributes) {
+      Set<Attribute<?>> attributeSet = new HashSet<>();
       for (Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.entityType().equals(referencedEntityType)) {
-          throw new IllegalArgumentException("Select attribute must be part of the referenced entity type");
+          throw new IllegalArgumentException("Attribute must be part of the referenced entity");
         }
-        selectAttributeSet.add(attribute);
+        attributeSet.add(attribute);
       }
-      this.selectAttributes = unmodifiableList(new ArrayList<>(selectAttributeSet));
+      this.attributes = unmodifiableList(new ArrayList<>(attributeSet));
 
       return this;
     }

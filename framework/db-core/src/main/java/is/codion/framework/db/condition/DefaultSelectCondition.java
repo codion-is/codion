@@ -28,7 +28,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
 
   private final Criteria criteria;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
-  private final Collection<Attribute<?>> selectAttributes;
+  private final Collection<Attribute<?>> attributes;
   private final OrderBy orderBy;
   private final Integer fetchDepth;
   private final boolean forUpdate;
@@ -39,7 +39,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
   private DefaultSelectCondition(DefaultBuilder builder) {
     this.criteria = builder.criteria;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
-    this.selectAttributes = builder.selectAttributes;
+    this.attributes = builder.attributes;
     this.orderBy = builder.orderBy;
     this.fetchDepth = builder.fetchDepth;
     this.forUpdate = builder.forUpdate;
@@ -99,8 +99,8 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
   }
 
   @Override
-  public Collection<Attribute<?>> selectAttributes() {
-    return selectAttributes;
+  public Collection<Attribute<?>> attributes() {
+    return attributes;
   }
 
   @Override
@@ -117,14 +117,14 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
             offset == that.offset &&
             criteria.equals(that.criteria) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
-            selectAttributes.equals(that.selectAttributes) &&
+            attributes.equals(that.attributes) &&
             Objects.equals(orderBy, that.orderBy) &&
             Objects.equals(fetchDepth, that.fetchDepth);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(forUpdate, limit, offset, criteria, foreignKeyFetchDepths, selectAttributes, orderBy, fetchDepth);
+    return Objects.hash(forUpdate, limit, offset, criteria, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
   }
 
   static final class DefaultBuilder implements SelectCondition.Builder {
@@ -132,7 +132,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     private final Criteria criteria;
 
     private Map<ForeignKey, Integer> foreignKeyFetchDepths;
-    private Collection<Attribute<?>> selectAttributes = emptyList();
+    private Collection<Attribute<?>> attributes = emptyList();
 
     private OrderBy orderBy;
     private Integer fetchDepth;
@@ -146,7 +146,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
       if (condition instanceof DefaultSelectCondition) {
         DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;
         foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
-        selectAttributes = selectCondition.selectAttributes;
+        attributes = selectCondition.attributes;
         orderBy = selectCondition.orderBy;
         fetchDepth = selectCondition.fetchDepth;
         forUpdate = selectCondition.forUpdate;
@@ -201,14 +201,14 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     }
 
     @Override
-    public <T extends Attribute<?>> Builder selectAttributes(T... attributes) {
-      selectAttributes = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
+    public <T extends Attribute<?>> Builder attributes(T... attributes) {
+      this.attributes = requireNonNull(attributes).length == 0 ? emptyList() : unmodifiableList(asList(attributes));
       return this;
     }
 
     @Override
-    public Builder selectAttributes(Collection<? extends Attribute<?>> attributes) {
-      selectAttributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
+    public Builder attributes(Collection<? extends Attribute<?>> attributes) {
+      this.attributes = requireNonNull(attributes).isEmpty() ? emptyList() : unmodifiableList(new ArrayList<>(attributes));
       return this;
     }
 

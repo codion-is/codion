@@ -51,7 +51,7 @@ public final class SelectQueriesTest {
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
     SelectCondition condition = SelectCondition.where(column(QueryColumnsWhereClause.ENAME).equalTo("SCOTT"))
-            .selectAttributes(QueryColumnsWhereClause.ENAME)
+            .attributes(QueryColumnsWhereClause.ENAME)
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
     builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))

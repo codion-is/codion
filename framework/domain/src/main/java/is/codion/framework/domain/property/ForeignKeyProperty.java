@@ -53,7 +53,7 @@ public interface ForeignKeyProperty extends Property<Entity> {
   /**
    * @return the attributes to select when fetching entities referenced via this foreign key, an empty list in case of all attributes
    */
-  List<Attribute<?>> selectAttributes();
+  List<Attribute<?>> attributes();
 
   /**
    * Provides setters for ForeignKeyProperty properties
@@ -87,6 +87,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @param attributes the attributes to select
      * @return this instance
      */
-    ForeignKeyProperty.Builder selectAttributes(Attribute<?>... attributes);
+    ForeignKeyProperty.Builder attributes(Attribute<?>... attributes);
   }
 }

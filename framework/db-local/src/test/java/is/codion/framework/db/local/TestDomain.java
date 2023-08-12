@@ -227,14 +227,14 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(EmployeeFk.DEPARTMENT)
                     .nullable(false),
             foreignKeyProperty(EmployeeFk.DEPARTMENT_FK, EmployeeFk.DEPARTMENT_FK.name())
-                    .selectAttributes(DepartmentFk.DNAME),
+                    .attributes(DepartmentFk.DNAME),
             columnProperty(EmployeeFk.JOB, EmployeeFk.JOB.name()),
             columnProperty(EmployeeFk.SALARY, EmployeeFk.SALARY.name())
                     .maximumFractionDigits(2),
             columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.name()),
             columnProperty(EmployeeFk.MGR),
             foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.name())
-                    .selectAttributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK)
+                    .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK)
                     .softReference(true),
             columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.name())
                     .nullable(false),

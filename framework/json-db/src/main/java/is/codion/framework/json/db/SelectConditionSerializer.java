@@ -66,9 +66,9 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
       }
     }
     generator.writeEndObject();
-    generator.writeFieldName("selectAttributes");
+    generator.writeFieldName("attributes");
     generator.writeStartArray();
-    for (Attribute<?> attribute : condition.selectAttributes()) {
+    for (Attribute<?> attribute : condition.attributes()) {
       generator.writeString(attribute.name());
     }
     generator.writeEndArray();

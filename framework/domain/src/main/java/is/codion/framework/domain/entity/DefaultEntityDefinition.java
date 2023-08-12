@@ -370,8 +370,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Collection<Attribute<?>> defaultSelectAttributes() {
-    return entityProperties.defaultSelectAttributes;
+  public Collection<Attribute<?>> selectAttributes() {
+    return entityProperties.selectAttributes;
   }
 
   @Override
@@ -789,7 +789,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Set<Column<?>> foreignKeyColumns = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
     private final List<TransientProperty<?>> transientProperties;
-    private final List<Attribute<?>> defaultSelectAttributes;
+    private final List<Attribute<?>> selectAttributes;
 
     private EntityProperties(List<Property.Builder<?, ?>> propertyBuilders) {
       if (requireNonNull(propertyBuilders, "propertyBuilders").isEmpty()) {
@@ -809,7 +809,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.columnPropertyForeignKeyProperties = unmodifiableMap(columnPropertyForeignKeyProperties());
       this.derivedAttributes = unmodifiableMap(derivedAttributes());
       this.transientProperties = unmodifiableList(transientProperties());
-      this.defaultSelectAttributes = unmodifiableList(defaultSelectAttributes());
+      this.selectAttributes = unmodifiableList(selectAttributes());
     }
 
     private Map<Attribute<?>, Property<?>> propertyMap(List<Property.Builder<?, ?>> builders) {
@@ -894,7 +894,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private List<Attribute<?>> defaultSelectAttributes() {
+    private List<Attribute<?>> selectAttributes() {
       List<Attribute<?>> selectableAttributes = columnProperties.stream()
               .filter(ColumnProperty::isSelectable)
               .filter(property -> !lazyLoadedBlobProperties.contains(property))

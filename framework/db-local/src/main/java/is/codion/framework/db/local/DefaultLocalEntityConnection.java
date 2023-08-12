@@ -609,7 +609,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
                     .selectCondition(SelectCondition.where(criteria)
-                            .selectAttributes(entityDefinition.primaryKeyColumns())
+                            .attributes(entityDefinition.primaryKeyColumns())
                             .build())
                     .build())
             .build();
@@ -908,7 +908,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Key> originalKeys = Entity.originalPrimaryKeys(entities);
     SelectCondition selectForUpdateCondition = SelectCondition.where(keys(originalKeys))
-            .selectAttributes(primaryKeyAndWritableColumnAttributes(entityType))
+            .attributes(primaryKeyAndWritableColumnAttributes(entityType))
             .forUpdate()
             .build();
     Map<Key, Entity> currentEntitiesByKey = Entity.mapToPrimaryKey(doSelect(selectForUpdateCondition));
@@ -964,7 +964,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void setForeignKeys(List<Entity> entities, SelectCondition condition,
                               int currentForeignKeyFetchDepth) throws SQLException {
     List<ForeignKeyProperty> foreignKeyProperties =
-            foreignKeyPropertiesToSet(entities.get(0).type(), condition.selectAttributes());
+            foreignKeyPropertiesToSet(entities.get(0).type(), condition.attributes());
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       ForeignKey foreignKey = foreignKeyProperty.attribute();
@@ -1025,7 +1025,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       List<Key> keys = referencedKeys.subList(i, Math.min(i + maximumNumberOfParameters, referencedKeys.size()));
       SelectCondition referencedEntitiesCondition = SelectCondition.where(keys(keys))
               .fetchDepth(conditionFetchDepthLimit)
-              .selectAttributes(attributesToSelect(foreignKeyProperty, keyColumns))
+              .attributes(attributesToSelect(foreignKeyProperty, keyColumns))
               .build();
       referencedEntities.addAll(doSelect(referencedEntitiesCondition, currentForeignKeyFetchDepth + 1).stream()
               .map(Entity::immutable)
@@ -1414,11 +1414,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static Collection<Attribute<?>> attributesToSelect(ForeignKeyProperty foreignKeyProperty,
                                                              List<? extends Attribute<?>> referencedAttributes) {
-    if (foreignKeyProperty.selectAttributes().isEmpty()) {
+    if (foreignKeyProperty.attributes().isEmpty()) {
       return emptyList();
     }
 
-    Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyProperty.selectAttributes());
+    Set<Attribute<?>> selectAttributes = new HashSet<>(foreignKeyProperty.attributes());
     selectAttributes.addAll(referencedAttributes);
 
     return selectAttributes;

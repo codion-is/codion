@@ -100,7 +100,7 @@ public final class ConditionObjectMapperTest {
             .queryTimeout(42)
             .fetchDepth(2)
             .fetchDepth(Employee.DEPARTMENT_FK, 0)
-            .selectAttributes(Employee.COMMISSION, Employee.DEPARTMENT)
+            .attributes(Employee.COMMISSION, Employee.DEPARTMENT)
             .build();
 
     String jsonString = mapper.writeValueAsString(selectCondition);
@@ -114,7 +114,7 @@ public final class ConditionObjectMapperTest {
     for (ForeignKey foreignKey : entities.definition(selectCondition.entityType()).foreignKeys()) {
       assertEquals(selectCondition.fetchDepth(foreignKey), readCondition.fetchDepth(foreignKey));
     }
-    assertEquals(selectCondition.selectAttributes(), readCondition.selectAttributes());
+    assertEquals(selectCondition.attributes(), readCondition.attributes());
     assertTrue(readCondition.forUpdate());
     assertEquals(42, readCondition.queryTimeout());
     assertEquals(selectCondition, readCondition);
