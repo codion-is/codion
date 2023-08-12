@@ -23,14 +23,12 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
   private final ColumnCriteriaSerializer columnCriteriaSerializer;
   private final CriteriaCombinationSerializer criteriaCombinationSerializer;
   private final CustomCriteriaSerializer customCriteriaSerializer;
-  private final AllCriteriaSerializer allCriteriaSerializer;
 
   CriteriaSerializer(EntityObjectMapper entityObjectMapper) {
     super(Criteria.class);
     this.columnCriteriaSerializer = new ColumnCriteriaSerializer(entityObjectMapper);
     this.criteriaCombinationSerializer = new CriteriaCombinationSerializer(columnCriteriaSerializer);
     this.customCriteriaSerializer = new CustomCriteriaSerializer(entityObjectMapper);
-    this.allCriteriaSerializer = new AllCriteriaSerializer();
   }
 
   @Override
@@ -57,8 +55,10 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
       customCriteriaSerializer.serialize(customCriteria, generator);
     }
     else if (criteria instanceof AllCriteria) {
-      AllCriteria allCriteria = (AllCriteria) criteria;
-      allCriteriaSerializer.serialize(allCriteria, generator);
+      generator.writeStartObject();
+      generator.writeStringField("type", "all");
+      generator.writeStringField("entityType", criteria.entityType().name());
+      generator.writeEndObject();
     }
     else {
       throw new IllegalArgumentException("Unknown criteria type: " + criteria.getClass());

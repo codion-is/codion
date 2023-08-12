@@ -60,7 +60,7 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
   @Override
   public ColumnCriteria<String> like(String value) {
     if (value == null) {
-      return (ColumnCriteria<String>) isNotNull();
+      return (ColumnCriteria<String>) isNull();
     }
 
     return new SingleValueColumnCriteria<>((Column<String>) column, value, EQUAL, true, true);
@@ -105,19 +105,11 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
 
   @Override
   public ColumnCriteria<T> in(Collection<? extends T> values) {
-    if (singleStringValue(values)) {
-      return equalTo(values.iterator().next());
-    }
-
     return new MultiValueColumnCriteria<>(column, values, EQUAL);
   }
 
   @Override
   public ColumnCriteria<T> notIn(Collection<? extends T> values) {
-    if (singleStringValue(values)) {
-      return notEqualTo(values.iterator().next());
-    }
-
     return new MultiValueColumnCriteria<>(column, values, NOT_EQUAL);
   }
 
@@ -133,19 +125,11 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
 
   @Override
   public ColumnCriteria<String> inIgnoreCase(Collection<String> values) {
-    if (singleStringValue(values)) {
-      return equalToIgnoreCase(values.iterator().next());
-    }
-
     return new MultiValueColumnCriteria<>((Column<String>) column, values, EQUAL, false);
   }
 
   @Override
   public ColumnCriteria<String> notInIgnoreCase(Collection<String> values) {
-    if (singleStringValue(values)) {
-      return notEqualToIgnoreCase(values.iterator().next());
-    }
-
     return new MultiValueColumnCriteria<>((Column<String>) column, values, NOT_EQUAL, false);
   }
 
@@ -197,9 +181,5 @@ final class DefaultColumnCriteriaBuilder<T> implements ColumnCriteria.Builder<T>
   @Override
   public ColumnCriteria<T> isNotNull() {
     return new SingleValueColumnCriteria<>(column, null, NOT_EQUAL);
-  }
-
-  private <T> boolean singleStringValue(Collection<T> values) {
-    return requireNonNull(values, VALUES_PARAMETER).size() == 1 && column.isString();
   }
 }
