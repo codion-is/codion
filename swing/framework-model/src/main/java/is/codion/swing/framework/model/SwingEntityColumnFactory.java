@@ -65,7 +65,7 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
    */
   protected final Comparator<?> attributeComparator(Attribute<?> attribute) {
     if (attribute instanceof ForeignKey) {
-      return entityDefinition.referencedDefinition((ForeignKey) attribute).comparator();
+      return entityDefinition.referencedEntity((ForeignKey) attribute).comparator();
     }
 
     return entityDefinition.property(attribute).comparator();
