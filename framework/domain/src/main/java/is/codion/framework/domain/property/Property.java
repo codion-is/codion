@@ -8,6 +8,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -443,50 +444,50 @@ public interface Property<T> {
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance.
-   * @param attribute the attribute
-   * @param <T> the attribute value type
+   * @param column the column
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Attribute<T> attribute) {
-    return columnProperty(attribute, null);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Column<T> column) {
+    return columnProperty(column, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Attribute<T> attribute, String caption) {
-    return new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(attribute, caption);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> columnProperty(Column<T> column, String caption) {
+    return new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(column, caption);
   }
 
   /**
    * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
    * with the primary key index set to 0.
-   * @param attribute the attribute
-   * @param <T> the attribute value type
+   * @param column the column
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute) {
-    return primaryKeyProperty(attribute, null);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Column<T> column) {
+    return primaryKeyProperty(column, null);
   }
 
   /**
    * A convenience method for creating a new {@link ColumnProperty.Builder} instance,
    * with the primary key index set to 0.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder} with primary key index 0
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Attribute<T> attribute, String caption) {
-    return (ColumnProperty.Builder<T, B>) columnProperty(attribute, caption).primaryKeyIndex(0);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> primaryKeyProperty(Column<T> column, String caption) {
+    return (ColumnProperty.Builder<T, B>) columnProperty(column, caption).primaryKeyIndex(0);
   }
 
   /**
@@ -575,56 +576,56 @@ public interface Property<T> {
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
-   * @param attribute the attribute
+   * @param column the column
    * @param subquery the sql query
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Attribute<T> attribute, String subquery) {
-    return subqueryProperty(attribute, null, subquery);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Column<T> column, String subquery) {
+    return subqueryProperty(column, null, subquery);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, based on a subquery.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param subquery the sql query
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Attribute<T> attribute, String caption,
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> subqueryProperty(Column<T> column, String caption,
                                                                                                    String subquery) {
-    return new DefaultColumnProperty.DefaultSubqueryPropertyBuilder<>(attribute, caption, subquery);
+    return new DefaultColumnProperty.DefaultSubqueryPropertyBuilder<>(column, caption, subquery);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, based on the given items.
-   * @param attribute the attribute
+   * @param column the column
    * @param validItems the Items representing all the valid values for this property
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Attribute<T> attribute, List<Item<T>> validItems) {
-    return itemProperty(attribute, null, validItems);
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Column<T> column, List<Item<T>> validItems) {
+    return itemProperty(column, null, validItems);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, based on the given items.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param validItems the Items representing all the valid values for this property
-   * @param <T> the attribute value type
+   * @param <T> the column value type
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
-  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Attribute<T> attribute, String caption,
+  static <T, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> itemProperty(Column<T> column, String caption,
                                                                                                List<Item<T>> validItems) {
-    return new DefaultItemProperty.DefaultItemPropertyBuilder<>(attribute, caption, validItems);
+    return new DefaultItemProperty.DefaultItemPropertyBuilder<>(column, caption, validItems);
   }
 
   /**
@@ -654,15 +655,15 @@ public interface Property<T> {
    * Creates a new {@link ColumnProperty.Builder} instance representing a Boolean value.
    * @param <C> the column type
    * @param <B> the builder type
-   * @param attribute the attribute
+   * @param column the column
    * @param columnClass the underlying column data type class
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Attribute<Boolean> attribute, Class<C> columnClass,
+  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Column<Boolean> column, Class<C> columnClass,
                                                                                                               C trueValue, C falseValue) {
-    return booleanProperty(attribute, null, columnClass, trueValue, falseValue);
+    return booleanProperty(column, null, columnClass, trueValue, falseValue);
   }
 
   /**
@@ -670,123 +671,123 @@ public interface Property<T> {
    * @param <C> the column type
    * @param <B> the builder type
    * @param columnClass the underlying column data type class
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param trueValue the value representing 'true' in the underlying column
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Attribute<Boolean> attribute, String caption,
+  static <C, B extends ColumnProperty.Builder<Boolean, B>> ColumnProperty.Builder<Boolean, B> booleanProperty(Column<Boolean> column, String caption,
                                                                                                               Class<C> columnClass, C trueValue, C falseValue) {
-    return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(attribute, caption)
+    return (ColumnProperty.Builder<Boolean, B>) new DefaultColumnProperty.DefaultColumnPropertyBuilder<>(column, caption)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
 
   /**
    * Creates a new {@link BlobProperty.Builder} instance.
-   * @param attribute the attribute
+   * @param column the column
    * @return a new {@link BlobProperty.Builder}
    */
-  static BlobProperty.Builder blobProperty(Attribute<byte[]> attribute) {
-    return blobProperty(attribute, null);
+  static BlobProperty.Builder blobProperty(Column<byte[]> column) {
+    return blobProperty(column, null);
   }
 
   /**
    * Creates a new {@link BlobProperty.Builder} instance.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @return a new {@link BlobProperty.Builder}
    */
-  static BlobProperty.Builder blobProperty(Attribute<byte[]> attribute, String caption) {
-    return new DefaultBlobProperty.DefaultBlobPropertyBuilder(attribute, caption);
+  static BlobProperty.Builder blobProperty(Column<byte[]> column, String caption) {
+    return new DefaultBlobProperty.DefaultBlobPropertyBuilder(column, caption);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
-   * @param attribute the attribute
+   * @param column the column
    * @param <T> the Temporal type to base this property on
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Attribute<T> attribute) {
-    return auditInsertTimeProperty(attribute, null);
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Column<T> column) {
+    return auditInsertTimeProperty(column, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was inserted.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param <T> the Temporal type to base this property on
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Attribute<T> attribute, String caption) {
-    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditInsertTimeProperty(Column<T> column, String caption) {
+    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(column, caption, INSERT);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
-   * @param attribute the attribute
+   * @param column the column
    * @param <T> the Temporal type to base this property on
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Attribute<T> attribute) {
-    return auditUpdateTimeProperty(attribute, null);
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Column<T> column) {
+    return auditUpdateTimeProperty(column, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the time a record was updated.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param <T> the Temporal type to base this property on
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Attribute<T> attribute, String caption) {
-    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
+  static <T extends Temporal, B extends ColumnProperty.Builder<T, B>> ColumnProperty.Builder<T, B> auditUpdateTimeProperty(Column<T> column, String caption) {
+    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(column, caption, UPDATE);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
-   * @param attribute the attribute
+   * @param column the column
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Attribute<String> attribute) {
-    return auditInsertUserProperty(attribute, null);
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Column<String> column) {
+    return auditInsertUserProperty(column, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who inserted a record.
-   * @param attribute the attribute
+   * @param column the column
    * @param <B> the builder type
    * @param caption the property caption
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Attribute<String> attribute, String caption) {
-    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, INSERT);
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditInsertUserProperty(Column<String> column, String caption) {
+    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(column, caption, INSERT);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
-   * @param attribute the attribute
+   * @param column the column
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Attribute<String> attribute) {
-    return auditUpdateUserProperty(attribute, null);
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Column<String> column) {
+    return auditUpdateUserProperty(column, null);
   }
 
   /**
    * Creates a new {@link ColumnProperty.Builder} instance, representing the username of the user who updated a record.
-   * @param attribute the attribute
+   * @param column the column
    * @param caption the property caption
    * @param <B> the builder type
    * @return a new {@link ColumnProperty.Builder}
    */
-  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Attribute<String> attribute, String caption) {
-    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(attribute, caption, UPDATE);
+  static <B extends ColumnProperty.Builder<String, B>> ColumnProperty.Builder<String, B> auditUpdateUserProperty(Column<String> column, String caption) {
+    return new DefaultAuditProperty.DefaultAuditPropertyBuilder<>(column, caption, UPDATE);
   }
 
   /**

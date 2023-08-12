@@ -129,7 +129,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
       }
       if (referencedEntity != null) {
         foreignKey.references().stream()
-                .map(ForeignKey.Reference::referencedAttribute)
+                .map(ForeignKey.Reference::referencedColumn)
                 .forEach(referencedAttribute -> validateReference(foreignKey, referencedAttribute, referencedEntity));
       }
     }

@@ -13,7 +13,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -58,9 +58,9 @@ public final class Example {
     public interface Customer {
       EntityType TYPE = DOMAIN.entityType("store.customer");
 
-      Attribute<String> ID = TYPE.stringAttribute("id");
-      Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
-      Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
+      Column<String> ID = TYPE.stringColumn("id");
+      Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+      Column<String> LAST_NAME = TYPE.stringColumn("last_name");
     }
 
     void customer() {
@@ -92,9 +92,9 @@ public final class Example {
     public interface Address {
       EntityType TYPE = DOMAIN.entityType("store.address");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id");
-      Attribute<String> STREET = TYPE.stringAttribute("street");
-      Attribute<String> CITY = TYPE.stringAttribute("city");
+      Column<Integer> ID = TYPE.integerColumn("id");
+      Column<String> STREET = TYPE.stringColumn("street");
+      Column<String> CITY = TYPE.stringColumn("city");
     }
 
     void address() {
@@ -118,9 +118,9 @@ public final class Example {
     public interface CustomerAddress {
       EntityType TYPE = DOMAIN.entityType("store.customer_address");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id");
-      Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-      Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("address_id");
+      Column<Integer> ID = TYPE.integerColumn("id");
+      Column<String> CUSTOMER_ID = TYPE.stringColumn("customer_id");
+      Column<Integer> ADDRESS_ID = TYPE.integerColumn("address_id");
 
       ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
       ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);

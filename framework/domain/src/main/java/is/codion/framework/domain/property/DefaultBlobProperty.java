@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.property;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements BlobProperty {
 
@@ -27,8 +27,8 @@ final class DefaultBlobProperty extends DefaultColumnProperty<byte[]> implements
 
     private boolean eagerlyLoaded = false;
 
-    DefaultBlobPropertyBuilder(Attribute<byte[]> attribute, String caption) {
-      super(attribute, caption);
+    DefaultBlobPropertyBuilder(Column<byte[]> column, String caption) {
+      super(column, caption);
     }
 
     @Override

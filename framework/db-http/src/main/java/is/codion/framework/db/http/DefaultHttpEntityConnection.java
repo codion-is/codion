@@ -19,8 +19,10 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import org.apache.http.HttpEntity;
@@ -39,8 +41,7 @@ import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.attribute;
-import static is.codion.framework.db.criteria.Criteria.key;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -297,19 +298,19 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute) throws DatabaseException {
-    return select(requireNonNull(attribute), SelectCondition.all(attribute.entityType())
-            .orderBy(ascending(attribute))
+  public <T> List<T> select(Column<T> column) throws DatabaseException {
+    return select(requireNonNull(column), SelectCondition.all(column.entityType())
+            .orderBy(ascending(column))
             .build());
   }
 
   @Override
-  public <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException {
-    Objects.requireNonNull(attribute);
+  public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+    Objects.requireNonNull(column);
     Objects.requireNonNull(condition);
     try {
       synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(attribute, condition)))));
+        return onResponse(execute(createHttpPost("values", byteArrayEntity(asList(column, condition)))));
       }
     }
     catch (DatabaseException e) {
@@ -322,7 +323,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    return selectSingle(where(attribute(attribute).equalTo(value)));
+    if (attribute instanceof ForeignKey) {
+      return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
+    }
+
+    return selectSingle(where(column((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
@@ -377,12 +382,20 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    return select(where(attribute(attribute).equalTo(value)));
+    if (attribute instanceof ForeignKey) {
+      return select(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
+    }
+
+    return select(where(column((Column<T>) attribute).equalTo(value)));
   }
 
   @Override
   public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    return select(where(attribute(attribute).in(values)));
+    if (attribute instanceof ForeignKey) {
+      return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
+    }
+
+    return select(where(column((Column<T>) attribute).in(values)));
   }
 
   @Override
@@ -434,14 +447,14 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData)
+  public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobAttribute, "blobAttribute");
+    Objects.requireNonNull(blobColumn, "blobAttribute");
     Objects.requireNonNull(blobData, "blobData");
     try {
       synchronized (this.entities) {
-        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobAttribute, blobData)))));
+        onResponse(execute(createHttpPost("writeBlob", byteArrayEntity(asList(primaryKey, blobColumn, blobData)))));
       }
     }
     catch (DatabaseException e) {
@@ -453,12 +466,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException {
+  public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
-    Objects.requireNonNull(blobAttribute, "blobAttribute");
+    Objects.requireNonNull(blobColumn, "blobAttribute");
     try {
       synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobAttribute)))));
+        return onResponse(execute(createHttpPost("readBlob", byteArrayEntity(asList(primaryKey, blobColumn)))));
       }
     }
     catch (DatabaseException e) {

@@ -24,11 +24,11 @@ public final class Table {
   private final String tableName;
   private final String comment;
   private final List<ForeignKeyColumn> foreignKeyColumns;
-  private final Map<String, Column> columns = new LinkedHashMap<>();
+  private final Map<String, MetadataColumn> columns = new LinkedHashMap<>();
   private final List<ForeignKeyConstraint> foreignKeys = new ArrayList<>();
 
   Table(Schema schema, String tableName, String comment,
-        List<Column> columns, List<ForeignKeyColumn> foreignKeyColumns) {
+        List<MetadataColumn> columns, List<ForeignKeyColumn> foreignKeyColumns) {
     this.schema = requireNonNull(schema);
     this.tableName = requireNonNull(tableName);
     this.comment = comment;
@@ -48,7 +48,7 @@ public final class Table {
     return comment;
   }
 
-  public List<Column> columns() {
+  public List<MetadataColumn> columns() {
     return unmodifiableList(new ArrayList<>(columns.values()));
   }
 

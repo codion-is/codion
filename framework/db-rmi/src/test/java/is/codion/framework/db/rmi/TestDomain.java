@@ -5,7 +5,7 @@ package is.codion.framework.db.rmi;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -30,9 +30,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("scott.dept");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
   }
 
   void department() {
@@ -53,17 +53,17 @@ public final class TestDomain extends DefaultDomain {
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
-    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
   }
 
   void employee() {

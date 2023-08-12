@@ -216,7 +216,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public Entity clearPrimaryKey() {
-    definition.primaryKeyAttributes().forEach(this::remove);
+    definition.primaryKeyColumns().forEach(this::remove);
     primaryKey = null;
 
     return this;
@@ -474,8 +474,9 @@ class DefaultEntity implements Entity, Serializable {
       if (((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
         primaryKey = null;
       }
-      if (definition.isForeignKeyAttribute(attribute)) {
-        removeInvalidForeignKeyValues(attribute, newValue);
+      Column<T> column = (Column<T>) attribute;
+      if (definition.isForeignKeyColumn(column)) {
+        removeInvalidForeignKeyValues(column, newValue);
       }
     }
     toString = null;
@@ -497,13 +498,13 @@ class DefaultEntity implements Entity, Serializable {
   private boolean isReferenceNull(ForeignKey foreignKey) {
     List<ForeignKey.Reference<?>> references = foreignKey.references();
     if (references.size() == 1) {
-      return isNull(references.get(0).attribute());
+      return isNull(references.get(0).column());
     }
     EntityDefinition referencedDefinition = definition.referencedDefinition(foreignKey);
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedAttribute());
-      if (!referencedProperty.isNullable() && isNull(reference.attribute())) {
+      ColumnProperty<?> referencedProperty = referencedDefinition.columnProperty(reference.referencedColumn());
+      if (!referencedProperty.isNullable() && isNull(reference.column())) {
         return true;
       }
     }
@@ -536,28 +537,28 @@ class DefaultEntity implements Entity, Serializable {
 
   private void throwIfModifiesReadOnlyReference(ForeignKeyProperty property, Entity foreignKeyValue,
                                                 ForeignKey.Reference<?> reference) {
-    boolean readOnlyReference = property.isReadOnly(reference.attribute());
+    boolean readOnlyReference = property.isReadOnly(reference.column());
     if (readOnlyReference) {
-      boolean containsValue = contains(reference.attribute());
+      boolean containsValue = contains(reference.column());
       if (containsValue) {
-        Object currentReferenceValue = get(reference.attribute());
-        Object newReferenceValue = foreignKeyValue.get(reference.referencedAttribute());
+        Object currentReferenceValue = get(reference.column());
+        Object newReferenceValue = foreignKeyValue.get(reference.referencedColumn());
         if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
           throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify read-only reference: " +
-                  reference.attribute() + " from " + currentReferenceValue + " to " + newReferenceValue);
+                  reference.column() + " from " + currentReferenceValue + " to " + newReferenceValue);
         }
       }
     }
   }
 
-  private <T> void removeInvalidForeignKeyValues(Attribute<T> attribute, T value) {
-    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties(attribute)) {
+  private <T> void removeInvalidForeignKeyValues(Column<T> column, T value) {
+    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties(column)) {
       Entity foreignKeyEntity = get(foreignKeyProperty);
       if (foreignKeyEntity != null) {
         ForeignKey foreignKey = foreignKeyProperty.attribute();
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
-        if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(attribute).referencedAttribute()))) {
+        if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).referencedColumn()))) {
           remove(foreignKey);
           removeCachedReferencedKey(foreignKey);
         }
@@ -578,9 +579,9 @@ class DefaultEntity implements Entity, Serializable {
     List<ForeignKey.Reference<?>> references = foreignKeyProperty.references();
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      if (!foreignKeyProperty.isReadOnly(reference.attribute())) {
-        Property<Object> columnProperty = definition.columnProperty((Attribute<Object>) reference.attribute());
-        put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedAttribute()));
+      if (!foreignKeyProperty.isReadOnly(reference.column())) {
+        Property<Object> columnProperty = definition.columnProperty((Column<Object>) reference.column());
+        put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedColumn()));
       }
     }
   }
@@ -603,19 +604,19 @@ class DefaultEntity implements Entity, Serializable {
   private Key createAndCacheCompositeReferenceKey(ForeignKey foreignKey,
                                                   List<ForeignKey.Reference<?>> references,
                                                   EntityDefinition referencedEntityDefinition) {
-    Map<Attribute<?>, Object> keyValues = new HashMap<>(references.size());
+    Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnProperty<?> referencedProperty = referencedEntityDefinition.columnProperty(reference.referencedAttribute());
-      Object value = values.get(reference.attribute());
+      ColumnProperty<?> referencedProperty = referencedEntityDefinition.columnProperty(reference.referencedColumn());
+      Object value = values.get(reference.column());
       if (value == null && !referencedProperty.isNullable()) {
         return null;
       }
-      keyValues.put(reference.referencedAttribute(), value);
+      keyValues.put(reference.referencedColumn(), value);
     }
-    Set<Attribute<?>> referencedAttributes = keyValues.keySet();
-    List<Attribute<?>> primaryKeyAttributes = referencedEntityDefinition.primaryKeyAttributes();
-    boolean isPrimaryKey = referencedAttributes.size() == primaryKeyAttributes.size() && referencedAttributes.containsAll(primaryKeyAttributes);
+    Set<Column<?>> referencedColumns = keyValues.keySet();
+    List<Column<?>> primaryKeyColumns = referencedEntityDefinition.primaryKeyColumns();
+    boolean isPrimaryKey = referencedColumns.size() == primaryKeyColumns.size() && referencedColumns.containsAll(primaryKeyColumns);
 
     return cacheReferencedKey(foreignKey, new DefaultKey(referencedEntityDefinition, keyValues, isPrimaryKey));
   }
@@ -623,16 +624,16 @@ class DefaultEntity implements Entity, Serializable {
   private Key createAndCacheSingleReferenceKey(ForeignKey foreignKey,
                                                ForeignKey.Reference<?> reference,
                                                EntityDefinition referencedEntityDefinition) {
-    Object value = values.get(reference.attribute());
+    Object value = values.get(reference.column());
     if (value == null) {
       return null;
     }
 
-    boolean isPrimaryKey = reference.referencedAttribute().equals(referencedEntityDefinition.primaryKeyAttributes().get(0));
+    boolean isPrimaryKey = reference.referencedColumn().equals(referencedEntityDefinition.primaryKeyColumns().get(0));
 
     return cacheReferencedKey(foreignKey,
             new DefaultKey(definition.referencedDefinition(foreignKey),
-                    reference.referencedAttribute(), value, isPrimaryKey));
+                    reference.referencedColumn(), value, isPrimaryKey));
   }
 
   private Key cacheReferencedKey(ForeignKey foreignKey, Key referencedKey) {
@@ -670,23 +671,23 @@ class DefaultEntity implements Entity, Serializable {
     if (!definition.hasPrimaryKey()) {
       return new DefaultKey(definition, emptyList(), true);
     }
-    List<Attribute<?>> primaryKeyAttributes = definition.primaryKeyAttributes();
-    if (primaryKeyAttributes.size() == 1) {
-      return createSingleAttributePrimaryKey(primaryKeyAttributes.get(0), originalValues);
+    List<Column<?>> primaryKeyColumns = definition.primaryKeyColumns();
+    if (primaryKeyColumns.size() == 1) {
+      return createSingleColumnPrimaryKey(primaryKeyColumns.get(0), originalValues);
     }
 
-    return createMultiAttributePrimaryKey(primaryKeyAttributes, originalValues);
+    return createMultiColumnPrimaryKey(primaryKeyColumns, originalValues);
   }
 
-  private DefaultKey createSingleAttributePrimaryKey(Attribute<?> attribute, boolean originalValues) {
-    return new DefaultKey(definition, attribute, originalValues ? original(attribute) : values.get(attribute), true);
+  private DefaultKey createSingleColumnPrimaryKey(Column<?> column, boolean originalValues) {
+    return new DefaultKey(definition, column, originalValues ? original(column) : values.get(column), true);
   }
 
-  private DefaultKey createMultiAttributePrimaryKey(List<Attribute<?>> primaryKeyAttributes, boolean originalValues) {
-    Map<Attribute<?>, Object> keyValues = new HashMap<>(primaryKeyAttributes.size());
-    for (int i = 0; i < primaryKeyAttributes.size(); i++) {
-      Attribute<?> attribute = primaryKeyAttributes.get(i);
-      keyValues.put(attribute, originalValues ? original(attribute) : values.get(attribute));
+  private DefaultKey createMultiColumnPrimaryKey(List<Column<?>> primaryKeyColumn, boolean originalValues) {
+    Map<Column<?>, Object> keyValues = new HashMap<>(primaryKeyColumn.size());
+    for (int i = 0; i < primaryKeyColumn.size(); i++) {
+      Column<?> column = primaryKeyColumn.get(i);
+      keyValues.put(column, originalValues ? original(column) : values.get(column));
     }
 
     return new DefaultKey(definition, keyValues, true);
@@ -804,10 +805,10 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private static Map<Attribute<?>, Object> createValueMap(Key key) {
-    Collection<Attribute<?>> attributes = key.attributes();
-    Map<Attribute<?>, Object> values = new HashMap<>(attributes.size());
-    for (Attribute<?> attribute : attributes) {
-      values.put(attribute, key.get(attribute));
+    Collection<Column<?>> columns = key.columns();
+    Map<Attribute<?>, Object> values = new HashMap<>(columns.size());
+    for (Column<?> column : columns) {
+      values.put(column, key.get(column));
     }
 
     return values;

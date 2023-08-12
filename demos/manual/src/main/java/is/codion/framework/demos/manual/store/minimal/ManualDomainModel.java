@@ -5,7 +5,7 @@ import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.Cu
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -27,16 +27,16 @@ class ManualDomainModel {
     interface City {
       EntityType TYPE = DOMAIN.entityType("store.city"); //<1>
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id"); //<2>
-      Attribute<String> NAME = TYPE.stringAttribute("name");
+      Column<Integer> ID = TYPE.integerColumn("id"); //<2>
+      Column<String> NAME = TYPE.stringColumn("name");
     }
 
     interface Customer {
       EntityType TYPE = DOMAIN.entityType("store.customer");
 
-      Attribute<Integer> ID = TYPE.integerAttribute("id");
-      Attribute<String> NAME = TYPE.stringAttribute("name");
-      Attribute<Integer> CITY_ID = TYPE.integerAttribute("city_id");
+      Column<Integer> ID = TYPE.integerColumn("id");
+      Column<String> NAME = TYPE.stringColumn("name");
+      Column<Integer> CITY_ID = TYPE.integerColumn("city_id");
 
       ForeignKey CITY_FK = TYPE.foreignKey("city", CITY_ID, City.ID);
     }
@@ -97,7 +97,7 @@ class ManualDomainModel {
 
     EntityDefinition cityDefinition = customerDefinition.referencedDefinition(Customer.CITY_FK);
 
-    List<Attribute<?>> cityPrimaryKeyAttributes = cityDefinition.primaryKeyAttributes();
+    List<Column<?>> cityPrimaryKeyColumns = cityDefinition.primaryKeyColumns();
     // end::domainUsage[]
   }
 }

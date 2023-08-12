@@ -42,7 +42,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/Condition
 ----
 
 *{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition]*::
-Represents a where clause as well as the attribute values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html#where[UpdateCondition.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.Builder.html[UpdateCondition.Builder] instance for specifying the attributes to update and their respective values.
+Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html#where[UpdateCondition.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.Builder.html[UpdateCondition.Builder] instance for specifying the columns to update and their respective values.
 
 [source,java,indent=0]
 ----

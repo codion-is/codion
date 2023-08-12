@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.framework;
 
 import is.codion.common.item.Item;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.swing.common.ui.component.button.NullableCheckBox;
@@ -35,23 +35,23 @@ public final class EntityEditPanels {
 
   interface DemoMaster {
     EntityType TYPE = domainType("domainType").entityType("master");
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Column<Integer> ID = TYPE.integerColumn("id");
   }
 
   interface Demo {
     EntityType TYPE = domainType("domainType").entityType("entityType");
-    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<Integer> FOREIGN_ATTRIBUTE = TYPE.integerAttribute("foreign_id");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<Integer> FOREIGN_ATTRIBUTE = TYPE.integerColumn("foreign_id");
     ForeignKey FOREIGN_KEY = TYPE.foreignKey("foreign_key", FOREIGN_ATTRIBUTE, DemoMaster.ID);
-    Attribute<LocalDate> LOCAL_DATE = TYPE.localDateAttribute("local_date");
-    Attribute<Integer> INTEGER = TYPE.integerAttribute("integer");
-    Attribute<Long> LONG = TYPE.longAttribute("long");
-    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
-    Attribute<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalAttribute("big_decimal");
-    Attribute<String> TEXT = TYPE.stringAttribute("text");
-    Attribute<String> LONG_TEXT = TYPE.stringAttribute("long_text");
-    Attribute<String> FORMATTED_TEXT = TYPE.stringAttribute("formatted_text");
-    Attribute<String> ITEM_LIST = TYPE.stringAttribute("item_list");
+    Column<LocalDate> LOCAL_DATE = TYPE.localDateColumn("local_date");
+    Column<Integer> INTEGER = TYPE.integerColumn("integer");
+    Column<Long> LONG = TYPE.longColumn("long");
+    Column<Double> DOUBLE = TYPE.doubleColumn("double");
+    Column<BigDecimal> BIG_DECIMAL = TYPE.bigDecimalColumn("big_decimal");
+    Column<String> TEXT = TYPE.stringColumn("text");
+    Column<String> LONG_TEXT = TYPE.stringColumn("long_text");
+    Column<String> FORMATTED_TEXT = TYPE.stringColumn("formatted_text");
+    Column<String> ITEM_LIST = TYPE.stringColumn("item_list");
   }
 
   private static final class EditPanelDemo extends EntityEditComponentPanel {

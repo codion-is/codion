@@ -4,6 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -38,11 +39,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
   boolean isSoftReference();
 
   /**
-   * Returns true if the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
-   * @param referenceAttribute the reference attribute
-   * @return true if the given foreign key reference attribute as read-only
+   * Returns true if the given foreign key reference column is read-only, as in, not updated when the foreign key value is set.
+   * @param referenceColumn the reference column
+   * @return true if the given foreign key reference column is read-only
    */
-  boolean isReadOnly(Attribute<?> referenceAttribute);
+  boolean isReadOnly(Column<?> referenceColumn);
 
   /**
    * @return the {@link ForeignKey.Reference}s that comprise this foreign key
@@ -74,11 +75,11 @@ public interface ForeignKeyProperty extends Property<Entity> {
     ForeignKeyProperty.Builder softReference(boolean softReference);
 
     /**
-     * Marks the given foreign key reference attribute as read-only, as in, not updated when the foreign key value is set.
-     * @param referenceAttribute the reference attribute
+     * Marks the given foreign key reference column as read-only, as in, not updated when the foreign key value is set.
+     * @param referenceColumn the reference column
      * @return this instance
      */
-    ForeignKeyProperty.Builder readOnly(Attribute<?> referenceAttribute);
+    ForeignKeyProperty.Builder readOnly(Column<?> referenceColumn);
 
     /**
      * Specifies the attributes from the referenced entity to select. Note that the primary key attributes

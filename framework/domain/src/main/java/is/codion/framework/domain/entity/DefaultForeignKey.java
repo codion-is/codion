@@ -23,7 +23,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   @Override
   public EntityType referencedType() {
-    return references.get(0).referencedAttribute().entityType();
+    return references.get(0).referencedColumn().entityType();
   }
 
   @Override
@@ -32,35 +32,35 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
   }
 
   @Override
-  public <T> Reference<T> reference(Attribute<T> attribute) {
-    requireNonNull(attribute);
+  public <T> Reference<T> reference(Column<T> column) {
+    requireNonNull(column);
     for (int i = 0; i < references.size(); i++) {
       Reference<?> reference = references.get(i);
-      if (reference.attribute().equals(attribute)) {
+      if (reference.column().equals(column)) {
         return (Reference<T>) reference;
       }
     }
 
-    throw new IllegalArgumentException("Attribute " + attribute + " is not part of foreign key " + name());
+    throw new IllegalArgumentException("Column " + column + " is not part of foreign key " + name());
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {
     if (references.isEmpty()) {
       throw new IllegalArgumentException("No references provided for foreign key: " + name());
     }
-    EntityType referencedEntityType = references.get(0).referencedAttribute().entityType();
+    EntityType referencedEntityType = references.get(0).referencedColumn().entityType();
     List<Reference<?>> referenceList = new ArrayList<>(references.size());
     for (Reference<?> reference : references) {
-      if (!entityType().equals(reference.attribute().entityType())) {
+      if (!entityType().equals(reference.column().entityType())) {
         throw new IllegalArgumentException("Entity type " + entityType() +
-                " expected, got " + reference.attribute().entityType());
+                " expected, got " + reference.column().entityType());
       }
-      if (!referencedEntityType.equals(reference.referencedAttribute().entityType())) {
+      if (!referencedEntityType.equals(reference.referencedColumn().entityType())) {
         throw new IllegalArgumentException("Entity type " + referencedEntityType +
-                " expected, got " + reference.referencedAttribute().entityType());
+                " expected, got " + reference.referencedColumn().entityType());
       }
-      if (referenceList.stream().anyMatch(existingReference -> existingReference.attribute().equals(reference.attribute()))) {
-        throw new IllegalArgumentException("Foreign key already contains a reference for attribute: " + reference.attribute());
+      if (referenceList.stream().anyMatch(existingReference -> existingReference.column().equals(reference.column()))) {
+        throw new IllegalArgumentException("Foreign key already contains a reference for column: " + reference.column());
       }
 
       referenceList.add(reference);
@@ -73,25 +73,25 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
     private static final long serialVersionUID = 1;
 
-    private final Attribute<T> attribute;
-    private final Attribute<T> referencedAttribute;
+    private final Column<T> column;
+    private final Column<T> referencedColumn;
 
-    DefaultReference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
-      if (requireNonNull(attribute, "attribute").equals(requireNonNull(referencedAttribute, "referencedAttribute"))) {
-        throw new IllegalArgumentException("attribute and referencedAttribute can not be the same");
+    DefaultReference(Column<T> column, Column<T> referencedColumn) {
+      if (requireNonNull(column, "column").equals(requireNonNull(referencedColumn, "referencedColumn"))) {
+        throw new IllegalArgumentException("column and referencedColumn can not be the same");
       }
-      this.attribute = attribute;
-      this.referencedAttribute = referencedAttribute;
+      this.column = column;
+      this.referencedColumn = referencedColumn;
     }
 
     @Override
-    public Attribute<T> attribute() {
-      return attribute;
+    public Column<T> column() {
+      return column;
     }
 
     @Override
-    public Attribute<T> referencedAttribute() {
-      return referencedAttribute;
+    public Column<T> referencedColumn() {
+      return referencedColumn;
     }
   }
 }

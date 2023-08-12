@@ -3,6 +3,7 @@
  */
 package is.codion.framework.json.domain;
 
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
@@ -43,7 +44,7 @@ final class EntityKeyDeserializer extends StdDeserializer<Key> {
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      ColumnProperty<Object> property = definition.columnProperty(definition.attribute(field.getKey()));
+      ColumnProperty<Object> property = definition.columnProperty((Column<Object>) definition.attribute(field.getKey()));
       builder.with(property.attribute(), entityObjectMapper.readValue(field.getValue().toString(), property.attribute().valueClass()));
     }
 

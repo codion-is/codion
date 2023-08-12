@@ -5,7 +5,7 @@ package is.codion.framework.demos.petstore.domain;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.StringFactory;
@@ -36,14 +36,14 @@ public final class Petstore extends DefaultDomain {
   public interface Address {
     EntityType TYPE = DOMAIN.entityType("address");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Address id");
-    Attribute<String> STREET_1 = TYPE.stringAttribute("Street 1");
-    Attribute<String> STREET_2 = TYPE.stringAttribute("Street 2");
-    Attribute<String> CITY = TYPE.stringAttribute("City");
-    Attribute<String> STATE = TYPE.stringAttribute("State");
-    Attribute<Integer> ZIP = TYPE.integerAttribute("Zip");
-    Attribute<Double> LATITUDE = TYPE.doubleAttribute("Latitude");
-    Attribute<Double> LONGITUDE = TYPE.doubleAttribute("Longitude");
+    Column<Integer> ID = TYPE.integerColumn("Address id");
+    Column<String> STREET_1 = TYPE.stringColumn("Street 1");
+    Column<String> STREET_2 = TYPE.stringColumn("Street 2");
+    Column<String> CITY = TYPE.stringColumn("City");
+    Column<String> STATE = TYPE.stringColumn("State");
+    Column<Integer> ZIP = TYPE.integerColumn("Zip");
+    Column<Double> LATITUDE = TYPE.doubleColumn("Latitude");
+    Column<Double> LONGITUDE = TYPE.doubleColumn("Longitude");
   }
 
   void address() {
@@ -92,10 +92,10 @@ public final class Petstore extends DefaultDomain {
   public interface Category {
     EntityType TYPE = DOMAIN.entityType("category");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Category id");
-    Attribute<String> NAME = TYPE.stringAttribute("Name");
-    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
-    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+    Column<Integer> ID = TYPE.integerColumn("Category id");
+    Column<String> NAME = TYPE.stringColumn("Name");
+    Column<String> DESCRIPTION = TYPE.stringColumn("Description");
+    Column<String> IMAGE_URL = TYPE.stringColumn("Image URL");
   }
 
   void category() {
@@ -123,11 +123,11 @@ public final class Petstore extends DefaultDomain {
   public interface Product {
     EntityType TYPE = DOMAIN.entityType("product");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Product id");
-    Attribute<Integer> CATEGORY_ID = TYPE.integerAttribute("Category id");
-    Attribute<String> NAME = TYPE.stringAttribute("Name");
-    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
-    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
+    Column<Integer> ID = TYPE.integerColumn("Product id");
+    Column<Integer> CATEGORY_ID = TYPE.integerColumn("Category id");
+    Column<String> NAME = TYPE.stringColumn("Name");
+    Column<String> DESCRIPTION = TYPE.stringColumn("Description");
+    Column<String> IMAGE_URL = TYPE.stringColumn("Image URL");
 
     ForeignKey CATEGORY_FK = TYPE.foreignKey("Category", CATEGORY_ID, Category.ID);
   }
@@ -166,10 +166,10 @@ public final class Petstore extends DefaultDomain {
   public interface SellerContactInfo {
     EntityType TYPE = DOMAIN.entityType("sellercontactinfo");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Contactinfo id");
-    Attribute<String> FIRST_NAME = TYPE.stringAttribute("First name");
-    Attribute<String> LAST_NAME = TYPE.stringAttribute("Last name");
-    Attribute<String> EMAIL = TYPE.stringAttribute("Email");
+    Column<Integer> ID = TYPE.integerColumn("Contactinfo id");
+    Column<String> FIRST_NAME = TYPE.stringColumn("First name");
+    Column<String> LAST_NAME = TYPE.stringColumn("Last name");
+    Column<String> EMAIL = TYPE.stringColumn("Email");
   }
 
   void sellerContactInfo() {
@@ -204,16 +204,16 @@ public final class Petstore extends DefaultDomain {
   public interface Item {
     EntityType TYPE = DOMAIN.entityType("item");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Item id");
-    Attribute<Integer> PRODUCT_ID = TYPE.integerAttribute("Product id");
-    Attribute<String> NAME = TYPE.stringAttribute("Name");
-    Attribute<String> DESCRIPTION = TYPE.stringAttribute("Description");
-    Attribute<String> IMAGE_URL = TYPE.stringAttribute("Image URL");
-    Attribute<String> IMAGE_THUMB_URL = TYPE.stringAttribute("Image thumbnail URL");
-    Attribute<BigDecimal> PRICE = TYPE.bigDecimalAttribute("Price");
-    Attribute<Integer> CONTACT_INFO_ID = TYPE.integerAttribute("Contactinfo id");
-    Attribute<Integer> ADDRESS_ID = TYPE.integerAttribute("Address id");
-    Attribute<Boolean> DISABLED = TYPE.booleanAttribute("Disabled");
+    Column<Integer> ID = TYPE.integerColumn("Item id");
+    Column<Integer> PRODUCT_ID = TYPE.integerColumn("Product id");
+    Column<String> NAME = TYPE.stringColumn("Name");
+    Column<String> DESCRIPTION = TYPE.stringColumn("Description");
+    Column<String> IMAGE_URL = TYPE.stringColumn("Image URL");
+    Column<String> IMAGE_THUMB_URL = TYPE.stringColumn("Image thumbnail URL");
+    Column<BigDecimal> PRICE = TYPE.bigDecimalColumn("Price");
+    Column<Integer> CONTACT_INFO_ID = TYPE.integerColumn("Contactinfo id");
+    Column<Integer> ADDRESS_ID = TYPE.integerColumn("Address id");
+    Column<Boolean> DISABLED = TYPE.booleanColumn("Disabled");
 
     ForeignKey PRODUCT_FK = TYPE.foreignKey("Product", PRODUCT_ID, Product.ID);
     ForeignKey CONTACT_INFO_FK = TYPE.foreignKey("Contact info", CONTACT_INFO_ID, SellerContactInfo.ID);
@@ -273,9 +273,9 @@ public final class Petstore extends DefaultDomain {
   public interface Tag {
     EntityType TYPE = DOMAIN.entityType("tag");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("Tag id");
-    Attribute<String> TAG = TYPE.stringAttribute("Tag");
-    Attribute<Integer> REFCOUNT = TYPE.integerAttribute("Reference count");
+    Column<Integer> ID = TYPE.integerColumn("Tag id");
+    Column<String> TAG = TYPE.stringColumn("Tag");
+    Column<Integer> REFCOUNT = TYPE.integerColumn("Reference count");
   }
 
   void tag() {
@@ -300,8 +300,8 @@ public final class Petstore extends DefaultDomain {
   public interface TagItem {
     EntityType TYPE = DOMAIN.entityType("tag_item");
 
-    Attribute<Integer> ITEM_ID = TYPE.integerAttribute("Item id");
-    Attribute<Integer> TAG_ID = TYPE.integerAttribute("Tag id");
+    Column<Integer> ITEM_ID = TYPE.integerColumn("Item id");
+    Column<Integer> TAG_ID = TYPE.integerColumn("Tag id");
 
     ForeignKey ITEM_FK = TYPE.foreignKey("Item", ITEM_ID, Item.ID);
     ForeignKey TAG_FK = TYPE.foreignKey("Tag", TAG_ID, Tag.ID);

@@ -99,7 +99,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}is.codion.framework.db.condition.Condition{cpar}[select(Attribute<T> attribute, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
 
 [source,java,indent=0]
 ----

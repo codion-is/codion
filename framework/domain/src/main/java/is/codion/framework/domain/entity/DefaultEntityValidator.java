@@ -74,7 +74,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
     Property<T> property = entity.definition().property(attribute);
-    if (!entity.definition().isForeignKeyAttribute(attribute)) {
+    if (!(attribute instanceof Column) || !entity.definition().isForeignKeyColumn((Column<?>) attribute)) {
       performNullValidation(entity, property);
     }
     if (property instanceof ItemProperty) {

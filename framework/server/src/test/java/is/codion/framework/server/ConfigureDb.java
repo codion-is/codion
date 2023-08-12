@@ -8,7 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.sql.SQLException;
@@ -27,7 +27,7 @@ public final class ConfigureDb extends DefaultDomain {
 
   interface Configured {
     EntityType TYPE = DOMAIN.entityType("scott.configured");
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Column<Integer> ID = TYPE.integerColumn("id");
   }
 
   void configured() {

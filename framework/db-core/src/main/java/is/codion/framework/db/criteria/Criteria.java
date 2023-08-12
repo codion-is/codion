@@ -4,7 +4,7 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaProvider;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.Entity;
@@ -32,7 +32,7 @@ import static java.util.Objects.requireNonNull;
  * @see #key(Key)
  * @see #keys(Collection)
  * @see #foreignKey(ForeignKey)
- * @see #attribute(Attribute)
+ * @see #column(Column)
  * @see #and(Criteria...)
  * @see #and(Collection)
  * @see #or(Criteria...)
@@ -56,11 +56,11 @@ public interface Criteria {
   List<?> values();
 
   /**
-   * @return a list of the attributes this criteria is based on, in the same
+   * @return a list of the columns this criteria is based on, in the same
    * order as their respective values appear in the criteria clause.
    * An empty list is returned in case no values are specified.
    */
-  List<Attribute<?>> attributes();
+  List<Column<?>> columns();
 
   /**
    * Returns a string representing this criteria, e.g. "column = ?" or "col1 is not null and col2 in (?, ?)".
@@ -100,20 +100,20 @@ public interface Criteria {
    * @return a criteria based on the given key
    */
   static Criteria key(Key key) {
-    if (requireNonNull(key).attributes().size() > 1) {
-      Map<Attribute<?>, Attribute<?>> attributeMap = key.attributes().stream()
+    if (requireNonNull(key).columns().size() > 1) {
+      Map<Column<?>, Column<?>> columnMap = key.columns().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
-      Map<Attribute<?>, Object> valueMap = new HashMap<>();
-      key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
+      Map<Column<?>, Object> valueMap = new HashMap<>();
+      key.columns().forEach(column -> valueMap.put(column, key.get(column)));
 
-      return DefaultForeignKeyCriteriaBuilder.compositeEqualCriteria(attributeMap, EQUAL, valueMap);
+      return DefaultForeignKeyCriteriaBuilder.compositeEqualCriteria(columnMap, EQUAL, valueMap);
     }
 
-    return attribute(key.attribute()).equalTo(key.get());
+    return column(key.column()).equalTo(key.get());
   }
 
   /**
-   * Creates a {@link Criteria} based on the given keys, assuming they are all based on the same attributes.
+   * Creates a {@link Criteria} based on the given keys, assuming they are all based on the same columns.
    * @param keys the keys
    * @return a criteria based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
@@ -123,20 +123,20 @@ public interface Criteria {
       throw new IllegalArgumentException("No keys specified for key criteria");
     }
     Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
-    if (firstKey.attributes().size() > 1) {
-      Map<Attribute<?>, Attribute<?>> attributeMap = firstKey.attributes().stream()
+    if (firstKey.columns().size() > 1) {
+      Map<Column<?>, Column<?>> columnMap = firstKey.columns().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
-      List<Map<Attribute<?>, ?>> valueMaps = new ArrayList<>(keys.size());
+      List<Map<Column<?>, ?>> valueMaps = new ArrayList<>(keys.size());
       keys.forEach(key -> {//can't use stream and toMap() due to possible null values
-        Map<Attribute<?>, Object> valueMap = new HashMap<>();
-        key.attributes().forEach(attribute -> valueMap.put(attribute, key.get(attribute)));
+        Map<Column<?>, Object> valueMap = new HashMap<>();
+        key.columns().forEach(column -> valueMap.put(column, key.get(column)));
         valueMaps.add(valueMap);
       });
 
-      return DefaultForeignKeyCriteriaBuilder.compositeKeyCriteria(attributeMap, EQUAL, valueMaps);
+      return DefaultForeignKeyCriteriaBuilder.compositeKeyCriteria(columnMap, EQUAL, valueMaps);
     }
 
-    return attribute((Attribute<?>) firstKey.attribute()).in(Entity.values(keys));
+    return column((Column<?>) firstKey.column()).in(Entity.values(keys));
   }
 
   /**
@@ -149,19 +149,15 @@ public interface Criteria {
   }
 
   /**
-   * Creates a {@link AttributeCriteria.Builder} instance based on the given attribute.
-   * @param attribute the attribute to base the criteria on
-   * @param <T> the attribute type
-   * @return a {@link AttributeCriteria.Builder} instance
-   * @throws IllegalArgumentException in case {@code attribute} is a {@link ForeignKey}.
+   * Creates a {@link ColumnCriteria.Builder} instance based on the given column.
+   * @param column the column to base the criteria on
+   * @param <T> the column type
+   * @return a {@link ColumnCriteria.Builder} instance
+   * @throws IllegalArgumentException in case {@code column} is a {@link ForeignKey}.
    * @see #foreignKey(ForeignKey)
    */
-  static <T> AttributeCriteria.Builder<T> attribute(Attribute<T> attribute) {
-    if (attribute instanceof ForeignKey) {
-      throw new IllegalArgumentException("Use Condition.foreignKey(ForeignKey foreignKey) to create a foreign key based criteria");
-    }
-
-    return new DefaultAttributeCriteriaBuilder<>(attribute);
+  static <T> ColumnCriteria.Builder<T> column(Column<T> column) {
+    return new DefaultColumnCriteriaBuilder<>(column);
   }
 
   /**
@@ -236,14 +232,14 @@ public interface Criteria {
   /**
    * Creates a new {@link CustomCriteria} based on the criteria of the given type
    * @param criteriaType the criteria type
-   * @param attributes the attributes representing the values used by this criteria, in the same order as their respective values
+   * @param columns the columns representing the values used by this criteria, in the same order as their respective values
    * @param values the values used by this criteria string
    * @return a new {@link CustomCriteria} instance
    * @throws NullPointerException in case any of the parameters are null
    * @see EntityDefinition.Builder#criteriaProvider(CriteriaType, CriteriaProvider)
    */
-  static CustomCriteria customCriteria(CriteriaType criteriaType, List<Attribute<?>> attributes,
+  static CustomCriteria customCriteria(CriteriaType criteriaType, List<Column<?>> columns,
                                        List<Object> values) {
-    return new DefaultCustomCriteria(criteriaType, attributes, values);
+    return new DefaultCustomCriteria(criteriaType, columns, values);
   }
 }

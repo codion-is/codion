@@ -44,10 +44,10 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     }
     else {
       generator.writeStartArray();
-      for (OrderBy.OrderByAttribute attribute : orderBy.orderByAttributes()) {
-        generator.writeString(attribute.attribute().name() +
-                ":" + (attribute.isAscending() ? "asc" : "desc") +
-                ":" + attribute.nullOrder().name());
+      for (OrderBy.OrderByColumn orderByColumn : orderBy.orderByColumns()) {
+        generator.writeString(orderByColumn.column().name() +
+                ":" + (orderByColumn.isAscending() ? "asc" : "desc") +
+                ":" + orderByColumn.nullOrder().name());
       }
       generator.writeEndArray();
     }

@@ -7,7 +7,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.property.Property;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.attribute;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -42,7 +42,7 @@ public final class DefaultEntitySearchModelTest {
           .build();
 
   private EntitySearchModel searchModel;
-  private Collection<Attribute<String>> searchAttributes;
+  private Collection<Column<String>> searchColumns;
 
   @Test
   void constructorNullEntityType() {
@@ -56,18 +56,18 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void constructorNullSearchProperties() {
-    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchAttributes(null));
+    assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(null));
   }
 
   @Test
   void searchWithNoSearchProperties() {
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchAttributes(emptyList()));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
   }
 
   @Test
   void constructorIncorrectEntitySearchProperty() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-            .searchAttributes(singletonList(Department.NAME)));
+            .searchColumns(singletonList(Department.NAME)));
   }
 
   @Test
@@ -75,7 +75,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.setDescription("description");
     assertEquals("description", searchModel.getDescription());
     assertNotNull(searchModel.connectionProvider());
-    assertTrue(searchModel.searchAttributes().containsAll(searchAttributes));
+    assertTrue(searchModel.searchColumns().containsAll(searchColumns));
     assertNotNull(searchModel.wildcardValue().get());
   }
 
@@ -114,7 +114,7 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.selectionEmptyObserver().get());
     assertFalse(searchModel.searchStringRepresentsSelected());
     List<Entity> result = searchModel.performQuery();
-    assertTrue(result.size() > 0);
+    assertTrue(!result.isEmpty());
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
     assertFalse(contains(result, "Andy"));
@@ -138,8 +138,8 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
     searchModel.setSearchString("jo,cl");
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -148,16 +148,16 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
-    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(false);
-    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(false);
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
@@ -180,21 +180,21 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.searchStringRepresentsSelected());
 
     searchModel.setSearchString("and; rew");
-    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPrefixState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPrefixState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(false);
-    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfixState().set(false);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
     searchModel.setSearchString("Joh");
-    searchModel.attributeSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
-    searchModel.attributeSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
-    searchModel.setAdditionalCriteriaSupplier(() -> attribute(Employee.JOB).notEqualTo("MANAGER"));
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
+    searchModel.setAdditionalCriteriaSupplier(() -> column(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
@@ -217,9 +217,9 @@ public final class DefaultEntitySearchModelTest {
 
   @BeforeEach
   void setUp() throws Exception {
-    searchAttributes = asList(Employee.NAME, Employee.JOB);
+    searchColumns = asList(Employee.NAME, Employee.JOB);
     searchModel = new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
-            .searchAttributes(searchAttributes)
+            .searchColumns(searchColumns)
             .build();
 
     CONNECTION_PROVIDER.connection().beginTransaction();

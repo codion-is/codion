@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.Criteria.Combination;
 
@@ -18,10 +18,10 @@ final class CriteriaCombinationSerializer implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final AttributeCriteriaSerializer attributeCriteriaSerializer;
+  private final ColumnCriteriaSerializer columnCriteriaSerializer;
 
-  CriteriaCombinationSerializer(AttributeCriteriaSerializer attributeCriteriaSerializer) {
-    this.attributeCriteriaSerializer = requireNonNull(attributeCriteriaSerializer);
+  CriteriaCombinationSerializer(ColumnCriteriaSerializer columnCriteriaSerializer) {
+    this.columnCriteriaSerializer = requireNonNull(columnCriteriaSerializer);
   }
 
   void serialize(Combination combination, JsonGenerator generator) throws IOException {
@@ -33,8 +33,8 @@ final class CriteriaCombinationSerializer implements Serializable {
       if (criteria instanceof Combination) {
         serialize((Combination) criteria, generator);
       }
-      else if (criteria instanceof AttributeCriteria) {
-        attributeCriteriaSerializer.serialize((AttributeCriteria<?>) criteria, generator);
+      else if (criteria instanceof ColumnCriteria) {
+        columnCriteriaSerializer.serialize((ColumnCriteria<?>) criteria, generator);
       }
     }
     generator.writeEndArray();

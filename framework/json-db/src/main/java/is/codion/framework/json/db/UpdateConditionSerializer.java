@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -36,9 +36,9 @@ final class UpdateConditionSerializer extends StdSerializer<UpdateCondition> {
     criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
-    for (Map.Entry<Attribute<?>, Object> attributeValue : condition.attributeValues().entrySet()) {
-      generator.writeFieldName(attributeValue.getKey().name());
-      entityObjectMapper.writeValue(generator, attributeValue.getValue());
+    for (Map.Entry<Column<?>, Object> columnValue : condition.columnValues().entrySet()) {
+      generator.writeFieldName(columnValue.getKey().name());
+      entityObjectMapper.writeValue(generator, columnValue.getValue());
     }
     generator.writeEndObject();
     generator.writeEndObject();

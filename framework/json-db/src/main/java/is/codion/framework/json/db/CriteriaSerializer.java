@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.criteria.AllCriteria;
-import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.Criteria.Combination;
 import is.codion.framework.db.criteria.CustomCriteria;
@@ -20,15 +20,15 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
 
   private static final long serialVersionUID = 1;
 
-  private final AttributeCriteriaSerializer attributeCriteriaSerializer;
+  private final ColumnCriteriaSerializer columnCriteriaSerializer;
   private final CriteriaCombinationSerializer criteriaCombinationSerializer;
   private final CustomCriteriaSerializer customCriteriaSerializer;
   private final AllCriteriaSerializer allCriteriaSerializer;
 
   CriteriaSerializer(EntityObjectMapper entityObjectMapper) {
     super(Criteria.class);
-    this.attributeCriteriaSerializer = new AttributeCriteriaSerializer(entityObjectMapper);
-    this.criteriaCombinationSerializer = new CriteriaCombinationSerializer(attributeCriteriaSerializer);
+    this.columnCriteriaSerializer = new ColumnCriteriaSerializer(entityObjectMapper);
+    this.criteriaCombinationSerializer = new CriteriaCombinationSerializer(columnCriteriaSerializer);
     this.customCriteriaSerializer = new CustomCriteriaSerializer(entityObjectMapper);
     this.allCriteriaSerializer = new AllCriteriaSerializer();
   }
@@ -48,9 +48,9 @@ final class CriteriaSerializer extends StdSerializer<Criteria> {
       Combination combination = (Combination) criteria;
       criteriaCombinationSerializer.serialize(combination, generator);
     }
-    else if (criteria instanceof AttributeCriteria) {
-      AttributeCriteria<?> attributeCriteria = (AttributeCriteria<?>) criteria;
-      attributeCriteriaSerializer.serialize(attributeCriteria, generator);
+    else if (criteria instanceof ColumnCriteria) {
+      ColumnCriteria<?> columnCriteria = (ColumnCriteria<?>) criteria;
+      columnCriteriaSerializer.serialize(columnCriteria, generator);
     }
     else if (criteria instanceof CustomCriteria) {
       CustomCriteria customCriteria = (CustomCriteria) criteria;

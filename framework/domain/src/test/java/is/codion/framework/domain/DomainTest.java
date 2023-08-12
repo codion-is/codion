@@ -8,7 +8,7 @@ import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -31,9 +31,9 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> {
       EntityType entityType = DOMAIN.entityType("keyWithSameIndex");
       domain.add(definition(
-              primaryKeyProperty(entityType.attribute("1", Integer.class)).primaryKeyIndex(0),
-              primaryKeyProperty(entityType.attribute("2", Integer.class)).primaryKeyIndex(1),
-              primaryKeyProperty(entityType.attribute("3", Integer.class)).primaryKeyIndex(1)));
+              primaryKeyProperty(entityType.column("1", Integer.class)).primaryKeyIndex(0),
+              primaryKeyProperty(entityType.column("2", Integer.class)).primaryKeyIndex(1),
+              primaryKeyProperty(entityType.column("3", Integer.class)).primaryKeyIndex(1)));
     });
   }
 
@@ -42,32 +42,32 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> {
       EntityType entityType = DOMAIN.entityType("keyWithSameIndex2");
       domain.add(definition(
-              primaryKeyProperty(entityType.attribute("1", Integer.class)),
-              primaryKeyProperty(entityType.attribute("2", Integer.class)),
-              primaryKeyProperty(entityType.attribute("3", Integer.class))));
+              primaryKeyProperty(entityType.column("1", Integer.class)),
+              primaryKeyProperty(entityType.column("2", Integer.class)),
+              primaryKeyProperty(entityType.column("3", Integer.class))));
     });
   }
 
   @Test
   void redefine() {
     EntityType entityType = DOMAIN.entityType("redefine");
-    Attribute<Integer> attribute = entityType.integerAttribute("attribute");
-    domain.add(definition(primaryKeyProperty(attribute)));
-    assertThrows(IllegalArgumentException.class, () -> domain.add(definition(primaryKeyProperty(attribute))));
+    Column<Integer> column = entityType.integerColumn("column");
+    domain.add(definition(primaryKeyProperty(column)));
+    assertThrows(IllegalArgumentException.class, () -> domain.add(definition(primaryKeyProperty(column))));
   }
 
   @Test
-  void foreignKeyReferencingUndefinedAttribute() {
+  void foreignKeyReferencingUndefinedColumn() {
     EntityType entityType = DOMAIN.entityType("test.entity");
-    Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+    Column<Integer> fkId = entityType.column("fk_id", Integer.class);
     EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
-    Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
-    Attribute<Integer> refIdNotPartOfEntity = referencedEntityType.attribute("id_none", Integer.class);
+    Column<Integer> refId = referencedEntityType.column("id", Integer.class);
+    Column<Integer> refIdNotPartOfEntity = referencedEntityType.column("id_none", Integer.class);
     ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refIdNotPartOfEntity);
     domain.add(definition(primaryKeyProperty(refId)));
 
     assertThrows(IllegalArgumentException.class, () -> domain.add(definition(
-            primaryKeyProperty(entityType.attribute("id", Integer.class)),
+            primaryKeyProperty(entityType.column("id", Integer.class)),
             columnProperty(fkId),
             Property.foreignKeyProperty(foreignKey, "caption"))));
   }
@@ -76,12 +76,12 @@ public class DomainTest {
   void foreignKeyReferencingUndefinedEntity() {
     assertThrows(IllegalArgumentException.class, () -> {
       EntityType entityType = DOMAIN.entityType("test.entity");
-      Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+      Column<Integer> fkId = entityType.column("fk_id", Integer.class);
       EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
-      Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
+      Column<Integer> refId = referencedEntityType.column("id", Integer.class);
       ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
       domain.add(definition(
-              primaryKeyProperty(entityType.attribute("id", Integer.class)),
+              primaryKeyProperty(entityType.column("id", Integer.class)),
               columnProperty(fkId),
               Property.foreignKeyProperty(foreignKey, "caption")));
     });
@@ -91,12 +91,12 @@ public class DomainTest {
   void foreignKeyReferencingUndefinedEntityNonStrict() {
     domain.setStrictForeignKeys(false);
     EntityType entityType = DOMAIN.entityType("test.entity");
-    Attribute<Integer> fkId = entityType.attribute("fk_id", Integer.class);
+    Column<Integer> fkId = entityType.column("fk_id", Integer.class);
     EntityType referencedEntityType = DOMAIN.entityType("test.referenced_entity");
-    Attribute<Integer> refId = referencedEntityType.attribute("id", Integer.class);
+    Column<Integer> refId = referencedEntityType.column("id", Integer.class);
     ForeignKey foreignKey = entityType.foreignKey("fk_id_fk", fkId, refId);
     domain.add(definition(
-            primaryKeyProperty(entityType.attribute("id", Integer.class)),
+            primaryKeyProperty(entityType.column("id", Integer.class)),
             columnProperty(fkId),
             Property.foreignKeyProperty(foreignKey, "caption")));
     domain.setStrictForeignKeys(true);
@@ -133,16 +133,16 @@ public class DomainTest {
   @Test
   void conditionProvider() {
     EntityType nullCriteriaProvider1 = DOMAIN.entityType("nullCriteriaProvider1");
-    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCriteriaProvider1.integerAttribute("id")))
-            .criteriaProvider(null, (attributes, values) -> null)));
+    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCriteriaProvider1.integerColumn("id")))
+            .criteriaProvider(null, (columns, values) -> null)));
     EntityType nullCritieraProvider2 = DOMAIN.entityType("nullCritieraProvider2");
-    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCritieraProvider2.integerAttribute("id")))
+    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCritieraProvider2.integerColumn("id")))
             .criteriaProvider(nullCritieraProvider2.criteriaType("id"), null)));
     EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
     CriteriaType nullCriteriaType = nullConditionProvider3.criteriaType("id");
-    assertThrows(IllegalStateException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider3.integerAttribute("id")))
-            .criteriaProvider(nullCriteriaType, (attributes, values) -> null)
-            .criteriaProvider(nullCriteriaType, (attributes, values) -> null)));
+    assertThrows(IllegalStateException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider3.integerColumn("id")))
+            .criteriaProvider(nullCriteriaType, (columns, values) -> null)
+            .criteriaProvider(nullCriteriaType, (columns, values) -> null)));
   }
 
   @Test
@@ -161,10 +161,10 @@ public class DomainTest {
   @Test
   void foreignKeyComparator() {
     EntityType ref = DOMAIN.entityType("fkCompRef");
-    Attribute<Integer> id = ref.integerAttribute("id");
+    Column<Integer> id = ref.integerColumn("id");
 
     EntityType entityType = DOMAIN.entityType("fkComp");
-    Attribute<Integer> ref_id = entityType.integerAttribute("ref_id");
+    Column<Integer> ref_id = entityType.integerColumn("ref_id");
     ForeignKey foreignKey = entityType.foreignKey("fk", ref_id, id);
     assertThrows(UnsupportedOperationException.class, () -> Property.foreignKeyProperty(foreignKey).comparator((o1, o2) -> 0));
   }

@@ -1,8 +1,8 @@
 public interface TagItem {
 	EntityType TYPE = DOMAIN.entityType("petstore.tag_item");
 
-	Attribute<Integer> TAGID = TYPE.integerAttribute("tagid");
-	Attribute<Integer> ITEMID = TYPE.integerAttribute("itemid");
+	Column<Integer> TAGID = TYPE.integerColumn("tagid");
+	Column<Integer> ITEMID = TYPE.integerColumn("itemid");
 
 	ForeignKey TAGID_FK = TYPE.foreignKey("tagid_fk", TAGID, Tag.TAGID);
 	ForeignKey ITEMID_FK = TYPE.foreignKey("itemid_fk", ITEMID, Item.ITEMID);

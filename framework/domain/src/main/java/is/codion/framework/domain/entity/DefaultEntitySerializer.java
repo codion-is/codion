@@ -72,17 +72,17 @@ final class DefaultEntitySerializer implements EntitySerializer {
   private void deserializeValues(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
     key.primaryKey = stream.readBoolean();
     int valueCount = stream.readInt();
-    key.attributes = new ArrayList<>(valueCount);
+    key.columns = new ArrayList<>(valueCount);
     key.values = new HashMap<>(valueCount);
     for (int i = 0; i < valueCount; i++) {
-      Attribute<Object> attribute = attributeByName(key.definition, (String) stream.readObject());
+      Column<Object> attribute = (Column<Object>) attributeByName(key.definition, (String) stream.readObject());
       Object value = stream.readObject();
       if (attribute != null) {
-        key.attributes.add(attribute);
+        key.columns.add(attribute);
         key.values.put(attribute, attribute.validateType(value));
       }
     }
-    key.attributes = unmodifiableList(key.attributes);
+    key.columns = unmodifiableList(key.columns);
     key.values = unmodifiableMap(key.values);
     key.singleIntegerKey = valueCount == 1 && isSingleIntegerKey(key);
     key.hashCodeDirty = true;
@@ -116,15 +116,15 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   private static void serializeValues(DefaultKey key, ObjectOutputStream stream) throws IOException {
     stream.writeBoolean(key.primaryKey);
-    stream.writeInt(key.attributes.size());
-    for (int i = 0; i < key.attributes.size(); i++) {
-      Attribute<?> attribute = key.attributes.get(i);
+    stream.writeInt(key.columns.size());
+    for (int i = 0; i < key.columns.size(); i++) {
+      Attribute<?> attribute = key.columns.get(i);
       stream.writeObject(attribute.name());
       stream.writeObject(key.values.get(attribute));
     }
   }
 
   private static boolean isSingleIntegerKey(DefaultKey key) {
-    return key.attributes.size() == 1 && key.attributes.get(0).isInteger();
+    return key.columns.size() == 1 && key.columns.get(0).isInteger();
   }
 }

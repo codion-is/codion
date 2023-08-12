@@ -5,7 +5,7 @@ package is.codion.framework.json.db;
 
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.CustomCriteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.property.Property;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -33,18 +33,19 @@ final class CustomCriteriaDeserializer implements Serializable {
 
   CustomCriteria deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String criteriaTypeName = conditionNode.get("criteriaType").asText();
-    JsonNode attributesNode = conditionNode.get("attributes");
-    List<Attribute<?>> attributes = Arrays.stream(entityObjectMapper.readValue(attributesNode.toString(), String[].class))
+    JsonNode columnsNode = conditionNode.get("columns");
+    List<Column<?>> columns = Arrays.stream(entityObjectMapper.readValue(columnsNode.toString(), String[].class))
             .map(definition::attribute)
+            .map(attribute -> (Column<?>) attribute)
             .collect(toList());
     JsonNode valuesNode = conditionNode.get("values");
     List<Object> values = new ArrayList<>();
     int attributeIndex = 0;
     for (JsonNode valueNode : valuesNode) {
-      Property<?> property = definition.property(attributes.get(attributeIndex++));
+      Property<?> property = definition.property(columns.get(attributeIndex++));
       values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
     }
 
-    return Criteria.customCriteria(definition.type().criteriaType(criteriaTypeName), attributes, values);
+    return Criteria.customCriteria(definition.type().criteriaType(criteriaTypeName), columns, values);
   }
 }

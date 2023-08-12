@@ -9,10 +9,11 @@ import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.AttributeCriteria;
+import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.criteria.ForeignKeyCriteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -178,7 +179,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       return foreignKeyCriteria((ColumnConditionModel<?, Entity>) conditionModel);
     }
 
-    return attributeCriteria(conditionModel);
+    return columnCriteria(conditionModel);
   }
 
   private static Criteria foreignKeyCriteria(ColumnConditionModel<?, Entity> conditionModel) {
@@ -203,19 +204,36 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
   }
 
-  private static <T> AttributeCriteria<T> attributeCriteria(ColumnConditionModel<?, T> conditionModel) {
-    Attribute<T> attribute = (Attribute<T>) conditionModel.columnIdentifier();
+  private static <T> ColumnCriteria<T> columnCriteria(ColumnConditionModel<?, T> conditionModel) {
+    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
     Collection<T> equalToValues = conditionModel.getEqualValues();
-    boolean caseInsensitiveString = attribute.isString() && !conditionModel.caseSensitiveState().get();
-    AttributeCriteria.Builder<T> builder = attribute(attribute);
+    boolean isString = column.isString();
+    boolean singleStringWithWildcards = isString && equalToValues.size() == 1 &&
+            containsWildcards((String) equalToValues.iterator().next());
+    boolean caseInsensitiveString = isString && !conditionModel.caseSensitiveState().get();
+    ColumnCriteria.Builder<T> builder = column(column);
     switch (conditionModel.getOperator()) {
       case EQUAL:
+        if (singleStringWithWildcards) {
+          String equalValue = (String) conditionModel.getEqualValue();
+
+          return caseInsensitiveString ?
+                (ColumnCriteria<T>) builder.likeIgnoreCase(equalValue) :
+                  (ColumnCriteria<T>) builder.like(equalValue);
+        }
         return caseInsensitiveString ?
-                (AttributeCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
+                (ColumnCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
                 builder.in(equalToValues);
       case NOT_EQUAL:
+        if (singleStringWithWildcards) {
+          String equalValue = (String) conditionModel.getEqualValue();
+
+          return caseInsensitiveString ?
+                (ColumnCriteria<T>) builder.notLikeIgnoreCase(equalValue) :
+                  (ColumnCriteria<T>) builder.notLike(equalValue);
+        }
         return caseInsensitiveString ?
-                (AttributeCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
+                (ColumnCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
                 builder.notIn(equalToValues);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
@@ -236,5 +254,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       default:
         throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
     }
+  }
+
+  private static boolean containsWildcards(String value) {
+    return value != null && value.contains("%") || value.contains("_");
   }
 }

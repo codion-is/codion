@@ -8,7 +8,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
@@ -72,9 +72,9 @@ public interface EntitySearchModel {
   void setDescription(String description);
 
   /**
-   * @return the attributes used when performing a search
+   * @return the columns used when performing a search
    */
-  Collection<Attribute<String>> searchAttributes();
+  Collection<Column<String>> searchColumns();
 
   /**
    * @param resultSorter the comparator used to sort the search result, null if the result should not be sorted
@@ -155,9 +155,9 @@ public interface EntitySearchModel {
   StateObserver selectionEmptyObserver();
 
   /**
-   * @return the settings associated with the search attributes
+   * @return the settings associated with the search Column
    */
-  Map<Attribute<String>, SearchSettings> attributeSearchSettings();
+  Map<Column<String>, SearchSettings> columnSearchSettings();
 
   /**
    * @return the Value representing the search string
@@ -201,11 +201,11 @@ public interface EntitySearchModel {
   interface Builder {
 
     /**
-     * @param searchAttributes the search attributes
+     * @param searchColumns the search columns
      * @return this builder
-     * @throws IllegalArgumentException in case {@code searchAttributes} is empty
+     * @throws IllegalArgumentException in case {@code searchColumns} is empty
      */
-    Builder searchAttributes(Collection<Attribute<String>> searchAttributes);
+    Builder searchColumns(Collection<Column<String>> searchColumns);
 
     /**
      * Override the default toString() for search elements when displayed in a field based on this model
@@ -251,7 +251,7 @@ public interface EntitySearchModel {
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @return a new {@link EntitySearchModel.Builder} instance
-   * @see EntityDefinition#searchAttributes()
+   * @see EntityDefinition#searchColumns()
    */
   static EntitySearchModel.Builder builder(EntityType entityType, EntityConnectionProvider connectionProvider) {
     return new DefaultEntitySearchModel.DefaultBuilder(entityType, connectionProvider);

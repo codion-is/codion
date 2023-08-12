@@ -12,7 +12,7 @@ import static java.util.Objects.requireNonNull;
 public final class ForeignKeyConstraint {
 
   private final Table referencedTable;
-  private final Map<Column, Column> references = new LinkedHashMap<>();
+  private final Map<MetadataColumn, MetadataColumn> references = new LinkedHashMap<>();
 
   ForeignKeyConstraint(Table referencedTable) {
     this.referencedTable = requireNonNull(referencedTable);
@@ -22,11 +22,11 @@ public final class ForeignKeyConstraint {
     return referencedTable;
   }
 
-  public Map<Column, Column> references() {
+  public Map<MetadataColumn, MetadataColumn> references() {
     return Collections.unmodifiableMap(references);
   }
 
-  void addReference(Column fkColumn, Column pkColumn) {
+  void addReference(MetadataColumn fkColumn, MetadataColumn pkColumn) {
     references.put(fkColumn, pkColumn);
   }
 }

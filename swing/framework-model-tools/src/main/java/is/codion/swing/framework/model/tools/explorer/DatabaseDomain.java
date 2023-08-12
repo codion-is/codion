@@ -5,15 +5,15 @@ package is.codion.swing.framework.model.tools.explorer;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.Property;
-import is.codion.swing.framework.model.tools.metadata.Column;
 import is.codion.swing.framework.model.tools.metadata.ForeignKeyConstraint;
+import is.codion.swing.framework.model.tools.metadata.MetadataColumn;
 import is.codion.swing.framework.model.tools.metadata.Table;
 
 import java.sql.DatabaseMetaData;
@@ -91,46 +91,46 @@ final class DatabaseDomain extends DefaultDomain {
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
             foreignKeyConstraint.references().entrySet().stream()
-                    .map(entry -> reference(attribute(entityType, entry.getKey()), attribute(referencedEntityType, entry.getValue())))
+                    .map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
     return foreignKeyProperty(foreignKey, caption(referencedTable.tableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(Column column, EntityType entityType) {
-    String caption = caption(column.columnName());
-    Attribute<?> attribute = attribute(entityType, column);
+  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(MetadataColumn metadataColumn, EntityType entityType) {
+    String caption = caption(metadataColumn.columnName());
+    Column<?> column = column(entityType, metadataColumn);
     ColumnProperty.Builder<?, ?> builder;
-    if (attribute.isByteArray()) {
-      builder = blobProperty((Attribute<byte[]>) attribute, caption);
+    if (column.isByteArray()) {
+      builder = blobProperty((Column<byte[]>) column, caption);
     }
     else {
-      builder = columnProperty(attribute, caption);
+      builder = columnProperty(column, caption);
     }
-    if (column.isPrimaryKeyColumn()) {
-      builder.primaryKeyIndex(column.primaryKeyIndex() - 1);
+    if (metadataColumn.isPrimaryKeyColumn()) {
+      builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);
     }
-    if (!column.isPrimaryKeyColumn() && column.nullable() == DatabaseMetaData.columnNoNulls) {
+    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.nullable() == DatabaseMetaData.columnNoNulls) {
       builder.nullable(false);
     }
-    if (attribute.isString() && column.columnSize() > 0) {
-      builder.maximumLength(column.columnSize());
+    if (column.isString() && metadataColumn.columnSize() > 0) {
+      builder.maximumLength(metadataColumn.columnSize());
     }
-    if (attribute.isDecimal() && column.decimalDigits() >= 1) {
-      builder.maximumFractionDigits(column.decimalDigits());
+    if (column.isDecimal() && metadataColumn.decimalDigits() >= 1) {
+      builder.maximumFractionDigits(metadataColumn.decimalDigits());
     }
-    if (!column.isPrimaryKeyColumn() && column.defaultValue() != null) {
+    if (!metadataColumn.isPrimaryKeyColumn() && metadataColumn.defaultValue() != null) {
       builder.columnHasDefaultValue(true);
     }
-    if (!nullOrEmpty(column.comment())) {
-      builder.description(column.comment());
+    if (!nullOrEmpty(metadataColumn.comment())) {
+      builder.description(metadataColumn.comment());
     }
 
     return builder;
   }
 
-  private static <T> Attribute<T> attribute(EntityType entityType, Column column) {
-    return (Attribute<T>) entityType.attribute(column.columnName(), column.columnClass());
+  private static <T> Column<T> column(EntityType entityType, MetadataColumn column) {
+    return (Column<T>) entityType.column(column.columnName(), column.columnClass());
   }
 
   private static String caption(String name) {
@@ -139,23 +139,23 @@ final class DatabaseDomain extends DefaultDomain {
     return caption.substring(0, 1).toUpperCase() + caption.substring(1);
   }
 
-  private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, Column column) {
+  private static boolean isLastKeyColumn(ForeignKeyConstraint foreignKeyConstraint, MetadataColumn column) {
     return foreignKeyConstraint.references().keySet().stream()
-            .mapToInt(Column::position)
+            .mapToInt(MetadataColumn::position)
             .max()
             .orElse(-1) == column.position();
   }
 
   private static String createForeignKeyName(ForeignKeyConstraint foreignKeyConstraint) {
     return foreignKeyConstraint.references().keySet().stream()
-            .map(Column::columnName)
+            .map(MetadataColumn::columnName)
             .map(String::toUpperCase)
             .collect(joining("_"));
   }
 
   private static boolean tableHasAutoIncrementPrimaryKeyColumn(Table table) {
     return table.columns().stream()
-            .filter(Column::isPrimaryKeyColumn)
-            .anyMatch(Column::autoIncrement);
+            .filter(MetadataColumn::isPrimaryKeyColumn)
+            .anyMatch(MetadataColumn::autoIncrement);
   }
 }

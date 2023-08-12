@@ -7,7 +7,7 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -35,20 +35,20 @@ public final class Store extends DefaultDomain {
   public interface Address {
     EntityType TYPE = DOMAIN.entityType("store.address");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> STREET = TYPE.stringAttribute("street");
-    Attribute<String> CITY = TYPE.stringAttribute("city");
-    Attribute<Boolean> VALID = TYPE.booleanAttribute("valid");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> STREET = TYPE.stringColumn("street");
+    Column<String> CITY = TYPE.stringColumn("city");
+    Column<Boolean> VALID = TYPE.booleanColumn("valid");
   }
 
   public interface Customer {
     EntityType TYPE = DOMAIN.entityType("store.customer");
 
-    Attribute<String> ID = TYPE.stringAttribute("id");
-    Attribute<String> FIRST_NAME = TYPE.stringAttribute("first_name");
-    Attribute<String> LAST_NAME = TYPE.stringAttribute("last_name");
-    Attribute<String> EMAIL = TYPE.stringAttribute("email");
-    Attribute<Boolean> IS_ACTIVE = TYPE.booleanAttribute("is_active");
+    Column<String> ID = TYPE.stringColumn("id");
+    Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
+    Column<String> LAST_NAME = TYPE.stringColumn("last_name");
+    Column<String> EMAIL = TYPE.stringColumn("email");
+    Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
 
     ReportType<JasperReport, JasperPrint, Map<String, Object>> REPORT =
             JasperReports.reportType("customer_report");
@@ -57,9 +57,9 @@ public final class Store extends DefaultDomain {
   public interface CustomerAddress {
     EntityType TYPE = DOMAIN.entityType("store.customer_address");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<String> CUSTOMER_ID = TYPE.stringAttribute("customer_id");
-    Attribute<Long> ADDRESS_ID = TYPE.longAttribute("address_id");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<String> CUSTOMER_ID = TYPE.stringColumn("customer_id");
+    Column<Long> ADDRESS_ID = TYPE.longColumn("address_id");
 
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
     ForeignKey ADDRESS_FK = TYPE.foreignKey("address_fk", ADDRESS_ID, Address.ID);

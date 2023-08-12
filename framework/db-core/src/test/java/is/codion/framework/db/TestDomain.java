@@ -7,6 +7,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -38,7 +39,7 @@ public final class TestDomain extends DefaultDomain {
   public interface Super {
     EntityType TYPE = DOMAIN.entityType("db.super_entity");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
+    Column<Integer> ID = TYPE.integerColumn("id");
   }
 
   void superEntity() {
@@ -48,11 +49,11 @@ public final class TestDomain extends DefaultDomain {
   public interface Master {
     EntityType TYPE = DOMAIN.entityType("db.master_entity");
 
-    Attribute<Integer> ID_1 = TYPE.integerAttribute("id");
-    Attribute<Integer> ID_2 = TYPE.integerAttribute("id2");
-    Attribute<Integer> SUPER_ID = TYPE.integerAttribute("super_id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
-    Attribute<Integer> CODE = TYPE.integerAttribute("code");
+    Column<Integer> ID_1 = TYPE.integerColumn("id");
+    Column<Integer> ID_2 = TYPE.integerColumn("id2");
+    Column<Integer> SUPER_ID = TYPE.integerColumn("super_id");
+    Column<String> NAME = TYPE.stringColumn("name");
+    Column<Integer> CODE = TYPE.integerColumn("code");
 
     ForeignKey SUPER_FK = TYPE.foreignKey("super_fk", SUPER_ID, Super.ID);
   }
@@ -72,19 +73,19 @@ public final class TestDomain extends DefaultDomain {
   public interface Detail {
     EntityType TYPE = DOMAIN.entityType("db.detail_entity");
 
-    Attribute<Long> ID = TYPE.longAttribute("id");
-    Attribute<Integer> INT = TYPE.integerAttribute("int");
-    Attribute<Double> DOUBLE = TYPE.doubleAttribute("double");
-    Attribute<String> STRING = TYPE.stringAttribute("string");
-    Attribute<LocalDate> DATE = TYPE.localDateAttribute("date");
-    Attribute<LocalDateTime> TIMESTAMP = TYPE.localDateTimeAttribute("timestamp");
-    Attribute<Boolean> BOOLEAN = TYPE.booleanAttribute("boolean");
-    Attribute<Boolean> BOOLEAN_NULLABLE = TYPE.booleanAttribute("boolean_nullable");
-    Attribute<Integer> MASTER_ID_1 = TYPE.integerAttribute("master_id");
-    Attribute<Integer> MASTER_ID_2 = TYPE.integerAttribute("master_id_2");
-    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
-    Attribute<Integer> MASTER_CODE = TYPE.integerAttribute("master_code");
-    Attribute<Integer> INT_VALUE_LIST = TYPE.integerAttribute("int_value_list");
+    Column<Long> ID = TYPE.longColumn("id");
+    Column<Integer> INT = TYPE.integerColumn("int");
+    Column<Double> DOUBLE = TYPE.doubleColumn("double");
+    Column<String> STRING = TYPE.stringColumn("string");
+    Column<LocalDate> DATE = TYPE.localDateColumn("date");
+    Column<LocalDateTime> TIMESTAMP = TYPE.localDateTimeColumn("timestamp");
+    Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
+    Column<Boolean> BOOLEAN_NULLABLE = TYPE.booleanColumn("boolean_nullable");
+    Column<Integer> MASTER_ID_1 = TYPE.integerColumn("master_id");
+    Column<Integer> MASTER_ID_2 = TYPE.integerColumn("master_id_2");
+    Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
+    Column<Integer> MASTER_CODE = TYPE.integerColumn("master_code");
+    Column<Integer> INT_VALUE_LIST = TYPE.integerColumn("int_value_list");
     Attribute<Integer> INT_DERIVED = TYPE.integerAttribute("int_derived");
 
     ForeignKey MASTER_FK = TYPE.foreignKey("master_fk",
@@ -136,9 +137,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Department {
     EntityType TYPE = DOMAIN.entityType("db.scott.dept");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
 
     CriteriaType CRITERIA = TYPE.criteriaType("criteria");
     CriteriaType NAME_NOT_NULL_CRITERIA = TYPE.criteriaType("criteriaNameNotNull");
@@ -158,29 +159,29 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .criteriaProvider(Department.CRITERIA, (attributes, values) -> {
+            .criteriaProvider(Department.CRITERIA, (columns, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .criteriaProvider(Department.NAME_NOT_NULL_CRITERIA, (attributes, values) -> "department name is not null")
+            .criteriaProvider(Department.NAME_NOT_NULL_CRITERIA, (columns, values) -> "department name is not null")
             .caption("Department"));
   }
 
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("db.scott.emp");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("emp_id");
-    Attribute<String> NAME = TYPE.stringAttribute("emp_name");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDateTime> HIREDATE = TYPE.localDateTimeAttribute("hiredate");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
+    Column<Integer> ID = TYPE.integerColumn("emp_id");
+    Column<String> NAME = TYPE.stringColumn("emp_name");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDateTime> HIREDATE = TYPE.localDateTimeColumn("hiredate");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
 
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);

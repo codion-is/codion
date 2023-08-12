@@ -5,7 +5,7 @@ package is.codion.framework.db.criteria;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.db.criteria.Criteria.Combination;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -28,7 +28,7 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
   private final Conjunction conjunction;
 
   DefaultCriteriaCombination(Conjunction conjunction, Collection<Criteria> criteria) {
-    super(entityType(criteria), attributes(criteria), values(criteria));
+    super(entityType(criteria), columns(criteria), values(criteria));
     this.conjunction = requireNonNull(conjunction);
     this.criteria = unmodifiableList(new ArrayList<>(criteria));
   }
@@ -105,9 +105,9 @@ final class DefaultCriteriaCombination extends AbstractCriteria implements Combi
             .collect(toList());
   }
 
-  private static List<Attribute<?>> attributes(Collection<Criteria> criteria) {
+  private static List<Column<?>> columns(Collection<Criteria> criteria) {
     return criteria.stream()
-            .flatMap(condition -> condition.attributes().stream())
+            .flatMap(condition -> condition.columns().stream())
             .collect(toList());
   }
 }

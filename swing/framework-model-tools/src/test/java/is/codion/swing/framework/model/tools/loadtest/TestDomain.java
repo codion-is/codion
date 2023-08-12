@@ -5,7 +5,7 @@ package is.codion.swing.framework.model.tools.loadtest;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
@@ -22,9 +22,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   public static final EntityType T_DEPARTMENT = DOMAIN.entityType("scott.dept");
-  public static final Attribute<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerAttribute("deptno");
-  public static final Attribute<String> DEPARTMENT_NAME = T_DEPARTMENT.stringAttribute("dname");
-  public static final Attribute<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringAttribute("loc");
+  public static final Column<Integer> DEPARTMENT_ID = T_DEPARTMENT.integerColumn("deptno");
+  public static final Column<String> DEPARTMENT_NAME = T_DEPARTMENT.stringColumn("dname");
+  public static final Column<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringColumn("loc");
 
   void department() {
     add(definition(

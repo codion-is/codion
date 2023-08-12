@@ -11,14 +11,14 @@ import java.util.Map;
 final class DefaultKeyBuilder implements Key.Builder {
 
   private final EntityDefinition definition;
-  private final Map<Attribute<?>, Object> attributeValues = new HashMap<>();
+  private final Map<Column<?>, Object> columnValues = new HashMap<>();
 
   private boolean primaryKey = true;
 
   DefaultKeyBuilder(Key key) {
     this(key.definition());
     this.primaryKey = key.isPrimaryKey();
-    key.attributes().forEach(attribute -> attributeValues.put(attribute, key.get(attribute)));
+    key.columns().forEach(column -> columnValues.put(column, key.get(column)));
   }
 
   DefaultKeyBuilder(EntityDefinition definition) {
@@ -26,26 +26,26 @@ final class DefaultKeyBuilder implements Key.Builder {
   }
 
   @Override
-  public <T> Key.Builder with(Attribute<T> attribute, T value) {
-    ColumnProperty<T> property = definition.columnProperty(attribute);
+  public <T> Key.Builder with(Column<T> column, T value) {
+    ColumnProperty<T> property = definition.columnProperty(column);
     if (!property.isPrimaryKeyColumn()) {
       primaryKey = false;
     }
-    attributeValues.put(attribute, value);
+    columnValues.put(column, value);
 
     return this;
   }
 
   @Override
   public Key build() {
-    return new DefaultKey(definition, initializeValues(new HashMap<>(attributeValues)), primaryKey);
+    return new DefaultKey(definition, initializeValues(new HashMap<>(columnValues)), primaryKey);
   }
 
-  private Map<Attribute<?>, Object> initializeValues(Map<Attribute<?>, Object> values) {
+  private Map<Column<?>, Object> initializeValues(Map<Column<?>, Object> values) {
     if (primaryKey && !values.isEmpty()) {
       //populate any missing primary key attributes with null values,
       //DefaultKey.equals() relies on the key attributes being present
-      definition.primaryKeyAttributes().forEach(attribute -> values.putIfAbsent(attribute, null));
+      definition.primaryKeyColumns().forEach(attribute -> values.putIfAbsent(attribute, null));
     }
 
     return values;

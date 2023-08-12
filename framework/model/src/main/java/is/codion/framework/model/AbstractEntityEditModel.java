@@ -12,6 +12,7 @@ import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -591,14 +592,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
     ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
-    Collection<Attribute<String>> searchAttributes = entities()
-            .definition(property.referencedType()).searchAttributes();
-    if (searchAttributes.isEmpty()) {
-      throw new IllegalStateException("No search attributes defined for entity: " + property.referencedType());
+    Collection<Column<String>> searchColumns = entities()
+            .definition(property.referencedType()).searchColumns();
+    if (searchColumns.isEmpty()) {
+      throw new IllegalStateException("No search columns defined for entity: " + property.referencedType());
     }
 
     return EntitySearchModel.builder(property.referencedType(), connectionProvider)
-            .searchAttributes(searchAttributes)
+            .searchColumns(searchColumns)
             .singleSelection(true)
             .build();
   }
@@ -963,7 +964,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private boolean isForeignKeyWritable(ForeignKey foreignKey) {
     return foreignKey.references().stream()
-            .map(ForeignKey.Reference::attribute)
+            .map(ForeignKey.Reference::column)
             .map(entityDefinition()::property)
             .filter(ColumnProperty.class::isInstance)
             .map(ColumnProperty.class::cast)
@@ -984,7 +985,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
     definition.columnProperties().stream()
-            .filter(property -> !definition.isForeignKeyAttribute(property.attribute()))//these are set via their respective parent fk properties
+            .filter(property -> !definition.isForeignKeyColumn(property.attribute()))//these are set via their respective parent fk properties
             .filter(property -> !property.columnHasDefaultValue() || property.hasDefaultValue())
             .map(property -> (Property<Object>) property)
             .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
@@ -1027,7 +1028,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
             dependentValues.put(foreignKeyProperty.attribute(), get(foreignKeyProperty.attribute())));
     if (attribute instanceof ForeignKey) {
       ((ForeignKey) attribute).references().forEach(reference ->
-              dependentValues.put(reference.attribute(), get(reference.attribute())));
+              dependentValues.put(reference.column(), get(reference.column())));
     }
 
     return dependentValues;

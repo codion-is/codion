@@ -4,7 +4,7 @@
 package is.codion.framework.domain.property;
 
 import is.codion.common.item.Item;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.List;
 import java.util.Map;
@@ -70,8 +70,8 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
 
     private final List<Item<T>> items;
 
-    DefaultItemPropertyBuilder(Attribute<T> attribute, String caption, List<Item<T>> items) {
-      super(attribute, caption);
+    DefaultItemPropertyBuilder(Column<T> column, String caption, List<Item<T>> items) {
+      super(column, caption);
       validateItems(items);
       this.items = items;
     }

@@ -15,6 +15,7 @@ import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -185,8 +186,8 @@ public interface EntityConnection extends AutoCloseable {
   Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Performs an update based on the given condition, updating the attributes found
-   * in the {@link UpdateCondition#attributeValues()} map, with the associated values.
+   * Performs an update based on the given condition, updating the columns found
+   * in the {@link UpdateCondition#columnValues()} map, with the associated values.
    * @param condition the condition
    * @return the number of affected rows
    * @throws DatabaseException in case of a database exception
@@ -221,30 +222,30 @@ public interface EntityConnection extends AutoCloseable {
   int delete(Criteria criteria) throws DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given attribute, note that the attribute
+   * Selects ordered and distinct non-null values of the given column, note that the column
    * must be associated with a {@link ColumnProperty}.
-   * @param attribute attribute
+   * @param column column
    * @param <T> the value type
-   * @return the values of the given attribute
+   * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based attribute
+   * @throws IllegalArgumentException in case the given property is not a column based column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Attribute<T> attribute) throws DatabaseException;
+  <T> List<T> select(Column<T> column) throws DatabaseException;
 
   /**
-   * Selects distinct non-null values of the given attribute, note that the attribute
+   * Selects distinct non-null values of the given column, note that the column
    * must be associated with a {@link ColumnProperty}. If the condition provides no
-   * order by clause the result is ordered by the attribute column.
-   * @param attribute attribute
+   * order by clause the result is ordered by the column column.
+   * @param column column
    * @param condition the condition, null if all values should be selected
    * @param <T> the value type
-   * @return the values of the given attribute
+   * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based attribute
+   * @throws IllegalArgumentException in case the given property is not a column based column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Attribute<T> attribute, Condition condition) throws DatabaseException;
+  <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
 
   /**
    * Selects a single entity
@@ -347,24 +348,24 @@ public interface EntityConnection extends AutoCloseable {
   <T, R, P> R fillReport(ReportType<T, R, P> reportType, P reportParameters) throws DatabaseException, ReportException;
 
   /**
-   * Writes {@code blobData} into the blob field specified by {@code attribute} for the given entity
+   * Writes {@code blobData} into the blob field specified by {@code blobColumn} for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
-   * @param blobAttribute the blob attribute
+   * @param blobColumn the blob column
    * @param blobData the blob data
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Key primaryKey, Attribute<byte[]> blobAttribute, byte[] blobData) throws DatabaseException;
+  void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException;
 
   /**
-   * Reads the blob value associated with {@code attribute} from the given entity,
+   * Reads the blob value associated with {@code blobColumn} from the given entity,
    * returns null if no blob data is found.
    * @param primaryKey the primary key of the entity
-   * @param blobAttribute the blob attribute
+   * @param blobColumn the blob attribute
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Key primaryKey, Attribute<byte[]> blobAttribute) throws DatabaseException;
+  byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
 
   /**
    * Creates a new {@link CopyEntities.Builder} instance for copying entities from source to destination, with a default batch size of 100.

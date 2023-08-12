@@ -4,13 +4,13 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Collection;
 
 import static java.util.Objects.requireNonNull;
 
-final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
+final class MultiValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -18,13 +18,13 @@ final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> 
   private static final String IN_PREFIX = " in (";
   private static final String NOT_IN_PREFIX = " not in (";
 
-  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator) {
-    this(attribute, values, operator, true);
+  MultiValueColumnCriteria(Column<T> column, Collection<? extends T> values, Operator operator) {
+    this(column, values, operator, true);
   }
 
-  MultiValueAttributeCriteria(Attribute<T> attribute, Collection<? extends T> values, Operator operator,
-                              boolean caseSensitive) {
-    super(attribute, operator, values, caseSensitive);
+  MultiValueColumnCriteria(Column<T> column, Collection<? extends T> values, Operator operator,
+                           boolean caseSensitive) {
+    super(column, operator, values, caseSensitive);
     for (Object value : values) {
       requireNonNull(value, "Condition values may not be null");
     }
@@ -36,7 +36,7 @@ final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> 
     if (this == object) {
       return true;
     }
-    if (!(object instanceof MultiValueAttributeCriteria)) {
+    if (!(object instanceof MultiValueColumnCriteria)) {
       return false;
     }
 
@@ -52,7 +52,7 @@ final class MultiValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> 
   protected String toString(String columnExpression) {
     boolean notEqual = operator() == Operator.NOT_EQUAL;
     String identifier = columnExpression;
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
+    boolean caseInsensitiveString = column().isString() && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }

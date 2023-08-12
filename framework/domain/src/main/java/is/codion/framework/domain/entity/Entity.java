@@ -360,7 +360,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T extends Entity> boolean isKeyModified(Collection<T> entities) {
     return requireNonNull(entities).stream()
-            .anyMatch(entity -> entity.primaryKey().attributes().stream()
+            .anyMatch(entity -> entity.primaryKey().columns().stream()
                     .anyMatch(entity::isModified));
   }
 

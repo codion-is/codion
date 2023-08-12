@@ -9,15 +9,6 @@
 
 A Codion domain model is based around the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity] interface, which represents a row in a table, providing access to the column values via its *get()* and *put()* methods.
 
-[plantuml, entity-diagram, svg, align=center]
--------------------------------------------
-
-interface Entity {
-    +<T> T get(Attribute<T> attribute)
-    +<T> T put(Attribute<T> attribute, T value)
-}
--------------------------------------------
-
 == Domain core classes
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/Domain.html[Domain]*::
@@ -30,7 +21,26 @@ A unique identifier for a domain model and a factory for *EntityType* instances 
 A unique identifier for an entity type (based on a table or query) and a factory for *Attribute* instances associated with that entity type.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute]*::
-A typed identifier for a column (actual or pseudo), allowing for type safe access to the associated value. Attributes are usually wrapped in an interface, serving as a convenient namespace.
+A typed identifier for a column, foreign key or transient value, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value. Attributes are usually wrapped in an interface, serving as a convenient namespace.
+
+[plantuml, attribute-diagram, svg, align=center]
+-------------------------------------------
+skinparam genericDisplay old
+
+interface Attribute<T> {
+    +String name()
+}
+
+interface Column<T> {}
+
+interface ForeignKey {}
+
+Attribute --> Column
+Attribute --> ForeignKey
+-------------------------------------------
+
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Column.html[Column]*::
+An Attribute subclass representing a table column.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey]*::
 An attribute subclass representing a foreign key relationship.
@@ -44,6 +54,17 @@ Each *Attribute* has an associated *Property* (or one of its subclasses) which e
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity]*::
 Represents a row in a table (or query) and maps *Attributes* to their associated values while keeping track of values which have been modified since they were initially set.
 
+
+[plantuml, entity-diagram, svg, align=center]
+-------------------------------------------
+
+interface Entity {
+    +<T> T get(Attribute<T> attribute)
+    +<T> T put(Attribute<T> attribute, T value)
+    +Key primaryKey()
+}
+-------------------------------------------
+
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Key.html[Key]*::
 Represents a unique key for a given entity.
 
@@ -52,7 +73,7 @@ To define a domain model API we:
 
 * Create a {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType] constant representing the domain.
 * Use the *DomainType* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] constants for each table, wrapped in a namespace interface.
-* Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey] constant for each foreign key.
+* Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey] constant for each foreign key.
 
 These constants represent the domain API and are used when referring to tables, columns or foreign keys.
 
@@ -61,11 +82,11 @@ These constants represent the domain API and are used when referring to tables, 
 include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomainModel.java[tags=storeApi]
 ----
 <1> The *DomainType* instance serves as a factory for *EntityTypes* associated with that domain.
-<2> Each *EntityType* instance serves as a factory for *Attributes* and *ForeignKeys* associated with that entity.
+<2> Each *EntityType* instance serves as a factory for *Columns* and *ForeignKeys* associated with that entity.
 
 Typically the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *tableName()* builder method when defining the entity.
 
-The underlying column name is typically used as the *Attribute* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when defining the associated *Property*.
+The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when defining the associated *Property*.
 
 == Domain implementation
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *Properties* based on the *Attributes* associated with the entity.
@@ -152,15 +173,15 @@ Foreign key based on a composite key.
 interface Parent {
   EntityType<Entity> TYPE = DOMAIN.entityType("parent");
 
-  Attribute<Integer> ID_1 = TYPE.integerAttribute("id1");
-  Attribute<Integer> ID_2 = TYPE.integerAttribute("id2");
+  Column<Integer> ID_1 = TYPE.integerColumn("id1");
+  Column<Integer> ID_2 = TYPE.integerColumn("id2");
 }
 
 interface Child {
   EntityType<Entity> TYPE = DOMAIN.entityType("child");
 
-  Attribute<Integer> PARENT_ID_1 = TYPE.integerAttribute("parent_id1");
-  Attribute<Integer> PARENT_ID_2 = TYPE.integerAttribute("parent_id2");
+  Column<Integer> PARENT_ID_1 = TYPE.integerColumn("parent_id1");
+  Column<Integer> PARENT_ID_2 = TYPE.integerColumn("parent_id2");
 
   ForeignKey PARENT_FK = TYPE.foreignKey("parent",
           PARENT_ID_1, Parent.ID_1,
@@ -179,7 +200,7 @@ include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[t
 
 === Property
 
-Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses, which encapsulate the metadata required for presenting and persisting the associated value. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute or ForeignKey.
+Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses, which encapsulate the metadata required for presenting and persisting the associated value. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute, Column or ForeignKey.
 
 A {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] can be transient or based on table columns.
 

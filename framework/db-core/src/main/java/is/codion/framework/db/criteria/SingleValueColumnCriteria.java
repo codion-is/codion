@@ -4,28 +4,30 @@
 package is.codion.framework.db.criteria;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 
 import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 
-final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T> {
+final class SingleValueColumnCriteria<T> extends AbstractColumnCriteria<T> {
 
   private static final long serialVersionUID = 1;
 
   private final T value;
+  private final boolean useLikeOperator;
 
-  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator) {
-    this(attribute, value, operator, true);
+  SingleValueColumnCriteria(Column<T> column, T value, Operator operator) {
+    this(column, value, operator, true, false);
   }
 
-  SingleValueAttributeCriteria(Attribute<T> attribute, T value, Operator operator,
-                               boolean caseSensitive) {
-    super(attribute, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
+  SingleValueColumnCriteria(Column<T> column, T value, Operator operator,
+                            boolean caseSensitive, boolean useLikeOperator) {
+    super(column, operator, value == null ? emptyList() : singletonList(value), caseSensitive);
     validateOperator(operator);
     this.value = value;
+    this.useLikeOperator = useLikeOperator;
   }
 
   @Override
@@ -33,13 +35,13 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
     if (this == object) {
       return true;
     }
-    if (!(object instanceof SingleValueAttributeCriteria)) {
+    if (!(object instanceof SingleValueColumnCriteria)) {
       return false;
     }
     if (!super.equals(object)) {
       return false;
     }
-    SingleValueAttributeCriteria<?> that = (SingleValueAttributeCriteria<?>) object;
+    SingleValueColumnCriteria<?> that = (SingleValueColumnCriteria<?>) object;
     return Objects.equals(value, that.value);
   }
 
@@ -74,20 +76,17 @@ final class SingleValueAttributeCriteria<T> extends AbstractAttributeCriteria<T>
       return identifier + (notEqual ? " is not null" : " is null");
     }
 
-    boolean caseInsensitiveString = attribute().isString() && !caseSensitive();
+    boolean isString = column().isString();
+    boolean caseInsensitiveString = isString && !caseSensitive();
     if (caseInsensitiveString) {
       identifier = "upper(" + identifier + ")";
     }
     String valuePlaceholder = caseInsensitiveString ? "upper(?)" : "?";
-    if (attribute().isString() && containsWildcards((String) value)) {
+    if (isString && useLikeOperator) {
       return identifier + (notEqual ? " not like " : " like ") + valuePlaceholder;
     }
 
     return identifier + (notEqual ? " <> " : " = ") + valuePlaceholder;
-  }
-
-  private static boolean containsWildcards(String value) {
-    return value.contains("%") || value.contains("_");
   }
 
   protected void validateOperator(Operator operator) {

@@ -240,45 +240,45 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     SwingEntityTableModel tableModel = createEmployeeTableModel();
     OrderBy orderBy = tableModel.orderBy();
     //default order by for entity
-    assertEquals(2, orderBy.orderByAttributes().size());
-    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
-    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(2, orderBy.orderByColumns().size());
+    assertTrue(orderBy.orderByColumns().get(0).isAscending());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+    assertTrue(orderBy.orderByColumns().get(1).isAscending());
+    assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
     tableModel.sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
     orderBy = tableModel.orderBy();
     //still default order by for entity
-    assertEquals(2, orderBy.orderByAttributes().size());
-    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
-    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(2, orderBy.orderByColumns().size());
+    assertTrue(orderBy.orderByColumns().get(0).isAscending());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+    assertTrue(orderBy.orderByColumns().get(1).isAscending());
+    assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
     tableModel.setOrderQueryBySortOrder(true);
     orderBy = tableModel.orderBy();
-    assertEquals(1, orderBy.orderByAttributes().size());
-    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(0).attribute());
+    assertEquals(1, orderBy.orderByColumns().size());
+    assertTrue(orderBy.orderByColumns().get(0).isAscending());
+    assertEquals(Employee.NAME, orderBy.orderByColumns().get(0).column());
 
     tableModel.sortModel().setSortOrder(Employee.HIREDATE, SortOrder.DESCENDING);
     tableModel.sortModel().addSortOrder(Employee.NAME, SortOrder.ASCENDING);
 
     orderBy = tableModel.orderBy();
-    assertEquals(2, orderBy.orderByAttributes().size());
-    assertFalse(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(Employee.HIREDATE, orderBy.orderByAttributes().get(0).attribute());
-    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(2, orderBy.orderByColumns().size());
+    assertFalse(orderBy.orderByColumns().get(0).isAscending());
+    assertEquals(Employee.HIREDATE, orderBy.orderByColumns().get(0).column());
+    assertTrue(orderBy.orderByColumns().get(1).isAscending());
+    assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
 
     tableModel.sortModel().clear();
     orderBy = tableModel.orderBy();
     //back to default order by for entity
-    assertEquals(2, orderBy.orderByAttributes().size());
-    assertTrue(orderBy.orderByAttributes().get(0).isAscending());
-    assertEquals(Employee.DEPARTMENT, orderBy.orderByAttributes().get(0).attribute());
-    assertTrue(orderBy.orderByAttributes().get(1).isAscending());
-    assertEquals(Employee.NAME, orderBy.orderByAttributes().get(1).attribute());
+    assertEquals(2, orderBy.orderByColumns().size());
+    assertTrue(orderBy.orderByColumns().get(0).isAscending());
+    assertEquals(Employee.DEPARTMENT, orderBy.orderByColumns().get(0).column());
+    assertTrue(orderBy.orderByColumns().get(1).isAscending());
+    assertEquals(Employee.NAME, orderBy.orderByColumns().get(1).column());
   }
 
   @Test

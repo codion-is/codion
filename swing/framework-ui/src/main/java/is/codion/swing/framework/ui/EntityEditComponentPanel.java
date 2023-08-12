@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -863,18 +864,18 @@ public class EntityEditComponentPanel extends JPanel {
   }
 
   /**
-   * Creates a builder for a combo boxe, containing the values of the given attribute.
-   * @param attribute the attribute for which to build a combo box
+   * Creates a builder for a combo boxe, containing the values of the given column.
+   * @param column the column for which to build a combo box
    * @param <T> the value type
    * @param <C> the component type
    * @param <B> the builder type
    * @return a combo box builder
    */
-  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Attribute<T> attribute) {
-    FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(attribute);
+  protected final <T, C extends JComboBox<T>, B extends ComboBoxBuilder<T, C, B>> ComboBoxBuilder<T, C, B> createComboBox(Column<T> column) {
+    FilteredComboBoxModel<T> comboBoxModel = editModel().comboBoxModel(column);
     comboBoxModel.refresher().addRefreshFailedListener(this::onException);
 
-    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(attribute, entityComponents.comboBox(attribute, comboBoxModel)
+    return (ComboBoxBuilder<T, C, B>) setComponentBuilder(column, entityComponents.comboBox(column, comboBoxModel)
             .onSetVisible(EntityEditComponentPanel::refreshIfCleared));
   }
 

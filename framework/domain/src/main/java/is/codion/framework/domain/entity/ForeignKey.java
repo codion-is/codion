@@ -18,38 +18,38 @@ public interface ForeignKey extends Attribute<Entity> {
   List<Reference<?>> references();
 
   /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the reference that is based on the given attribute
+   * @param column the column
+   * @param <T> the column type
+   * @return the reference that is based on the given column
    */
-  <T> Reference<T> reference(Attribute<T> attribute);
+  <T> Reference<T> reference(Column<T> column);
 
   /**
-   * Represents a foreign key reference between attributes.
+   * Represents a foreign key reference between columns.
    * @param <T> the attribute type
    */
   interface Reference<T> {
 
     /**
-     * @return the attribute in the detail entity
+     * @return the column in the child entity
      */
-    Attribute<T> attribute();
+    Column<T> column();
 
     /**
-     * @return the attribute in the master entity
+     * @return the column in the parent entity
      */
-    Attribute<T> referencedAttribute();
+    Column<T> referencedColumn();
   }
 
   /**
-   * Returns a new {@link Reference} based on the given attributes.
-   * @param attribute the local attribute
-   * @param referencedAttribute the referenced attribute
-   * @param <T> the attribute type
-   * @return a new {@link Reference} based on the given attributes
+   * Returns a new {@link Reference} based on the given columns.
+   * @param column the local column
+   * @param referencedColumn the referenced column
+   * @param <T> the column type
+   * @return a new {@link Reference} based on the given columns
    */
-  static <T> Reference<T> reference(Attribute<T> attribute, Attribute<T> referencedAttribute) {
-    return new DefaultForeignKey.DefaultReference<>(attribute, referencedAttribute);
+  static <T> Reference<T> reference(Column<T> column, Column<T> referencedColumn) {
+    return new DefaultForeignKey.DefaultReference<>(column, referencedColumn);
   }
 
   /**
@@ -58,7 +58,7 @@ public interface ForeignKey extends Attribute<Entity> {
    * @param name the attribute name
    * @param references the references
    * @return a new {@link ForeignKey}
-   * @see ForeignKey#reference(Attribute, Attribute)
+   * @see ForeignKey#reference(Column, Column)
    */
   static ForeignKey foreignKey(EntityType entityType, String name, List<ForeignKey.Reference<?>> references) {
     return new DefaultForeignKey(name, entityType, references);

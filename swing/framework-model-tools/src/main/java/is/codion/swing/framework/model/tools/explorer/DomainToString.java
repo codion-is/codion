@@ -61,18 +61,18 @@ final class DomainToString {
     if (property instanceof ColumnProperty) {
       ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
       String valueClassName = columnProperty.attribute().valueClass().getSimpleName();
-      builder.append(INDENT).append("Attribute<").append(valueClassName).append("> ")
+      builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
               .append(columnProperty.columnName().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
-              .append("Attribute(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+              .append("Column(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
     else if (property instanceof ForeignKeyProperty) {
       ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
       List<String> references = new ArrayList<>();
       foreignKeyProperty.references().forEach(reference -> {
         StringBuilder referenceBuilder = new StringBuilder();
-        referenceBuilder.append(reference.attribute().name().toUpperCase()).append(", ")
-                .append(interfaceName(reference.referencedAttribute().entityType().name(), true))
-                .append(".").append(reference.referencedAttribute().name().toUpperCase());
+        referenceBuilder.append(reference.column().name().toUpperCase()).append(", ")
+                .append(interfaceName(reference.referencedColumn().entityType().name(), true))
+                .append(".").append(reference.referencedColumn().name().toUpperCase());
         references.add(referenceBuilder.toString());
       });
 
@@ -88,8 +88,9 @@ final class DomainToString {
     List<String> strings = new ArrayList<>();
     properties.forEach(property -> {
       if (property instanceof ColumnProperty) {
-        strings.add(columnProperty(interfaceName, (ColumnProperty<?>) property,
-                definition.isForeignKeyAttribute(property.attribute()), definition.primaryKeyAttributes().size() > 1));
+        ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
+        strings.add(columnProperty(interfaceName, columnProperty,
+                definition.isForeignKeyColumn(columnProperty.attribute()), definition.primaryKeyColumns().size() > 1));
       }
       else if (property instanceof ForeignKeyProperty) {
         strings.add(foreignKeyProperty(interfaceName, (ForeignKeyProperty) property));

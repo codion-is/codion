@@ -7,6 +7,7 @@ import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -43,7 +44,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
               EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
     }
 
-    ColumnProperty<?> property = definition(attribute.entityType()).columnProperty(attribute);
+    ColumnProperty<?> property = definition(attribute.entityType()).columnProperty((Column<?>) attribute);
     if (property.isAggregateColumn()) {
       return Optional.empty();
     }

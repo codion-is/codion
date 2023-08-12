@@ -3,7 +3,7 @@
  */
 package is.codion.framework.demos.petclinic.domain.api;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -14,11 +14,11 @@ import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 public interface Pet {
   EntityType TYPE = DOMAIN.entityType("petclinic.pet");
 
-  Attribute<Integer> ID = TYPE.integerAttribute("id");
-  Attribute<String> NAME = TYPE.stringAttribute("name");
-  Attribute<LocalDate> BIRTH_DATE = TYPE.localDateAttribute("birth_date");
-  Attribute<Integer> PET_TYPE_ID = TYPE.integerAttribute("type_id");
-  Attribute<Integer> OWNER_ID = TYPE.integerAttribute("owner_id");
+  Column<Integer> ID = TYPE.integerColumn("id");
+  Column<String> NAME = TYPE.stringColumn("name");
+  Column<LocalDate> BIRTH_DATE = TYPE.localDateColumn("birth_date");
+  Column<Integer> PET_TYPE_ID = TYPE.integerColumn("type_id");
+  Column<Integer> OWNER_ID = TYPE.integerColumn("owner_id");
 
   ForeignKey PET_TYPE_FK = TYPE.foreignKey("type_fk", PET_TYPE_ID, PetType.ID);
   ForeignKey OWNER_FK = TYPE.foreignKey("owner_fk", OWNER_ID, Owner.ID);

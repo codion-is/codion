@@ -170,11 +170,11 @@ public interface EntityDefinition {
   <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute);
 
   /**
-   * Returns a list containing all primary key attributes associated with this entity type.
-   * If the entity has no primary key attributes defined, an empty list is returned.
-   * @return the primary key attributes of this entity type, sorted by primary key column index
+   * Returns a list containing all primary key columns associated with this entity type.
+   * If the entity has no primary key columns defined, an empty list is returned.
+   * @return the primary key columns of this entity type, sorted by primary key column index
    */
-  List<Attribute<?>> primaryKeyAttributes();
+  List<Column<?>> primaryKeyColumns();
 
   /**
    * Returns a list containing all primary key properties associated with this entity type.
@@ -235,11 +235,11 @@ public interface EntityDefinition {
   <T> Attribute<T> attribute(String attributeName);
 
   /**
-   * Returns the attributes to search by when searching for entities of this type by a string value
-   * @return the attributes to use when searching by string
+   * Returns the solumns to search by when searching for entities of this type by a string value
+   * @return the solumn to use when searching by string
    * @see ColumnProperty.Builder#searchProperty(boolean)
    */
-  Collection<Attribute<String>> searchAttributes();
+  Collection<Column<String>> searchColumns();
 
   /**
    * Returns the attributes selected by default for this entity type.
@@ -249,13 +249,13 @@ public interface EntityDefinition {
   Collection<Attribute<?>> defaultSelectAttributes();
 
   /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the column property associated with the attribute
-   * @throws IllegalArgumentException in case the attribute does not represent a {@link ColumnProperty}
-   * @throws NullPointerException in case {@code attribute} is null
+   * @param column the column
+   * @param <T> the column type
+   * @return the column property associated with the column
+   * @throws IllegalArgumentException in case the column does not represent a {@link ColumnProperty}
+   * @throws NullPointerException in case {@code column} is null
    */
-  <T> ColumnProperty<T> columnProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> columnProperty(Column<T> column);
 
   /**
    * @param attribute the attribute
@@ -267,13 +267,13 @@ public interface EntityDefinition {
   <T> Property<T> property(Attribute<T> attribute);
 
   /**
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return the primary key property associated with {@code attribute}.
+   * @param column the column
+   * @param <T> the column type
+   * @return the primary key property associated with {@code column}.
    * @throws IllegalArgumentException in case no such property exists
-   * @throws NullPointerException in case {@code attribute} is null
+   * @throws NullPointerException in case {@code column} is null
    */
-  <T> ColumnProperty<T> primaryKeyProperty(Attribute<T> attribute);
+  <T> ColumnProperty<T> primaryKeyProperty(Column<T> column);
 
   /**
    * Returns the {@link Property}s based on the given attributes
@@ -283,11 +283,11 @@ public interface EntityDefinition {
   Collection<Property<?>> properties(Collection<Attribute<?>> attributes);
 
   /**
-   * Returns the {@link ColumnProperty}s based on the given attributes
-   * @param attributes the attributes which properties to retrieve
+   * Returns the {@link ColumnProperty}s based on the given columns
+   * @param columns the columns which properties to retrieve
    * @return a list of column properties
    */
-  List<ColumnProperty<?>> columnProperties(List<Attribute<?>> attributes);
+  List<ColumnProperty<?>> columnProperties(List<Column<?>> columns);
 
   /**
    * Retrieves the writable (non-read-only) column properties comprising this entity type
@@ -311,10 +311,10 @@ public interface EntityDefinition {
   boolean isUpdatable(ForeignKey foreignKey);
 
   /**
-   * @param attribute the attribute
-   * @return true if the given attribute is part of a foreign key
+   * @param column the column
+   * @return true if the given column is part of a foreign key
    */
-  boolean isForeignKeyAttribute(Attribute<?> attribute);
+  boolean isForeignKeyColumn(Column<?> column);
 
   /**
    * Returns the foreign keys referencing entities of the given type

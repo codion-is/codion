@@ -7,26 +7,26 @@ import java.util.List;
 
 /**
  * Specifies an order by clause.
- * @see #ascending(Attribute[])
- * @see #descending(Attribute[])
+ * @see #ascending(Column[])
+ * @see #descending(Column[])
  * @see #builder()
  */
 public interface OrderBy {
 
   /**
-   * @return the order by attributes comprising this order by clause
+   * @return the order by columns comprising this order by clause
    */
-  List<OrderByAttribute> orderByAttributes();
+  List<OrderByColumn> orderByColumns();
 
   /**
-   * Specifies an order by attribute and whether it's ascending or descending
+   * Specifies an order by column and whether it's ascending or descending
    */
-  interface OrderByAttribute {
+  interface OrderByColumn {
 
     /**
-     * @return the attribute to order by
+     * @return the column to order by
      */
-    Attribute<?> attribute();
+    Column<?> column();
 
     /**
      * @return true if the order is ascending, false for descending
@@ -34,7 +34,7 @@ public interface OrderBy {
     boolean isAscending();
 
     /**
-     * @return the {@link NullOrder} when ordering by this attribute
+     * @return the {@link NullOrder} when ordering by this column
      */
     NullOrder nullOrder();
   }
@@ -66,52 +66,52 @@ public interface OrderBy {
   interface Builder {
 
     /**
-     * Adds an 'ascending' order by for the given attributes
-     * @param attributes the attributes
+     * Adds an 'ascending' order by for the given columns
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder ascending(Attribute<?>... attributes);
+    Builder ascending(Column<?>... columns);
 
     /**
-     * Adds an 'ascending' order by for the given attributes with nulls appearing first
-     * @param attributes the attributes
+     * Adds an 'ascending' order by for the given columns with nulls appearing first
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder ascendingNullsFirst(Attribute<?>... attributes);
+    Builder ascendingNullsFirst(Column<?>... columns);
 
     /**
-     * Adds an 'ascending' order by for the given attributes with nulls appearing last
-     * @param attributes the attributes
+     * Adds an 'ascending' order by for the given columns with nulls appearing last
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder ascendingNullsLast(Attribute<?>... attributes);
+    Builder ascendingNullsLast(Column<?>... columns);
 
     /**
-     * Adds a 'descending' order by for the given attributes
-     * @param attributes the attributes
+     * Adds a 'descending' order by for the given columns
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder descending(Attribute<?>... attributes);
+    Builder descending(Column<?>... columns);
 
     /**
-     * Adds a 'descending' order by for the given attributes with nulls appearing first
-     * @param attributes the attributes
+     * Adds a 'descending' order by for the given columns with nulls appearing first
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder descendingNullsFirst(Attribute<?>... attributes);
+    Builder descendingNullsFirst(Column<?>... columns);
 
     /**
-     * Adds a 'descending' order by for the given attributes with nulls appearing last
-     * @param attributes the attributes
+     * Adds a 'descending' order by for the given columns with nulls appearing last
+     * @param columns the columns
      * @return this builder instance
-     * @throws IllegalArgumentException in case {@code attributes} is empty
+     * @throws IllegalArgumentException in case {@code columns} is empty
      */
-    Builder descendingNullsLast(Attribute<?>... attributes);
+    Builder descendingNullsLast(Column<?>... columns);
 
     /**
      * @return a new {@link OrderBy} instance based on this builder
@@ -128,18 +128,18 @@ public interface OrderBy {
   }
 
   /**
-   * @param attributes the attributes to order by ascending
-   * @return a new ascending OrderBy instance based on the given attributes
+   * @param columns the columns to order by ascending
+   * @return a new ascending OrderBy instance based on the given columns
    */
-  static OrderBy ascending(Attribute<?>... attributes) {
-    return builder().ascending(attributes).build();
+  static OrderBy ascending(Column<?>... columns) {
+    return builder().ascending(columns).build();
   }
 
   /**
-   * @param attributes the attributes to order by descending
-   * @return a new descending OrderBy instance based on the given attributes
+   * @param columns the columns to order by descending
+   * @return a new descending OrderBy instance based on the given columns
    */
-  static OrderBy descending(Attribute<?>... attributes) {
-    return builder().descending(attributes).build();
+  static OrderBy descending(Column<?>... columns) {
+    return builder().descending(columns).build();
   }
 }

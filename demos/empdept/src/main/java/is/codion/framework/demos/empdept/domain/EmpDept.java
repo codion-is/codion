@@ -8,6 +8,7 @@ import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -41,10 +42,10 @@ public final class EmpDept extends DefaultDomain {
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
-    /** Attributes for the columns in the scott.dept table */
-    Attribute<Integer> ID = TYPE.integerAttribute("deptno");
-    Attribute<String> NAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOCATION = TYPE.stringAttribute("loc");
+    /** Columns for the columns in the scott.dept table */
+    Column<Integer> ID = TYPE.integerColumn("deptno");
+    Column<String> NAME = TYPE.stringColumn("dname");
+    Column<String> LOCATION = TYPE.stringColumn("loc");
 
     /** Bean getters and setters */
     Integer getId();
@@ -67,15 +68,15 @@ public final class EmpDept extends DefaultDomain {
   public interface Employee extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.emp", Employee.class);
 
-    /** Attributes for the columns in the scott.emp table */
-    Attribute<Integer> ID = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<BigDecimal> SALARY = TYPE.bigDecimalAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    /** Columns for the columns in the scott.emp table */
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<BigDecimal> SALARY = TYPE.bigDecimalColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 
     /** Foreign key attribute for the DEPTNO column in the table scott.emp */
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);

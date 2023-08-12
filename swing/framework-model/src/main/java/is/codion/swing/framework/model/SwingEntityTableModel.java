@@ -17,6 +17,7 @@ import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -921,7 +922,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   protected OrderBy orderBy() {
     if (orderQueryBySortOrder && sortModel().isSorted()) {
       OrderBy orderBy = orderByFromSortModel();
-      if (!orderBy.orderByAttributes().isEmpty()) {
+      if (!orderBy.orderByColumns().isEmpty()) {
         return orderBy;
       }
     }
@@ -1099,10 +1100,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             .forEach(columnSortOrder -> {
               switch (columnSortOrder.sortOrder()) {
                 case ASCENDING:
-                  builder.ascending(columnSortOrder.columnIdentifier());
+                  builder.ascending((Column<?>) columnSortOrder.columnIdentifier());
                   break;
                 case DESCENDING:
-                  builder.descending(columnSortOrder.columnIdentifier());
+                  builder.descending((Column<?>) columnSortOrder.columnIdentifier());
                   break;
                 default:
               }

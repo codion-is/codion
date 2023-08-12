@@ -12,7 +12,7 @@ import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.CriteriaType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -84,9 +84,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Department extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.dept", Department.class);
 
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
-    Attribute<String> DNAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOC = TYPE.stringAttribute("loc");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> DNAME = TYPE.stringColumn("dname");
+    Column<String> LOC = TYPE.stringColumn("loc");
 
     CriteriaType DEPARTMENT_CRITERIA_TYPE = TYPE.criteriaType("criteria");
     CriteriaType DEPARTMENT_CRITERIA_SALES_TYPE = TYPE.criteriaType("criteriaSalesId");
@@ -132,18 +132,18 @@ public final class TestDomain extends DefaultDomain {
   public interface Employee {
     EntityType TYPE = DOMAIN.entityType("scott.emp");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeAttribute("hiretime");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
-    Attribute<String> DEPARTMENT_LOCATION = TYPE.stringAttribute("location");
-    Attribute<byte[]> DATA_LAZY = TYPE.byteArrayAttribute("data_lazy");
-    Attribute<byte[]> DATA = TYPE.byteArrayAttribute("data");
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeColumn("hiretime");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
+    Column<String> DEPARTMENT_LOCATION = TYPE.stringColumn("location");
+    Column<byte[]> DATA_LAZY = TYPE.byteArrayColumn("data_lazy");
+    Column<byte[]> DATA = TYPE.byteArrayColumn("data");
 
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
@@ -188,9 +188,9 @@ public final class TestDomain extends DefaultDomain {
   public interface DepartmentFk extends Entity {
     EntityType TYPE = DOMAIN.entityType("scott.deptfk");
 
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("deptno");
-    Attribute<String> DNAME = TYPE.stringAttribute("dname");
-    Attribute<String> LOC = TYPE.stringAttribute("loc");
+    Column<Integer> DEPTNO = TYPE.integerColumn("deptno");
+    Column<String> DNAME = TYPE.stringColumn("dname");
+    Column<String> LOC = TYPE.stringColumn("loc");
   }
 
   void departmentFk() {
@@ -205,15 +205,15 @@ public final class TestDomain extends DefaultDomain {
   public interface EmployeeFk {
     EntityType TYPE = DOMAIN.entityType("scott.empfk");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("empno");
-    Attribute<String> NAME = TYPE.stringAttribute("ename");
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Integer> MGR = TYPE.integerAttribute("mgr");
-    Attribute<LocalDate> HIREDATE = TYPE.localDateAttribute("hiredate");
-    Attribute<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeAttribute("hiretime");
-    Attribute<Double> SALARY = TYPE.doubleAttribute("sal");
-    Attribute<Double> COMMISSION = TYPE.doubleAttribute("comm");
-    Attribute<Integer> DEPARTMENT = TYPE.integerAttribute("deptno");
+    Column<Integer> ID = TYPE.integerColumn("empno");
+    Column<String> NAME = TYPE.stringColumn("ename");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Integer> MGR = TYPE.integerColumn("mgr");
+    Column<LocalDate> HIREDATE = TYPE.localDateColumn("hiredate");
+    Column<OffsetDateTime> HIRETIME = TYPE.offsetDateTimeColumn("hiretime");
+    Column<Double> SALARY = TYPE.doubleColumn("sal");
+    Column<Double> COMMISSION = TYPE.doubleColumn("comm");
+    Column<Integer> DEPARTMENT = TYPE.integerColumn("deptno");
 
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, DepartmentFk.DEPTNO);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
@@ -248,8 +248,8 @@ public final class TestDomain extends DefaultDomain {
   public interface UUIDTestDefault {
     EntityType TYPE = DOMAIN.entityType("scott.uuid_test_default");
 
-    Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
-    Attribute<String> DATA = TYPE.stringAttribute("data");
+    Column<UUID> ID = TYPE.column("id", UUID.class);
+    Column<String> DATA = TYPE.stringColumn("data");
   }
 
   private void uuidTestDefaultValue() {
@@ -276,8 +276,8 @@ public final class TestDomain extends DefaultDomain {
   public interface UUIDTestNoDefault {
     EntityType TYPE = DOMAIN.entityType("scott.uuid_test_no_default");
 
-    Attribute<UUID> ID = TYPE.attribute("id", UUID.class);
-    Attribute<String> DATA = TYPE.stringAttribute("data");
+    Column<UUID> ID = TYPE.column("id", UUID.class);
+    Column<String> DATA = TYPE.stringColumn("data");
   }
 
   private void uuidTestNoDefaultValue() {
@@ -301,11 +301,11 @@ public final class TestDomain extends DefaultDomain {
   public interface Job {
     EntityType TYPE = DOMAIN.entityType("job");
 
-    Attribute<String> JOB = TYPE.stringAttribute("job");
-    Attribute<Double> MAX_SALARY = TYPE.doubleAttribute("max_salary");
-    Attribute<Double> MIN_SALARY = TYPE.doubleAttribute("min_salary");
-    Attribute<Double> MAX_COMMISSION = TYPE.doubleAttribute("max_commission");
-    Attribute<Double> MIN_COMMISSION = TYPE.doubleAttribute("min_commission");
+    Column<String> JOB = TYPE.stringColumn("job");
+    Column<Double> MAX_SALARY = TYPE.doubleColumn("max_salary");
+    Column<Double> MIN_SALARY = TYPE.doubleColumn("min_salary");
+    Column<Double> MAX_COMMISSION = TYPE.doubleColumn("max_commission");
+    Column<Double> MIN_COMMISSION = TYPE.doubleColumn("min_commission");
   }
 
   private void job() {
@@ -334,10 +334,10 @@ public final class TestDomain extends DefaultDomain {
   public interface NoPrimaryKey {
     EntityType TYPE = DOMAIN.entityType("scott.no_pk_table");
 
-    Attribute<Integer> COL_4 = TYPE.integerAttribute("col4");
-    Attribute<String> COL_3 = TYPE.stringAttribute("col3");
-    Attribute<String> COL_2 = TYPE.stringAttribute("col2");
-    Attribute<Integer> COL_1 = TYPE.integerAttribute("col1");
+    Column<Integer> COL_4 = TYPE.integerColumn("col4");
+    Column<String> COL_3 = TYPE.stringColumn("col3");
+    Column<String> COL_2 = TYPE.stringColumn("col2");
+    Column<Integer> COL_1 = TYPE.integerColumn("col1");
   }
 
   private void noPkEntity() {
@@ -351,8 +351,8 @@ public final class TestDomain extends DefaultDomain {
   public interface EmpnoDeptno {
     EntityType TYPE = DOMAIN.entityType("joinedQueryEntityType");
 
-    Attribute<Integer> DEPTNO = TYPE.integerAttribute("d.deptno");
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("e.empno");
+    Column<Integer> DEPTNO = TYPE.integerColumn("d.deptno");
+    Column<Integer> EMPNO = TYPE.integerColumn("e.empno");
 
     CriteriaType CRITERIA = EmpnoDeptno.TYPE.criteriaType("criteria");
   }
@@ -372,8 +372,8 @@ public final class TestDomain extends DefaultDomain {
   public interface Query {
     EntityType TYPE = DOMAIN.entityType("query");
 
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> ENAME = TYPE.stringColumn("ename");
   }
 
   private void query() {
@@ -392,8 +392,8 @@ public final class TestDomain extends DefaultDomain {
   public interface QueryColumnsWhereClause {
     EntityType TYPE = DOMAIN.entityType("query_where");
 
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> ENAME = TYPE.stringColumn("ename");
   }
 
   private void queryColumnsWhereClause() {
@@ -411,8 +411,8 @@ public final class TestDomain extends DefaultDomain {
   public interface QueryFromClause {
     EntityType TYPE = DOMAIN.entityType("query_from");
 
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> ENAME = TYPE.stringColumn("ename");
   }
 
   private void queryFromClause() {
@@ -429,8 +429,8 @@ public final class TestDomain extends DefaultDomain {
   public interface QueryFromWhereClause {
     EntityType TYPE = DOMAIN.entityType("query_from_where");
 
-    Attribute<Integer> EMPNO = TYPE.integerAttribute("empno");
-    Attribute<String> ENAME = TYPE.stringAttribute("ename");
+    Column<Integer> EMPNO = TYPE.integerColumn("empno");
+    Column<String> ENAME = TYPE.stringColumn("ename");
   }
 
   private void queryFromWhereClause() {
@@ -448,8 +448,8 @@ public final class TestDomain extends DefaultDomain {
   public interface Master {
     EntityType TYPE = DOMAIN.entityType("scott.master");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> DATA = TYPE.stringAttribute("data");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> DATA = TYPE.stringColumn("data");
   }
 
   void master() {
@@ -462,9 +462,9 @@ public final class TestDomain extends DefaultDomain {
   public interface Detail {
     EntityType TYPE = DOMAIN.entityType("scott.detail");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<Integer> MASTER_1_ID = TYPE.integerAttribute("master_1_id");
-    Attribute<Integer> MASTER_2_ID = TYPE.integerAttribute("master_2_id");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<Integer> MASTER_1_ID = TYPE.integerColumn("master_1_id");
+    Column<Integer> MASTER_2_ID = TYPE.integerColumn("master_2_id");
 
     ForeignKey MASTER_1_FK = TYPE.foreignKey("master_1_fk", MASTER_1_ID, Master.ID);
     ForeignKey MASTER_2_FK = TYPE.foreignKey("master_2_fk", MASTER_2_ID, Master.ID);
@@ -483,8 +483,8 @@ public final class TestDomain extends DefaultDomain {
   public interface MasterFk {
     EntityType TYPE = DOMAIN.entityType("scott.master_fk");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> NAME = TYPE.stringAttribute("name");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> NAME = TYPE.stringColumn("name");
   }
 
   void masterFk() {
@@ -496,8 +496,8 @@ public final class TestDomain extends DefaultDomain {
   public interface DetailFk {
     EntityType TYPE = DOMAIN.entityType("scott.detail_fk");
 
-    Attribute<Integer> ID = TYPE.integerAttribute("id");
-    Attribute<String> MASTER_NAME = TYPE.stringAttribute("master_name");
+    Column<Integer> ID = TYPE.integerColumn("id");
+    Column<String> MASTER_NAME = TYPE.stringColumn("master_name");
 
     ForeignKey MASTER_FK = TYPE.foreignKey("master_fk", MASTER_NAME, MasterFk.NAME);
   }
