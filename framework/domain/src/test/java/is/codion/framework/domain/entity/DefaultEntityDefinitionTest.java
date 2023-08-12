@@ -79,11 +79,11 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void defaultSelectAttributes() {
+  void selectAttributes() {
     Domain domain = new TestDomain();
 
     Collection<Attribute<?>> defaultSelectAttributes = domain.entities()
-            .definition(Employee.TYPE).defaultSelectAttributes();
+            .definition(Employee.TYPE).selectAttributes();
     assertTrue(defaultSelectAttributes.contains(Employee.ID));
     assertTrue(defaultSelectAttributes.contains(Employee.NAME));
     assertTrue(defaultSelectAttributes.contains(Employee.JOB));
@@ -99,7 +99,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Employee.DEPARTMENT_NAME));
 
     defaultSelectAttributes = domain.entities()
-            .definition(Department.TYPE).defaultSelectAttributes();
+            .definition(Department.TYPE).selectAttributes();
     assertTrue(defaultSelectAttributes.contains(Department.NO));
     assertTrue(defaultSelectAttributes.contains(Department.NAME));
     assertTrue(defaultSelectAttributes.contains(Department.LOCATION));
@@ -107,7 +107,7 @@ public class DefaultEntityDefinitionTest {
     assertFalse(defaultSelectAttributes.contains(Department.DATA));
 
     defaultSelectAttributes = domain.entities()
-            .definition(Detail.TYPE).defaultSelectAttributes();
+            .definition(Detail.TYPE).selectAttributes();
     assertTrue(defaultSelectAttributes.contains(Detail.ID));
     assertTrue(defaultSelectAttributes.contains(Detail.INT));
     assertTrue(defaultSelectAttributes.contains(Detail.DOUBLE));

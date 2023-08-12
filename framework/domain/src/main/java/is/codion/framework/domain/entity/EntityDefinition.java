@@ -243,10 +243,10 @@ public interface EntityDefinition {
 
   /**
    * Returns the attributes selected by default for this entity type.
-   * Contains the selectable column property attributes and foreign keys, excluding lazy loaded blob attributes.
+   * Contains the selectable columns and foreign keys, excluding lazy loaded blob columns.
    * @return the default select attributes
    */
-  Collection<Attribute<?>> defaultSelectAttributes();
+  Collection<Attribute<?>> selectAttributes();
 
   /**
    * @param column the column

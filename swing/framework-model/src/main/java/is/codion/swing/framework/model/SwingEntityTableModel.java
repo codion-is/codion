@@ -941,7 +941,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       return emptyList();
     }
 
-    return entityDefinition().defaultSelectAttributes().stream()
+    return entityDefinition().selectAttributes().stream()
             .filter(columnModel()::isColumnVisible)
             .collect(toList());
   }

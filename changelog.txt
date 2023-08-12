@@ -9403,3 +9403,4 @@
   DefaultColumnConditionBuilder.like() bug fixed, no longer translates IN with single value to EQUALS, refactoring
   DefaultEntityTableConditionModel refactored
   SelectCondition, ForeignKeyProperty, SwingEntityTableModel, selectAttributes() renamed attributes()
+  EntityDefinition.defaultSelectAttributes() renamed selectAttributes()
