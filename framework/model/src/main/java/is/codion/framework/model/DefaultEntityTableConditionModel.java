@@ -200,41 +200,17 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
         return builder.notIn(values);
       default:
-        throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key conditions");
+        throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key criteria");
     }
   }
 
   private static <T> ColumnCriteria<T> columnCriteria(ColumnConditionModel<?, T> conditionModel) {
-    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
-    Collection<T> equalToValues = conditionModel.getEqualValues();
-    boolean isString = column.isString();
-    boolean singleStringWithWildcards = isString && equalToValues.size() == 1 &&
-            containsWildcards((String) equalToValues.iterator().next());
-    boolean caseInsensitiveString = isString && !conditionModel.caseSensitiveState().get();
-    ColumnCriteria.Builder<T> builder = column(column);
+    ColumnCriteria.Builder<T> builder = column((Column<T>) conditionModel.columnIdentifier());
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        if (singleStringWithWildcards) {
-          String equalValue = (String) conditionModel.getEqualValue();
-
-          return caseInsensitiveString ?
-                (ColumnCriteria<T>) builder.likeIgnoreCase(equalValue) :
-                  (ColumnCriteria<T>) builder.like(equalValue);
-        }
-        return caseInsensitiveString ?
-                (ColumnCriteria<T>) builder.inIgnoreCase((Collection<String>) equalToValues) :
-                builder.in(equalToValues);
+        return equalCriteria(conditionModel, builder);
       case NOT_EQUAL:
-        if (singleStringWithWildcards) {
-          String equalValue = (String) conditionModel.getEqualValue();
-
-          return caseInsensitiveString ?
-                (ColumnCriteria<T>) builder.notLikeIgnoreCase(equalValue) :
-                  (ColumnCriteria<T>) builder.notLike(equalValue);
-        }
-        return caseInsensitiveString ?
-                (ColumnCriteria<T>) builder.notInIgnoreCase((Collection<String>) equalToValues) :
-                builder.notIn(equalToValues);
+        return notEqualCriteria(conditionModel, builder);
       case LESS_THAN:
         return builder.lessThan(conditionModel.getUpperBound());
       case LESS_THAN_OR_EQUAL:
@@ -256,7 +232,49 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     }
   }
 
+  private static <T> ColumnCriteria<T> equalCriteria(ColumnConditionModel<?, T> conditionModel,
+                                                     ColumnCriteria.Builder<T> builder) {
+    Collection<T> equalToValues = conditionModel.getEqualValues();
+    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
+    if (column.isString() && equalToValues.size() == 1) {
+      return singleStringEqualCriteria(conditionModel, builder, (String) equalToValues.iterator().next());
+    }
+
+    return builder.in(equalToValues);
+  }
+
+  private static <T> ColumnCriteria<T> notEqualCriteria(ColumnConditionModel<?, T> conditionModel,
+                                                        ColumnCriteria.Builder<T> builder) {
+    Collection<T> equalToValues = conditionModel.getEqualValues();
+    Column<T> column = (Column<T>) conditionModel.columnIdentifier();
+    if (column.isString() && equalToValues.size() == 1) {
+      return singleStringNotEqualCriteria(conditionModel, builder, (String) equalToValues.iterator().next());
+    }
+
+    return builder.notIn(equalToValues);
+  }
+
+  private static <T> ColumnCriteria<T> singleStringEqualCriteria(ColumnConditionModel<?, T> conditionModel,
+                                                                 ColumnCriteria.Builder<T> builder, String value) {
+    boolean caseSensitive = conditionModel.caseSensitiveState().get();
+    if (containsWildcards(value)) {
+      return (ColumnCriteria<T>) (caseSensitive ? builder.like(value) : builder.likeIgnoreCase(value));
+    }
+
+    return caseSensitive ? builder.equalTo((T) value) : (ColumnCriteria<T>) builder.equalToIgnoreCase(value);
+  }
+
+  private static <T> ColumnCriteria<T> singleStringNotEqualCriteria(ColumnConditionModel<?, T> conditionModel,
+                                                                    ColumnCriteria.Builder<T> builder, String value) {
+    boolean caseSensitive = conditionModel.caseSensitiveState().get();
+    if (containsWildcards(value)) {
+      return (ColumnCriteria<T>) (caseSensitive ? builder.notLike(value) : builder.notLikeIgnoreCase(value));
+    }
+
+    return caseSensitive ? builder.notEqualTo((T) value) : (ColumnCriteria<T>) builder.notEqualToIgnoreCase(value);
+  }
+
   private static boolean containsWildcards(String value) {
-    return value != null && value.contains("%") || value.contains("_");
+    return value != null && (value.contains("%") || value.contains("_"));
   }
 }
