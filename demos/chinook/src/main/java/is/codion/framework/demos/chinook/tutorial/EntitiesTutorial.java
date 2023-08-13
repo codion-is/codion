@@ -141,13 +141,13 @@ public final class EntitiesTutorial {
     // select the artist Metallica by name, the selectSingle() method
     // throws a RecordNotFoundException if no record is found and a
     // MultipleRecordsFoundException if more than one are found
-    Entity metallica = connection.selectSingle(Artist.NAME, "Metallica");
+    Entity metallica = connection.selectSingle(column(Artist.NAME).equalTo("Metallica"));
 
     // select all albums by Metallica, by using select() with the
-    // Metallica Entity as condition value, basically asking for the
+    // Metallica Entity as criteria value, basically asking for the
     // records where the given foreign key references that specific Entity
     // select() returns an empty list if none are found
-    List<Entity> albums = connection.select(Album.ARTIST_FK, metallica);
+    List<Entity> albums = connection.select(foreignKey(Album.ARTIST_FK).equalTo(metallica));
 
     albums.forEach(System.out::println);
 

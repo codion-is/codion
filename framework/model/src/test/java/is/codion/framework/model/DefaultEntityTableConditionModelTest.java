@@ -20,6 +20,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -73,8 +74,8 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void setEqualConditionValues() throws DatabaseException {
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
-    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
     boolean searchStateChanged = conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(searchStateChanged);
@@ -90,8 +91,8 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void clearPropertyConditionModels() throws DatabaseException {
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
-    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     assertTrue(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
@@ -101,8 +102,8 @@ public class DefaultEntityTableConditionModelTest {
 
   @Test
   void condition() throws DatabaseException {
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
-    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);

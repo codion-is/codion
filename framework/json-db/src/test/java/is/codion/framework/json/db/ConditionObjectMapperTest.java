@@ -150,7 +150,7 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void allCondition() throws JsonProcessingException {
-    Condition condition = Condition.all(Department.TYPE);
+    Condition condition = where(all(Department.TYPE));
 
     String jsonString = mapper.writeValueAsString(condition);
     Condition readCondition = mapper.readValue(jsonString, Condition.class);

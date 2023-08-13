@@ -53,7 +53,13 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 === Selecting entities
 
+{url-entity-connection}#select{opar}is.codion.framework.db.criteria.Criteria{cpar}[select(Criteria criteria)]
+
 {url-entity-connection}#select{opar}is.codion.framework.db.condition.Condition{cpar}[select(Condition condition)]
+
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.criteria.Criteria{cpar}[selectSingle(Criteria criteria)]
+
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
 
 [source,java,indent=0]
 ----
@@ -74,30 +80,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectKeys]
 ----
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Attribute{comma}T{cpar}[select(Attribute<T> attribute, T value)]
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectByValue]
-----
-
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleCondition]
-----
-
-{url-entity-connection}#selectSingle{opar}is.codion.framework.domain.entity.Attribute{comma}T{cpar}[selectSingle(Attribute<T> attribute, T value)]
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectSingleValue]
-----
-
 === Selecting values
 
 For selecting the values of a single column.
+
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.criteria.Criteria{cpar}[select(Column<T> column, Criteria criteria)]
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
 

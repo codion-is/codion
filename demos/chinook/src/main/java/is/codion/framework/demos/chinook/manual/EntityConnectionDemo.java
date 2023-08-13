@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.all;
 import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
@@ -44,16 +43,29 @@ import static java.util.Arrays.asList;
  */
 public final class EntityConnectionDemo {
 
-  static void selectConditionDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  static void selectCriteriaCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
     // tag::selectCondition[]
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> artists = connection.select(
-            where(column(Artist.NAME).like("The %")));
+            column(Artist.NAME).like("The %"));
 
-    List<Entity> nonLiveAlbums = connection.select(where(and(
+    List<Entity> nonLiveAlbums = connection.select(and(
             foreignKey(Album.ARTIST_FK).in(artists),
-            column(Album.TITLE).likeIgnoreCase("%live%"))));
+            column(Album.TITLE).likeIgnoreCase("%live%")));
+
+    Entity aliceInChains = connection.selectSingle(
+            column(Artist.NAME).equalTo("Alice In Chains"));
+
+    List<Entity> aliceInChainsAlbums = connection.select(
+            foreignKey(Album.ARTIST_FK).equalTo(aliceInChains));
+
+    Entity ironMaiden = connection.selectSingle(
+            column(Artist.NAME).equalTo("Iron Maiden"));
+
+    Entity liveIronMaidenAlbum = connection.selectSingle(and(
+            foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
+            column(Album.TITLE).likeIgnoreCase("%live after%")));
     // end::selectCondition[]
   }
 
@@ -61,7 +73,8 @@ public final class EntityConnectionDemo {
     // tag::fetchDepthEntity[]
     EntityConnection connection = connectionProvider.connection();
 
-    List<Entity> tracks = connection.select(where(column(Track.NAME).like("Bad%")));
+    List<Entity> tracks = connection.select(
+            column(Track.NAME).like("Bad%"));
 
     Entity track = tracks.get(0);
 
@@ -134,31 +147,6 @@ public final class EntityConnectionDemo {
     // end::selectKeys[]
   }
 
-  static void selectByValue(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::selectByValue[]
-    EntityConnection connection = connectionProvider.connection();
-
-    Entity aliceInChains =
-            connection.selectSingle(Artist.NAME, "Alice In Chains");
-
-    List<Entity> albums =
-            connection.select(Album.ARTIST_FK, aliceInChains);
-    // end::selectByValue[]
-  }
-
-  static void selectSingleCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::selectSingleCondition[]
-    EntityConnection connection = connectionProvider.connection();
-
-    Entity ironMaiden = connection.selectSingle(
-            where(column(Artist.NAME).equalTo("Iron Maiden")));
-
-    Entity liveAlbum = connection.selectSingle(where(and(
-            foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
-            column(Album.TITLE).likeIgnoreCase("%live after%"))));
-    // end::selectSingleCondition[]
-  }
-
   static void selectKey(EntityConnectionProvider connectionProvider) throws DatabaseException {
     // tag::selectKey[]
     EntityConnection connection = connectionProvider.connection();
@@ -175,11 +163,11 @@ public final class EntityConnectionDemo {
     // tag::selectSingleValue[]
     EntityConnection connection = connectionProvider.connection();
 
-    Entity aliceInChains = connection.selectSingle(Artist.NAME, "Alice In Chains");
+    Entity aliceInChains = connection.selectSingle(column(Artist.NAME).equalTo("Alice In Chains"));
 
     // we only have one album by Alice in Chains
     // otherwise this would throw an exception
-    Entity albumFacelift = connection.selectSingle(Album.ARTIST_FK, aliceInChains);
+    Entity albumFacelift = connection.selectSingle(foreignKey(Album.ARTIST_FK).equalTo(aliceInChains));
     // end::selectSingleValue[]
   }
 
@@ -189,7 +177,7 @@ public final class EntityConnectionDemo {
 
     List<String> customerUsStates =
             connection.select(Customer.STATE,
-                    where(column(Customer.COUNTRY).equalTo("USA")));
+                    column(Customer.COUNTRY).equalTo("USA"));
     // end::selectValues[]
   }
 
@@ -242,14 +230,14 @@ public final class EntityConnectionDemo {
     // tag::update[]
     EntityConnection connection = connectionProvider.connection();
 
-    Entity myBand = connection.selectSingle(Artist.NAME, "My Band");
+    Entity myBand = connection.selectSingle(column(Artist.NAME).equalTo("My Band"));
 
     myBand.put(Artist.NAME, "Proper Name");
 
     connection.update(myBand);
 
     List<Entity> customersWithoutPhoneNo =
-            connection.select(where(column(Customer.PHONE).isNull()));
+            connection.select(column(Customer.PHONE).isNull());
 
     Entity.put(Customer.PHONE, "<none>", customersWithoutPhoneNo);
 
@@ -277,13 +265,13 @@ public final class EntityConnectionDemo {
     // tag::deleteCondition[]
     EntityConnection connection = connectionProvider.connection();
 
-    Entity aquaman = connection.selectSingle(Artist.NAME, "Aquaman");
+    Entity aquaman = connection.selectSingle(column(Artist.NAME).equalTo("Aquaman"));
 
     List<Long> aquamanAlbumIds = connection.select(Album.ID,
-            where(foreignKey(Album.ARTIST_FK).equalTo(aquaman)));
+            foreignKey(Album.ARTIST_FK).equalTo(aquaman));
 
     List<Long> aquamanTrackIds = connection.select(Track.ID,
-            where(column(Track.ALBUM_ID).in(aquamanAlbumIds)));
+            column(Track.ALBUM_ID).in(aquamanAlbumIds));
 
     int playlistTracksDeleted = connection.delete(
             column(PlaylistTrack.TRACK_ID).in(aquamanTrackIds));
@@ -300,12 +288,12 @@ public final class EntityConnectionDemo {
     // tag::deleteKey[]
     EntityConnection connection = connectionProvider.connection();
 
-    Entity audioslave = connection.selectSingle(Artist.NAME, "Audioslave");
+    Entity audioslave = connection.selectSingle(column(Artist.NAME).equalTo("Audioslave"));
 
-    List<Entity> albums = connection.select(Album.ARTIST_FK, audioslave);
-    List<Entity> tracks = connection.select(Track.ALBUM_FK, albums);
-    List<Entity> playlistTracks = connection.select(PlaylistTrack.TRACK_FK, tracks);
-    List<Entity> invoiceLines = connection.select(InvoiceLine.TRACK_FK, tracks);
+    List<Entity> albums = connection.select(foreignKey(Album.ARTIST_FK).equalTo(audioslave));
+    List<Entity> tracks = connection.select(foreignKey(Track.ALBUM_FK).in(albums));
+    List<Entity> playlistTracks = connection.select(foreignKey(PlaylistTrack.TRACK_FK).in(tracks));
+    List<Entity> invoiceLines = connection.select(foreignKey(InvoiceLine.TRACK_FK).in(tracks));
 
     List<Key> toDelete = new ArrayList<>();
     toDelete.addAll(Entity.primaryKeys(invoiceLines));
@@ -351,7 +339,7 @@ public final class EntityConnectionDemo {
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
     Collection<Entity> playlistGenres = connection.select(
-            where(column(Genre.NAME).in("Classical", "Soundtrack")));
+            column(Genre.NAME).in("Classical", "Soundtrack"));
 
     Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
             new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));
@@ -411,14 +399,12 @@ public final class EntityConnectionDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    selectConditionDemo(connectionProvider);
+    selectCriteriaCondition(connectionProvider);
     fetchDepthEntity(connectionProvider);
     fetchDepthCondition(connectionProvider);
     fetchDepthForeignKeyCondition(connectionProvider);
     selectKeys(connectionProvider);
-    selectByValue(connectionProvider);
     iterator(connectionProvider);
-    selectSingleCondition(connectionProvider);
     selectKey(connectionProvider);
     selectSingleValue(connectionProvider);
     selectValues(connectionProvider);

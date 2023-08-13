@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.List;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -41,7 +42,7 @@ public class EntitySearchFieldTest {
 
     assertNull(value.get());
 
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
 
     searchModel.setSelectedEntity(sales);
     assertEquals(sales, value.get());
@@ -54,7 +55,7 @@ public class EntitySearchFieldTest {
     ComponentValue<Entity, EntitySearchField> singleSelectionValue = value.component().singleSelectionValue();
     assertNull(singleSelectionValue.get());
 
-    Entity research = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "RESEARCH");
+    Entity research = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("RESEARCH"));
 
     searchModel.setSelectedEntities(Arrays.asList(sales, research));
 

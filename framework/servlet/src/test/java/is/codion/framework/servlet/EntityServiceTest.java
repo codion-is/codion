@@ -308,7 +308,7 @@ public class EntityServiceTest {
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("count"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(where(column(Department.ID).equalTo(10)))));
+      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(column(Department.ID).equalTo(10))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(1, CONDITION_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class));

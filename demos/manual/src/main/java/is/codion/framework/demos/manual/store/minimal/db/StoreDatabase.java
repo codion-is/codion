@@ -17,9 +17,7 @@ import is.codion.framework.domain.entity.Key;
 
 import java.util.List;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.and;
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Address;
 import static is.codion.framework.demos.manual.store.minimal.domain.Store.Customer;
 import static java.util.Arrays.asList;
@@ -41,24 +39,24 @@ public class StoreDatabase {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> customersNamedDoe =
-            connection.select(Customer.LAST_NAME, "Doe");
+            connection.select(column(Customer.LAST_NAME).equalTo("Doe"));
 
     List<Entity> doesAddresses =
-            connection.select(Address.CUSTOMER_FK, customersNamedDoe);
+            connection.select(foreignKey(Address.CUSTOMER_FK).in(customersNamedDoe));
 
     List<Entity> customersWithoutEmail =
-            connection.select(where(column(Customer.EMAIL).isNull()));
+            connection.select(column(Customer.EMAIL).isNull());
 
     List<String> activeCustomerEmailAddresses =
             connection.select(Customer.EMAIL,
-                    where(column(Customer.IS_ACTIVE).equalTo(true)));
+                    column(Customer.IS_ACTIVE).equalTo(true));
 
     List<Entity> activeCustomersWithEmailAddresses =
-            connection.select(where(and(
+            connection.select(and(
                     column(Customer.IS_ACTIVE).equalTo(true),
-                    column(Customer.EMAIL).isNotNull())));
+                    column(Customer.EMAIL).isNotNull()));
 
-    //The domain model entities, a factory for Entity instances.
+    // The domain model entities, a factory for Entity instances.
     Entities entities = connection.entities();
 
     Entity customer = entities.builder(Customer.TYPE)
@@ -67,7 +65,7 @@ public class StoreDatabase {
             .build();
 
     Key customerKey = connection.insert(customer);
-    //select to get generated and default column values
+    // select to get generated and default column values
     customer = connection.select(customerKey);
 
     Entity address = entities.builder(Address.TYPE)

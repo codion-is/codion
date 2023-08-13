@@ -18,11 +18,9 @@ import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 
 import org.apache.http.HttpEntity;
@@ -41,7 +39,7 @@ import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.criteria.Criteria.key;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -305,6 +303,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
+  public <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException {
+    return select(column, SelectCondition.where(criteria)
+            .orderBy(ascending(column))
+            .build());
+  }
+
+  @Override
   public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
     Objects.requireNonNull(column);
     Objects.requireNonNull(condition);
@@ -322,17 +327,13 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    if (attribute instanceof ForeignKey) {
-      return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
-    }
-
-    return selectSingle(where(column((Column<T>) attribute).equalTo(value)));
+  public Entity select(Key key) throws DatabaseException {
+    return selectSingle(key(key));
   }
 
   @Override
-  public Entity select(Key key) throws DatabaseException {
-    return selectSingle(where(key(key)));
+  public Entity selectSingle(Criteria criteria) throws DatabaseException {
+    return selectSingle(where(criteria));
   }
 
   @Override
@@ -365,6 +366,11 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
+  public List<Entity> select(Criteria criteria) throws DatabaseException {
+    return select(where(criteria));
+  }
+
+  @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
@@ -378,24 +384,6 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
     catch (Exception e) {
       throw logAndWrap(e);
     }
-  }
-
-  @Override
-  public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    if (attribute instanceof ForeignKey) {
-      return select(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
-    }
-
-    return select(where(column((Column<T>) attribute).equalTo(value)));
-  }
-
-  @Override
-  public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    if (attribute instanceof ForeignKey) {
-      return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
-    }
-
-    return select(where(column((Column<T>) attribute).in(values)));
   }
 
   @Override

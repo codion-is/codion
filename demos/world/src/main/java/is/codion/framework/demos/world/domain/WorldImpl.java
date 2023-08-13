@@ -14,7 +14,6 @@ import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
@@ -312,7 +311,7 @@ public final class WorldImpl extends DefaultDomain implements World {
     @Override
     public Double execute(EntityConnection connection, String countryCode) throws DatabaseException {
       return connection.select(City.POPULATION,
-                      where(column(City.COUNTRY_CODE).equalTo(countryCode)))
+                      column(City.COUNTRY_CODE).equalTo(countryCode))
               .stream()
               .mapToInt(Integer::intValue)
               .average()
