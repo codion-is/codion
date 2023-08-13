@@ -20,11 +20,11 @@ final class DefaultUpdate implements Update, Serializable {
   private static final long serialVersionUID = 1;
 
   private final Condition condition;
-  private final Map<Column<?>, Object> propertyValues;
+  private final Map<Column<?>, Object> columnValues;
 
   private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
     this.condition = builder.condition;
-    this.propertyValues = builder.columnValues;
+    this.columnValues = unmodifiableMap(builder.columnValues);
   }
 
   @Override
@@ -34,7 +34,7 @@ final class DefaultUpdate implements Update, Serializable {
 
   @Override
   public Map<Column<?>, Object> columnValues() {
-    return unmodifiableMap(propertyValues);
+    return columnValues;
   }
 
   @Override
@@ -47,12 +47,12 @@ final class DefaultUpdate implements Update, Serializable {
     }
     DefaultUpdate that = (DefaultUpdate) object;
     return Objects.equals(condition, that.condition) &&
-            Objects.equals(propertyValues, that.propertyValues);
+            Objects.equals(columnValues, that.columnValues);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(condition, propertyValues);
+    return Objects.hash(condition, columnValues);
   }
 
   static final class DefaultBuilder implements Update.Builder {
@@ -64,7 +64,7 @@ final class DefaultUpdate implements Update, Serializable {
       this(requireNonNull(update).condition());
       if (update instanceof DefaultUpdate) {
         DefaultUpdate defaultUpdate = (DefaultUpdate) update;
-        columnValues.putAll(defaultUpdate.propertyValues);
+        columnValues.putAll(defaultUpdate.columnValues);
       }
     }
 

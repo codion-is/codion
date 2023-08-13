@@ -9418,3 +9418,4 @@
   EntityComboBoxModel.setSelectConditionSupplier() renamed setConditionSupplier()
   Select.fetchDepth(foreignKey) reintroduced
   DefaultSelect.DefaultBuilder copy constructor bug fixed, map received was unmodifiable
+  DefaultUpdate.columnValues now unmodifiable
