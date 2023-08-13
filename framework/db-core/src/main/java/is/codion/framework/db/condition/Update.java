@@ -10,12 +10,12 @@ import is.codion.framework.domain.entity.EntityType;
 import java.util.Map;
 
 /**
- * A condition specifying a where clause along with attributes and their associated values for update.
- * A factory class for {@link UpdateCondition.Builder} instances via
- * {@link UpdateCondition#all(EntityType)}, {@link UpdateCondition#where(Criteria)} and
- * {@link UpdateCondition#builder(UpdateCondition)}.
+ * A class encapsulating a where clause along with columns and their associated values for update.
+ * A factory class for {@link Update.Builder} instances via
+ * {@link Update#all(EntityType)}, {@link Update#where(Criteria)} and
+ * {@link Update#builder(Update)}.
  */
-public interface UpdateCondition {
+public interface Update {
 
   /**
    * @return the underlying Criteria instance
@@ -28,7 +28,7 @@ public interface UpdateCondition {
   Map<Column<?>, Object> columnValues();
 
   /**
-   * Builds an {@link UpdateCondition}.
+   * Builds an {@link Update}.
    */
   interface Builder {
 
@@ -42,32 +42,32 @@ public interface UpdateCondition {
     <T> Builder set(Column<?> column, T value);
 
     /**
-     * @return a new {@link UpdateCondition} instance based on this builder
+     * @return a new {@link Update} instance based on this builder
      */
-    UpdateCondition build();
+    Update build();
   }
 
   /**
    * @param entityType the entity type
-   * @return a {@link UpdateCondition.Builder} instance
+   * @return a {@link Update.Builder} instance
    */
   static Builder all(EntityType entityType) {
-    return new DefaultUpdateCondition.DefaultBuilder(Criteria.all(entityType));
+    return new DefaultUpdate.DefaultBuilder(Criteria.all(entityType));
   }
 
   /**
    * @param criteria the criteria
-   * @return a {@link UpdateCondition.Builder} instance
+   * @return a {@link Update.Builder} instance
    */
   static Builder where(Criteria criteria) {
-    return new DefaultUpdateCondition.DefaultBuilder(criteria);
+    return new DefaultUpdate.DefaultBuilder(criteria);
   }
 
   /**
-   * @param condition the condition
-   * @return a {@link UpdateCondition.Builder} instance
+   * @param update the update
+   * @return a {@link Update.Builder} instance
    */
-  static Builder builder(UpdateCondition condition) {
-    return new DefaultUpdateCondition.DefaultBuilder(condition);
+  static Builder builder(Update update) {
+    return new DefaultUpdate.DefaultBuilder(update);
   }
 }

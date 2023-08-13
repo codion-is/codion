@@ -108,7 +108,7 @@ public interface EntitySearchModel {
   boolean searchStringRepresentsSelected();
 
   /**
-   * Performs a query based on the select condition
+   * Performs a query based on the current search configuration
    * @return a list containing the entities fulfilling the current condition
    * @throws IllegalStateException in case no search attributes are specified
    */

@@ -14,11 +14,11 @@ import java.util.Optional;
 
 /**
  * A class encapsulating select query parameters.
- * A factory class for {@link SelectCondition.Builder} instances via
- * {@link SelectCondition#all(EntityType)}, {@link SelectCondition#where(Criteria)} and
- * {@link SelectCondition#builder(SelectCondition)}.
+ * A factory class for {@link Select.Builder} instances via
+ * {@link Select#all(EntityType)}, {@link Select#where(Criteria)} and
+ * {@link Select#builder(Select)}.
  */
-public interface SelectCondition {
+public interface Select {
 
   int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
 
@@ -72,7 +72,7 @@ public interface SelectCondition {
   Collection<Attribute<?>> attributes();
 
   /**
-   * Builds a {@link SelectCondition}.
+   * Builds a {@link Select}.
    */
   interface Builder {
 
@@ -142,32 +142,32 @@ public interface SelectCondition {
     Builder queryTimeout(int queryTimeout);
 
     /**
-     * @return a new {@link SelectCondition} instance based on this builder
+     * @return a new {@link Select} instance based on this builder
      */
-    SelectCondition build();
+    Select build();
   }
 
   /**
    * @param entityType the entity type
-   * @return a new {@link SelectCondition.Builder} instance
+   * @return a new {@link Select.Builder} instance
    */
   static Builder all(EntityType entityType) {
-    return new DefaultSelectCondition.DefaultBuilder(Criteria.all(entityType));
+    return new DefaultSelect.DefaultBuilder(Criteria.all(entityType));
   }
 
   /**
    * @param criteria the criteria
-   * @return a new {@link SelectCondition.Builder} instance
+   * @return a new {@link Select.Builder} instance
    */
   static Builder where(Criteria criteria) {
-    return new DefaultSelectCondition.DefaultBuilder(criteria);
+    return new DefaultSelect.DefaultBuilder(criteria);
   }
 
   /**
-   * @param condition the condition
-   * @return a new {@link SelectCondition.Builder} instance
+   * @param select the select
+   * @return a new {@link Select.Builder} instance
    */
-  static Builder builder(SelectCondition condition) {
-    return new DefaultSelectCondition.DefaultBuilder(condition);
+  static Builder builder(Select select) {
+    return new DefaultSelect.DefaultBuilder(select);
   }
 }

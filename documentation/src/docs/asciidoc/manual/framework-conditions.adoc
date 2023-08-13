@@ -23,22 +23,22 @@ Extends *Critiera* and represents a combination of *Criteria* instances, which a
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=combination]
 ----
 
-== SelectCondition
+== Select
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html[SelectCondition]*::
-Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.html#where[SelectCondition.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/SelectCondition.Builder.html[SelectCondition.Builder] instance for further configuration.
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=selectCondition]
-----
-
-== UpdateCondition
-
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html[UpdateCondition]*::
-Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.html#where[UpdateCondition.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/UpdateCondition.Builder.html[UpdateCondition.Builder] instance for specifying the columns to update and their respective values.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.html[Select]*::
+Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.html#where[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.Builder.html[Select.Builder] instance for further configuration.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=updateCondition]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=select]
+----
+
+== Update
+
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.html[Update]*::
+Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.html#where[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=update]
 ----

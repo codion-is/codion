@@ -10,7 +10,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
@@ -120,13 +120,13 @@ abstract class AbstractHttpEntityConnectionTest {
 
     List<Entity> entities = connection.select(criteria);
 
-    UpdateCondition updateCondition = UpdateCondition.where(column(Employee.COMMISSION).isNull())
+    Update update = Update.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();
     connection.beginTransaction();
     try {
-      connection.update(updateCondition);
+      connection.update(update);
       assertEquals(0, connection.rowCount(criteria));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {

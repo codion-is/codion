@@ -10,7 +10,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
@@ -211,7 +211,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   @Override
   public List<Entity> performQuery() {
     try {
-      List<Entity> result = connectionProvider.connection().select(selectCondition());
+      List<Entity> result = connectionProvider.connection().select(select());
       if (resultSorter != null) {
         result.sort(resultSorter);
       }
@@ -259,11 +259,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   /**
-   * @return a condition based on this search model including any additional search condition
+   * @return a select instance based on this search model including any additional search condition
    * @throws IllegalStateException in case no search properties are specified
    * @see #setAdditionalCriteriaSupplier(Supplier)
    */
-  private SelectCondition selectCondition() {
+  private Select select() {
     if (searchColumns.isEmpty()) {
       throw new IllegalStateException("No search columns provided for search model: " + entityType);
     }
@@ -285,11 +285,11 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       }
     }
     Criteria criteriaCombination = or(criteria);
-    SelectCondition.Builder conditionBuilder = additionalCriteriaSupplier == null ?
-            SelectCondition.where(criteriaCombination) :
-            SelectCondition.where(and(additionalCriteriaSupplier.get(), criteriaCombination));
+    Select.Builder selectBuilder = additionalCriteriaSupplier == null ?
+            Select.where(criteriaCombination) :
+            Select.where(and(additionalCriteriaSupplier.get(), criteriaCombination));
 
-    return conditionBuilder
+    return selectBuilder
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())
             .build();
   }

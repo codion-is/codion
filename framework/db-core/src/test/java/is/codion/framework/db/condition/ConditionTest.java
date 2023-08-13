@@ -17,20 +17,20 @@ public final class ConditionTest {
 
   @Test
   void selectCondition() {
-    SelectCondition condition = SelectCondition.where(column(Department.LOCATION).equalTo("New York"))
+    Select select = Select.where(column(Department.LOCATION).equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();
-    assertEquals(-1, condition.limit());
+    assertEquals(-1, select.limit());
 
-    condition = SelectCondition.all(Department.TYPE)
+    select = Select.all(Department.TYPE)
             .limit(10)
             .build();
-    assertEquals(10, condition.limit());
+    assertEquals(10, select.limit());
   }
 
   @Test
   void updateConditionDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> UpdateCondition.all(Employee.TYPE)
+    assertThrows(IllegalArgumentException.class, () -> Update.all(Employee.TYPE)
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
@@ -39,47 +39,47 @@ public final class ConditionTest {
   void equals() {
     Criteria criteria1 = column(Employee.NAME).in("Luke", "John");
     Criteria criteria2 = column(Employee.NAME).in("Luke", "John");
-    assertEquals(SelectCondition.where(criteria1).build(), SelectCondition.where(criteria2).build());
-    assertEquals(SelectCondition.where(criteria1)
+    assertEquals(Select.where(criteria1).build(), Select.where(criteria2).build());
+    assertEquals(Select.where(criteria1)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
-            SelectCondition.where(criteria2)
+            Select.where(criteria2)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build());
-    assertNotEquals(SelectCondition.where(criteria1)
+    assertNotEquals(Select.where(criteria1)
                     .orderBy(OrderBy.ascending(Employee.NAME))
                     .build(),
-            SelectCondition.where(criteria2)
-                    .build());
-
-    assertEquals(SelectCondition.where(criteria1)
-                    .attributes(Employee.NAME)
-                    .build(),
-            SelectCondition.where(criteria2)
-                    .attributes(Employee.NAME)
+            Select.where(criteria2)
                     .build());
 
-    assertEquals(SelectCondition.where(criteria1)
+    assertEquals(Select.where(criteria1)
+                    .attributes(Employee.NAME)
+                    .build(),
+            Select.where(criteria2)
+                    .attributes(Employee.NAME)
+                    .build());
+
+    assertEquals(Select.where(criteria1)
                     .attributes(Employee.NAME)
                     .offset(10)
                     .build(),
-            SelectCondition.where(criteria2)
-                    .attributes(Employee.NAME)
-                    .offset(10)
-                    .build());
-
-    assertNotEquals(SelectCondition.where(criteria1)
-                    .attributes(Employee.NAME)
-                    .build(),
-            SelectCondition.where(criteria2)
+            Select.where(criteria2)
                     .attributes(Employee.NAME)
                     .offset(10)
                     .build());
 
-    assertNotEquals(SelectCondition.where(criteria1)
+    assertNotEquals(Select.where(criteria1)
                     .attributes(Employee.NAME)
                     .build(),
-            SelectCondition.where(criteria2)
+            Select.where(criteria2)
+                    .attributes(Employee.NAME)
+                    .offset(10)
+                    .build());
+
+    assertNotEquals(Select.where(criteria1)
+                    .attributes(Employee.NAME)
+                    .build(),
+            Select.where(criteria2)
                     .attributes(Employee.ID)
                     .build());
   }

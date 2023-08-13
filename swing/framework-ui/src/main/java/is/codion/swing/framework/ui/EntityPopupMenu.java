@@ -31,7 +31,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static is.codion.framework.db.condition.SelectCondition.where;
+import static is.codion.framework.db.condition.Select.where;
 import static is.codion.framework.db.criteria.Criteria.key;
 import static is.codion.swing.common.ui.Utilities.setClipboard;
 import static java.util.Objects.requireNonNull;

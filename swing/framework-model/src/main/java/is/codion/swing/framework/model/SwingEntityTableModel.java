@@ -66,7 +66,7 @@ import java.util.function.Consumer;
 import java.util.function.Predicate;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.condition.SelectCondition.where;
+import static is.codion.framework.db.condition.Select.where;
 import static is.codion.framework.model.EntityTableConditionModel.entityTableConditionModel;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.ConditionPreferences.conditionPreferences;
 import static is.codion.framework.model.EntityTableModel.ColumnPreferences.columnPreferences;

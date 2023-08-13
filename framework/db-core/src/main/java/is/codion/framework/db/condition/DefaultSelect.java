@@ -21,7 +21,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultSelectCondition implements SelectCondition, Serializable {
+final class DefaultSelect implements Select, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -35,7 +35,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
   private final int offset;
   private final int queryTimeout;
 
-  private DefaultSelectCondition(DefaultBuilder builder) {
+  private DefaultSelect(DefaultBuilder builder) {
     this.criteria = builder.criteria;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
     this.attributes = builder.attributes;
@@ -102,10 +102,10 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DefaultSelectCondition)) {
+    if (!(object instanceof DefaultSelect)) {
       return false;
     }
-    DefaultSelectCondition that = (DefaultSelectCondition) object;
+    DefaultSelect that = (DefaultSelect) object;
     return forUpdate == that.forUpdate &&
             limit == that.limit &&
             offset == that.offset &&
@@ -121,7 +121,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     return Objects.hash(forUpdate, limit, offset, criteria, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
   }
 
-  static final class DefaultBuilder implements SelectCondition.Builder {
+  static final class DefaultBuilder implements Select.Builder {
 
     private final Criteria criteria;
 
@@ -135,10 +135,10 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     private int offset = -1;
     private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
-    DefaultBuilder(SelectCondition condition) {
-      this(requireNonNull(condition).criteria());
-      if (condition instanceof DefaultSelectCondition) {
-        DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;
+    DefaultBuilder(Select select) {
+      this(requireNonNull(select).criteria());
+      if (select instanceof DefaultSelect) {
+        DefaultSelect selectCondition = (DefaultSelect) select;
         foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
         attributes = selectCondition.attributes;
         orderBy = selectCondition.orderBy;
@@ -213,8 +213,8 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     }
 
     @Override
-    public SelectCondition build() {
-      return new DefaultSelectCondition(this);
+    public Select build() {
+      return new DefaultSelect(this);
     }
   }
 }

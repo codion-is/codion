@@ -5,7 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -41,9 +41,9 @@ final class DefaultCopyEntities implements CopyEntities {
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
       Criteria entityCriteria = criteria.get(entityType);
-      SelectCondition.Builder conditionBuilder = entityCriteria == null ?
-              SelectCondition.all(entityType) :
-              SelectCondition.where(entityCriteria);
+      Select.Builder conditionBuilder = entityCriteria == null ?
+              Select.all(entityType) :
+              Select.where(entityCriteria);
       List<Entity> entities = source.select(conditionBuilder
               .fetchDepth(0)
               .build());

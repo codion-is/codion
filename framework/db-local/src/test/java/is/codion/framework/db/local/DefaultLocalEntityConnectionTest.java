@@ -16,8 +16,8 @@ import is.codion.common.db.exception.UpdateException;
 import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
@@ -268,17 +268,17 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectLimitOffset() throws Exception {
-    SelectCondition condition = SelectCondition.all(Employee.TYPE)
+    Select select = Select.all(Employee.TYPE)
             .orderBy(OrderBy.ascending(Employee.NAME))
             .limit(2)
             .build();
-    List<Entity> result = connection.select(condition);
+    List<Entity> result = connection.select(select);
     assertEquals(2, result.size());
-    condition = SelectCondition.builder(condition)
+    select = Select.builder(select)
             .limit(3)
             .offset(3)
             .build();
-    result = connection.select(condition);
+    result = connection.select(select);
     assertEquals(3, result.size());
     assertEquals("BLAKE", result.get(0).get(Employee.NAME));
     assertEquals("CLARK", result.get(1).get(Employee.NAME));
@@ -299,30 +299,30 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(customCriteria(EmpnoDeptno.CRITERIA));
     assertEquals(7, result.size());
 
-    SelectCondition condition = SelectCondition.where(customCriteria(Employee.NAME_IS_BLAKE_CRITERIA)).build();
-    result = connection.select(condition);
+    Select select = Select.where(customCriteria(Employee.NAME_IS_BLAKE_CRITERIA)).build();
+    result = connection.select(select);
     Entity emp = result.iterator().next();
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    condition = SelectCondition.builder(condition).fetchDepth(Employee.DEPARTMENT_FK, 0).build();
-    result = connection.select(condition);
+    select = Select.builder(select).fetchDepth(Employee.DEPARTMENT_FK, 0).build();
+    result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    condition = SelectCondition.builder(condition).fetchDepth(Employee.MGR_FK, 0).build();
-    result = connection.select(condition);
+    select = Select.builder(select).fetchDepth(Employee.MGR_FK, 0).build();
+    result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    condition = SelectCondition.builder(condition).fetchDepth(Employee.MGR_FK, 2).build();
-    result = connection.select(condition);
+    select = Select.builder(select).fetchDepth(Employee.MGR_FK, 2).build();
+    result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -330,8 +330,8 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    condition = SelectCondition.builder(condition).fetchDepth(Employee.MGR_FK, -1).build();
-    result = connection.select(condition);
+    select = Select.builder(select).fetchDepth(Employee.MGR_FK, -1).build();
+    result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -355,7 +355,7 @@ public class DefaultLocalEntityConnectionTest {
     Criteria criteria = all(Department.TYPE);
     List<Entity> departments = connection.select(criteria);
     assertEquals(4, departments.size());
-    SelectCondition.Builder selectConditionBuilder = SelectCondition.where(criteria);
+    Select.Builder selectConditionBuilder = Select.where(criteria);
     departments = connection.select(selectConditionBuilder.limit(0).build());
     assertTrue(departments.isEmpty());
     departments = connection.select(selectConditionBuilder.limit(2).build());
@@ -377,7 +377,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void foreignKeyAttributes() throws DatabaseException {
-    List<Entity> emps = connection.select(SelectCondition.where(foreignKey(EmployeeFk.MGR_FK).isNotNull())
+    List<Entity> emps = connection.select(Select.where(foreignKey(EmployeeFk.MGR_FK).isNotNull())
             .fetchDepth(EmployeeFk.MGR_FK, 2)
             .build());
     for (Entity emp : emps) {
@@ -399,7 +399,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void attributes() throws Exception {
-    List<Entity> emps = connection.select(SelectCondition.all(Employee.TYPE)
+    List<Entity> emps = connection.select(Select.all(Employee.TYPE)
             .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT)
             .build());
     for (Entity emp : emps) {
@@ -412,7 +412,7 @@ public class DefaultLocalEntityConnectionTest {
       assertFalse(emp.contains(Employee.NAME));
       assertFalse(emp.contains(Employee.SALARY));
     }
-    for (Entity emp : connection.select(SelectCondition.all(Employee.TYPE)
+    for (Entity emp : connection.select(Select.all(Employee.TYPE)
             .attributes(Employee.ID, Employee.JOB, Employee.DEPARTMENT_FK, Employee.MGR, Employee.COMMISSION)
             .build())) {
       assertTrue(emp.contains(Employee.ID));//pk automatically included
@@ -622,15 +622,15 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateNonUpdatable() {
-    assertThrows(UpdateException.class, () -> connection.update(UpdateCondition.where(column(Employee.ID).equalTo(1))
+    assertThrows(UpdateException.class, () -> connection.update(Update.where(column(Employee.ID).equalTo(1))
             .set(Employee.ID, 999)
             .build()));
   }
 
   @Test
   void updateWithConditionNoProperties() {
-    UpdateCondition condition = UpdateCondition.all(Employee.TYPE).build();
-    assertThrows(IllegalArgumentException.class, () -> connection.update(condition));
+    Update update = Update.all(Employee.TYPE).build();
+    assertThrows(IllegalArgumentException.class, () -> connection.update(update));
   }
 
   @Test
@@ -639,13 +639,13 @@ public class DefaultLocalEntityConnectionTest {
 
     List<Entity> entities = connection.select(criteria);
 
-    UpdateCondition updateCondition = UpdateCondition.where(column(Employee.COMMISSION).isNull())
+    Update update = Update.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
             .set(Employee.SALARY, 4200d)
             .build();
     connection.beginTransaction();
     try {
-      connection.update(updateCondition);
+      connection.update(update);
       assertEquals(0, connection.rowCount(criteria));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
@@ -660,12 +660,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithConditionNoRows() throws DatabaseException {
-    UpdateCondition updateCondition = UpdateCondition.where(column(Employee.ID).isNull())
+    Update update = Update.where(column(Employee.ID).isNull())
             .set(Employee.SALARY, 4200d)
             .build();
     connection.beginTransaction();
     try {
-      assertEquals(0, connection.update(updateCondition));
+      assertEquals(0, connection.update(update));
     }
     finally {
       connection.rollbackTransaction();
@@ -698,7 +698,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectValuesLimit() throws DatabaseException {
-    List<Integer> deptnos = connection.select(Department.DEPTNO, SelectCondition.all(Department.TYPE)
+    List<Integer> deptnos = connection.select(Department.DEPTNO, Select.all(Department.TYPE)
             .limit(2)
             .orderBy(descending(Department.DEPTNO))
             .build());
@@ -712,9 +712,9 @@ public class DefaultLocalEntityConnectionTest {
     LocalEntityConnection connection2 = createConnection();
     String originalLocation;
     try {
-      SelectCondition condition = SelectCondition.where(column(Department.DNAME).equalTo("SALES")).forUpdate().build();
+      Select select = Select.where(column(Department.DNAME).equalTo("SALES")).forUpdate().build();
 
-      Entity sales = connection.selectSingle(condition);
+      Entity sales = connection.selectSingle(select);
       originalLocation = sales.get(Department.LOC);
 
       sales.put(Department.LOC, "Syracuse");
@@ -955,7 +955,7 @@ public class DefaultLocalEntityConnectionTest {
     assertNotNull(scottFromDb.get(Employee.DATA));
 
     //overrides lazy loading
-    scottFromDb = connection.selectSingle(SelectCondition.where(key(scott.primaryKey()))
+    scottFromDb = connection.selectSingle(Select.where(key(scott.primaryKey()))
             .attributes(Employee.DATA_LAZY)
             .build());
     assertNotNull(scottFromDb.get(Employee.DATA_LAZY));
@@ -1073,13 +1073,13 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void selectQuery() throws DatabaseException {
     connection.select(all(Query.TYPE));
-    connection.select(SelectCondition.all(Query.TYPE).forUpdate().build());
+    connection.select(Select.all(Query.TYPE).forUpdate().build());
     connection.select(all(QueryColumnsWhereClause.TYPE));
-    connection.select(SelectCondition.all(QueryColumnsWhereClause.TYPE).forUpdate().build());
+    connection.select(Select.all(QueryColumnsWhereClause.TYPE).forUpdate().build());
     connection.select(all(QueryFromClause.TYPE));
-    connection.select(SelectCondition.all(QueryFromClause.TYPE).forUpdate().build());
+    connection.select(Select.all(QueryFromClause.TYPE).forUpdate().build());
     connection.select(all(QueryFromWhereClause.TYPE));
-    connection.select(SelectCondition.all(QueryFromWhereClause.TYPE).forUpdate().build());
+    connection.select(Select.all(QueryFromWhereClause.TYPE).forUpdate().build());
   }
 
   @Test
@@ -1092,29 +1092,29 @@ public class DefaultLocalEntityConnectionTest {
     List<Entity> result2 = connection.select(column(Department.DEPTNO).greaterThanOrEqualTo(20));
     assertSame(result, result2);
 
-    result2 = connection.select(SelectCondition.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(column(Department.DEPTNO)
             .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
-    result = connection.select(SelectCondition.where(column(Department.DEPTNO)
+    result = connection.select(Select.where(column(Department.DEPTNO)
             .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertSame(result, result2);
 
-    result2 = connection.select(SelectCondition.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(column(Department.DEPTNO)
             .greaterThanOrEqualTo(20))
             .orderBy(OrderBy.ascending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
-    result = connection.select(SelectCondition.where(column(Department.DEPTNO)
+    result = connection.select(Select.where(column(Department.DEPTNO)
             .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
-    result2 = connection.select(SelectCondition.where(column(Department.DEPTNO)
+    result2 = connection.select(Select.where(column(Department.DEPTNO)
             .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
@@ -1134,28 +1134,28 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void orderByNullOrder() throws DatabaseException {
-    List<Entity> result = connection.select(SelectCondition.all(Employee.TYPE)
+    List<Entity> result = connection.select(Select.all(Employee.TYPE)
             .orderBy(OrderBy.builder()
                     .ascendingNullsFirst(Employee.MGR)
                     .build())
             .build());
     assertEquals(result.get(0).get(Employee.NAME), "KING");
 
-    result = connection.select(SelectCondition.all(Employee.TYPE)
+    result = connection.select(Select.all(Employee.TYPE)
             .orderBy(OrderBy.builder()
                     .ascendingNullsLast(Employee.MGR)
                     .build())
             .build());
     assertEquals(result.get(result.size() - 1).get(Employee.NAME), "KING");
 
-    result = connection.select(SelectCondition.all(Employee.TYPE)
+    result = connection.select(Select.all(Employee.TYPE)
             .orderBy(OrderBy.builder()
                     .descendingNullsFirst(Employee.MGR)
                     .build())
             .build());
     assertEquals(result.get(0).get(Employee.NAME), "KING");
 
-    result = connection.select(SelectCondition.all(Employee.TYPE)
+    result = connection.select(Select.all(Employee.TYPE)
             .orderBy(OrderBy.builder()
                     .descendingNullsLast(Employee.MGR)
                     .build())

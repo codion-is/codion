@@ -5,7 +5,7 @@ import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.world.domain.WorldImpl;
 import is.codion.framework.demos.world.domain.api.World.City;
@@ -51,7 +51,7 @@ public final class CountryReportDataSourceTest {
 
       EntityConnection connection = connectionProvider.connection();
       List<Entity> countries =
-              connection.select(SelectCondition.where(column(Country.NAME)
+              connection.select(Select.where(column(Country.NAME)
                       .in("Denmark", "Iceland"))
                       .orderBy(ascending(Country.NAME))
                       .build());

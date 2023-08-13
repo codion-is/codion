@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.SelectCondition.where;
+import static is.codion.framework.db.condition.Select.where;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
@@ -379,7 +379,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the select condition supplier ({@link #getSelectCriteriaSupplier()}) as well as the
+   * the select criteria supplier ({@link #getSelectCriteriaSupplier()}) as well as the
    * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
    * @see #getSelectCriteriaSupplier()

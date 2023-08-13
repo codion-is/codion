@@ -17,7 +17,7 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
@@ -182,10 +182,10 @@ public class EntityServerTest {
     assertEquals(1, users.size());
     assertEquals(UNIT_TEST_USER, users.iterator().next());
 
-    SelectCondition selectCondition = SelectCondition.all(Employee.TYPE)
+    Select select = Select.all(Employee.TYPE)
             .orderBy(OrderBy.ascending(Employee.NAME))
             .build();
-    remoteConnectionTwo.select(selectCondition);
+    remoteConnectionTwo.select(select);
 
     admin.databaseStatistics();
 

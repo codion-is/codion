@@ -8,7 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -154,26 +154,26 @@ public final class EntitiesTutorial {
     // for queries requiring further configuration, such as order by, we use
     // a SelectCondition.Builder initialized with a criteria specifying
     // the attribute we're searching by, the operator and value.
-    SelectCondition artistsCondition =
-            SelectCondition.where(column(Artist.NAME).like("An%"))
+    Select selectArtists =
+            Select.where(column(Artist.NAME).like("An%"))
                     // and we set the order by clause
                     .orderBy(OrderBy.ascending(Artist.NAME))
                     .build();
 
-    List<Entity> artistsStartingWithAn = connection.select(artistsCondition);
+    List<Entity> artistsStartingWithAn = connection.select(selectArtists);
 
     artistsStartingWithAn.forEach(System.out::println);
 
-    // create a select condition
-    SelectCondition albumsCondition =
-            SelectCondition.where(foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn))
+    // create a select
+    Select selectAlbums =
+            Select.where(foreignKey(Album.ARTIST_FK).in(artistsStartingWithAn))
                     .orderBy(OrderBy.builder()
                             .ascending(Album.ARTIST_ID)
                             .descending(Album.TITLE)
                             .build())
                     .build();
 
-    List<Entity> albumsByArtistsStartingWithAn = connection.select(albumsCondition);
+    List<Entity> albumsByArtistsStartingWithAn = connection.select(selectAlbums);
 
     albumsByArtistsStartingWithAn.forEach(System.out::println);
   }

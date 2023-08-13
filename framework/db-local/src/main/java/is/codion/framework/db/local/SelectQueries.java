@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
@@ -80,28 +80,28 @@ final class SelectQueries {
       return selectedProperties;
     }
 
-    Builder selectCondition(SelectCondition condition) {
-      return selectCondition(condition, true);
+    Builder selectCondition(Select select) {
+      return selectCondition(select, true);
     }
 
-    Builder selectCondition(SelectCondition condition, boolean setWhereClause) {
+    Builder selectCondition(Select select, boolean setWhereClause) {
       entitySelectQuery();
       if (!columnsClauseFromSelectQuery) {
-        setColumns(condition);
+        setColumns(select);
       }
       //default from clause is handled by from()
       if (setWhereClause) {
-        where(condition.criteria());
+        where(select.criteria());
       }
       if (groupBy == null) {
         groupBy(definition.groupByClause());
       }
-      condition.orderBy().ifPresent(this::setOrderBy);
-      forUpdate(condition.forUpdate());
-      if (condition.limit() >= 0) {
-        limit(condition.limit());
-        if (condition.offset() >= 0) {
-          offset(condition.offset());
+      select.orderBy().ifPresent(this::setOrderBy);
+      forUpdate(select.forUpdate());
+      if (select.limit() >= 0) {
+        limit(select.limit());
+        if (select.offset() >= 0) {
+          offset(select.offset());
         }
       }
 
@@ -223,8 +223,8 @@ final class SelectQueries {
       return builder.toString();
     }
 
-    private void setColumns(SelectCondition condition) {
-      Collection<Attribute<?>> attributes = condition.attributes();
+    private void setColumns(Select select) {
+      Collection<Attribute<?>> attributes = select.attributes();
       if (attributes.isEmpty()) {
         this.selectedProperties = selectableProperties();
         columns(allColumnsClause());

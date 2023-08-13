@@ -14,14 +14,14 @@ import java.util.Objects;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultUpdateCondition implements UpdateCondition, Serializable {
+final class DefaultUpdate implements Update, Serializable {
 
   private static final long serialVersionUID = 1;
 
   private final Criteria criteria;
   private final Map<Column<?>, Object> propertyValues;
 
-  private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
+  private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
     this.criteria = builder.criteria;
     this.propertyValues = builder.columnValues;
   }
@@ -41,10 +41,10 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     if (this == object) {
       return true;
     }
-    if (!(object instanceof DefaultUpdateCondition)) {
+    if (!(object instanceof DefaultUpdate)) {
       return false;
     }
-    DefaultUpdateCondition that = (DefaultUpdateCondition) object;
+    DefaultUpdate that = (DefaultUpdate) object;
     return Objects.equals(criteria, that.criteria) &&
             Objects.equals(propertyValues, that.propertyValues);
   }
@@ -54,15 +54,15 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     return Objects.hash(criteria, propertyValues);
   }
 
-  static final class DefaultBuilder implements UpdateCondition.Builder {
+  static final class DefaultBuilder implements Update.Builder {
 
     private final Criteria criteria;
     private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
 
-    DefaultBuilder(UpdateCondition condition) {
-      this(requireNonNull(condition).criteria());
-      if (condition instanceof DefaultUpdateCondition) {
-        DefaultUpdateCondition updateCondition = (DefaultUpdateCondition) condition;
+    DefaultBuilder(Update update) {
+      this(requireNonNull(update).criteria());
+      if (update instanceof DefaultUpdate) {
+        DefaultUpdate updateCondition = (DefaultUpdate) update;
         columnValues.putAll(updateCondition.propertyValues);
       }
     }
@@ -75,7 +75,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     public <T> Builder set(Column<?> column, T value) {
       requireNonNull(column, "column");
       if (columnValues.containsKey(column)) {
-        throw new IllegalArgumentException("Update condition already contains a value for column: " + column);
+        throw new IllegalArgumentException("Update already contains a value for column: " + column);
       }
       columnValues.put(column, value);
 
@@ -83,8 +83,8 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     }
 
     @Override
-    public UpdateCondition build() {
-      return new DefaultUpdateCondition(this);
+    public Update build() {
+      return new DefaultUpdate(this);
     }
   }
 }

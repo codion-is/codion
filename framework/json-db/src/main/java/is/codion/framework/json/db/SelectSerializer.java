@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.condition.Select;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -17,28 +17,28 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 import java.io.IOException;
 import java.util.Objects;
 
-final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
+final class SelectSerializer extends StdSerializer<Select> {
 
   private static final long serialVersionUID = 1;
 
   private final CriteriaSerializer criteriaSerializer;
   private final Entities entities;
 
-  SelectConditionSerializer(EntityObjectMapper entityObjectMapper) {
-    super(SelectCondition.class);
+  SelectSerializer(EntityObjectMapper entityObjectMapper) {
+    super(Select.class);
     this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
     this.entities = entityObjectMapper.entities();
   }
 
   @Override
-  public void serialize(SelectCondition condition, JsonGenerator generator,
+  public void serialize(Select select, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", condition.criteria().entityType().name());
+    generator.writeStringField("entityType", select.criteria().entityType().name());
     generator.writeFieldName("criteria");
-    criteriaSerializer.serialize(condition.criteria(), generator);
+    criteriaSerializer.serialize(select.criteria(), generator);
     generator.writeFieldName("orderBy");
-    OrderBy orderBy = condition.orderBy().orElse(null);
+    OrderBy orderBy = select.orderBy().orElse(null);
     if (orderBy == null) {
       generator.writeNull();
     }
@@ -51,16 +51,16 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
       }
       generator.writeEndArray();
     }
-    generator.writeObjectField("limit", condition.limit());
-    generator.writeObjectField("offset", condition.offset());
-    generator.writeObjectField("forUpdate", condition.forUpdate());
-    generator.writeObjectField("queryTimeout", condition.queryTimeout());
-    Integer conditionFetchDepth = condition.fetchDepth().orElse(null);
+    generator.writeObjectField("limit", select.limit());
+    generator.writeObjectField("offset", select.offset());
+    generator.writeObjectField("forUpdate", select.forUpdate());
+    generator.writeObjectField("queryTimeout", select.queryTimeout());
+    Integer conditionFetchDepth = select.fetchDepth().orElse(null);
     generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.definition(condition.criteria().entityType()).foreignKeys()) {
-      Integer fkFetchDepth = condition.fetchDepth(foreignKey).orElse(null);
+    for (ForeignKey foreignKey : entities.definition(select.criteria().entityType()).foreignKeys()) {
+      Integer fkFetchDepth = select.fetchDepth(foreignKey).orElse(null);
       if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.name(), fkFetchDepth);
       }
@@ -68,7 +68,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeEndObject();
     generator.writeFieldName("attributes");
     generator.writeStartArray();
-    for (Attribute<?> attribute : condition.attributes()) {
+    for (Attribute<?> attribute : select.attributes()) {
       generator.writeString(attribute.name());
     }
     generator.writeEndArray();

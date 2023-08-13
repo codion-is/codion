@@ -17,7 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
-import static is.codion.framework.db.condition.SelectCondition.where;
+import static is.codion.framework.db.condition.Select.where;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 

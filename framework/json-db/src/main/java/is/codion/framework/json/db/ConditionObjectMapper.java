@@ -3,8 +3,8 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
@@ -29,10 +29,10 @@ public final class ConditionObjectMapper extends ObjectMapper {
     CriteriaDeserializer criteriaDeserializer = new CriteriaDeserializer(entityObjectMapper);
     module.addSerializer(Criteria.class, new CriteriaSerializer(entityObjectMapper));
     module.addDeserializer(Criteria.class, criteriaDeserializer);
-    module.addSerializer(SelectCondition.class, new SelectConditionSerializer(entityObjectMapper));
-    module.addDeserializer(SelectCondition.class, new SelectConditionDeserializer(criteriaDeserializer));
-    module.addSerializer(UpdateCondition.class, new UpdateConditionSerializer(entityObjectMapper));
-    module.addDeserializer(UpdateCondition.class, new UpdateConditionDeserializer(criteriaDeserializer));
+    module.addSerializer(Select.class, new SelectSerializer(entityObjectMapper));
+    module.addDeserializer(Select.class, new SelectDeserializer(criteriaDeserializer));
+    module.addSerializer(Update.class, new UpdateSerializer(entityObjectMapper));
+    module.addDeserializer(Update.class, new UpdateDeserializer(criteriaDeserializer));
     registerModule(module);
   }
 

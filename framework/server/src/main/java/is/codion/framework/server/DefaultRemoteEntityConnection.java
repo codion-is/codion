@@ -11,8 +11,8 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
@@ -186,9 +186,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int update(UpdateCondition condition) throws DatabaseException {
+  public int update(Update update) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.update(condition);
+      return connectionProxy.update(update);
     }
   }
 
@@ -228,9 +228,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> select(Column<T> column, SelectCondition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(column, condition);
+      return connectionProxy.select(column, select);
     }
   }
 
@@ -249,9 +249,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(SelectCondition condition) throws DatabaseException {
+  public Entity selectSingle(Select select) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(condition);
+      return connectionProxy.selectSingle(select);
     }
   }
 
@@ -270,9 +270,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(SelectCondition condition) throws DatabaseException {
+  public List<Entity> select(Select select) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(condition);
+      return connectionProxy.select(select);
     }
   }
 

@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.chinook.manual;
 
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
@@ -32,19 +32,19 @@ final class CriteriaDemo {
             Criteria.and(liveAlbums, metallicaAlbums);
     // end::combination[]
 
-    // tag::selectCondition[]
-    SelectCondition selectLiveMetallicaAlbums =
-            SelectCondition.where(liveMetallicaAlbumsCriteria)
+    // tag::select[]
+    Select selectLiveMetallicaAlbums =
+            Select.where(liveMetallicaAlbumsCriteria)
                     .orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
                     .build();
-    // end::selectCondition[]
+    // end::select[]
 
-    // tag::updateCondition[]
-    UpdateCondition removeLiveMetallicaAlbumCovers =
-            UpdateCondition.where(liveMetallicaAlbumsCriteria)
+    // tag::update[]
+    Update removeLiveMetallicaAlbumCovers =
+            Update.where(liveMetallicaAlbumsCriteria)
                     .set(Album.COVER, null)
                     .build();
-    // end::updateCondition[]
+    // end::update[]
   }
 
   private static Entity selectArtist(String artistName) {

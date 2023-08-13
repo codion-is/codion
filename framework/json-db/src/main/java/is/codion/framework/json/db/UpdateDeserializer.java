@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.util.Iterator;
 import java.util.Map;
 
-final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition> {
+final class UpdateDeserializer extends StdDeserializer<Update> {
 
   private static final long serialVersionUID = 1;
 
@@ -28,15 +28,15 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
   private final CriteriaDeserializer criteriaDeserializer;
   private final Entities entities;
 
-  UpdateConditionDeserializer(CriteriaDeserializer criteriaDeserializer) {
-    super(UpdateCondition.class);
+  UpdateDeserializer(CriteriaDeserializer criteriaDeserializer) {
+    super(Update.class);
     this.criteriaDeserializer = criteriaDeserializer;
     this.entityObjectMapper = criteriaDeserializer.entityObjectMapper;
     this.entities = criteriaDeserializer.entities;
   }
 
   @Override
-  public UpdateCondition deserialize(JsonParser parser, DeserializationContext ctxt)
+  public Update deserialize(JsonParser parser, DeserializationContext ctxt)
           throws IOException {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
@@ -44,7 +44,7 @@ final class UpdateConditionDeserializer extends StdDeserializer<UpdateCondition>
     JsonNode criteriaNode = jsonNode.get("criteria");
     Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
 
-    UpdateCondition.Builder updateCondition = UpdateCondition.where(criteria);
+    Update.Builder updateCondition = Update.where(criteria);
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
