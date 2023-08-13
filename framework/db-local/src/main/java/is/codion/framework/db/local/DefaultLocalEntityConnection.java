@@ -959,8 +959,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (int i = 0; i < foreignKeyProperties.size(); i++) {
       ForeignKeyProperty foreignKeyProperty = foreignKeyProperties.get(i);
       ForeignKey foreignKey = foreignKeyProperty.attribute();
-      int conditionFetchDepthLimit = select.fetchDepth(foreignKey)
-              .orElse(foreignKeyProperty.fetchDepth());
+      int conditionFetchDepthLimit = select.foreignKeyFetchDepths()
+              .getOrDefault(foreignKey, foreignKeyProperty.fetchDepth());
       if (isWithinFetchDepthLimit(currentForeignKeyFetchDepth, conditionFetchDepthLimit)
               && containsReferenceAttributes(entities.get(0), foreignKey.references())) {
         try {
