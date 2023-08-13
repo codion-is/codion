@@ -9414,3 +9414,4 @@
   SelectSerializer now excludes elements with default values
   Select and Update moved to EntityConnection
   EntityConnection.InsertEntities renamed Insert
+  EntityConnection.CopyEntities renamed Copy

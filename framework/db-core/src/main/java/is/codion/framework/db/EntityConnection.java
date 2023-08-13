@@ -367,14 +367,14 @@ public interface EntityConnection extends AutoCloseable {
   byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
 
   /**
-   * Creates a new {@link CopyEntities.Builder} instance for copying entities from source to destination, with a default batch size of 100.
+   * Creates a new {@link Copy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
    * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
-   * Call {@link CopyEntities.Builder#execute()} to perform the copy operation.
+   * Call {@link Copy.Builder#execute()} to perform the copy operation.
    * @param source the source connection
    * @param destination the destination connection
-   * @return a new {@link CopyEntities.Builder} instance
+   * @return a new {@link Copy.Builder} instance
    */
-  static CopyEntities.Builder copyEntities(EntityConnection source, EntityConnection destination) {
+  static Copy.Builder copyEntities(EntityConnection source, EntityConnection destination) {
     return new DefaultCopyEntities.DefaultBuilder(source, destination);
   }
 
@@ -395,7 +395,7 @@ public interface EntityConnection extends AutoCloseable {
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
-  interface CopyEntities {
+  interface Copy {
 
     /**
      * Executes this copy operation
@@ -404,7 +404,7 @@ public interface EntityConnection extends AutoCloseable {
     void execute() throws DatabaseException;
 
     /**
-     * A builder for a {@link CopyEntities} operation.
+     * A builder for a {@link Copy} operation.
      */
     interface Builder {
 
@@ -442,9 +442,9 @@ public interface EntityConnection extends AutoCloseable {
       void execute() throws DatabaseException;
 
       /**
-       * @return a new {@link CopyEntities} instance
+       * @return a new {@link Copy} instance
        */
-      CopyEntities build();
+      Copy build();
     }
   }
 
