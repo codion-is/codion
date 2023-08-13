@@ -4,7 +4,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.db.EntityConnection.InsertEntities;
+import is.codion.framework.db.EntityConnection.Insert;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
 
@@ -16,7 +16,7 @@ import java.util.function.Consumer;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultInsertEntities implements InsertEntities {
+final class DefaultInsertEntities implements Insert {
 
   private final EntityConnection connection;
   private final Iterator<Entity> entityIterator;
@@ -93,7 +93,7 @@ final class DefaultInsertEntities implements InsertEntities {
     }
 
     @Override
-    public InsertEntities build() {
+    public Insert build() {
       return new DefaultInsertEntities(this);
     }
   }

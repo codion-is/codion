@@ -379,14 +379,14 @@ public interface EntityConnection extends AutoCloseable {
   }
 
   /**
-   * Creates a new {@link InsertEntities} instance the given entities, with a default batch size of 100.
+   * Creates a new {@link Insert} instance the given entities, with a default batch size of 100.
    * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-   * Call {@link InsertEntities#execute()} to perform the insert operation.
+   * Call {@link Insert#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
-   * @return a new {@link InsertEntities.Builder} instance
+   * @return a new {@link Insert.Builder} instance
    */
-  static InsertEntities.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
+  static Insert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
     return new DefaultInsertEntities.DefaultBuilder(connection, entities);
   }
 
@@ -453,7 +453,7 @@ public interface EntityConnection extends AutoCloseable {
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
-  interface InsertEntities {
+  interface Insert {
 
     /**
      * Executes this batch insert
@@ -462,7 +462,7 @@ public interface EntityConnection extends AutoCloseable {
     void execute() throws DatabaseException;
 
     /**
-     * A builder for {@link InsertEntities} operation.
+     * A builder for {@link Insert} operation.
      */
     interface Builder {
 
@@ -491,9 +491,9 @@ public interface EntityConnection extends AutoCloseable {
       void execute() throws DatabaseException;
 
       /**
-       * @return a new {@link InsertEntities} instance
+       * @return a new {@link Insert} instance
        */
-      InsertEntities build();
+      Insert build();
     }
   }
 
