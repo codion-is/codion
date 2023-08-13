@@ -18,7 +18,7 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public final class SelectTest {
 
   @Test
-  void selectCondition() {
+  void select() {
     Select select = Select.where(column(Department.LOCATION).equalTo("New York"))
             .orderBy(OrderBy.ascending(Department.NAME))
             .build();

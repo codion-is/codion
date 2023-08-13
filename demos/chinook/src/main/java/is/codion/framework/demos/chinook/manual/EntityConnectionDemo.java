@@ -42,7 +42,7 @@ import static java.util.Arrays.asList;
  */
 public final class EntityConnectionDemo {
 
-  static void selectCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  static void select(EntityConnectionProvider connectionProvider) throws DatabaseException {
     // tag::select[]
     EntityConnection connection = connectionProvider.connection();
 
@@ -398,7 +398,7 @@ public final class EntityConnectionDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    selectCondition(connectionProvider);
+    select(connectionProvider);
     fetchDepthEntity(connectionProvider);
     fetchDepthCondition(connectionProvider);
     fetchDepthForeignKeyCondition(connectionProvider);

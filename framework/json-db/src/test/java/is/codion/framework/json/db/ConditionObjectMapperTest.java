@@ -86,7 +86,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  void selectCondition() throws JsonProcessingException {
+  void select() throws JsonProcessingException {
     Select select = Select.where(column(Employee.EMPNO).equalTo(1))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)

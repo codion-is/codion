@@ -556,7 +556,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ColumnProperty<T> property = entityDefinition.columnProperty(column);
     Condition combinedCondition = and(select.condition(), column(column).isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
-            .selectCondition(select, false)
+            .select(select, false)
             .columns(property.columnExpression())
             .where(combinedCondition)
             .groupBy(property.columnExpression())
@@ -592,7 +592,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")
             .subquery(selectQueries.builder(entityDefinition)
-                    .selectCondition(Select.where(condition)
+                    .select(Select.where(condition)
                             .attributes(entityDefinition.primaryKeyColumns())
                             .build())
                     .build())
@@ -1043,7 +1043,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String selectQuery = null;
     EntityDefinition entityDefinition = domainEntities.definition(select.condition().entityType());
     SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
-            .selectCondition(select);
+            .select(select);
     Condition condition = select.condition();
     try {
       selectQuery = selectQueryBuilder.build();
