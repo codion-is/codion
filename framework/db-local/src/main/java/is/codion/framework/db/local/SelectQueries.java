@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.Select;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;

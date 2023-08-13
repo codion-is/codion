@@ -23,8 +23,6 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.Select;
-import is.codion.framework.db.Update;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Attribute;

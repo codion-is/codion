@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 

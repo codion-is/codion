@@ -25,8 +25,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/Condition
 
 == Select
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/Select.html[Select]*::
-Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/Select.html#where[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/Select.Builder.html[Select.Builder] instance for further configuration.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html[Select]*::
+Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.html#where[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Select.Builder.html[Select.Builder] instance for further configuration.
 
 [source,java,indent=0]
 ----
@@ -35,8 +35,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/Condition
 
 == Update
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/Update.html[Update]*::
-Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/Update.html#where[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html[Update]*::
+Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.html#where[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/EntityConnection.Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
 
 [source,java,indent=0]
 ----

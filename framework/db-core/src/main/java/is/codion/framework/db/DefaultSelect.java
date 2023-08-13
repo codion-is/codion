@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -129,7 +130,7 @@ final class DefaultSelect implements Select, Serializable {
     private boolean forUpdate;
     private int limit = -1;
     private int offset = -1;
-    private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
+    private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Select select) {
       this(requireNonNull(select).condition());

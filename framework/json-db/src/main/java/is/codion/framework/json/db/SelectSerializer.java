@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.Select;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;

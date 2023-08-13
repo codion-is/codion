@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.Update;
+import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
