@@ -63,8 +63,8 @@ final class DefaultUpdate implements Update, Serializable {
     DefaultBuilder(Update update) {
       this(requireNonNull(update).condition());
       if (update instanceof DefaultUpdate) {
-        DefaultUpdate updateCondition = (DefaultUpdate) update;
-        columnValues.putAll(updateCondition.propertyValues);
+        DefaultUpdate defaultUpdate = (DefaultUpdate) update;
+        columnValues.putAll(defaultUpdate.propertyValues);
       }
     }
 

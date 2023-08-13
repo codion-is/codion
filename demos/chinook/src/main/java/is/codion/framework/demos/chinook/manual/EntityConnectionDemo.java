@@ -244,7 +244,7 @@ public final class EntityConnectionDemo {
     // end::update[]
   }
 
-  static void updateConditionDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  static void updateDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
     // tag::update[]
     EntityConnection connection = connectionProvider.connection();
 
@@ -411,7 +411,7 @@ public final class EntityConnectionDemo {
     rowCount(connectionProvider);
     insert(connectionProvider);
     update(connectionProvider);
-    updateConditionDemo(connectionProvider);
+    updateDemo(connectionProvider);
     deleteCondition(connectionProvider);
     deleteKey(connectionProvider);
     function(connectionProvider);
