@@ -146,7 +146,7 @@ final class DefaultSelect implements Select, Serializable {
       this(requireNonNull(select).condition());
       if (select instanceof DefaultSelect) {
         DefaultSelect defaultSelect = (DefaultSelect) select;
-        foreignKeyFetchDepths = defaultSelect.foreignKeyFetchDepths;
+        foreignKeyFetchDepths = new HashMap<>(defaultSelect.foreignKeyFetchDepths);
         attributes = defaultSelect.attributes;
         orderBy = defaultSelect.orderBy;
         fetchDepth = defaultSelect.fetchDepth;
