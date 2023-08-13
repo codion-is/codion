@@ -80,6 +80,16 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
+  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
+    requireNonNull(foreignKey);
+    if (foreignKeyFetchDepths.containsKey(foreignKey)) {
+      return Optional.of(foreignKeyFetchDepths.get(foreignKey));
+    }
+
+    return fetchDepth();
+  }
+
+  @Override
   public Map<ForeignKey, Integer> foreignKeyFetchDepths() {
     return foreignKeyFetchDepths;
   }

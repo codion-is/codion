@@ -541,6 +541,14 @@ public interface EntityConnection extends AutoCloseable {
     Optional<Integer> fetchDepth();
 
     /**
+     * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
+     * should be fetched, -1 no limit and an empty Optional if unspecified (use default).
+     * @param foreignKey the foreign key
+     * @return the number of levels of foreign key values to fetch
+     */
+    Optional<Integer> fetchDepth(ForeignKey foreignKey);
+
+    /**
      * Returns a map containing the number of levels of foreign key values to fetch per foreign key,
      * with 0 meaning no referenced entities should be fetched, -1 no limit.
      * @return a map containing the number of levels of foreign key values to fetch for each foreign key
