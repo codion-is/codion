@@ -12,7 +12,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.Select;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -71,14 +71,14 @@ public interface LocalEntityConnection extends EntityConnection {
   DatabaseConnection databaseConnection();
 
   /**
-   * Returns a result set iterator based on the given query criteria, this iterator closes all underlying
+   * Returns a result set iterator based on the given query condition, this iterator closes all underlying
    * resources in case of an exception and when it finishes iterating.
    * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
-   * @param criteria the query criteria
-   * @return an iterator for the given query criteria
+   * @param condition the query condition
+   * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
    */
-  ResultIterator<Entity> iterator(Criteria criteria) throws DatabaseException;
+  ResultIterator<Entity> iterator(Condition condition) throws DatabaseException;
 
   /**
    * Returns a result set iterator based on the given select, this iterator closes all underlying

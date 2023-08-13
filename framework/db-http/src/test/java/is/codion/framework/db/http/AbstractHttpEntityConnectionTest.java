@@ -11,7 +11,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.Update;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
@@ -32,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.key;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.key;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -116,9 +116,9 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void updateByCondition() throws DatabaseException {
-    Criteria criteria = column(Employee.COMMISSION).isNull();
+    Condition condition = column(Employee.COMMISSION).isNull();
 
-    List<Entity> entities = connection.select(criteria);
+    List<Entity> entities = connection.select(condition);
 
     Update update = Update.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
@@ -127,7 +127,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.rowCount(criteria));
+      assertEquals(0, connection.rowCount(condition));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -180,7 +180,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.rowCount(Criteria.all(Department.TYPE)));
+    assertEquals(4, connection.rowCount(Condition.all(Department.TYPE)));
   }
 
   @Test

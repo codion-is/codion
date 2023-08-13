@@ -242,8 +242,8 @@ final class DefaultEntityType implements EntityType, Serializable {
   }
 
   @Override
-  public CriteriaType criteriaType(String name) {
-    return CriteriaType.criteriaType(this, name);
+  public ConditionType conditionType(String name) {
+    return ConditionType.conditionType(this, name);
   }
 
   @Override

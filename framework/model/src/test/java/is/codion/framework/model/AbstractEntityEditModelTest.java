@@ -36,7 +36,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;

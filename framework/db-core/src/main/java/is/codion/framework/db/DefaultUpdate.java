@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 
 import java.io.Serializable;
@@ -18,17 +18,17 @@ final class DefaultUpdate implements Update, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final Criteria criteria;
+  private final Condition condition;
   private final Map<Column<?>, Object> propertyValues;
 
   private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
-    this.criteria = builder.criteria;
+    this.condition = builder.condition;
     this.propertyValues = builder.columnValues;
   }
 
   @Override
-  public Criteria criteria() {
-    return criteria;
+  public Condition condition() {
+    return condition;
   }
 
   @Override
@@ -45,30 +45,30 @@ final class DefaultUpdate implements Update, Serializable {
       return false;
     }
     DefaultUpdate that = (DefaultUpdate) object;
-    return Objects.equals(criteria, that.criteria) &&
+    return Objects.equals(condition, that.condition) &&
             Objects.equals(propertyValues, that.propertyValues);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(criteria, propertyValues);
+    return Objects.hash(condition, propertyValues);
   }
 
   static final class DefaultBuilder implements Update.Builder {
 
-    private final Criteria criteria;
+    private final Condition condition;
     private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
 
     DefaultBuilder(Update update) {
-      this(requireNonNull(update).criteria());
+      this(requireNonNull(update).condition());
       if (update instanceof DefaultUpdate) {
         DefaultUpdate updateCondition = (DefaultUpdate) update;
         columnValues.putAll(updateCondition.propertyValues);
       }
     }
 
-    DefaultBuilder(Criteria criteria) {
-      this.criteria = requireNonNull(criteria);
+    DefaultBuilder(Condition condition) {
+      this.condition = requireNonNull(condition);
     }
 
     @Override

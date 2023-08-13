@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TrackTableModelTest {

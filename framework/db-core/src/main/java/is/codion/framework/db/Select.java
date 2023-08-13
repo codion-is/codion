@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -15,7 +15,7 @@ import java.util.Optional;
 /**
  * A class encapsulating select query parameters.
  * A factory class for {@link Select.Builder} instances via
- * {@link Select#all(EntityType)}, {@link Select#where(Criteria)} and
+ * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and
  * {@link Select#builder(Select)}.
  */
 public interface Select {
@@ -23,9 +23,9 @@ public interface Select {
   int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
 
   /**
-   * @return the underlying Criteria instance
+   * @return the underlying condition instance
    */
-  Criteria criteria();
+  Condition condition();
 
   /**
    * @return the OrderBy for this condition, an empty Optional if none is specified
@@ -152,15 +152,15 @@ public interface Select {
    * @return a new {@link Select.Builder} instance
    */
   static Builder all(EntityType entityType) {
-    return new DefaultSelect.DefaultBuilder(Criteria.all(entityType));
+    return new DefaultSelect.DefaultBuilder(Condition.all(entityType));
   }
 
   /**
-   * @param criteria the criteria
+   * @param condition the condition
    * @return a new {@link Select.Builder} instance
    */
-  static Builder where(Criteria criteria) {
-    return new DefaultSelect.DefaultBuilder(criteria);
+  static Builder where(Condition condition) {
+    return new DefaultSelect.DefaultBuilder(condition);
   }
 
   /**

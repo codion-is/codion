@@ -21,7 +21,7 @@ import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.condition.Condition.all;
 
 public final class EmployeeServer extends EntityServer {
 

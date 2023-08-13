@@ -21,8 +21,8 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.db.criteria.Criteria.all;
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Arrays.asList;
 
 public final class EmpDeptServletLoadTest extends LoadTestModel<EntityConnectionProvider> {

@@ -13,8 +13,8 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.petstore.domain.Petstore.Category;
 import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 

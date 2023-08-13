@@ -11,8 +11,8 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.Select;
-import is.codion.framework.db.criteria.ColumnCriteria;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.ColumnCondition;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -31,7 +31,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.condition.Condition.*;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.joining;
@@ -78,7 +78,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private Function<Entity, String> toStringProvider;
   private Comparator<Entity> resultSorter;
   private String description;
-  private Supplier<Criteria> additionalCriteriaSupplier;
+  private Supplier<Condition> additionalConditionSupplier;
 
   private DefaultEntitySearchModel(DefaultBuilder builder) {
     this.entityType = builder.entityType;
@@ -170,8 +170,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier) {
-    this.additionalCriteriaSupplier = additionalCriteriaSupplier;
+  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
+    this.additionalConditionSupplier = additionalConditionSupplier;
   }
 
   @Override
@@ -261,33 +261,33 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   /**
    * @return a select instance based on this search model including any additional search condition
    * @throws IllegalStateException in case no search properties are specified
-   * @see #setAdditionalCriteriaSupplier(Supplier)
+   * @see #setAdditionalConditionSupplier(Supplier)
    */
   private Select select() {
     if (searchColumns.isEmpty()) {
       throw new IllegalStateException("No search columns provided for search model: " + entityType);
     }
-    Collection<Criteria> criteria = new ArrayList<>();
+    Collection<Condition> conditions = new ArrayList<>();
     String[] searchStrings = singleSelectionState.get() ?
             new String[] {searchStringValue.get()} : searchStringValue.get().split(multipleItemSeparatorValue.get());
     for (Column<String> searchColumn : searchColumns) {
       SearchSettings searchSettings = columnSearchSettings.get(searchColumn);
       for (String rawSearchString : searchStrings) {
-        ColumnCriteria.Builder<String> builder = column(searchColumn);
+        ColumnCondition.Builder<String> builder = column(searchColumn);
         String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
         boolean containsWildcards = containsWildcards(preparedSearchString);
         if (searchSettings.caseSensitiveState().get()) {
-          criteria.add(containsWildcards ? builder.like(preparedSearchString) : builder.equalTo(preparedSearchString));
+          conditions.add(containsWildcards ? builder.like(preparedSearchString) : builder.equalTo(preparedSearchString));
         }
         else {
-          criteria.add(containsWildcards ? builder.likeIgnoreCase(preparedSearchString) : builder.equalToIgnoreCase(preparedSearchString));
+          conditions.add(containsWildcards ? builder.likeIgnoreCase(preparedSearchString) : builder.equalToIgnoreCase(preparedSearchString));
         }
       }
     }
-    Criteria criteriaCombination = or(criteria);
-    Select.Builder selectBuilder = additionalCriteriaSupplier == null ?
-            Select.where(criteriaCombination) :
-            Select.where(and(additionalCriteriaSupplier.get(), criteriaCombination));
+    Condition conditionCombination = or(conditions);
+    Select.Builder selectBuilder = additionalConditionSupplier == null ?
+            Select.where(conditionCombination) :
+            Select.where(and(additionalConditionSupplier.get(), conditionCombination));
 
     return selectBuilder
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())

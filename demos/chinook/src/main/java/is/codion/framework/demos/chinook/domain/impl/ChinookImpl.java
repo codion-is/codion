@@ -23,8 +23,8 @@ import java.util.Collection;
 import java.util.List;
 
 import static is.codion.framework.db.Select.where;
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;

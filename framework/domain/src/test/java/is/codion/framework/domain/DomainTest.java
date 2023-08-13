@@ -9,7 +9,7 @@ import is.codion.common.db.operation.DatabaseProcedure;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.property.Property;
@@ -132,17 +132,17 @@ public class DomainTest {
 
   @Test
   void conditionProvider() {
-    EntityType nullCriteriaProvider1 = DOMAIN.entityType("nullCriteriaProvider1");
-    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCriteriaProvider1.integerColumn("id")))
-            .criteriaProvider(null, (columns, values) -> null)));
+    EntityType nullConditionProvider1 = DOMAIN.entityType("nullConditionProvider1");
+    assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider1.integerColumn("id")))
+            .conditionProvider(null, (columns, values) -> null)));
     EntityType nullCritieraProvider2 = DOMAIN.entityType("nullCritieraProvider2");
     assertThrows(NullPointerException.class, () -> domain.add(definition(primaryKeyProperty(nullCritieraProvider2.integerColumn("id")))
-            .criteriaProvider(nullCritieraProvider2.criteriaType("id"), null)));
+            .conditionProvider(nullCritieraProvider2.conditionType("id"), null)));
     EntityType nullConditionProvider3 = DOMAIN.entityType("nullConditionProvider3");
-    CriteriaType nullCriteriaType = nullConditionProvider3.criteriaType("id");
+    ConditionType nullConditionType = nullConditionProvider3.conditionType("id");
     assertThrows(IllegalStateException.class, () -> domain.add(definition(primaryKeyProperty(nullConditionProvider3.integerColumn("id")))
-            .criteriaProvider(nullCriteriaType, (columns, values) -> null)
-            .criteriaProvider(nullCriteriaType, (columns, values) -> null)));
+            .conditionProvider(nullConditionType, (columns, values) -> null)
+            .conditionProvider(nullConditionType, (columns, values) -> null)));
   }
 
   @Test

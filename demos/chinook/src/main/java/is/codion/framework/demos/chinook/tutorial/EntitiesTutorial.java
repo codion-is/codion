@@ -25,8 +25,8 @@ import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
@@ -144,7 +144,7 @@ public final class EntitiesTutorial {
     Entity metallica = connection.selectSingle(column(Artist.NAME).equalTo("Metallica"));
 
     // select all albums by Metallica, by using select() with the
-    // Metallica Entity as criteria value, basically asking for the
+    // Metallica Entity as condition value, basically asking for the
     // records where the given foreign key references that specific Entity
     // select() returns an empty list if none are found
     List<Entity> albums = connection.select(foreignKey(Album.ARTIST_FK).equalTo(metallica));
@@ -152,7 +152,7 @@ public final class EntitiesTutorial {
     albums.forEach(System.out::println);
 
     // for queries requiring further configuration, such as order by, we use
-    // a SelectCondition.Builder initialized with a criteria specifying
+    // a Select.Builder initialized with a condition specifying
     // the attribute we're searching by, the operator and value.
     Select selectArtists =
             Select.where(column(Artist.NAME).like("An%"))

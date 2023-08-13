@@ -13,7 +13,7 @@ import is.codion.common.rmi.server.RemoteClient;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.Select;
 import is.codion.framework.db.Update;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Column;
@@ -78,9 +78,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(Criteria criteria) throws DatabaseException {
+  public int rowCount(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.rowCount(criteria);
+      return connectionProxy.rowCount(condition);
     }
   }
 
@@ -207,9 +207,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int delete(Criteria criteria) throws DatabaseException {
+  public int delete(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.delete(criteria);
+      return connectionProxy.delete(condition);
     }
   }
 
@@ -221,9 +221,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException {
+  public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(column, criteria);
+      return connectionProxy.select(column, condition);
     }
   }
 
@@ -242,9 +242,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity selectSingle(Criteria criteria) throws RemoteException, DatabaseException {
+  public Entity selectSingle(Condition condition) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectSingle(criteria);
+      return connectionProxy.selectSingle(condition);
     }
   }
 
@@ -263,9 +263,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public List<Entity> select(Criteria criteria) throws RemoteException, DatabaseException {
+  public List<Entity> select(Condition condition) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.select(criteria);
+      return connectionProxy.select(condition);
     }
   }
 

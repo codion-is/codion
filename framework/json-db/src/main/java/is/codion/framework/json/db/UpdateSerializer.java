@@ -19,11 +19,11 @@ final class UpdateSerializer extends StdSerializer<Update> {
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
-  private final CriteriaSerializer criteriaSerializer;
+  private final ConditionSerializer conditionSerializer;
 
   UpdateSerializer(EntityObjectMapper entityObjectMapper) {
     super(Update.class);
-    this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
+    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
     this.entityObjectMapper = entityObjectMapper;
   }
 
@@ -31,9 +31,9 @@ final class UpdateSerializer extends StdSerializer<Update> {
   public void serialize(Update update, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", update.criteria().entityType().name());
-    generator.writeFieldName("criteria");
-    criteriaSerializer.serialize(update.criteria(), generator);
+    generator.writeStringField("entityType", update.condition().entityType().name());
+    generator.writeFieldName("condition");
+    conditionSerializer.serialize(update.condition(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {

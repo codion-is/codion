@@ -185,9 +185,9 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final transient SelectQuery selectQuery;
 
   /**
-   * The {@link CriteriaProvider}s mapped to their respective criteriaType
+   * The {@link ConditionProvider}s mapped to their respective conditionType
    */
-  private final transient Map<CriteriaType, CriteriaProvider> criteriaProviders;
+  private final transient Map<ConditionType, ConditionProvider> conditionProviders;
 
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
@@ -220,7 +220,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.tableName = builder.tableName;
     this.selectTableName = builder.selectTableName;
     this.selectQuery = builder.selectQuery;
-    this.criteriaProviders = builder.criteriaProviders == null ? null : new HashMap<>(builder.criteriaProviders);
+    this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
     this.entityProperties = builder.properties;
     this.groupByClause = createGroupByClause();
     resolveEntityClassMethods();
@@ -253,16 +253,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public CriteriaProvider criteriaProvider(CriteriaType criteriaType) {
-    requireNonNull(criteriaType);
-    if (criteriaProviders != null) {
-      CriteriaProvider criteriaProvider = criteriaProviders.get(criteriaType);
-      if (criteriaProvider != null) {
-        return criteriaProvider;
+  public ConditionProvider conditionProvider(ConditionType conditionType) {
+    requireNonNull(conditionType);
+    if (conditionProviders != null) {
+      ConditionProvider conditionProvider = conditionProviders.get(conditionType);
+      if (conditionProvider != null) {
+        return conditionProvider;
       }
     }
 
-    throw new IllegalArgumentException("CriteriaProvider for type " + criteriaType + " not found");
+    throw new IllegalArgumentException("ConditionProvider for type " + conditionType + " not found");
   }
 
   @Override
@@ -1023,7 +1023,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final EntityProperties properties;
 
     private String tableName;
-    private Map<CriteriaType, CriteriaProvider> criteriaProviders;
+    private Map<ConditionType, ConditionProvider> conditionProviders;
     private String caption;
     private String captionResourceKey;
     private String description;
@@ -1058,16 +1058,16 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     @Override
-    public Builder criteriaProvider(CriteriaType criteriaType, CriteriaProvider criteriaProvider) {
-      requireNonNull(criteriaType, "criteriaType");
-      requireNonNull(criteriaProvider, "criteriaProvider");
-      if (this.criteriaProviders == null) {
-        this.criteriaProviders = new HashMap<>();
+    public Builder conditionProvider(ConditionType conditionType, ConditionProvider conditionProvider) {
+      requireNonNull(conditionType, "conditionType");
+      requireNonNull(conditionProvider, "conditionProvider");
+      if (this.conditionProviders == null) {
+        this.conditionProviders = new HashMap<>();
       }
-      if (this.criteriaProviders.containsKey(criteriaType)) {
-        throw new IllegalStateException("CriteriaProvider for criteria type  " + criteriaType + " has already been added");
+      if (this.conditionProviders.containsKey(conditionType)) {
+        throw new IllegalStateException("ConditionProvider for condition type  " + conditionType + " has already been added");
       }
-      this.criteriaProviders.put(criteriaType, criteriaProvider);
+      this.conditionProviders.put(conditionType, conditionProvider);
       return this;
     }
 

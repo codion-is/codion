@@ -10,7 +10,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
@@ -210,13 +210,13 @@ public interface EntityConnection extends AutoCloseable {
   void delete(Collection<Key> entityKeys) throws DatabaseException;
 
   /**
-   * Deletes the entities specified by the given criteria.
+   * Deletes the entities specified by the given condition.
    * Performs a commit unless a transaction is open.
-   * @param criteria the criteria specifying the entities to delete
+   * @param condition the condition specifying the entities to delete
    * @return the number of deleted rows
    * @throws DatabaseException in case of a database exception
    */
-  int delete(Criteria criteria) throws DatabaseException;
+  int delete(Condition condition) throws DatabaseException;
 
   /**
    * Selects ordered and distinct non-null values of the given column, note that the column
@@ -233,14 +233,14 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Selects distinct non-null values of the given column. The result is ordered by the selected column.
    * @param column column
-   * @param criteria the criteria
+   * @param condition the condition
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
    * @throws IllegalArgumentException in case the given property is not a column based column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException;
+  <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
 
   /**
    * Selects distinct non-null values of the given column. If the select provides no
@@ -266,14 +266,14 @@ public interface EntityConnection extends AutoCloseable {
   Entity select(Key key) throws DatabaseException;
 
   /**
-   * Selects a single entity based on the specified criteria
-   * @param criteria the criteria specifying the entity to select
-   * @return the entities based on the given criteria
+   * Selects a single entity based on the specified condition
+   * @param condition the condition specifying the entity to select
+   * @return the entities based on the given condition
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(Criteria criteria) throws DatabaseException;
+  Entity selectSingle(Condition condition) throws DatabaseException;
 
   /**
    * Selects a single entity based on the specified select
@@ -294,12 +294,12 @@ public interface EntityConnection extends AutoCloseable {
   Collection<Entity> select(Collection<Key> keys) throws DatabaseException;
 
   /**
-   * Selects entities based on the given criteria
-   * @param criteria the criteria specifying which entities to select
-   * @return entities based to the given criteria
+   * Selects entities based on the given condition
+   * @param condition the condition specifying which entities to select
+   * @return entities based to the given condition
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(Criteria criteria) throws DatabaseException;
+  List<Entity> select(Condition condition) throws DatabaseException;
 
   /**
    * Selects entities based on the given select
@@ -319,12 +319,12 @@ public interface EntityConnection extends AutoCloseable {
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given criteria
-   * @param criteria the search criteria
-   * @return the number of rows fitting the given criteria
+   * Selects the number of rows returned based on the given condition
+   * @param condition the search condition
+   * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a database exception
    */
-  int rowCount(Criteria criteria) throws DatabaseException;
+  int rowCount(Condition condition) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -422,12 +422,12 @@ public interface EntityConnection extends AutoCloseable {
       Builder includePrimaryKeys(boolean includePrimaryKeys);
 
       /**
-       * Specifies a criteria to use when determining which entities of the given type to copy,
+       * Specifies a condition to use when determining which entities of the given type to copy,
        * if none is specified all entities are copied.
-       * @param criteria the criteria to use
+       * @param condition the condition to use
        * @return this builder instance
        */
-      Builder criteria(Criteria criteria);
+      Builder condition(Condition condition);
 
       /**
        * Builds and executes this copy operation

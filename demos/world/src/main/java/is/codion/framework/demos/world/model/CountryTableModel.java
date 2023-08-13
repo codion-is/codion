@@ -4,7 +4,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.report.ReportException;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.model.EntitySearchModelConditionModel;
@@ -17,7 +17,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Supplier;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.model.JasperReports.fillReport;
 import static java.util.Collections.singletonMap;
@@ -49,12 +49,12 @@ public final class CountryTableModel extends SwingEntityTableModel {
     ((EntitySearchModelConditionModel) conditionModel()
             .attributeModel(Country.CAPITAL_FK))
             .entitySearchModel()
-            .setAdditionalCriteriaSupplier(new CapitalCriteriaSupplier());
+            .setAdditionalConditionSupplier(new CapitalConditionSupplier());
   }
 
-  private final class CapitalCriteriaSupplier implements Supplier<Criteria> {
+  private final class CapitalConditionSupplier implements Supplier<Condition> {
     @Override
-    public Criteria get() {
+    public Condition get() {
       EntityConnection connection = connectionProvider().connection();
       try {
         return column(City.ID).in(connection.select(Country.CAPITAL));

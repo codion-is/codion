@@ -5,7 +5,7 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -23,7 +23,7 @@ final class DefaultCopyEntities implements CopyEntities {
   private final EntityConnection source;
   private final EntityConnection destination;
   private final Collection<EntityType> entityTypes = new ArrayList<>();
-  private final Map<EntityType, Criteria> criteria = new HashMap<>();
+  private final Map<EntityType, Condition> conditions = new HashMap<>();
   private final int batchSize;
   private final boolean includePrimaryKeys;
 
@@ -31,7 +31,7 @@ final class DefaultCopyEntities implements CopyEntities {
     this.source = builder.source;
     this.destination = builder.destination;
     this.entityTypes.addAll(builder.entityTypes);
-    this.criteria.putAll(builder.criteria);
+    this.conditions.putAll(builder.conditions);
     this.batchSize = builder.batchSize;
     this.includePrimaryKeys = builder.includePrimaryKeys;
   }
@@ -39,10 +39,10 @@ final class DefaultCopyEntities implements CopyEntities {
   @Override
   public void execute() throws DatabaseException {
     for (EntityType entityType : entityTypes) {
-      Criteria entityCriteria = criteria.get(entityType);
-      Select.Builder conditionBuilder = entityCriteria == null ?
+      Condition entityCondition = conditions.get(entityType);
+      Select.Builder conditionBuilder = entityCondition == null ?
               Select.all(entityType) :
-              Select.where(entityCriteria);
+              Select.where(entityCondition);
       List<Entity> entities = source.select(conditionBuilder
               .fetchDepth(0)
               .build());
@@ -60,7 +60,7 @@ final class DefaultCopyEntities implements CopyEntities {
     private final EntityConnection source;
     private final EntityConnection destination;
     private final Collection<EntityType> entityTypes = new ArrayList<>();
-    private final Map<EntityType, Criteria> criteria = new HashMap<>();
+    private final Map<EntityType, Condition> conditions = new HashMap<>();
 
     private boolean includePrimaryKeys = true;
     private int batchSize = 100;
@@ -92,11 +92,11 @@ final class DefaultCopyEntities implements CopyEntities {
     }
 
     @Override
-    public Builder criteria(Criteria criteria) {
-      if (!entityTypes.contains(requireNonNull(criteria).entityType())) {
-        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + criteria.entityType());
+    public Builder condition(Condition condition) {
+      if (!entityTypes.contains(requireNonNull(condition).entityType())) {
+        throw new IllegalArgumentException("CopyEntities.Builder does not contain entityType: " + condition.entityType());
       }
-      this.criteria.put(criteria.entityType(), criteria);
+      this.conditions.put(condition.entityType(), condition);
       return this;
     }
 

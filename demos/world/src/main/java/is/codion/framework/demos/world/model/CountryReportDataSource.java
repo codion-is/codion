@@ -18,7 +18,7 @@ import java.util.function.BiFunction;
 import java.util.function.Consumer;
 
 import static is.codion.framework.db.Select.where;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.domain.entity.OrderBy.descending;
 
 public final class CountryReportDataSource extends JasperReportsDataSource<Country> {

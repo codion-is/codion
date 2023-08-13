@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -12,15 +12,15 @@ import java.util.Map;
 /**
  * A class encapsulating a where clause along with columns and their associated values for update.
  * A factory class for {@link Update.Builder} instances via
- * {@link Update#all(EntityType)}, {@link Update#where(Criteria)} and
+ * {@link Update#all(EntityType)}, {@link Update#where(Condition)} and
  * {@link Update#builder(Update)}.
  */
 public interface Update {
 
   /**
-   * @return the underlying Criteria instance
+   * @return the underlying condition instance
    */
-  Criteria criteria();
+  Condition condition();
 
   /**
    * @return an unmodifiable view of the new values mapped to their respective columns
@@ -52,15 +52,15 @@ public interface Update {
    * @return a {@link Update.Builder} instance
    */
   static Builder all(EntityType entityType) {
-    return new DefaultUpdate.DefaultBuilder(Criteria.all(entityType));
+    return new DefaultUpdate.DefaultBuilder(Condition.all(entityType));
   }
 
   /**
-   * @param criteria the criteria
+   * @param condition the condition
    * @return a {@link Update.Builder} instance
    */
-  static Builder where(Criteria criteria) {
-    return new DefaultUpdate.DefaultBuilder(criteria);
+  static Builder where(Condition condition) {
+    return new DefaultUpdate.DefaultBuilder(condition);
   }
 
   /**

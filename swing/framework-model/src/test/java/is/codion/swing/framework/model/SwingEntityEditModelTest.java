@@ -19,7 +19,7 @@ import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 

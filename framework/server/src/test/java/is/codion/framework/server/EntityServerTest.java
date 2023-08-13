@@ -18,7 +18,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.Select;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
@@ -35,7 +35,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
 
-import static is.codion.framework.db.criteria.Criteria.all;
+import static is.codion.framework.db.condition.Condition.all;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -79,10 +79,10 @@ public class EntityServerTest {
             .parameter(RemoteEntityConnectionProvider.REMOTE_CLIENT_DOMAIN_TYPE, "TestDomain").build();
     RemoteEntityConnection connection = server.connect(connectionRequestOne);
 
-    Criteria criteria = Criteria.customCriteria(Employee.MGR_CRITERIA_TYPE,
+    Condition condition = Condition.customCondition(Employee.MGR_CONDITION_TYPE,
             singletonList(Employee.MGR), singletonList(4));
 
-    connection.select(criteria);
+    connection.select(condition);
 
     connection.close();
   }

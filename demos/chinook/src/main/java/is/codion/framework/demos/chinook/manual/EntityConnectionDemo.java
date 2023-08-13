@@ -32,7 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
 
@@ -42,7 +42,7 @@ import static java.util.Arrays.asList;
  */
 public final class EntityConnectionDemo {
 
-  static void selectCriteriaCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+  static void selectCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
     // tag::select[]
     EntityConnection connection = connectionProvider.connection();
 
@@ -398,7 +398,7 @@ public final class EntityConnectionDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    selectCriteriaCondition(connectionProvider);
+    selectCondition(connectionProvider);
     fetchDepthEntity(connectionProvider);
     fetchDepthCondition(connectionProvider);
     fetchDepthForeignKeyCondition(connectionProvider);

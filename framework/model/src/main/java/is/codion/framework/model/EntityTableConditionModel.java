@@ -7,7 +7,7 @@ import is.codion.common.Conjunction;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
@@ -40,21 +40,21 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   <T> boolean setEqualConditionValues(Attribute<T> attribute, Collection<T> values);
 
   /**
-   * @return the current criteria based on the state of the underlying condition models
+   * @return the current condition based on the state of the underlying condition models
    */
-  Criteria criteria();
+  Condition condition();
 
   /**
    * @return supplies any additional search condition, not based on any individual property condition
    */
-  Supplier<Criteria> getAdditionalCriteriaSupplier();
+  Supplier<Condition> getAdditionalConditionSupplier();
 
   /**
    * Sets the additional condition supplier, one not based on any individual property condition.
    * This condition supplier may return null in case of no condition.
-   * @param additionalCriteriaSupplier the condition supplier
+   * @param additionalConditionSupplier the condition supplier
    */
-  void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier);
+  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
 
   /**
    * @return the conjunction to be used when multiple column condition are active,
@@ -80,14 +80,14 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   <A extends Attribute<T>, T> ColumnConditionModel<A, T> attributeModel(A attribute);
 
   /**
-   * @param listener a listener notified each time the search criteria changes
+   * @param listener a listener notified each time the search condition changes
    */
-  void addChangeListener(Consumer<Criteria> listener);
+  void addChangeListener(Consumer<Condition> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeChangeListener(Consumer<Criteria> listener);
+  void removeChangeListener(Consumer<Condition> listener);
 
   /**
    * Creates a new {@link EntityTableConditionModel}

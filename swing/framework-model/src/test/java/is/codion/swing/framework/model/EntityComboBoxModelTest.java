@@ -7,6 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
@@ -29,8 +30,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.customCriteria;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -278,13 +278,13 @@ public final class EntityComboBoxModelTest {
     comboBoxModel.clear();
     assertEquals(0, comboBoxModel.getSize());
 
-    comboBoxModel.setSelectCriteriaSupplier(() -> customCriteria(Employee.CRITERIA_3_TYPE));
+    comboBoxModel.setSelectConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_3_TYPE));
     comboBoxModel.setForeignKeyFilterKeys(Employee.DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
     assertEquals(2, refreshed.get());
-    comboBoxModel.setSelectCriteriaSupplier(null);
+    comboBoxModel.setSelectConditionSupplier(null);
     comboBoxModel.forceRefresh();
     assertEquals(16, comboBoxModel.getSize());
     assertEquals(3, refreshed.get());

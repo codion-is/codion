@@ -18,7 +18,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.Select;
 import is.codion.framework.db.Update;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -48,7 +48,7 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
 
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
 import static is.codion.framework.domain.entity.OrderBy.descending;
@@ -293,13 +293,13 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.select(primaryKeys(result));
     assertEquals(2, result.size());
-    result = connection.select(customCriteria(Department.DEPARTMENT_CRITERIA_TYPE,
+    result = connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_TYPE,
             asList(Department.DEPTNO, Department.DEPTNO), asList(10, 20)));
     assertEquals(2, result.size());
-    result = connection.select(customCriteria(EmpnoDeptno.CRITERIA));
+    result = connection.select(Condition.customCondition(EmpnoDeptno.CONDITION));
     assertEquals(7, result.size());
 
-    Select select = Select.where(customCriteria(Employee.NAME_IS_BLAKE_CRITERIA)).build();
+    Select select = Select.where(Condition.customCondition(Employee.NAME_IS_BLAKE_CONDITION)).build();
     result = connection.select(select);
     Entity emp = result.iterator().next();
     assertTrue(emp.isLoaded(Employee.DEPARTMENT_FK));
@@ -352,10 +352,10 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectLimit() throws DatabaseException {
-    Criteria criteria = all(Department.TYPE);
-    List<Entity> departments = connection.select(criteria);
+    Condition condition = all(Department.TYPE);
+    List<Entity> departments = connection.select(condition);
     assertEquals(4, departments.size());
-    Select.Builder selectConditionBuilder = Select.where(criteria);
+    Select.Builder selectConditionBuilder = Select.where(condition);
     departments = connection.select(selectConditionBuilder.limit(0).build());
     assertTrue(departments.isEmpty());
     departments = connection.select(selectConditionBuilder.limit(2).build());
@@ -430,21 +430,21 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectInvalidColumn() {
-    assertThrows(DatabaseException.class, () -> connection.select(customCriteria(Department.DEPARTMENT_CRITERIA_INVALID_COLUMN_TYPE)));
+    assertThrows(DatabaseException.class, () -> connection.select(Condition.customCondition(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE)));
   }
 
   @Test
   void rowCount() throws Exception {
     int rowCount = connection.rowCount(all(Department.TYPE));
     assertEquals(4, rowCount);
-    Criteria deptNoCriteria = column(Department.DEPTNO).greaterThanOrEqualTo(30);
-    rowCount = connection.rowCount(deptNoCriteria);
+    Condition deptNoCondition = column(Department.DEPTNO).greaterThanOrEqualTo(30);
+    rowCount = connection.rowCount(deptNoCondition);
     assertEquals(2, rowCount);
 
     rowCount = connection.rowCount(all(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
-    deptNoCriteria = column(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
-    rowCount = connection.rowCount(deptNoCriteria);
+    deptNoCondition = column(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
+    rowCount = connection.rowCount(deptNoCondition);
     assertEquals(4, rowCount);
 
     rowCount = connection.rowCount(all(Job.TYPE));
@@ -457,7 +457,7 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(sales.get(Department.DNAME), "SALES");
     sales = connection.select(sales.primaryKey());
     assertEquals(sales.get(Department.DNAME), "SALES");
-    sales = connection.selectSingle(customCriteria(Department.DEPARTMENT_CRITERIA_SALES_TYPE));
+    sales = connection.selectSingle(Condition.customCondition(Department.DEPARTMENT_CONDITION_SALES_TYPE));
     assertEquals(sales.get(Department.DNAME), "SALES");
 
     Entity king = connection.selectSingle(column(Employee.NAME).equalTo("KING"));
@@ -470,7 +470,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void customCondition() throws DatabaseException {
-    assertEquals(4, connection.select(customCriteria(Employee.MGR_GREATER_THAN_CRITERIA,
+    assertEquals(4, connection.select(Condition.customCondition(Employee.MGR_GREATER_THAN_CONDITION,
             singletonList(Employee.MGR), singletonList(5))).size());
   }
 
@@ -635,9 +635,9 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void updateWithCondition() throws DatabaseException {
-    Criteria criteria = column(Employee.COMMISSION).isNull();
+    Condition condition = column(Employee.COMMISSION).isNull();
 
-    List<Entity> entities = connection.select(criteria);
+    List<Entity> entities = connection.select(condition);
 
     Update update = Update.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
@@ -646,7 +646,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.rowCount(criteria));
+      assertEquals(0, connection.rowCount(condition));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -750,9 +750,9 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(true);
     Entity allen;
     try {
-      Criteria criteria = column(Employee.NAME).equalTo("ALLEN");
+      Condition condition = column(Employee.NAME).equalTo("ALLEN");
 
-      allen = connection.selectSingle(criteria);
+      allen = connection.selectSingle(condition);
 
       connection2.delete(allen.primaryKey());
 
@@ -851,8 +851,8 @@ public class DefaultLocalEntityConnectionTest {
   @Test
   void iterator() throws Exception {
     try (LocalEntityConnection connection = createConnection()) {
-      Criteria criteria = all(Employee.TYPE);
-      Iterator<Entity> iterator = connection.iterator(criteria).iterator();
+      Condition condition = all(Employee.TYPE);
+      Iterator<Entity> iterator = connection.iterator(condition).iterator();
       //calling hasNext() should be idempotent and not lose rows
       assertTrue(iterator.hasNext());
       assertTrue(iterator.hasNext());
@@ -864,9 +864,9 @@ public class DefaultLocalEntityConnectionTest {
         counter++;
       }
       assertThrows(NoSuchElementException.class, iterator::next);
-      int rowCount = connection.rowCount(criteria);
+      int rowCount = connection.rowCount(condition);
       assertEquals(rowCount, counter);
-      iterator = connection.iterator(criteria).iterator();
+      iterator = connection.iterator(condition).iterator();
       counter = 0;
       try {
         while (true) {

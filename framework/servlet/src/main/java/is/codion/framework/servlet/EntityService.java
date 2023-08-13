@@ -20,7 +20,7 @@ import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.Select;
 import is.codion.framework.db.Update;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -523,7 +523,7 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper conditionObjectMapper = conditionObjectMapper(connection.entities());
-        int rowCount = connection.rowCount(conditionObjectMapper.readValue(context.req.getInputStream(), Criteria.class));
+        int rowCount = connection.rowCount(conditionObjectMapper.readValue(context.req.getInputStream(), Condition.class));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(conditionObjectMapper.entityObjectMapper().writeValueAsString(rowCount));
@@ -767,8 +767,8 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        Criteria criteria = deserialize(context.req);
-        int deleteCount = connection.delete(criteria);
+        Condition condition = deserialize(context.req);
+        int deleteCount = connection.delete(condition);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
                 .result(Serializer.serialize(deleteCount));
@@ -786,8 +786,8 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper mapper = conditionObjectMapper(connection.entities());
-        Criteria deleteCriteria = mapper.readValue(context.req.getInputStream(), Criteria.class);
-        int deleteCount = connection.delete(deleteCriteria);
+        Condition deleteCondition = mapper.readValue(context.req.getInputStream(), Condition.class);
+        int deleteCount = connection.delete(deleteCondition);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(mapper.entityObjectMapper().writeValueAsString(deleteCount));

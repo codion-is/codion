@@ -300,11 +300,11 @@ public interface EntityType {
   ForeignKey foreignKey(String name, List<ForeignKey.Reference<?>> references);
 
   /**
-   * Instantiates a new {@link CriteriaType} for this entity type
+   * Instantiates a new {@link ConditionType} for this entity type
    * @param name the name
-   * @return a new criteria type
+   * @return a new condition type
    */
-  CriteriaType criteriaType(String name);
+  ConditionType conditionType(String name);
 
   /**
    * Creates a new EntityType instance.

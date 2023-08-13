@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.Update;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -25,14 +25,14 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
   private static final long serialVersionUID = 1;
 
   private final EntityObjectMapper entityObjectMapper;
-  private final CriteriaDeserializer criteriaDeserializer;
+  private final ConditionDeserializer conditionDeserializer;
   private final Entities entities;
 
-  UpdateDeserializer(CriteriaDeserializer criteriaDeserializer) {
+  UpdateDeserializer(ConditionDeserializer conditionDeserializer) {
     super(Update.class);
-    this.criteriaDeserializer = criteriaDeserializer;
-    this.entityObjectMapper = criteriaDeserializer.entityObjectMapper;
-    this.entities = criteriaDeserializer.entities;
+    this.conditionDeserializer = conditionDeserializer;
+    this.entityObjectMapper = conditionDeserializer.entityObjectMapper;
+    this.entities = conditionDeserializer.entities;
   }
 
   @Override
@@ -41,10 +41,10 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
-    JsonNode criteriaNode = jsonNode.get("criteria");
-    Criteria criteria = criteriaDeserializer.deserialize(definition, criteriaNode);
+    JsonNode conditionNode = jsonNode.get("condition");
+    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
 
-    Update.Builder updateCondition = Update.where(criteria);
+    Update.Builder updateCondition = Update.where(condition);
     JsonNode values = jsonNode.get("values");
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {

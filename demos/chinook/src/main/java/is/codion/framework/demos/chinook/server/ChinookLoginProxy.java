@@ -19,8 +19,8 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
 
-import static is.codion.framework.db.criteria.Criteria.and;
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.and;
+import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;

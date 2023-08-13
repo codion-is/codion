@@ -5,40 +5,40 @@
 
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain_model, Chinook domain model>> is used in the examples below.
 
-== Criteria
+== Condition
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/criteria/Criteria.html[Criteria]*::
-Represents an element of a where condition and contains factory methods for creating *Criteria* instances.
-
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=criteria]
-----
-
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/criteria/Criteria.Combination.html[Criteria.Combination]*::
-Extends *Critiera* and represents a combination of *Criteria* instances, which are combined using either *AND* or *OR*. These can be nested and combined with other criteria combinations.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.html[Condition]*::
+Represents an element of a where clause and contains factory methods for creating *Condition* instances.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=combination]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/ConditionDemo.java[tags=condition]
+----
+
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Condition.Combination.html[Condition.Combination]*::
+Extends *Condition* and represents a combination of *Condition* instances, which are combined using either *AND* or *OR*. These can be nested and combined with other condition combinations.
+
+[source,java,indent=0]
+----
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/ConditionDemo.java[tags=combination]
 ----
 
 == Select
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.html[Select]*::
-Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.html#where[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Select.Builder.html[Select.Builder] instance for further configuration.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/Select.html[Select]*::
+Represents a where clause as well as extended configuration specifically for selecting, such as *orderBy*, *limit*, *offset* and *fetchDepth*. {url-javadoc}{framework-db-core}/is/codion/framework/db/Select.html#where[Select.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/Select.Builder.html[Select.Builder] instance for further configuration.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=select]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/ConditionDemo.java[tags=select]
 ----
 
 == Update
 
-*{url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.html[Update]*::
-Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.html#where[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/condition/Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
+*{url-javadoc}{framework-db-core}/is/codion/framework/db/Update.html[Update]*::
+Represents a where clause as well as the columns values for updating one or more entities. {url-javadoc}{framework-db-core}/is/codion/framework/db/Update.html#where[Update.where] returns a {url-javadoc}{framework-db-core}/is/codion/framework/db/Update.Builder.html[Update.Builder] instance for specifying the columns to update and their respective values.
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/CriteriaDemo.java[tags=update]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/ConditionDemo.java[tags=update]
 ----

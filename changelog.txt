@@ -9409,3 +9409,4 @@
   Condition removed, related refactoring
   SelectCondition and UpdateCondition renamed Select and Update respectively
   Select and Update moved up to db package
+  Criteria renamed Condition

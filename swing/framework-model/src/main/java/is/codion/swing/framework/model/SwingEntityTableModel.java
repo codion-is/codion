@@ -15,7 +15,7 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
@@ -98,13 +98,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
-  private final State criteriaChangedState = State.state();
+  private final State conditionChangedState = State.state();
   private final Consumer<Map<Key, Entity>> updateListener = new UpdateListener();
 
   /**
-   * the criteria used during the last successful refresh
+   * the condition used during the last successful refresh
    */
-  private Criteria refreshCriteria;
+  private Condition refreshCondition;
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -226,7 +226,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.editModel = requireNonNull(editModel);
     this.tableModel = createTableModel(editModel.entityDefinition(), requireNonNull(columnFactory));
     this.conditionModel = entityTableConditionModel(editModel.entityType(), editModel.connectionProvider(), requireNonNull(conditionModelFactory));
-    this.refreshCriteria = conditionModel.criteria();
+    this.refreshCondition = conditionModel.condition();
     addEditListeners();
     bindEvents();
     applyPreferences();
@@ -546,7 +546,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final StateObserver conditionChangedObserver() {
-    return criteriaChangedState.observer();
+    return conditionChangedState.observer();
   }
 
   @Override
@@ -859,16 +859,16 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @return entities selected from the database according the query condition.
    * @see #conditionRequiredState()
    * @see #isConditionEnabled()
-   * @see EntityTableConditionModel#criteria()
+   * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
     if (conditionRequiredState.get() && !isConditionEnabled()) {
-      updateRefreshCriteria(conditionModel.criteria());
+      updateRefreshCondition(conditionModel.condition());
 
       return emptyList();
     }
     try {
-      return queryItems(conditionModel.criteria());
+      return queryItems(conditionModel.condition());
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -970,7 +970,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void bindEvents() {
     columnModel().addColumnHiddenListener(this::onColumnHidden);
-    conditionModel.addChangeListener(this::onCriteriaChanged);
+    conditionModel.addChangeListener(this::onConditionChanged);
     editModel.addAfterInsertListener(this::onInsert);
     editModel.addAfterUpdateListener(this::onUpdate);
     editModel.addAfterDeleteListener(this::onDelete);
@@ -993,20 +993,20 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             EntityEditEvents.removeUpdateListener(foreignKey.referencedType(), updateListener));
   }
 
-  private List<Entity> queryItems(Criteria criteria) throws DatabaseException {
-    List<Entity> items = editModel.connectionProvider().connection().select(where(criteria)
+  private List<Entity> queryItems(Condition condition) throws DatabaseException {
+    List<Entity> items = editModel.connectionProvider().connection().select(where(condition)
               .attributes(attributes())
               .limit(getLimit())
               .orderBy(orderBy())
               .build());
-    updateRefreshCriteria(criteria);
+    updateRefreshCondition(condition);
 
     return items;
   }
 
-  private void updateRefreshCriteria(Criteria criteria) {
-    refreshCriteria = criteria;
-    criteriaChangedState.set(false);
+  private void updateRefreshCondition(Condition condition) {
+    refreshCondition = condition;
+    conditionChangedState.set(false);
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
@@ -1077,8 +1077,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private void onCriteriaChanged(Criteria criteria) {
-    criteriaChangedState.set(!Objects.equals(refreshCriteria, criteria));
+  private void onConditionChanged(Condition condition) {
+    conditionChangedState.set(!Objects.equals(refreshCondition, condition));
   }
 
   private void onColumnHidden(Attribute<?> attribute) {

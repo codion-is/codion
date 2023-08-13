@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
@@ -23,7 +23,7 @@ import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
@@ -194,22 +194,22 @@ public final class DefaultEntitySearchModelTest {
     searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
     searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
     searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
-    searchModel.setAdditionalCriteriaSupplier(() -> column(Employee.JOB).notEqualTo("MANAGER"));
+    searchModel.setAdditionalConditionSupplier(() -> column(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
   }
 
   @Test
-  void setAdditionalCriteriaProvider() {
+  void setAdditionalConditionProvider() {
     searchModel.singleSelectionState().set(true);
     searchModel.wildcardValue().set('%');
     searchModel.setSearchString("johnson");
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
-    searchModel.setAdditionalCriteriaSupplier(() ->
-            Criteria.customCriteria(Employee.CRITERIA_1_TYPE));
+    searchModel.setAdditionalConditionSupplier(() ->
+            Condition.customCondition(Employee.CONDITION_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();
     assertTrue(result.isEmpty());

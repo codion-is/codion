@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db;
 
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
@@ -25,7 +25,7 @@ final class DefaultSelect implements Select, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final Criteria criteria;
+  private final Condition condition;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private final Collection<Attribute<?>> attributes;
   private final OrderBy orderBy;
@@ -36,7 +36,7 @@ final class DefaultSelect implements Select, Serializable {
   private final int queryTimeout;
 
   private DefaultSelect(DefaultBuilder builder) {
-    this.criteria = builder.criteria;
+    this.condition = builder.condition;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
     this.attributes = builder.attributes;
     this.orderBy = builder.orderBy;
@@ -48,8 +48,8 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
-  public Criteria criteria() {
-    return criteria;
+  public Condition condition() {
+    return condition;
   }
 
   @Override
@@ -109,7 +109,7 @@ final class DefaultSelect implements Select, Serializable {
     return forUpdate == that.forUpdate &&
             limit == that.limit &&
             offset == that.offset &&
-            criteria.equals(that.criteria) &&
+            condition.equals(that.condition) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
             attributes.equals(that.attributes) &&
             Objects.equals(orderBy, that.orderBy) &&
@@ -118,12 +118,12 @@ final class DefaultSelect implements Select, Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(forUpdate, limit, offset, criteria, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
+    return Objects.hash(forUpdate, limit, offset, condition, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
   }
 
   static final class DefaultBuilder implements Select.Builder {
 
-    private final Criteria criteria;
+    private final Condition condition;
 
     private Map<ForeignKey, Integer> foreignKeyFetchDepths;
     private Collection<Attribute<?>> attributes = emptyList();
@@ -136,7 +136,7 @@ final class DefaultSelect implements Select, Serializable {
     private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Select select) {
-      this(requireNonNull(select).criteria());
+      this(requireNonNull(select).condition());
       if (select instanceof DefaultSelect) {
         DefaultSelect selectCondition = (DefaultSelect) select;
         foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
@@ -150,8 +150,8 @@ final class DefaultSelect implements Select, Serializable {
       }
     }
 
-    DefaultBuilder(Criteria criteria) {
-      this.criteria = requireNonNull(criteria);
+    DefaultBuilder(Condition condition) {
+      this.condition = requireNonNull(condition);
     }
 
     @Override

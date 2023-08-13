@@ -21,12 +21,12 @@ final class SelectSerializer extends StdSerializer<Select> {
 
   private static final long serialVersionUID = 1;
 
-  private final CriteriaSerializer criteriaSerializer;
+  private final ConditionSerializer conditionSerializer;
   private final Entities entities;
 
   SelectSerializer(EntityObjectMapper entityObjectMapper) {
     super(Select.class);
-    this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
+    this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
     this.entities = entityObjectMapper.entities();
   }
 
@@ -34,9 +34,9 @@ final class SelectSerializer extends StdSerializer<Select> {
   public void serialize(Select select, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", select.criteria().entityType().name());
-    generator.writeFieldName("criteria");
-    criteriaSerializer.serialize(select.criteria(), generator);
+    generator.writeStringField("entityType", select.condition().entityType().name());
+    generator.writeFieldName("condition");
+    conditionSerializer.serialize(select.condition(), generator);
     generator.writeFieldName("orderBy");
     OrderBy orderBy = select.orderBy().orElse(null);
     if (orderBy == null) {
@@ -59,7 +59,7 @@ final class SelectSerializer extends StdSerializer<Select> {
     generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.definition(select.criteria().entityType()).foreignKeys()) {
+    for (ForeignKey foreignKey : entities.definition(select.condition().entityType()).foreignKeys()) {
       Integer fkFetchDepth = select.fetchDepth(foreignKey).orElse(null);
       if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.name(), fkFetchDepth);
