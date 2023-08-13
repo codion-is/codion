@@ -55,11 +55,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 {url-entity-connection}#select{opar}is.codion.framework.db.criteria.Criteria{cpar}[select(Criteria criteria)]
 
-{url-entity-connection}#select{opar}is.codion.framework.db.condition.Condition{cpar}[select(Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.db.condition.SelectCondition{cpar}[select(SelectCondition condition)]
 
 {url-entity-connection}#selectSingle{opar}is.codion.framework.db.criteria.Criteria{cpar}[selectSingle(Criteria criteria)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Condition{cpar}[selectSingle(Condition condition)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.SelectCondition{cpar}[selectSingle(SelectCondition condition)]
 
 [source,java,indent=0]
 ----
@@ -86,7 +86,7 @@ For selecting the values of a single column.
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.criteria.Criteria{cpar}[select(Column<T> column, Criteria criteria)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.SelectCondition{cpar}[select(Column<T> column, SelectCondition condition)]
 
 [source,java,indent=0]
 ----
@@ -97,7 +97,9 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 *LocalEntityConnection* provides a way to iterate over a result set, instead of loading it into memory.
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.db.condition.Condition{cpar}[iterator(Condition condition)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.db.criteria.Criteria{cpar}[iterator(Criteria criteria)]
+
+{url-local-entity-connection}#iterator{opar}is.codion.framework.db.condition.SelectCondition{cpar}[iterator(Condition condition)]
 
 [source,java,indent=0]
 ----

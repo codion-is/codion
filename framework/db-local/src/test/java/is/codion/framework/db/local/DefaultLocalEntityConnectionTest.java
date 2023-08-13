@@ -48,7 +48,6 @@ import java.util.NoSuchElementException;
 import java.util.Random;
 import java.util.TimeZone;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.TestDomain.*;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
@@ -853,7 +852,7 @@ public class DefaultLocalEntityConnectionTest {
   void iterator() throws Exception {
     try (LocalEntityConnection connection = createConnection()) {
       Criteria criteria = all(Employee.TYPE);
-      Iterator<Entity> iterator = connection.iterator(where(criteria)).iterator();
+      Iterator<Entity> iterator = connection.iterator(criteria).iterator();
       //calling hasNext() should be idempotent and not lose rows
       assertTrue(iterator.hasNext());
       assertTrue(iterator.hasNext());
@@ -867,7 +866,7 @@ public class DefaultLocalEntityConnectionTest {
       assertThrows(NoSuchElementException.class, iterator::next);
       int rowCount = connection.rowCount(criteria);
       assertEquals(rowCount, counter);
-      iterator = connection.iterator(where(criteria)).iterator();
+      iterator = connection.iterator(criteria).iterator();
       counter = 0;
       try {
         while (true) {
@@ -885,10 +884,10 @@ public class DefaultLocalEntityConnectionTest {
   void dualIterator() throws Exception {
     try (LocalEntityConnection connection = createConnection()) {
       ResultIterator<Entity> deptIterator =
-              connection.iterator(where(all(Department.TYPE)));
+              connection.iterator(all(Department.TYPE));
       while (deptIterator.hasNext()) {
         ResultIterator<Entity> empIterator =
-                connection.iterator(where(foreignKey(Employee.DEPARTMENT_FK).equalTo(deptIterator.next())));
+                connection.iterator(foreignKey(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()));
         while (empIterator.hasNext()) {
           empIterator.next();
         }

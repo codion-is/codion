@@ -3,7 +3,6 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
@@ -23,7 +22,6 @@ import org.junit.jupiter.api.Test;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.json.db.ConditionObjectMapper.conditionObjectMapper;
 import static is.codion.framework.json.domain.EntityObjectMapper.entityObjectMapper;
@@ -44,14 +42,15 @@ public final class ConditionObjectMapperTest {
             .with(Department.DEPTNO, 2)
             .build();
 
-    Condition condition = where(and(
-            foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
-            column(Employee.NAME).equalToIgnoreCase("Loc"),
-            column(Employee.EMPNO).between(10, 40),
-            column(Employee.COMMISSION).isNotNull()));
+    SelectCondition condition = SelectCondition.where(and(
+                    foreignKey(Employee.DEPARTMENT_FK).notIn(dept1, dept2),
+                    column(Employee.NAME).equalToIgnoreCase("Loc"),
+                    column(Employee.EMPNO).between(10, 40),
+                    column(Employee.COMMISSION).isNotNull()))
+            .build();
 
     String jsonString = mapper.writeValueAsString(condition);
-    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+    SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(condition, readCondition);
     assertEquals("(deptno not in (?, ?) and upper(ename) = upper(?) and (empno >= ? and empno <= ?) and comm is not null)",
@@ -75,10 +74,10 @@ public final class ConditionObjectMapperTest {
     CustomCriteria customedCriteria = customCriteria(TestEntity.CRITERIA_TYPE,
             asList(TestEntity.DECIMAL, TestEntity.DATE_TIME),
             asList(BigDecimal.valueOf(123.4), LocalDateTime.now()));
-    Condition condition = where(customedCriteria);
+    SelectCondition condition = SelectCondition.where(customedCriteria).build();
 
     String jsonString = mapper.writeValueAsString(condition);
-    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+    SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
     CustomCriteria readCriteria = (CustomCriteria) readCondition.criteria();
 
     assertEquals(customedCriteria.criteriaType(), readCriteria.criteriaType());
@@ -111,7 +110,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(selectCondition.limit(), readCondition.limit());
     assertEquals(selectCondition.offset(), readCondition.offset());
     assertEquals(selectCondition.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
-    for (ForeignKey foreignKey : entities.definition(selectCondition.entityType()).foreignKeys()) {
+    for (ForeignKey foreignKey : entities.definition(selectCondition.criteria().entityType()).foreignKeys()) {
       assertEquals(selectCondition.fetchDepth(foreignKey), readCondition.fetchDepth(foreignKey));
     }
     assertEquals(selectCondition.attributes(), readCondition.attributes());
@@ -127,7 +126,7 @@ public final class ConditionObjectMapperTest {
     assertFalse(readCondition.orderBy().isPresent());
     assertFalse(readCondition.fetchDepth().isPresent());
 
-    Condition condition = where(column(Employee.EMPNO).equalTo(2));
+    SelectCondition condition = SelectCondition.where(column(Employee.EMPNO).equalTo(2)).build();
     jsonString = mapper.writeValueAsString(condition);
 
     selectCondition = mapper.readValue(jsonString, SelectCondition.class);
@@ -136,7 +135,7 @@ public final class ConditionObjectMapperTest {
   @Test
   void updateCondition() throws JsonProcessingException {
     UpdateCondition condition = UpdateCondition.where(column(Department.DEPTNO)
-            .between(1, 2))
+                    .between(1, 2))
             .set(Department.LOCATION, "loc")
             .set(Department.DEPTNO, 3)
             .build();
@@ -150,23 +149,24 @@ public final class ConditionObjectMapperTest {
 
   @Test
   void allCondition() throws JsonProcessingException {
-    Condition condition = where(all(Department.TYPE));
+    SelectCondition condition = SelectCondition.all(Department.TYPE).build();
 
     String jsonString = mapper.writeValueAsString(condition);
-    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+    SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(condition, readCondition);
   }
 
   @Test
   void combinationOfCombinations() throws JsonProcessingException {
-    Condition condition = where(and(
-            column(Employee.COMMISSION).equalTo(100d),
-            or(column(Employee.JOB).notEqualTo("test"),
-                    column(Employee.JOB).isNotNull())));
+    SelectCondition condition = SelectCondition.where(and(
+                    column(Employee.COMMISSION).equalTo(100d),
+                    or(column(Employee.JOB).notEqualTo("test"),
+                            column(Employee.JOB).isNotNull())))
+            .build();
 
     String jsonString = mapper.writeValueAsString(condition);
-    Condition readCondition = mapper.readValue(jsonString, Condition.class);
+    SelectCondition readCondition = mapper.readValue(jsonString, SelectCondition.class);
 
     assertEquals(condition, readCondition);
   }

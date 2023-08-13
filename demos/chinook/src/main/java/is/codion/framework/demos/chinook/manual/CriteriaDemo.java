@@ -3,7 +3,6 @@
  */
 package is.codion.framework.demos.chinook.manual;
 
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
@@ -12,7 +11,7 @@ import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.OrderBy;
 
-final class ConditionDemo {
+final class CriteriaDemo {
 
   private static void criteria() {
     // tag::criteria[]
@@ -32,11 +31,6 @@ final class ConditionDemo {
     Criteria liveMetallicaAlbumsCriteria =
             Criteria.and(liveAlbums, metallicaAlbums);
     // end::combination[]
-
-    // tag::condition[]
-    Condition liveMetallicaAlbumsCondition =
-            Condition.where(liveMetallicaAlbumsCriteria);
-    // end::condition[]
 
     // tag::selectCondition[]
     SelectCondition selectLiveMetallicaAlbums =

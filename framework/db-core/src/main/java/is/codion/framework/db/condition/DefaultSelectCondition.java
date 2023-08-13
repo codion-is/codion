@@ -5,7 +5,6 @@ package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 
@@ -46,11 +45,6 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     this.limit = builder.limit;
     this.offset = builder.offset;
     this.queryTimeout = builder.queryTimeout;
-  }
-
-  @Override
-  public EntityType entityType() {
-    return criteria.entityType();
   }
 
   @Override
@@ -141,7 +135,7 @@ final class DefaultSelectCondition implements SelectCondition, Serializable {
     private int offset = -1;
     private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
 
-    DefaultBuilder(Condition condition) {
+    DefaultBuilder(SelectCondition condition) {
       this(requireNonNull(condition).criteria());
       if (condition instanceof DefaultSelectCondition) {
         DefaultSelectCondition selectCondition = (DefaultSelectCondition) condition;

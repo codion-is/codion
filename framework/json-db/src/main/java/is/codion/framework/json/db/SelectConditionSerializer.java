@@ -34,7 +34,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
   public void serialize(SelectCondition condition, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", condition.entityType().name());
+    generator.writeStringField("entityType", condition.criteria().entityType().name());
     generator.writeFieldName("criteria");
     criteriaSerializer.serialize(condition.criteria(), generator);
     generator.writeFieldName("orderBy");
@@ -59,7 +59,7 @@ final class SelectConditionSerializer extends StdSerializer<SelectCondition> {
     generator.writeObjectField("fetchDepth", conditionFetchDepth);
     generator.writeFieldName("fkFetchDepth");
     generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.definition(condition.entityType()).foreignKeys()) {
+    for (ForeignKey foreignKey : entities.definition(condition.criteria().entityType()).foreignKeys()) {
       Integer fkFetchDepth = condition.fetchDepth(foreignKey).orElse(null);
       if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
         generator.writeObjectField(foreignKey.name(), fkFetchDepth);

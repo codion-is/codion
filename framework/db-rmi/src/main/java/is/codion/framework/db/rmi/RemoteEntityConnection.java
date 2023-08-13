@@ -11,7 +11,7 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
@@ -266,7 +266,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  <T> List<T> select(Column<T> column, Condition condition) throws RemoteException, DatabaseException;
+  <T> List<T> select(Column<T> column, SelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects an entity by key
@@ -299,7 +299,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    * @throws RemoteException in case of a remote exception
    */
-  Entity selectSingle(Condition condition) throws RemoteException, DatabaseException;
+  Entity selectSingle(SelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects entities based on the given {@code keys}
@@ -326,7 +326,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  List<Entity> select(Condition condition) throws RemoteException, DatabaseException;
+  List<Entity> select(SelectCondition condition) throws RemoteException, DatabaseException;
 
   /**
    * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

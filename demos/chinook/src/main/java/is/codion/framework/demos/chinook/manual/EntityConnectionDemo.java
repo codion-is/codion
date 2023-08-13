@@ -32,7 +32,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
@@ -311,7 +310,7 @@ public final class EntityConnectionDemo {
     LocalEntityConnection connection = connectionProvider.connection();
 
     try (ResultIterator<Entity> iterator =
-                 connection.iterator(where(column(Customer.EMAIL).isNotNull()))) {
+                 connection.iterator(column(Customer.EMAIL).isNotNull())) {
       while (iterator.hasNext()) {
         System.out.println(iterator.next().get(Customer.EMAIL));
       }

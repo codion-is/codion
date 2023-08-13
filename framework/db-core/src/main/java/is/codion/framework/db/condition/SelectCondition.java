@@ -16,11 +16,16 @@ import java.util.Optional;
  * A class encapsulating select query parameters.
  * A factory class for {@link SelectCondition.Builder} instances via
  * {@link SelectCondition#all(EntityType)}, {@link SelectCondition#where(Criteria)} and
- * {@link SelectCondition#builder(Condition)}.
+ * {@link SelectCondition#builder(SelectCondition)}.
  */
-public interface SelectCondition extends Condition {
+public interface SelectCondition {
 
   int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
+
+  /**
+   * @return the underlying Criteria instance
+   */
+  Criteria criteria();
 
   /**
    * @return the OrderBy for this condition, an empty Optional if none is specified
@@ -162,7 +167,7 @@ public interface SelectCondition extends Condition {
    * @param condition the condition
    * @return a new {@link SelectCondition.Builder} instance
    */
-  static Builder builder(Condition condition) {
+  static Builder builder(SelectCondition condition) {
     return new DefaultSelectCondition.DefaultBuilder(condition);
   }
 }

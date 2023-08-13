@@ -23,7 +23,6 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
@@ -63,7 +62,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.database.Database.closeSilently;
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -308,7 +306,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statementProperties.clear();
             statementValues.clear();
           }
-          List<Entity> selected = doSelect(selectCondition(where(keys(Entity.primaryKeys(entitiesToUpdate)))), 0);//bypass caching
+          List<Entity> selected = doSelect(SelectCondition.where(keys(Entity.primaryKeys(entitiesToUpdate))).build(), 0);//bypass caching
           if (selected.size() != entitiesToUpdate.size()) {
             throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
                     selected.size() + ", entityType: " + entityTypeEntities.getKey());
@@ -345,7 +343,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (requireNonNull(condition, CONDITION).columnValues().isEmpty()) {
       throw new IllegalArgumentException("No attribute values provided for update");
     }
-    checkIfReadOnly(condition.entityType());
+    checkIfReadOnly(condition.criteria().entityType());
 
     List<Object> statementValues = new ArrayList<>();
     List<ColumnProperty<?>> statementProperties = new ArrayList<>();
@@ -353,7 +351,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     String updateQuery = null;
     synchronized (connection) {
       try {
-        EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
+        EntityDefinition entityDefinition = domainEntities.definition(condition.criteria().entityType());
         for (Map.Entry<Column<?>, Object> columnValue : condition.columnValues().entrySet()) {
           ColumnProperty<Object> columnProperty = entityDefinition.columnProperty((Column<Object>) columnValue.getKey());
           if (!columnProperty.isUpdatable()) {
@@ -470,11 +468,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Entity selectSingle(Criteria criteria) throws DatabaseException {
-    return selectSingle(where(criteria));
+    return selectSingle(SelectCondition.where(criteria).build());
   }
 
   @Override
-  public Entity selectSingle(Condition condition) throws DatabaseException {
+  public Entity selectSingle(SelectCondition condition) throws DatabaseException {
     List<Entity> entities = select(condition);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
@@ -496,7 +494,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         List<Entity> result = new ArrayList<>();
         for (List<Key> entityTypeKeys : Entity.mapKeysToType(keys).values()) {
-          result.addAll(doSelect(selectCondition(where(keys(entityTypeKeys)))));
+          result.addAll(doSelect(SelectCondition.where(keys(entityTypeKeys)).build()));
         }
         commitIfTransactionIsNotOpen();
 
@@ -511,17 +509,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public List<Entity> select(Criteria criteria) throws DatabaseException {
-    return select(where(criteria));
+    return select(SelectCondition.where(criteria).build());
   }
 
   @Override
-  public List<Entity> select(Condition condition) throws DatabaseException {
+  public List<Entity> select(SelectCondition condition) throws DatabaseException {
     requireNonNull(condition, CONDITION);
-    SelectCondition selectCondition = selectCondition(condition);
     synchronized (connection) {
       try {
-        List<Entity> result = doSelect(selectCondition);
-        if (!selectCondition.forUpdate()) {
+        List<Entity> result = doSelect(condition);
+        if (!condition.forUpdate()) {
           commitIfTransactionIsNotOpen();
         }
 
@@ -549,19 +546,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+  public <T> List<T> select(Column<T> column, SelectCondition condition) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(column, "column").entityType());
     if (entityDefinition.selectQuery() != null) {
       throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom select queries");
     }
-    SelectCondition selectCondition = selectCondition(requireNonNull(condition, CONDITION));
-    if (!selectCondition.entityType().equals(column.entityType())) {
-      throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + selectCondition.entityType());
+    requireNonNull(condition, CONDITION);
+    if (!condition.criteria().entityType().equals(column.entityType())) {
+      throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + condition.criteria().entityType());
     }
     ColumnProperty<T> property = entityDefinition.columnProperty(column);
-    Criteria combinedCriteria = and(selectCondition.criteria(), column(column).isNotNull());
+    Criteria combinedCriteria = and(condition.criteria(), column(column).isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
-            .selectCondition(selectCondition, false)
+            .selectCondition(condition, false)
             .columns(property.columnExpression())
             .where(combinedCriteria)
             .groupBy(property.columnExpression())
@@ -579,7 +576,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       }
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(selectQuery, asList(column, selectCondition),
+        LOG.error(createLogMessage(selectQuery, asList(column, condition),
                 entityDefinition.columnProperties(combinedCriteria.columns()), e), e);
         throw translateSQLException(e);
       }
@@ -829,7 +826,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public ResultIterator<Entity> iterator(Condition condition) throws DatabaseException {
+  public ResultIterator<Entity> iterator(Criteria criteria) throws DatabaseException {
+    return iterator(SelectCondition.where(criteria).build());
+  }
+
+  @Override
+  public ResultIterator<Entity> iterator(SelectCondition condition) throws DatabaseException {
     synchronized (connection) {
       try {
         return entityIterator(condition);
@@ -920,7 +922,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<Entity> doSelect(SelectCondition condition) throws SQLException {
     List<Entity> result = cachedResult(condition);
     if (result != null) {
-      LOG.debug("Returning cached result: " + condition.entityType());
+      LOG.debug("Returning cached result: " + condition.criteria().entityType());
       return result;
     }
 
@@ -1036,19 +1038,18 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return keyBuilder.build();
   }
 
-  private ResultIterator<Entity> entityIterator(Condition condition) throws SQLException {
+  private ResultIterator<Entity> entityIterator(SelectCondition condition) throws SQLException {
     requireNonNull(condition, CONDITION);
-    SelectCondition selectCondition = selectCondition(condition);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
     String selectQuery = null;
-    EntityDefinition entityDefinition = domainEntities.definition(selectCondition.entityType());
+    EntityDefinition entityDefinition = domainEntities.definition(condition.criteria().entityType());
     SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
-            .selectCondition(selectCondition);
-    Criteria criteria = selectCondition.criteria();
+            .selectCondition(condition);
+    Criteria criteria = condition.criteria();
     try {
       selectQuery = selectQueryBuilder.build();
-      statement = prepareStatement(selectQuery, false, selectCondition.queryTimeout());
+      statement = prepareStatement(selectQuery, false, condition.queryTimeout());
       resultSet = executeStatement(statement, selectQuery, criteria, entityDefinition);
 
       return new EntityResultIterator(statement, resultSet,
@@ -1309,7 +1310,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<Entity> cacheResult(SelectCondition condition, List<Entity> result) {
     if (queryCacheEnabled && !condition.forUpdate()) {
-      LOG.debug("Caching result: " + condition.entityType());
+      LOG.debug("Caching result: " + condition.criteria().entityType());
       queryCache.put(condition, result);
     }
 
@@ -1450,14 +1451,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       default:
         return string;
     }
-  }
-
-  private static SelectCondition selectCondition(Condition condition) {
-    if (condition instanceof SelectCondition) {
-      return (SelectCondition) condition;
-    }
-
-    return SelectCondition.builder(condition).build();
   }
 
   static Database configureDatabase(Database database, Domain domain) throws DatabaseException {

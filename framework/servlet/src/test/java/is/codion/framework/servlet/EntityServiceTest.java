@@ -8,7 +8,7 @@ import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entities;
@@ -61,7 +61,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.keys;
 import static java.util.Arrays.asList;
@@ -318,7 +317,7 @@ public class EntityServiceTest {
 
   @Test
   void values() throws Exception {
-    Condition condition = where(column(Department.ID).equalTo(10));
+    SelectCondition condition = SelectCondition.where(column(Department.ID).equalTo(10)).build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("values"));
@@ -369,7 +368,7 @@ public class EntityServiceTest {
     List<Key> keys = new ArrayList<>();
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
-    Condition selectCondition = where(keys(keys));
+    SelectCondition selectCondition = SelectCondition.where(keys(keys)).build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("select"));

@@ -18,7 +18,6 @@ import is.codion.common.rmi.server.exception.ServerException;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
@@ -542,7 +541,7 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req);
-        List<?> values = connection.select((Column<?>) parameters.get(0), (Condition) parameters.get(1));
+        List<?> values = connection.select((Column<?>) parameters.get(0), (SelectCondition) parameters.get(1));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
                 .result(Serializer.serialize(values));
@@ -564,10 +563,10 @@ public final class EntityService implements AuxiliaryServer {
         JsonNode jsonNode = mapper.readTree(context.req.getInputStream());
         EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
         Column<?> column = (Column<?>) entities.definition(entityType).attribute(jsonNode.get("column").textValue());
-        Condition condition = null;
+        SelectCondition condition = null;
         JsonNode conditionNode = jsonNode.get("condition");
         if (conditionNode != null) {
-          condition = mapper.readValue(conditionNode.toString(), Condition.class);
+          condition = mapper.readValue(conditionNode.toString(), SelectCondition.class);
         }
         List<?> values = connection.select(column, condition);
         context.status(HttpStatus.OK_200)
@@ -623,7 +622,7 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        Condition selectCondition = deserialize(context.req);
+        SelectCondition selectCondition = deserialize(context.req);
         List<Entity> selected = connection.select(selectCondition);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)

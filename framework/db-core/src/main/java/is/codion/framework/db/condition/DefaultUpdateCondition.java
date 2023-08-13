@@ -5,7 +5,6 @@ package is.codion.framework.db.condition;
 
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.LinkedHashMap;
@@ -25,11 +24,6 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
   private DefaultUpdateCondition(DefaultUpdateCondition.DefaultBuilder builder) {
     this.criteria = builder.criteria;
     this.propertyValues = builder.columnValues;
-  }
-
-  @Override
-  public EntityType entityType() {
-    return criteria.entityType();
   }
 
   @Override
@@ -65,7 +59,7 @@ final class DefaultUpdateCondition implements UpdateCondition, Serializable {
     private final Criteria criteria;
     private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
 
-    DefaultBuilder(Condition condition) {
+    DefaultBuilder(UpdateCondition condition) {
       this(requireNonNull(condition).criteria());
       if (condition instanceof DefaultUpdateCondition) {
         DefaultUpdateCondition updateCondition = (DefaultUpdateCondition) condition;

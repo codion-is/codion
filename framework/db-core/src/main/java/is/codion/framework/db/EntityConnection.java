@@ -10,7 +10,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
-import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
@@ -255,7 +255,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws IllegalArgumentException in case the given property is not a column based column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
-  <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
+  <T> List<T> select(Column<T> column, SelectCondition condition) throws DatabaseException;
 
   /**
    * Selects an entity by key
@@ -285,7 +285,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity selectSingle(Condition condition) throws DatabaseException;
+  Entity selectSingle(SelectCondition condition) throws DatabaseException;
 
   /**
    * Selects entities based on the given {@code keys}
@@ -309,7 +309,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return entities based to the given condition
    * @throws DatabaseException in case of a database exception
    */
-  List<Entity> select(Condition condition) throws DatabaseException;
+  List<Entity> select(SelectCondition condition) throws DatabaseException;
 
   /**
    * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

@@ -13,9 +13,14 @@ import java.util.Map;
  * A condition specifying a where clause along with attributes and their associated values for update.
  * A factory class for {@link UpdateCondition.Builder} instances via
  * {@link UpdateCondition#all(EntityType)}, {@link UpdateCondition#where(Criteria)} and
- * {@link UpdateCondition#builder(Condition)}.
+ * {@link UpdateCondition#builder(UpdateCondition)}.
  */
-public interface UpdateCondition extends Condition {
+public interface UpdateCondition {
+
+  /**
+   * @return the underlying Criteria instance
+   */
+  Criteria criteria();
 
   /**
    * @return an unmodifiable view of the new values mapped to their respective columns
@@ -62,7 +67,7 @@ public interface UpdateCondition extends Condition {
    * @param condition the condition
    * @return a {@link UpdateCondition.Builder} instance
    */
-  static Builder builder(Condition condition) {
+  static Builder builder(UpdateCondition condition) {
     return new DefaultUpdateCondition.DefaultBuilder(condition);
   }
 }
