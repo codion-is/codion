@@ -385,6 +385,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
+  public <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException {
+    return select(column, SelectCondition.where(criteria)
+            .orderBy(ascending(column))
+            .build());
+  }
+
+  @Override
   public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
     Objects.requireNonNull(column);
     try {
@@ -402,17 +409,13 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException {
-    if (attribute instanceof ForeignKey) {
-      return selectSingle(where(foreignKey((ForeignKey) attribute).equalTo((Entity) value)));
-    }
-
-    return selectSingle(where(column((Column<T>) attribute).equalTo(value)));
+  public Entity select(Key key) throws DatabaseException {
+    return selectSingle(where(key(key)));
   }
 
   @Override
-  public Entity select(Key key) throws DatabaseException {
-    return selectSingle(where(key(key)));
+  public Entity selectSingle(Criteria criteria) throws DatabaseException {
+    return selectSingle(where(criteria));
   }
 
   @Override
@@ -446,6 +449,11 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
+  public List<Entity> select(Criteria criteria) throws DatabaseException {
+    return select(where(criteria));
+  }
+
+  @Override
   public List<Entity> select(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition, "condition");
     try {
@@ -460,20 +468,6 @@ final class HttpEntityConnectionJdk implements EntityConnection {
       LOG.error(e.getMessage(), e);
       throw new RuntimeException(e);
     }
-  }
-
-  @Override
-  public <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException {
-    return select(attribute, singletonList(value));
-  }
-
-  @Override
-  public <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException {
-    if (attribute instanceof ForeignKey) {
-      return select(where(foreignKey((ForeignKey) attribute).in((Collection<Entity>) values)));
-    }
-
-    return select(where(column((Column<T>) attribute).in(values)));
   }
 
   @Override
