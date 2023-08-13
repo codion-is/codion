@@ -3,8 +3,8 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.Select;
-import is.codion.framework.db.Update;
+import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.domain.entity.Entities;
@@ -111,7 +111,7 @@ public final class ConditionObjectMapperTest {
     assertEquals(select.offset(), readCondition.offset());
     assertEquals(select.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
     for (ForeignKey foreignKey : entities.definition(select.condition().entityType()).foreignKeys()) {
-      assertEquals(select.fetchDepth(foreignKey), readCondition.fetchDepth(foreignKey));
+      assertEquals(select.foreignKeyFetchDepths().get(foreignKey), readCondition.foreignKeyFetchDepths().get(foreignKey));
     }
     assertEquals(select.attributes(), readCondition.attributes());
     assertTrue(readCondition.forUpdate());

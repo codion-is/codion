@@ -3,9 +3,8 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.Select;
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -15,19 +14,18 @@ import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
-import java.util.Objects;
+import java.util.Collection;
+import java.util.Map;
 
 final class SelectSerializer extends StdSerializer<Select> {
 
   private static final long serialVersionUID = 1;
 
   private final ConditionSerializer conditionSerializer;
-  private final Entities entities;
 
   SelectSerializer(EntityObjectMapper entityObjectMapper) {
     super(Select.class);
     this.conditionSerializer = new ConditionSerializer(entityObjectMapper);
-    this.entities = entityObjectMapper.entities();
   }
 
   @Override
@@ -37,12 +35,9 @@ final class SelectSerializer extends StdSerializer<Select> {
     generator.writeStringField("entityType", select.condition().entityType().name());
     generator.writeFieldName("condition");
     conditionSerializer.serialize(select.condition(), generator);
-    generator.writeFieldName("orderBy");
     OrderBy orderBy = select.orderBy().orElse(null);
-    if (orderBy == null) {
-      generator.writeNull();
-    }
-    else {
+    if (orderBy != null) {
+      generator.writeFieldName("orderBy");
       generator.writeStartArray();
       for (OrderBy.OrderByColumn orderByColumn : orderBy.orderByColumns()) {
         generator.writeString(orderByColumn.column().name() +
@@ -51,27 +46,40 @@ final class SelectSerializer extends StdSerializer<Select> {
       }
       generator.writeEndArray();
     }
-    generator.writeObjectField("limit", select.limit());
-    generator.writeObjectField("offset", select.offset());
-    generator.writeObjectField("forUpdate", select.forUpdate());
-    generator.writeObjectField("queryTimeout", select.queryTimeout());
+    if (select.limit() != 0) {
+      generator.writeObjectField("limit", select.limit());
+    }
+    if (select.offset() != 0) {
+      generator.writeObjectField("offset", select.offset());
+    }
+    if (select.forUpdate()) {
+      generator.writeObjectField("forUpdate", select.forUpdate());
+    }
+    if (select.queryTimeout() != 0) {
+      generator.writeObjectField("queryTimeout", select.queryTimeout());
+    }
     Integer conditionFetchDepth = select.fetchDepth().orElse(null);
-    generator.writeObjectField("fetchDepth", conditionFetchDepth);
-    generator.writeFieldName("fkFetchDepth");
-    generator.writeStartObject();
-    for (ForeignKey foreignKey : entities.definition(select.condition().entityType()).foreignKeys()) {
-      Integer fkFetchDepth = select.fetchDepth(foreignKey).orElse(null);
-      if (!Objects.equals(fkFetchDepth, conditionFetchDepth)) {
-        generator.writeObjectField(foreignKey.name(), fkFetchDepth);
+    if (conditionFetchDepth != null) {
+      generator.writeObjectField("fetchDepth", conditionFetchDepth);
+    }
+    Map<ForeignKey, Integer> foreignKeyFetchDepths = select.foreignKeyFetchDepths();
+    if (!foreignKeyFetchDepths.isEmpty()) {
+      generator.writeFieldName("fkFetchDepth");
+      generator.writeStartObject();
+      for (Map.Entry<ForeignKey, Integer> entry : foreignKeyFetchDepths.entrySet()) {
+        generator.writeObjectField(entry.getKey().name(), entry.getValue());
       }
+      generator.writeEndObject();
     }
-    generator.writeEndObject();
-    generator.writeFieldName("attributes");
-    generator.writeStartArray();
-    for (Attribute<?> attribute : select.attributes()) {
-      generator.writeString(attribute.name());
+    Collection<Attribute<?>> attributes = select.attributes();
+    if (!attributes.isEmpty()) {
+      generator.writeFieldName("attributes");
+      generator.writeStartArray();
+      for (Attribute<?> attribute : attributes) {
+        generator.writeString(attribute.name());
+      }
+      generator.writeEndArray();
+      generator.writeEndObject();
     }
-    generator.writeEndArray();
-    generator.writeEndObject();
   }
 }

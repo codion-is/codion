@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;

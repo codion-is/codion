@@ -34,7 +34,7 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.Select.where;
+import static is.codion.framework.db.EntityConnection.Select.where;
 import static is.codion.framework.db.condition.Condition.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;

@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Employee;
 import is.codion.framework.db.condition.Condition;

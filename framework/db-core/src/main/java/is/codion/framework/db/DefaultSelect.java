@@ -3,6 +3,7 @@
  */
 package is.codion.framework.db;
 
+import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -17,8 +18,7 @@ import java.util.Objects;
 import java.util.Optional;
 
 import static java.util.Arrays.asList;
-import static java.util.Collections.emptyList;
-import static java.util.Collections.unmodifiableList;
+import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
 final class DefaultSelect implements Select, Serializable {
@@ -37,7 +37,9 @@ final class DefaultSelect implements Select, Serializable {
 
   private DefaultSelect(DefaultBuilder builder) {
     this.condition = builder.condition;
-    this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths;
+    this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths == null ?
+            emptyMap() :
+            unmodifiableMap(builder.foreignKeyFetchDepths);
     this.attributes = builder.attributes;
     this.orderBy = builder.orderBy;
     this.fetchDepth = builder.fetchDepth;
@@ -78,13 +80,8 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
-  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
-    requireNonNull(foreignKey);
-    if (foreignKeyFetchDepths != null && foreignKeyFetchDepths.containsKey(foreignKey)) {
-      return Optional.of(foreignKeyFetchDepths.get(foreignKey));
-    }
-
-    return fetchDepth();
+  public Map<ForeignKey, Integer> foreignKeyFetchDepths() {
+    return foreignKeyFetchDepths;
   }
 
   @Override
@@ -133,7 +130,7 @@ final class DefaultSelect implements Select, Serializable {
     private boolean forUpdate;
     private int limit = -1;
     private int offset = -1;
-    private int queryTimeout = DEFAULT_QUERY_TIMEOUT_SECONDS;
+    private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
     DefaultBuilder(Select select) {
       this(requireNonNull(select).condition());

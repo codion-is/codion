@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.chinook.manual;
 
-import is.codion.framework.db.Select;
-import is.codion.framework.db.Update;
+import is.codion.framework.db.EntityConnection.Select;
+import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;

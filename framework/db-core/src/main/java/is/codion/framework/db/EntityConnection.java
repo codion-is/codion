@@ -12,11 +12,14 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
+import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
@@ -24,6 +27,7 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -39,6 +43,8 @@ import java.util.function.Consumer;
  * @see #commitTransaction()
  */
 public interface EntityConnection extends AutoCloseable {
+
+  int DEFAULT_QUERY_TIMEOUT_SECONDS = 120;
 
   /**
    * @return the underlying domain entities
@@ -488,6 +494,226 @@ public interface EntityConnection extends AutoCloseable {
        * @return a new {@link InsertEntities} instance
        */
       InsertEntities build();
+    }
+  }
+
+  /**
+   * A class encapsulating select query parameters.
+   * A factory class for {@link Builder} instances via
+   * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and
+   * {@link EntityConnection.Select#builder(EntityConnection.Select)}.
+   */
+  interface Select {
+
+    /**
+     * @return the underlying condition instance
+     */
+    Condition condition();
+
+    /**
+     * @return the OrderBy for this condition, an empty Optional if none is specified
+     */
+    Optional<OrderBy> orderBy();
+
+    /**
+     * @return the limit to use for the given condition, -1 for no limit
+     */
+    int limit();
+
+    /**
+     * @return the offset to use for the given condition, -1 for no offset
+     */
+    int offset();
+
+    /**
+     * @return true if this select should lock the result for update
+     */
+    boolean forUpdate();
+
+    /**
+     * @return the query timeout
+     */
+    int queryTimeout();
+
+    /**
+     * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
+     */
+    Optional<Integer> fetchDepth();
+
+    /**
+     * Returns a map containing the number of levels of foreign key values to fetch per foreign key,
+     * with 0 meaning no referenced entities should be fetched, -1 no limit.
+     * @return a map containing the number of levels of foreign key values to fetch for each foreign key
+     */
+    Map<ForeignKey, Integer> foreignKeyFetchDepths();
+
+    /**
+     * @return the attributes to include in the query result,
+     * an empty Collection if all should be included
+     */
+    Collection<Attribute<?>> attributes();
+
+    /**
+     * Builds a {@link Select}.
+     */
+    interface Builder {
+
+      /**
+       * Sets the OrderBy for this condition
+       * @param orderBy the OrderBy to use when applying this condition
+       * @return this builder instance
+       */
+      Builder orderBy(OrderBy orderBy);
+
+      /**
+       * @param limit the limit to use for this condition
+       * @return this builder instance
+       */
+      Builder limit(int limit);
+
+      /**
+       * @param offset the offset to use for this condition
+       * @return this builder instance
+       */
+      Builder offset(int offset);
+
+      /**
+       * Marks this condition as a select for update query, this means the resulting records
+       * will be locked by the given connection until unlocked by running another (non - select for update)
+       * query on the same connection or performing an update
+       * @return this builder instance
+       */
+      Builder forUpdate();
+
+      /**
+       * Limit the levels of foreign keys to fetch
+       * @param fetchDepth the foreign key fetch depth limit
+       * @return this builder instance
+       */
+      Builder fetchDepth(int fetchDepth);
+
+      /**
+       * Limit the levels of foreign keys to fetch via the given foreign key
+       * @param foreignKey the foreign key
+       * @param fetchDepth the foreign key fetch depth limit
+       * @return this builder instance
+       */
+      Builder fetchDepth(ForeignKey foreignKey, int fetchDepth);
+
+      /**
+       * Sets the attributes to include in the query result. An empty array means all attributes should be included.
+       * Note that primary key attribute values are always included.
+       * @param attributes the attributes to include
+       * @param <T> the attribute type
+       * @return this builder instance
+       */
+      <T extends Attribute<?>> Builder attributes(T... attributes);
+
+      /**
+       * Sets the attributes to include in the query result. An empty Collection means all attributes should be included.
+       * Note that primary key attribute values are always included.
+       * @param attributes the attributes to include
+       * @return this builder instance
+       */
+      Builder attributes(Collection<? extends Attribute<?>> attributes);
+
+      /**
+       * @param queryTimeout the query timeout, 0 for no timeout
+       * @return this builder instance
+       */
+      Builder queryTimeout(int queryTimeout);
+
+      /**
+       * @return a new {@link Select} instance based on this builder
+       */
+      Select build();
+    }
+
+    /**
+     * @param entityType the entity type
+     * @return a new {@link Builder} instance
+     */
+    static Builder all(EntityType entityType) {
+      return new DefaultSelect.DefaultBuilder(Condition.all(entityType));
+    }
+
+    /**
+     * @param condition the condition
+     * @return a new {@link Builder} instance
+     */
+    static Builder where(Condition condition) {
+      return new DefaultSelect.DefaultBuilder(condition);
+    }
+
+    /**
+     * @param select the select
+     * @return a new {@link Builder} instance
+     */
+    static Builder builder(Select select) {
+      return new DefaultSelect.DefaultBuilder(select);
+    }
+  }
+
+  /**
+   * A class encapsulating a where clause along with columns and their associated values for update.
+   * A factory class for {@link Builder} instances via
+   * {@link Update#all(EntityType)}, {@link Update#where(Condition)} and
+   * {@link EntityConnection.Update#builder(EntityConnection.Update)}.
+   */
+  interface Update {
+
+    /**
+     * @return the underlying condition instance
+     */
+    Condition condition();
+
+    /**
+     * @return an unmodifiable view of the new values mapped to their respective columns
+     */
+    Map<Column<?>, Object> columnValues();
+
+    /**
+     * Builds an {@link Update}.
+     */
+    interface Builder {
+
+      /**
+       * Adds a column value to update
+       * @param column the column
+       * @param value the new value
+       * @param <T> the value type
+       * @return this builder
+       */
+      <T> Builder set(Column<?> column, T value);
+
+      /**
+       * @return a new {@link Update} instance based on this builder
+       */
+      Update build();
+    }
+
+    /**
+     * @param entityType the entity type
+     * @return a {@link Builder} instance
+     */
+    static Builder all(EntityType entityType) {
+      return new DefaultUpdate.DefaultBuilder(Condition.all(entityType));
+    }
+
+    /**
+     * @param condition the condition
+     * @return a {@link Builder} instance
+     */
+    static Builder where(Condition condition) {
+      return new DefaultUpdate.DefaultBuilder(condition);
+    }
+
+    /**
+     * @param update the update
+     * @return a {@link Builder} instance
+     */
+    static Builder builder(Update update) {
+      return new DefaultUpdate.DefaultBuilder(update);
     }
   }
 }

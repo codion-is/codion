@@ -9450,3 +9450,6 @@
   SelectCondition and UpdateCondition renamed Select and Update respectively
   Select and Update moved up to db package
   Criteria renamed Condition
+  Select.fetchDepth(foreignKey) replaced with foreignKeyFetchDepths()
+  SelectSerializer now excludes elements with default values
+  Select and Update moved to EntityConnection
