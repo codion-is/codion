@@ -7,7 +7,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -45,7 +45,7 @@ public final class TestDomain extends DefaultDomain {
     Column<Boolean> BOOLEAN = TYPE.booleanColumn("boolean");
     Column<LocalTime> TIME = TYPE.localTimeColumn("time");
     Attribute<Entity> ENTITY = TYPE.entityAttribute("entity");
-    CriteriaType CRITERIA_TYPE = TYPE.criteriaType("entityCriteriaType");
+    ConditionType CONDITION_TYPE = TYPE.conditionType("entityConditionType");
   }
 
   void testEntity() {
@@ -59,7 +59,7 @@ public final class TestDomain extends DefaultDomain {
             columnProperty(TestEntity.BOOLEAN),
             columnProperty(TestEntity.TIME),
             transientProperty(TestEntity.ENTITY))
-            .criteriaProvider(TestEntity.CRITERIA_TYPE, (attributes, values) -> "1 = 2"));
+            .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
   }
 
   public interface Department {

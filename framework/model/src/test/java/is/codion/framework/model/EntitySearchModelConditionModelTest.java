@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;

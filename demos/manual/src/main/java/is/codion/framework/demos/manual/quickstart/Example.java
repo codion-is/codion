@@ -31,8 +31,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;

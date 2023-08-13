@@ -17,7 +17,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Map;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 
 public final class WorldImplTest extends EntityTestUnit {
 

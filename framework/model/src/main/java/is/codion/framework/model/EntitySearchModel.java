@@ -7,7 +7,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
@@ -108,19 +108,19 @@ public interface EntitySearchModel {
   boolean searchStringRepresentsSelected();
 
   /**
-   * Performs a query based on the select condition
+   * Performs a query based on the current search configuration
    * @return a list containing the entities fulfilling the current condition
    * @throws IllegalStateException in case no search attributes are specified
    */
   List<Entity> performQuery();
 
   /**
-   * Sets the additional search criteria provider to use when performing the next search.
-   * This criteria is AND'ed to the actual search criteria.
+   * Sets the additional search condition provider to use when performing the next search.
+   * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalCriteriaSupplier the additional search criteria provider
+   * @param additionalConditionSupplier the additional search condition provider
    */
-  void setAdditionalCriteriaSupplier(Supplier<Criteria> additionalCriteriaSupplier);
+  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
 
   /**
    * Override the default toString() for search elements when displayed

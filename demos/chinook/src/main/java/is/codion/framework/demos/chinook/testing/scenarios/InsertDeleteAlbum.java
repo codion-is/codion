@@ -17,7 +17,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomItem;
 import static is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel.selectRandomRow;
 import static java.util.Arrays.asList;

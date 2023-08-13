@@ -8,7 +8,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -141,8 +141,8 @@ public final class TestDomain extends DefaultDomain {
     Column<String> NAME = TYPE.stringColumn("dname");
     Column<String> LOCATION = TYPE.stringColumn("loc");
 
-    CriteriaType CRITERIA = TYPE.criteriaType("criteria");
-    CriteriaType NAME_NOT_NULL_CRITERIA = TYPE.criteriaType("criteriaNameNotNull");
+    ConditionType CONDITION = TYPE.conditionType("condition");
+    ConditionType NAME_NOT_NULL_CONDITION = TYPE.conditionType("conditionNameNotNull");
   }
 
   void department() {
@@ -159,14 +159,14 @@ public final class TestDomain extends DefaultDomain {
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
             .stringFactory(Department.NAME)
-            .criteriaProvider(Department.CRITERIA, (columns, values) -> {
+            .conditionProvider(Department.CONDITION, (columns, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .criteriaProvider(Department.NAME_NOT_NULL_CRITERIA, (columns, values) -> "department name is not null")
+            .conditionProvider(Department.NAME_NOT_NULL_CONDITION, (columns, values) -> "department name is not null")
             .caption("Department"));
   }
 

@@ -7,7 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -34,8 +34,8 @@ import java.util.function.Predicate;
 import java.util.function.Supplier;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.SelectCondition.where;
-import static is.codion.framework.db.criteria.Criteria.foreignKey;
+import static is.codion.framework.db.Select.where;
+import static is.codion.framework.db.condition.Condition.foreignKey;
 import static java.util.Collections.*;
 import static java.util.Objects.requireNonNull;
 
@@ -62,7 +62,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private boolean staticData = false;
   /** used to indicate that a refresh is being forced, as in, overriding the staticData directive */
   private boolean forceRefresh = false;
-  private Supplier<Criteria> selectCriteriaSupplier;
+  private Supplier<Condition> selectConditionSupplier;
   private OrderBy orderBy;
   private boolean strictForeignKeyFiltering = true;
   private boolean listenToEditEvents = true;
@@ -76,7 +76,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.entities = connectionProvider.entities();
     this.orderBy = this.entities.definition(entityType).orderBy();
-    this.selectCriteriaSupplier = new DefaultSelectCriteriaSupplier();
+    this.selectConditionSupplier = new DefaultSelectConditionSupplier();
     setSelectedItemTranslator(new SelectedItemTranslator());
     setItemSupplier(new ItemSupplier());
     setItemValidator(new ItemValidator());
@@ -228,18 +228,18 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   /**
-   * Sets the criteria provider to use when querying data, set to null to fetch all underlying entities.
-   * @param selectCriteriaSupplier the criteria supplier
+   * Sets the condition provider to use when querying data, set to null to fetch all underlying entities.
+   * @param selectConditionSupplier the condition supplier
    */
-  public final void setSelectCriteriaSupplier(Supplier<Criteria> selectCriteriaSupplier) {
-    this.selectCriteriaSupplier = selectCriteriaSupplier == null ? new DefaultSelectCriteriaSupplier() : selectCriteriaSupplier;
+  public final void setSelectConditionSupplier(Supplier<Condition> selectConditionSupplier) {
+    this.selectConditionSupplier = selectConditionSupplier == null ? new DefaultSelectConditionSupplier() : selectConditionSupplier;
   }
 
   /**
-   * @return the select criteria supplier
+   * @return the select condition supplier
    */
-  public final Supplier<Criteria> getSelectCriteriaSupplier() {
-    return this.selectCriteriaSupplier;
+  public final Supplier<Condition> getSelectConditionSupplier() {
+    return this.selectConditionSupplier;
   }
 
   /**
@@ -379,16 +379,16 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Retrieves the entities to present in this EntityComboBoxModel, taking into account
-   * the select condition supplier ({@link #getSelectCriteriaSupplier()}) as well as the
+   * the select condition supplier ({@link #getSelectConditionSupplier()}) as well as the
    * select attributes ({@link #getAttributes()}) and order by clause ({@link #getOrderBy()}.
    * @return the entities to present in this EntityComboBoxModel
-   * @see #getSelectCriteriaSupplier()
+   * @see #getSelectConditionSupplier()
    * @see #getAttributes()
    * @see #getOrderBy()
    */
   protected Collection<Entity> performQuery() {
     try {
-      return connectionProvider.connection().select(where(selectCriteriaSupplier.get())
+      return connectionProvider.connection().select(where(selectConditionSupplier.get())
               .attributes(attributes)
               .orderBy(orderBy)
               .build());
@@ -431,7 +431,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
       linkFilter(foreignKey, foreignKeyModel);
     }
     else {
-      linkCriteria(foreignKey, foreignKeyModel);
+      linkCondition(foreignKey, foreignKeyModel);
     }
     addSelectionListener(selected -> {
       if (selected != null && !selected.isNull(foreignKey)) {
@@ -456,9 +456,9 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     });
   }
 
-  private void linkCriteria(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
+  private void linkCondition(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Consumer<Entity> listener = selected -> {
-      setSelectCriteriaSupplier(() -> foreignKey(foreignKey).equalTo(selected));
+      setSelectConditionSupplier(() -> foreignKey(foreignKey).equalTo(selected));
       refresh();
     };
     foreignKeyModel.addSelectionListener(listener);
@@ -561,11 +561,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class DefaultSelectCriteriaSupplier implements Supplier<Criteria> {
+  private final class DefaultSelectConditionSupplier implements Supplier<Condition> {
 
     @Override
-    public Criteria get() {
-      return Criteria.all(entityType);
+    public Condition get() {
+      return Condition.all(entityType);
     }
   }
 

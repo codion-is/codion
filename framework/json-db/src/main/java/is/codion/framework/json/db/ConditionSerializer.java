@@ -1,9 +1,13 @@
 /*
- * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.framework.json.db;
 
+import is.codion.framework.db.condition.AllCondition;
+import is.codion.framework.db.condition.ColumnCondition;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Condition.Combination;
+import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -12,23 +16,52 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer;
 
 import java.io.IOException;
 
-public class ConditionSerializer extends StdSerializer<Condition> {
+final class ConditionSerializer extends StdSerializer<Condition> {
 
   private static final long serialVersionUID = 1;
 
-  private final CriteriaSerializer criteriaSerializer;
+  private final ColumnConditionSerializer columnConditionSerializer;
+  private final ConditionCombinationSerializer conditionCombinationSerializer;
+  private final CustomConditionSerializer customConditionSerializer;
 
   ConditionSerializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
-    this.criteriaSerializer = new CriteriaSerializer(entityObjectMapper);
+    this.columnConditionSerializer = new ColumnConditionSerializer(entityObjectMapper);
+    this.conditionCombinationSerializer = new ConditionCombinationSerializer(columnConditionSerializer);
+    this.customConditionSerializer = new CustomConditionSerializer(entityObjectMapper);
   }
 
   @Override
-  public void serialize(Condition condition, JsonGenerator generator, SerializerProvider provider) throws IOException {
+  public void serialize(Condition condition, JsonGenerator generator,
+                        SerializerProvider provider) throws IOException {
     generator.writeStartObject();
     generator.writeStringField("entityType", condition.entityType().name());
-    generator.writeFieldName("criteria");
-    criteriaSerializer.serialize(condition.criteria(), generator);
+    generator.writeFieldName("condition");
+    serialize(condition, generator);
     generator.writeEndObject();
+  }
+
+  void serialize(Condition condition, JsonGenerator generator) throws IOException {
+    if (condition instanceof Combination) {
+      Combination combination = (Combination) condition;
+      conditionCombinationSerializer.serialize(combination, generator);
+    }
+    else if (condition instanceof ColumnCondition) {
+      ColumnCondition<?> columnCondition = (ColumnCondition<?>) condition;
+      columnConditionSerializer.serialize(columnCondition, generator);
+    }
+    else if (condition instanceof CustomCondition) {
+      CustomCondition customCondition = (CustomCondition) condition;
+      customConditionSerializer.serialize(customCondition, generator);
+    }
+    else if (condition instanceof AllCondition) {
+      generator.writeStartObject();
+      generator.writeStringField("type", "all");
+      generator.writeStringField("entityType", condition.entityType().name());
+      generator.writeEndObject();
+    }
+    else {
+      throw new IllegalArgumentException("Unknown condition type: " + condition.getClass());
+    }
   }
 }

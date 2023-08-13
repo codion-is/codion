@@ -25,8 +25,8 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 
-import static is.codion.framework.db.criteria.Criteria.all;
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.all;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 

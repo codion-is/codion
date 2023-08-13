@@ -32,7 +32,7 @@ import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.Optional;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
 

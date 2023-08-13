@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.SelectCondition;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
 import is.codion.framework.db.local.TestDomain.QueryFromClause;
@@ -12,7 +12,7 @@ import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class SelectQueriesTest {
@@ -50,14 +50,14 @@ public final class SelectQueriesTest {
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
 
-    SelectCondition condition = SelectCondition.where(column(QueryColumnsWhereClause.ENAME).equalTo("SCOTT"))
+    Select select = Select.where(column(QueryColumnsWhereClause.ENAME).equalTo("SCOTT"))
             .attributes(QueryColumnsWhereClause.ENAME)
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
     builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
-            .selectCondition(condition);
+            .selectCondition(select);
 
-    //select condition should not affect columns when the columns are hardcoded in the entity query
+    //select should not affect columns when the columns are hardcoded in the entity query
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\norder by empno desc", builder.build());
   }
 }

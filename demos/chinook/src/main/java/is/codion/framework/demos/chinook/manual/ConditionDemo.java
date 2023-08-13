@@ -3,10 +3,9 @@
  */
 package is.codion.framework.demos.chinook.manual;
 
+import is.codion.framework.db.Select;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.demos.chinook.domain.Chinook.Album;
 import is.codion.framework.demos.chinook.domain.Chinook.Artist;
 import is.codion.framework.domain.entity.Entity;
@@ -14,43 +13,38 @@ import is.codion.framework.domain.entity.OrderBy;
 
 final class ConditionDemo {
 
-  private static void criteria() {
-    // tag::criteria[]
-    Criteria liveAlbums =
-            Criteria.column(Album.TITLE).like("Live%");
+  private static void condition() {
+    // tag::condition[]
+    Condition liveAlbums =
+            Condition.column(Album.TITLE).like("Live%");
 
     Entity metallica = selectArtist("Metallica");
 
-    Criteria metallicaAlbums =
-            Criteria.foreignKey(Album.ARTIST_FK).equalTo(metallica);
+    Condition metallicaAlbums =
+            Condition.foreignKey(Album.ARTIST_FK).equalTo(metallica);
 
-    Criteria allArtistsCriteria =
-            Criteria.all(Artist.TYPE);
-    // end::criteria[]
-
-    // tag::combination[]
-    Criteria liveMetallicaAlbumsCriteria =
-            Criteria.and(liveAlbums, metallicaAlbums);
-    // end::combination[]
-
-    // tag::condition[]
-    Condition liveMetallicaAlbumsCondition =
-            Condition.where(liveMetallicaAlbumsCriteria);
+    Condition allArtistsCondition =
+            Condition.all(Artist.TYPE);
     // end::condition[]
 
-    // tag::selectCondition[]
-    SelectCondition selectLiveMetallicaAlbums =
-            SelectCondition.where(liveMetallicaAlbumsCriteria)
+    // tag::combination[]
+    Condition liveMetallicaAlbumsCondition =
+            Condition.and(liveAlbums, metallicaAlbums);
+    // end::combination[]
+
+    // tag::select[]
+    Select selectLiveMetallicaAlbums =
+            Select.where(liveMetallicaAlbumsCondition)
                     .orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
                     .build();
-    // end::selectCondition[]
+    // end::select[]
 
-    // tag::updateCondition[]
-    UpdateCondition removeLiveMetallicaAlbumCovers =
-            UpdateCondition.where(liveMetallicaAlbumsCriteria)
+    // tag::update[]
+    Update removeLiveMetallicaAlbumCovers =
+            Update.where(liveMetallicaAlbumsCondition)
                     .set(Album.COVER, null)
                     .build();
-    // end::updateCondition[]
+    // end::update[]
   }
 
   private static Entity selectArtist(String artistName) {

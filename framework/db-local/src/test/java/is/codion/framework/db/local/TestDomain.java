@@ -13,7 +13,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
@@ -88,9 +88,9 @@ public final class TestDomain extends DefaultDomain {
     Column<String> DNAME = TYPE.stringColumn("dname");
     Column<String> LOC = TYPE.stringColumn("loc");
 
-    CriteriaType DEPARTMENT_CRITERIA_TYPE = TYPE.criteriaType("criteria");
-    CriteriaType DEPARTMENT_CRITERIA_SALES_TYPE = TYPE.criteriaType("criteriaSalesId");
-    CriteriaType DEPARTMENT_CRITERIA_INVALID_COLUMN_TYPE = TYPE.criteriaType("criteriaInvalidColumnId");
+    ConditionType DEPARTMENT_CONDITION_TYPE = TYPE.conditionType("condition");
+    ConditionType DEPARTMENT_CONDITION_SALES_TYPE = TYPE.conditionType("conditionSalesId");
+    ConditionType DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE = TYPE.conditionType("conditionInvalidColumnId");
 
     void setName(String name);
 
@@ -117,15 +117,15 @@ public final class TestDomain extends DefaultDomain {
                     .beanProperty("location"))
             .smallDataset(true)
             .stringFactory(Department.DNAME)
-            .criteriaProvider(Department.DEPARTMENT_CRITERIA_TYPE, (attributes, values) -> {
+            .conditionProvider(Department.DEPARTMENT_CONDITION_TYPE, (attributes, values) -> {
               StringBuilder builder = new StringBuilder("deptno in (");
               values.forEach(value -> builder.append("?,"));
               builder.deleteCharAt(builder.length() - 1);
 
               return builder.append(")").toString();
             })
-            .criteriaProvider(Department.DEPARTMENT_CRITERIA_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
-            .criteriaProvider(Department.DEPARTMENT_CRITERIA_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_SALES_TYPE, (attributes, values) -> "dname = 'SALES'")
+            .conditionProvider(Department.DEPARTMENT_CONDITION_INVALID_COLUMN_TYPE, (attributes, values) -> "no_column is null")
             .caption("Department"));
   }
 
@@ -148,8 +148,8 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.DEPTNO);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
-    CriteriaType NAME_IS_BLAKE_CRITERIA = TYPE.criteriaType("criteria1Id");
-    CriteriaType MGR_GREATER_THAN_CRITERIA = TYPE.criteriaType("criteria2Id");
+    ConditionType NAME_IS_BLAKE_CONDITION = TYPE.conditionType("condition1Id");
+    ConditionType MGR_GREATER_THAN_CONDITION = TYPE.conditionType("condition2Id");
   }
 
   void employee() {
@@ -180,8 +180,8 @@ public final class TestDomain extends DefaultDomain {
                     .eagerlyLoaded(true))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .criteriaProvider(Employee.NAME_IS_BLAKE_CRITERIA, (attributes, values) -> "ename = 'BLAKE'")
-            .criteriaProvider(Employee.MGR_GREATER_THAN_CRITERIA, (attributes, values) -> "mgr > ?")
+            .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
+            .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
   }
 
@@ -354,7 +354,7 @@ public final class TestDomain extends DefaultDomain {
     Column<Integer> DEPTNO = TYPE.integerColumn("d.deptno");
     Column<Integer> EMPNO = TYPE.integerColumn("e.empno");
 
-    CriteriaType CRITERIA = EmpnoDeptno.TYPE.criteriaType("criteria");
+    ConditionType CONDITION = EmpnoDeptno.TYPE.conditionType("condition");
   }
 
   private void empnoDeptno() {
@@ -366,7 +366,7 @@ public final class TestDomain extends DefaultDomain {
                     .where("e.deptno = d.deptno")
                     .orderBy("e.deptno, e.ename")
                     .build())
-            .criteriaProvider(EmpnoDeptno.CRITERIA, (attributes, values) -> "d.deptno = 10"));
+            .conditionProvider(EmpnoDeptno.CONDITION, (attributes, values) -> "d.deptno = 10"));
   }
 
   public interface Query {

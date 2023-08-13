@@ -8,9 +8,9 @@ import is.codion.common.db.database.Database;
 import is.codion.common.rmi.client.Clients;
 import is.codion.common.rmi.server.ServerConfiguration;
 import is.codion.common.user.User;
+import is.codion.framework.db.Select;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
@@ -67,9 +67,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.column;
-import static is.codion.framework.db.criteria.Criteria.keys;
+import static is.codion.framework.db.condition.Condition.column;
+import static is.codion.framework.db.condition.Condition.keys;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -324,11 +323,11 @@ public class EntityServiceTest {
 
   @Test
   void values() throws Exception {
-    Condition condition = where(column(Department.ID).equalTo(10));
+    Select select = Select.where(column(Department.ID).equalTo(10)).build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("values"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(asList(Department.ID, condition))));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(asList(Department.ID, select))));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(10, EntityServiceTest.<List<Integer>>deserialize(response.getEntity().getContent()).get(0));
@@ -336,7 +335,7 @@ public class EntityServiceTest {
       ObjectNode node = ENTITY_OBJECT_MAPPER.createObjectNode();
       node.set("column", CONDITION_OBJECT_MAPPER.valueToTree(Department.ID.name()));
       node.set("entityType", CONDITION_OBJECT_MAPPER.valueToTree(Department.ID.entityType().name()));
-      node.set("condition", CONDITION_OBJECT_MAPPER.valueToTree(condition));
+      node.set("condition", CONDITION_OBJECT_MAPPER.valueToTree(select));
       post = new HttpPost(createJsonURI("values"));
       post.setEntity(new StringEntity(node.toString()));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
@@ -375,17 +374,17 @@ public class EntityServiceTest {
     List<Key> keys = new ArrayList<>();
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
-    Condition selectCondition = where(keys(keys));
+    Select select = Select.where(keys(keys)).build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("select"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(selectCondition)));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(select)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(2, EntityServiceTest.<List<Entity>>deserialize(response.getEntity().getContent()).size());
       }
       post = new HttpPost(createJsonURI("select"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(selectCondition)));
+      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(select)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(2, ENTITY_OBJECT_MAPPER.deserializeEntities(response.getEntity().getContent()).size());
@@ -478,18 +477,18 @@ public class EntityServiceTest {
 
   @Test
   void updateCondition() throws Exception {
-    UpdateCondition updateCondition = UpdateCondition.where(column(Department.ID).between(10, 20))
+    Update update = Update.where(column(Department.ID).between(10, 20))
             .set(Department.LOCATION, "aloc").build();
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("updateByCondition"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(updateCondition)));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(update)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(Integer.valueOf(2), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("updateByCondition"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(updateCondition)));
+      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(update)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         Integer updateCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);
@@ -500,17 +499,17 @@ public class EntityServiceTest {
 
   @Test
   void delete() throws Exception {
-    Criteria deleteCriteria = column(Department.ID).equalTo(40);
+    Condition deleteCondition = column(Department.ID).equalTo(40);
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
       HttpPost post = new HttpPost(createSerURI("delete"));
-      post.setEntity(new ByteArrayEntity(Serializer.serialize(deleteCriteria)));
+      post.setEntity(new ByteArrayEntity(Serializer.serialize(deleteCondition)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         assertEquals(Integer.valueOf(1), deserialize(response.getEntity().getContent()));
       }
       post = new HttpPost(createJsonURI("delete"));
-      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(deleteCriteria)));
+      post.setEntity(new StringEntity(CONDITION_OBJECT_MAPPER.writeValueAsString(deleteCondition)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
         Integer deleteCount = ENTITY_OBJECT_MAPPER.readValue(response.getEntity().getContent(), Integer.class);

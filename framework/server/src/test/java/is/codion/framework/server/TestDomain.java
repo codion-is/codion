@@ -11,7 +11,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -77,7 +77,7 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
-    CriteriaType MGR_CRITERIA_TYPE = TYPE.criteriaType("mgrCriteriaType");
+    ConditionType MGR_CONDITION_TYPE = TYPE.conditionType("mgrConditionType");
     ReportType<Object, Object, Object> EMP_REPORT = ReportType.reportType("emp_report");
     FunctionType<EntityConnection, Object, Object> FUNC = FunctionType.functionType("emp_func");
   }
@@ -109,7 +109,7 @@ public final class TestDomain extends DefaultDomain {
             denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
-            .criteriaProvider(Employee.MGR_CRITERIA_TYPE, (attributes, values) -> "mgr > ?")
+            .conditionProvider(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
 
     add(Employee.EMP_REPORT, new AbstractReport<Object, Object, Object>("path", true) {

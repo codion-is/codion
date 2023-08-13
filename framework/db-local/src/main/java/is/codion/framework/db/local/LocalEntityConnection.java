@@ -11,8 +11,8 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 
@@ -26,7 +26,7 @@ import java.sql.Connection;
  * User user = User.parse("scott:tiger");
  *
  * try (EntityConnection connection = LocalEntityConnection.localEntityConnection(database, domain, user)) {
- *   List&lt;Entity&gt; customers = connection.select(Conditions.condition(Customer.TYPE));
+ *   List&lt;Entity&gt; customers = connection.select(all(Customer.TYPE));
  * }
  * </pre>
  * A factory class for creating LocalEntityConnection instances.
@@ -47,7 +47,7 @@ public interface LocalEntityConnection extends EntityConnection {
    * Value type: Integer<br>
    * Default value: 120
    */
-  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", SelectCondition.DEFAULT_QUERY_TIMEOUT_SECONDS);
+  PropertyValue<Integer> QUERY_TIMEOUT_SECONDS = Configuration.integerValue("codion.db.queryTimeoutSeconds", Select.DEFAULT_QUERY_TIMEOUT_SECONDS);
 
   /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
@@ -81,6 +81,16 @@ public interface LocalEntityConnection extends EntityConnection {
   ResultIterator<Entity> iterator(Condition condition) throws DatabaseException;
 
   /**
+   * Returns a result set iterator based on the given select, this iterator closes all underlying
+   * resources in case of an exception and when it finishes iterating.
+   * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
+   * @param select the query select
+   * @return an iterator for the given query select
+   * @throws DatabaseException in case of an exception
+   */
+  ResultIterator<Entity> iterator(Select select) throws DatabaseException;
+
+  /**
    * @return true if optimistic locking is enabled
    */
   boolean isOptimisticLockingEnabled();
@@ -97,7 +107,7 @@ public interface LocalEntityConnection extends EntityConnection {
 
   /**
    * @param limitForeignKeyFetchDepth false to override the fetch depth limit specified by conditions or entities
-   * @see SelectCondition.Builder#fetchDepth(int)
+   * @see Select.Builder#fetchDepth(int)
    */
   void setLimitForeignKeyFetchDepth(boolean limitForeignKeyFetchDepth);
 

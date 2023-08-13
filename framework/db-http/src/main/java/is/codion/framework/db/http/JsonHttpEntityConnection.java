@@ -13,10 +13,9 @@ import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
+import is.codion.framework.db.Select;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
@@ -50,8 +49,7 @@ import java.util.ResourceBundle;
 import java.util.UUID;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.key;
+import static is.codion.framework.db.condition.Condition.key;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -263,12 +261,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int update(UpdateCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int update(Update update) throws DatabaseException {
+    Objects.requireNonNull(update);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("updateByCondition",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(update)))),
                 entityObjectMapper, Integer.class);
       }
     }
@@ -303,12 +301,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int delete(Criteria criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria);
+  public int delete(Condition condition) throws DatabaseException {
+    Objects.requireNonNull(condition);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("delete",
-                        stringEntity(conditionObjectMapper.writeValueAsString(criteria)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
       }
     }
@@ -322,27 +320,27 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
 
   @Override
   public <T> List<T> select(Column<T> column) throws DatabaseException {
-    return select(Objects.requireNonNull(column), SelectCondition.all(column.entityType())
-            .orderBy(ascending(column))
-            .build());
-  }
-
-  @Override
-  public <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException {
-    return select(column, SelectCondition.where(criteria)
+    return select(Objects.requireNonNull(column), Select.all(column.entityType())
             .orderBy(ascending(column))
             .build());
   }
 
   @Override
   public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+    return select(column, Select.where(condition)
+            .orderBy(ascending(column))
+            .build());
+  }
+
+  @Override
+  public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     Objects.requireNonNull(column);
-    Objects.requireNonNull(condition);
+    Objects.requireNonNull(select);
     try {
       ObjectNode node = entityObjectMapper.createObjectNode();
       node.set("column", conditionObjectMapper.valueToTree(column.name()));
       node.set("entityType", conditionObjectMapper.valueToTree(column.entityType().name()));
-      node.set("condition", conditionObjectMapper.valueToTree(condition));
+      node.set("condition", conditionObjectMapper.valueToTree(select));
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("values", stringEntity(node.toString()))), entityObjectMapper, List.class);
       }
@@ -361,13 +359,13 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Entity selectSingle(Criteria criteria) throws DatabaseException {
-    return selectSingle(where(criteria));
+  public Entity selectSingle(Condition condition) throws DatabaseException {
+    return selectSingle(Select.where(condition).build());
   }
 
   @Override
-  public Entity selectSingle(Condition condition) throws DatabaseException {
-    List<Entity> selected = select(condition);
+  public Entity selectSingle(Select select) throws DatabaseException {
+    List<Entity> selected = select(select);
     if (nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -397,17 +395,17 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public List<Entity> select(Criteria criteria) throws DatabaseException {
-    return select(where(criteria));
+  public List<Entity> select(Condition condition) throws DatabaseException {
+    return select(Select.where(condition).build());
   }
 
   @Override
-  public List<Entity> select(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, "condition");
+  public List<Entity> select(Select select) throws DatabaseException {
+    Objects.requireNonNull(select, "select");
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("select",
-                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(select)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
       }
     }
@@ -444,12 +442,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int rowCount(Criteria criteria) throws DatabaseException {
-    Objects.requireNonNull(criteria);
+  public int rowCount(Condition condition) throws DatabaseException {
+    Objects.requireNonNull(condition);
     try {
       synchronized (this.entities) {
         return onJsonResponse(execute(createHttpPost("count",
-                        stringEntity(conditionObjectMapper.writeValueAsString(criteria)))),
+                        stringEntity(conditionObjectMapper.writeValueAsString(condition)))),
                 entityObjectMapper, Integer.class);
       }
     }

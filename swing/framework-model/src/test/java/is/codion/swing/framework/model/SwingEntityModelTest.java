@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collections;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class SwingEntityModelTest

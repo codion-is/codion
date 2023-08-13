@@ -38,25 +38,25 @@ public interface FilteredTableSearchModel {
 
   /**
    * Finds the next value and selects the row, if none is found the selection is cleared
-   * @return the row and column of the next item fitting the search criteria, an empty Optional if none is found
+   * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
    */
   Optional<RowColumn> nextResult();
 
   /**
    * Finds the next value and adds the row to the selection
-   * @return the row and column of the next item fitting the search criteria, an empty Optional if none is found
+   * @return the row and column of the next item fitting the search condition, an empty Optional if none is found
    */
   Optional<RowColumn> selectNextResult();
 
   /**
    * Finds the previous value and selects the row, if none is found the selection is cleared
-   * @return the row and column of the previous item fitting the search criteria, an empty Optional if none is found
+   * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
    */
   Optional<RowColumn> previousResult();
 
   /**
    * Finds the previous value and adds the row to the selection
-   * @return the row and column of the previous item fitting the search criteria, an empty Optional if none is found
+   * @return the row and column of the previous item fitting the search condition, an empty Optional if none is found
    */
   Optional<RowColumn> selectPreviousResult();
 

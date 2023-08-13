@@ -100,9 +100,8 @@ is.codion.common.db.report.DefaultReportType
 is.codion.common.rmi.client.DefaultConnectionRequest
 is.codion.common.user.DefaultUser
 is.codion.common.version.DefaultVersion
-is.codion.framework.db.condition.DefaultCondition
-is.codion.framework.db.condition.DefaultSelectCondition
-is.codion.framework.db.condition.DefaultUpdateCondition
+is.codion.framework.db.DefaultSelect
+is.codion.framework.db.DefaultUpdate
 is.codion.framework.db.criteria.AbstractCriteria
 is.codion.framework.db.criteria.AbstractColumnCriteria
 is.codion.framework.db.criteria.AllCriteria

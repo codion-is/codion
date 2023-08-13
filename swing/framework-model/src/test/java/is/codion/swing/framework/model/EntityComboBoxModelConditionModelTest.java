@@ -16,7 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.swing.framework.model.EntityComboBoxModelConditionModel.entityComboBoxModelConditionModel;
 import static org.junit.jupiter.api.Assertions.*;
 

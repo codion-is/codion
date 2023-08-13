@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package is.codion.framework.json.db;
 
@@ -16,28 +16,53 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 
 import java.io.IOException;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static java.util.Objects.requireNonNull;
 
-public class ConditionDeserializer extends StdDeserializer<Condition> {
+final class ConditionDeserializer extends StdDeserializer<Condition> {
 
   private static final long serialVersionUID = 1;
 
-  private final CriteriaDeserializer criteriaDeserializer;
-  private final Entities entities;
+  final EntityObjectMapper entityObjectMapper;
+  final Entities entities;
+
+  private final ColumnConditionDeserializer columnConditionDeserializer;
+  private final ConditionCombinationDeserializer conditionCombinationDeserializer;
+  private final CustomConditionDeserializer customConditionDeserializer;
 
   ConditionDeserializer(EntityObjectMapper entityObjectMapper) {
     super(Condition.class);
-    this.criteriaDeserializer = new CriteriaDeserializer(entityObjectMapper);
+    this.entityObjectMapper = requireNonNull(entityObjectMapper);
+    this.columnConditionDeserializer = new ColumnConditionDeserializer(entityObjectMapper);
+    this.conditionCombinationDeserializer = new ConditionCombinationDeserializer(this);
+    this.customConditionDeserializer = new CustomConditionDeserializer(entityObjectMapper);
     this.entities = entityObjectMapper.entities();
   }
 
   @Override
   public Condition deserialize(JsonParser parser, DeserializationContext ctxt) throws IOException {
-    JsonNode jsonNode = parser.getCodec().readTree(parser);
-    EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
-    EntityDefinition definition = entities.definition(entityType);
-    JsonNode criteriaNode = jsonNode.get("criteria");
+    JsonNode node = parser.getCodec().readTree(parser);
+    EntityType entityType = entities.domainType().entityType(node.get("entityType").asText());
+    JsonNode conditionNode = node.get("condition");
 
-    return where(criteriaDeserializer.deserialize(definition, criteriaNode));
+    return deserialize(entities.definition(entityType), conditionNode);
+  }
+
+  Condition deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
+    JsonNode type = conditionNode.get("type");
+    String typeString = type.asText();
+    if ("combination".equals(typeString)) {
+      return conditionCombinationDeserializer.deserialize(definition, conditionNode);
+    }
+    else if ("column".equals(typeString)) {
+      return columnConditionDeserializer.deserialize(definition, conditionNode);
+    }
+    else if ("custom".equals(typeString)) {
+      return customConditionDeserializer.deserialize(definition, conditionNode);
+    }
+    else if ("all".equals(typeString)) {
+      return Condition.all(definition.type());
+    }
+
+    throw new IllegalArgumentException("Unknown condition type: " + type);
   }
 }

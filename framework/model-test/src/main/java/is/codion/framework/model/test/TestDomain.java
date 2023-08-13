@@ -8,7 +8,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
-import is.codion.framework.domain.entity.CriteriaType;
+import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 
@@ -157,9 +157,9 @@ public final class TestDomain extends DefaultDomain {
     ForeignKey DEPARTMENT_FK = TYPE.foreignKey("dept_fk", DEPARTMENT, Department.ID);
     ForeignKey MGR_FK = TYPE.foreignKey("mgr_fk", MGR, ID);
 
-    CriteriaType CRITERIA_1_TYPE = TYPE.criteriaType("criteria1Id");
-    CriteriaType CRITERIA_2_TYPE = TYPE.criteriaType("criteria2Id");
-    CriteriaType CRITERIA_3_TYPE = TYPE.criteriaType("criteria3Id");
+    ConditionType CONDITION_1_TYPE = TYPE.conditionType("condition1Id");
+    ConditionType CONDITION_2_TYPE = TYPE.conditionType("condition2Id");
+    ConditionType CONDITION_3_TYPE = TYPE.conditionType("condition3Id");
   }
 
   void employee() {
@@ -191,9 +191,9 @@ public final class TestDomain extends DefaultDomain {
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
-            .criteriaProvider(Employee.CRITERIA_1_TYPE, (attributes, values) -> "1 = 2")
-            .criteriaProvider(Employee.CRITERIA_2_TYPE, (attributes, values) -> "1 = 1")
-            .criteriaProvider(Employee.CRITERIA_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
+            .conditionProvider(Employee.CONDITION_1_TYPE, (attributes, values) -> "1 = 2")
+            .conditionProvider(Employee.CONDITION_2_TYPE, (attributes, values) -> "1 = 1")
+            .conditionProvider(Employee.CONDITION_3_TYPE, (attributes, values) -> " ename = 'CLARK'")
             .caption("Employee")
             .backgroundColorProvider((entity, attribute) -> {
               if (attribute.equals(Employee.JOB) && "MANAGER".equals(entity.get(Employee.JOB))) {

@@ -8,7 +8,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
@@ -20,7 +20,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.condition.Condition.column;
 import static java.util.Arrays.asList;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -108,7 +108,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
-    conditionModel.setAdditionalCriteriaSupplier(() -> Criteria.customCriteria(Employee.CRITERIA_2_TYPE));
-    assertNotNull(conditionModel.getAdditionalCriteriaSupplier());
+    conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
+    assertNotNull(conditionModel.getAdditionalConditionSupplier());
   }
 }

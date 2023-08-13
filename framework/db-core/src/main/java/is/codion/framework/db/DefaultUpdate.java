@@ -1,0 +1,90 @@
+/*
+ * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package is.codion.framework.db;
+
+import is.codion.framework.db.condition.Condition;
+import is.codion.framework.domain.entity.Column;
+
+import java.io.Serializable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Objects;
+
+import static java.util.Collections.unmodifiableMap;
+import static java.util.Objects.requireNonNull;
+
+final class DefaultUpdate implements Update, Serializable {
+
+  private static final long serialVersionUID = 1;
+
+  private final Condition condition;
+  private final Map<Column<?>, Object> propertyValues;
+
+  private DefaultUpdate(DefaultUpdate.DefaultBuilder builder) {
+    this.condition = builder.condition;
+    this.propertyValues = builder.columnValues;
+  }
+
+  @Override
+  public Condition condition() {
+    return condition;
+  }
+
+  @Override
+  public Map<Column<?>, Object> columnValues() {
+    return unmodifiableMap(propertyValues);
+  }
+
+  @Override
+  public boolean equals(Object object) {
+    if (this == object) {
+      return true;
+    }
+    if (!(object instanceof DefaultUpdate)) {
+      return false;
+    }
+    DefaultUpdate that = (DefaultUpdate) object;
+    return Objects.equals(condition, that.condition) &&
+            Objects.equals(propertyValues, that.propertyValues);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(condition, propertyValues);
+  }
+
+  static final class DefaultBuilder implements Update.Builder {
+
+    private final Condition condition;
+    private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
+
+    DefaultBuilder(Update update) {
+      this(requireNonNull(update).condition());
+      if (update instanceof DefaultUpdate) {
+        DefaultUpdate updateCondition = (DefaultUpdate) update;
+        columnValues.putAll(updateCondition.propertyValues);
+      }
+    }
+
+    DefaultBuilder(Condition condition) {
+      this.condition = requireNonNull(condition);
+    }
+
+    @Override
+    public <T> Builder set(Column<?> column, T value) {
+      requireNonNull(column, "column");
+      if (columnValues.containsKey(column)) {
+        throw new IllegalArgumentException("Update already contains a value for column: " + column);
+      }
+      columnValues.put(column, value);
+
+      return this;
+    }
+
+    @Override
+    public Update build() {
+      return new DefaultUpdate(this);
+    }
+  }
+}

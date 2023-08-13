@@ -10,8 +10,8 @@ import is.codion.common.db.result.ResultIterator;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
+import is.codion.framework.db.Select;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
@@ -32,8 +32,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Arrays.asList;
 
@@ -43,8 +42,8 @@ import static java.util.Arrays.asList;
  */
 public final class EntityConnectionDemo {
 
-  static void selectCriteriaCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::selectCondition[]
+  static void selectCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    // tag::select[]
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> artists = connection.select(
@@ -66,7 +65,7 @@ public final class EntityConnectionDemo {
     Entity liveIronMaidenAlbum = connection.selectSingle(and(
             foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
             column(Album.TITLE).likeIgnoreCase("%live after%")));
-    // end::selectCondition[]
+    // end::select[]
   }
 
   static void fetchDepthEntity(EntityConnectionProvider connectionProvider) throws DatabaseException {
@@ -93,7 +92,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.where(column(Track.NAME).like("Bad%"))
+            Select.where(column(Track.NAME).like("Bad%"))
                     .fetchDepth(0)
                     .build());
 
@@ -114,7 +113,7 @@ public final class EntityConnectionDemo {
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> tracks = connection.select(
-            SelectCondition.where(column(Track.NAME).like("Bad%"))
+            Select.where(column(Track.NAME).like("Bad%"))
                     .fetchDepth(Track.ALBUM_FK, 0)
                     .build());
 
@@ -246,19 +245,19 @@ public final class EntityConnectionDemo {
   }
 
   static void updateConditionDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::updateCondition[]
+    // tag::update[]
     EntityConnection connection = connectionProvider.connection();
 
     connection.update(
-            UpdateCondition.where(column(Artist.NAME).equalTo("Azymuth"))
+            Update.where(column(Artist.NAME).equalTo("Azymuth"))
                     .set(Artist.NAME, "Azymouth")
                     .build());
 
     int updateCount = connection.update(
-            UpdateCondition.where(column(Customer.EMAIL).isNull())
+            Update.where(column(Customer.EMAIL).isNull())
                     .set(Customer.EMAIL, "<none>")
                     .build());
-    // end::updateCondition[]
+    // end::update[]
   }
 
   static void deleteCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
@@ -311,7 +310,7 @@ public final class EntityConnectionDemo {
     LocalEntityConnection connection = connectionProvider.connection();
 
     try (ResultIterator<Entity> iterator =
-                 connection.iterator(where(column(Customer.EMAIL).isNotNull()))) {
+                 connection.iterator(column(Customer.EMAIL).isNotNull())) {
       while (iterator.hasNext()) {
         System.out.println(iterator.next().get(Customer.EMAIL));
       }
@@ -399,7 +398,7 @@ public final class EntityConnectionDemo {
                     .user(User.parse("scott:tiger"))
                     .build();
 
-    selectCriteriaCondition(connectionProvider);
+    selectCondition(connectionProvider);
     fetchDepthEntity(connectionProvider);
     fetchDepthCondition(connectionProvider);
     fetchDepthForeignKeyCondition(connectionProvider);
