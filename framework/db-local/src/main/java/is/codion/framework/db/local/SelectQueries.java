@@ -80,11 +80,11 @@ final class SelectQueries {
       return selectedProperties;
     }
 
-    Builder selectCondition(Select select) {
-      return selectCondition(select, true);
+    Builder select(Select select) {
+      return select(select, true);
     }
 
-    Builder selectCondition(Select select, boolean setWhereClause) {
+    Builder select(Select select, boolean setWhereClause) {
       entitySelectQuery();
       if (!columnsClauseFromSelectQuery) {
         setColumns(select);

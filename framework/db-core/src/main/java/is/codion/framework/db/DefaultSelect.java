@@ -80,6 +80,16 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
+  public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
+    requireNonNull(foreignKey);
+    if (foreignKeyFetchDepths.containsKey(foreignKey)) {
+      return Optional.of(foreignKeyFetchDepths.get(foreignKey));
+    }
+
+    return fetchDepth();
+  }
+
+  @Override
   public Map<ForeignKey, Integer> foreignKeyFetchDepths() {
     return foreignKeyFetchDepths;
   }
@@ -135,15 +145,15 @@ final class DefaultSelect implements Select, Serializable {
     DefaultBuilder(Select select) {
       this(requireNonNull(select).condition());
       if (select instanceof DefaultSelect) {
-        DefaultSelect selectCondition = (DefaultSelect) select;
-        foreignKeyFetchDepths = selectCondition.foreignKeyFetchDepths;
-        attributes = selectCondition.attributes;
-        orderBy = selectCondition.orderBy;
-        fetchDepth = selectCondition.fetchDepth;
-        forUpdate = selectCondition.forUpdate;
-        limit = selectCondition.limit;
-        offset = selectCondition.offset;
-        queryTimeout = selectCondition.queryTimeout;
+        DefaultSelect defaultSelect = (DefaultSelect) select;
+        foreignKeyFetchDepths = new HashMap<>(defaultSelect.foreignKeyFetchDepths);
+        attributes = defaultSelect.attributes;
+        orderBy = defaultSelect.orderBy;
+        fetchDepth = defaultSelect.fetchDepth;
+        forUpdate = defaultSelect.forUpdate;
+        limit = defaultSelect.limit;
+        offset = defaultSelect.offset;
+        queryTimeout = defaultSelect.queryTimeout;
       }
     }
 

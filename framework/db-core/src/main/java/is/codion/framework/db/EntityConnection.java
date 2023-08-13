@@ -367,26 +367,26 @@ public interface EntityConnection extends AutoCloseable {
   byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
 
   /**
-   * Creates a new {@link CopyEntities.Builder} instance for copying entities from source to destination, with a default batch size of 100.
+   * Creates a new {@link Copy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
    * Performs a commit after each {code batchSize} number of inserts, unless the destination connection has an open transaction.
-   * Call {@link CopyEntities.Builder#execute()} to perform the copy operation.
+   * Call {@link Copy.Builder#execute()} to perform the copy operation.
    * @param source the source connection
    * @param destination the destination connection
-   * @return a new {@link CopyEntities.Builder} instance
+   * @return a new {@link Copy.Builder} instance
    */
-  static CopyEntities.Builder copyEntities(EntityConnection source, EntityConnection destination) {
+  static Copy.Builder copyEntities(EntityConnection source, EntityConnection destination) {
     return new DefaultCopyEntities.DefaultBuilder(source, destination);
   }
 
   /**
-   * Creates a new {@link InsertEntities} instance the given entities, with a default batch size of 100.
+   * Creates a new {@link Insert} instance the given entities, with a default batch size of 100.
    * Performs a commit after each {@code batchSize} number of inserts, unless the destination connection has an open transaction.
-   * Call {@link InsertEntities#execute()} to perform the insert operation.
+   * Call {@link Insert#execute()} to perform the insert operation.
    * @param connection the entity connection to use when inserting
    * @param entities the entities to insert
-   * @return a new {@link InsertEntities.Builder} instance
+   * @return a new {@link Insert.Builder} instance
    */
-  static InsertEntities.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
+  static Insert.Builder insertEntities(EntityConnection connection, Iterator<Entity> entities) {
     return new DefaultInsertEntities.DefaultBuilder(connection, entities);
   }
 
@@ -395,7 +395,7 @@ public interface EntityConnection extends AutoCloseable {
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
-  interface CopyEntities {
+  interface Copy {
 
     /**
      * Executes this copy operation
@@ -404,7 +404,7 @@ public interface EntityConnection extends AutoCloseable {
     void execute() throws DatabaseException;
 
     /**
-     * A builder for a {@link CopyEntities} operation.
+     * A builder for a {@link Copy} operation.
      */
     interface Builder {
 
@@ -442,9 +442,9 @@ public interface EntityConnection extends AutoCloseable {
       void execute() throws DatabaseException;
 
       /**
-       * @return a new {@link CopyEntities} instance
+       * @return a new {@link Copy} instance
        */
-      CopyEntities build();
+      Copy build();
     }
   }
 
@@ -453,7 +453,7 @@ public interface EntityConnection extends AutoCloseable {
    * unless the destination connection has an open transaction.
    * @see #execute()
    */
-  interface InsertEntities {
+  interface Insert {
 
     /**
      * Executes this batch insert
@@ -462,7 +462,7 @@ public interface EntityConnection extends AutoCloseable {
     void execute() throws DatabaseException;
 
     /**
-     * A builder for {@link InsertEntities} operation.
+     * A builder for {@link Insert} operation.
      */
     interface Builder {
 
@@ -491,9 +491,9 @@ public interface EntityConnection extends AutoCloseable {
       void execute() throws DatabaseException;
 
       /**
-       * @return a new {@link InsertEntities} instance
+       * @return a new {@link Insert} instance
        */
-      InsertEntities build();
+      Insert build();
     }
   }
 
@@ -539,6 +539,14 @@ public interface EntityConnection extends AutoCloseable {
      * @return the global fetch depth limit for this condition, an empty Optional if none has been specified
      */
     Optional<Integer> fetchDepth();
+
+    /**
+     * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
+     * should be fetched, -1 no limit and an empty Optional if unspecified (use default).
+     * @param foreignKey the foreign key
+     * @return the number of levels of foreign key values to fetch
+     */
+    Optional<Integer> fetchDepth(ForeignKey foreignKey);
 
     /**
      * Returns a map containing the number of levels of foreign key values to fetch per foreign key,

@@ -45,7 +45,7 @@ public final class SelectQueriesTest {
   }
 
   @Test
-  void selectCondition() {
+  void select() {
     SelectQueries.Builder builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
             .entitySelectQuery();
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10", builder.build());
@@ -55,7 +55,7 @@ public final class SelectQueriesTest {
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.EMPNO))
             .build();
     builder = queries.builder(testDomain.entities().definition(QueryColumnsWhereClause.TYPE))
-            .selectCondition(select);
+            .select(select);
 
     //select should not affect columns when the columns are hardcoded in the entity query
     assertEquals("select e.empno, e.ename\nfrom scott.emp e\nwhere e.deptno > 10\nand ename = ?\norder by empno desc", builder.build());

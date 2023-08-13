@@ -4,7 +4,7 @@
 package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.framework.db.EntityConnection.CopyEntities;
+import is.codion.framework.db.EntityConnection.Copy;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entity;
@@ -19,7 +19,7 @@ import java.util.Map;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultCopyEntities implements CopyEntities {
+final class DefaultCopyEntities implements Copy {
 
   private final EntityConnection source;
   private final EntityConnection destination;
@@ -107,7 +107,7 @@ final class DefaultCopyEntities implements CopyEntities {
     }
 
     @Override
-    public CopyEntities build() {
+    public Copy build() {
       return new DefaultCopyEntities(this);
     }
   }

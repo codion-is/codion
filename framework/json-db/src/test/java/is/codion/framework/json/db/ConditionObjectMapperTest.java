@@ -86,7 +86,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  void selectCondition() throws JsonProcessingException {
+  void select() throws JsonProcessingException {
     Select select = Select.where(column(Employee.EMPNO).equalTo(1))
             .orderBy(OrderBy.builder()
                     .ascending(Employee.EMPNO)
@@ -133,7 +133,7 @@ public final class ConditionObjectMapperTest {
   }
 
   @Test
-  void updateCondition() throws JsonProcessingException {
+  void update() throws JsonProcessingException {
     Update update = Update.where(column(Department.DEPTNO)
                     .between(1, 2))
             .set(Department.LOCATION, "loc")

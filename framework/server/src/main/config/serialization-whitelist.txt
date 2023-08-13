@@ -34,6 +34,7 @@ java.time.ZoneRegion
 java.util.ArrayList
 java.util.Arrays$ArrayList
 java.util.Collections$EmptyList
+java.util.Collections$EmptyMap
 java.util.Collections$SingletonList
 java.util.Collections$SingletonMap
 java.util.Collections$UnmodifiableCollection

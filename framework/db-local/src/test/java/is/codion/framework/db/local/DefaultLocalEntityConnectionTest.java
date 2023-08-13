@@ -355,14 +355,14 @@ public class DefaultLocalEntityConnectionTest {
     Condition condition = all(Department.TYPE);
     List<Entity> departments = connection.select(condition);
     assertEquals(4, departments.size());
-    Select.Builder selectConditionBuilder = Select.where(condition);
-    departments = connection.select(selectConditionBuilder.limit(0).build());
+    Select.Builder selectBuilder = Select.where(condition);
+    departments = connection.select(selectBuilder.limit(0).build());
     assertTrue(departments.isEmpty());
-    departments = connection.select(selectConditionBuilder.limit(2).build());
+    departments = connection.select(selectBuilder.limit(2).build());
     assertEquals(2, departments.size());
-    departments = connection.select(selectConditionBuilder.limit(3).build());
+    departments = connection.select(selectBuilder.limit(3).build());
     assertEquals(3, departments.size());
-    departments = connection.select(selectConditionBuilder.limit(-1).build());
+    departments = connection.select(selectBuilder.limit(-1).build());
     assertEquals(4, departments.size());
   }
 

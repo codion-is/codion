@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public final class UpdateTest {
 
   @Test
-  void updateConditionDuplicate() {
+  void updateDuplicate() {
     assertThrows(IllegalArgumentException.class, () -> Update.all(Employee.TYPE)
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));

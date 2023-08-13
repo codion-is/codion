@@ -9453,3 +9453,9 @@
   Select.fetchDepth(foreignKey) replaced with foreignKeyFetchDepths()
   SelectSerializer now excludes elements with default values
   Select and Update moved to EntityConnection
+  EntityConnection.InsertEntities renamed Insert
+  EntityConnection.CopyEntities renamed Copy
+  EntityComboBoxModel.setSelectConditionSupplier() renamed setConditionSupplier()
+  Select.fetchDepth(foreignKey) reintroduced
+  DefaultSelect.DefaultBuilder copy constructor bug fixed, map received was unmodifiable
+  DefaultUpdate.columnValues now unmodifiable
