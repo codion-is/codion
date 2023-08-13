@@ -9415,3 +9415,4 @@
   Select and Update moved to EntityConnection
   EntityConnection.InsertEntities renamed Insert
   EntityConnection.CopyEntities renamed Copy
+  EntityComboBoxModel.setSelectConditionSupplier() renamed setConditionSupplier()
