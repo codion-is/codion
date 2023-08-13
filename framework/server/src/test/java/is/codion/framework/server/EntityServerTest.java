@@ -17,7 +17,7 @@ import is.codion.common.rmi.server.exception.ServerAuthenticationException;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.db.rmi.RemoteEntityConnectionProvider;

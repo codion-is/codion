@@ -5,7 +5,6 @@ package is.codion.framework.db;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.framework.db.EntityConnection.CopyEntities;
-import is.codion.framework.db.condition.Select;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;

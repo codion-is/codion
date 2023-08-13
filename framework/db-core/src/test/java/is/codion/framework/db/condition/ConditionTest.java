@@ -3,8 +3,10 @@
  */
 package is.codion.framework.db.condition;
 
+import is.codion.framework.db.Select;
 import is.codion.framework.db.TestDomain.Department;
 import is.codion.framework.db.TestDomain.Employee;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.OrderBy;
 

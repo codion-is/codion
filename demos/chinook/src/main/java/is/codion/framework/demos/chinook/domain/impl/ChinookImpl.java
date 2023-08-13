@@ -7,7 +7,7 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.db.operation.DatabaseFunction;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.Select;
 import is.codion.framework.demos.chinook.domain.Chinook;
 import is.codion.framework.demos.chinook.domain.Chinook.Playlist.RandomPlaylistParameters;
 import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParameters;
@@ -22,7 +22,7 @@ import java.text.NumberFormat;
 import java.util.Collection;
 import java.util.List;
 
-import static is.codion.framework.db.condition.Select.where;
+import static is.codion.framework.db.Select.where;
 import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.domain.entity.EntityDefinition.definition;

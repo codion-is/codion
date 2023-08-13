@@ -55,11 +55,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 {url-entity-connection}#select{opar}is.codion.framework.db.criteria.Criteria{cpar}[select(Criteria criteria)]
 
-{url-entity-connection}#select{opar}is.codion.framework.db.condition.Select{cpar}[select(Select select)]
+{url-entity-connection}#select{opar}is.codion.framework.db.Select{cpar}[select(Select select)]
 
 {url-entity-connection}#selectSingle{opar}is.codion.framework.db.criteria.Criteria{cpar}[selectSingle(Criteria criteria)]
 
-{url-entity-connection}#selectSingle{opar}is.codion.framework.db.condition.Select{cpar}[selectSingle(Select select)]
+{url-entity-connection}#selectSingle{opar}is.codion.framework.db.Select{cpar}[selectSingle(Select select)]
 
 [source,java,indent=0]
 ----
@@ -86,7 +86,7 @@ For selecting the values of a single column.
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.criteria.Criteria{cpar}[select(Column<T> column, Criteria criteria)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Select{cpar}[select(Column<T> column, Select condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.Select{cpar}[select(Column<T> column, Select condition)]
 
 [source,java,indent=0]
 ----
@@ -99,7 +99,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 {url-local-entity-connection}#iterator{opar}is.codion.framework.db.criteria.Criteria{cpar}[iterator(Criteria criteria)]
 
-{url-local-entity-connection}#iterator{opar}is.codion.framework.db.condition.Select{cpar}[iterator(Select select)]
+{url-local-entity-connection}#iterator{opar}is.codion.framework.db.Select{cpar}[iterator(Select select)]
 
 [source,java,indent=0]
 ----
@@ -162,7 +162,7 @@ The framework performs optimistic locking during updates of entity instances usi
 
 For updating by where condition.
 
-** {url-entity-connection}#update{opar}is.codion.framework.db.condition.Update{cpar}[update(Update update)]
+** {url-entity-connection}#update{opar}is.codion.framework.db.Update{cpar}[update(Update update)]
 
 [source,java,indent=0]
 ----

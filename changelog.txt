@@ -9408,3 +9408,4 @@
   EntityConnection.select(attribute, value), selectSingle(attribute, value) removed, select() and selectSingle() overloaded with Criteria argument
   Condition removed, related refactoring
   SelectCondition and UpdateCondition renamed Select and Update respectively
+  Select and Update moved up to db package

@@ -4,7 +4,7 @@
 package is.codion.framework.db.local;
 
 import is.codion.common.db.database.Database;
-import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.local.TestDomain.Query;
 import is.codion.framework.db.local.TestDomain.QueryColumnsWhereClause;
 import is.codion.framework.db.local.TestDomain.QueryFromClause;

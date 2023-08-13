@@ -10,8 +10,6 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
-import is.codion.framework.db.condition.Select;
-import is.codion.framework.db.condition.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Column;

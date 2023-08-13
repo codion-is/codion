@@ -10,7 +10,7 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;

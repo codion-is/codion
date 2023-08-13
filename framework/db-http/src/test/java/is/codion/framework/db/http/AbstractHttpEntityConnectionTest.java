@@ -10,7 +10,7 @@ import is.codion.common.db.report.Report;
 import is.codion.common.db.report.ReportException;
 import is.codion.common.rmi.client.Clients;
 import is.codion.framework.db.EntityConnection;
-import is.codion.framework.db.condition.Update;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;

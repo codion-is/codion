@@ -3,7 +3,7 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.Update;
+import is.codion.framework.db.Update;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;

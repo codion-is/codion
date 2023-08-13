@@ -10,7 +10,7 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.db.condition.Select;
+import is.codion.framework.db.Select;
 import is.codion.framework.db.criteria.ColumnCriteria;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.entity.Column;
