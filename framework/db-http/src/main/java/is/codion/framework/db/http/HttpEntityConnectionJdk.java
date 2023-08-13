@@ -14,9 +14,9 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.db.condition.SelectCondition;
-import is.codion.framework.db.condition.UpdateCondition;
-import is.codion.framework.db.criteria.Criteria;
+import is.codion.framework.db.Select;
+import is.codion.framework.db.Update;
+import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
@@ -49,8 +49,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.db.condition.Condition.where;
-import static is.codion.framework.db.criteria.Criteria.*;
+import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -322,11 +321,11 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int update(UpdateCondition condition) throws DatabaseException {
-    Objects.requireNonNull(condition);
+  public int update(Update update) throws DatabaseException {
+    Objects.requireNonNull(update);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("updateByCondition", condition)));
+        return handleResponse(execute(createRequest("updateByCondition", update)));
       }
     }
     catch (DatabaseException e) {
@@ -361,7 +360,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int delete(Criteria criteria) throws DatabaseException {
+  public int delete(Condition criteria) throws DatabaseException {
     Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
@@ -379,24 +378,24 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public <T> List<T> select(Column<T> column) throws DatabaseException {
-    return select(Objects.requireNonNull(column), SelectCondition.all(column.entityType())
-            .orderBy(ascending(column))
-            .build());
-  }
-
-  @Override
-  public <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException {
-    return select(column, SelectCondition.where(criteria)
+    return select(Objects.requireNonNull(column), Select.all(column.entityType())
             .orderBy(ascending(column))
             .build());
   }
 
   @Override
   public <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException {
+    return select(column, Select.where(condition)
+            .orderBy(ascending(column))
+            .build());
+  }
+
+  @Override
+  public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     Objects.requireNonNull(column);
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("values", asList(column, condition))));
+        return handleResponse(execute(createRequest("values", asList(column, select))));
       }
     }
     catch (DatabaseException e) {
@@ -410,17 +409,17 @@ final class HttpEntityConnectionJdk implements EntityConnection {
 
   @Override
   public Entity select(Key key) throws DatabaseException {
-    return selectSingle(where(key(key)));
-  }
-
-  @Override
-  public Entity selectSingle(Criteria criteria) throws DatabaseException {
-    return selectSingle(where(criteria));
+    return selectSingle(key(key));
   }
 
   @Override
   public Entity selectSingle(Condition condition) throws DatabaseException {
-    List<Entity> selected = select(condition);
+    return selectSingle(Select.where(condition).build());
+  }
+
+  @Override
+  public Entity selectSingle(Select select) throws DatabaseException {
+    List<Entity> selected = select(select);
     if (nullOrEmpty(selected)) {
       throw new RecordNotFoundException(MESSAGES.getString("record_not_found"));
     }
@@ -449,16 +448,16 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(Criteria criteria) throws DatabaseException {
-    return select(where(criteria));
+  public List<Entity> select(Condition condition) throws DatabaseException {
+    return select(Select.where(condition).build());
   }
 
   @Override
-  public List<Entity> select(Condition condition) throws DatabaseException {
-    Objects.requireNonNull(condition, "condition");
+  public List<Entity> select(Select select) throws DatabaseException {
+    Objects.requireNonNull(select, "select");
     try {
       synchronized (this.entities) {
-        return handleResponse(execute(createRequest("select", condition)));
+        return handleResponse(execute(createRequest("select", select)));
       }
     }
     catch (DatabaseException e) {
@@ -488,7 +487,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int rowCount(Criteria criteria) throws DatabaseException {
+  public int rowCount(Condition criteria) throws DatabaseException {
     Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {

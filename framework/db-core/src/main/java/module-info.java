@@ -8,7 +8,6 @@ module is.codion.framework.db.core {
 
   exports is.codion.framework.db;
   exports is.codion.framework.db.condition;
-  exports is.codion.framework.db.criteria;
 
   uses is.codion.framework.db.EntityConnectionProvider.Builder;
 }
