@@ -14,7 +14,6 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -234,11 +233,22 @@ public interface EntityConnection extends AutoCloseable {
   <T> List<T> select(Column<T> column) throws DatabaseException;
 
   /**
-   * Selects distinct non-null values of the given column, note that the column
-   * must be associated with a {@link ColumnProperty}. If the condition provides no
-   * order by clause the result is ordered by the column column.
+   * Selects distinct non-null values of the given column. The result is ordered by the selected column.
    * @param column column
-   * @param condition the condition, null if all values should be selected
+   * @param criteria the criteria
+   * @param <T> the value type
+   * @return the values of the given column
+   * @throws DatabaseException in case of a database exception
+   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws UnsupportedOperationException in case the entity is based on a select query
+   */
+  <T> List<T> select(Column<T> column, Criteria criteria) throws DatabaseException;
+
+  /**
+   * Selects distinct non-null values of the given column. If the condition provides no
+   * order by clause the result is ordered by the selected column.
+   * @param column column
+   * @param condition the condition
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
@@ -246,19 +256,6 @@ public interface EntityConnection extends AutoCloseable {
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
   <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
-
-  /**
-   * Selects a single entity
-   * @param attribute attribute to use as a condition
-   * @param value the value to use in the condition
-   * @param <T> the value type
-   * @return an entity of the type {@code entityType}, having the
-   * value of {@code attribute} as {@code value}
-   * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
-   */
-  <T> Entity selectSingle(Attribute<T> attribute, T value) throws DatabaseException;
 
   /**
    * Selects an entity by key
@@ -269,6 +266,16 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
   Entity select(Key key) throws DatabaseException;
+
+  /**
+   * Selects a single entity based on the specified criteria
+   * @param criteria the criteria specifying the entity to select
+   * @return the entities based on the given criteria
+   * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   */
+  Entity selectSingle(Criteria criteria) throws DatabaseException;
 
   /**
    * Selects a single entity based on the specified condition
@@ -289,32 +296,20 @@ public interface EntityConnection extends AutoCloseable {
   Collection<Entity> select(Collection<Key> keys) throws DatabaseException;
 
   /**
+   * Selects entities based on the given criteria
+   * @param criteria the criteria specifying which entities to select
+   * @return entities based to the given criteria
+   * @throws DatabaseException in case of a database exception
+   */
+  List<Entity> select(Criteria criteria) throws DatabaseException;
+
+  /**
    * Selects entities based on the given condition
    * @param condition the condition specifying which entities to select
    * @return entities based to the given condition
    * @throws DatabaseException in case of a database exception
    */
   List<Entity> select(Condition condition) throws DatabaseException;
-
-  /**
-   * Selects entities based on a single attribute condition
-   * @param attribute the condition attribute
-   * @param value the value to use as condition
-   * @param <T> the value type
-   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
-   * @throws DatabaseException in case of a database exception
-   */
-  <T> List<Entity> select(Attribute<T> attribute, T value) throws DatabaseException;
-
-  /**
-   * Selects entities based on a single attribute condition, using {@code values} OR'ed together
-   * @param attribute the condition attribute
-   * @param values the values to use as condition
-   * @param <T> the value type
-   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
-   * @throws DatabaseException in case of a database exception
-   */
-  <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws DatabaseException;
 
   /**
    * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

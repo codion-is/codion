@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigDecimal;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public final class TrackTableModelTest {
@@ -25,7 +26,7 @@ public final class TrackTableModelTest {
     EntityConnectionProvider connectionProvider = createConnectionProvider();
 
     Entity masterOfPuppets = connectionProvider.connection()
-            .selectSingle(Album.TITLE, "Master Of Puppets");
+            .selectSingle(column(Album.TITLE).equalTo("Master Of Puppets"));
 
     TrackTableModel trackTableModel = new TrackTableModel(connectionProvider);
     trackTableModel.conditionModel().attributeModel(Track.ALBUM_FK)

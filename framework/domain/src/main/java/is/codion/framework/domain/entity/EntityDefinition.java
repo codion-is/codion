@@ -218,7 +218,7 @@ public interface EntityDefinition {
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
    */
-  EntityDefinition referencedDefinition(ForeignKey foreignKey);
+  EntityDefinition referencedEntity(ForeignKey foreignKey);
 
   /**
    * @param attribute the attribute

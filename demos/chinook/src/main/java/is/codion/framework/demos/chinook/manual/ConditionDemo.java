@@ -23,31 +23,31 @@ final class ConditionDemo {
 
     Criteria metallicaAlbums =
             Criteria.foreignKey(Album.ARTIST_FK).equalTo(metallica);
+
+    Criteria allArtistsCriteria =
+            Criteria.all(Artist.TYPE);
     // end::criteria[]
 
     // tag::combination[]
-    Criteria liveMetallicaAlbums =
+    Criteria liveMetallicaAlbumsCriteria =
             Criteria.and(liveAlbums, metallicaAlbums);
     // end::combination[]
 
     // tag::condition[]
     Condition liveMetallicaAlbumsCondition =
-            Condition.where(liveMetallicaAlbums);
-
-    Condition allArtistsCondition =
-            Condition.all(Artist.TYPE);
+            Condition.where(liveMetallicaAlbumsCriteria);
     // end::condition[]
 
     // tag::selectCondition[]
     SelectCondition selectLiveMetallicaAlbums =
-            SelectCondition.where(liveMetallicaAlbums)
+            SelectCondition.where(liveMetallicaAlbumsCriteria)
                     .orderBy(OrderBy.descending(Album.NUMBER_OF_TRACKS))
                     .build();
     // end::selectCondition[]
 
     // tag::updateCondition[]
     UpdateCondition removeLiveMetallicaAlbumCovers =
-            UpdateCondition.where(liveMetallicaAlbums)
+            UpdateCondition.where(liveMetallicaAlbumsCriteria)
                     .set(Album.COVER, null)
                     .build();
     // end::updateCondition[]

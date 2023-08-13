@@ -36,6 +36,7 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
 import static org.junit.jupiter.api.Assertions.*;
@@ -78,7 +79,7 @@ public final class AbstractEntityEditModelTest {
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
-      Entity jones = connection.selectSingle(Employee.NAME, "JONES");
+      Entity jones = connection.selectSingle(column(Employee.NAME).equalTo("JONES"));
       employeeEditModel.setEntity(jones);
       assertEquals("JONES", employeeEditModel.put(Employee.NAME, "Noname"));
       employeeEditModel.insert();
@@ -125,7 +126,7 @@ public final class AbstractEntityEditModelTest {
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
-      Entity employee = connection.selectSingle(Employee.NAME, "MARTIN");
+      Entity employee = connection.selectSingle(column(Employee.NAME).equalTo("MARTIN"));
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
       employee.put(Employee.NAME, "NOONE");
@@ -141,7 +142,7 @@ public final class AbstractEntityEditModelTest {
   @Test
   void entityCopy() throws DatabaseException {
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(
-            Employee.NAME, "MARTIN");
+            column(Employee.NAME).equalTo("MARTIN"));
     employeeEditModel.setEntity(employee);
     Entity copyWithPrimaryKeyValue = employeeEditModel.entity();
     assertEquals(employee, copyWithPrimaryKeyValue);
@@ -161,7 +162,7 @@ public final class AbstractEntityEditModelTest {
   @Test
   void defaultForeignKeyValue() throws DatabaseException {
     Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(
-            Employee.NAME, "MARTIN");
+            column(Employee.NAME).equalTo("MARTIN"));
     employeeEditModel.setEntity(employee);
     //clear the department foreign key value
     Entity dept = employeeEditModel.referencedEntity(Employee.DEPARTMENT_FK);
@@ -242,7 +243,7 @@ public final class AbstractEntityEditModelTest {
     assertTrue(employeeEditModel.isEntityNew());
     assertFalse(employeeEditModel.modifiedObserver().get());
 
-    Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "MARTIN");
+    Entity employee = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("MARTIN"));
     employeeEditModel.setEntity(employee);
     assertFalse(primaryKeyNullState.get());
     assertFalse(entityNewState.get());
@@ -396,7 +397,7 @@ public final class AbstractEntityEditModelTest {
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
-      employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
+      employeeEditModel.setEntity(connection.selectSingle(column(Employee.NAME).equalTo("MILLER")));
       employeeEditModel.put(Employee.NAME, "BJORN");
       List<Entity> toUpdate = singletonList(employeeEditModel.entity());
       Consumer<Map<Key, Entity>> listener = updatedEntities ->
@@ -423,7 +424,7 @@ public final class AbstractEntityEditModelTest {
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     connection.beginTransaction();
     try {
-      employeeEditModel.setEntity(connection.selectSingle(Employee.NAME, "MILLER"));
+      employeeEditModel.setEntity(connection.selectSingle(column(Employee.NAME).equalTo("MILLER")));
       List<Entity> toDelete = singletonList(employeeEditModel.entity());
       employeeEditModel.addAfterDeleteListener(deletedEntities -> assertTrue(toDelete.containsAll(deletedEntities)));
       employeeEditModel.setDeleteEnabled(false);
@@ -441,8 +442,8 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void setEntity() throws Exception {
-    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "MARTIN");
-    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "KING");
+    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("MARTIN"));
+    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("KING"));
     employeeEditModel.setEntity(king);
     employeeEditModel.put(Employee.MGR_FK, martin);
     employeeEditModel.setDefaultValues();
@@ -457,7 +458,7 @@ public final class AbstractEntityEditModelTest {
 
   @Test
   void setPersistValue() throws Exception {
-    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "KING");
+    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("KING"));
     employeeEditModel.setEntity(king);
     assertNotNull(employeeEditModel.get(Employee.JOB));
     employeeEditModel.setPersistValue(Employee.JOB, true);
@@ -480,8 +481,8 @@ public final class AbstractEntityEditModelTest {
     Consumer<State> alwaysDenyListener = data -> data.set(false);
 
     employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
-    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "KING");
-    Entity adams = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "ADAMS");
+    Entity king = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("KING"));
+    Entity adams = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("ADAMS"));
     employeeEditModel.setEntity(king);
     employeeEditModel.put(Employee.NAME, "New name");
     employeeEditModel.setEntity(adams);
@@ -523,10 +524,10 @@ public final class AbstractEntityEditModelTest {
   @Test
   void replaceForeignKeyValues() throws DatabaseException {
     Entity james = employeeEditModel.connectionProvider().connection()
-            .selectSingle(Employee.NAME, "JAMES");
+            .selectSingle(column(Employee.NAME).equalTo("JAMES"));
     employeeEditModel.setEntity(james);
     Entity blake = employeeEditModel.connectionProvider().connection()
-            .selectSingle(Employee.NAME, "BLAKE");
+            .selectSingle(column(Employee.NAME).equalTo("BLAKE"));
     assertNotSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
     employeeEditModel.replaceForeignKeyValues(Employee.MGR_FK, singletonList(blake));
     assertSame(employeeEditModel.referencedEntity(Employee.MGR_FK), blake);
@@ -588,7 +589,7 @@ public final class AbstractEntityEditModelTest {
     AtomicInteger deptEdit = new AtomicInteger();
     employeeEditModel.addEditListener(Employee.DEPARTMENT_FK, value -> deptEdit.incrementAndGet());
 
-    Entity dept = employeeEditModel.connectionProvider().connection().selectSingle(Department.ID, 10);
+    Entity dept = employeeEditModel.connectionProvider().connection().selectSingle(column(Department.ID).equalTo(10));
     employeeEditModel.put(Employee.DEPARTMENT_FK, dept);
 
     employeeEditModel.put(Employee.DEPARTMENT, 20);
@@ -596,7 +597,7 @@ public final class AbstractEntityEditModelTest {
     assertEquals(2, deptChange.get());
     assertEquals(2, deptEdit.get());
 
-    dept = employeeEditModel.connectionProvider().connection().selectSingle(Department.ID, 20);
+    dept = employeeEditModel.connectionProvider().connection().selectSingle(column(Department.ID).equalTo(20));
     employeeEditModel.put(Employee.DEPARTMENT_FK, dept);
 
     assertEquals(2, deptNoChange.get());
@@ -609,7 +610,7 @@ public final class AbstractEntityEditModelTest {
     assertEquals(4, deptChange.get());
     assertEquals(4, deptEdit.get());
 
-    dept = employeeEditModel.connectionProvider().connection().selectSingle(Department.ID, 30);
+    dept = employeeEditModel.connectionProvider().connection().selectSingle(column(Department.ID).equalTo(30));
     employeeEditModel.put(Employee.DEPARTMENT_FK, dept);
 
     assertEquals(3, deptNoChange.get());
@@ -622,7 +623,7 @@ public final class AbstractEntityEditModelTest {
     employeeEditModel.put(Employee.NAME, "NAME");
     //only modified when the entity is not new
     assertFalse(employeeEditModel.modifiedObserver(Employee.NAME).get());
-    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(Employee.NAME, "MARTIN");
+    Entity martin = employeeEditModel.connectionProvider().connection().selectSingle(column(Employee.NAME).equalTo("MARTIN"));
     employeeEditModel.setEntity(martin);
     State modifiedState = State.state();
     State nullState = State.state();
@@ -651,7 +652,7 @@ public final class AbstractEntityEditModelTest {
   void modifiedUpdate() throws DatabaseException, ValidationException {
     EntityConnection connection = employeeEditModel.connectionProvider().connection();
     StateObserver nameModifiedObserver = employeeEditModel.modifiedObserver(Employee.NAME);
-    Entity martin = connection.selectSingle(Employee.NAME, "MARTIN");
+    Entity martin = connection.selectSingle(column(Employee.NAME).equalTo("MARTIN"));
     employeeEditModel.setEntity(martin);
     employeeEditModel.put(Employee.NAME, "MARTINEZ");
     assertTrue(nameModifiedObserver.get());
@@ -671,7 +672,7 @@ public final class AbstractEntityEditModelTest {
       super(entityType, connectionProvider);
       setDefaultValueSupplier(Employee.HIREDATE, LocalDate::now);
       try {
-        Entity jones = connectionProvider.connection().selectSingle(Employee.ID, 3);//JONES, used in containsUnsavedData()
+        Entity jones = connectionProvider.connection().selectSingle(column(Employee.ID).equalTo(3));//JONES, used in containsUnsavedData()
         setDefaultValueSupplier(Employee.MGR_FK, () -> jones);
       }
       catch (DatabaseException e) {

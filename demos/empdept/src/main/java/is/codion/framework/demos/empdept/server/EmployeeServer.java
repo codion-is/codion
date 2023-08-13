@@ -6,7 +6,6 @@ package is.codion.framework.demos.empdept.server;
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.rmi.server.RemoteClient;
-import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.SelectCondition;
 import is.codion.framework.demos.empdept.domain.EmpDept;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
@@ -21,6 +20,8 @@ import java.rmi.server.RMIClientSocketFactory;
 import java.rmi.server.RMIServerSocketFactory;
 import java.util.Collection;
 import java.util.List;
+
+import static is.codion.framework.db.criteria.Criteria.all;
 
 public final class EmployeeServer extends EntityServer {
 
@@ -49,7 +50,7 @@ public final class EmployeeServer extends EntityServer {
     @Override
     public Collection<Entity> employees() throws RemoteException, DatabaseException {
       synchronized (connectionProxy) {
-        return connectionProxy.select(Condition.all(Employee.TYPE));
+        return connectionProxy.select(all(Employee.TYPE));
       }
     }
 

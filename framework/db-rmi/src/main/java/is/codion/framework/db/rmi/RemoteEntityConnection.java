@@ -14,7 +14,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.condition.UpdateCondition;
 import is.codion.framework.db.criteria.Criteria;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
@@ -243,11 +242,23 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   <T> List<T> select(Column<T> column) throws RemoteException, DatabaseException;
 
   /**
-   * Selects distinct non-null values of the given column, note that the column
-   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}. If the condition provides no
-   * order by clause the result is ordered by the column column.
+   * Selects distinct non-null values of the given column. The result is ordered by the selected column.
+   * @param column column
+   * @param criteria the criteria
+   * @param <T> the value type
+   * @return the values of the given column
+   * @throws DatabaseException in case of a database exception
+   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws UnsupportedOperationException in case the entity is based on a select query
+   * @throws RemoteException in case of a remote exception
+   */
+  <T> List<T> select(Column<T> column, Criteria criteria) throws RemoteException, DatabaseException;
+
+  /**
+   * Selects distinct non-null values of the given column. If the condition provides no
+   * order by clause the result is ordered by the selected column.
    * @param column the column
-   * @param condition the condition, null if all values should be selected
+   * @param condition the condition
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a db exception
@@ -256,20 +267,6 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws RemoteException in case of a remote exception
    */
   <T> List<T> select(Column<T> column, Condition condition) throws RemoteException, DatabaseException;
-
-  /**
-   * Selects a single entity
-   * @param attribute the attribute to use as a condition
-   * @param value the value to use in the condition
-   * @param <T> the value type
-   * @return an entity of the type {@code entityType}, having the
-   * value of {@code attribute} as {@code value}
-   * @throws DatabaseException in case of a db exception
-   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
-   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
-   * @throws RemoteException in case of a remote exception
-   */
-  <T> Entity selectSingle(Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
 
   /**
    * Selects an entity by key
@@ -281,6 +278,17 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws RemoteException in case of a remote exception
    */
   Entity select(Key key) throws RemoteException, DatabaseException;
+
+  /**
+   * Selects a single entity based on the specified criteria
+   * @param criteria the criteria specifying the entity to select
+   * @return the entities based on the given criteria
+   * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
+   * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
+   * @throws RemoteException in case of a remote exception
+   */
+  Entity selectSingle(Criteria criteria) throws RemoteException, DatabaseException;
 
   /**
    * Selects a single entity based on the specified condition
@@ -303,6 +311,15 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Collection<Entity> select(Collection<Key> keys) throws RemoteException, DatabaseException;
 
   /**
+   * Selects entities based on the given criteria
+   * @param criteria the criteria specifying which entities to select
+   * @return entities based to the given criteria
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  List<Entity> select(Criteria criteria) throws RemoteException,  DatabaseException;
+
+  /**
    * Selects entities based on the given condition
    * @param condition the condition specifying which entities to select
    * @return entities based to the given condition
@@ -310,28 +327,6 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws RemoteException in case of a remote exception
    */
   List<Entity> select(Condition condition) throws RemoteException, DatabaseException;
-
-  /**
-   * Selects entities based on a single attribute condition
-   * @param attribute the condition attribute
-   * @param value the value to use as condition
-   * @param <T> the value type
-   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
-   * @throws DatabaseException in case of a database exception
-   * @throws RemoteException in case of a remote exception
-   */
-  <T> List<Entity> select(Attribute<T> attribute, T value) throws RemoteException, DatabaseException;
-
-  /**
-   * Selects entities based on a single attribute condition, using {@code values} OR'ed together
-   * @param attribute the condition attribute
-   * @param values the values to use as condition
-   * @param <T> the value type
-   * @return entities of the type {@code entityType} based on {@code attribute} and {@code values}
-   * @throws DatabaseException in case of a database exception
-   * @throws RemoteException in case of a remote exception
-   */
-  <T> List<Entity> select(Attribute<T> attribute, Collection<T> values) throws RemoteException, DatabaseException;
 
   /**
    * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes

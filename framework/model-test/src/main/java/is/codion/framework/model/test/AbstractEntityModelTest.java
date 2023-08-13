@@ -26,7 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Objects;
 
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -165,11 +165,11 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     assertTrue(departmentModel.detailModel(Employee.TYPE).tableModel().getRowCount() > 0);
 
     EntityConnection connection = departmentModel.connectionProvider().connection();
-    Entity department = connection.selectSingle(Department.NAME, "SALES");
+    Entity department = connection.selectSingle(column(Department.NAME).equalTo("SALES"));
 
     departmentModel.tableModel().selectionModel().setSelectedItem(department);
 
-    List<Entity> salesEmployees = connection.select(where(foreignKey(Employee.DEPARTMENT_FK).equalTo(department)));
+    List<Entity> salesEmployees = connection.select(foreignKey(Employee.DEPARTMENT_FK).equalTo(department));
     assertFalse(salesEmployees.isEmpty());
     departmentModel.tableModel().selectionModel().setSelectedItem(department);
     Collection<Entity> employeesFromDetailModel =
@@ -231,7 +231,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
     link.setClearForeignKeyOnEmptySelection(false);
 
-    Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
+    Entity dept = employeeModel.connectionProvider().connection().selectSingle(column(Department.ID).equalTo(10));
 
     departmentModel.tableModel().refresh();
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
@@ -265,7 +265,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     ForeignKeyDetailModelLink<Model, EditModel, TableModel> link = departmentModel.detailModelLink(employeeModel);
     link.setRefreshOnSelection(false);
 
-    Entity dept = employeeModel.connectionProvider().connection().selectSingle(Department.ID, 10);
+    Entity dept = employeeModel.connectionProvider().connection().selectSingle(column(Department.ID).equalTo(10));
 
     departmentModel.tableModel().refresh();
     departmentModel.tableModel().selectionModel().setSelectedItem(dept);
@@ -287,7 +287,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
             .with(Department.LOCATION, "Loc")
             .build();
 
-    Entity emp = connectionProvider.connection().selectSingle(Employee.ID, 8).clearPrimaryKey();
+    Entity emp = connectionProvider.connection().selectSingle(column(Employee.ID).equalTo(8)).clearPrimaryKey();
     emp.put(Employee.NAME, "NewName");
 
     Model model = createDepartmentModelWithoutDetailModel();

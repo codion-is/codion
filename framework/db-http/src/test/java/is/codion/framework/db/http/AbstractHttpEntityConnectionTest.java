@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.db.criteria.Criteria.key;
 import static java.util.Arrays.asList;
@@ -112,17 +111,11 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectByValue() throws DatabaseException {
-    List<Entity> department = connection.select(Department.NAME, "SALES");
-    assertEquals(1, department.size());
-  }
-
-  @Test
   void update() throws DatabaseException {
-    Entity department = connection.selectSingle(Department.NAME, "ACCOUNTING");
+    Entity department = connection.selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     department.put(Department.NAME, "TEstING");
     connection.update(department);
-    department = connection.selectSingle(Department.ID, department.get(Department.ID));
+    department = connection.selectSingle(column(Department.ID).equalTo(department.get(Department.ID)));
     assertEquals("TEstING", department.get(Department.NAME));
     department.put(Department.NAME, "ACCOUNTING");
     connection.update(department);
@@ -132,7 +125,7 @@ abstract class AbstractHttpEntityConnectionTest {
   void updateByCondition() throws DatabaseException {
     Criteria criteria = column(Employee.COMMISSION).isNull();
 
-    List<Entity> entities = connection.select(where(criteria));
+    List<Entity> entities = connection.select(criteria);
 
     UpdateCondition updateCondition = UpdateCondition.where(column(Employee.COMMISSION).isNull())
             .set(Employee.COMMISSION, 500d)
@@ -155,7 +148,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKey() throws DatabaseException {
-    Entity employee = connection.selectSingle(Employee.NAME, "ADAMS");
+    Entity employee = connection.selectSingle(column(Employee.NAME).equalTo("ADAMS"));
     connection.beginTransaction();
     try {
       connection.delete(employee.primaryKey());
@@ -185,7 +178,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void selectDependencies() throws DatabaseException {
-    Entity department = connection.selectSingle(Department.NAME, "SALES");
+    Entity department = connection.selectSingle(column(Department.NAME).equalTo("SALES"));
     Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(Employee.TYPE));
@@ -221,7 +214,7 @@ abstract class AbstractHttpEntityConnectionTest {
     byte[] bytes = new byte[1024];
     new Random().nextBytes(bytes);
 
-    Entity scott = connection.selectSingle(Employee.ID, 7);
+    Entity scott = connection.selectSingle(column(Employee.ID).equalTo(7));
     connection.writeBlob(scott.primaryKey(), Employee.DATA, bytes);
     assertArrayEquals(bytes, connection.readBlob(scott.primaryKey(), Employee.DATA));
   }
@@ -234,13 +227,13 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteDepartmentWithEmployees() throws DatabaseException {
-    Entity department = connection.selectSingle(Department.NAME, "SALES");
+    Entity department = connection.selectSingle(column(Department.NAME).equalTo("SALES"));
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key(department.primaryKey())));
   }
 
   @Test
   void foreignKeyValues() throws DatabaseException {
-    Entity employee = connection.selectSingle(Employee.ID, 5);
+    Entity employee = connection.selectSingle(column(Employee.ID).equalTo(5));
     assertNotNull(employee.get(Employee.DEPARTMENT_FK));
     assertNotNull(employee.get(Employee.MGR_FK));
   }

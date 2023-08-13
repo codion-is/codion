@@ -35,8 +35,7 @@ import java.rmi.registry.LocateRegistry;
 import java.util.Collection;
 import java.util.UUID;
 
-import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.framework.db.condition.Condition.where;
+import static is.codion.framework.db.criteria.Criteria.all;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
 import static java.util.Collections.singletonMap;
@@ -83,7 +82,7 @@ public class EntityServerTest {
     Criteria criteria = Criteria.customCriteria(Employee.MGR_CRITERIA_TYPE,
             singletonList(Employee.MGR), singletonList(4));
 
-    connection.select(where(criteria));
+    connection.select(criteria);
 
     connection.close();
   }

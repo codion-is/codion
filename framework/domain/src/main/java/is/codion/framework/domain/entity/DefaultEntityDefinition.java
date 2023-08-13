@@ -192,7 +192,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   /**
    * Maps the definition of a referenced entity to its foreign key attribute.
    */
-  private final Map<ForeignKey, EntityDefinition> foreignEntityDefinitions = new HashMap<>();
+  private final Map<ForeignKey, EntityDefinition> referencedEntities = new HashMap<>();
 
   /**
    * The properties associated with this entity.
@@ -547,8 +547,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public EntityDefinition referencedDefinition(ForeignKey foreignKey) {
-    EntityDefinition definition = foreignEntityDefinitions.get(requireNonNull(foreignKey, FOREIGN_KEY));
+  public EntityDefinition referencedEntity(ForeignKey foreignKey) {
+    EntityDefinition definition = referencedEntities.get(requireNonNull(foreignKey, FOREIGN_KEY));
     if (definition == null) {
       throw new IllegalArgumentException("Referenced entity definition not found for foreign key: " + foreignKey);
     }
@@ -611,7 +611,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @return true if the referenced entity definition has been set for the given foreign key
    */
   boolean hasReferencedEntityDefinition(ForeignKey foreignKey) {
-    return foreignEntityDefinitions.containsKey(foreignKey);
+    return referencedEntities.containsKey(foreignKey);
   }
 
   /**
@@ -625,14 +625,14 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     requireNonNull(foreignKey, FOREIGN_KEY);
     requireNonNull(definition, "definition");
     ForeignKeyProperty foreignKeyProperty = foreignKeyProperty(foreignKey);
-    if (foreignEntityDefinitions.containsKey(foreignKey)) {
+    if (referencedEntities.containsKey(foreignKey)) {
       throw new IllegalStateException("Foreign definition has already been set for " + foreignKey);
     }
     if (!foreignKeyProperty.referencedType().equals(definition.type())) {
       throw new IllegalArgumentException("Definition for entity " + foreignKeyProperty.referencedType() +
               " expected for " + foreignKey);
     }
-    foreignEntityDefinitions.put(foreignKey, definition);
+    referencedEntities.put(foreignKey, definition);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {

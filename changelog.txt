@@ -9444,3 +9444,5 @@
   DefaultEntityTableConditionModel refactored
   SelectCondition, ForeignKeyProperty, SwingEntityTableModel, selectAttributes() renamed attributes()
   EntityDefinition.defaultSelectAttributes() renamed selectAttributes()
+  EntityDefinition.referencedDefinition() renamed referencedEntity()
+  EntityConnection.select(attribute, value), selectSingle(attribute, value) removed, select() and selectSingle() overloaded with Criteria argument

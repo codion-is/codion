@@ -13,6 +13,8 @@ import is.codion.framework.domain.entity.Entity;
 
 import java.util.List;
 
+import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.demos.petstore.domain.Petstore.Category;
 import static is.codion.framework.demos.petstore.domain.Petstore.Product;
 
@@ -48,11 +50,11 @@ public final class EntitiesInAction {
     connection.insert(smallBeetles);
 
     //see what products are available for the Cats category
-    Entity categoryCats = connection.selectSingle(Category.NAME, "Cats");
+    Entity categoryCats = connection.selectSingle(column(Category.NAME).equalTo("Cats"));
 
-    List<Entity> catProducts = connection.select(Product.CATEGORY_FK, categoryCats);
+    List<Entity> cats = connection.select(foreignKey(Product.CATEGORY_FK).equalTo(categoryCats));
 
-    catProducts.forEach(System.out::println);
+    cats.forEach(System.out::println);
     // end::entitiesInAction[]
   }
 }

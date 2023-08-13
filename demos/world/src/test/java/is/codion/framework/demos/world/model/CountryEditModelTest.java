@@ -9,7 +9,6 @@ import is.codion.framework.demos.world.domain.api.World.Country;
 
 import org.junit.jupiter.api.Test;
 
-import static is.codion.framework.db.condition.Condition.where;
 import static is.codion.framework.db.criteria.Criteria.column;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -24,7 +23,7 @@ public class CountryEditModelTest {
     try (EntityConnectionProvider connectionProvider = createConnectionProvider()) {
       CountryEditModel countryEditModel = new CountryEditModel(connectionProvider);
       countryEditModel.setEntity(connectionProvider.connection().selectSingle(
-              where(column(Country.NAME).equalTo("Afghanistan"))));
+              column(Country.NAME).equalTo("Afghanistan")));
       assertEquals(583_025, countryEditModel.averageCityPopulationObserver().get());
       countryEditModel.setEntity(null);
       assertNull(countryEditModel.averageCityPopulationObserver().get());

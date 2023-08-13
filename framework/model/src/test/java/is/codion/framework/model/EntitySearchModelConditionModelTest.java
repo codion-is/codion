@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Collection;
 import java.util.List;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.framework.model.EntitySearchModelConditionModel.entitySearchModelConditionModel;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
@@ -39,12 +40,12 @@ public class EntitySearchModelConditionModelTest {
             .searchColumns(singletonList(Department.NAME))
             .build();
     EntitySearchModelConditionModel conditionModel = entitySearchModelConditionModel(Employee.DEPARTMENT_FK, searchModel);
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
     searchModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "ACCOUNTING");
+    Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     List<Entity> salesAccounting = asList(sales, accounting);
     searchModel.setSelectedEntities(salesAccounting);
     assertTrue(conditionModel.getEqualValues().contains(sales));

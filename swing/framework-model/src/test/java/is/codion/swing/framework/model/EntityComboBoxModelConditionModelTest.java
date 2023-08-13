@@ -16,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 
+import static is.codion.framework.db.criteria.Criteria.column;
 import static is.codion.swing.framework.model.EntityComboBoxModelConditionModel.entityComboBoxModelConditionModel;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -33,7 +34,7 @@ public class EntityComboBoxModelConditionModelTest {
   void searchEntitiesComboBoxModel() throws DatabaseException {
     EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Department.TYPE, CONNECTION_PROVIDER);
     EntityComboBoxModelConditionModel conditionModel = entityComboBoxModelConditionModel(Employee.DEPARTMENT_FK, comboBoxModel);
-    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(Department.NAME, "SALES");
+    Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = conditionModel.getEqualValues();
     assertEquals(1, searchEntities.size());

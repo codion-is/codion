@@ -13,6 +13,8 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static is.codion.framework.db.criteria.Criteria.column;
+import static is.codion.framework.db.criteria.Criteria.foreignKey;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
 import static java.util.Collections.singleton;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -83,13 +85,13 @@ public class ChinookTest extends EntityTestUnit {
     EntityConnection connection = connection();
     connection.beginTransaction();
     try {
-      Entity genre = connection.selectSingle(Genre.NAME, "Metal");
+      Entity genre = connection.selectSingle(column(Genre.NAME).equalTo("Metal"));
       int noOfTracks = 10;
       String playlistName = "MetalPlaylistTest";
       RandomPlaylistParameters parameters = new RandomPlaylistParameters(playlistName, noOfTracks, singleton(genre));
       Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
       assertEquals(playlistName, playlist.get(Playlist.NAME));
-      List<Entity> playlistTracks = connection.select(PlaylistTrack.PLAYLIST_FK, playlist);
+      List<Entity> playlistTracks = connection.select(foreignKey(PlaylistTrack.PLAYLIST_FK).equalTo(playlist));
       assertEquals(noOfTracks, playlistTracks.size());
       playlistTracks.stream()
               .map(playlistTrack -> playlistTrack.get(PlaylistTrack.TRACK_FK))
