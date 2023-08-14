@@ -14,7 +14,7 @@ public final class UpdateTest {
 
   @Test
   void updateDuplicate() {
-    assertThrows(IllegalArgumentException.class, () -> Update.all(Employee.TYPE)
+    assertThrows(IllegalStateException.class, () -> Update.all(Employee.TYPE)
             .set(Employee.COMMISSION, 123d)
             .set(Employee.COMMISSION, 123d));
   }
