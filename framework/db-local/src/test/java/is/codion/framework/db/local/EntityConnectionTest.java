@@ -69,8 +69,8 @@ public class EntityConnectionTest {
             .batchSize(2)
             .execute();
 
-    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
+    assertEquals(sourceConnection.count(all(Department.TYPE)),
+            DESTINATION_CONNECTION.count(all(Department.TYPE)));
 
     assertThrows(IllegalArgumentException.class, () -> EntityConnection.copyEntities(sourceConnection, DESTINATION_CONNECTION)
             .entityTypes(Employee.TYPE)
@@ -82,7 +82,7 @@ public class EntityConnectionTest {
             .includePrimaryKeys(false)
             .condition(column(Employee.SALARY).greaterThan(1000d))
             .execute();
-    assertEquals(13, DESTINATION_CONNECTION.rowCount(all(Employee.TYPE)));
+    assertEquals(13, DESTINATION_CONNECTION.count(all(Employee.TYPE)));
 
     DESTINATION_CONNECTION.delete(all(Employee.TYPE));
     DESTINATION_CONNECTION.delete(all(Department.TYPE));
@@ -102,8 +102,8 @@ public class EntityConnectionTest {
               .onInsert(keys -> {})
               .execute();
     }
-    assertEquals(sourceConnection.rowCount(all(Department.TYPE)),
-            DESTINATION_CONNECTION.rowCount(all(Department.TYPE)));
+    assertEquals(sourceConnection.count(all(Department.TYPE)),
+            DESTINATION_CONNECTION.count(all(Department.TYPE)));
 
     EntityConnection.insertEntities(DESTINATION_CONNECTION, Collections.emptyIterator())
             .batchSize(10)

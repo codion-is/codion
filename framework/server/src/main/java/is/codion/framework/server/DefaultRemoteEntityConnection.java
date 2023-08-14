@@ -78,9 +78,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int count(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.rowCount(condition);
+      return connectionProxy.count(condition);
     }
   }
 
@@ -92,26 +92,26 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, null);
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+    execute(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     synchronized (connectionProxy) {
-      connectionProxy.executeProcedure(procedureType, argument);
+      connectionProxy.execute(procedureType, argument);
     }
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, null);
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+    return execute(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.executeFunction(functionType, argument);
+      return connectionProxy.execute(functionType, argument);
     }
   }
 
@@ -277,9 +277,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectDependencies(entities);
+      return connectionProxy.dependencies(entities);
     }
   }
 

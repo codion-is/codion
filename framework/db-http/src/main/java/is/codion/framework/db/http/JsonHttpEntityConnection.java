@@ -171,12 +171,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, null);
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+    return execute(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       synchronized (this.entities) {
@@ -192,12 +192,12 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, null);
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+    execute(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       synchronized (this.entities) {
@@ -416,7 +416,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       Map<EntityType, Collection<Entity>> dependencies = new HashMap<>();
@@ -440,7 +440,7 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int count(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       synchronized (this.entities) {

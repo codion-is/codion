@@ -142,21 +142,6 @@ final class DefaultSelect implements Select, Serializable {
     private int offset = -1;
     private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
-    DefaultBuilder(Select select) {
-      this(requireNonNull(select).condition());
-      if (select instanceof DefaultSelect) {
-        DefaultSelect defaultSelect = (DefaultSelect) select;
-        foreignKeyFetchDepths = new HashMap<>(defaultSelect.foreignKeyFetchDepths);
-        attributes = defaultSelect.attributes;
-        orderBy = defaultSelect.orderBy;
-        fetchDepth = defaultSelect.fetchDepth;
-        forUpdate = defaultSelect.forUpdate;
-        limit = defaultSelect.limit;
-        offset = defaultSelect.offset;
-        queryTimeout = defaultSelect.queryTimeout;
-      }
-    }
-
     DefaultBuilder(Condition condition) {
       this.condition = requireNonNull(condition);
     }

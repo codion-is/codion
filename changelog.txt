@@ -9459,3 +9459,8 @@
   Select.fetchDepth(foreignKey) reintroduced
   DefaultSelect.DefaultBuilder copy constructor bug fixed, map received was unmodifiable
   DefaultUpdate.columnValues now unmodifiable
+  DefaultEntityTableConditionModel bug fixed, equalCondition() now translates empty values to isNull()
+  Select.Builder, Update.Builder, builder(Select) and builder(Update) removed
+  EntityConnection.rowCount() renamed count()
+  EntityConnection.selectDependencies() renamed dependencies()
+  EntityConnection.executeFunction() and executeProcedure() renamed execute()

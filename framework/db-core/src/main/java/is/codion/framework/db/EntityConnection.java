@@ -20,7 +20,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
@@ -33,7 +32,7 @@ import java.util.function.Consumer;
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
- * {@link #executeFunction(FunctionType)}  and {@link #executeProcedure(ProcedureType)}
+ * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)},
  * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
@@ -113,7 +112,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException;
 
   /**
    * Executes the function with the given type
@@ -125,7 +124,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
 
   /**
    * Executes the procedure with the given type with no arguments
@@ -134,7 +133,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the procedure argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException;
 
   /**
    * Executes the procedure with the given type
@@ -144,7 +143,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key.
@@ -191,7 +190,7 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Performs an update based on the given update, updating the columns found
    * in the {@link Update#columnValues()} map, with the associated values.
-   * @param update the update
+   * @param update the update to perform
    * @return the number of affected rows
    * @throws DatabaseException in case of a database exception
    */
@@ -225,8 +224,7 @@ public interface EntityConnection extends AutoCloseable {
   int delete(Condition condition) throws DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given column, note that the column
-   * must be associated with a {@link ColumnProperty}.
+   * Selects ordered and distinct non-null values of the given column.
    * @param column column
    * @param <T> the value type
    * @return the values of the given column
@@ -252,7 +250,7 @@ public interface EntityConnection extends AutoCloseable {
    * Selects distinct non-null values of the given column. If the select provides no
    * order by clause the result is ordered by the selected column.
    * @param column column
-   * @param select the select
+   * @param select the select to perform
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
@@ -283,7 +281,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Selects a single entity based on the specified select
-   * @param select the select specifying the entity to select
+   * @param select the select to perform
    * @return the entities based on the given select
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
@@ -309,7 +307,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Selects entities based on the given select
-   * @param select the select specifying which entities to select
+   * @param select the select to perform
    * @return entities based to the given select
    * @throws DatabaseException in case of a database exception
    */
@@ -322,15 +320,15 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
+  Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given condition
+   * Counts the number of rows returned based on the given condition
    * @param condition the search condition
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a database exception
    */
-  int rowCount(Condition condition) throws DatabaseException;
+  int count(Condition condition) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object
@@ -500,8 +498,7 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * A class encapsulating select query parameters.
    * A factory class for {@link Builder} instances via
-   * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and
-   * {@link EntityConnection.Select#builder(EntityConnection.Select)}.
+   * {@link Select#all(EntityType)}, {@link Select#where(Condition)}.
    */
   interface Select {
 
@@ -652,21 +649,12 @@ public interface EntityConnection extends AutoCloseable {
     static Builder where(Condition condition) {
       return new DefaultSelect.DefaultBuilder(condition);
     }
-
-    /**
-     * @param select the select
-     * @return a new {@link Builder} instance
-     */
-    static Builder builder(Select select) {
-      return new DefaultSelect.DefaultBuilder(select);
-    }
   }
 
   /**
    * A class encapsulating a where clause along with columns and their associated values for update.
    * A factory class for {@link Builder} instances via
-   * {@link Update#all(EntityType)}, {@link Update#where(Condition)} and
-   * {@link EntityConnection.Update#builder(EntityConnection.Update)}.
+   * {@link Update#all(EntityType)}, {@link Update#where(Condition)}.
    */
   interface Update {
 
@@ -691,6 +679,7 @@ public interface EntityConnection extends AutoCloseable {
        * @param value the new value
        * @param <T> the value type
        * @return this builder
+       * @throws IllegalStateException in case a value has already been added for the given column
        */
       <T> Builder set(Column<?> column, T value);
 
@@ -714,14 +703,6 @@ public interface EntityConnection extends AutoCloseable {
      */
     static Builder where(Condition condition) {
       return new DefaultUpdate.DefaultBuilder(condition);
-    }
-
-    /**
-     * @param update the update
-     * @return a {@link Builder} instance
-     */
-    static Builder builder(Update update) {
-      return new DefaultUpdate.DefaultBuilder(update);
     }
   }
 }

@@ -419,7 +419,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req());
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
-        connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
+        connection.execute((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
         context.status(HttpStatus.OK_200);
       }
       catch (Exception e) {
@@ -440,7 +440,7 @@ public final class EntityService implements AuxiliaryServer {
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(connection.executeFunction(functionType, argument)));
+                .result(Serializer.serialize(connection.execute(functionType, argument)));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -474,7 +474,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(connection.selectDependencies(deserialize(context.req()))));
+                .result(Serializer.serialize(connection.dependencies(deserialize(context.req()))));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -490,7 +490,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
         List<Entity> entities = entityObjectMapper.deserializeEntities(context.req().getInputStream());
-        Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(entities);
+        Map<EntityType, Collection<Entity>> dependencies = connection.dependencies(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(entityObjectMapper.writeValueAsString(dependencies));
@@ -507,7 +507,7 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        int rowCount = connection.rowCount(deserialize(context.req()));
+        int rowCount = connection.count(deserialize(context.req()));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
                 .result(Serializer.serialize(rowCount));
@@ -525,7 +525,7 @@ public final class EntityService implements AuxiliaryServer {
       try {
         RemoteEntityConnection connection = authenticate(context);
         ConditionObjectMapper conditionObjectMapper = conditionObjectMapper(connection.entities());
-        int rowCount = connection.rowCount(conditionObjectMapper.readValue(context.req().getInputStream(), Condition.class));
+        int rowCount = connection.count(conditionObjectMapper.readValue(context.req().getInputStream(), Condition.class));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(conditionObjectMapper.entityObjectMapper().writeValueAsString(rowCount));

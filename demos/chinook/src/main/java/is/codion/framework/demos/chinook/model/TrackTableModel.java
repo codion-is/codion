@@ -25,7 +25,7 @@ public final class TrackTableModel extends SwingEntityTableModel {
     if (selectionModel().isSelectionNotEmpty()) {
       Collection<Long> trackIds = Entity.values(Track.ID, selectionModel().getSelectedItems());
       Collection<Entity> result = connectionProvider().connection()
-              .executeFunction(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
+              .execute(Track.RAISE_PRICE, new RaisePriceParameters(trackIds, increase));
       replaceEntities(result);
     }
   }

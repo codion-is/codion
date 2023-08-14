@@ -83,18 +83,18 @@ public final class EntityDependenciesPanel extends JPanel {
     requireNonNull(entities);
     requireNonNull(connectionProvider);
     requireNonNull(dialogParent);
-    Map<EntityType, Collection<Entity>> dependencies = selectDependencies(entities, connectionProvider, dialogParent);
+    Map<EntityType, Collection<Entity>> dependencies = dependencies(entities, connectionProvider, dialogParent);
     if (!dependencies.isEmpty()) {
       displayDependenciesDialog(dependencies, connectionProvider, dialogParent, noDependenciesMessage);
     }
   }
 
-  private static Map<EntityType, Collection<Entity>> selectDependencies(Collection<Entity> entities,
-                                                                        EntityConnectionProvider connectionProvider,
-                                                                        JComponent dialogParent) {
+  private static Map<EntityType, Collection<Entity>> dependencies(Collection<Entity> entities,
+                                                                  EntityConnectionProvider connectionProvider,
+                                                                  JComponent dialogParent) {
     WaitCursor.show(dialogParent);
     try {
-      return connectionProvider.connection().selectDependencies(entities);
+      return connectionProvider.connection().dependencies(entities);
     }
     catch (DatabaseException e) {
       Dialogs.displayExceptionDialog(e, parentWindow(dialogParent));

@@ -180,24 +180,24 @@ public final class EntityConnectionDemo {
     // end::selectValues[]
   }
 
-  static void selectDependencies(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::selectDependencies[]
+  static void dependencies(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    // tag::dependencies[]
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> employees = connection.select(all(Employee.TYPE));
 
-    Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<EntityType, Collection<Entity>> dependencies = connection.dependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(Customer.TYPE);
-    // end::selectDependencies[]
+    // end::dependencies[]
   }
 
-  static void rowCount(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::rowCount[]
+  static void count(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    // tag::count[]
     EntityConnection connection = connectionProvider.connection();
 
-    int numberOfItStaff = connection.rowCount(column(Employee.TITLE).equalTo("IT Staff"));
-    // end::rowCount[]
+    int numberOfItStaff = connection.count(column(Employee.TITLE).equalTo("IT Staff"));
+    // end::count[]
   }
 
   static void insert(EntityConnectionProvider connectionProvider) throws DatabaseException {
@@ -329,18 +329,18 @@ public final class EntityConnectionDemo {
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
     Collection<Entity> modifiedTracks =
-            connection.executeFunction(Track.RAISE_PRICE,
+            connection.execute(Track.RAISE_PRICE,
                     new RaisePriceParameters(trackIds, priceIncrease));
 
     Collection<Entity> updatedInvoices =
-            connection.executeFunction(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
+            connection.execute(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
 
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
     Collection<Entity> playlistGenres = connection.select(
             column(Genre.NAME).in("Classical", "Soundtrack"));
 
-    Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
+    Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
             new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));
     // end::function[]
   }
@@ -407,8 +407,8 @@ public final class EntityConnectionDemo {
     selectKey(connectionProvider);
     selectSingleValue(connectionProvider);
     selectValues(connectionProvider);
-    selectDependencies(connectionProvider);
-    rowCount(connectionProvider);
+    dependencies(connectionProvider);
+    count(connectionProvider);
     insert(connectionProvider);
     update(connectionProvider);
     updateDemo(connectionProvider);

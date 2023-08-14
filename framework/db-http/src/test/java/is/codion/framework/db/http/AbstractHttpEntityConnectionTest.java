@@ -68,12 +68,12 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void executeProcedure() throws DatabaseException {
-    connection.executeProcedure(TestDomain.PROCEDURE_ID);
+    connection.execute(TestDomain.PROCEDURE_ID);
   }
 
   @Test
   void executeFunction() throws DatabaseException {
-    assertNotNull(connection.executeFunction(TestDomain.FUNCTION_ID));
+    assertNotNull(connection.execute(TestDomain.FUNCTION_ID));
   }
 
   @Test
@@ -134,7 +134,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.rowCount(condition));
+      assertEquals(0, connection.count(condition));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -177,9 +177,9 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectDependencies() throws DatabaseException {
+  void dependencies() throws DatabaseException {
     Entity department = connection.selectSingle(column(Department.NAME).equalTo("SALES"));
-    Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
+    Map<EntityType, Collection<Entity>> dependentEntities = connection.dependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(Employee.TYPE));
     assertFalse(dependentEntities.get(Employee.TYPE).isEmpty());
@@ -187,7 +187,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.rowCount(Condition.all(Department.TYPE)));
+    assertEquals(4, connection.count(Condition.all(Department.TYPE)));
   }
 
   @Test
