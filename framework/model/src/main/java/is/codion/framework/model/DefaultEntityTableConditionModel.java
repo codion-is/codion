@@ -188,17 +188,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     ForeignKeyCondition.Builder builder = foreignKey(foreignKey);
     switch (conditionModel.getOperator()) {
       case EQUAL:
-        if (values.isEmpty()) {
-          return builder.isNull();
-        }
-
-        return builder.in(values);
+        return values.isEmpty() ? builder.isNull() : builder.in(values);
       case NOT_EQUAL:
-        if (values.isEmpty()) {
-          return builder.isNotNull();
-        }
-
-        return builder.notIn(values);
+        return values.isEmpty() ? builder.isNotNull() : builder.notIn(values);
       default:
         throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key condition");
     }
@@ -236,6 +228,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
                                                        ColumnCondition.Builder<T> builder) {
     Collection<T> equalToValues = conditionModel.getEqualValues();
     Column<T> column = (Column<T>) conditionModel.columnIdentifier();
+    if (equalToValues.isEmpty()) {
+      return builder.isNull();
+    }
     if (column.isString() && equalToValues.size() == 1) {
       return singleStringEqualCondition(conditionModel, builder, (String) equalToValues.iterator().next());
     }
@@ -247,6 +242,9 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
                                                           ColumnCondition.Builder<T> builder) {
     Collection<T> equalToValues = conditionModel.getEqualValues();
     Column<T> column = (Column<T>) conditionModel.columnIdentifier();
+    if (equalToValues.isEmpty()) {
+      return builder.isNotNull();
+    }
     if (column.isString() && equalToValues.size() == 1) {
       return singleStringNotEqualCondition(conditionModel, builder, (String) equalToValues.iterator().next());
     }
