@@ -108,7 +108,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws RemoteException, DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws RemoteException, DatabaseException;
 
   /**
    * Executes the function with the given type
@@ -121,7 +121,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws RemoteException, DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given type with no arguments
@@ -131,7 +131,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws RemoteException, DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given type
@@ -142,7 +142,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws RemoteException, DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws RemoteException, DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key.

@@ -329,18 +329,18 @@ public final class EntityConnectionDemo {
     BigDecimal priceIncrease = BigDecimal.valueOf(0.1);
 
     Collection<Entity> modifiedTracks =
-            connection.executeFunction(Track.RAISE_PRICE,
+            connection.execute(Track.RAISE_PRICE,
                     new RaisePriceParameters(trackIds, priceIncrease));
 
     Collection<Entity> updatedInvoices =
-            connection.executeFunction(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
+            connection.execute(Invoice.UPDATE_TOTALS, Arrays.asList(1234L, 3412L));
 
     String playlistName = "Random playlist";
     int numberOfTracks = 100;
     Collection<Entity> playlistGenres = connection.select(
             column(Genre.NAME).in("Classical", "Soundtrack"));
 
-    Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST,
+    Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST,
             new RandomPlaylistParameters(playlistName, numberOfTracks, playlistGenres));
     // end::function[]
   }

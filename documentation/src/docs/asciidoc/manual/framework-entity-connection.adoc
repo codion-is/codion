@@ -191,20 +191,20 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 == Procedures & Functions
 
-=== executeFunction
+=== Function
 
-** {url-entity-connection}#executeFunction{opar}is.codion.common.db.operation.FunctionType{cpar}[executeFunction(FunctionType functionType)]
-** {url-entity-connection}#executeFunction{opar}is.codion.common.db.operation.FunctionType{comma}T{cpar}[executeFunction(FunctionType functionType, T argument)]
+** {url-entity-connection}#execute{opar}is.codion.common.db.operation.FunctionType{cpar}[execute(FunctionType functionType)]
+** {url-entity-connection}#execute{opar}is.codion.common.db.operation.FunctionType{comma}T{cpar}[execute(FunctionType functionType, T argument)]
 
 [source,java,indent=0]
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=function]
 ----
 
-=== executeProcedure
+=== Procedure
 
-** {url-entity-connection}#executeProcedure{opar}is.codion.common.db.operation.ProcedureType{cpar}[executeProcedure(ProcedureType procedureType)]
-** {url-entity-connection}#executeProcedure{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[executeProcedure(ProcedureType procedureType, T argument)]
+** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{cpar}[execute(ProcedureType procedureType)]
+** {url-entity-connection}#execute{opar}is.codion.common.db.operation.ProcedureType{comma}T{cpar}[execute(ProcedureType procedureType, T argument)]
 
 Executing procedures is the same as executing functions, except without a return value.
 

@@ -29,7 +29,7 @@ public final class PlaylistTableModel extends SwingEntityTableModel {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      Entity randomPlaylist = connection.executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
+      Entity randomPlaylist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
       connection.commitTransaction();
 
       return randomPlaylist;

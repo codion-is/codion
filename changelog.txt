@@ -9423,3 +9423,4 @@
   Select.Builder, Update.Builder, builder(Select) and builder(Update) removed
   EntityConnection.rowCount() renamed count()
   EntityConnection.selectDependencies() renamed dependencies()
+  EntityConnection.executeFunction() and executeProcedure() renamed execute()

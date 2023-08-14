@@ -61,12 +61,12 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void executeProcedure() throws DatabaseException {
-    connection.executeProcedure(TestDomain.PROCEDURE_ID);
+    connection.execute(TestDomain.PROCEDURE_ID);
   }
 
   @Test
   void executeFunction() throws DatabaseException {
-    assertNotNull(connection.executeFunction(TestDomain.FUNCTION_ID));
+    assertNotNull(connection.execute(TestDomain.FUNCTION_ID));
   }
 
   @Test

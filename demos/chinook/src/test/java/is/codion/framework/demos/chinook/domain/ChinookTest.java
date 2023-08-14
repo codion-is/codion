@@ -89,7 +89,7 @@ public class ChinookTest extends EntityTestUnit {
       int noOfTracks = 10;
       String playlistName = "MetalPlaylistTest";
       RandomPlaylistParameters parameters = new RandomPlaylistParameters(playlistName, noOfTracks, singleton(genre));
-      Entity playlist = connection.executeFunction(Playlist.RANDOM_PLAYLIST, parameters);
+      Entity playlist = connection.execute(Playlist.RANDOM_PLAYLIST, parameters);
       assertEquals(playlistName, playlist.get(Playlist.NAME));
       List<Entity> playlistTracks = connection.select(foreignKey(PlaylistTrack.PLAYLIST_FK).equalTo(playlist));
       assertEquals(noOfTracks, playlistTracks.size());

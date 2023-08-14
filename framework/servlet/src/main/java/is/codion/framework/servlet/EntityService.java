@@ -417,7 +417,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         List<Object> parameters = deserialize(context.req);
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
-        connection.executeProcedure((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
+        connection.execute((ProcedureType<? extends EntityConnection, Object>) parameters.get(0), argument);
         context.status(HttpStatus.OK_200);
       }
       catch (Exception e) {
@@ -438,7 +438,7 @@ public final class EntityService implements AuxiliaryServer {
         Object argument = parameters.size() > 1 ? parameters.get(1) : null;
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(connection.executeFunction(functionType, argument)));
+                .result(Serializer.serialize(connection.execute(functionType, argument)));
       }
       catch (Exception e) {
         handleException(context, e);

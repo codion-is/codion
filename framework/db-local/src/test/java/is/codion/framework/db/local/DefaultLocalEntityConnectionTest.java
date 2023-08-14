@@ -488,12 +488,12 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void executeFunction() throws DatabaseException {
-    connection.executeFunction(FUNCTION_ID);
+    connection.execute(FUNCTION_ID);
   }
 
   @Test
   void executeProcedure() throws DatabaseException {
-    connection.executeProcedure(PROCEDURE_ID);
+    connection.execute(PROCEDURE_ID);
   }
 
   @Test

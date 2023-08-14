@@ -32,7 +32,7 @@ import java.util.function.Consumer;
 /**
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
- * {@link #executeFunction(FunctionType)}  and {@link #executeProcedure(ProcedureType)}
+ * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)},
  * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
@@ -112,7 +112,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException;
 
   /**
    * Executes the function with the given type
@@ -124,7 +124,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the function return value
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
+  <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException;
 
   /**
    * Executes the procedure with the given type with no arguments
@@ -133,7 +133,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the procedure argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException;
 
   /**
    * Executes the procedure with the given type
@@ -143,7 +143,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the argument type
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
+  <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException;
 
   /**
    * Inserts the given entity, returning the primary key.

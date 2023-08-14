@@ -155,12 +155,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, null);
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+    return execute(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       synchronized (this.entities) {
@@ -176,12 +176,12 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, null);
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+    execute(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       synchronized (this.entities) {
