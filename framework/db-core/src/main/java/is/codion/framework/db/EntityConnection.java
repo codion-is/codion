@@ -500,8 +500,7 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * A class encapsulating select query parameters.
    * A factory class for {@link Builder} instances via
-   * {@link Select#all(EntityType)}, {@link Select#where(Condition)} and
-   * {@link EntityConnection.Select#builder(EntityConnection.Select)}.
+   * {@link Select#all(EntityType)}, {@link Select#where(Condition)}.
    */
   interface Select {
 
@@ -652,21 +651,12 @@ public interface EntityConnection extends AutoCloseable {
     static Builder where(Condition condition) {
       return new DefaultSelect.DefaultBuilder(condition);
     }
-
-    /**
-     * @param select the select
-     * @return a new {@link Builder} instance
-     */
-    static Builder builder(Select select) {
-      return new DefaultSelect.DefaultBuilder(select);
-    }
   }
 
   /**
    * A class encapsulating a where clause along with columns and their associated values for update.
    * A factory class for {@link Builder} instances via
-   * {@link Update#all(EntityType)}, {@link Update#where(Condition)} and
-   * {@link EntityConnection.Update#builder(EntityConnection.Update)}.
+   * {@link Update#all(EntityType)}, {@link Update#where(Condition)}.
    */
   interface Update {
 
@@ -691,6 +681,7 @@ public interface EntityConnection extends AutoCloseable {
        * @param value the new value
        * @param <T> the value type
        * @return this builder
+       * @throws IllegalStateException in case a value has already been added for the given column
        */
       <T> Builder set(Column<?> column, T value);
 
@@ -714,14 +705,6 @@ public interface EntityConnection extends AutoCloseable {
      */
     static Builder where(Condition condition) {
       return new DefaultUpdate.DefaultBuilder(condition);
-    }
-
-    /**
-     * @param update the update
-     * @return a {@link Builder} instance
-     */
-    static Builder builder(Update update) {
-      return new DefaultUpdate.DefaultBuilder(update);
     }
   }
 }

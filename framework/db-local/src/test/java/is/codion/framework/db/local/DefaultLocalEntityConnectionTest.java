@@ -274,7 +274,8 @@ public class DefaultLocalEntityConnectionTest {
             .build();
     List<Entity> result = connection.select(select);
     assertEquals(2, result.size());
-    select = Select.builder(select)
+    select = Select.all(Employee.TYPE)
+            .orderBy(OrderBy.ascending(Employee.NAME))
             .limit(3)
             .offset(3)
             .build();
@@ -307,21 +308,29 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    select = Select.builder(select).fetchDepth(Employee.DEPARTMENT_FK, 0).build();
+    select = Select.where(select.condition())
+            .fetchDepth(Employee.DEPARTMENT_FK, 0)
+            .build();
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    select = Select.builder(select).fetchDepth(Employee.MGR_FK, 0).build();
+    select = Select.where(select.condition())
+            .fetchDepth(Employee.DEPARTMENT_FK, 0)
+            .fetchDepth(Employee.MGR_FK, 0)
+            .build();
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
     assertFalse(emp.isLoaded(Employee.DEPARTMENT_FK));
     assertFalse(emp.isLoaded(Employee.MGR_FK));
 
-    select = Select.builder(select).fetchDepth(Employee.MGR_FK, 2).build();
+    select = Select.where(select.condition())
+            .fetchDepth(Employee.DEPARTMENT_FK, 0)
+            .fetchDepth(Employee.MGR_FK, 2)
+            .build();
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();
@@ -330,7 +339,10 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    select = Select.builder(select).fetchDepth(Employee.MGR_FK, -1).build();
+    select = Select.where(select.condition())
+            .fetchDepth(Employee.DEPARTMENT_FK, 0)
+            .fetchDepth(Employee.MGR_FK, -1)
+            .build();
     result = connection.select(select);
     assertEquals(1, result.size());
     emp = result.iterator().next();

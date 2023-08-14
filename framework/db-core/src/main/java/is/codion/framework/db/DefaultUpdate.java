@@ -60,14 +60,6 @@ final class DefaultUpdate implements Update, Serializable {
     private final Condition condition;
     private final Map<Column<?>, Object> columnValues = new LinkedHashMap<>();
 
-    DefaultBuilder(Update update) {
-      this(requireNonNull(update).condition());
-      if (update instanceof DefaultUpdate) {
-        DefaultUpdate defaultUpdate = (DefaultUpdate) update;
-        columnValues.putAll(defaultUpdate.columnValues);
-      }
-    }
-
     DefaultBuilder(Condition condition) {
       this.condition = requireNonNull(condition);
     }
@@ -76,7 +68,7 @@ final class DefaultUpdate implements Update, Serializable {
     public <T> Builder set(Column<?> column, T value) {
       requireNonNull(column, "column");
       if (columnValues.containsKey(column)) {
-        throw new IllegalArgumentException("Update already contains a value for column: " + column);
+        throw new IllegalStateException("Update already contains a value for column: " + column);
       }
       columnValues.put(column, value);
 
