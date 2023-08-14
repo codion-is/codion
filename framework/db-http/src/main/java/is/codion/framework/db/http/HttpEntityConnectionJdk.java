@@ -228,12 +228,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType) throws DatabaseException {
-    return executeFunction(functionType, null);
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType) throws DatabaseException {
+    return execute(functionType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T, R> R executeFunction(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T, R> R execute(FunctionType<C, T, R> functionType, T argument) throws DatabaseException {
     Objects.requireNonNull(functionType);
     try {
       synchronized (this.entities) {
@@ -250,12 +250,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType) throws DatabaseException {
-    executeProcedure(procedureType, null);
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType) throws DatabaseException {
+    execute(procedureType, null);
   }
 
   @Override
-  public <C extends EntityConnection, T> void executeProcedure(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
+  public <C extends EntityConnection, T> void execute(ProcedureType<C, T> procedureType, T argument) throws DatabaseException {
     Objects.requireNonNull(procedureType);
     try {
       synchronized (this.entities) {
@@ -465,7 +465,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException {
+  public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities, "entities");
     try {
       synchronized (this.entities) {
@@ -482,7 +482,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public int rowCount(Condition criteria) throws DatabaseException {
+  public int count(Condition criteria) throws DatabaseException {
     Objects.requireNonNull(criteria);
     try {
       synchronized (this.entities) {
