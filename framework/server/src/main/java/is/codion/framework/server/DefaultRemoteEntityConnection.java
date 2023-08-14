@@ -78,9 +78,9 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int count(Condition condition) throws DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.rowCount(condition);
+      return connectionProxy.count(condition);
     }
   }
 

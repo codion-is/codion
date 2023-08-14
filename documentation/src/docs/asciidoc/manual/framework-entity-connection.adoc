@@ -117,15 +117,15 @@ For selecting entities that depend on a set of entities via foreign keys.
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
 ----
 
-=== rowCount
+=== Count
 
 For selecting the row count given a condition.
 
-{url-entity-connection}#rowCount{opar}is.codion.framework.db.condition.Condition{cpar}[rowCount(Condition condition)]
+{url-entity-connection}#count{opar}is.codion.framework.db.condition.Condition{cpar}[count(Condition condition)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=rowCount]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=count]
 ----
 
 == Modifying

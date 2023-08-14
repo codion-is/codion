@@ -9421,3 +9421,4 @@
   DefaultUpdate.columnValues now unmodifiable
   DefaultEntityTableConditionModel bug fixed, equalCondition() now translates empty values to isNull()
   Select.Builder, Update.Builder, builder(Select) and builder(Update) removed
+  EntityConnection.rowCount() renamed count()

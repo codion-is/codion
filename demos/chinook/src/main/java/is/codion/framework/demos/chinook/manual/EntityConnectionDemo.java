@@ -192,12 +192,12 @@ public final class EntityConnectionDemo {
     // end::selectDependencies[]
   }
 
-  static void rowCount(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::rowCount[]
+  static void count(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    // tag::count[]
     EntityConnection connection = connectionProvider.connection();
 
-    int numberOfItStaff = connection.rowCount(column(Employee.TITLE).equalTo("IT Staff"));
-    // end::rowCount[]
+    int numberOfItStaff = connection.count(column(Employee.TITLE).equalTo("IT Staff"));
+    // end::count[]
   }
 
   static void insert(EntityConnectionProvider connectionProvider) throws DatabaseException {
@@ -408,7 +408,7 @@ public final class EntityConnectionDemo {
     selectSingleValue(connectionProvider);
     selectValues(connectionProvider);
     selectDependencies(connectionProvider);
-    rowCount(connectionProvider);
+    count(connectionProvider);
     insert(connectionProvider);
     update(connectionProvider);
     updateDemo(connectionProvider);

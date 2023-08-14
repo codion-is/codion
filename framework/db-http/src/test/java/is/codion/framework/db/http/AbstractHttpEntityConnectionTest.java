@@ -127,7 +127,7 @@ abstract class AbstractHttpEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.rowCount(condition));
+      assertEquals(0, connection.count(condition));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -180,7 +180,7 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void rowCount() throws DatabaseException {
-    assertEquals(4, connection.rowCount(Condition.all(Department.TYPE)));
+    assertEquals(4, connection.count(Condition.all(Department.TYPE)));
   }
 
   @Test

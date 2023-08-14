@@ -20,7 +20,6 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ColumnProperty;
 import is.codion.framework.domain.property.ForeignKeyProperty;
 
 import java.util.Collection;
@@ -225,8 +224,7 @@ public interface EntityConnection extends AutoCloseable {
   int delete(Condition condition) throws DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given column, note that the column
-   * must be associated with a {@link ColumnProperty}.
+   * Selects ordered and distinct non-null values of the given column.
    * @param column column
    * @param <T> the value type
    * @return the values of the given column
@@ -325,12 +323,12 @@ public interface EntityConnection extends AutoCloseable {
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given condition
+   * Counts the number of rows returned based on the given condition
    * @param condition the search condition
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a database exception
    */
-  int rowCount(Condition condition) throws DatabaseException;
+  int count(Condition condition) throws DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized report result object

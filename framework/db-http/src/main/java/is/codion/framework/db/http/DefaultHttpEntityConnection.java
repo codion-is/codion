@@ -399,7 +399,7 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int count(Condition condition) throws DatabaseException {
     Objects.requireNonNull(condition);
     try {
       synchronized (this.entities) {

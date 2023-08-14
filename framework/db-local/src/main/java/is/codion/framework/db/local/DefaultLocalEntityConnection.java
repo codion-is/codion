@@ -587,7 +587,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public int rowCount(Condition condition) throws DatabaseException {
+  public int count(Condition condition) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(condition, CONDITION).entityType());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns("count(*)")

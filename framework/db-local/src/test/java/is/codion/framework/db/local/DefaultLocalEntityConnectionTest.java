@@ -351,11 +351,11 @@ public class DefaultLocalEntityConnectionTest {
     emp = emp.referencedEntity(Employee.MGR_FK);
     assertTrue(emp.isLoaded(Employee.MGR_FK));
 
-    assertEquals(4, connection.rowCount(column(Employee.ID).in(asList(1, 2, 3, 4))));
-    assertEquals(0, connection.rowCount(column(Employee.DEPARTMENT).isNull()));
-    assertEquals(0, connection.rowCount(foreignKey(Employee.DEPARTMENT_FK).isNull()));
-    assertEquals(1, connection.rowCount(column(Employee.MGR).isNull()));
-    assertEquals(1, connection.rowCount(foreignKey(Employee.MGR_FK).isNull()));
+    assertEquals(4, connection.count(column(Employee.ID).in(asList(1, 2, 3, 4))));
+    assertEquals(0, connection.count(column(Employee.DEPARTMENT).isNull()));
+    assertEquals(0, connection.count(foreignKey(Employee.DEPARTMENT_FK).isNull()));
+    assertEquals(1, connection.count(column(Employee.MGR).isNull()));
+    assertEquals(1, connection.count(foreignKey(Employee.MGR_FK).isNull()));
 
     assertFalse(connection.select(foreignKey(Employee.DEPARTMENT_FK).in(connection.select(column(Department.DEPTNO).equalTo(20)))).isEmpty());
 
@@ -446,20 +446,20 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void rowCount() throws Exception {
-    int rowCount = connection.rowCount(all(Department.TYPE));
+  void count() throws Exception {
+    int rowCount = connection.count(all(Department.TYPE));
     assertEquals(4, rowCount);
     Condition deptNoCondition = column(Department.DEPTNO).greaterThanOrEqualTo(30);
-    rowCount = connection.rowCount(deptNoCondition);
+    rowCount = connection.count(deptNoCondition);
     assertEquals(2, rowCount);
 
-    rowCount = connection.rowCount(all(EmpnoDeptno.TYPE));
+    rowCount = connection.count(all(EmpnoDeptno.TYPE));
     assertEquals(16, rowCount);
     deptNoCondition = column(EmpnoDeptno.DEPTNO).greaterThanOrEqualTo(30);
-    rowCount = connection.rowCount(deptNoCondition);
+    rowCount = connection.count(deptNoCondition);
     assertEquals(4, rowCount);
 
-    rowCount = connection.rowCount(all(Job.TYPE));
+    rowCount = connection.count(all(Job.TYPE));
     assertEquals(4, rowCount);
   }
 
@@ -658,7 +658,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.beginTransaction();
     try {
       connection.update(update);
-      assertEquals(0, connection.rowCount(condition));
+      assertEquals(0, connection.count(condition));
       Collection<Entity> afterUpdate = connection.select(Entity.primaryKeys(entities));
       for (Entity entity : afterUpdate) {
         assertEquals(500d, entity.get(Employee.COMMISSION));
@@ -876,7 +876,7 @@ public class DefaultLocalEntityConnectionTest {
         counter++;
       }
       assertThrows(NoSuchElementException.class, iterator::next);
-      int rowCount = connection.rowCount(condition);
+      int rowCount = connection.count(condition);
       assertEquals(rowCount, counter);
       iterator = connection.iterator(condition).iterator();
       counter = 0;

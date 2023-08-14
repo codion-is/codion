@@ -338,13 +338,13 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
-   * Selects the number of rows returned based on the given condition
+   * Counts the number of rows returned based on the given condition
    * @param condition the search condition
    * @return the number of rows fitting the given condition
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException   in case of a remote exception
    */
-  int rowCount(Condition condition) throws RemoteException, DatabaseException;
+  int count(Condition condition) throws RemoteException, DatabaseException;
 
   /**
    * Takes a ReportType object using a JDBC datasource and returns an initialized ReportResult object
