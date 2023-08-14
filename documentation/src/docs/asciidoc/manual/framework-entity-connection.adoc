@@ -106,7 +106,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=iterator]
 ----
 
-=== ependencies
+=== dependencies
 
 For selecting entities that depend on a set of entities via foreign keys.
 

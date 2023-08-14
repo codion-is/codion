@@ -34,6 +34,7 @@ import java.util.Map;
 
 import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.demos.chinook.domain.Chinook.*;
+import static is.codion.framework.domain.entity.OrderBy.descending;
 import static java.util.Arrays.asList;
 
 /**
@@ -59,12 +60,14 @@ public final class EntityConnectionDemo {
     List<Entity> aliceInChainsAlbums = connection.select(
             foreignKey(Album.ARTIST_FK).equalTo(aliceInChains));
 
-    Entity ironMaiden = connection.selectSingle(
-            column(Artist.NAME).equalTo("Iron Maiden"));
+    Entity metal = connection.selectSingle(
+            column(Genre.NAME).equalToIgnoreCase("metal"));
 
-    Entity liveIronMaidenAlbum = connection.selectSingle(and(
-            foreignKey(Album.ARTIST_FK).equalTo(ironMaiden),
-            column(Album.TITLE).likeIgnoreCase("%live after%")));
+    List<Entity> metalTracks = connection.select(
+            Select.where(foreignKey(Track.GENRE_FK).equalTo(metal))
+                    .attributes(Track.NAME, Track.ALBUM_FK)
+                    .orderBy(descending(Album.TITLE))
+                    .build());
     // end::select[]
   }
 
