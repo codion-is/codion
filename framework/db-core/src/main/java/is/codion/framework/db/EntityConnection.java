@@ -191,7 +191,7 @@ public interface EntityConnection extends AutoCloseable {
   /**
    * Performs an update based on the given update, updating the columns found
    * in the {@link Update#columnValues()} map, with the associated values.
-   * @param update the update
+   * @param update the update to perform
    * @return the number of affected rows
    * @throws DatabaseException in case of a database exception
    */
@@ -252,7 +252,7 @@ public interface EntityConnection extends AutoCloseable {
    * Selects distinct non-null values of the given column. If the select provides no
    * order by clause the result is ordered by the selected column.
    * @param column column
-   * @param select the select
+   * @param select the select to perform
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
@@ -283,7 +283,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Selects a single entity based on the specified select
-   * @param select the select specifying the entity to select
+   * @param select the select to perform
    * @return the entities based on the given select
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
@@ -309,7 +309,7 @@ public interface EntityConnection extends AutoCloseable {
 
   /**
    * Selects entities based on the given select
-   * @param select the select specifying which entities to select
+   * @param select the select to perform
    * @return entities based to the given select
    * @throws DatabaseException in case of a database exception
    */
