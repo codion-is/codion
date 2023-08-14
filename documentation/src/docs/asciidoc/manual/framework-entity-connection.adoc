@@ -106,18 +106,18 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=iterator]
 ----
 
-=== selectDependencies
+=== ependencies
 
 For selecting entities that depend on a set of entities via foreign keys.
 
-{url-entity-connection}#selectDependencies{opar}java.util.Collection{cpar}[selectDependencies(Collection<Entity> entities)]
+{url-entity-connection}#dependencies{opar}java.util.Collection{cpar}[dependencies(Collection<Entity> entities)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=selectDependencies]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=dependencies]
 ----
 
-=== Count
+=== count
 
 For selecting the row count given a condition.
 

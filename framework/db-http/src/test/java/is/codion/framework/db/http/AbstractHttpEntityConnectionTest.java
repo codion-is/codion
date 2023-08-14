@@ -170,9 +170,9 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
-  void selectDependencies() throws DatabaseException {
+  void dependencies() throws DatabaseException {
     Entity department = connection.selectSingle(column(Department.NAME).equalTo("SALES"));
-    Map<EntityType, Collection<Entity>> dependentEntities = connection.selectDependencies(singletonList(department));
+    Map<EntityType, Collection<Entity>> dependentEntities = connection.dependencies(singletonList(department));
     assertNotNull(dependentEntities);
     assertTrue(dependentEntities.containsKey(Employee.TYPE));
     assertFalse(dependentEntities.get(Employee.TYPE).isEmpty());

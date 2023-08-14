@@ -320,7 +320,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @see ForeignKeyProperty#isSoftReference()
    */
-  Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws DatabaseException;
+  Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Counts the number of rows returned based on the given condition

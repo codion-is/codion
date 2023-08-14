@@ -472,7 +472,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
-                .result(Serializer.serialize(connection.selectDependencies(deserialize(context.req))));
+                .result(Serializer.serialize(connection.dependencies(deserialize(context.req))));
       }
       catch (Exception e) {
         handleException(context, e);
@@ -488,7 +488,7 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper entityObjectMapper = entityObjectMapper(connection.entities());
         List<Entity> entities = entityObjectMapper.deserializeEntities(context.req.getInputStream());
-        Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(entities);
+        Map<EntityType, Collection<Entity>> dependencies = connection.dependencies(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(entityObjectMapper.writeValueAsString(dependencies));

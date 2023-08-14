@@ -180,16 +180,16 @@ public final class EntityConnectionDemo {
     // end::selectValues[]
   }
 
-  static void selectDependencies(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::selectDependencies[]
+  static void dependencies(EntityConnectionProvider connectionProvider) throws DatabaseException {
+    // tag::dependencies[]
     EntityConnection connection = connectionProvider.connection();
 
     List<Entity> employees = connection.select(all(Employee.TYPE));
 
-    Map<EntityType, Collection<Entity>> dependencies = connection.selectDependencies(employees);
+    Map<EntityType, Collection<Entity>> dependencies = connection.dependencies(employees);
 
     Collection<Entity> customersDependingOnEmployees = dependencies.get(Customer.TYPE);
-    // end::selectDependencies[]
+    // end::dependencies[]
   }
 
   static void count(EntityConnectionProvider connectionProvider) throws DatabaseException {
@@ -407,7 +407,7 @@ public final class EntityConnectionDemo {
     selectKey(connectionProvider);
     selectSingleValue(connectionProvider);
     selectValues(connectionProvider);
-    selectDependencies(connectionProvider);
+    dependencies(connectionProvider);
     count(connectionProvider);
     insert(connectionProvider);
     update(connectionProvider);

@@ -206,18 +206,18 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectDependencies() throws Exception {
-    Map<EntityType, Collection<Entity>> empty = connection.selectDependencies(new ArrayList<>());
+  void dependencies() throws Exception {
+    Map<EntityType, Collection<Entity>> empty = connection.dependencies(new ArrayList<>());
     assertTrue(empty.isEmpty());
     List<Entity> accounting = connection.select(column(Department.DNAME).equalTo("ACCOUNTING"));
-    Map<EntityType, Collection<Entity>> emps = connection.selectDependencies(accounting);
+    Map<EntityType, Collection<Entity>> emps = connection.dependencies(accounting);
     assertEquals(1, emps.size());
     assertTrue(emps.containsKey(Employee.TYPE));
     assertEquals(7, emps.get(Employee.TYPE).size());
     emps.get(Employee.TYPE).forEach(entity -> assertTrue(entity.isImmutable()));
 
     Entity emp = connection.selectSingle(column(Employee.NAME).equalTo("KING"));
-    Map<EntityType, Collection<Entity>> deps = connection.selectDependencies(singletonList(emp));
+    Map<EntityType, Collection<Entity>> deps = connection.dependencies(singletonList(emp));
     assertTrue(deps.isEmpty());//soft foreign key reference
 
     //multiple foreign keys referencing the same entity
@@ -229,41 +229,41 @@ public class DefaultLocalEntityConnectionTest {
     Entity detail1 = connection.selectSingle(column(Detail.ID).equalTo(1));
     Entity detail2 = connection.selectSingle(column(Detail.ID).equalTo(2));
 
-    deps = connection.selectDependencies(singletonList(master1));
+    deps = connection.dependencies(singletonList(master1));
     Collection<Entity> dependantEntities = deps.get(Detail.TYPE);
     assertEquals(1, dependantEntities.size());
     assertTrue(dependantEntities.contains(detail1));
 
-    deps = connection.selectDependencies(singletonList(master2));
+    deps = connection.dependencies(singletonList(master2));
     dependantEntities = deps.get(Detail.TYPE);
     assertEquals(2, dependantEntities.size());
     assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
 
-    deps = connection.selectDependencies(singletonList(master3));
+    deps = connection.dependencies(singletonList(master3));
     dependantEntities = deps.get(Detail.TYPE);
     assertEquals(1, dependantEntities.size());
     assertTrue(dependantEntities.contains(detail2));
 
-    deps = connection.selectDependencies(Arrays.asList(master1, master2));
+    deps = connection.dependencies(Arrays.asList(master1, master2));
     dependantEntities = deps.get(Detail.TYPE);
     assertEquals(2, dependantEntities.size());
     assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
 
-    deps = connection.selectDependencies(Arrays.asList(master2, master3));
+    deps = connection.dependencies(Arrays.asList(master2, master3));
     dependantEntities = deps.get(Detail.TYPE);
     assertEquals(2, dependantEntities.size());
     assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
 
-    deps = connection.selectDependencies(Arrays.asList(master1, master2, master3, master4));
+    deps = connection.dependencies(Arrays.asList(master1, master2, master3, master4));
     dependantEntities = deps.get(Detail.TYPE);
     assertEquals(2, dependantEntities.size());
     assertTrue(dependantEntities.containsAll(Arrays.asList(detail1, detail2)));
 
-    deps = connection.selectDependencies(singletonList(master4));
+    deps = connection.dependencies(singletonList(master4));
     assertFalse(deps.containsKey(Detail.TYPE));
 
     Entity jones = connection.selectSingle(column(EmployeeFk.NAME).equalTo("JONES"));
-    assertTrue(connection.selectDependencies(singletonList(jones)).isEmpty());//soft reference
+    assertTrue(connection.dependencies(singletonList(jones)).isEmpty());//soft reference
   }
 
   @Test

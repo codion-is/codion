@@ -335,7 +335,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */
-  Map<EntityType, Collection<Entity>> selectDependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Counts the number of rows returned based on the given condition

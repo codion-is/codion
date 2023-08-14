@@ -21,7 +21,7 @@ public final class ViewGenre extends AbstractEntityUsageScenario<ChinookAppModel
     EntityLoadTestModel.selectRandomRow(genreModel.tableModel());
     SwingEntityModel trackModel = genreModel.detailModel(Track.TYPE);
     selectRandomRows(trackModel.tableModel(), 2);
-    genreModel.connectionProvider().connection().selectDependencies(trackModel.tableModel().selectionModel().getSelectedItems());
+    genreModel.connectionProvider().connection().dependencies(trackModel.tableModel().selectionModel().getSelectedItems());
   }
 
   @Override
