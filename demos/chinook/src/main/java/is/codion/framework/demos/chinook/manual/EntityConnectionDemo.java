@@ -66,7 +66,7 @@ public final class EntityConnectionDemo {
     List<Entity> metalTracks = connection.select(
             Select.where(foreignKey(Track.GENRE_FK).equalTo(metal))
                     .attributes(Track.NAME, Track.ALBUM_FK)
-                    .orderBy(descending(Album.TITLE))
+                    .orderBy(descending(Track.NAME))
                     .build());
     // end::select[]
   }
