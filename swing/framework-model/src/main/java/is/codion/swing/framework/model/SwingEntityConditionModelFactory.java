@@ -5,8 +5,8 @@ package is.codion.swing.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 

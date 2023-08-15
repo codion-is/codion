@@ -4,8 +4,8 @@
 package is.codion.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
 import java.util.Map;

@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+
 import java.io.Serializable;
 
 final class NullColorProvider implements ColorProvider, Serializable {

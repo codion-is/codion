@@ -3,7 +3,7 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.Column;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 

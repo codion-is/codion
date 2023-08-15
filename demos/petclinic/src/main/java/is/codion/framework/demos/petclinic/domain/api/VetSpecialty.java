@@ -3,9 +3,9 @@
  */
 package is.codion.framework.demos.petclinic.domain.api;
 
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import static is.codion.framework.demos.petclinic.domain.api.Petclinic.DOMAIN;
 

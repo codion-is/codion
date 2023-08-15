@@ -5,10 +5,10 @@ package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -49,7 +49,7 @@ final class UpdateDeserializer extends StdDeserializer<Update> {
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Column<Object> column = definition.columnProperty((Column<Object>) definition.attribute(field.getKey())).attribute();
+      Column<Object> column = definition.columnDefinition((Column<Object>) definition.attribute(field.getKey())).attribute();
       updateBuilder.set(column, entityObjectMapper.readValue(field.getValue().toString(), column.valueClass()));
     }
 

@@ -4,9 +4,9 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.EntityConnection.Select;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;

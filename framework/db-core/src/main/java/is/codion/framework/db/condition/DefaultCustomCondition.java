@@ -3,9 +3,9 @@
  */
 package is.codion.framework.db.condition;
 
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.List;
 import java.util.Objects;

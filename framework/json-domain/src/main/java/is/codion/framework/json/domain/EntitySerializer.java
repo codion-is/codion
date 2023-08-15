@@ -3,11 +3,11 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;
@@ -62,20 +62,20 @@ final class EntitySerializer extends StdSerializer<Entity> {
     generator.writeStartObject();
     EntityDefinition definition = entity.definition();
     for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
-      Property<?> property = definition.property(entry.getKey());
-      if (include(property, entity)) {
-        generator.writeFieldName(property.attribute().name());
+      AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(entry.getKey());
+      if (include(attributeDefinition, entity)) {
+        generator.writeFieldName(attributeDefinition.attribute().name());
         mapper.writeValue(generator, entry.getValue());
       }
     }
     generator.writeEndObject();
   }
 
-  private boolean include(Property<?> property, Entity entity) {
-    if (!includeForeignKeyValues && property instanceof ForeignKeyProperty) {
+  private boolean include(AttributeDefinition<?> attributeDefinition, Entity entity) {
+    if (!includeForeignKeyValues && attributeDefinition instanceof ForeignKeyDefinition) {
       return false;
     }
-    if (!includeNullValues && entity.isNull(property.attribute())) {
+    if (!includeNullValues && entity.isNull(attributeDefinition.attribute())) {
       return false;
     }
 

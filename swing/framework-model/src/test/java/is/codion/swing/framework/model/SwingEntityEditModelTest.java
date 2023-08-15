@@ -8,7 +8,7 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -77,8 +77,8 @@ public class SwingEntityEditModelTest {
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.items().isEmpty());
-    ForeignKeyProperty deptProperty = employeeEditModel.entities().definition(Employee.TYPE).foreignKeyProperty(Employee.DEPARTMENT_FK);
-    assertEquals(deptProperty.referencedType(), model.entityType());
+    ForeignKeyDefinition deptForeignKey = employeeEditModel.entities().definition(Employee.TYPE).foreignKeyDefinition(Employee.DEPARTMENT_FK);
+    assertEquals(deptForeignKey.referencedType(), model.entityType());
     model.refresh();
     for (Entity department : model.items()) {
       assertTrue(department.contains(Department.ID));

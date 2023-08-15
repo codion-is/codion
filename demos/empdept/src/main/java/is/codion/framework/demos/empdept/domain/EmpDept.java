@@ -7,11 +7,11 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -22,10 +22,8 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Property.*;
 import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
 
@@ -139,16 +137,16 @@ public final class EmpDept extends DefaultDomain {
   // tag::defineDepartment[]
   void department() {
     /*Defining the entity Department.TYPE*/
-    add(definition(
-            primaryKeyProperty(Department.ID, "Department no.")
+    add(Department.TYPE.define(
+            Department.ID.primaryKey("Department no.")
                     .updatable(true)
                     .nullable(false)
                     .beanProperty("id"),
-            columnProperty(Department.NAME, "Department name")
+            Department.NAME.column("Department name")
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
-            columnProperty(Department.LOCATION, "Location")
+            Department.LOCATION.column("Location")
                     .maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
@@ -161,40 +159,40 @@ public final class EmpDept extends DefaultDomain {
   // tag::defineEmployee[]
   void employee() {
     /*Defining the entity Employee.TYPE*/
-    add(definition(
-            primaryKeyProperty(Employee.ID, "Employee no.")
+    add(Employee.TYPE.define(
+            Employee.ID.primaryKey("Employee no.")
                     .beanProperty("id"),
-            columnProperty(Employee.NAME, "Name")
-                    .searchProperty(true)
+            Employee.NAME.column("Name")
+                    .searchColumn(true)
                     .maximumLength(10)
                     .nullable(false)
                     .beanProperty("name"),
-            columnProperty(Employee.DEPARTMENT)
+            Employee.DEPARTMENT.column()
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, "Department")
+            Employee.DEPARTMENT_FK.foreignKey("Department")
                     .beanProperty("department"),
-            itemProperty(Employee.JOB, "Job", Employee.JOB_VALUES)
+            Employee.JOB.item("Job", Employee.JOB_VALUES)
                     .beanProperty("job"),
-            columnProperty(Employee.SALARY, "Salary")
+            Employee.SALARY.column("Salary")
                     .nullable(false)
                     .valueRange(900, 10000)
                     .maximumFractionDigits(2)
                     .beanProperty("salary"),
-            columnProperty(Employee.COMMISSION, "Commission")
+            Employee.COMMISSION.column("Commission")
                     .valueRange(100, 2000)
                     .maximumFractionDigits(2)
                     .beanProperty("commission"),
-            columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK, "Manager")
+            Employee.MGR.column(),
+            Employee.MGR_FK.foreignKey("Manager")
                     .beanProperty("manager"),
-            columnProperty(Employee.HIREDATE, "Hiredate")
+            Employee.HIREDATE.column("Hiredate")
                     .nullable(false)
                     .beanProperty("hiredate")
                     .localeDateTimePattern(LocaleDateTimePattern.builder()
                             .delimiterDash()
                             .yearTwoDigits()
                             .build()),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, "Location",
+            Employee.DEPARTMENT_LOCATION.denormalized("Location",
                     Employee.DEPARTMENT_FK, Department.LOCATION))
             .keyGenerator(increment("scott.emp", Employee.ID.name()))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

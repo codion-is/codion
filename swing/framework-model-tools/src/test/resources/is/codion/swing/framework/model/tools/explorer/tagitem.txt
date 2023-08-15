@@ -9,11 +9,11 @@ public interface TagItem {
 }
 
 void tagItem() {
-	add(definition(
-		columnProperty(TagItem.TAGID)
+	add(TagItem.TYPE.define(
+		TagItem.TAGID.column()
 			.primaryKeyIndex(0),
-		foreignKeyProperty(TagItem.TAGID_FK, "Tag"),
-		columnProperty(TagItem.ITEMID)
+		TagItem.TAGID_FK.foreignKey("Tag"),
+		TagItem.ITEMID.column()
 			.primaryKeyIndex(1),
-		foreignKeyProperty(TagItem.ITEMID_FK, "Item")));
+		TagItem.ITEMID_FK.foreignKey("Item")));
 }

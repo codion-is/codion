@@ -8,10 +8,10 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.ui.component.table.FilteredTable;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -28,9 +28,7 @@ import java.util.List;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Album;
 import static is.codion.framework.demos.chinook.tutorial.ClientTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.property.Property.*;
 import static is.codion.swing.common.ui.Windows.screenSizeRatio;
 import static is.codion.swing.common.ui.layout.Layouts.gridLayout;
 import static java.util.Collections.singletonList;
@@ -65,23 +63,23 @@ public final class ClientTutorial {
 
     public Chinook() {
       super(DOMAIN);
-      add(definition(
-              primaryKeyProperty(Artist.ID),
-              columnProperty(Artist.NAME, "Name")
-                      .searchProperty(true).nullable(false).maximumLength(120),
-              subqueryProperty(Artist.NUMBER_OF_ALBUMS, "Albums",
+      add(Artist.TYPE.define(
+              Artist.ID.primaryKey(),
+              Artist.NAME.column("Name")
+                      .searchColumn(true).nullable(false).maximumLength(120),
+              Artist.NUMBER_OF_ALBUMS.subquery("Albums",
                       "select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid"))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(Artist.NAME)
               .caption("Artists"));
 
-      add(definition(
-              primaryKeyProperty(Album.ID),
-              columnProperty(Album.ARTIST_ID)
+      add(Artist.TYPE.define(
+              Album.ID.primaryKey(),
+              Album.ARTIST_ID.column()
                       .nullable(false),
-              foreignKeyProperty(Album.ARTIST_FK, "Artist"),
-              columnProperty(Album.TITLE, "Title")
+              Album.ARTIST_FK.foreignKey("Artist"),
+              Album.TITLE.column("Title")
                       .nullable(false).maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(StringFactory.builder()

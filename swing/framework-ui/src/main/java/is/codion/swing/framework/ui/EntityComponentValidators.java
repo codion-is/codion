@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.text.DocumentAdapter;

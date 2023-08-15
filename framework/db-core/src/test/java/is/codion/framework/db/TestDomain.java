@@ -6,11 +6,11 @@ package is.codion.framework.db;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -18,9 +18,7 @@ import java.util.Comparator;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -43,7 +41,7 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void superEntity() {
-    add(definition(primaryKeyProperty(Super.ID)));
+    add(Super.TYPE.define(Super.ID.primaryKey()));
   }
 
   public interface Master {
@@ -59,13 +57,13 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void master() {
-    add(definition(
-            columnProperty(Master.ID_1).primaryKeyIndex(0),
-            columnProperty(Master.ID_2).primaryKeyIndex(1),
-            columnProperty(Master.SUPER_ID),
-            foreignKeyProperty(Master.SUPER_FK, "Super"),
-            columnProperty(Master.NAME),
-            columnProperty(Master.CODE))
+    add(Master.TYPE.define(
+            Master.ID_1.column().primaryKeyIndex(0),
+            Master.ID_2.column().primaryKeyIndex(1),
+            Master.SUPER_ID.column(),
+            Master.SUPER_FK.foreignKey("Super"),
+            Master.NAME.column(),
+            Master.CODE.column())
             .comparator(Comparator.comparing(o -> o.get(Master.CODE)))
             .stringFactory(Master.NAME));
   }
@@ -100,27 +98,27 @@ public final class TestDomain extends DefaultDomain {
           item(2, "2"), item(3, "3"));
 
   void detail() {
-    add(definition(
-            primaryKeyProperty(Detail.ID),
-            columnProperty(Detail.INT, Detail.INT.name()),
-            columnProperty(Detail.DOUBLE, Detail.DOUBLE.name()),
-            columnProperty(Detail.STRING, "Detail string"),
-            columnProperty(Detail.DATE, Detail.DATE.name()),
-            columnProperty(Detail.TIMESTAMP, Detail.TIMESTAMP.name()),
-            columnProperty(Detail.BOOLEAN, Detail.BOOLEAN.name())
+    add(Detail.TYPE.define(
+            Detail.ID.primaryKey(),
+            Detail.INT.column(Detail.INT.name()),
+            Detail.DOUBLE.column(Detail.DOUBLE.name()),
+            Detail.STRING.column("Detail string"),
+            Detail.DATE.column(Detail.DATE.name()),
+            Detail.TIMESTAMP.column(Detail.TIMESTAMP.name()),
+            Detail.BOOLEAN.column(Detail.BOOLEAN.name())
                     .nullable(false)
                     .defaultValue(true)
-                    .description("A boolean property"),
-            columnProperty(Detail.BOOLEAN_NULLABLE, Detail.BOOLEAN_NULLABLE.name())
+                    .description("A boolean column"),
+            Detail.BOOLEAN_NULLABLE.column(Detail.BOOLEAN_NULLABLE.name())
                     .defaultValue(true),
-            columnProperty(Detail.MASTER_ID_1),
-            columnProperty(Detail.MASTER_ID_2),
-            foreignKeyProperty(Detail.MASTER_FK, Detail.MASTER_FK.name()),
-            foreignKeyProperty(Detail.MASTER_VIA_CODE_FK, Detail.MASTER_FK.name()),
-            denormalizedProperty(Detail.MASTER_NAME, Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
-            columnProperty(Detail.MASTER_CODE, Detail.MASTER_CODE.name()),
-            itemProperty(Detail.INT_VALUE_LIST, Detail.INT_VALUE_LIST.name(), ITEMS),
-            derivedProperty(Detail.INT_DERIVED, Detail.INT_DERIVED.name(), linkedValues -> {
+            Detail.MASTER_ID_1.column(),
+            Detail.MASTER_ID_2.column(),
+            Detail.MASTER_FK.foreignKey(Detail.MASTER_FK.name()),
+            Detail.MASTER_VIA_CODE_FK.foreignKey(Detail.MASTER_FK.name()),
+            Detail.MASTER_NAME.denormalized(Detail.MASTER_NAME.name(), Detail.MASTER_FK, Master.NAME),
+            Detail.MASTER_CODE.column(Detail.MASTER_CODE.name()),
+            Detail.INT_VALUE_LIST.item(Detail.INT_VALUE_LIST.name(), ITEMS),
+            Detail.INT_DERIVED.derived(Detail.INT_DERIVED.name(), linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
@@ -146,14 +144,14 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    add(definition(
-            primaryKeyProperty(Department.ID, Department.ID.name())
+    add(Department.TYPE.define(
+            Department.ID.primaryKey(Department.ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(Department.NAME, Department.NAME.name())
-                    .searchProperty(true)
+            Department.NAME.column(Department.NAME.name())
+                    .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false),
-            columnProperty(Department.LOCATION, Department.LOCATION.name())
+            Department.LOCATION.column(Department.LOCATION.name())
                     .maximumLength(13))
             .tableName("scott.dept")
             .smallDataset(true)
@@ -188,31 +186,31 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    add(definition(
-            primaryKeyProperty(Employee.ID, Employee.ID.name()).columnName("empno"),
-            columnProperty(Employee.NAME, Employee.NAME.name())
-                    .searchProperty(true)
+    add(Employee.TYPE.define(
+            Employee.ID.primaryKey(Employee.ID.name()).columnName("empno"),
+            Employee.NAME.column(Employee.NAME.name())
+                    .searchColumn(true)
                     .columnName("ename")
                     .maximumLength(10)
                     .nullable(false),
-            columnProperty(Employee.DEPARTMENT)
+            Employee.DEPARTMENT.column()
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name()),
-            itemProperty(Employee.JOB, Employee.JOB.name(),
+            Employee.DEPARTMENT_FK.foreignKey(Employee.DEPARTMENT_FK.name()),
+            Employee.JOB.item(Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true),
-            columnProperty(Employee.SALARY, Employee.SALARY.name())
+                    .searchColumn(true),
+            Employee.SALARY.column(Employee.SALARY.name())
                     .nullable(false)
                     .valueRange(1000, 10000)
                     .maximumFractionDigits(2),
-            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
+            Employee.COMMISSION.column(Employee.COMMISSION.name())
                     .valueRange(100, 2000)
                     .maximumFractionDigits(2),
-            columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name()),
-            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
+            Employee.MGR.column(),
+            Employee.MGR_FK.foreignKey(Employee.MGR_FK.name()),
+            Employee.HIREDATE.column(Employee.HIREDATE.name())
                     .nullable(false),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION))
+            Employee.DEPARTMENT_LOCATION.denormalized(Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION))
             .tableName("scott.emp")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)

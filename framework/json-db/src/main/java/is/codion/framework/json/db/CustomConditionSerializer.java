@@ -4,7 +4,7 @@
 package is.codion.framework.json.db;
 
 import is.codion.framework.db.condition.CustomCondition;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.core.JsonGenerator;

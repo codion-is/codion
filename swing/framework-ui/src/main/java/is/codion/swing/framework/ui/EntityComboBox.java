@@ -4,10 +4,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel.ItemFinder;
 import is.codion.swing.common.ui.component.Components;

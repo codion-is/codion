@@ -6,12 +6,12 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.value.Value;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 import is.codion.swing.common.ui.component.Components;
@@ -317,16 +317,16 @@ public class EntityEditComponentPanel extends JPanel {
    */
   public final void selectInputComponent() {
     Entities entities = editModel().entities();
-    List<Property<?>> properties = selectComponentAttributes().stream()
-            .map(attribute -> entities.definition(attribute.entityType()).property(attribute))
-            .sorted(Property.propertyComparator())
+    List<AttributeDefinition<?>> attributeDefinitions = selectComponentAttributes().stream()
+            .map(attribute -> entities.definition(attribute.entityType()).attributeDefinition(attribute))
+            .sorted(AttributeDefinition.definitionComparator())
             .collect(Collectors.toList());
-    Optional<Property<?>> optionalProperty = properties.size() == 1 ? Optional.of(properties.iterator().next()) :
-            Dialogs.selectionDialog(properties)
+    Optional<AttributeDefinition<?>> optionalAttribute = attributeDefinitions.size() == 1 ? Optional.of(attributeDefinitions.iterator().next()) :
+            Dialogs.selectionDialog(attributeDefinitions)
                     .owner(this)
                     .title(FrameworkMessages.selectInputField())
                     .selectSingle();
-    optionalProperty.ifPresent(property -> requestComponentFocus(property.attribute()));
+    optionalAttribute.ifPresent(attributeDefinition -> requestComponentFocus(attributeDefinition.attribute()));
   }
 
   /**
@@ -464,9 +464,9 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a panel containing a label and the component associated with the given attribute.
-   * The label text is the caption of the property based on {@code attribute}.
+   * The label text is the caption defined for {@code attribute}.
    * The default layout of the resulting panel is with the label on top and inputComponent below.
-   * @param attribute the attribute from which property to retrieve the label caption
+   * @param attribute the attribute from which definition to retrieve the label caption
    * @return a panel containing a label and a component
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
@@ -476,9 +476,9 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a panel containing a label and the component associated with the given attribute.
-   * The label text is the caption of the property based on {@code attribute}.
+   * The label text is the caption defined for {@code attribute}.
    * The default layout of the resulting panel is with the label on top and {@code inputComponent} below.
-   * @param attribute the attribute from which property to retrieve the label caption
+   * @param attribute the attribute from which definition to retrieve the label caption
    * @param inputComponent a component bound to the value of {@code attribute}
    * @return a panel containing a label and a component
    */
@@ -488,8 +488,8 @@ public class EntityEditComponentPanel extends JPanel {
 
   /**
    * Creates a panel containing a label and the component associated with the given attribute.
-   * The label text is the caption of the property based on {@code attribute}.
-   * @param attribute the attribute from which property to retrieve the label caption
+   * The label text is the caption defined for on {@code attribute}.
+   * @param attribute the attribute from which definition to retrieve the label caption
    * @param inputComponent a component bound to the value of {@code attribute}
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
@@ -503,7 +503,7 @@ public class EntityEditComponentPanel extends JPanel {
   /**
    * Creates a panel containing a label and the given component.
    * The label text is the caption of {@code attribute}.
-   * @param attribute the attribute from which property to retrieve the label caption
+   * @param attribute the attribute from which definition to retrieve the label caption
    * @param inputComponent a component bound to the value of {@code attribute}
    * @param labelBorderLayoutConstraints {@link BorderLayout#NORTH}, {@link BorderLayout#SOUTH},
    * {@link BorderLayout#EAST} or {@link BorderLayout#WEST}
@@ -931,10 +931,10 @@ public class EntityEditComponentPanel extends JPanel {
    * @return a label builder for the given attribute
    */
   protected final <T> LabelBuilder<T> createLabel(Attribute<T> attribute) {
-    Property<T> property = editModel().entities()
-            .definition(requireNonNull(attribute).entityType()).property(attribute);
-    return (LabelBuilder<T>) Components.label(property.caption())
-            .displayedMnemonic(property.mnemonic() == null ? 0 : property.mnemonic())
+    AttributeDefinition<T> attributeDefinition = editModel().entities()
+            .definition(requireNonNull(attribute).entityType()).attributeDefinition(attribute);
+    return (LabelBuilder<T>) Components.label(attributeDefinition.caption())
+            .displayedMnemonic(attributeDefinition.mnemonic() == null ? 0 : attributeDefinition.mnemonic())
             .labelFor(getComponentInternal(attribute));
   }
 

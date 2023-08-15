@@ -1,6 +1,6 @@
 [C
 [Ljava.util.concurrent.ConcurrentHashMap$Segment;
-[Lis.codion.framework.domain.entity.Attribute;
+[Lis.codion.framework.domain.entity.attribute.Attribute;
 [Ljava.lang.Object;
 [Ljava.lang.StackTraceElement;
 [Ljava.lang.String;

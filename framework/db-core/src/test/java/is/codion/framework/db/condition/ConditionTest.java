@@ -9,7 +9,7 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.junit.jupiter.api.Test;
 
@@ -282,7 +282,7 @@ public final class ConditionTest {
   }
 
   @Test
-  void attributeConditionWithNonColumnProperty() {
+  void attributeConditionWithNonColumn() {
     EntityDefinition definition = ENTITIES.definition(Employee.TYPE);
     assertThrows(IllegalArgumentException.class, () ->
             column(Employee.DEPARTMENT_LOCATION).isNull().toString(definition));
@@ -300,60 +300,60 @@ public final class ConditionTest {
   @Test
   void whereClause() {
     EntityDefinition departmentDefinition = ENTITIES.definition(Department.TYPE);
-    ColumnProperty<?> property = (ColumnProperty<?>) departmentDefinition.property(Department.NAME);
+    ColumnDefinition<?> columnDefinition = departmentDefinition.columnDefinition(Department.NAME);
     Condition condition = column(Department.NAME).equalTo("upper");
-    assertEquals(property.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).like("upper%");
-    assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " like ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).equalTo("upper");
-    assertEquals(property.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).isNull();
-    assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " is null", condition.toString(departmentDefinition));
     condition = column(Department.NAME).equalTo((String) null);
-    assertEquals(property.columnExpression() + " is null", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " is null", condition.toString(departmentDefinition));
     condition = column(Department.NAME).in(emptyList());
-    assertEquals(property.columnExpression() + " in ()", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " in ()", condition.toString(departmentDefinition));
 
     condition = column(Department.NAME).notEqualTo("upper");
-    assertEquals(property.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notLike("upper%");
-    assertEquals(property.columnExpression() + " not like ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " not like ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notEqualTo("upper");
-    assertEquals(property.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).isNotNull();
-    assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " is not null", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notEqualTo(null);
-    assertEquals(property.columnExpression() + " is not null", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " is not null", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notIn(emptyList());
-    assertEquals(property.columnExpression() + " not in ()", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " not in ()", condition.toString(departmentDefinition));
 
     condition = column(Department.NAME).greaterThan("upper");
-    assertEquals(property.columnExpression() + " > ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " > ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).greaterThanOrEqualTo("upper");
-    assertEquals(property.columnExpression() + " >= ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " >= ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).lessThan("upper");
-    assertEquals(property.columnExpression() + " < ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " < ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).lessThanOrEqualTo("upper");
-    assertEquals(property.columnExpression() + " <= ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " <= ?", condition.toString(departmentDefinition));
 
     condition = column(Department.NAME).betweenExclusive("upper", "lower");
-    assertEquals("(" + property.columnExpression() + " > ? and " + property.columnExpression() + " < ?)", condition.toString(departmentDefinition));
+    assertEquals("(" + columnDefinition.columnExpression() + " > ? and " + columnDefinition.columnExpression() + " < ?)", condition.toString(departmentDefinition));
     condition = column(Department.NAME).between("upper", "lower");
-    assertEquals("(" + property.columnExpression() + " >= ? and " + property.columnExpression() + " <= ?)", condition.toString(departmentDefinition));
+    assertEquals("(" + columnDefinition.columnExpression() + " >= ? and " + columnDefinition.columnExpression() + " <= ?)", condition.toString(departmentDefinition));
 
     condition = column(Department.NAME).notBetweenExclusive("upper", "lower");
-    assertEquals("(" + property.columnExpression() + " <= ? or " + property.columnExpression() + " >= ?)", condition.toString(departmentDefinition));
+    assertEquals("(" + columnDefinition.columnExpression() + " <= ? or " + columnDefinition.columnExpression() + " >= ?)", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notBetween("upper", "lower");
-    assertEquals("(" + property.columnExpression() + " < ? or " + property.columnExpression() + " > ?)", condition.toString(departmentDefinition));
+    assertEquals("(" + columnDefinition.columnExpression() + " < ? or " + columnDefinition.columnExpression() + " > ?)", condition.toString(departmentDefinition));
 
     condition = column(Department.NAME).equalTo("upper");
-    assertEquals(property.columnExpression() + " = ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " = ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).like("%upper%");
-    assertEquals(property.columnExpression() + " like ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " like ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notEqualTo("upper");
-    assertEquals(property.columnExpression() + " <> ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " <> ?", condition.toString(departmentDefinition));
     condition = column(Department.NAME).notLike("%upper%");
-    assertEquals(property.columnExpression() + " not like ?", condition.toString(departmentDefinition));
+    assertEquals(columnDefinition.columnExpression() + " not like ?", condition.toString(departmentDefinition));
   }
 
   private static void assertDepartmentKeyCondition(Condition condition, EntityDefinition departmentDefinition,

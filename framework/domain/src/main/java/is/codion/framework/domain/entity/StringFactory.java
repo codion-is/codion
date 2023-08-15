@@ -3,6 +3,9 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+
 import java.io.Serializable;
 import java.text.Format;
 import java.util.ArrayList;
@@ -70,7 +73,7 @@ public final class StringFactory {
     Builder formattedValue(Attribute<?> attribute, Format format);
 
     /**
-     * Adds the value mapped to the given property in the {@link Entity} instance mapped to the given foreign key
+     * Adds the value mapped to the given attribute in the {@link Entity} instance mapped to the given foreign key
      * to this {@link Builder}
      * @param foreignKey the foreign key
      * @param attribute the attribute in the referenced entity to use

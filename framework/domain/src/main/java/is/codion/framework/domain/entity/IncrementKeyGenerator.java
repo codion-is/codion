@@ -5,7 +5,7 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.database.Database;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.sql.SQLException;
 
@@ -23,9 +23,9 @@ final class IncrementKeyGenerator extends AbstractQueriedKeyGenerator {
 
   @Override
   public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
-    ColumnProperty<?> primaryKeyProperty = entity.definition().primaryKeyProperties().get(0);
-    if (entity.isNull(primaryKeyProperty.attribute())) {
-      selectAndPut(entity, primaryKeyProperty, connection);
+    ColumnDefinition<?> primaryKeyColumn = entity.definition().primaryKeyColumnDefinitions().get(0);
+    if (entity.isNull(primaryKeyColumn.attribute())) {
+      selectAndPut(entity, primaryKeyColumn, connection);
     }
   }
 

@@ -9,7 +9,7 @@ import is.codion.framework.demos.manual.store.domain.Store.Customer;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 
 import org.junit.jupiter.api.Test;

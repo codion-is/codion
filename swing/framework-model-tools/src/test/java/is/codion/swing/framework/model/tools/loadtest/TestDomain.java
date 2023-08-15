@@ -5,12 +5,8 @@ package is.codion.swing.framework.model.tools.loadtest;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.columnProperty;
-import static is.codion.framework.domain.property.Property.primaryKeyProperty;
+import is.codion.framework.domain.entity.attribute.Column;
 
 public final class TestDomain extends DefaultDomain {
 
@@ -27,14 +23,14 @@ public final class TestDomain extends DefaultDomain {
   public static final Column<String> DEPARTMENT_LOCATION = T_DEPARTMENT.stringColumn("loc");
 
   void department() {
-    add(definition(
-            primaryKeyProperty(DEPARTMENT_ID, DEPARTMENT_ID.name())
+    add(T_DEPARTMENT.define(
+            DEPARTMENT_ID.primaryKey(DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
-            columnProperty(DEPARTMENT_NAME, DEPARTMENT_NAME.name())
-                    .searchProperty(true)
+            DEPARTMENT_NAME.column(DEPARTMENT_NAME.name())
+                    .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false),
-            columnProperty(DEPARTMENT_LOCATION, DEPARTMENT_LOCATION.name())
+            DEPARTMENT_LOCATION.column(DEPARTMENT_LOCATION.name())
                     .maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)

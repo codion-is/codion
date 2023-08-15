@@ -3,20 +3,27 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.OffsetDateTime;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.domain.entity.ForeignKey.reference;
+import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.Arrays.asList;
 import static java.util.Collections.singletonList;
+import static java.util.Objects.requireNonNull;
 
 final class DefaultEntityType implements EntityType, Serializable {
 
@@ -64,6 +71,16 @@ final class DefaultEntityType implements EntityType, Serializable {
   @Override
   public String resourceBundleName() {
     return resourceBundleName;
+  }
+
+  @Override
+  public EntityDefinition.Builder define(AttributeDefinition.Builder<?, ?>... definitionBuilders) {
+    return define(Arrays.asList(requireNonNull(definitionBuilders)));
+  }
+
+  @Override
+  public EntityDefinition.Builder define(List<AttributeDefinition.Builder<?, ?>> definitionBuilders) {
+    return new DefaultEntityDefinition.DefaultBuilder(requireNonNull(definitionBuilders));
   }
 
   @Override

@@ -1,14 +1,11 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.entity.ForeignKey.Reference;
+import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,7 +17,7 @@ import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implements ForeignKeyProperty {
+final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Entity> implements ForeignKeyDefinition {
 
   private static final long serialVersionUID = 1;
 
@@ -30,7 +27,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
   private final int fetchDepth;
   private final boolean softReference;
 
-  private DefaultForeignKeyProperty(DefaultForeignKeyPropertyBuilder builder) {
+  private DefaultForeignKeyDefinition(DefaultForeignKeyDefinitionBuilder builder) {
     super(builder);
     this.readOnlyColumns = builder.readOnlyColumns;
     this.referencedEntityType = builder.referencedEntityType;
@@ -74,41 +71,42 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     return attributes;
   }
 
-  static final class DefaultForeignKeyPropertyBuilder extends AbstractPropertyBuilder<Entity, ForeignKeyProperty.Builder>
-          implements ForeignKeyProperty.Builder {
+  static final class DefaultForeignKeyDefinitionBuilder extends AbstractAttributeDefinitionBuilder<Entity, ForeignKeyDefinition.Builder>
+          implements ForeignKeyDefinition.Builder {
 
     private final Set<Column<?>> readOnlyColumns = new HashSet<>(1);
     private final EntityType referencedEntityType;
+
     private List<Attribute<?>> attributes = emptyList();
     private int fetchDepth;
     private boolean softReference;
 
-    DefaultForeignKeyPropertyBuilder(ForeignKey foreignKey, String caption) {
+    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, String caption) {
       super(foreignKey, caption);
       this.referencedEntityType = foreignKey.referencedType();
-      this.fetchDepth = Property.FOREIGN_KEY_FETCH_DEPTH.get();
+      this.fetchDepth = AttributeDefinition.FOREIGN_KEY_FETCH_DEPTH.get();
       this.softReference = false;
     }
 
     @Override
-    public ForeignKeyProperty build() {
-      return new DefaultForeignKeyProperty(this);
+    public ForeignKeyDefinition build() {
+      return new DefaultForeignKeyDefinition(this);
     }
 
     @Override
-    public ForeignKeyProperty.Builder fetchDepth(int fetchDepth) {
+    public ForeignKeyDefinition.Builder fetchDepth(int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder softReference(boolean softReference) {
+    public ForeignKeyDefinition.Builder softReference(boolean softReference) {
       this.softReference = softReference;
       return this;
     }
 
     @Override
-    public ForeignKeyProperty.Builder readOnly(Column<?> referenceColumn) {
+    public ForeignKeyDefinition.Builder readOnly(Column<?> referenceColumn) {
       if (((ForeignKey) attribute).reference(referenceColumn) == null) {
         throw new IllegalArgumentException("Column " + referenceColumn + " is not part of foreign key: " + attribute);
       }
@@ -117,7 +115,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     }
 
     @Override
-    public ForeignKeyProperty.Builder attributes(Attribute<?>... attributes) {
+    public ForeignKeyDefinition.Builder attributes(Attribute<?>... attributes) {
       Set<Attribute<?>> attributeSet = new HashSet<>();
       for (Attribute<?> attribute : requireNonNull(attributes)) {
         if (!attribute.entityType().equals(referencedEntityType)) {
@@ -131,7 +129,7 @@ final class DefaultForeignKeyProperty extends AbstractProperty<Entity> implement
     }
 
     @Override
-    public ForeignKeyProperty.Builder comparator(Comparator<Entity> comparator) {
+    public ForeignKeyDefinition.Builder comparator(Comparator<Entity> comparator) {
       throw new UnsupportedOperationException("Foreign key values are compared using the comparator of the underlying entity");
     }
   }

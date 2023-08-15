@@ -11,19 +11,19 @@ public interface Product {
 }
 
 void product() {
-	add(definition(
-		primaryKeyProperty(Product.PRODUCTID),
-		columnProperty(Product.CATEGORYID)
+	add(Product.TYPE.define(
+		Product.PRODUCTID.primaryKey(),
+		Product.CATEGORYID.column()
 			.nullable(false),
-		foreignKeyProperty(Product.CATEGORYID_FK, "Category"),
-		columnProperty(Product.NAME, "Name")
+		Product.CATEGORYID_FK.foreignKey("Category"),
+		Product.NAME.column("Name")
 			.nullable(false)
 			.maximumLength(25)
 			.description("The product name"),
-		columnProperty(Product.DESCRIPTION, "Description")
+		Product.DESCRIPTION.column("Description")
 			.nullable(false)
 			.maximumLength(255),
-		columnProperty(Product.IMAGEURL, "Imageurl")
+		Product.IMAGEURL.column("Imageurl")
 			.maximumLength(55))
 		.description("The available products"));
 }

@@ -16,11 +16,11 @@ import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.rmi.RemoteEntityConnection;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.rmi.RemoteException;
 import java.rmi.server.RMIClientSocketFactory;

@@ -350,8 +350,8 @@ public final class EntityComponentsTest {
   @Test
   void component() {
     EntityDefinition definition = CONNECTION_PROVIDER.entities().definition(Detail.TYPE);
-    definition.columnProperties()
-            .forEach(property -> entityComponents.component(property.attribute()).build());
+    definition.columnDefinitions()
+            .forEach(columnDefinition -> entityComponents.component(columnDefinition.attribute()).build());
 
     assertThrows(IllegalArgumentException.class, () -> entityComponents.component(Detail.MASTER_FK));
   }

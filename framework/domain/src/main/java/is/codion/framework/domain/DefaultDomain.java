@@ -96,7 +96,7 @@ public abstract class DefaultDomain implements Domain {
    * Note that any subsequent changes in the builder are not reflected in the entity definition.
    * @param definitionBuilder the builder which definition to add
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity
-   * @throws IllegalArgumentException in case no properties are specified
+   * @throws IllegalArgumentException in case no attribute definitions are specified
    */
   protected final void add(EntityDefinition.Builder definitionBuilder) {
     add(requireNonNull(definitionBuilder, "definitionBuilder").build());
@@ -106,7 +106,7 @@ public abstract class DefaultDomain implements Domain {
    * Adds a new {@link EntityDefinition} to this domain model.
    * @param definition the definition to add
    * @throws IllegalArgumentException in case the entityType has already been used to define an entity
-   * @throws IllegalArgumentException in case no properties are specified
+   * @throws IllegalArgumentException in case no attribute definitions are specified
    */
   protected final void add(EntityDefinition definition) {
     requireNonNull(definition, "definition");

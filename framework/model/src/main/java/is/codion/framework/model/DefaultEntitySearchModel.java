@@ -13,10 +13,10 @@ import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.ColumnCondition;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -260,7 +260,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   /**
    * @return a select instance based on this search model including any additional search condition
-   * @throws IllegalStateException in case no search properties are specified
+   * @throws IllegalStateException in case no search columns are specified
    * @see #setAdditionalConditionSupplier(Supplier)
    */
   private Select select() {
@@ -312,7 +312,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     EntityDefinition definition = connectionProvider.entities().definition(entityType);
 
     return searchColumns.stream()
-            .map(column -> definition.property(column).caption())
+            .map(column -> definition.columnDefinition(column).caption())
             .collect(joining(", "));
   }
 

@@ -12,16 +12,16 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.List;
 
@@ -31,9 +31,7 @@ import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinoo
 import static is.codion.framework.demos.chinook.tutorial.EntitiesTutorial.Chinook.Artist;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.Entity.primaryKeys;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 /**
@@ -76,17 +74,17 @@ public final class EntitiesTutorial {
       // for illustration purposes, the builders are usually hidden within
       // a fluent call chain.
 
-      // create properties for the columns in the table 'chinook.artist'
-      ColumnProperty.Builder<Long, ?> artistId =
-              primaryKeyProperty(Artist.ID);
+      // create columns for the table 'chinook.artist'
+      ColumnDefinition.Builder<Long, ?> artistId =
+              Artist.ID.primaryKey();
 
-      ColumnProperty.Builder<String, ?> artistName =
-              columnProperty(Artist.NAME, "Name")
+      ColumnDefinition.Builder<String, ?> artistName =
+              Artist.NAME.column("Name")
                       .nullable(false)
                       .maximumLength(120);
 
-      // define an entity based on the table 'chinook.artist', with the above properties
-      EntityDefinition artist = definition(artistId, artistName)
+      // define an entity based on the table 'chinook.artist', with the above columns
+      EntityDefinition artist = Artist.TYPE.define(artistId, artistName)
               .keyGenerator(identity())
               .stringFactory(Artist.NAME)
               .smallDataset(true)
@@ -96,24 +94,24 @@ public final class EntitiesTutorial {
       // add the artist definition to this domain model
       add(artist);
 
-      // create properties for the columns in the table 'chinook.album'
-      ColumnProperty.Builder<Long, ?> albumId =
-              primaryKeyProperty(Album.ID);
+      // create columns and foreign key for the table 'chinook.album'
+      ColumnDefinition.Builder<Long, ?> albumId =
+              Album.ID.primaryKey();
 
-      ColumnProperty.Builder<String, ?> albumTitle =
-              columnProperty(Album.TITLE, "Title")
+      ColumnDefinition.Builder<String, ?> albumTitle =
+              Album.TITLE.column("Title")
                       .nullable(false)
                       .maximumLength(160);
 
-      ColumnProperty.Builder<Long, ?> albumArtistId =
-              columnProperty(Album.ARTIST_ID)
+      ColumnDefinition.Builder<Long, ?> albumArtistId =
+              Album.ARTIST_ID.column()
                       .nullable(false);
 
-      ForeignKeyProperty.Builder albumArtist =
-              foreignKeyProperty(Album.ARTIST_FK, "Artist");
+      ForeignKeyDefinition.Builder albumArtist =
+              Album.ARTIST_FK.foreignKey("Artist");
 
-      // define an entity based on the table 'chinook.album', with the above properties
-      EntityDefinition album = definition(albumId, albumTitle, albumArtistId, albumArtist)
+      // define an entity based on the table 'chinook.album', with the above columns and foreign key
+      EntityDefinition album = Album.TYPE.define(albumId, albumTitle, albumArtistId, albumArtist)
               .keyGenerator(identity())
               .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)

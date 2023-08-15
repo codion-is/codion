@@ -3,7 +3,7 @@
  */
 package is.codion.framework.domain.entity.exception;
 
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.attribute.Attribute;
 
 /**
  * An exception used to indicate that an item value is invalid.

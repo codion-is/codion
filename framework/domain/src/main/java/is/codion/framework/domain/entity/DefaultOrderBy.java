@@ -3,6 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Column;
+
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,7 +45,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     return Objects.hash(orderByColumns);
   }
 
-  private static final class DefaultOrderByAttribute implements OrderByColumn, Serializable {
+  private static final class DefaultOrderByColumn implements OrderByColumn, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -51,7 +53,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     private final NullOrder nullOrder;
     private final boolean ascending;
 
-    private DefaultOrderByAttribute(Column<?> column, NullOrder nullOrder, boolean ascending) {
+    private DefaultOrderByColumn(Column<?> column, NullOrder nullOrder, boolean ascending) {
       this.column = requireNonNull(column, "column");
       this.nullOrder = requireNonNull(nullOrder, "nullOrder");
       this.ascending = ascending;
@@ -80,7 +82,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       if (object == null || getClass() != object.getClass()) {
         return false;
       }
-      DefaultOrderByAttribute that = (DefaultOrderByAttribute) object;
+      DefaultOrderByColumn that = (DefaultOrderByColumn) object;
       return column.equals(that.column) &&
               //backwards compatability, nullOrder could be null after deserialization from older version
               Objects.equals(nullOrder, that.nullOrder) &&
@@ -148,7 +150,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
             throw new IllegalArgumentException("Order by already contains column: " + column);
           }
         }
-        orderByColumns.add(new DefaultOrderByAttribute(column, nullOrder, ascending));
+        orderByColumns.add(new DefaultOrderByColumn(column, nullOrder, ascending));
       }
     }
   }

@@ -3,10 +3,10 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
 
@@ -34,26 +34,26 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
 
   @Override
   public final List<FilteredTableColumn<Attribute<?>>> createColumns() {
-    List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(entityDefinition.visibleProperties().size());
-    for (Property<?> property : entityDefinition.visibleProperties()) {
-      createColumn(property, columns.size()).ifPresent(columns::add);
+    List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(entityDefinition.visibleAttributeDefinitions().size());
+    for (AttributeDefinition<?> attributeDefinition : entityDefinition.visibleAttributeDefinitions()) {
+      createColumn(attributeDefinition, columns.size()).ifPresent(columns::add);
     }
 
     return columns;
   }
 
   /**
-   * Creates a column for the given property.
-   * @param property the property
+   * Creates a column for the given attribute.
+   * @param attributeDefinition the attribute definition
    * @param modelIndex the column model index
-   * @return the column or an empty Optional in case no column should be created for the given property
+   * @return the column or an empty Optional in case no column should be created for the given attribute
    */
-  protected Optional<FilteredTableColumn<Attribute<?>>> createColumn(Property<?> property, int modelIndex) {
+  protected Optional<FilteredTableColumn<Attribute<?>>> createColumn(AttributeDefinition<?> attributeDefinition, int modelIndex) {
     FilteredTableColumn.Builder<? extends Attribute<?>> columnBuilder =
-            FilteredTableColumn.builder(property.attribute(), modelIndex)
-                    .headerValue(property.caption())
-                    .columnClass(property.attribute().valueClass())
-                    .comparator(attributeComparator(property.attribute()));
+            FilteredTableColumn.builder(attributeDefinition.attribute(), modelIndex)
+                    .headerValue(attributeDefinition.caption())
+                    .columnClass(attributeDefinition.attribute().valueClass())
+                    .comparator(attributeComparator(attributeDefinition.attribute()));
 
     return Optional.of((FilteredTableColumn<Attribute<?>>) columnBuilder.build());
   }
@@ -68,6 +68,6 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
       return entityDefinition.referencedEntity((ForeignKey) attribute).comparator();
     }
 
-    return entityDefinition.property(attribute).comparator();
+    return entityDefinition.attributeDefinition(attribute).comparator();
   }
 }

@@ -13,15 +13,15 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
 
 import org.json.JSONObject;
@@ -54,7 +54,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Specifies whether the table model sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column properties.
+   * Note that this only applies to column attributes.
    * Value type: Boolean<br>
    * Default value: false
    */
@@ -120,7 +120,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
-   * key with the corresponding entity from {@code foreignKeyValues}, useful when property
+   * key with the corresponding entity from {@code foreignKeyValues}, useful when attribute
    * values have been changed in the referenced entity that must be reflected in the table model.
    * @param foreignKey the foreign key
    * @param foreignKeyValues the foreign key entities
@@ -224,14 +224,14 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
 
   /**
    * Specifies whether the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column properties.
+   * Note that this only applies to column attributes.
    * @return true if the current sort order should be used as a basis for the query order by clause
    */
   boolean isOrderQueryBySortOrder();
 
   /**
    * Specifies whether the current sort order is used as a basis for the query order by clause.
-   * Note that this only applies to column properties.
+   * Note that this only applies to column attributes.
    * @param orderQueryBySortOrder true if the current sort order should be used as a basis for the query order by clause
    */
   void setOrderQueryBySortOrder(boolean orderQueryBySortOrder);

@@ -4,12 +4,12 @@
 package is.codion.swing.framework.model.tools.explorer;
 
 import is.codion.common.Text;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.BlobProperty;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,21 +32,21 @@ final class DomainToString {
     builder.append("public interface ").append(interfaceName).append(" {").append(LINE_SEPARATOR);
     builder.append(INDENT).append("EntityType TYPE = ").append("DOMAIN.entityType(\"")
             .append(definition.tableName().toLowerCase()).append("\");").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
-    List<Property<?>> columnProperties = definition.properties().stream()
-            .filter(ColumnProperty.class::isInstance)
+    List<AttributeDefinition<?>> columnDefinitions = definition.attributeDefinitions().stream()
+            .filter(ColumnDefinition.class::isInstance)
             .collect(toList());
-    columnProperties.forEach(property -> appendAttribute(builder, property));
-    List<Property<?>> foreignKeyProperties = definition.properties().stream()
-            .filter(ForeignKeyProperty.class::isInstance)
+    columnDefinitions.forEach(columnDefinition -> appendAttribute(builder, columnDefinition));
+    List<AttributeDefinition<?>> foreignKeyDefinitions = definition.attributeDefinitions().stream()
+            .filter(ForeignKeyDefinition.class::isInstance)
             .collect(toList());
-    if (!foreignKeyProperties.isEmpty()) {
+    if (!foreignKeyDefinitions.isEmpty()) {
       builder.append(LINE_SEPARATOR);
-      foreignKeyProperties.forEach(property -> appendAttribute(builder, property));
+      foreignKeyDefinitions.forEach(foreignKeyDefinition -> appendAttribute(builder, foreignKeyDefinition));
     }
     builder.append("}").append(LINE_SEPARATOR).append(LINE_SEPARATOR);
     builder.append("void ").append(interfaceName(definition.tableName(), false)).append("() {").append(LINE_SEPARATOR);
-    builder.append(INDENT).append("add(definition(").append(LINE_SEPARATOR);
-    builder.append(String.join("," + LINE_SEPARATOR, propertyStrings(definition.properties(), interfaceName, definition))).append(")");
+    builder.append(INDENT).append("add(").append(interfaceName).append(".TYPE.define(").append(LINE_SEPARATOR);
+    builder.append(String.join("," + LINE_SEPARATOR, attributeStrings(definition.attributeDefinitions(), interfaceName, definition))).append(")");
     if (definition.description() != null) {
       builder.append(LINE_SEPARATOR).append(DOUBLE_INDENT).append(".description(\"").append(definition.description()).append("\")");
     }
@@ -57,18 +57,18 @@ final class DomainToString {
     return builder.toString();
   }
 
-  private static void appendAttribute(StringBuilder builder, Property<?> property) {
-    if (property instanceof ColumnProperty) {
-      ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-      String valueClassName = columnProperty.attribute().valueClass().getSimpleName();
+  private static void appendAttribute(StringBuilder builder, AttributeDefinition<?> attributeDefinition) {
+    if (attributeDefinition instanceof ColumnDefinition) {
+      ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
+      String valueClassName = columnDefinition.attribute().valueClass().getSimpleName();
       builder.append(INDENT).append("Column<").append(valueClassName).append("> ")
-              .append(columnProperty.columnName().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
-              .append("Column(\"").append(columnProperty.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
+              .append(columnDefinition.columnName().toUpperCase()).append(" = TYPE.").append(attributeTypePrefix(valueClassName))
+              .append("Column(\"").append(columnDefinition.columnName().toLowerCase()).append("\");").append(LINE_SEPARATOR);
     }
-    else if (property instanceof ForeignKeyProperty) {
-      ForeignKeyProperty foreignKeyProperty = (ForeignKeyProperty) property;
+    else if (attributeDefinition instanceof ForeignKeyDefinition) {
+      ForeignKeyDefinition foreignKeyDefinition = (ForeignKeyDefinition) attributeDefinition;
       List<String> references = new ArrayList<>();
-      foreignKeyProperty.references().forEach(reference -> {
+      foreignKeyDefinition.references().forEach(reference -> {
         StringBuilder referenceBuilder = new StringBuilder();
         referenceBuilder.append(reference.column().name().toUpperCase()).append(", ")
                 .append(interfaceName(reference.referencedColumn().entityType().name(), true))
@@ -78,73 +78,73 @@ final class DomainToString {
 
       //todo wrap references if more than four
       builder.append(INDENT).append("ForeignKey ")
-              .append(property.attribute().name().toUpperCase()).append(" = TYPE.foreignKey(\"")
-              .append(property.attribute().name().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
+              .append(attributeDefinition.attribute().name().toUpperCase()).append(" = TYPE.foreignKey(\"")
+              .append(attributeDefinition.attribute().name().toLowerCase()).append("\", " + String.join("," + LINE_SEPARATOR, references) + ");").append(LINE_SEPARATOR);
     }
   }
 
-  private static List<String> propertyStrings(List<Property<?>> properties, String interfaceName,
-                                              EntityDefinition definition) {
+  private static List<String> attributeStrings(List<AttributeDefinition<?>> attributeDefinitions, String interfaceName,
+                                               EntityDefinition definition) {
     List<String> strings = new ArrayList<>();
-    properties.forEach(property -> {
-      if (property instanceof ColumnProperty) {
-        ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-        strings.add(columnProperty(interfaceName, columnProperty,
-                definition.isForeignKeyColumn(columnProperty.attribute()), definition.primaryKeyColumns().size() > 1));
+    attributeDefinitions.forEach(attributeDefinition -> {
+      if (attributeDefinition instanceof ColumnDefinition) {
+        ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
+        strings.add(columnDefinition(interfaceName, columnDefinition,
+                definition.isForeignKeyColumn(columnDefinition.attribute()), definition.primaryKeyColumns().size() > 1));
       }
-      else if (property instanceof ForeignKeyProperty) {
-        strings.add(foreignKeyProperty(interfaceName, (ForeignKeyProperty) property));
+      else if (attributeDefinition instanceof ForeignKeyDefinition) {
+        strings.add(foreignKeyDefinition(interfaceName, (ForeignKeyDefinition) attributeDefinition));
       }
     });
 
     return strings;
   }
 
-  private static String foreignKeyProperty(String interfaceName, ForeignKeyProperty property) {
+  private static String foreignKeyDefinition(String interfaceName, ForeignKeyDefinition definition) {
     StringBuilder builder = new StringBuilder();
-    String foreignKey = property.attribute().name().toUpperCase();
-    builder.append(DOUBLE_INDENT).append("foreignKeyProperty(").append(interfaceName).append(".").append(foreignKey)
-            .append(", \"").append(property.caption()).append("\")");
+    String foreignKey = definition.attribute().name().toUpperCase();
+    builder.append(DOUBLE_INDENT).append(interfaceName).append(".").append(foreignKey)
+            .append(".foreignKey(").append("\"").append(definition.caption()).append("\")");
 
     return builder.toString();
   }
 
-  private static String columnProperty(String interfaceName, ColumnProperty<?> property,
-                                       boolean isForeignKey, boolean compositePrimaryKey) {
+  private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
+                                         boolean isForeignKey, boolean compositePrimaryKey) {
     StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
-            .append(propertyType(property.attribute(),
-                    property.isPrimaryKeyColumn() && !compositePrimaryKey))
-            .append(interfaceName).append(".").append(property.columnName().toUpperCase());
-    if (!isForeignKey && !property.isPrimaryKeyColumn()) {
-      builder.append(", ").append("\"").append(property.caption()).append("\")");
+            .append(interfaceName).append(".").append(column.columnName().toUpperCase()).append(".")
+            .append(definitionType(column.attribute(),
+                    column.isPrimaryKeyColumn() && !compositePrimaryKey));
+    if (!isForeignKey && !column.isPrimaryKeyColumn()) {
+      builder.append("\"").append(column.caption()).append("\")");
     }
     else {
       builder.append(")");
     }
-    if (property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+    if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).isEagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".eagerlyLoaded()");
     }
-    if (property.isPrimaryKeyColumn() && compositePrimaryKey) {
+    if (column.isPrimaryKeyColumn() && compositePrimaryKey) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".primaryKeyIndex(")
-              .append(property.primaryKeyIndex()).append(")");
+              .append(column.primaryKeyIndex()).append(")");
     }
-    if (property.columnHasDefaultValue()) {
+    if (column.columnHasDefaultValue()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".columnHasDefaultValue(true)");
     }
-    if (!property.isNullable() && !property.isPrimaryKeyColumn()) {
+    if (!column.isNullable() && !column.isPrimaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".nullable(false)");
     }
-    if (String.class.equals(property.attribute().valueClass())) {
+    if (String.class.equals(column.attribute().valueClass())) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumLength(")
-              .append(property.maximumLength()).append(")");
+              .append(column.maximumLength()).append(")");
     }
-    if (Double.class.equals(property.attribute().valueClass()) && property.maximumFractionDigits() >= 1) {
+    if (Double.class.equals(column.attribute().valueClass()) && column.maximumFractionDigits() >= 1) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".maximumFractionDigits(")
-              .append(property.maximumFractionDigits()).append(")");
+              .append(column.maximumFractionDigits()).append(")");
     }
-    if (!nullOrEmpty(property.description())) {
+    if (!nullOrEmpty(column.description())) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".description(")
-              .append("\"").append(property.description()).append("\")");
+              .append("\"").append(column.description()).append("\")");
     }
 
     return builder.toString();
@@ -158,12 +158,12 @@ final class DomainToString {
     return valueClassName.substring(0, 1).toLowerCase() + valueClassName.substring(1);
   }
 
-  private static String propertyType(Attribute<?> attribute, boolean primaryKeyProperty) {
+  private static String definitionType(Attribute<?> attribute, boolean primaryKey) {
     if (attribute.isByteArray()) {
-      return "blobProperty(";
+      return "blob(";
     }
 
-    return primaryKeyProperty ? "primaryKeyProperty(" : "columnProperty(";
+    return primaryKey ? "primaryKey(" : "column(";
   }
 
   private static String interfaceName(String tableName, boolean uppercase) {

@@ -4,8 +4,8 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 import java.util.Objects;
@@ -48,7 +48,7 @@ abstract class AbstractColumnCondition<T> extends AbstractCondition implements C
 
   @Override
   public final String toString(EntityDefinition definition) {
-    return toString(requireNonNull(definition).columnProperty(column).columnExpression());
+    return toString(requireNonNull(definition).columnDefinition(column).columnExpression());
   }
 
   @Override

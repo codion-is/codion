@@ -10,9 +10,9 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -52,10 +52,10 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  void noSearchPropertiesDefined() {
+  void noSearchColumnsDefined() {
     DefaultEntityTableConditionModel<Attribute<?>> model = new DefaultEntityTableConditionModel<>(Detail.TYPE,
             CONNECTION_PROVIDER, new EntityConditionModelFactory(CONNECTION_PROVIDER));
-    //no search properties defined for master entity
+    //no search columns defined for master entity
     ColumnConditionModel<? extends Attribute<Entity>, Entity> masterModel =
             model.attributeModel(Detail.MASTER_FK);
     assertThrows(IllegalStateException.class, () ->
@@ -90,7 +90,7 @@ public class DefaultEntityTableConditionModelTest {
   }
 
   @Test
-  void clearPropertyConditionModels() throws DatabaseException {
+  void clearColumnConditionModels() throws DatabaseException {
     Entity sales = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("SALES"));
     Entity accounting = CONNECTION_PROVIDER.connection().selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));

@@ -3,8 +3,8 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.SerializerProvider;

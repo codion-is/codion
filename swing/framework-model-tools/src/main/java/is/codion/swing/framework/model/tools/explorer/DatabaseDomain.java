@@ -5,13 +5,13 @@ package is.codion.swing.framework.model.tools.explorer;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.tools.metadata.ForeignKeyConstraint;
 import is.codion.swing.framework.model.tools.metadata.MetadataColumn;
 import is.codion.swing.framework.model.tools.metadata.Table;
@@ -24,9 +24,7 @@ import java.util.List;
 import java.util.Map;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.entity.ForeignKey.reference;
-import static is.codion.framework.domain.property.Property.*;
+import static is.codion.framework.domain.entity.attribute.ForeignKey.reference;
 import static java.util.stream.Collectors.joining;
 import static java.util.stream.Collectors.toList;
 
@@ -52,9 +50,9 @@ final class DatabaseDomain extends DefaultDomain {
   }
 
   private void define(Table table, EntityType entityType) {
-    List<Builder<?, ?>> propertyBuilders = propertyBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
-    if (!propertyBuilders.isEmpty()) {
-      EntityDefinition.Builder definitionBuilder = definition(propertyBuilders.toArray(new Builder[0]));
+    List<AttributeDefinition.Builder<?, ?>> definitionBuilders = definitionBuilders(table, entityType, new ArrayList<>(table.foreignKeys()));
+    if (!definitionBuilders.isEmpty()) {
+      EntityDefinition.Builder definitionBuilder = entityType.define(definitionBuilders.toArray(new AttributeDefinition.Builder[0]));
       if (tableHasAutoIncrementPrimaryKeyColumn(table)) {
         definitionBuilder.keyGenerator(KeyGenerator.identity());
       }
@@ -65,20 +63,20 @@ final class DatabaseDomain extends DefaultDomain {
     }
   }
 
-  private List<Property.Builder<?, ?>> propertyBuilders(Table table, EntityType entityType,
-                                                        Collection<ForeignKeyConstraint> foreignKeyConstraints) {
-    List<Property.Builder<?, ?>> builders = new ArrayList<>();
+  private List<AttributeDefinition.Builder<?, ?>> definitionBuilders(Table table, EntityType entityType,
+                                                                     Collection<ForeignKeyConstraint> foreignKeyConstraints) {
+    List<AttributeDefinition.Builder<?, ?>> builders = new ArrayList<>();
     table.columns().forEach(column -> {
-      builders.add(columnPropertyBuilder(column, entityType));
+      builders.add(columnDefinitionBuilder(column, entityType));
       if (column.isForeignKeyColumn()) {
         foreignKeyConstraints.stream()
                 //if this is the last column in the foreign key
                 .filter(foreignKeyConstraint -> isLastKeyColumn(foreignKeyConstraint, column))
                 .findFirst()
                 .ifPresent(foreignKeyConstraint -> {
-                  //we add the foreign key property just below it
+                  //we add the foreign key just below it
                   foreignKeyConstraints.remove(foreignKeyConstraint);
-                  builders.add(foreignKeyPropertyBuilder(foreignKeyConstraint, entityType));
+                  builders.add(foreignKeyDefinitionBuilder(foreignKeyConstraint, entityType));
                 });
       }
     });
@@ -86,7 +84,7 @@ final class DatabaseDomain extends DefaultDomain {
     return builders;
   }
 
-  private Property.Builder<?, ?> foreignKeyPropertyBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
+  private AttributeDefinition.Builder<?, ?> foreignKeyDefinitionBuilder(ForeignKeyConstraint foreignKeyConstraint, EntityType entityType) {
     Table referencedTable = foreignKeyConstraint.referencedTable();
     EntityType referencedEntityType = tableEntityTypes.get(referencedTable);
     ForeignKey foreignKey = entityType.foreignKey(createForeignKeyName(foreignKeyConstraint) + "_FK",
@@ -94,18 +92,18 @@ final class DatabaseDomain extends DefaultDomain {
                     .map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
-    return foreignKeyProperty(foreignKey, caption(referencedTable.tableName()));
+    return foreignKey.foreignKey(caption(referencedTable.tableName()));
   }
 
-  private static ColumnProperty.Builder<?, ?> columnPropertyBuilder(MetadataColumn metadataColumn, EntityType entityType) {
+  private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetadataColumn metadataColumn, EntityType entityType) {
     String caption = caption(metadataColumn.columnName());
     Column<?> column = column(entityType, metadataColumn);
-    ColumnProperty.Builder<?, ?> builder;
+    ColumnDefinition.Builder<?, ?> builder;
     if (column.isByteArray()) {
-      builder = blobProperty((Column<byte[]>) column, caption);
+      builder = column.blob(caption);
     }
     else {
-      builder = columnProperty(column, caption);
+      builder = column.column(caption);
     }
     if (metadataColumn.isPrimaryKeyColumn()) {
       builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);

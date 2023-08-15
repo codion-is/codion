@@ -3,15 +3,17 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
 import is.codion.framework.domain.entity.exception.NullValidationException;
 import is.codion.framework.domain.entity.exception.RangeValidationException;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Property;
 
 import java.io.Serializable;
 import java.text.MessageFormat;
@@ -22,13 +24,13 @@ import java.util.stream.Collectors;
 import static java.util.Objects.requireNonNull;
 
 /**
- * A default {@link EntityValidator} implementation providing null validation for properties marked as not null,
- * item validation for item based properties, range validation for numerical properties with max and/or min values
+ * A default {@link EntityValidator} implementation providing null validation for attributes marked as not null,
+ * item validation for item based attributes, range validation for numerical attributes with max and/or min values
  * specified and string length validation based on the specified max length.
  * This Validator can be extended to provide further validation.
- * @see Property.Builder#nullable(boolean)
- * @see Property.Builder#valueRange(Number, Number)
- * @see Property.Builder#maximumLength(int)
+ * @see AttributeDefinition.Builder#nullable(boolean)
+ * @see AttributeDefinition.Builder#valueRange(Number, Number)
+ * @see AttributeDefinition.Builder#maximumLength(int)
  */
 public class DefaultEntityValidator implements EntityValidator, Serializable {
 
@@ -38,7 +40,7 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ATTRIBUTE_PARAM = "attribute";
-  private static final String VALUE_REQUIRED_KEY = "property_value_is_required";
+  private static final String VALUE_REQUIRED_KEY = "value_is_required";
   private static final String INVALID_ITEM_VALUE_KEY = "invalid_item_value";
 
   @Override
@@ -54,15 +56,15 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
 
   @Override
   public <T> boolean isNullable(Entity entity, Attribute<T> attribute) {
-    return requireNonNull(entity).definition().property(attribute).isNullable();
+    return requireNonNull(entity).definition().attributeDefinition(attribute).isNullable();
   }
 
   @Override
   public void validate(Entity entity) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    List<Attribute<?>> attributes = entity.definition().properties().stream()
+    List<Attribute<?>> attributes = entity.definition().attributeDefinitions().stream()
             .filter(DefaultEntityValidator::validationRequired)
-            .map(Property::attribute)
+            .map(AttributeDefinition::attribute)
             .collect(Collectors.toList());
     for (Attribute<?> attribute : attributes) {
       validate(entity, attribute);
@@ -73,12 +75,12 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
   public <T> void validate(Entity entity, Attribute<T> attribute) throws ValidationException {
     requireNonNull(entity, ENTITY_PARAM);
     requireNonNull(attribute, ATTRIBUTE_PARAM);
-    Property<T> property = entity.definition().property(attribute);
+    AttributeDefinition<T> definition = entity.definition().attributeDefinition(attribute);
     if (!(attribute instanceof Column) || !entity.definition().isForeignKeyColumn((Column<?>) attribute)) {
-      performNullValidation(entity, property);
+      performNullValidation(entity, definition);
     }
-    if (property instanceof ItemProperty) {
-      performItemValidation(entity, (ItemProperty<T>) property);
+    if (definition instanceof ItemColumnDefinition) {
+      performItemValidation(entity, (ItemColumnDefinition<T>) definition);
     }
     if (attribute.isNumerical()) {
       performRangeValidation(entity, (Attribute<Number>) attribute);
@@ -88,34 +90,34 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
     }
   }
 
-  private <T> void performNullValidation(Entity entity, Property<T> property) throws NullValidationException {
+  private <T> void performNullValidation(Entity entity, AttributeDefinition<T> attributeDefinition) throws NullValidationException {
     requireNonNull(entity, ENTITY_PARAM);
-    requireNonNull(property, "property");
-    Attribute<T> attribute = property.attribute();
+    requireNonNull(attributeDefinition, "attributeDefinition");
+    Attribute<T> attribute = attributeDefinition.attribute();
     if (!isNullable(entity, attribute) && entity.isNull(attribute)) {
-      if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(property instanceof ForeignKeyProperty)) {
+      if ((entity.primaryKey().isNull() || entity.originalPrimaryKey().isNull()) && !(attributeDefinition instanceof ForeignKeyDefinition)) {
         //a new entity being inserted, allow null for columns with default values and generated primary key values
-        boolean nonKeyColumnPropertyWithoutDefaultValue = isNonKeyColumnPropertyWithoutDefaultValue(property);
-        boolean primaryKeyPropertyWithoutAutoGenerate = isNonGeneratedPrimaryKeyProperty(entity.definition(), property);
-        if (nonKeyColumnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
+        boolean nonKeyColumnWithoutDefaultValue = isNonKeyColumnWithoutDefaultValue(attributeDefinition);
+        boolean primaryKeyColumnWithoutAutoGenerate = isNonGeneratedPrimaryKeyColumn(entity.definition(), attributeDefinition);
+        if (nonKeyColumnWithoutDefaultValue || primaryKeyColumnWithoutAutoGenerate) {
           throw new NullValidationException(attribute,
-                  MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
+                  MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), attributeDefinition.caption()));
         }
       }
       else {
         throw new NullValidationException(attribute,
-                MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), property.caption()));
+                MessageFormat.format(MESSAGES.getString(VALUE_REQUIRED_KEY), attributeDefinition.caption()));
       }
     }
   }
 
-  private <T> void performItemValidation(Entity entity, ItemProperty<T> property) throws ItemValidationException {
-    if (entity.isNull(property.attribute()) && isNullable(entity, property.attribute())) {
+  private <T> void performItemValidation(Entity entity, ItemColumnDefinition<T> columnDefinition) throws ItemValidationException {
+    if (entity.isNull(columnDefinition.attribute()) && isNullable(entity, columnDefinition.attribute())) {
       return;
     }
-    T value = entity.get(property.attribute());
-    if (!property.isValid(value)) {
-      throw new ItemValidationException(property.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
+    T value = entity.get(columnDefinition.attribute());
+    if (!columnDefinition.isValid(value)) {
+      throw new ItemValidationException(columnDefinition.attribute(), value, MESSAGES.getString(INVALID_ITEM_VALUE_KEY) + ": " + value);
     }
   }
 
@@ -126,17 +128,17 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<T> property = entity.definition().property(attribute);
-    Number value = entity.get(property.attribute());
-    Number minimumValue = property.minimumValue();
+    AttributeDefinition<T> definition = entity.definition().attributeDefinition(attribute);
+    Number value = entity.get(definition.attribute());
+    Number minimumValue = definition.minimumValue();
     if (minimumValue != null && value.doubleValue() < minimumValue.doubleValue()) {
-      throw new RangeValidationException(property.attribute(), value, "'" + property.caption() + "' " +
-              MESSAGES.getString("property_value_too_small") + " " + minimumValue);
+      throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
+              MESSAGES.getString("value_too_small") + " " + minimumValue);
     }
-    Number maximumValue = property.maximumValue();
+    Number maximumValue = definition.maximumValue();
     if (maximumValue != null && value.doubleValue() > maximumValue.doubleValue()) {
-      throw new RangeValidationException(property.attribute(), value, "'" + property.caption() + "' " +
-              MESSAGES.getString("property_value_too_large") + " " + maximumValue);
+      throw new RangeValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
+              MESSAGES.getString("value_too_large") + " " + maximumValue);
     }
   }
 
@@ -147,32 +149,32 @@ public class DefaultEntityValidator implements EntityValidator, Serializable {
       return;
     }
 
-    Property<?> property = entity.definition().property(attribute);
-    int maximumLength = property.maximumLength();
+    AttributeDefinition<?> definition = entity.definition().attributeDefinition(attribute);
+    int maximumLength = definition.maximumLength();
     String value = entity.get(attribute);
     if (maximumLength != -1 && value.length() > maximumLength) {
-      throw new LengthValidationException(property.attribute(), value, "'" + property.caption() + "' " +
-              MESSAGES.getString("property_value_too_long") + " " + maximumLength + "\n:'" + value + "'");
+      throw new LengthValidationException(definition.attribute(), value, "'" + definition.caption() + "' " +
+              MESSAGES.getString("value_too_long") + " " + maximumLength + "\n:'" + value + "'");
     }
   }
 
-  private static boolean isNonGeneratedPrimaryKeyProperty(EntityDefinition definition, Property<?> property) {
-    return (property instanceof ColumnProperty
-            && ((ColumnProperty<?>) property).isPrimaryKeyColumn())
+  private static boolean isNonGeneratedPrimaryKeyColumn(EntityDefinition definition, AttributeDefinition<?> attributeDefinition) {
+    return (attributeDefinition instanceof ColumnDefinition
+            && ((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn())
             && !definition.isKeyGenerated();
   }
 
-  private static boolean isNonKeyColumnPropertyWithoutDefaultValue(Property<?> property) {
-    return property instanceof ColumnProperty
-            && !((ColumnProperty<?>) property).isPrimaryKeyColumn()
-            && !((ColumnProperty<?>) property).columnHasDefaultValue();
+  private static boolean isNonKeyColumnWithoutDefaultValue(AttributeDefinition<?> definition) {
+    return definition instanceof ColumnDefinition
+            && !((ColumnDefinition<?>) definition).isPrimaryKeyColumn()
+            && !((ColumnDefinition<?>) definition).columnHasDefaultValue();
   }
 
-  private static boolean validationRequired(Property<?> property) {
-    if (property.isDerived()) {
+  private static boolean validationRequired(AttributeDefinition<?> definition) {
+    if (definition.isDerived()) {
       return false;
     }
-    if (property instanceof ColumnProperty && ((ColumnProperty<?>) property).isReadOnly()) {
+    if (definition instanceof ColumnDefinition && ((ColumnDefinition<?>) definition).isReadOnly()) {
       return false;
     }
 

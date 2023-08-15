@@ -12,15 +12,15 @@ import is.codion.common.db.report.ReportType;
 import is.codion.common.user.User;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.Domain;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -229,7 +229,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
   <T> List<T> select(Column<T> column) throws DatabaseException;
@@ -241,7 +241,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
   <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
@@ -254,7 +254,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    */
   <T> List<T> select(Column<T> column, Select select) throws DatabaseException;
@@ -318,7 +318,7 @@ public interface EntityConnection extends AutoCloseable {
    * @param entities the entities for which to retrieve dependencies, must be of same type
    * @return the entities that depend on {@code entities}
    * @throws DatabaseException in case of a database exception
-   * @see ForeignKeyProperty#isSoftReference()
+   * @see ForeignKeyDefinition#isSoftReference()
    */
   Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException;
 

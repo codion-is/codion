@@ -15,14 +15,12 @@ import is.codion.framework.demos.petclinic.domain.api.Visit;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.sql.Statement;
 
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Property.*;
 
 public final class PetclinicImpl extends DefaultDomain {
 
@@ -38,14 +36,14 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void vet() {
-    add(definition(
-            primaryKeyProperty(Vet.ID),
-            columnProperty(Vet.FIRST_NAME, "First name")
-                    .searchProperty(true)
+    add(Vet.TYPE.define(
+            Vet.ID.primaryKey(),
+            Vet.FIRST_NAME.column("First name")
+                    .searchColumn(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(Vet.LAST_NAME, "Last name")
-                    .searchProperty(true)
+            Vet.LAST_NAME.column("Last name")
+                    .searchColumn(true)
                     .maximumLength(30)
                     .nullable(false))
             .keyGenerator(identity())
@@ -60,10 +58,10 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void specialty() {
-    add(definition(
-            primaryKeyProperty(Specialty.ID),
-            columnProperty(Specialty.NAME, "Name")
-                    .searchProperty(true)
+    add(Specialty.TYPE.define(
+            Specialty.ID.primaryKey(),
+            Specialty.NAME.column("Name")
+                    .searchColumn(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(identity())
@@ -73,13 +71,13 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void vetSpecialty() {
-    add(definition(
-            columnProperty(VetSpecialty.VET)
+    add(VetSpecialty.TYPE.define(
+            VetSpecialty.VET.primaryKey()
                     .primaryKeyIndex(0),
-            columnProperty(VetSpecialty.SPECIALTY)
+            VetSpecialty.SPECIALTY.column()
                     .primaryKeyIndex(1),
-            foreignKeyProperty(VetSpecialty.VET_FK, "Vet"),
-            foreignKeyProperty(VetSpecialty.SPECIALTY_FK, "Specialty"))
+            VetSpecialty.VET_FK.foreignKey("Vet"),
+            VetSpecialty.SPECIALTY_FK.foreignKey("Specialty"))
             .caption("Vet specialties")
             .stringFactory(StringFactory.builder()
                     .value(VetSpecialty.VET_FK)
@@ -89,10 +87,10 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void petType() {
-    add(definition(
-            primaryKeyProperty(PetType.ID),
-            columnProperty(PetType.NAME, "Name")
-                    .searchProperty(true)
+    add(PetType.TYPE.define(
+            PetType.ID.primaryKey(),
+            PetType.NAME.column("Name")
+                    .searchColumn(true)
                     .maximumLength(80)
                     .nullable(false))
             .keyGenerator(identity())
@@ -103,23 +101,23 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void owner() {
-    add(definition(
-            primaryKeyProperty(Owner.ID),
-            columnProperty(Owner.FIRST_NAME, "First name")
-                    .searchProperty(true)
+    add(Owner.TYPE.define(
+            Owner.ID.primaryKey(),
+            Owner.FIRST_NAME.column("First name")
+                    .searchColumn(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(Owner.LAST_NAME, "Last name")
-                    .searchProperty(true)
+            Owner.LAST_NAME.column("Last name")
+                    .searchColumn(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(Owner.ADDRESS, "Address")
+            Owner.ADDRESS.column("Address")
                     .maximumLength(255),
-            columnProperty(Owner.CITY, "City")
+            Owner.CITY.column("City")
                     .maximumLength(80),
-            columnProperty(Owner.TELEPHONE, "Telephone")
+            Owner.TELEPHONE.column("Telephone")
                     .maximumLength(20),
-            columnProperty(Owner.PHONE_TYPE, "Phone type")
+            Owner.PHONE_TYPE.column("Phone type")
                     .columnClass(String.class, new PhoneTypeValueConverter()))
             .keyGenerator(identity())
             .caption("Owners")
@@ -131,7 +129,7 @@ public final class PetclinicImpl extends DefaultDomain {
             .orderBy(ascending(Owner.LAST_NAME, Owner.FIRST_NAME)));
   }
 
-  private static final class PhoneTypeValueConverter implements ValueConverter<PhoneType, String> {
+  private static final class PhoneTypeValueConverter implements Column.ValueConverter<PhoneType, String> {
 
     @Override
     public String toColumnValue(PhoneType value, Statement statement) {
@@ -145,20 +143,20 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void pet() {
-    add(definition(
-            primaryKeyProperty(Pet.ID),
-            columnProperty(Pet.NAME, "Name")
-                    .searchProperty(true)
+    add(Pet.TYPE.define(
+            Pet.ID.primaryKey(),
+            Pet.NAME.column("Name")
+                    .searchColumn(true)
                     .maximumLength(30)
                     .nullable(false),
-            columnProperty(Pet.BIRTH_DATE, "Birth date")
+            Pet.BIRTH_DATE.column("Birth date")
                     .nullable(false),
-            columnProperty(Pet.PET_TYPE_ID)
+            Pet.PET_TYPE_ID.column()
                     .nullable(false),
-            foreignKeyProperty(Pet.PET_TYPE_FK, "Pet type"),
-            columnProperty(Pet.OWNER_ID)
+            Pet.PET_TYPE_FK.foreignKey("Pet type"),
+            Pet.OWNER_ID.column()
                     .nullable(false),
-            foreignKeyProperty(Pet.OWNER_FK, "Owner"))
+            Pet.OWNER_FK.foreignKey("Owner"))
             .keyGenerator(identity())
             .caption("Pets")
             .stringFactory(Pet.NAME)
@@ -166,14 +164,14 @@ public final class PetclinicImpl extends DefaultDomain {
   }
 
   private void visit() {
-    add(definition(
-            primaryKeyProperty(Visit.ID),
-            columnProperty(Visit.PET_ID)
+    add(Visit.TYPE.define(
+            Visit.ID.primaryKey(),
+            Visit.PET_ID.column()
                     .nullable(false),
-            foreignKeyProperty(Visit.PET_FK, "Pet"),
-            columnProperty(Visit.VISIT_DATE, "Date")
+            Visit.PET_FK.foreignKey("Pet"),
+            Visit.VISIT_DATE.column("Date")
                     .nullable(false),
-            columnProperty(Visit.DESCRIPTION, "Description")
+            Visit.DESCRIPTION.column("Description")
                     .maximumLength(255))
             .keyGenerator(identity())
             .orderBy(OrderBy.builder()

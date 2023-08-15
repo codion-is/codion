@@ -5,15 +5,14 @@ import is.codion.framework.demos.manual.store.minimal.ManualDomainModel.Store.Cu
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.KeyGenerator;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.List;
 
@@ -53,21 +52,21 @@ class ManualDomainModel {
     }
 
     void city() {
-      add(EntityDefinition.definition(
-              Property.primaryKeyProperty(City.ID),
-              Property.columnProperty(City.NAME, "Name")
+      add(City.TYPE.define(
+              City.ID.primaryKey(),
+              City.NAME.column("Name")
                       .nullable(false))
               .keyGenerator(KeyGenerator.identity())
               .caption("Cities"));
     }
 
     void customer() {
-      add(EntityDefinition.definition(
-              Property.primaryKeyProperty(Customer.ID),
-              Property.columnProperty(Customer.NAME, "Name")
+      add(Customer.TYPE.define(
+              Customer.ID.primaryKey(),
+              Customer.NAME.column("Name")
                       .maximumLength(42),
-              Property.columnProperty(Customer.CITY_ID),
-              Property.foreignKeyProperty(Customer.CITY_FK, "City"))
+              Customer.CITY_ID.column(),
+              Customer.CITY_FK.foreignKey("City"))
               .keyGenerator(KeyGenerator.identity())
               .caption("Customers"));
     }

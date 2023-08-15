@@ -4,6 +4,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.DomainType;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -156,7 +158,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {
-    if (!referencedEntity.containsAttribute(referencedAttribute)) {
+    if (!referencedEntity.contains(referencedAttribute)) {
       throw new IllegalArgumentException("Attribute " + referencedAttribute + " referenced by foreign key "
               + foreignKey + " not found in referenced entity");
     }

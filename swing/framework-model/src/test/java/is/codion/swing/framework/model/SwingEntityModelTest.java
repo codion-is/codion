@@ -64,7 +64,7 @@ public final class SwingEntityModelTest
   void isModified() {
     //here we're basically testing for the entity in the edit model being modified after
     //being set when selected in the table model, this usually happens when combo box models
-    //are being filtered on property value change, see EmployeeEditModel.bindEvents()
+    //are being filtered on attribute value change, see EmployeeEditModel.bindEvents()
     SwingEntityModel employeeModel = departmentModel.detailModel(Employee.TYPE);
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     SwingEntityTableModel employeeTableModel = employeeModel.tableModel();

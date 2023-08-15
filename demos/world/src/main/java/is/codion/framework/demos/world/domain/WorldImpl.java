@@ -7,18 +7,16 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
 import is.codion.framework.domain.entity.query.SelectQuery;
-import is.codion.framework.domain.property.ColumnProperty.ValueConverter;
 
 import java.sql.Statement;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.framework.domain.property.Property.*;
 import static java.lang.Double.parseDouble;
 import static java.util.Arrays.asList;
 
@@ -49,23 +47,23 @@ public final class WorldImpl extends DefaultDomain implements World {
 
   // tag::defineCity[]
   void city() {
-    add(definition(
-            primaryKeyProperty(City.ID),
-            columnProperty(City.NAME, "Name")
-                    .searchProperty(true)
+    add(City.TYPE.define(
+            City.ID.primaryKey(),
+            City.NAME.column("Name")
+                    .searchColumn(true)
                     .nullable(false)
                     .maximumLength(35),
-            columnProperty(City.COUNTRY_CODE)
+            City.COUNTRY_CODE.column()
                     .nullable(false),
-            foreignKeyProperty(City.COUNTRY_FK, "Country"),
-            columnProperty(City.DISTRICT, "District")
+            City.COUNTRY_FK.foreignKey("Country"),
+            City.DISTRICT.column("District")
                     .nullable(false)
                     .maximumLength(20),
-            columnProperty(City.POPULATION, "Population")
+            City.POPULATION.column("Population")
                     .nullable(false)
                     .numberFormatGrouping(true),
             // tag::columnClass[]
-            columnProperty(City.LOCATION, "Location")
+            City.LOCATION.column("Location")
                     .columnClass(String.class, new LocationConverter())
                     .comparator(new LocationComparator()))
             // end::columnClass[]
@@ -86,76 +84,76 @@ public final class WorldImpl extends DefaultDomain implements World {
   // end::defineCity[]
 
   void country() {
-    add(definition(
+    add(Country.TYPE.define(
             // tag::primaryKey[]
-            primaryKeyProperty(Country.CODE, "Code")
+            Country.CODE.primaryKey("Code")
                     .updatable(true)
                     .maximumLength(3),
             // end::primaryKey[]
-            columnProperty(Country.NAME, "Name")
-                    .searchProperty(true)
+            Country.NAME.column("Name")
+                    .searchColumn(true)
                     .nullable(false)
                     .maximumLength(52),
             // tag::item[]
-            itemProperty(Country.CONTINENT, "Continent", CONTINENT_ITEMS)
+            Country.CONTINENT.item("Continent", CONTINENT_ITEMS)
                     .nullable(false),
             // end::item[]
-            // tag::columnProperty[]
-            columnProperty(Country.REGION, "Region")
+            // tag::columnAttribute[]
+            Country.REGION.column("Region")
                     .nullable(false)
                     .maximumLength(26),
-            columnProperty(Country.SURFACEAREA, "Surface area")
+            Country.SURFACEAREA.column("Surface area")
                     .nullable(false)
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(Country.INDEPYEAR, "Indep. year")
+            Country.INDEPYEAR.column("Indep. year")
                     .valueRange(-2000, 2500),
-            columnProperty(Country.INDEPYEAR_SEARCHABLE)
+            Country.INDEPYEAR_SEARCHABLE.column()
                     .columnExpression("to_char(indepyear)")
-                    .searchProperty(true)
+                    .searchColumn(true)
                     .readOnly(true),
-            columnProperty(Country.POPULATION, "Population")
+            Country.POPULATION.column("Population")
                     .nullable(false)
                     .numberFormatGrouping(true),
-            columnProperty(Country.LIFE_EXPECTANCY, "Life expectancy")
+            Country.LIFE_EXPECTANCY.column("Life expectancy")
                     .maximumFractionDigits(1)
                     .valueRange(0, 99),
-            // end::columnProperty[]
-            columnProperty(Country.GNP, "GNP")
+            // end::columnAttribute[]
+            Country.GNP.column("GNP")
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(Country.GNPOLD, "GNP old")
+            Country.GNPOLD.column("GNP old")
                     .numberFormatGrouping(true)
                     .maximumFractionDigits(2),
-            columnProperty(Country.LOCALNAME, "Local name")
+            Country.LOCALNAME.column("Local name")
                     .nullable(false)
                     .maximumLength(45),
-            columnProperty(Country.GOVERNMENTFORM, "Government form")
+            Country.GOVERNMENTFORM.column("Government form")
                     .nullable(false),
-            columnProperty(Country.HEADOFSTATE, "Head of state")
+            Country.HEADOFSTATE.column("Head of state")
                     .maximumLength(60),
-            columnProperty(Country.CAPITAL),
-            // tag::foreignKeyPropertyCapital[]
-            foreignKeyProperty(Country.CAPITAL_FK, "Capital"),
-            // end::foreignKeyPropertyCapital[]
-            // tag::denormalizedProperty[]
-            denormalizedProperty(Country.CAPITAL_POPULATION, "Capital pop.",
-                    Country.CAPITAL_FK, City.POPULATION)
+            Country.CAPITAL.column(),
+            // tag::foreignKeyCapital[]
+            Country.CAPITAL_FK.foreignKey("Capital"),
+            // end::foreignKeyCapital[]
+            // tag::denormalizedAttribute[]
+            Country.CAPITAL_POPULATION.denormalized("Capital pop.",
+                            Country.CAPITAL_FK, City.POPULATION)
                     .numberFormatGrouping(true),
-            // end::denormalizedProperty[]
-            // tag::subqueryProperty[]
-            subqueryProperty(Country.NO_OF_CITIES, "No. of cities",
+            // end::denormalizedAttribute[]
+            // tag::subqueryColumn[]
+            Country.NO_OF_CITIES.subquery("No. of cities",
                     "select count(*) from world.city " +
                             "where city.countrycode = country.code"),
-            // end::subqueryProperty[]
-            subqueryProperty(Country.NO_OF_LANGUAGES, "No. of languages",
+            // end::subqueryColumn[]
+            Country.NO_OF_LANGUAGES.subquery("No. of languages",
                     "select count(*) from world.countrylanguage " +
                             "where countrylanguage.countrycode = country.code"),
-            // tag::blobProperty[]
-            blobProperty(Country.FLAG, "Flag")
+            // tag::blobColumn[]
+            Country.FLAG.blob("Flag")
                     .eagerlyLoaded(true),
-            // end::blobProperty[]
-            columnProperty(Country.CODE_2, "Code 2")
+            // end::blobColumn[]
+            Country.CODE_2.column("Code 2")
                     .nullable(false)
                     .maximumLength(2))
             .orderBy(ascending(Country.NAME))
@@ -167,27 +165,27 @@ public final class WorldImpl extends DefaultDomain implements World {
   }
 
   void countryLanguage() {
-    add(definition(
+    add(CountryLanguage.TYPE.define(
             // tag::compositePrimaryKey[]
-            columnProperty(CountryLanguage.COUNTRY_CODE)
+            CountryLanguage.COUNTRY_CODE.column()
                     .primaryKeyIndex(0)
                     .updatable(true),
-            columnProperty(CountryLanguage.LANGUAGE, "Language")
+            CountryLanguage.LANGUAGE.column("Language")
                     .primaryKeyIndex(1)
                     .updatable(true),
             // end::compositePrimaryKey[]
-            foreignKeyProperty(CountryLanguage.COUNTRY_FK, "Country"),
-            // tag::booleanProperty[]
-            columnProperty(CountryLanguage.IS_OFFICIAL, "Official")
+            CountryLanguage.COUNTRY_FK.foreignKey("Country"),
+            // tag::booleanColumn[]
+            CountryLanguage.IS_OFFICIAL.column("Official")
                     .columnHasDefaultValue(true)
                     .nullable(false),
-            // end::booleanProperty[]
-            // tag::derivedProperty[]
-            derivedProperty(CountryLanguage.NO_OF_SPEAKERS, "No. of speakers",
+            // end::booleanColumn[]
+            // tag::derivedAttribute[]
+            CountryLanguage.NO_OF_SPEAKERS.derived("No. of speakers",
                     new NoOfSpeakersProvider(), CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
                     .numberFormatGrouping(true),
-            // end::derivedProperty[]
-            columnProperty(CountryLanguage.PERCENTAGE, "Percentage")
+            // end::derivedAttribute[]
+            CountryLanguage.PERCENTAGE.column("Percentage")
                     .nullable(false)
                     .maximumFractionDigits(1)
                     .valueRange(0, 100))
@@ -200,34 +198,34 @@ public final class WorldImpl extends DefaultDomain implements World {
   }
 
   void lookup() {
-    add(definition(
-            columnProperty(Lookup.COUNTRY_CODE, "Country code")
+    add(Lookup.TYPE.define(
+            Lookup.COUNTRY_CODE.column("Country code")
                     .primaryKeyIndex(0),
-            columnProperty(Lookup.COUNTRY_NAME, "Country name"),
-            itemProperty(Lookup.COUNTRY_CONTINENT, "Continent", CONTINENT_ITEMS),
-            columnProperty(Lookup.COUNTRY_REGION, "Region"),
-            columnProperty(Lookup.COUNTRY_SURFACEAREA, "Surface area")
+            Lookup.COUNTRY_NAME.column("Country name"),
+            Lookup.COUNTRY_CONTINENT.item("Continent", CONTINENT_ITEMS),
+            Lookup.COUNTRY_REGION.column("Region"),
+            Lookup.COUNTRY_SURFACEAREA.column("Surface area")
                     .numberFormatGrouping(true),
-            columnProperty(Lookup.COUNTRY_INDEPYEAR, "Indep. year"),
-            columnProperty(Lookup.COUNTRY_POPULATION, "Country population")
+            Lookup.COUNTRY_INDEPYEAR.column("Indep. year"),
+            Lookup.COUNTRY_POPULATION.column("Country population")
                     .numberFormatGrouping(true),
-            columnProperty(Lookup.COUNTRY_LIFEEXPECTANCY, "Life expectancy"),
-            columnProperty(Lookup.COUNTRY_GNP, "GNP")
+            Lookup.COUNTRY_LIFEEXPECTANCY.column("Life expectancy"),
+            Lookup.COUNTRY_GNP.column("GNP")
                     .numberFormatGrouping(true),
-            columnProperty(Lookup.COUNTRY_GNPOLD, "GNP old")
+            Lookup.COUNTRY_GNPOLD.column("GNP old")
                     .numberFormatGrouping(true),
-            columnProperty(Lookup.COUNTRY_LOCALNAME, "Local name"),
-            columnProperty(Lookup.COUNTRY_GOVERNMENTFORM, "Government form"),
-            columnProperty(Lookup.COUNTRY_HEADOFSTATE, "Head of state"),
-            blobProperty(Lookup.COUNTRY_FLAG, "Flag"),
-            columnProperty(Lookup.COUNTRY_CODE2, "Code2"),
-            columnProperty(Lookup.CITY_ID)
+            Lookup.COUNTRY_LOCALNAME.column("Local name"),
+            Lookup.COUNTRY_GOVERNMENTFORM.column("Government form"),
+            Lookup.COUNTRY_HEADOFSTATE.column("Head of state"),
+            Lookup.COUNTRY_FLAG.blob("Flag"),
+            Lookup.COUNTRY_CODE2.column("Code2"),
+            Lookup.CITY_ID.column()
                     .primaryKeyIndex(1),
-            columnProperty(Lookup.CITY_NAME, "City"),
-            columnProperty(Lookup.CITY_DISTRICT, "District"),
-            columnProperty(Lookup.CITY_POPULATION, "City population")
+            Lookup.CITY_NAME.column("City"),
+            Lookup.CITY_DISTRICT.column("District"),
+            Lookup.CITY_POPULATION.column("City population")
                     .numberFormatGrouping(true),
-            columnProperty(Lookup.CITY_LOCATION, "City location")
+            Lookup.CITY_LOCATION.column("City location")
                     .columnClass(String.class, new LocationConverter())
                     .comparator(new LocationComparator()))
             .selectQuery(SelectQuery.builder()
@@ -243,31 +241,31 @@ public final class WorldImpl extends DefaultDomain implements World {
   }
 
   void continent() {
-    add(definition(
-            columnProperty(Continent.NAME, "Continent")
+    add(Continent.TYPE.define(
+            Continent.NAME.column("Continent")
                     .groupingColumn(true)
                     .beanProperty("name"),
-            columnProperty(Continent.SURFACE_AREA, "Surface area")
+            Continent.SURFACE_AREA.column("Surface area")
                     .columnExpression("sum(surfacearea)")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true),
-            columnProperty(Continent.POPULATION, "Population")
+            Continent.POPULATION.column("Population")
                     .columnExpression("sum(population)")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true),
-            columnProperty(Continent.MIN_LIFE_EXPECTANCY, "Min. life expectancy")
+            Continent.MIN_LIFE_EXPECTANCY.column("Min. life expectancy")
                     .columnExpression("min(lifeexpectancy)")
                     .aggregateColumn(true),
-            columnProperty(Continent.MAX_LIFE_EXPECTANCY, "Max. life expectancy")
+            Continent.MAX_LIFE_EXPECTANCY.column("Max. life expectancy")
                     .columnExpression("max(lifeexpectancy)")
                     .aggregateColumn(true),
-            columnProperty(Continent.MIN_INDEPENDENCE_YEAR, "Min. ind. year")
+            Continent.MIN_INDEPENDENCE_YEAR.column("Min. ind. year")
                     .columnExpression("min(indepyear)")
                     .aggregateColumn(true),
-            columnProperty(Continent.MAX_INDEPENDENCE_YEAR, "Max. ind. year")
+            Continent.MAX_INDEPENDENCE_YEAR.column("Max. ind. year")
                     .columnExpression("max(indepyear)")
                     .aggregateColumn(true),
-            columnProperty(Continent.GNP, "GNP")
+            Continent.GNP.column("GNP")
                     .columnExpression("sum(gnp)")
                     .aggregateColumn(true)
                     .numberFormatGrouping(true))

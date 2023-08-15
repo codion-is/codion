@@ -3,7 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -27,8 +28,8 @@ final class DefaultKeyBuilder implements Key.Builder {
 
   @Override
   public <T> Key.Builder with(Column<T> column, T value) {
-    ColumnProperty<T> property = definition.columnProperty(column);
-    if (!property.isPrimaryKeyColumn()) {
+    ColumnDefinition<T> columnDefinition = definition.columnDefinition(column);
+    if (!columnDefinition.isPrimaryKeyColumn()) {
       primaryKey = false;
     }
     columnValues.put(column, value);

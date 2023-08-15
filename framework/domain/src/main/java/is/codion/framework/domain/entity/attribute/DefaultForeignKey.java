@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
+
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -42,6 +45,16 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
     }
 
     throw new IllegalArgumentException("Column " + column + " is not part of foreign key " + name());
+  }
+
+  @Override
+  public ForeignKeyDefinition.Builder foreignKey() {
+    return foreignKey(null);
+  }
+
+  @Override
+  public ForeignKeyDefinition.Builder foreignKey(String caption) {
+    return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(this, caption);
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {

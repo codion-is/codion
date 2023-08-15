@@ -11,9 +11,9 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
@@ -350,7 +350,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(exception);
     String title = editModel().entities()
             .definition(exception.attribute().entityType())
-            .property(exception.attribute())
+            .attributeDefinition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
     requestComponentFocus(exception.attribute());

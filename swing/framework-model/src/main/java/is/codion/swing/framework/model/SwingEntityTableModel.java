@@ -16,19 +16,19 @@ import is.codion.common.value.Value;
 import is.codion.common.value.ValueObserver;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.framework.model.EntityModel;
@@ -390,9 +390,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       return entityDefinition().isUpdatable((ForeignKey) attribute);
     }
 
-    Property<?> property = entityDefinition().property(attribute);
+    AttributeDefinition<?> attributeDefinition = entityDefinition().attributeDefinition(attribute);
 
-    return property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
+    return attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
   }
 
   /**
@@ -465,7 +465,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   public boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");
-    entityDefinition().foreignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyDefinition(foreignKey);
 
     return conditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
   }
@@ -1096,7 +1096,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private OrderBy orderByFromSortModel() {
     OrderBy.Builder builder = OrderBy.builder();
     sortModel().columnSortOrder().stream()
-            .filter(columnSortOrder -> isColumnProperty(columnSortOrder.columnIdentifier()))
+            .filter(columnSortOrder -> isColumn(columnSortOrder.columnIdentifier()))
             .forEach(columnSortOrder -> {
               switch (columnSortOrder.sortOrder()) {
                 case ASCENDING:
@@ -1112,8 +1112,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     return builder.build();
   }
 
-  private boolean isColumnProperty(Attribute<?> attribute) {
-    return entityDefinition().property(attribute) instanceof ColumnProperty;
+  private boolean isColumn(Attribute<?> attribute) {
+    return entityDefinition().attributeDefinition(attribute) instanceof ColumnDefinition;
   }
 
   private JSONObject createPreferences() throws Exception {
@@ -1257,15 +1257,15 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         return Optional.empty();
       }
 
-      Property<?> property = entityDefinition.property(attribute);
-      if (property.isHidden()) {
+      AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+      if (attributeDefinition.isHidden()) {
         return Optional.empty();
       }
 
       return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
               .operators(operators(attribute.valueClass()))
-              .format(property.format())
-              .dateTimePattern(property.dateTimePattern())
+              .format(attributeDefinition.format())
+              .dateTimePattern(attributeDefinition.dateTimePattern())
               .build());
     }
 
@@ -1290,8 +1290,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public <T extends Number> Optional<SummaryValueProvider<T>> createSummaryValueProvider(Attribute<?> attribute, Format format) {
-      Property<?> property = entityDefinition.property(attribute);
-      if (attribute.isNumerical() && !(property instanceof ItemProperty)) {
+      AttributeDefinition<?> attributeDefinition = entityDefinition.attributeDefinition(attribute);
+      if (attribute.isNumerical() && !(attributeDefinition instanceof ItemColumnDefinition)) {
         return Optional.of(summaryValueProvider(attribute, tableModel, format));
       }
 

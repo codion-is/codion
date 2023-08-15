@@ -21,7 +21,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityApplicationModel;
 import is.codion.swing.common.ui.UiManagerDefaults;
@@ -1084,9 +1084,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     private List<EntityDependencyTreeNode> getChildren() {
       List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (EntityDefinition definition : entities.definitions()) {
-        for (ForeignKeyProperty fkProperty : definition.foreignKeyProperties()) {
-          if (fkProperty.referencedType().equals(entityType()) && !fkProperty.isSoftReference()
-                  && !foreignKeyCycle(fkProperty.referencedType())) {
+        for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeyDefinitions()) {
+          if (foreignKeyDefinition.referencedType().equals(entityType()) && !foreignKeyDefinition.isSoftReference()
+                  && !foreignKeyCycle(foreignKeyDefinition.referencedType())) {
             childrenList.add(new EntityDependencyTreeNode(definition.type(), entities));
           }
         }

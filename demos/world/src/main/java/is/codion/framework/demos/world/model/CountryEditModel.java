@@ -7,7 +7,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 

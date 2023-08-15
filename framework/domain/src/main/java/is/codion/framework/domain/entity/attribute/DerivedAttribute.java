@@ -1,29 +1,12 @@
 /*
- * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
-
-import is.codion.framework.domain.entity.Attribute;
+package is.codion.framework.domain.entity.attribute;
 
 import java.io.Serializable;
-import java.util.List;
 import java.util.Optional;
 
-/**
- * A property which value is derived from the values of one or more properties.
- * @param <T> the underlying type
- */
-public interface DerivedProperty<T> extends Property<T> {
-
-  /**
-   * @return the attributes this property derives from.
-   */
-  List<Attribute<?>> sourceAttributes();
-
-  /**
-   * @return the value provider, providing the derived value
-   */
-  Provider<T> valueProvider();
+public interface DerivedAttribute<T> extends Attribute<T> {
 
   /**
    * Provides the source values from which to derive the value.

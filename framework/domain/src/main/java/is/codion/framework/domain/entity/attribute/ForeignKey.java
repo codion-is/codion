@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
+
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 
@@ -23,6 +26,19 @@ public interface ForeignKey extends Attribute<Entity> {
    * @return the reference that is based on the given column
    */
   <T> Reference<T> reference(Column<T> column);
+
+  /**
+   * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
+   * @return a new {@link ForeignKeyDefinition.Builder}
+   */
+  ForeignKeyDefinition.Builder foreignKey();
+
+  /**
+   * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
+   * @param caption the caption
+   * @return a new {@link ForeignKeyDefinition.Builder}
+   */
+  ForeignKeyDefinition.Builder foreignKey(String caption);
 
   /**
    * Represents a foreign key reference between columns.

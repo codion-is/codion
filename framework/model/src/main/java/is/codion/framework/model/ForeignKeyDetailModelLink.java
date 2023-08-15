@@ -5,7 +5,7 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 /**
  * Represents a link between a master and detail model based on a foreign key.

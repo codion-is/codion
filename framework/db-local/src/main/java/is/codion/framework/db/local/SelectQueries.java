@@ -6,14 +6,14 @@ package is.codion.framework.db.local;
 import is.codion.common.db.database.Database;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.SelectQuery;
-import is.codion.framework.domain.property.ColumnProperty;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import static java.util.stream.Collectors.toList;
 final class SelectQueries {
 
   private final Database database;
-  private final Map<EntityType, List<ColumnProperty<?>>> selectablePropertiesCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, List<ColumnDefinition<?>>> selectableColumnsCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
@@ -59,7 +59,7 @@ final class SelectQueries {
 
     private final List<String> where = new ArrayList<>(1);
 
-    private List<ColumnProperty<?>> selectedProperties = Collections.emptyList();
+    private List<ColumnDefinition<?>> selectedColums = Collections.emptyList();
 
     private String columns;
     private String from;
@@ -76,8 +76,8 @@ final class SelectQueries {
       this.definition = definition;
     }
 
-    List<ColumnProperty<?>> selectedProperties() {
-      return selectedProperties;
+    List<ColumnDefinition<?>> selectedColumns() {
+      return selectedColums;
     }
 
     Builder select(Select select) {
@@ -113,7 +113,7 @@ final class SelectQueries {
       if (selectQuery != null) {
         if (selectQuery.columns() != null) {
           columns(selectQuery.columns());
-          selectedProperties = selectableProperties();
+          selectedColums = selectableColumns();
           columnsClauseFromSelectQuery = true;
         }
         else {
@@ -226,12 +226,12 @@ final class SelectQueries {
     private void setColumns(Select select) {
       Collection<Attribute<?>> attributes = select.attributes();
       if (attributes.isEmpty()) {
-        this.selectedProperties = selectableProperties();
+        this.selectedColums = selectableColumns();
         columns(allColumnsClause());
       }
       else {
-        this.selectedProperties = propertiesToSelect(attributes);
-        columns(columnsClause(selectedProperties));
+        this.selectedColums = columnsToSelect(attributes);
+        columns(columnsClause(selectedColums));
       }
     }
 
@@ -243,45 +243,45 @@ final class SelectQueries {
       return from;
     }
 
-    private List<ColumnProperty<?>> propertiesToSelect(Collection<Attribute<?>> selectAttributes) {
-      Set<ColumnProperty<?>> propertiesToSelect = new HashSet<>(definition.primaryKeyProperties());
+    private List<ColumnDefinition<?>> columnsToSelect(Collection<Attribute<?>> selectAttributes) {
+      Set<ColumnDefinition<?>> columnsToSelect = new HashSet<>(definition.primaryKeyColumnDefinitions());
       selectAttributes.forEach(attribute -> {
         if (attribute instanceof ForeignKey) {
           ((ForeignKey) attribute).references().forEach(reference ->
-                  propertiesToSelect.add(definition.columnProperty(reference.column())));
+                  columnsToSelect.add(definition.columnDefinition(reference.column())));
         }
         else if (attribute instanceof Column) {
-          propertiesToSelect.add(definition.columnProperty((Column<?>) attribute));
+          columnsToSelect.add(definition.columnDefinition((Column<?>) attribute));
         }
       });
 
-      return new ArrayList<>(propertiesToSelect);
+      return new ArrayList<>(columnsToSelect);
     }
 
-    private List<ColumnProperty<?>> selectableProperties() {
-      return selectablePropertiesCache.computeIfAbsent(definition.type(), entityType ->
-              definition.columnProperties().stream()
-                      .filter(property -> !definition.lazyLoadedBlobProperties().contains(property))
-                      .filter(ColumnProperty::isSelectable)
+    private List<ColumnDefinition<?>> selectableColumns() {
+      return selectableColumnsCache.computeIfAbsent(definition.type(), entityType ->
+              definition.columnDefinitions().stream()
+                      .filter(columnDefinition -> !definition.lazyLoadedBlobColumnDefinitions().contains(columnDefinition))
+                      .filter(ColumnDefinition::isSelectable)
                       .collect(toList()));
     }
 
     private String allColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(selectableProperties()));
+      return allColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(selectableColumns()));
     }
 
-    private String columnsClause(List<ColumnProperty<?>> columnProperties) {
+    private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {
       StringBuilder stringBuilder = new StringBuilder();
-      for (int i = 0; i < columnProperties.size(); i++) {
-        ColumnProperty<?> property = columnProperties.get(i);
-        String columnName = property.columnName();
-        String columnExpression = property.columnExpression();
+      for (int i = 0; i < columnDefinitions.size(); i++) {
+        ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
+        String columnName = columnDefinition.columnName();
+        String columnExpression = columnDefinition.columnExpression();
         stringBuilder.append(columnExpression);
         if (!columnName.equals(columnExpression)) {
           stringBuilder.append(" as ").append(columnName);
         }
 
-        if (i < columnProperties.size() - 1) {
+        if (i < columnDefinitions.size() - 1) {
           stringBuilder.append(", ");
         }
       }
@@ -308,7 +308,7 @@ final class SelectQueries {
     }
 
     private String columnOrderByClause(EntityDefinition entityDefinition, OrderBy.OrderByColumn orderByColumn) {
-      return entityDefinition.columnProperty(orderByColumn.column()).columnExpression() +
+      return entityDefinition.columnDefinition(orderByColumn.column()).columnExpression() +
               (orderByColumn.isAscending() ? "" : " desc") +
               nullOrderString(orderByColumn.nullOrder());
     }

@@ -1,12 +1,11 @@
 /*
  * Copyright (c) 2008 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.Rounder;
 import is.codion.common.Text;
 import is.codion.common.format.LocaleDateTimePattern;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
@@ -28,7 +27,7 @@ import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.time.format.DateTimeFormatter.ofPattern;
 import static java.util.Objects.requireNonNull;
 
-abstract class AbstractProperty<T> implements Property<T>, Serializable {
+abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>, Serializable {
 
   private static final long serialVersionUID = 1;
 
@@ -38,13 +37,13 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private static final ValueSupplier<Object> DEFAULT_VALUE_SUPPLIER = new NullDefaultValueSupplier();
 
   /**
-   * The attribute this property is based on, should be unique within an Entity.
-   * The name of this attribute serves as column name for column properties by default.
+   * The attribute this definition is based on, should be unique within an Entity.
+   * The name of this attribute serves as column name for column attributes by default.
    */
   private final Attribute<T> attribute;
 
   /**
-   * The caption to use when this property is presented
+   * The caption to use when this attribute is presented
    */
   private final String caption;
 
@@ -64,45 +63,45 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
   private final ValueSupplier<T> defaultValueSupplier;
 
   /**
-   * True if the value of this property is allowed to be null
+   * True if the value of this attribute is allowed to be null
    */
   private final boolean nullable;
 
   /**
-   * True if this property should be hidden in table views
+   * True if this attribute should be hidden in table views
    */
   private final boolean hidden;
 
   /**
    * The maximum length of the data.
-   * Only applicable to string based properties.
+   * Only applicable to string based attributes.
    */
   private final int maximumLength;
 
   /**
-   * The maximum value for this property.
-   * Only applicable to numerical properties
+   * The maximum value for this attribute.
+   * Only applicable to numerical attributes
    */
   private final Number maximumValue;
 
   /**
-   * The minimum value for this property.
-   * Only applicable to numerical properties
+   * The minimum value for this attribute.
+   * Only applicable to numerical attributes
    */
   private final Number minimumValue;
 
   /**
-   * A string describing this property
+   * A string describing this attribute
    */
   private final String description;
 
   /**
-   * A mnemonic to use when creating a label for this property
+   * A mnemonic to use when creating a label for this attribute
    */
   private final Character mnemonic;
 
   /**
-   * The Format used when presenting the value of this property
+   * The Format used when presenting the value of this propertattribute
    */
   private final Format format;
 
@@ -136,7 +135,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
    */
   private transient DateTimeFormatter dateTimeFormatter;
 
-  protected AbstractProperty(AbstractPropertyBuilder<T, ?> builder) {
+  protected AbstractAttributeDefinition(AbstractAttributeDefinitionBuilder<T, ?> builder) {
     requireNonNull(builder, "builder");
     this.attribute = builder.attribute;
     this.caption = builder.caption;
@@ -190,7 +189,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
 
   @Override
   public final boolean hasDefaultValue() {
-    return !(defaultValueSupplier instanceof AbstractProperty.NullDefaultValueSupplier);
+    return !(defaultValueSupplier instanceof AbstractAttributeDefinition.NullDefaultValueSupplier);
   }
 
   @Override
@@ -295,7 +294,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     if (obj == null || getClass() != obj.getClass()) {
       return false;
     }
-    AbstractProperty<?> that = (AbstractProperty<?>) obj;
+    AbstractAttributeDefinition<?> that = (AbstractAttributeDefinition<?>) obj;
 
     return attribute.equals(that.attribute);
   }
@@ -397,17 +396,17 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     }
   }
 
-  static final class PropertyComparator implements Comparator<Property<?>> {
+  static final class DefinitionComparator implements Comparator<AttributeDefinition<?>> {
 
     private final Collator collator = Collator.getInstance();
 
     @Override
-    public int compare(Property<?> property1, Property<?> property2) {
-      return collator.compare(property1.toString().toLowerCase(), property2.toString().toLowerCase());
+    public int compare(AttributeDefinition<?> definition1, AttributeDefinition<?> definition2) {
+      return collator.compare(definition1.toString().toLowerCase(), definition2.toString().toLowerCase());
     }
   }
 
-  abstract static class AbstractPropertyBuilder<T, B extends Property.Builder<T, B>> implements Property.Builder<T, B> {
+  abstract static class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B> {
 
     protected final Attribute<T> attribute;
     private final String caption;
@@ -428,7 +427,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     private String dateTimePattern;
     private DateTimeFormatter dateTimeFormatter;
 
-    AbstractPropertyBuilder(Attribute<T> attribute, String caption) {
+    AbstractAttributeDefinitionBuilder(Attribute<T> attribute, String caption) {
       this.attribute = requireNonNull(attribute);
       this.caption = caption;
       format = defaultFormat(attribute);
@@ -452,7 +451,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public final B captionResourceKey(String captionResourceKey) {
       if (caption != null) {
-        throw new IllegalStateException("Caption has already been set for property: " + attribute);
+        throw new IllegalStateException("Caption has already been set for attribute: " + attribute);
       }
       String resourceBundleName = attribute.entityType().resourceBundleName();
       if (resourceBundleName == null) {
@@ -504,7 +503,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public B maximumLength(int maximumLength) {
       if (!attribute.isString()) {
-        throw new IllegalStateException("maximumLength is only applicable to string properties: " + attribute);
+        throw new IllegalStateException("maximumLength is only applicable to string attributes: " + attribute);
       }
       if (maximumLength <= 0) {
         throw new IllegalArgumentException("maximumLength must be a positive integer: " + attribute);
@@ -526,7 +525,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public B valueRange(Number minimumValue, Number maximumValue) {
       if (!attribute.isNumerical()) {
-        throw new IllegalStateException("valueRange is only applicable to numerical properties");
+        throw new IllegalStateException("valueRange is only applicable to numerical attributes");
       }
       if (maximumValue != null && minimumValue != null && maximumValue.doubleValue() < minimumValue.doubleValue()) {
         throw new IllegalArgumentException("minimum value must be smaller than maximum value: " + attribute);
@@ -539,7 +538,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public final B numberFormatGrouping(boolean numberFormatGrouping) {
       if (!attribute.isNumerical()) {
-        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical properties: " + attribute);
+        throw new IllegalStateException("numberFormatGrouping is only applicable to numerical attributes: " + attribute);
       }
       ((NumberFormat) format).setGroupingUsed(numberFormatGrouping);
       return (B) this;
@@ -561,10 +560,10 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     public final B format(Format format) {
       requireNonNull(format, "format");
       if (attribute.isNumerical() && !(format instanceof NumberFormat)) {
-        throw new IllegalArgumentException("NumberFormat required for numerical property: " + attribute);
+        throw new IllegalArgumentException("NumberFormat required for numerical attribute: " + attribute);
       }
       if (attribute.isTemporal()) {
-        throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal properties: " + attribute);
+        throw new IllegalStateException("Use dateTimePattern() or localeDateTimePattern() for temporal attributes: " + attribute);
       }
       this.format = format;
       return (B) this;
@@ -574,10 +573,10 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     public final B dateTimePattern(String dateTimePattern) {
       requireNonNull(dateTimePattern, "dateTimePattern");
       if (!attribute.isTemporal()) {
-        throw new IllegalStateException("dateTimePattern is only applicable to temporal properties: " + attribute);
+        throw new IllegalStateException("dateTimePattern is only applicable to temporal attributes: " + attribute);
       }
       if (this.localeDateTimePattern != null) {
-        throw new IllegalStateException("localeDateTimePattern has already been set for property: " + attribute);
+        throw new IllegalStateException("localeDateTimePattern has already been set for attribute: " + attribute);
       }
       this.dateTimePattern = dateTimePattern;
       this.dateTimeFormatter = ofPattern(dateTimePattern);
@@ -588,10 +587,10 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     public final B localeDateTimePattern(LocaleDateTimePattern localeDateTimePattern) {
       requireNonNull(localeDateTimePattern, "localeDateTimePattern");
       if (!attribute.isTemporal()) {
-        throw new IllegalStateException("localeDateTimePattern is only applicable to temporal properties: " + attribute);
+        throw new IllegalStateException("localeDateTimePattern is only applicable to temporal attributes: " + attribute);
       }
       if (this.dateTimePattern != null) {
-        throw new IllegalStateException("dateTimePattern has already been set for property: " + attribute);
+        throw new IllegalStateException("dateTimePattern has already been set for attribute: " + attribute);
       }
       this.localeDateTimePattern = localeDateTimePattern;
       this.dateTimePattern = localeDateTimePattern.dateTimePattern();
@@ -603,7 +602,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public final B maximumFractionDigits(int maximumFractionDigits) {
       if (!attribute.isDecimal()) {
-        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal properties: " + attribute);
+        throw new IllegalStateException("maximumFractionDigits is only applicable to decimal attributes: " + attribute);
       }
       ((NumberFormat) format).setMaximumFractionDigits(maximumFractionDigits);
       return (B) this;
@@ -612,7 +611,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
     @Override
     public final B decimalRoundingMode(RoundingMode decimalRoundingMode) {
       if (!attribute.isDecimal()) {
-        throw new IllegalStateException("decimalRoundingMode is only applicable to decimal properties: " + attribute);
+        throw new IllegalStateException("decimalRoundingMode is only applicable to decimal attributes: " + attribute);
       }
       this.decimalRoundingMode = requireNonNull(decimalRoundingMode, "decimalRoundingMode");
       return (B) this;
@@ -641,7 +640,7 @@ abstract class AbstractProperty<T> implements Property<T>, Serializable {
         NumberFormat numberFormat = defaultNumberFormat(attribute);
         if (attribute.isDecimal()) {
           ((DecimalFormat) numberFormat).setParseBigDecimal(attribute.isBigDecimal());
-          numberFormat.setMaximumFractionDigits(Property.MAXIMUM_FRACTION_DIGITS.get());
+          numberFormat.setMaximumFractionDigits(AttributeDefinition.MAXIMUM_FRACTION_DIGITS.get());
         }
 
         return numberFormat;

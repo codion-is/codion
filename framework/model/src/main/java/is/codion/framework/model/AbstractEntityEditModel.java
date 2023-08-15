@@ -11,20 +11,20 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.AbstractValue;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.TransientProperty;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,7 +98,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Map<Attribute<?>, Value<?>> editModelValues = new ConcurrentHashMap<>();
 
   /**
-   * Contains true if values should persist for the given property when the model is cleared
+   * Contains true if values should persist for the given attribute when the model is cleared
    */
   private final Map<Attribute<?>, Boolean> persistentValues = new HashMap<>();
 
@@ -162,7 +162,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     setReadOnly(entityDefinition().isReadOnly());
     configurePersistentForeignKeyValues();
     bindEventsInternal();
-    doSetEntity(defaultEntity(Property::defaultValue));
+    doSetEntity(defaultEntity(AttributeDefinition::defaultValue));
   }
 
   @Override
@@ -182,7 +182,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
   }
 
@@ -215,14 +215,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean isPersistValue(Attribute<?> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
 
     return Boolean.TRUE.equals(persistentValues.get(attribute));
   }
 
   @Override
   public final void setPersistValue(Attribute<?> attribute, boolean persistValue) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     persistentValues.put(attribute, persistValue);
   }
 
@@ -332,7 +332,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
 
     return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
@@ -340,7 +340,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver nullObserver(Attribute<?> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
 
     return attributeNullStateMap.computeIfAbsent(attribute, k ->
             State.state(entity.isNull(attribute))).observer();
@@ -363,7 +363,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> T put(Attribute<T> attribute, T value) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
     T previousValue = entity.put(attribute, value);
     if (!Objects.equals(value, previousValue)) {
@@ -375,7 +375,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> T remove(Attribute<T> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     T value = null;
     if (entity.contains(attribute)) {
       Map<Attribute<?>, Object> dependingValues = dependendingValues(attribute);
@@ -583,7 +583,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsSearchModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyDefinition(foreignKey);
     synchronized (entitySearchModels) {
       return entitySearchModels.containsKey(foreignKey);
     }
@@ -591,14 +591,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public EntitySearchModel createForeignKeySearchModel(ForeignKey foreignKey) {
-    ForeignKeyProperty property = entityDefinition().foreignKeyProperty(foreignKey);
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeyDefinition(foreignKey);
     Collection<Column<String>> searchColumns = entities()
-            .definition(property.referencedType()).searchColumns();
+            .definition(foreignKeyDefinition.referencedType()).searchColumns();
     if (searchColumns.isEmpty()) {
-      throw new IllegalStateException("No search columns defined for entity: " + property.referencedType());
+      throw new IllegalStateException("No search columns defined for entity: " + foreignKeyDefinition.referencedType());
     }
 
-    return EntitySearchModel.builder(property.referencedType(), connectionProvider)
+    return EntitySearchModel.builder(foreignKeyDefinition.referencedType(), connectionProvider)
             .searchColumns(searchColumns)
             .singleSelection(true)
             .build();
@@ -606,7 +606,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntitySearchModel foreignKeySearchModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyDefinition(foreignKey);
     synchronized (entitySearchModels) {
       // can't use computeIfAbsent here, see comment in SwingEntityEditModel.foreignKeyComboBoxModel()
       EntitySearchModel entitySearchModel = entitySearchModels.get(foreignKey);
@@ -621,7 +621,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final <T> Value<T> value(Attribute<T> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     return (Value<T>) editModelValues.computeIfAbsent(attribute, k -> new EditModelValue<>(this, attribute));
   }
 
@@ -824,7 +824,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   /**
    * For every field referencing the given foreign key values, replaces that foreign key instance with
-   * the corresponding entity from {@code values}, useful when property
+   * the corresponding entity from {@code values}, useful when attribute
    * values have been changed in the referenced entity that must be reflected in the edit model.
    * @param foreignKey the foreign key attribute
    * @param values the foreign key entities
@@ -947,12 +947,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private <T> Event<T> editEvent(Attribute<T> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     return (Event<T>) valueEditEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
   private <T> Event<T> valueEvent(Attribute<T> attribute) {
-    entityDefinition().property(attribute);
+    entityDefinition().attributeDefinition(attribute);
     return (Event<T>) valueChangeEvents.computeIfAbsent(attribute, k -> Event.event());
   }
 
@@ -965,52 +965,52 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private boolean isForeignKeyWritable(ForeignKey foreignKey) {
     return foreignKey.references().stream()
             .map(ForeignKey.Reference::column)
-            .map(entityDefinition()::property)
-            .filter(ColumnProperty.class::isInstance)
-            .map(ColumnProperty.class::cast)
-            .anyMatch(columnProperty -> !columnProperty.isReadOnly());
+            .map(entityDefinition()::columnDefinition)
+            .filter(ColumnDefinition.class::isInstance)
+            .map(ColumnDefinition.class::cast)
+            .anyMatch(columnDefinition -> !columnDefinition.isReadOnly());
   }
 
   /**
    * Instantiates a new {@link Entity} using the values provided by {@code valueSupplier}.
-   * Values are populated for {@link ColumnProperty} and its descendants, {@link ForeignKeyProperty}
-   * and {@link TransientProperty} (excluding its descendants).
-   * If a {@link ColumnProperty}s underlying column has a default value the property is
-   * skipped unless the property itself has a default value, which then overrides the columns default value.
+   * Values are populated for {@link ColumnDefinition} and its descendants, {@link ForeignKeyDefinition}
+   * and {@link TransientAttributeDefinition} (excluding its descendants).
+   * If a {@link ColumnDefinition}s underlying column has a default value the attribute is
+   * skipped unless the attribute itself has a default value, which then overrides the columns default value.
    * @return an entity instance populated with default values
-   * @see ColumnProperty.Builder#columnHasDefaultValue()
-   * @see ColumnProperty.Builder#defaultValue(Object)
+   * @see ColumnDefinition.Builder#columnHasDefaultValue()
+   * @see ColumnDefinition.Builder#defaultValue(Object)
    */
   private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    definition.columnProperties().stream()
-            .filter(property -> !definition.isForeignKeyColumn(property.attribute()))//these are set via their respective parent fk properties
-            .filter(property -> !property.columnHasDefaultValue() || property.hasDefaultValue())
-            .map(property -> (Property<Object>) property)
-            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
-    definition.transientProperties().stream()
-            .filter(property -> !property.isDerived())
-            .map(property -> (Property<Object>) property)
-            .forEach(property -> newEntity.put(property.attribute(), valueSupplier.get(property)));
-    definition.foreignKeyProperties().forEach(property ->
-            newEntity.put(property.attribute(), valueSupplier.get(property)));
+    definition.columnDefinitions().stream()
+            .filter(columnDefinition -> !definition.isForeignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
+            .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
+            .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
+            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+    definition.transientAttributeDefinitions().stream()
+            .filter(attributeDefinition -> !attributeDefinition.isDerived())
+            .map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
+            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+    definition.foreignKeyDefinitions().forEach(foreignKeyDefinition ->
+            newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
 
     newEntity.saveAll();
 
     return newEntity;
   }
 
-  private <T> T defaultValue(Property<T> property) {
-    if (isPersistValue(property.attribute())) {
-      if (property instanceof ForeignKeyProperty) {
-        return (T) entity.referencedEntity((ForeignKey) property.attribute());
+  private <T> T defaultValue(AttributeDefinition<T> attributeDefinition) {
+    if (isPersistValue(attributeDefinition.attribute())) {
+      if (attributeDefinition instanceof ForeignKeyDefinition) {
+        return (T) entity.referencedEntity((ForeignKey) attributeDefinition.attribute());
       }
 
-      return entity.get(property.attribute());
+      return entity.get(attributeDefinition.attribute());
     }
 
-    return (T) defaultValueSuppliers.computeIfAbsent(property.attribute(), k -> property::defaultValue).get();
+    return (T) defaultValueSuppliers.computeIfAbsent(attributeDefinition.attribute(), k -> attributeDefinition::defaultValue).get();
   }
 
   private void bindEventsInternal() {
@@ -1024,8 +1024,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     EntityDefinition entityDefinition = entityDefinition();
     entityDefinition.derivedAttributes(attribute).forEach(derivedAttribute ->
             dependentValues.put(derivedAttribute, get(derivedAttribute)));
-    entityDefinition.foreignKeyProperties(attribute).forEach(foreignKeyProperty ->
-            dependentValues.put(foreignKeyProperty.attribute(), get(foreignKeyProperty.attribute())));
+    if (attribute instanceof Column) {
+      entityDefinition.foreignKeyDefinitions((Column<?>) attribute).forEach(foreignKeyDefinition ->
+              dependentValues.put(foreignKeyDefinition.attribute(), get(foreignKeyDefinition.attribute())));
+    }
     if (attribute instanceof ForeignKey) {
       ((ForeignKey) attribute).references().forEach(reference ->
               dependentValues.put(reference.column(), get(reference.column())));
@@ -1109,7 +1111,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private interface ValueSupplier {
-    <T> T get(Property<T> property);
+    <T> T get(AttributeDefinition<T> attributeDefinition);
   }
 
   private static final class EditModelValue<T> extends AbstractValue<T> {
