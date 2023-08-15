@@ -81,15 +81,18 @@ public final class EmpDeptMinimalApp {
        * We then define the entity based on the SCOTT.DEPT table
        */
       add(Department.TYPE.define(
-              Department.DEPTNO.primaryKey(),
-              Department.DEPTNO.column()
+              Department.DEPTNO
+                      .primaryKey(),
+              Department.DEPTNO
+                      .column()
                       .caption("Department name")
                       .searchColumn(true)
                       .nullable(false)
                       .maximumLength(14),
-             Department.LOC.column()
-                              .caption("Department location")
-                              .maximumLength(13))
+             Department.LOC
+                     .column()
+                     .caption("Department location")
+                     .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
               .stringFactory(Department.DNAME));
@@ -99,32 +102,42 @@ public final class EmpDeptMinimalApp {
        * department as well as the manager
        */
       add(Employee.TYPE.define(
-              Employee.EMPNO.primaryKey(),
-              Employee.ENAME.column()
+              Employee.EMPNO
+                      .primaryKey(),
+              Employee.ENAME
+                      .column()
                       .caption("Name")
                       .searchColumn(true)
                       .nullable(false)
                       .maximumLength(10),
-              Employee.DEPTNO.column()
+              Employee.DEPTNO
+                      .column()
                       .nullable(false),
-              Employee.DEPT_FK.foreignKey()
+              Employee.DEPT_FK
+                      .foreignKey()
                       .caption("Department"),
-              Employee.JOB.column()
+              Employee.JOB
+                      .column()
                       .caption("Job")
                       .nullable(false)
                       .maximumLength(9),
-              Employee.SAL.column()
+              Employee.SAL
+                      .column()
                       .caption("Salary")
                       .nullable(false)
                       .maximumFractionDigits(2)
                       .valueRange(1000, 10000),
-              Employee.COMM.column()
+              Employee.COMM
+                      .column()
                       .caption("Commission")
                       .maximumFractionDigits(2),
-              Employee.MGR.column(),
-              Employee.MGR_FK.foreignKey()
+              Employee.MGR
+                      .column(),
+              Employee.MGR_FK
+                      .foreignKey()
                       .caption("Manager"),
-              Employee.HIREDATE.column()
+              Employee.HIREDATE
+                      .column()
                       .caption("Hiredate")
                       .nullable(false))
             .keyGenerator(increment("scott.emp", "empno"))

@@ -9466,3 +9466,4 @@
   EntityConnection.executeFunction() and executeProcedure() renamed execute()
   Property replaced with AttributeDefinition, related refactoring
   AttributeDefinition.Builder.caption() added, methods overloaded with caption parameter removed
+  ExceptionPanel.DISPLAY_SYSTEM_PROPERTIES configuration value moved to ExceptionDialogBuilder

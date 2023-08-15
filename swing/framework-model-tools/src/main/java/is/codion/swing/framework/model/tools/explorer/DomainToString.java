@@ -104,6 +104,7 @@ final class DomainToString {
     StringBuilder builder = new StringBuilder();
     String foreignKey = definition.attribute().name().toUpperCase();
     builder.append(DOUBLE_INDENT).append(interfaceName).append(".").append(foreignKey)
+            .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
             .append(".foreignKey()")
             .append(LINE_SEPARATOR)
             .append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
@@ -114,8 +115,9 @@ final class DomainToString {
   private static String columnDefinition(String interfaceName, ColumnDefinition<?> column,
                                          boolean isForeignKey, boolean compositePrimaryKey) {
     StringBuilder builder = new StringBuilder(DOUBLE_INDENT)
-            .append(interfaceName).append(".").append(column.columnName().toUpperCase()).append(".")
-            .append(definitionType(column.attribute(),
+            .append(interfaceName).append(".").append(column.columnName().toUpperCase())
+            .append(LINE_SEPARATOR).append(TRIPLE_INDENT)
+            .append(".").append(definitionType(column.attribute(),
                     column.isPrimaryKeyColumn() && !compositePrimaryKey));
     if (!isForeignKey && !column.isPrimaryKeyColumn()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");

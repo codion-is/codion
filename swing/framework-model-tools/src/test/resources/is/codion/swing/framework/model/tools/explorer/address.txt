@@ -14,33 +14,42 @@ public interface Address {
 
 void address() {
 	add(Address.TYPE.define(
-		Address.ADDRESSID.primaryKey(),
-		Address.STREET1.column()
+		Address.ADDRESSID
+			.primaryKey(),
+		Address.STREET1
+			.column()
 			.caption("Street1")
 			.nullable(false)
 			.maximumLength(55),
-		Address.STREET2.column()
+		Address.STREET2
+			.column()
 			.caption("Street2")
 			.maximumLength(55),
-		Address.CITY.column()
+		Address.CITY
+			.column()
 			.caption("City")
 			.nullable(false)
 			.maximumLength(55),
-		Address.STATE.column()
+		Address.STATE
+			.column()
 			.caption("State")
 			.nullable(false)
 			.maximumLength(25),
-		Address.ZIP.column()
+		Address.ZIP
+			.column()
 			.caption("Zip")
 			.nullable(false),
-		Address.LATITUDE.column()
+		Address.LATITUDE
+			.column()
 			.caption("Latitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		Address.LONGITUDE.column()
+		Address.LONGITUDE
+			.column()
 			.caption("Longitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		Address.IMAGE.blob()
+		Address.IMAGE
+			.blob()
 			.caption("Image")));
 }

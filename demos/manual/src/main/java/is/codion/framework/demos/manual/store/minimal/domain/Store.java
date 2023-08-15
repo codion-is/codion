@@ -49,19 +49,24 @@ public class Store extends DefaultDomain {
     super(DOMAIN);
 
     add(Customer.TYPE.define(
-            Customer.ID.primaryKey(),
-            Customer.FIRST_NAME.column()
+            Customer.ID
+                    .primaryKey(),
+            Customer.FIRST_NAME
+                    .column()
                     .caption("First name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.LAST_NAME.column()
+            Customer.LAST_NAME
+                    .column()
                     .caption("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.EMAIL.column()
+            Customer.EMAIL
+                    .column()
                     .caption("Email")
                     .maximumLength(100),
-            Customer.IS_ACTIVE.column()
+            Customer.IS_ACTIVE
+                    .column()
                     .caption("Is active")
                     .nullable(false)
                     .defaultValue(true))
@@ -74,16 +79,21 @@ public class Store extends DefaultDomain {
             .caption("Customer"));
 
     add(Address.TYPE.define(
-            Address.ID.primaryKey(),
-            Address.CUSTOMER_ID.column()
+            Address.ID
+                    .primaryKey(),
+            Address.CUSTOMER_ID
+                    .column()
                     .nullable(false),
-            Address.CUSTOMER_FK.foreignKey()
+            Address.CUSTOMER_FK
+                    .foreignKey()
                     .caption("Customer"),
-            Address.STREET.column()
+            Address.STREET
+                    .column()
                     .caption("Street")
                     .nullable(false)
                     .maximumLength(100),
-            Address.CITY.column()
+            Address.CITY
+                    .column()
                     .caption("City")
                     .nullable(false)
                     .maximumLength(50))
@@ -98,24 +108,29 @@ public class Store extends DefaultDomain {
 
   void addressExpanded() {
     ColumnDefinition.Builder<Long, ?> id =
-            Address.ID.primaryKey();
+            Address.ID
+                    .primaryKey();
 
     ColumnDefinition.Builder<Long, ?> customerId =
-            Address.CUSTOMER_ID.column()
+            Address.CUSTOMER_ID
+                    .column()
                     .nullable(false);
 
     ForeignKeyDefinition.Builder customerFk =
-            Address.CUSTOMER_FK.foreignKey()
+            Address.CUSTOMER_FK
+                    .foreignKey()
                     .caption("Customer");
 
     ColumnDefinition.Builder<String, ?> street =
-            Address.STREET.column()
+            Address.STREET
+                    .column()
                     .caption("Street")
                     .nullable(false)
                     .maximumLength(100);
 
     ColumnDefinition.Builder<String, ?> city =
-            Address.CITY.column()
+            Address.CITY
+                    .column()
                     .caption("City")
                     .nullable(false)
                     .maximumLength(50);
