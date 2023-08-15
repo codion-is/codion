@@ -198,18 +198,6 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
     return new DefaultAuditColumnDefinition.DefaultAuditColumnDefinitionBuilder<>((Column<String>) this, caption, UPDATE);
   }
 
-  /**
-   * Creates a new {@link Column}, associated with the given entityType.
-   * @param entityType the entityType owning this column
-   * @param name the column name
-   * @param valueClass the class representing the column value type
-   * @param <T> the column type
-   * @return a new {@link Column}
-   */
-  public <T> Column<T> column(EntityType entityType, String name, Class<T> valueClass) {
-    return new DefaultColumn<>(name, valueClass, entityType);
-  }
-
   private static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
 
     private final T trueValue;

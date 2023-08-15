@@ -129,14 +129,14 @@ class DefaultEntity implements Entity, Serializable {
   public final boolean isModified() {
     if (originalValues != null) {
       for (Attribute<?> attribute : originalValues.keySet()) {
-        AttributeDefinition<?> definition = this.definition.attributeDefinition(attribute);
-        if (definition instanceof ColumnDefinition) {
-          ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) definition;
+        AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(attribute);
+        if (attributeDefinition instanceof ColumnDefinition) {
+          ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) attributeDefinition;
           if (columnDefinition.isInsertable() && columnDefinition.isUpdatable()) {
             return true;
           }
         }
-        if (definition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) definition).modifiesEntity()) {
+        if (attributeDefinition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) attributeDefinition).modifiesEntity()) {
           return true;
         }
       }
