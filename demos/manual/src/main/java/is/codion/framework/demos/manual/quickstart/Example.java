@@ -65,12 +65,15 @@ public final class Example {
 
     void customer() {
       add(Customer.TYPE.define(
-              Customer.ID.primaryKey(),
-              Customer.FIRST_NAME.column()
+              Customer.ID
+                      .primaryKey(),
+              Customer.FIRST_NAME
+                      .column()
                       .caption("First name")
                       .nullable(false)
                       .maximumLength(40),
-              Customer.LAST_NAME.column()
+              Customer.LAST_NAME
+                      .column()
                       .caption("Last name")
                       .nullable(false)
                       .maximumLength(40))
@@ -101,12 +104,15 @@ public final class Example {
 
     void address() {
       add(Address.TYPE.define(
-                      Address.ID.primaryKey(),
-                      Address.STREET.column()
-                              .caption("Street")
+              Address.ID
+                      .primaryKey(),
+              Address.STREET
+                      .column()
+                      .caption("Street")
                       .nullable(false)
                       .maximumLength(120),
-              Address.CITY.column()
+              Address.CITY
+                      .column()
                       .caption("City")
                       .nullable(false)
                       .maximumLength(50))
@@ -132,14 +138,19 @@ public final class Example {
 
     void customerAddress() {
       add(CustomerAddress.TYPE.define(
-                      CustomerAddress.ID.primaryKey(),
-                      CustomerAddress.CUSTOMER_ID.column()
+              CustomerAddress.ID
+                      .primaryKey(),
+              CustomerAddress.CUSTOMER_ID
+                      .column()
                       .nullable(false),
-              CustomerAddress.CUSTOMER_FK.foreignKey()
+              CustomerAddress.CUSTOMER_FK
+                      .foreignKey()
                       .caption("Customer"),
-              CustomerAddress.ADDRESS_ID.column()
+              CustomerAddress.ADDRESS_ID
+                      .column()
                       .nullable(false),
-              CustomerAddress.ADDRESS_FK.foreignKey()
+              CustomerAddress.ADDRESS_FK
+                      .foreignKey()
                       .caption("Address"))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address"));

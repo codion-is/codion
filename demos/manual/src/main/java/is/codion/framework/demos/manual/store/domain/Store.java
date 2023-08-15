@@ -73,18 +73,23 @@ public final class Store extends DefaultDomain {
   private void customer() {
     // tag::customer[]
     add(Customer.TYPE.define(
-            Customer.ID.primaryKey(),
-            Customer.FIRST_NAME.column()
+            Customer.ID
+                    .primaryKey(),
+            Customer.FIRST_NAME
+                    .column()
                     .caption("First name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.LAST_NAME.column()
+            Customer.LAST_NAME
+                    .column()
                     .caption("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.EMAIL.column()
+            Customer.EMAIL
+                    .column()
                     .caption("Email"),
-            Customer.IS_ACTIVE.column()
+            Customer.IS_ACTIVE
+                    .column()
                     .caption("Is active")
                     .columnHasDefaultValue(true)
                     .defaultValue(true))
@@ -99,16 +104,20 @@ public final class Store extends DefaultDomain {
   private void address() {
     // tag::address[]
     add(Address.TYPE.define(
-                    Address.ID.primaryKey(),
-                    Address.STREET.column()
-                            .caption("Street")
+            Address.ID
+                    .primaryKey(),
+            Address.STREET
+                    .column()
+                    .caption("Street")
                     .nullable(false)
                     .maximumLength(120),
-            Address.CITY.column()
+            Address.CITY
+                    .column()
                     .caption("City")
                     .nullable(false)
                     .maximumLength(50),
-            Address.VALID.column()
+            Address.VALID
+                    .column()
                     .caption("Valid")
                     .columnHasDefaultValue(true)
                     .nullable(false))
@@ -126,14 +135,19 @@ public final class Store extends DefaultDomain {
   private void customerAddress() {
     // tag::customerAddress[]
     add(CustomerAddress.TYPE.define(
-            CustomerAddress.ID.primaryKey(),
-            CustomerAddress.CUSTOMER_ID.column()
+            CustomerAddress.ID
+                    .primaryKey(),
+            CustomerAddress.CUSTOMER_ID
+                    .column()
                     .nullable(false),
-            CustomerAddress.CUSTOMER_FK.foreignKey()
+            CustomerAddress.CUSTOMER_FK
+                    .foreignKey()
                     .caption("Customer"),
-            CustomerAddress.ADDRESS_ID.column()
+            CustomerAddress.ADDRESS_ID
+                    .column()
                     .nullable(false),
-            CustomerAddress.ADDRESS_FK.foreignKey()
+            CustomerAddress.ADDRESS_FK
+                    .foreignKey()
                     .caption("Address"))
             .keyGenerator(identity())
             .caption("Customer address"));

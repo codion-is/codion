@@ -53,7 +53,9 @@ public final class SchemaBrowser extends DefaultDomain {
   }
 
   void schema() {
-    add(Schema.TYPE.define(Schema.NAME.primaryKey()
+    add(Schema.TYPE.define(
+            Schema.NAME
+                    .primaryKey()
                     .caption("Name"))
             .tableName(bundle.getString("t_schema"))
             .orderBy(ascending(Schema.NAME))
@@ -73,11 +75,14 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void table() {
     EntityDefinition.Builder tableBuilder = Table.TYPE.define(
-            Table.SCHEMA.column()
+            Table.SCHEMA
+                    .column()
                     .primaryKeyIndex(0),
-            Table.SCHEMA_FK.foreignKey()
+            Table.SCHEMA_FK
+                    .foreignKey()
                     .caption("Schema"),
-            Table.NAME.column()
+            Table.NAME
+                    .column()
                     .caption("Name")
                     .primaryKeyIndex(1))
             .tableName(bundle.getString("t_table"))
@@ -117,17 +122,22 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void tableColumn() {
     add(TableColumn.TYPE.define(
-            TableColumn.SCHEMA.column()
+            TableColumn.SCHEMA
+                    .column()
                     .primaryKeyIndex(0),
-            TableColumn.TABLE_NAME.column()
+            TableColumn.TABLE_NAME
+                    .column()
                     .primaryKeyIndex(1),
-            TableColumn.TABLE_FK.foreignKey()
+            TableColumn.TABLE_FK
+                    .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
-            TableColumn.NAME.column()
+            TableColumn.NAME
+                    .column()
                     .caption("Column name")
                     .primaryKeyIndex(2),
-            TableColumn.DATA_TYPE.column()
+            TableColumn.DATA_TYPE
+                    .column()
                     .caption("Data type"))
             .tableName(bundle.getString("t_column"))
             .orderBy(ascending(TableColumn.SCHEMA, TableColumn.TABLE_NAME, TableColumn.NAME))
@@ -155,17 +165,22 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void constraint() {
     add(Constraint.TYPE.define(
-            Constraint.SCHEMA.column()
+            Constraint.SCHEMA
+                    .column()
                     .primaryKeyIndex(0),
-            Constraint.TABLE_NAME.column()
+            Constraint.TABLE_NAME
+                    .column()
                     .primaryKeyIndex(1),
-            Constraint.TABLE_FK.foreignKey()
+            Constraint.TABLE_FK
+                    .foreignKey()
                     .caption("Table")
                     .fetchDepth(2),
-            Constraint.NAME.column()
+            Constraint.NAME
+                    .column()
                     .caption("Constraint name")
                     .primaryKeyIndex(2),
-            Constraint.CONSTRAINT_TYPE.column()
+            Constraint.CONSTRAINT_TYPE
+                    .column()
                     .caption("Type"))
             .tableName(bundle.getString("t_constraint"))
             .orderBy(ascending(Constraint.SCHEMA, Constraint.TABLE_NAME, Constraint.NAME))
@@ -195,18 +210,24 @@ public final class SchemaBrowser extends DefaultDomain {
 
   void constraintColumn() {
     add(ConstraintColumn.TYPE.define(
-            ConstraintColumn.SCHEMA.column()
+            ConstraintColumn.SCHEMA
+                    .column()
                     .primaryKeyIndex(0),
-            ConstraintColumn.TABLE_NAME.column()
+            ConstraintColumn.TABLE_NAME
+                    .column()
                     .primaryKeyIndex(1),
-            ConstraintColumn.CONSTRAINT_NAME.column()
+            ConstraintColumn.CONSTRAINT_NAME
+                    .column()
                     .primaryKeyIndex(2),
-            ConstraintColumn.CONSTRAINT_FK.foreignKey()
+            ConstraintColumn.CONSTRAINT_FK
+                    .foreignKey()
                     .caption("Constraint")
                     .fetchDepth(3),
-            ConstraintColumn.COLUMN_NAME.column()
+            ConstraintColumn.COLUMN_NAME
+                    .column()
                     .caption("Column name"),
-            ConstraintColumn.POSITION.column()
+            ConstraintColumn.POSITION
+                    .column()
                     .caption("Position"))
             .tableName(bundle.getString("t_column_constraint"))
             .orderBy(ascending(ConstraintColumn.SCHEMA, ConstraintColumn.TABLE_NAME, ConstraintColumn.CONSTRAINT_NAME))

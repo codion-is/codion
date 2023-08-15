@@ -76,10 +76,12 @@ public final class EntitiesTutorial {
 
       // create columns for the table 'chinook.artist'
       ColumnDefinition.Builder<Long, ?> artistId =
-              Artist.ID.primaryKey();
+              Artist.ID
+                      .primaryKey();
 
       ColumnDefinition.Builder<String, ?> artistName =
-              Artist.NAME.column()
+              Artist.NAME
+                      .column()
                       .caption("Name")
                       .nullable(false)
                       .maximumLength(120);
@@ -97,20 +99,24 @@ public final class EntitiesTutorial {
 
       // create columns and foreign key for the table 'chinook.album'
       ColumnDefinition.Builder<Long, ?> albumId =
-              Album.ID.primaryKey();
+              Album.ID
+                      .primaryKey();
 
       ColumnDefinition.Builder<String, ?> albumTitle =
-              Album.TITLE.column()
+              Album.TITLE
+                      .column()
                       .caption("Title")
                       .nullable(false)
                       .maximumLength(160);
 
       ColumnDefinition.Builder<Long, ?> albumArtistId =
-              Album.ARTIST_ID.column()
+              Album.ARTIST_ID
+                      .column()
                       .nullable(false);
 
       ForeignKeyDefinition.Builder albumArtist =
-              Album.ARTIST_FK.foreignKey()
+              Album.ARTIST_FK
+                      .foreignKey()
                       .caption("Artist");
 
       // define an entity based on the table 'chinook.album', with the above columns and foreign key
