@@ -80,7 +80,7 @@ final class DefaultEntityType implements EntityType, Serializable {
 
   @Override
   public EntityDefinition.Builder define(List<AttributeDefinition.Builder<?, ?>> definitionBuilders) {
-    return new DefaultEntityDefinition.DefaultBuilder(requireNonNull(definitionBuilders));
+    return new DefaultEntityDefinition.DefaultBuilder(this, requireNonNull(definitionBuilders));
   }
 
   @Override
