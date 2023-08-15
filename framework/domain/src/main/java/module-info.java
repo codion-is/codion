@@ -6,9 +6,9 @@ module is.codion.framework.domain {
   requires transitive is.codion.common.db;
 
   exports is.codion.framework.domain.entity;
+  exports is.codion.framework.domain.entity.attribute;
   exports is.codion.framework.domain.entity.exception;
   exports is.codion.framework.domain.entity.query;
-  exports is.codion.framework.domain.property;
   exports is.codion.framework.domain;
 
   uses is.codion.framework.domain.Domain;
