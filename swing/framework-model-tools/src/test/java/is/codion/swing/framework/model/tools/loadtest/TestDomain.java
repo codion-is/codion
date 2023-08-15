@@ -24,13 +24,16 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(T_DEPARTMENT.define(
-            DEPARTMENT_ID.primaryKey(DEPARTMENT_ID.name())
+            DEPARTMENT_ID.primaryKey()
+                    .caption(DEPARTMENT_ID.name())
                     .updatable(true).nullable(false),
-            DEPARTMENT_NAME.column(DEPARTMENT_NAME.name())
+            DEPARTMENT_NAME.column()
+                    .caption(DEPARTMENT_NAME.name())
                     .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false),
-            DEPARTMENT_LOCATION.column(DEPARTMENT_LOCATION.name())
+            DEPARTMENT_LOCATION.column()
+                    .caption(DEPARTMENT_LOCATION.name())
                     .maximumLength(13))
             .smallDataset(true)
             .stringFactory(DEPARTMENT_NAME)

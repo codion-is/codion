@@ -42,9 +42,8 @@ final class DefaultDerivedAttributeDefinition<T> extends AbstractAttributeDefini
     private final DerivedAttribute.Provider<T> valueProvider;
     private final List<Attribute<?>> sourceAttributes;
 
-    DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute, String caption,
-                                             DerivedAttribute.Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
-      super(attribute, caption);
+    DefaultDerivedAttributeDefinitionBuilder(Attribute<T> attribute, DerivedAttribute.Provider<T> valueProvider, Attribute<?>... sourceAttributes) {
+      super(attribute);
       this.valueProvider = requireNonNull(valueProvider);
       if (sourceAttributes.length == 0) {
         throw new IllegalArgumentException("No source attributes, a derived attribute must be derived from one or more existing attributes");

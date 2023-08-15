@@ -351,6 +351,18 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     return null;
   }
 
+  private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
+    if (resourceBundleName == null) {
+      return true;
+    }
+    try {
+      return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
+    }
+    catch (MissingResourceException e) {
+      return true;
+    }
+  }
+
   static class DefaultValueSupplier<T> implements ValueSupplier<T>, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -409,7 +421,7 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
   abstract static class AbstractAttributeDefinitionBuilder<T, B extends AttributeDefinition.Builder<T, B>> implements AttributeDefinition.Builder<T, B> {
 
     protected final Attribute<T> attribute;
-    private final String caption;
+    private String caption;
     private String beanProperty;
     private ValueSupplier<T> defaultValueSupplier;
     private String captionResourceKey;
@@ -427,14 +439,13 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     private String dateTimePattern;
     private DateTimeFormatter dateTimeFormatter;
 
-    AbstractAttributeDefinitionBuilder(Attribute<T> attribute, String caption) {
+    AbstractAttributeDefinitionBuilder(Attribute<T> attribute) {
       this.attribute = requireNonNull(attribute);
-      this.caption = caption;
       format = defaultFormat(attribute);
       comparator = defaultComparator(attribute);
       beanProperty = Text.underscoreToCamelCase(attribute.name());
       captionResourceKey = attribute.name();
-      hidden = caption == null && resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
+      hidden = resourceNotFound(attribute.entityType().resourceBundleName(), captionResourceKey);
       nullable = true;
       maximumLength = -1;
       defaultValueSupplier = (ValueSupplier<T>) DEFAULT_VALUE_SUPPLIER;
@@ -446,6 +457,13 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     @Override
     public final Attribute<T> attribute() {
       return attribute;
+    }
+
+    @Override
+    public final B caption(String caption) {
+      this.caption = requireNonNull(caption);
+      this.hidden = false;
+      return (B) this;
     }
 
     @Override
@@ -621,18 +639,6 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
     public B comparator(Comparator<T> comparator) {
       this.comparator = requireNonNull(comparator);
       return (B) this;
-    }
-
-    private static boolean resourceNotFound(String resourceBundleName, String captionResourceKey) {
-      if (resourceBundleName == null) {
-        return true;
-      }
-      try {
-        return !ResourceBundle.getBundle(resourceBundleName).containsKey(captionResourceKey);
-      }
-      catch (MissingResourceException e) {
-        return true;
-      }
     }
 
     private static Format defaultFormat(Attribute<?> attribute) {

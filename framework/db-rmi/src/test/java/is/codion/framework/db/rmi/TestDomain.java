@@ -35,13 +35,16 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKey(Department.ID.name())
+            Department.ID.primaryKey()
+                    .caption(Department.ID.name())
                     .updatable(true).nullable(false),
-            Department.NAME.column(Department.NAME.name())
+            Department.NAME.column()
+                    .caption(Department.NAME.name())
                     .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false),
-            Department.LOCATION.column(Department.LOCATION.name())
+            Department.LOCATION.column()
+                    .caption(Department.LOCATION.name())
                     .maximumLength(13))
             .smallDataset(true)
             .stringFactory(Department.NAME)
@@ -66,29 +69,38 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey(Employee.ID.name()),
-            Employee.NAME.column(Employee.NAME.name())
+            Employee.ID.primaryKey()
+                    .caption(Employee.ID.name()),
+            Employee.NAME.column()
+                    .caption(Employee.NAME.name())
                     .searchColumn(true)
                     .maximumLength(10)
                     .nullable(false),
             Employee.DEPARTMENT.column()
                     .nullable(false),
-            Employee.DEPARTMENT_FK.foreignKey(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.item(Employee.JOB.name(),
+            Employee.DEPARTMENT_FK.foreignKey()
+                    .caption(Employee.DEPARTMENT_FK.name()),
+            Employee.JOB.item(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
+                    .caption(Employee.JOB.name())
                     .searchColumn(true),
-            Employee.SALARY.column(Employee.SALARY.name())
+            Employee.SALARY.column()
+                    .caption(Employee.SALARY.name())
                     .nullable(false)
                     .valueRange(1000, 10000)
                     .maximumFractionDigits(2),
-            Employee.COMMISSION.column(Employee.COMMISSION.name())
+            Employee.COMMISSION.column()
+                    .caption(Employee.COMMISSION.name())
                     .valueRange(100, 2000)
                     .maximumFractionDigits(2),
             Employee.MGR.column(),
-            Employee.MGR_FK.foreignKey(Employee.MGR_FK.name()),
-            Employee.HIREDATE.column(Employee.HIREDATE.name())
+            Employee.MGR_FK.foreignKey()
+                    .caption(Employee.MGR_FK.name()),
+            Employee.HIREDATE.column()
+                    .caption(Employee.HIREDATE.name())
                     .nullable(false),
-            Employee.DEPARTMENT_LOCATION.denormalized(Department.LOCATION.name(), Employee.DEPARTMENT_FK, Department.LOCATION))
+            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));

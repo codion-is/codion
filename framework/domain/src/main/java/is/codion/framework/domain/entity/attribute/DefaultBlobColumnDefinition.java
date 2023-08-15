@@ -25,8 +25,8 @@ final class DefaultBlobColumnDefinition extends DefaultColumnDefinition<byte[]> 
 
     private boolean eagerlyLoaded = false;
 
-    DefaultBlobColumnDefinitionBuilder(Column<byte[]> column, String caption) {
-      super(column, caption);
+    DefaultBlobColumnDefinitionBuilder(Column<byte[]> column) {
+      super(column);
     }
 
     @Override

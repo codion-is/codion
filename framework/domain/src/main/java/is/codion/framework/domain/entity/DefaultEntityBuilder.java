@@ -36,8 +36,8 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public <T> Entity.Builder with(Attribute<T> attribute, T value) {
-    AttributeDefinition<T> definition = this.definition.attributeDefinition(attribute);
-    if (definition.isDerived()) {
+    AttributeDefinition<T> attributeDefinition = definition.attributeDefinition(attribute);
+    if (attributeDefinition.isDerived()) {
       throw new IllegalArgumentException("Can not set the value of a derived attribute");
     }
     builderValues.put(attribute, value);

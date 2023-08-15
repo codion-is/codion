@@ -81,8 +81,8 @@ final class DefaultForeignKeyDefinition extends AbstractAttributeDefinition<Enti
     private int fetchDepth;
     private boolean softReference;
 
-    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey, String caption) {
-      super(foreignKey, caption);
+    DefaultForeignKeyDefinitionBuilder(ForeignKey foreignKey) {
+      super(foreignKey);
       this.referencedEntityType = foreignKey.referencedType();
       this.fetchDepth = AttributeDefinition.FOREIGN_KEY_FETCH_DEPTH.get();
       this.softReference = false;

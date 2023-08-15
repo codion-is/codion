@@ -239,7 +239,8 @@ public class DefaultEntityDefinitionTest {
         setStrictForeignKeys(false);
         add(entityType.define(
                 integerColumn.primaryKey(),
-                foreignKey.foreignKey("caption")));
+                foreignKey.foreignKey()
+                        .caption("caption")));
         setStrictForeignKeys(true);
       }
     }
@@ -276,7 +277,7 @@ public class DefaultEntityDefinitionTest {
                 pk.primaryKey(),
                 column1.column(),
                 column2.column(),
-                der.derived("cap", linkedValues -> null, column1, column2)));
+                der.derived(linkedValues -> null, column1, column2)));
       }
     }
     Domain domain = new TestDomain();

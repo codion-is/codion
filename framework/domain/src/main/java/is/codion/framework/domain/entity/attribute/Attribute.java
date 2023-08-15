@@ -147,14 +147,6 @@ public interface Attribute<T> {
   <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute();
 
   /**
-   * Creates a new {@link TransientAttributeDefinition.Builder} instance, which does not map to an underlying table column.
-   * @param caption the attribute caption
-   * @param <B> the builder type
-   * @return a new {@link TransientAttributeDefinition.Builder}
-   */
-  <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute(String caption);
-
-  /**
    * Instantiates a {@link AttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
    * @param <B> the builder type
    * @param entityAttribute the entity attribute from which this attribute gets its value
@@ -162,18 +154,6 @@ public interface Attribute<T> {
    * @return a new {@link AttributeDefinition.Builder}
    */
   <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
-                                                                                               Attribute<T> denormalizedAttribute);
-
-  /**
-   * Instantiates a {@link AttributeDefinition.Builder} instance, for displaying a value from a referenced entity attribute.
-   * @param <B> the builder type
-   * @param caption the caption of this attribute
-   * @param entityAttribute the entity attribute from which this attribute gets its value
-   * @param denormalizedAttribute the attribute from the referenced entity, from which this attribute gets its value
-   * @return a new {@link AttributeDefinition.Builder}
-   */
-  <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(String caption,
-                                                                                               Attribute<Entity> entityAttribute,
                                                                                                Attribute<T> denormalizedAttribute);
 
   /**
@@ -185,18 +165,5 @@ public interface Attribute<T> {
    * @throws IllegalArgumentException in case no source attributes are specified
    */
   <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
-                                                                                          Attribute<?>... sourceAttributes);
-
-  /**
-   * Instantiates a {@link AttributeDefinition.Builder} instance, which value is derived from one or more source attributes.
-   * @param caption the caption
-   * @param valueProvider a {@link DerivedAttribute.Provider} instance responsible for deriving the value
-   * @param sourceAttributes the ids of the attributes from which this attribute derives its value
-   * @param <B> the builder type
-   * @return a new {@link AttributeDefinition.Builder}
-   * @throws IllegalArgumentException in case no source attributes are specified
-   */
-  <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(String caption,
-                                                                                          DerivedAttribute.Provider<T> valueProvider,
                                                                                           Attribute<?>... sourceAttributes);
 }

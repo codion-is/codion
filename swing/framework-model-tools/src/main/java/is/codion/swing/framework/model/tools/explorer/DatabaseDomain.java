@@ -92,7 +92,7 @@ final class DatabaseDomain extends DefaultDomain {
                     .map(entry -> reference(column(entityType, entry.getKey()), column(referencedEntityType, entry.getValue())))
                     .collect(toList()));
 
-    return foreignKey.foreignKey(caption(referencedTable.tableName()));
+    return foreignKey.foreignKey().caption(caption(referencedTable.tableName().toLowerCase()));
   }
 
   private static ColumnDefinition.Builder<?, ?> columnDefinitionBuilder(MetadataColumn metadataColumn, EntityType entityType) {
@@ -100,10 +100,10 @@ final class DatabaseDomain extends DefaultDomain {
     Column<?> column = column(entityType, metadataColumn);
     ColumnDefinition.Builder<?, ?> builder;
     if (column.isByteArray()) {
-      builder = column.blob(caption);
+      builder = column.blob().caption(caption);
     }
     else {
-      builder = column.column(caption);
+      builder = column.column().caption(caption);
     }
     if (metadataColumn.isPrimaryKeyColumn()) {
       builder.primaryKeyIndex(metadataColumn.primaryKeyIndex() - 1);

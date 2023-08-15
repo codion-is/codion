@@ -65,11 +65,15 @@ public final class ClientTutorial {
       super(DOMAIN);
       add(Artist.TYPE.define(
               Artist.ID.primaryKey(),
-              Artist.NAME.column("Name")
-                      .searchColumn(true).nullable(false).maximumLength(120),
-              Artist.NUMBER_OF_ALBUMS.subquery("Albums",
+              Artist.NAME.column()
+                      .caption("Name")
+                      .searchColumn(true)
+                      .nullable(false)
+                      .maximumLength(120),
+              Artist.NUMBER_OF_ALBUMS.subquery(
                       "select count(*) from chinook.album " +
-                              "where album.artistid = artist.artistid"))
+                              "where album.artistid = artist.artistid")
+                      .caption("Albums"))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(Artist.NAME)
               .caption("Artists"));
@@ -78,9 +82,12 @@ public final class ClientTutorial {
               Album.ID.primaryKey(),
               Album.ARTIST_ID.column()
                       .nullable(false),
-              Album.ARTIST_FK.foreignKey("Artist"),
-              Album.TITLE.column("Title")
-                      .nullable(false).maximumLength(160))
+              Album.ARTIST_FK.foreignKey()
+                      .caption("Artist"),
+              Album.TITLE.column()
+                      .caption("Title")
+                      .nullable(false)
+                      .maximumLength(160))
               .keyGenerator(automatic("chinook.artist"))
               .stringFactory(StringFactory.builder()
                       .value(Album.ARTIST_FK)

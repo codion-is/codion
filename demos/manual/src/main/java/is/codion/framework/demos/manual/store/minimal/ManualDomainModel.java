@@ -54,7 +54,8 @@ class ManualDomainModel {
     void city() {
       add(City.TYPE.define(
               City.ID.primaryKey(),
-              City.NAME.column("Name")
+              City.NAME.column()
+                      .caption("Name")
                       .nullable(false))
               .keyGenerator(KeyGenerator.identity())
               .caption("Cities"));
@@ -63,10 +64,12 @@ class ManualDomainModel {
     void customer() {
       add(Customer.TYPE.define(
               Customer.ID.primaryKey(),
-              Customer.NAME.column("Name")
+              Customer.NAME.column()
+                      .caption("Name")
                       .maximumLength(42),
               Customer.CITY_ID.column(),
-              Customer.CITY_FK.foreignKey("City"))
+              Customer.CITY_FK.foreignKey()
+                      .caption("City"))
               .keyGenerator(KeyGenerator.identity())
               .caption("Customers"));
     }

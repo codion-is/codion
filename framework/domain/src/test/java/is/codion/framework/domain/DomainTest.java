@@ -65,7 +65,8 @@ public class DomainTest {
     assertThrows(IllegalArgumentException.class, () -> domain.add(entityType.define(
             entityType.column("id", Integer.class).primaryKey(),
             fkId.column(),
-            foreignKey.foreignKey("caption"))));
+            foreignKey.foreignKey()
+                    .caption("caption"))));
   }
 
   @Test
@@ -79,7 +80,8 @@ public class DomainTest {
       domain.add(entityType.define(
               entityType.column("id", Integer.class).primaryKey(),
               fkId.column(),
-              foreignKey.foreignKey("caption")));
+              foreignKey.foreignKey()
+                    .caption("caption")));
     });
   }
 
@@ -94,7 +96,8 @@ public class DomainTest {
     domain.add(entityType.define(
             entityType.column("id", Integer.class).primaryKey(),
             fkId.column(),
-            foreignKey.foreignKey("caption")));
+            foreignKey.foreignKey()
+                    .caption("caption")));
     domain.setStrictForeignKeys(true);
   }
 

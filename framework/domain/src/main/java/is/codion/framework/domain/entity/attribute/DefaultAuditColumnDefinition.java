@@ -26,8 +26,8 @@ final class DefaultAuditColumnDefinition<T> extends DefaultColumnDefinition<T> i
 
     private final AuditColumn.AuditAction auditAction;
 
-    DefaultAuditColumnDefinitionBuilder(Column<T> column, String caption, AuditColumn.AuditAction auditAction) {
-      super(column, caption);
+    DefaultAuditColumnDefinitionBuilder(Column<T> column, AuditColumn.AuditAction auditAction) {
+      super(column);
       this.auditAction = requireNonNull(auditAction);
     }
 

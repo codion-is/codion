@@ -265,6 +265,12 @@ public interface AttributeDefinition<T> {
     Attribute<T> attribute();
 
     /**
+     * @param caption the caption
+     * @return this builder instance
+     */
+    B caption(String caption);
+
+    /**
      * Specifies the key to use when retrieving the caption for this attribute from the entity resource bundle,
      * in case it differes from the attribute name ({@link Attribute#name()}), which is the default value.
      * Note that this configures the attribute to not be hidden.

@@ -472,7 +472,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public <T> Collection<ForeignKeyDefinition> foreignKeyDefinitions(Column<T> column) {
     return entityAttributes.columnForeignKeyDefinitions
-            .getOrDefault(requireNonNull(column, "column"), emptyList());
+            .getOrDefault(requireNonNull(column, COLUMN), emptyList());
   }
 
   @Override
@@ -850,7 +850,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .map(ForeignKey.class::cast)
               .collect(toMap(Function.identity(), foreignKey -> foreignKeyColumnDefinitions(foreignKey, attributeMap)));
       foreignKeyColumns.addAll(foreignKeyColumnDefinitions.values().stream()
-              .flatMap(columnDefinitions -> columnDefinitions.stream().map(ColumnDefinition::attribute))
+              .flatMap(definitions -> definitions.stream().map(ColumnDefinition::attribute))
               .collect(toSet()));
       foreignKeyBuilders.forEach(foreignKeyBuilder -> setForeignKeyNullable(foreignKeyBuilder, foreignKeyColumnDefinitions));
     }
