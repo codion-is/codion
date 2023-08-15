@@ -15,7 +15,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 
-import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerContrastIJTheme;
+import com.formdev.flatlaf.intellijthemes.materialthemeuilite.FlatMaterialDarkerIJTheme;
 
 import javax.swing.UIManager;
 
@@ -66,7 +66,7 @@ public class StoreDemo {
   }
 
   public static void main(String[] args) throws Exception {
-    UIManager.setLookAndFeel(new FlatMaterialDarkerContrastIJTheme());
+    UIManager.setLookAndFeel(new FlatMaterialDarkerIJTheme());
 
     Database database = H2DatabaseFactory
             .createDatabase("jdbc:h2:mem:h2db",
