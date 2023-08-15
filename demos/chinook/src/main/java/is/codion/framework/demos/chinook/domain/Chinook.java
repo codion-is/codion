@@ -6,16 +6,16 @@ package is.codion.framework.demos.chinook.domain;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition.ValueSupplier;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.DerivedAttribute;
+import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.DerivedProperty.SourceValues;
-import is.codion.framework.domain.property.Property;
 import is.codion.plugin.jasperreports.model.JRReportType;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
@@ -189,7 +189,7 @@ public interface Chinook {
 
     FunctionType<EntityConnection, Collection<Long>, Collection<Entity>> UPDATE_TOTALS = functionType("chinook.update_totals");
 
-    Property.ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
+    ValueSupplier<LocalDate> DATE_DEFAULT_VALUE = LocalDate::now;
 
     default void updateTotal() {
       put(TOTAL, optional(CALCULATED_TOTAL).orElse(BigDecimal.ZERO));
@@ -283,7 +283,7 @@ public interface Chinook {
   }
 
   final class InvoiceLineTotalProvider
-          implements DerivedProperty.Provider<BigDecimal> {
+          implements DerivedAttribute.Provider<BigDecimal> {
 
     private static final long serialVersionUID = 1;
 
@@ -300,7 +300,7 @@ public interface Chinook {
   }
 
   final class TrackMinSecProvider
-          implements DerivedProperty.Provider<String> {
+          implements DerivedAttribute.Provider<String> {
 
     private static final long serialVersionUID = 1;
 
@@ -318,7 +318,7 @@ public interface Chinook {
   }
 
   final class CoverArtImageProvider
-          implements DerivedProperty.Provider<Image> {
+          implements DerivedAttribute.Provider<Image> {
 
     private static final long serialVersionUID = 1;
 

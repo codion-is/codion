@@ -12,13 +12,13 @@ import is.codion.common.db.report.ReportType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.sql.Connection;
@@ -32,10 +32,8 @@ import java.util.Map;
 import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -102,17 +100,17 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    add(definition(
-            primaryKeyProperty(Department.DEPTNO, Department.DEPTNO.name())
+    add(Department.TYPE.define(
+            Department.DEPTNO.primaryKey(Department.DEPTNO.name())
                     .updatable(true)
                     .nullable(false)
                     .beanProperty("id"),
-            columnProperty(Department.DNAME, Department.DNAME.name())
-                    .searchProperty(true)
+            Department.DNAME.column(Department.DNAME.name())
+                    .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false)
                     .beanProperty("name"),
-            columnProperty(Department.LOC, Department.LOC.name())
+            Department.LOC.column(Department.LOC.name())
                     .maximumLength(13)
                     .beanProperty("location"))
             .smallDataset(true)
@@ -153,30 +151,30 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    add(definition(
-            primaryKeyProperty(Employee.ID, Employee.ID.name()),
-            columnProperty(Employee.NAME, Employee.NAME.name())
-                    .searchProperty(true).maximumLength(10).nullable(false),
-            columnProperty(Employee.DEPARTMENT)
+    add(Employee.TYPE.define(
+            Employee.ID.primaryKey(Employee.ID.name()),
+            Employee.NAME.column(Employee.NAME.name())
+                    .searchColumn(true).maximumLength(10).nullable(false),
+            Employee.DEPARTMENT.column()
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK, Employee.DEPARTMENT_FK.name()),
-            itemProperty(Employee.JOB, Employee.JOB.name(),
+            Employee.DEPARTMENT_FK.foreignKey(Employee.DEPARTMENT_FK.name()),
+            Employee.JOB.item(Employee.JOB.name(),
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true),
-            columnProperty(Employee.SALARY, Employee.SALARY.name())
+                    .searchColumn(true),
+            Employee.SALARY.column(Employee.SALARY.name())
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(Employee.COMMISSION, Employee.COMMISSION.name())
+            Employee.COMMISSION.column(Employee.COMMISSION.name())
                     .valueRange(100, 2000).maximumFractionDigits(2),
-            columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK, Employee.MGR_FK.name())
+            Employee.MGR.column(),
+            Employee.MGR_FK.foreignKey(Employee.MGR_FK.name())
                     //not really soft, just for testing purposes
                     .softReference(true),
-            columnProperty(Employee.HIREDATE, Employee.HIREDATE.name())
+            Employee.HIREDATE.column(Employee.HIREDATE.name())
                     .nullable(false),
-            columnProperty(Employee.HIRETIME, Employee.HIRETIME.name()),
-            denormalizedProperty(Employee.DEPARTMENT_LOCATION, Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC),
-            columnProperty(Employee.DATA_LAZY),
-            blobProperty(Employee.DATA)
+            Employee.HIRETIME.column(Employee.HIRETIME.name()),
+            Employee.DEPARTMENT_LOCATION.denormalized(Department.LOC.name(), Employee.DEPARTMENT_FK, Department.LOC),
+            Employee.DATA_LAZY.column(),
+            Employee.DATA.blob()
                     .eagerlyLoaded(true))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
@@ -194,10 +192,10 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void departmentFk() {
-    add(definition(
-            primaryKeyProperty(DepartmentFk.DEPTNO, Department.DEPTNO.name()),
-            columnProperty(DepartmentFk.DNAME, DepartmentFk.DNAME.name()),
-            columnProperty(DepartmentFk.LOC, DepartmentFk.LOC.name()))
+    add(DepartmentFk.TYPE.define(
+            DepartmentFk.DEPTNO.primaryKey(Department.DEPTNO.name()),
+            DepartmentFk.DNAME.column(DepartmentFk.DNAME.name()),
+            DepartmentFk.LOC.column(DepartmentFk.LOC.name()))
             .tableName("scott.dept")
             .stringFactory(DepartmentFk.DNAME));
   }
@@ -220,25 +218,25 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employeeFk() {
-    add(definition(
-            primaryKeyProperty(EmployeeFk.ID, EmployeeFk.ID.name()),
-            columnProperty(EmployeeFk.NAME, EmployeeFk.NAME.name())
+    add(EmployeeFk.TYPE.define(
+            EmployeeFk.ID.primaryKey(EmployeeFk.ID.name()),
+            EmployeeFk.NAME.column(EmployeeFk.NAME.name())
                     .nullable(false),
-            columnProperty(EmployeeFk.DEPARTMENT)
+            EmployeeFk.DEPARTMENT.column()
                     .nullable(false),
-            foreignKeyProperty(EmployeeFk.DEPARTMENT_FK, EmployeeFk.DEPARTMENT_FK.name())
+            EmployeeFk.DEPARTMENT_FK.foreignKey(EmployeeFk.DEPARTMENT_FK.name())
                     .attributes(DepartmentFk.DNAME),
-            columnProperty(EmployeeFk.JOB, EmployeeFk.JOB.name()),
-            columnProperty(EmployeeFk.SALARY, EmployeeFk.SALARY.name())
+            EmployeeFk.JOB.column(EmployeeFk.JOB.name()),
+            EmployeeFk.SALARY.column(EmployeeFk.SALARY.name())
                     .maximumFractionDigits(2),
-            columnProperty(EmployeeFk.COMMISSION, EmployeeFk.COMMISSION.name()),
-            columnProperty(EmployeeFk.MGR),
-            foreignKeyProperty(EmployeeFk.MGR_FK, EmployeeFk.MGR_FK.name())
+            EmployeeFk.COMMISSION.column(EmployeeFk.COMMISSION.name()),
+            EmployeeFk.MGR.column(),
+            EmployeeFk.MGR_FK.foreignKey(EmployeeFk.MGR_FK.name())
                     .attributes(EmployeeFk.NAME, EmployeeFk.JOB, EmployeeFk.DEPARTMENT_FK)
                     .softReference(true),
-            columnProperty(EmployeeFk.HIREDATE, EmployeeFk.HIREDATE.name())
+            EmployeeFk.HIREDATE.column(EmployeeFk.HIREDATE.name())
                     .nullable(false),
-            columnProperty(EmployeeFk.HIRETIME, EmployeeFk.HIRETIME.name()))
+            EmployeeFk.HIRETIME.column(EmployeeFk.HIRETIME.name()))
             .tableName("scott.emp")
             .stringFactory(EmployeeFk.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
@@ -267,9 +265,9 @@ public final class TestDomain extends DefaultDomain {
         return true;
       }
     };
-    add(definition(
-            primaryKeyProperty(UUIDTestDefault.ID, "Id"),
-            columnProperty(UUIDTestDefault.DATA, "Data"))
+    add(UUIDTestDefault.TYPE.define(
+            UUIDTestDefault.ID.primaryKey("Id"),
+            UUIDTestDefault.DATA.column("Data"))
             .keyGenerator(uuidKeyGenerator));
   }
 
@@ -287,9 +285,9 @@ public final class TestDomain extends DefaultDomain {
         entity.put(UUIDTestNoDefault.ID, UUID.randomUUID());
       }
     };
-    add(definition(
-            primaryKeyProperty(UUIDTestNoDefault.ID, "Id"),
-            columnProperty(UUIDTestNoDefault.DATA, "Data"))
+    add(UUIDTestNoDefault.TYPE.define(
+            UUIDTestNoDefault.ID.primaryKey("Id"),
+            UUIDTestNoDefault.DATA.column("Data"))
             .keyGenerator(uuidKeyGenerator));
   }
 
@@ -309,20 +307,20 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void job() {
-    add(definition(
-            columnProperty(Job.JOB)
+    add(Job.TYPE.define(
+            Job.JOB.column()
                     .primaryKeyIndex(0)
                     .groupingColumn(true),
-            columnProperty(Job.MAX_SALARY)
+            Job.MAX_SALARY.column()
                     .columnExpression("max(sal)")
                     .aggregateColumn(true),
-            columnProperty(Job.MIN_SALARY)
+            Job.MIN_SALARY.column()
                     .columnExpression("min(sal)")
                     .aggregateColumn(true),
-            columnProperty(Job.MAX_COMMISSION)
+            Job.MAX_COMMISSION.column()
                     .columnExpression("max(comm)")
                     .aggregateColumn(true),
-            columnProperty(Job.MIN_COMMISSION)
+            Job.MIN_COMMISSION.column()
                     .columnExpression("min(comm)")
                     .aggregateColumn(true))
             .tableName("scott.emp")
@@ -341,11 +339,11 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void noPkEntity() {
-    add(definition(
-            columnProperty(NoPrimaryKey.COL_1),
-            columnProperty(NoPrimaryKey.COL_2),
-            columnProperty(NoPrimaryKey.COL_3),
-            columnProperty(NoPrimaryKey.COL_4)));
+    add(NoPrimaryKey.TYPE.define(
+            NoPrimaryKey.COL_1.column(),
+            NoPrimaryKey.COL_2.column(),
+            NoPrimaryKey.COL_3.column(),
+            NoPrimaryKey.COL_4.column()));
   }
 
   public interface EmpnoDeptno {
@@ -358,9 +356,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void empnoDeptno() {
-    add(definition(
-            columnProperty(EmpnoDeptno.DEPTNO),
-            primaryKeyProperty(EmpnoDeptno.EMPNO))
+    add(EmpnoDeptno.TYPE.define(
+            EmpnoDeptno.DEPTNO.column(),
+            EmpnoDeptno.EMPNO.primaryKey())
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp e, scott.dept d")
                     .where("e.deptno = d.deptno")
@@ -377,9 +375,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void query() {
-    add(definition(
-            columnProperty(Query.EMPNO),
-            columnProperty(Query.ENAME))
+    add(Query.TYPE.define(
+            Query.EMPNO.column(),
+            Query.ENAME.column())
             .tableName("scott.emp")
             .orderBy(OrderBy.descending(Query.ENAME))
             .selectTableName("scott.emp e")
@@ -397,9 +395,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryColumnsWhereClause() {
-    add(definition(
-            columnProperty(QueryColumnsWhereClause.EMPNO),
-            columnProperty(QueryColumnsWhereClause.ENAME))
+    add(QueryColumnsWhereClause.TYPE.define(
+            QueryColumnsWhereClause.EMPNO.column(),
+            QueryColumnsWhereClause.ENAME.column())
             .tableName("scott.emp e")
             .orderBy(OrderBy.descending(QueryColumnsWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
@@ -416,9 +414,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryFromClause() {
-    add(definition(
-            columnProperty(QueryFromClause.EMPNO),
-            columnProperty(QueryFromClause.ENAME))
+    add(QueryFromClause.TYPE.define(
+            QueryFromClause.EMPNO.column(),
+            QueryFromClause.ENAME.column())
             .orderBy(OrderBy.descending(QueryFromClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp")
@@ -434,9 +432,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   private void queryFromWhereClause() {
-    add(definition(
-            columnProperty(QueryFromWhereClause.EMPNO),
-            columnProperty(QueryFromWhereClause.ENAME))
+    add(QueryFromWhereClause.TYPE.define(
+            QueryFromWhereClause.EMPNO.column(),
+            QueryFromWhereClause.ENAME.column())
             .orderBy(OrderBy.descending(QueryFromWhereClause.ENAME))
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp")
@@ -453,9 +451,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void master() {
-    add(definition(
-            primaryKeyProperty(Master.ID),
-            columnProperty(Master.DATA))
+    add(Master.TYPE.define(
+            Master.ID.primaryKey(),
+            Master.DATA.column())
             .keyGenerator(identity()));
   }
 
@@ -471,12 +469,12 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void detail() {
-    add(definition(
-            primaryKeyProperty(Detail.ID),
-            columnProperty(Detail.MASTER_1_ID),
-            foreignKeyProperty(Detail.MASTER_1_FK),
-            columnProperty(Detail.MASTER_2_ID),
-            foreignKeyProperty(Detail.MASTER_2_FK))
+    add(Detail.TYPE.define(
+            Detail.ID.primaryKey(),
+            Detail.MASTER_1_ID.column(),
+            Detail.MASTER_1_FK.foreignKey(),
+            Detail.MASTER_2_ID.column(),
+            Detail.MASTER_2_FK.foreignKey())
             .keyGenerator(identity()));
   }
 
@@ -488,9 +486,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void masterFk() {
-    add(definition(
-            primaryKeyProperty(MasterFk.ID),
-            columnProperty(MasterFk.NAME)));
+    add(MasterFk.TYPE.define(
+            MasterFk.ID.primaryKey(),
+            MasterFk.NAME.column()));
   }
 
   public interface DetailFk {
@@ -503,9 +501,9 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void detailFk() {
-    add(definition(
-            primaryKeyProperty(DetailFk.ID),
-            columnProperty(DetailFk.MASTER_NAME),
-            foreignKeyProperty(DetailFk.MASTER_FK)));
+    add(DetailFk.TYPE.define(
+            DetailFk.ID.primaryKey(),
+            DetailFk.MASTER_NAME.column(),
+            DetailFk.MASTER_FK.foreignKey()));
   }
 }

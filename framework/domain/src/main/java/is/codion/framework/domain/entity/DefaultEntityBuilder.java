@@ -3,7 +3,8 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -35,9 +36,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public <T> Entity.Builder with(Attribute<T> attribute, T value) {
-    Property<T> property = definition.property(attribute);
-    if (property.isDerived()) {
-      throw new IllegalArgumentException("Can not set the value of a derived property");
+    AttributeDefinition<T> definition = this.definition.attributeDefinition(attribute);
+    if (definition.isDerived()) {
+      throw new IllegalArgumentException("Can not set the value of a derived attribute");
     }
     builderValues.put(attribute, value);
 
@@ -46,9 +47,9 @@ final class DefaultEntityBuilder implements Entity.Builder {
 
   @Override
   public Entity.Builder withDefaultValues() {
-    definition.properties().stream()
-            .filter(Property::hasDefaultValue)
-            .forEach(property -> builderValues.put(property.attribute(), property.defaultValue()));
+    definition.attributeDefinitions().stream()
+            .filter(AttributeDefinition::hasDefaultValue)
+            .forEach(attributeDefinition -> builderValues.put(attributeDefinition.attribute(), attributeDefinition.defaultValue()));
 
     return this;
   }

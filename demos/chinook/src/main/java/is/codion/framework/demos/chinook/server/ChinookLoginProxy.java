@@ -16,16 +16,13 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import static is.codion.framework.db.condition.Condition.and;
 import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.columnProperty;
-import static is.codion.framework.domain.property.Property.primaryKeyProperty;
 import static java.lang.String.valueOf;
 
 /**
@@ -117,10 +114,10 @@ public final class ChinookLoginProxy implements LoginProxy {
 
     private Authentication() {
       super(DOMAIN);
-      add(definition(
-              primaryKeyProperty(User.ID),
-              columnProperty(User.USERNAME),
-              columnProperty(User.PASSWORD_HASH))
+      add(User.TYPE.define(
+              User.ID.primaryKey(),
+              User.USERNAME.column(),
+              User.PASSWORD_HASH.column())
               .readOnly(true));
     }
   }

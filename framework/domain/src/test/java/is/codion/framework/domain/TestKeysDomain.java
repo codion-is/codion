@@ -3,12 +3,9 @@
  */
 package is.codion.framework.domain;
 
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
-
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.*;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 public final class TestKeysDomain extends DefaultDomain {
 
@@ -27,34 +24,34 @@ public final class TestKeysDomain extends DefaultDomain {
   }
 
   public void testPrimaryKeyIndexes1() {
-    add(definition(
-            columnProperty(TestPrimaryKey.ID1)
+    add(TestPrimaryKey.TYPE.define(
+            TestPrimaryKey.ID1.column()
                     .primaryKeyIndex(0),
-            columnProperty(TestPrimaryKey.ID2)
+            TestPrimaryKey.ID2.column()
                     .primaryKeyIndex(1),
-            columnProperty(TestPrimaryKey.ID3)
+            TestPrimaryKey.ID3.column()
                     .primaryKeyIndex(3)));
   }
 
   public void testPrimaryKeyIndexes2() {
-    add(definition(
-            columnProperty(TestPrimaryKey.ID1)
+    add(TestPrimaryKey.TYPE.define(
+            TestPrimaryKey.ID1.column()
                     .primaryKeyIndex(1),
-            columnProperty(TestPrimaryKey.ID2)
+            TestPrimaryKey.ID2.column()
                     .primaryKeyIndex(1),
-            columnProperty(TestPrimaryKey.ID3)
+            TestPrimaryKey.ID3.column()
                     .primaryKeyIndex(2)));
   }
 
   public void testPrimaryKeyIndexes3() {
-    add(definition(
-            columnProperty(TestPrimaryKey.ID1)
+    add(TestPrimaryKey.TYPE.define(
+            TestPrimaryKey.ID1.column()
                     .primaryKeyIndex(-1)));
   }
 
   public void testPrimaryKeyIndexes4() {
-    add(definition(
-            columnProperty(TestPrimaryKey.ID1)
+    add(TestPrimaryKey.TYPE.define(
+            TestPrimaryKey.ID1.column()
                     .primaryKeyIndex(10)));
   }
 
@@ -77,17 +74,17 @@ public final class TestKeysDomain extends DefaultDomain {
   }
 
   public void testForeignKeys() {
-    add(definition(
-            columnProperty(TestFkMaster.ID1)
+    add(TestFkMaster.TYPE.define(
+            TestFkMaster.ID1.column()
                     .primaryKeyIndex(0)//,
             //here's what we're testing for, a missing fk reference property
-//            columnProperty(TestFKMaster.ID1)
+//            TestFKMaster.ID1.column()
 //                    .primaryKeyIndex(1)
     ));
-    add(definition(
-            primaryKeyProperty(TestFkDetail.ID),
-            columnProperty(TestFkDetail.MASTER_ID1),
-            columnProperty(TestFkDetail.MASTER_ID2),
-            foreignKeyProperty(TestFkDetail.MASTER_FK)));
+    add(TestFkMaster.TYPE.define(
+            TestFkDetail.ID.primaryKey(),
+            TestFkDetail.MASTER_ID1.column(),
+            TestFkDetail.MASTER_ID2.column(),
+            TestFkDetail.MASTER_FK.foreignKey()));
   }
 }

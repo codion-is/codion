@@ -4,14 +4,14 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.ConditionProvider;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.ArrayList;
 import java.util.Arrays;

@@ -640,7 +640,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void updateWithConditionNoProperties() {
+  void updateWithConditionNoColumns() {
     Update update = Update.all(Employee.TYPE).build();
     assertThrows(IllegalArgumentException.class, () -> connection.update(update));
   }
@@ -685,7 +685,7 @@ public class DefaultLocalEntityConnectionTest {
   }
 
   @Test
-  void selectValuesNonColumnProperty() {
+  void selectValuesNonColumn() {
     assertThrows(IllegalArgumentException.class, () -> connection.select(Employee.DEPARTMENT_LOCATION));
   }
 

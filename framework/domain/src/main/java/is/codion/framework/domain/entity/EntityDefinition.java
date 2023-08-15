@@ -5,22 +5,22 @@ package is.codion.framework.domain.entity;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.query.SelectQuery;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.TransientProperty;
 
 import java.lang.invoke.MethodHandle;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Specifies an entity definition.
@@ -138,9 +138,9 @@ public interface EntityDefinition {
   Comparator<Entity> comparator();
 
   /**
-   * @return an unmodifiable list view of the properties
+   * @return an unmodifiable list view of the attribute definitions
    */
-  List<Property<?>> properties();
+  List<AttributeDefinition<?>> attributeDefinitions();
 
   /**
    * @return true if this entity has a defined primary key
@@ -177,36 +177,36 @@ public interface EntityDefinition {
   List<Column<?>> primaryKeyColumns();
 
   /**
-   * Returns a list containing all primary key properties associated with this entity type.
-   * If the entity has no primary key properties defined, an empty list is returned.
-   * @return the primary key properties of this entity type, sorted by primary key column index
+   * Returns a list containing the definitions of all primary key columns associated with this entity type.
+   * If the entity has no primary key columns defined, an empty list is returned.
+   * @return the primary key column definitions of this entity type, sorted by primary key column index
    */
-  List<ColumnProperty<?>> primaryKeyProperties();
+  List<ColumnDefinition<?>> primaryKeyColumnDefinitions();
 
   /**
-   * @return a list containing the visible properties for this entity type
+   * @return a list containing the definitions of the visible attributes for this entity type
    */
-  List<Property<?>> visibleProperties();
+  List<AttributeDefinition<?>> visibleAttributeDefinitions();
 
   /**
-   * @return a list containing the column-based properties for this entity type
+   * @return a list containing the definitions of the colums for this entity type
    */
-  List<ColumnProperty<?>> columnProperties();
+  List<ColumnDefinition<?>> columnDefinitions();
 
   /**
-   * @return a list containing all lazy loaded blob properties for this entity type
+   * @return a list containing the definitions of the lazy loaded blob columns for this entity type
    */
-  List<ColumnProperty<?>> lazyLoadedBlobProperties();
+  List<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions();
 
   /**
-   * @return a list containing the non-column-based properties for this entity type
+   * @return a list containing the definitions of all non-column-based attributes for this entity type
    */
-  List<TransientProperty<?>> transientProperties();
+  List<TransientAttributeDefinition<?>> transientAttributeDefinitions();
 
   /**
-   * @return a list containing the foreign key properties for this entity type
+   * @return a list containing the foreign key definitions for this entity type
    */
-  List<ForeignKeyProperty> foreignKeyProperties();
+  List<ForeignKeyDefinition> foreignKeyDefinitions();
 
   /**
    * @return all foreign keys for this entity type
@@ -214,7 +214,7 @@ public interface EntityDefinition {
   Collection<ForeignKey> foreignKeys();
 
   /**
-   * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key property.
+   * Returns the {@link EntityDefinition} of the entity referenced by the given foreign key.
    * @param foreignKey the foreign key
    * @return the definition of the referenced entity
    */
@@ -224,7 +224,7 @@ public interface EntityDefinition {
    * @param attribute the attribute
    * @return true if this entity definition contains the given attribute
    */
-  boolean containsAttribute(Attribute<?> attribute);
+  boolean contains(Attribute<?> attribute);
 
   /**
    * Returns the attribute with the given name, null if none is found.
@@ -237,7 +237,7 @@ public interface EntityDefinition {
   /**
    * Returns the solumns to search by when searching for entities of this type by a string value
    * @return the solumn to use when searching by string
-   * @see ColumnProperty.Builder#searchProperty(boolean)
+   * @see ColumnDefinition.Builder#searchColumn(boolean)
    */
   Collection<Column<String>> searchColumns();
 
@@ -251,62 +251,53 @@ public interface EntityDefinition {
   /**
    * @param column the column
    * @param <T> the column type
-   * @return the column property associated with the column
-   * @throws IllegalArgumentException in case the column does not represent a {@link ColumnProperty}
+   * @return the column definition associated with the column
+   * @throws IllegalArgumentException in case the column does not represent a {@link ColumnDefinition}
    * @throws NullPointerException in case {@code column} is null
    */
-  <T> ColumnProperty<T> columnProperty(Column<T> column);
+  <T> ColumnDefinition<T> columnDefinition(Column<T> column);
 
   /**
    * @param attribute the attribute
    * @param <T> the attribute type
-   * @return the property associated with {@code attribute}.
-   * @throws IllegalArgumentException in case no such property exists
+   * @return the attribute definition associated with {@code attribute}.
+   * @throws IllegalArgumentException in case no such attribute exists
    * @throws NullPointerException in case {@code attribute} is null
    */
-  <T> Property<T> property(Attribute<T> attribute);
+  <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute);
 
   /**
-   * @param column the column
-   * @param <T> the column type
-   * @return the primary key property associated with {@code column}.
-   * @throws IllegalArgumentException in case no such property exists
-   * @throws NullPointerException in case {@code column} is null
+   * Returns the {@link AttributeDefinition}s for the given attributes
+   * @param attributes the attributes which definitions to retrieve
+   * @return a Collection containing the definitions for the given attributes
    */
-  <T> ColumnProperty<T> primaryKeyProperty(Column<T> column);
+  Collection<AttributeDefinition<?>> attributeDefinitions(Collection<Attribute<?>> attributes);
 
   /**
-   * Returns the {@link Property}s based on the given attributes
-   * @param attributes the attributes which properties to retrieve
-   * @return a Collection containing the properties based on the given attributes
+   * Returns the {@link ColumnDefinition}s based on the given columns
+   * @param columns the columns which definitions to retrieve
+   * @return a list of column definitions
    */
-  Collection<Property<?>> properties(Collection<Attribute<?>> attributes);
+  List<ColumnDefinition<?>> columnDefinitions(List<Column<?>> columns);
 
   /**
-   * Returns the {@link ColumnProperty}s based on the given columns
-   * @param columns the columns which properties to retrieve
-   * @return a list of column properties
-   */
-  List<ColumnProperty<?>> columnProperties(List<Column<?>> columns);
-
-  /**
-   * Retrieves the writable (non-read-only) column properties comprising this entity type
-   * @param includePrimaryKeyProperties if true primary key properties are included, non-updatable primary key properties
+   * Retrieves the definitions of the writable (non-read-only) columns comprising this entity type
+   * @param includePrimaryKeyColumns if true primary key columns are included, non-updatable primary key columns
    * are only included if {@code includeNonUpdatable} is true
-   * @param includeNonUpdatable if true then non-updatable properties are included
-   * @return a list containing the writable column properties (properties that map to database columns) comprising
+   * @param includeNonUpdatable if true then non-updatable columns are included
+   * @return a list containing the writable columns (attributes that map to database columns) comprising
    * the entity of type {@code entityType}
    */
-  List<ColumnProperty<?>> writableColumnProperties(boolean includePrimaryKeyProperties, boolean includeNonUpdatable);
+  List<ColumnDefinition<?>> writableColumnDefinitions(boolean includePrimaryKeyColumns, boolean includeNonUpdatable);
 
   /**
-   * @return a Collection containing all updatable properties associated with the given entityType
+   * @return a Collection containing all updatable attributes associated with the given entityType
    */
-  Collection<Property<?>> updatableProperties();
+  Collection<AttributeDefinition<?>> updatableAttributeDefinitions();
 
   /**
    * @param foreignKey the foreign key
-   * @return true if all the underlying properties are updatable
+   * @return true if all the underlying columns are updatable
    */
   boolean isUpdatable(ForeignKey foreignKey);
 
@@ -325,17 +316,17 @@ public interface EntityDefinition {
 
   /**
    * @param foreignKey the foreign key
-   * @return the ForeignKeyProperty based on the given foreign key
-   * @throws IllegalArgumentException in case no such property exists
+   * @return the ForeignKeyDefinition for the given foreign key
+   * @throws IllegalArgumentException in case no such foreign key exists
    */
-  ForeignKeyProperty foreignKeyProperty(ForeignKey foreignKey);
+  ForeignKeyDefinition foreignKeyDefinition(ForeignKey foreignKey);
 
   /**
-   * @param columnAttribute the column attribute
+   * @param column the column
    * @param <T> the attribute type
-   * @return the ForeignKeyProperties based on the given column attribute, an empty collection in case none are found
+   * @return the ForeignKeyDefinitions associated with the given column, an empty collection in case none are found
    */
-  <T> Collection<ForeignKeyProperty> foreignKeyProperties(Attribute<T> columnAttribute);
+  <T> Collection<ForeignKeyDefinition> foreignKeyDefinitions(Column<T> column);
 
   /**
    * Returns the background color provider, never null
@@ -407,7 +398,8 @@ public interface EntityDefinition {
 
   /**
    * Builds a EntityDefinition
-   * @see #definition(Property.Builder[])
+   * @see EntityType#define(AttributeDefinition.Builder[])
+   * @see EntityType#define(List)
    */
   interface Builder {
 
@@ -524,7 +516,7 @@ public interface EntityDefinition {
     /**
      * Sets the select query to use when selecting entities of this type,
      * use with care. If the query contains a columns clause, the order
-     * of the properties when defining the entity  must match the column order in the given query.
+     * of the attributes when defining the entity  must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
      * @return this {@link Builder} instance
      */
@@ -562,25 +554,5 @@ public interface EntityDefinition {
      * @return a new {@link EntityDefinition} instance based on this builder
      */
     EntityDefinition build();
-  }
-
-  /**
-   * Creates a {@link EntityDefinition.Builder} instance based on the given property builders.
-   * @param propertyBuilders builders for the properties comprising the entity
-   * @return a {@link EntityDefinition.Builder} instance
-   * @throws IllegalArgumentException in case {@code propertyBuilders} is empty
-   */
-  static EntityDefinition.Builder definition(Property.Builder<?, ?>... propertyBuilders) {
-    return definition(Arrays.asList(requireNonNull(propertyBuilders)));
-  }
-
-  /**
-   * Creates a {@link EntityDefinition.Builder} instance based on the given property builders.
-   * @param propertyBuilders builders for the properties comprising the entity
-   * @return a {@link EntityDefinition.Builder} instance
-   * @throws IllegalArgumentException in case {@code propertyBuilders} is empty
-   */
-  static EntityDefinition.Builder definition(List<Property.Builder<?, ?>> propertyBuilders) {
-    return new DefaultEntityDefinition.DefaultBuilder(requireNonNull(propertyBuilders));
   }
 }

@@ -3,7 +3,7 @@
  */
 package is.codion.swing.framework.model;
 
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.DefaultForeignKeyDetailModelLink;
 
 /**

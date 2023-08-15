@@ -15,10 +15,10 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.conn.HttpClientConnectionManager;

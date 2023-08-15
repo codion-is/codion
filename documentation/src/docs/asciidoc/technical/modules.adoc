@@ -174,7 +174,7 @@ Domain model related classes.
 
 * {url-javadoc}{framework-domain}/is/codion/framework/domain/package-summary.html[is.codion.framework.domain]
 * {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/package-summary.html[is.codion.framework.domain.entity]
-* {url-javadoc}{framework-domain}/is/codion/framework/domain/property/package-summary.html[is.codion.framework.domain.property]
+* {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/package-summary.html[is.codion.framework.domain.entity.attribute]
 
 .Dependency graph
 [%collapsible]

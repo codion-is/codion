@@ -5,12 +5,12 @@ package is.codion.framework.json;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -19,9 +19,7 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.property.Property.*;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -49,16 +47,16 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void testEntity() {
-    add(definition(
-            columnProperty(TestEntity.DECIMAL).primaryKeyIndex(0),
-            columnProperty(TestEntity.DATE_TIME).primaryKeyIndex(1),
-            columnProperty(TestEntity.OFFSET_DATE_TIME),
-            columnProperty(TestEntity.BLOB),
-            columnProperty(TestEntity.READ_ONLY)
+    add(TestEntity.TYPE.define(
+            TestEntity.DECIMAL.column().primaryKeyIndex(0),
+            TestEntity.DATE_TIME.column().primaryKeyIndex(1),
+            TestEntity.OFFSET_DATE_TIME.column(),
+            TestEntity.BLOB.column(),
+            TestEntity.READ_ONLY.column()
                     .readOnly(true),
-            columnProperty(TestEntity.BOOLEAN),
-            columnProperty(TestEntity.TIME),
-            transientProperty(TestEntity.ENTITY))
+            TestEntity.BOOLEAN.column(),
+            TestEntity.TIME.column(),
+            TestEntity.ENTITY.attribute())
             .conditionProvider(TestEntity.CONDITION_TYPE, (attributes, values) -> "1 = 2"));
   }
 
@@ -71,16 +69,16 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void department() {
-    add(definition(
-            primaryKeyProperty(Department.DEPTNO)
+    add(Department.TYPE.define(
+            Department.DEPTNO.primaryKey()
                     .updatable(true).nullable(false),
-            columnProperty(Department.NAME)
-                    .searchProperty(true)
+            Department.NAME.column()
+                    .searchColumn(true)
                     .maximumLength(14)
                     .nullable(false),
-            columnProperty(Department.LOCATION)
+            Department.LOCATION.column()
                     .maximumLength(13),
-            columnProperty(Department.LOGO))
+            Department.LOGO.column())
             .smallDataset(true)
             .caption("Department"));
   }
@@ -101,25 +99,25 @@ public final class TestDomain extends DefaultDomain {
   }
 
   void employee() {
-    add(definition(
-            primaryKeyProperty(Employee.EMPNO),
-            columnProperty(Employee.NAME)
-                    .searchProperty(true).maximumLength(10).nullable(false),
-            columnProperty(Employee.DEPARTMENT)
+    add(Employee.TYPE.define(
+            Employee.EMPNO.primaryKey(),
+            Employee.NAME.column()
+                    .searchColumn(true).maximumLength(10).nullable(false),
+            Employee.DEPARTMENT.column()
                     .nullable(false),
-            foreignKeyProperty(Employee.DEPARTMENT_FK),
-            itemProperty(Employee.JOB,
+            Employee.DEPARTMENT_FK.foreignKey(),
+            Employee.JOB.item(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
-                    .searchProperty(true),
-            columnProperty(Employee.SALARY)
+                    .searchColumn(true),
+            Employee.SALARY.column()
                     .nullable(false).valueRange(1000, 10000).maximumFractionDigits(2),
-            columnProperty(Employee.COMMISSION)
+            Employee.COMMISSION.column()
                     .valueRange(100, 2000).maximumFractionDigits(2),
-            columnProperty(Employee.MGR),
-            foreignKeyProperty(Employee.MGR_FK),
-            columnProperty(Employee.HIREDATE)
+            Employee.MGR.column(),
+            Employee.MGR_FK.foreignKey(),
+            Employee.HIREDATE.column()
                     .nullable(false),
-            denormalizedProperty(Employee.EMP_DEPARTMENT_LOCATION, Employee.DEPARTMENT_FK, Department.LOCATION))
+            Employee.EMP_DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));

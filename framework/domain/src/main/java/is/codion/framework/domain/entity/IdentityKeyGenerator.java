@@ -4,7 +4,8 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.db.connection.DatabaseConnection;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -26,8 +27,8 @@ final class IdentityKeyGenerator implements KeyGenerator {
   public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
     try (ResultSet generatedKeys = insertStatement.getGeneratedKeys()) {
       if (generatedKeys.next()) {
-        ColumnProperty<?> property = entity.definition().primaryKeyProperties().get(0);
-        entity.put((Attribute<Object>) property.attribute(), generatedKeys.getObject(property.columnName()));
+        ColumnDefinition<?> column = entity.definition().primaryKeyColumnDefinitions().get(0);
+        entity.put((Attribute<Object>) column.attribute(), generatedKeys.getObject(column.columnName()));
       }
     }
   }

@@ -20,6 +20,7 @@ import is.codion.framework.domain.entity.ForeignKeyDomain.Maturity;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Otolith;
 import is.codion.framework.domain.entity.ForeignKeyDomain.OtolithCategory;
 import is.codion.framework.domain.entity.ForeignKeyDomain.Species;
+import is.codion.framework.domain.entity.attribute.Attribute;
 
 import org.junit.jupiter.api.Test;
 
@@ -76,10 +77,10 @@ public class DefaultEntityTest {
 
     EntityType entityType = TestDomain.DOMAIN.entityType("entityType");
     Attribute<?> invalid = entityType.integerAttribute("invalid");
-    Map<Attribute<?>, Object> invalidPropertyValues = new HashMap<>();
-    invalidPropertyValues.put(invalid, 1);
+    Map<Attribute<?>, Object> invalidAttributeValues = new HashMap<>();
+    invalidAttributeValues.put(invalid, 1);
 
-    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidPropertyValues, null));
+    assertThrows(IllegalArgumentException.class, () -> new DefaultEntity(masterDefinition, invalidAttributeValues, null));
   }
 
   @Test
@@ -394,7 +395,7 @@ public class DefaultEntityTest {
     Entity test2 = testEntity.deepCopy();
     assertNotSame(test2, testEntity, "Entity copy should not be == the original");
     assertEquals(test2, testEntity, "Entities should be equal after .getCopy()");
-    assertTrue(test2.columnValuesEqual(testEntity), "Entity property values should be equal after .getCopy()");
+    assertTrue(test2.columnValuesEqual(testEntity), "Entity attribute values should be equal after .getCopy()");
     assertNotSame(testEntity.referencedEntity(Detail.MASTER_FK), test2.referencedEntity(Detail.MASTER_FK), "This should be a deep copy");
 
     test2.put(Detail.DOUBLE, 2.1);
@@ -686,12 +687,12 @@ public class DefaultEntityTest {
   }
 
   @Test
-  void keyInvalidPropertyGet() {
+  void keyInvalidAttributeGet() {
     assertThrows(IllegalArgumentException.class, () -> ENTITIES.keyBuilder(Employee.TYPE).build().get(Employee.NAME));
   }
 
   @Test
-  void transientPropertyModifiesEntity() throws IOException, ClassNotFoundException {
+  void transientAttributeModifiesEntity() throws IOException, ClassNotFoundException {
     Entity entity = ENTITIES.builder(TransModifies.TYPE)
             .with(TransModifies.ID, 42)
             .with(TransModifies.TRANS, null)

@@ -3,8 +3,8 @@
  */
 package is.codion.framework.demos.chinook.ui;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.ui.EntitySearchField;

@@ -3,7 +3,9 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -150,7 +152,7 @@ class DefaultKey implements Key, Serializable {
       throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
     }
 
-    return (T) values.get(definition.columnProperty(column).attribute());
+    return (T) values.get(definition.columnDefinition(column).attribute());
   }
 
   @Override
@@ -255,9 +257,9 @@ class DefaultKey implements Key, Serializable {
   private Integer computeMultipleValueHashCode() {
     int hash = 0;
     for (int i = 0; i < columns.size(); i++) {
-      ColumnProperty<?> property = definition.columnProperty(columns.get(i));
-      Object value = values.get(property.attribute());
-      if (!property.isNullable() && value == null) {
+      ColumnDefinition<?> columnDefinition = definition.columnDefinition(columns.get(i));
+      Object value = values.get(columnDefinition.attribute());
+      if (!columnDefinition.isNullable() && value == null) {
         return null;
       }
       if (value != null) {

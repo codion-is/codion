@@ -1,21 +1,21 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.item.Item;
 
 import java.util.List;
 
 /**
- * A property based on a list of valid items.
+ * An attribute based on a list of valid items.
  * @param <T> the value type
  */
-public interface ItemProperty<T> extends ColumnProperty<T> {
+public interface ItemColumnDefinition<T> extends ColumnDefinition<T> {
 
   /**
    * @param value the value to validate
-   * @return true if the given value is valid for this property
+   * @return true if the given value is valid for this attribute
    */
   boolean isValid(T value);
 

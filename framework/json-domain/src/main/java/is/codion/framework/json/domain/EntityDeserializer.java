@@ -3,11 +3,11 @@
  */
 package is.codion.framework.json.domain;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -51,26 +51,26 @@ public final class EntityDeserializer extends StdDeserializer<Entity> {
 
   private Map<Attribute<?>, Object> valueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
-    return propertyValueMap(definition, node.get("values"));
+    return attributeValueMap(definition, node.get("values"));
   }
 
   private Map<Attribute<?>, Object> originalValueMap(JsonNode node, EntityDefinition definition)
           throws JsonProcessingException {
     JsonNode originalValues = node.get("originalValues");
     if (originalValues != null) {
-      return propertyValueMap(definition, originalValues);
+      return attributeValueMap(definition, originalValues);
     }
 
     return null;
   }
 
-  private Map<Attribute<?>, Object> propertyValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
+  private Map<Attribute<?>, Object> attributeValueMap(EntityDefinition definition, JsonNode values) throws JsonProcessingException {
     Map<Attribute<?>, Object> valueMap = new HashMap<>();
     Iterator<Map.Entry<String, JsonNode>> fields = values.fields();
     while (fields.hasNext()) {
       Map.Entry<String, JsonNode> field = fields.next();
-      Property<?> property = definition.property(definition.attribute(field.getKey()));
-      valueMap.put(property.attribute(), entityObjectMapper.readValue(field.getValue().toString(), property.attribute().valueClass()));
+      AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(definition.attribute(field.getKey()));
+      valueMap.put(attributeDefinition.attribute(), entityObjectMapper.readValue(field.getValue().toString(), attributeDefinition.attribute().valueClass()));
     }
 
     return valueMap;

@@ -8,9 +8,9 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -28,9 +28,7 @@ import java.util.Locale;
 
 import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.framework.domain.property.Property.*;
 
 /**
  * EmpDept minimal application demo
@@ -82,44 +80,44 @@ public final class EmpDeptMinimalApp {
       /*
        * We then define the entity based on the SCOTT.DEPT table
        */
-      add(definition(
-              primaryKeyProperty(Department.DEPTNO),
-              columnProperty(Department.DEPTNO, "Department name")
-                      .searchProperty(true)
-                      .nullable(false)
-                      .maximumLength(14),
-              columnProperty(Department.LOC, "Department location")
-                      .maximumLength(13))
+      add(Department.TYPE.define(
+                      Department.DEPTNO.primaryKey(),
+                      Department.DEPTNO.column("Department name")
+                              .searchColumn(true)
+                              .nullable(false)
+                              .maximumLength(14),
+                      Department.LOC.column("Department location")
+                              .maximumLength(13))
               .keyGenerator(increment("scott.dept", "deptno"))
               .caption("Departments")
               .stringFactory(Department.DNAME));
       /*
        * We then define the entity based on the SCOTT.EMP table,
-       * note the foreign key properties, referencing the
+       * note the foreign keys, referencing the
        * department as well as the manager
        */
-      add(definition(
-              primaryKeyProperty(Employee.EMPNO),
-              columnProperty(Employee.ENAME, "Name")
-                      .searchProperty(true)
-                      .nullable(false)
-                      .maximumLength(10),
-              columnProperty(Employee.DEPTNO)
-                      .nullable(false),
-              foreignKeyProperty(Employee.DEPT_FK, "Department"),
-              columnProperty(Employee.JOB, "Job")
-                      .nullable(false)
-                      .maximumLength(9),
-              columnProperty(Employee.SAL, "Salary")
-                      .nullable(false)
-                      .maximumFractionDigits(2)
-                      .valueRange(1000, 10000),
-              columnProperty(Employee.COMM, "Commission")
-                      .maximumFractionDigits(2),
-              columnProperty(Employee.MGR),
-              foreignKeyProperty(Employee.MGR_FK, "Manager"),
-              columnProperty(Employee.HIREDATE, "Hiredate")
-                      .nullable(false))
+      add(Employee.TYPE.define(
+                      Employee.EMPNO.primaryKey(),
+                      Employee.ENAME.column("Name")
+                              .searchColumn(true)
+                              .nullable(false)
+                              .maximumLength(10),
+                      Employee.DEPTNO.column()
+                              .nullable(false),
+                      Employee.DEPT_FK.foreignKey("Department"),
+                      Employee.JOB.column("Job")
+                              .nullable(false)
+                              .maximumLength(9),
+                      Employee.SAL.column("Salary")
+                              .nullable(false)
+                              .maximumFractionDigits(2)
+                              .valueRange(1000, 10000),
+                      Employee.COMM.column("Commission")
+                              .maximumFractionDigits(2),
+                      Employee.MGR.column(),
+                      Employee.MGR_FK.foreignKey("Manager"),
+                      Employee.HIREDATE.column("Hiredate")
+                              .nullable(false))
               .keyGenerator(increment("scott.emp", "empno"))
               .caption("Employees")
               .stringFactory(Employee.ENAME));
@@ -158,7 +156,7 @@ public final class EmpDeptMinimalApp {
   /**
    * We extend a EntityEditPanel for the department entity,
    * implementing the initializeUI method.
-   * This is the panel which allows us to edit the properties
+   * This is the panel which allows us to edit the attributes
    * of single department entity instances.
    */
   public static final class DepartmentEditPanel extends EntityEditPanel {

@@ -5,9 +5,9 @@ package is.codion.framework.json.db;
 
 import is.codion.common.Operator;
 import is.codion.framework.db.condition.ColumnCondition;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.json.domain.EntityObjectMapper;
 
 import com.fasterxml.jackson.databind.JsonNode;
@@ -33,14 +33,14 @@ final class ColumnConditionDeserializer implements Serializable {
 
   <T> ColumnCondition<T> deserialize(EntityDefinition definition, JsonNode conditionNode) throws IOException {
     String columnName = conditionNode.get("column").asText();
-    ColumnProperty<T> property = definition.columnProperty((Column<T>) definition.attribute(columnName));
+    ColumnDefinition<T> columnDefinition = definition.columnDefinition((Column<T>) definition.attribute(columnName));
     boolean caseSensitive = conditionNode.get("caseSensitive").asBoolean();
     JsonNode valuesNode = conditionNode.get("values");
     List<T> values = new ArrayList<>();
     for (JsonNode valueNode : valuesNode) {
-      values.add(entityObjectMapper.readValue(valueNode.toString(), property.attribute().valueClass()));
+      values.add(entityObjectMapper.readValue(valueNode.toString(), columnDefinition.attribute().valueClass()));
     }
-    ColumnCondition.Builder<T> builder = column(property.attribute());
+    ColumnCondition.Builder<T> builder = column(columnDefinition.attribute());
     switch (Operator.valueOf(conditionNode.get("operator").asText())) {
       case EQUAL:
         return equalColumnCondition(values, builder, caseSensitive);

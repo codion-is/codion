@@ -8,8 +8,8 @@ import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
 
 import java.util.Collection;
 import java.util.function.Consumer;
@@ -45,12 +45,12 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   Condition condition();
 
   /**
-   * @return supplies any additional search condition, not based on any individual property condition
+   * @return supplies any additional search condition
    */
   Supplier<Condition> getAdditionalConditionSupplier();
 
   /**
-   * Sets the additional condition supplier, one not based on any individual property condition.
+   * Sets the additional condition supplier.
    * This condition supplier may return null in case of no condition.
    * @param additionalConditionSupplier the condition supplier
    */

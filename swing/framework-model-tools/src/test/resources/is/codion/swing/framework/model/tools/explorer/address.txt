@@ -13,26 +13,26 @@ public interface Address {
 }
 
 void address() {
-	add(definition(
-		primaryKeyProperty(Address.ADDRESSID),
-		columnProperty(Address.STREET1, "Street1")
+	add(Address.TYPE.define(
+		Address.ADDRESSID.primaryKey(),
+		Address.STREET1.column("Street1")
 			.nullable(false)
 			.maximumLength(55),
-		columnProperty(Address.STREET2, "Street2")
+		Address.STREET2.column("Street2")
 			.maximumLength(55),
-		columnProperty(Address.CITY, "City")
+		Address.CITY.column("City")
 			.nullable(false)
 			.maximumLength(55),
-		columnProperty(Address.STATE, "State")
+		Address.STATE.column("State")
 			.nullable(false)
 			.maximumLength(25),
-		columnProperty(Address.ZIP, "Zip")
+		Address.ZIP.column("Zip")
 			.nullable(false),
-		columnProperty(Address.LATITUDE, "Latitude")
+		Address.LATITUDE.column("Latitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		columnProperty(Address.LONGITUDE, "Longitude")
+		Address.LONGITUDE.column("Longitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		blobProperty(Address.IMAGE, "Image")));
+		Address.IMAGE.blob("Image")));
 }

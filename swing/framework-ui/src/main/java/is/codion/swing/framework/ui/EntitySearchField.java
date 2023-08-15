@@ -7,11 +7,11 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
 import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
@@ -365,18 +365,18 @@ public final class EntitySearchField extends HintTextField {
 
     private void initializeUI(EntitySearchModel searchModel) {
       CardLayout cardLayout = new CardLayout(5, 5);
-      PanelBuilder propertyBasePanelBuilder = Components.panel(cardLayout);
-      FilteredComboBoxModel<Item<Attribute<String>>> propertyComboBoxModel = new FilteredComboBoxModel<>();
+      PanelBuilder columnBasePanelBuilder = Components.panel(cardLayout);
+      FilteredComboBoxModel<Item<Column<String>>> columnComboBoxModel = new FilteredComboBoxModel<>();
       EntityDefinition definition = searchModel.connectionProvider().entities().definition(searchModel.entityType());
       for (Map.Entry<Column<String>, EntitySearchModel.SearchSettings> entry :
               searchModel.columnSearchSettings().entrySet()) {
-        propertyComboBoxModel.addItem(Item.item(entry.getKey(), definition.property(entry.getKey()).caption()));
-        propertyBasePanelBuilder.add(createPropertyPanel(entry.getValue()), entry.getKey().name());
+        columnComboBoxModel.addItem(Item.item(entry.getKey(), definition.columnDefinition(entry.getKey()).caption()));
+        columnBasePanelBuilder.add(createColumnSettingsPanel(entry.getValue()), entry.getKey().name());
       }
-      JPanel propertyBasePanel = propertyBasePanelBuilder.build();
-      if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.addSelectionListener(selected -> cardLayout.show(propertyBasePanel, selected.get().name()));
-        propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
+      JPanel columnBasePanel = columnBasePanelBuilder.build();
+      if (columnComboBoxModel.getSize() > 0) {
+        columnComboBoxModel.addSelectionListener(selected -> cardLayout.show(columnBasePanel, selected.get().name()));
+        columnComboBoxModel.setSelectedItem(columnComboBoxModel.getElementAt(0));
       }
 
       JPanel generalSettingsPanel = Components.gridLayoutPanel(2, 1)
@@ -397,13 +397,13 @@ public final class EntitySearchField extends HintTextField {
       generalSettingsPanel.add(valueSeparatorPanel);
 
       setLayout(borderLayout());
-      add(Components.comboBox(propertyComboBoxModel).build(), BorderLayout.NORTH);
-      add(propertyBasePanel, BorderLayout.CENTER);
+      add(Components.comboBox(columnComboBoxModel).build(), BorderLayout.NORTH);
+      add(columnBasePanel, BorderLayout.CENTER);
       add(generalSettingsPanel, BorderLayout.SOUTH);
       setBorder(createEmptyBorder());
     }
 
-    private static JPanel createPropertyPanel(EntitySearchModel.SearchSettings settings) {
+    private static JPanel createColumnSettingsPanel(EntitySearchModel.SearchSettings settings) {
       return Components.gridLayoutPanel(3, 1)
               .add(Components.checkBox(settings.caseSensitiveState())
                       .text(MESSAGES.getString("case_sensitive"))

@@ -4,12 +4,16 @@
 package is.codion.framework.domain.entity;
 
 import is.codion.common.Primitives;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Property;
-import is.codion.framework.domain.property.TransientProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.DerivedAttribute;
+import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
+import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -89,7 +93,7 @@ class DefaultEntity implements Entity, Serializable {
    * @param definition the entity definition
    * @param values the initial values, may be null
    * @param originalValues the original values, may be null
-   * @throws IllegalArgumentException in case any of the properties are not part of the entity.
+   * @throws IllegalArgumentException in case any of the attributes are not part of the entity.
    */
   DefaultEntity(EntityDefinition definition, Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues) {
     this.values = validateTypes(requireNonNull(definition), values == null ? new HashMap<>() : new HashMap<>(values));
@@ -125,14 +129,14 @@ class DefaultEntity implements Entity, Serializable {
   public final boolean isModified() {
     if (originalValues != null) {
       for (Attribute<?> attribute : originalValues.keySet()) {
-        Property<?> property = definition.property(attribute);
-        if (property instanceof ColumnProperty) {
-          ColumnProperty<?> columnProperty = (ColumnProperty<?>) property;
-          if (columnProperty.isInsertable() && columnProperty.isUpdatable()) {
+        AttributeDefinition<?> definition = this.definition.attributeDefinition(attribute);
+        if (definition instanceof ColumnDefinition) {
+          ColumnDefinition<?> columnDefinition = (ColumnDefinition<?>) definition;
+          if (columnDefinition.isInsertable() && columnDefinition.isUpdatable()) {
             return true;
           }
         }
-        if (property instanceof TransientProperty && ((TransientProperty<?>) property).modifiesEntity()) {
+        if (definition instanceof TransientAttributeDefinition && ((TransientAttributeDefinition<?>) definition).modifiesEntity()) {
           return true;
         }
       }
@@ -143,7 +147,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final <T> T get(Attribute<T> attribute) {
-    return get(definition.property(attribute));
+    return get(definition.attributeDefinition(attribute));
   }
 
   @Override
@@ -153,12 +157,12 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final <T> T original(Attribute<T> attribute) {
-    return original(definition.property(attribute));
+    return original(definition.attributeDefinition(attribute));
   }
 
   @Override
   public final boolean isNull(Attribute<?> attribute) {
-    return isNull(definition.property(attribute));
+    return isNull(definition.attributeDefinition(attribute));
   }
 
   @Override
@@ -168,7 +172,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isModified(Attribute<?> attribute) {
-    definition.property(attribute);
+    definition.attributeDefinition(attribute);
     return isModifiedInternal(attribute);
   }
 
@@ -192,13 +196,13 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean isLoaded(ForeignKey foreignKey) {
-    definition.foreignKeyProperty(foreignKey);
+    definition.foreignKeyDefinition(foreignKey);
     return values.get(foreignKey) != null;
   }
 
   @Override
   public final <T> String toString(Attribute<T> attribute) {
-    Property<T> property = definition.property(attribute);
+    AttributeDefinition<T> attributeDefinition = definition.attributeDefinition(attribute);
     if (attribute instanceof ForeignKey && values.get(attribute) == null) {
       Key referencedKey = referencedKey((ForeignKey) attribute);
       if (referencedKey != null) {
@@ -206,12 +210,12 @@ class DefaultEntity implements Entity, Serializable {
       }
     }
 
-    return property.toString(get(property));
+    return attributeDefinition.toString(get(attributeDefinition));
   }
 
   @Override
   public <T> T put(Attribute<T> attribute, T value) {
-    return put(definition.property(attribute), value);
+    return put(definition.attributeDefinition(attribute), value);
   }
 
   @Override
@@ -234,9 +238,9 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public void revert(Attribute<?> attribute) {
-    Property<?> property = definition.property(attribute);
+    AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(attribute);
     if (isModifiedInternal(attribute)) {
-      put((Property<Object>) property, original(property));
+      put((AttributeDefinition<Object>) attributeDefinition, original(attributeDefinition));
     }
   }
 
@@ -251,12 +255,14 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public <T> T remove(Attribute<T> attribute) {
-    definition.property(attribute);
+    definition.attributeDefinition(attribute);
     T value = null;
     if (values.containsKey(attribute)) {
       value = (T) values.remove(attribute);
       removeOriginalValue(attribute);
-      definition.foreignKeyProperties(attribute).forEach(foreignKeyProperty -> remove(foreignKeyProperty.attribute()));
+      if (attribute instanceof Column) {
+        definition.foreignKeyDefinitions((Column<?>) attribute).forEach(foreignKey -> remove(foreignKey.attribute()));
+      }
     }
 
     return value;
@@ -270,8 +276,8 @@ class DefaultEntity implements Entity, Serializable {
     if (entity != null && !definition.type().equals(entity.type())) {
       throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
     }
-    Map<Property<?>, Object> previousValues = new HashMap<>();
-    definition.properties().forEach(property -> previousValues.put(property, get(property)));
+    Map<Attribute<?>, Object> previousValues = new HashMap<>();
+    definition.attributeDefinitions().forEach(attributeDefinition -> previousValues.put(attributeDefinition.attribute(), get(attributeDefinition)));
     clear();
     if (entity != null) {
       entity.entrySet().forEach(attributeValue -> values.put(attributeValue.getKey(), attributeValue.getValue()));
@@ -282,9 +288,9 @@ class DefaultEntity implements Entity, Serializable {
       }
     }
     Map<Attribute<?>, Object> affectedAttributes = new HashMap<>();
-    previousValues.forEach((property, previousValue) -> {
-      if (!Objects.equals(get(property), previousValue)) {
-        affectedAttributes.put(property.attribute(), previousValue);
+    previousValues.forEach((attribute, previousValue) -> {
+      if (!Objects.equals(get(attribute), previousValue)) {
+        affectedAttributes.put(attribute, previousValue);
       }
     });
 
@@ -345,8 +351,8 @@ class DefaultEntity implements Entity, Serializable {
               " expected, got: " + entity.type());
     }
 
-    return definition.columnProperties().stream()
-            .allMatch(property -> valueEqual(entity, property));
+    return definition.columnDefinitions().stream()
+            .allMatch(column -> valueEqual(entity, column));
   }
 
   /**
@@ -395,7 +401,7 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final Key referencedKey(ForeignKey foreignKey) {
-    definition.foreignKeyProperty(foreignKey);
+    definition.foreignKeyDefinition(foreignKey);
     Key cachedReferencedKey = cachedReferencedKey(foreignKey);
     if (cachedReferencedKey != null) {
       return cachedReferencedKey;
@@ -440,28 +446,28 @@ class DefaultEntity implements Entity, Serializable {
     toString = null;
   }
 
-  private <T> T get(Property<T> property) {
-    if (property.isDerived()) {
-      return derivedValue((DerivedProperty<T>) property, false);
+  private <T> T get(AttributeDefinition<T> attributeDefinition) {
+    if (attributeDefinition.isDerived()) {
+      return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, false);
     }
 
-    return (T) values.get(property.attribute());
+    return (T) values.get(attributeDefinition.attribute());
   }
 
-  private <T> T original(Property<T> property) {
-    if (property.isDerived()) {
-      return derivedValue((DerivedProperty<T>) property, true);
+  private <T> T original(AttributeDefinition<T> attributeDefinition) {
+    if (attributeDefinition.isDerived()) {
+      return derivedValue((DerivedAttributeDefinition<T>) attributeDefinition, true);
     }
-    if (isModifiedInternal(property.attribute())) {
-      return (T) originalValues.get(property.attribute());
+    if (isModifiedInternal(attributeDefinition.attribute())) {
+      return (T) originalValues.get(attributeDefinition.attribute());
     }
 
-    return get(property);
+    return get(attributeDefinition);
   }
 
-  private <T> T put(Property<T> property, T value) {
-    T newValue = validateAndPrepareValue(property, value);
-    Attribute<T> attribute = property.attribute();
+  private <T> T put(AttributeDefinition<T> attributeDefinition, T value) {
+    T newValue = validateAndPrepareValue(attributeDefinition, value);
+    Attribute<T> attribute = attributeDefinition.attribute();
     boolean initialization = !values.containsKey(attribute);
     T previousValue = (T) values.put(attribute, newValue);
     if (!initialization && Objects.equals(previousValue, newValue)) {
@@ -470,8 +476,8 @@ class DefaultEntity implements Entity, Serializable {
     if (!initialization) {
       updateOriginalValue(attribute, newValue, previousValue);
     }
-    if (property instanceof ColumnProperty) {
-      if (((ColumnProperty<?>) property).isPrimaryKeyColumn()) {
+    if (attributeDefinition instanceof ColumnDefinition) {
+      if (((ColumnDefinition<?>) attributeDefinition).isPrimaryKeyColumn()) {
         primaryKey = null;
       }
       Column<T> column = (Column<T>) attribute;
@@ -480,19 +486,19 @@ class DefaultEntity implements Entity, Serializable {
       }
     }
     toString = null;
-    if (property instanceof ForeignKeyProperty) {
-      setForeignKeyValues((ForeignKeyProperty) property, (Entity) newValue);
+    if (attributeDefinition instanceof ForeignKeyDefinition) {
+      setForeignKeyValues((ForeignKeyDefinition) attributeDefinition, (Entity) newValue);
     }
 
     return previousValue;
   }
 
-  private <T> boolean isNull(Property<T> property) {
-    if (property instanceof ForeignKeyProperty) {
-      return isReferenceNull(((ForeignKeyProperty) property).attribute());
+  private <T> boolean isNull(AttributeDefinition<T> attributeDefinition) {
+    if (attributeDefinition instanceof ForeignKeyDefinition) {
+      return isReferenceNull(((ForeignKeyDefinition) attributeDefinition).attribute());
     }
 
-    return get(property) == null;
+    return get(attributeDefinition) == null;
   }
 
   private boolean isReferenceNull(ForeignKey foreignKey) {
@@ -503,8 +509,8 @@ class DefaultEntity implements Entity, Serializable {
     EntityDefinition referencedEntity = definition.referencedEntity(foreignKey);
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnProperty<?> referencedProperty = referencedEntity.columnProperty(reference.referencedColumn());
-      if (!referencedProperty.isNullable() && isNull(reference.column())) {
+      ColumnDefinition<?> referencedColumn = referencedEntity.columnDefinition(reference.referencedColumn());
+      if (!referencedColumn.isNullable() && isNull(reference.column())) {
         return true;
       }
     }
@@ -512,39 +518,39 @@ class DefaultEntity implements Entity, Serializable {
     return false;
   }
 
-  private <T> T validateAndPrepareValue(Property<T> property, T value) {
-    if (property.isDerived()) {
-      throw new IllegalArgumentException("Can not set the value of a derived property");
+  private <T> T validateAndPrepareValue(AttributeDefinition<T> attributeDefinition, T value) {
+    if (attributeDefinition.isDerived()) {
+      throw new IllegalArgumentException("Can not set the value of a derived attribute");
     }
-    if (property instanceof ItemProperty && value != null && !((ItemProperty<T>) property).isValid(value)) {
-      throw new IllegalArgumentException("Invalid item value: " + value + " for property " + property.attribute());
+    if (attributeDefinition instanceof ItemColumnDefinition && value != null && !((ItemColumnDefinition<T>) attributeDefinition).isValid(value)) {
+      throw new IllegalArgumentException("Invalid item value: " + value + " for attribute " + attributeDefinition.attribute());
     }
-    if (value != null && property instanceof ForeignKeyProperty) {
-      validateForeignKeyValue((ForeignKeyProperty) property, (Entity) value);
+    if (value != null && attributeDefinition instanceof ForeignKeyDefinition) {
+      validateForeignKeyValue((ForeignKeyDefinition) attributeDefinition, (Entity) value);
     }
 
-    return property.prepareValue(property.attribute().validateType(value));
+    return attributeDefinition.prepareValue(attributeDefinition.attribute().validateType(value));
   }
 
-  private void validateForeignKeyValue(ForeignKeyProperty property, Entity foreignKeyValue) {
-    EntityType referencedType = property.referencedType();
+  private void validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
+    EntityType referencedType = foreignKeyDefinition.referencedType();
     if (!Objects.equals(referencedType, foreignKeyValue.type())) {
       throw new IllegalArgumentException("Entity of type " + referencedType +
-              " expected for property " + property + ", got: " + foreignKeyValue.type());
+              " expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.type());
     }
-    property.references().forEach(reference -> throwIfModifiesReadOnlyReference(property, foreignKeyValue, reference));
+    foreignKeyDefinition.references().forEach(reference -> throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference));
   }
 
-  private void throwIfModifiesReadOnlyReference(ForeignKeyProperty property, Entity foreignKeyValue,
+  private void throwIfModifiesReadOnlyReference(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue,
                                                 ForeignKey.Reference<?> reference) {
-    boolean readOnlyReference = property.isReadOnly(reference.column());
+    boolean readOnlyReference = foreignKeyDefinition.isReadOnly(reference.column());
     if (readOnlyReference) {
       boolean containsValue = contains(reference.column());
       if (containsValue) {
         Object currentReferenceValue = get(reference.column());
         Object newReferenceValue = foreignKeyValue.get(reference.referencedColumn());
         if (!Objects.equals(currentReferenceValue, newReferenceValue)) {
-          throw new IllegalArgumentException("Foreign key " + property + " is not allowed to modify read-only reference: " +
+          throw new IllegalArgumentException("Foreign key " + foreignKeyDefinition + " is not allowed to modify read-only reference: " +
                   reference.column() + " from " + currentReferenceValue + " to " + newReferenceValue);
         }
       }
@@ -552,10 +558,10 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private <T> void removeInvalidForeignKeyValues(Column<T> column, T value) {
-    for (ForeignKeyProperty foreignKeyProperty : definition.foreignKeyProperties(column)) {
-      Entity foreignKeyEntity = get(foreignKeyProperty);
+    for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeyDefinitions(column)) {
+      Entity foreignKeyEntity = get(foreignKeyDefinition);
       if (foreignKeyEntity != null) {
-        ForeignKey foreignKey = foreignKeyProperty.attribute();
+        ForeignKey foreignKey = foreignKeyDefinition.attribute();
         //if the value isn't equal to the value in the foreign key,
         //that foreign key reference is invalid and is removed
         if (!Objects.equals(value, foreignKeyEntity.get(foreignKey.reference(column).referencedColumn()))) {
@@ -567,21 +573,21 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   /**
-   * Sets the values of the properties used in the reference to the corresponding values found in {@code referencedEntity}.
+   * Sets the values of the columns used in the reference to the corresponding values found in {@code referencedEntity}.
    * Example: EntityOne references EntityTwo via entityTwoId, after a call to this method the EntityOne.entityTwoId
-   * property has the value of EntityTwos primary key property. If {@code referencedEntity} is null then
+   * attribute has the value of EntityTwos primary key attribute. If {@code referencedEntity} is null then
    * the corresponding reference values are set to null.
-   * @param foreignKeyProperty the entity reference property
+   * @param foreignKeyDefinition the foreign key definition
    * @param referencedEntity the referenced entity
    */
-  private void setForeignKeyValues(ForeignKeyProperty foreignKeyProperty, Entity referencedEntity) {
-    removeCachedReferencedKey(foreignKeyProperty.attribute());
-    List<ForeignKey.Reference<?>> references = foreignKeyProperty.references();
+  private void setForeignKeyValues(ForeignKeyDefinition foreignKeyDefinition, Entity referencedEntity) {
+    removeCachedReferencedKey(foreignKeyDefinition.attribute());
+    List<ForeignKey.Reference<?>> references = foreignKeyDefinition.references();
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      if (!foreignKeyProperty.isReadOnly(reference.column())) {
-        Property<Object> columnProperty = definition.columnProperty((Column<Object>) reference.column());
-        put(columnProperty, referencedEntity == null ? null : referencedEntity.get(reference.referencedColumn()));
+      if (!foreignKeyDefinition.isReadOnly(reference.column())) {
+        AttributeDefinition<Object> columnDefinition = definition.columnDefinition((Column<Object>) reference.column());
+        put(columnDefinition, referencedEntity == null ? null : referencedEntity.get(reference.referencedColumn()));
       }
     }
   }
@@ -589,7 +595,7 @@ class DefaultEntity implements Entity, Serializable {
   /**
    * Creates and caches the key referenced by the given foreign key
    * @param foreignKey the foreign key
-   * @return the referenced key or null if a valid key can not be created (null values for non-nullable properties)
+   * @return the referenced key or null if a valid key can not be created (null values for non-nullable columns)
    */
   private Key createAndCacheReferencedKey(ForeignKey foreignKey) {
     EntityDefinition referencedEntity = definition.referencedEntity(foreignKey);
@@ -607,9 +613,9 @@ class DefaultEntity implements Entity, Serializable {
     Map<Column<?>, Object> keyValues = new HashMap<>(references.size());
     for (int i = 0; i < references.size(); i++) {
       ForeignKey.Reference<?> reference = references.get(i);
-      ColumnProperty<?> referencedProperty = referencedEntity.columnProperty(reference.referencedColumn());
+      ColumnDefinition<?> referencedColumn = referencedEntity.columnDefinition(reference.referencedColumn());
       Object value = values.get(reference.column());
-      if (value == null && !referencedProperty.isNullable()) {
+      if (value == null && !referencedColumn.isNullable()) {
         return null;
       }
       keyValues.put(reference.referencedColumn(), value);
@@ -664,7 +670,7 @@ class DefaultEntity implements Entity, Serializable {
 
   /**
    * Creates a Key for this Entity instance
-   * @param originalValues if true then the original values of the properties involved are used
+   * @param originalValues if true then the original values of the columns involved are used
    * @return a Key based on the values in this Entity instance
    */
   private Key createPrimaryKey(boolean originalValues) {
@@ -693,17 +699,17 @@ class DefaultEntity implements Entity, Serializable {
     return new DefaultKey(definition, keyValues, true);
   }
 
-  private <T> T derivedValue(DerivedProperty<T> derivedProperty, boolean originalValue) {
-    return derivedProperty.valueProvider().get(createSourceValues(derivedProperty, originalValue));
+  private <T> T derivedValue(DerivedAttributeDefinition<T> derivedDefinition, boolean originalValue) {
+    return derivedDefinition.valueProvider().get(createSourceValues(derivedDefinition, originalValue));
   }
 
-  private DerivedProperty.SourceValues createSourceValues(DerivedProperty<?> derivedProperty, boolean originalValue) {
-    List<Attribute<?>> sourceAttributes = derivedProperty.sourceAttributes();
+  private DerivedAttribute.SourceValues createSourceValues(DerivedAttributeDefinition<?> derivedDefinition, boolean originalValue) {
+    List<Attribute<?>> sourceAttributes = derivedDefinition.sourceAttributes();
     if (sourceAttributes.size() == 1) {
-      return new DefaultSourceValues(derivedProperty.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
+      return new DefaultSourceValues(derivedDefinition.attribute(), createSingleAttributeSourceValueMap(sourceAttributes.get(0), originalValue));
     }
 
-    return new DefaultSourceValues(derivedProperty.attribute(), createMultiAttributeSourceValueMap(sourceAttributes, originalValue));
+    return new DefaultSourceValues(derivedDefinition.attribute(), createMultiAttributeSourceValueMap(sourceAttributes, originalValue));
   }
 
   private Map<Attribute<?>, Object> createSingleAttributeSourceValueMap(Attribute<?> sourceAttribute, boolean originalValue) {
@@ -746,16 +752,16 @@ class DefaultEntity implements Entity, Serializable {
     }
   }
 
-  private boolean valueEqual(Entity entity, Property<?> property) {
-    Attribute<?> attribute = property.attribute();
+  private boolean valueEqual(Entity entity, AttributeDefinition<?> attributeDefinition) {
+    Attribute<?> attribute = attributeDefinition.attribute();
     if (contains(attribute) != entity.contains(attribute)) {
       return false;
     }
     if (attribute.isByteArray()) {
-      return Arrays.equals((byte[]) get(property), (byte[]) entity.get(attribute));
+      return Arrays.equals((byte[]) get(attributeDefinition), (byte[]) entity.get(attribute));
     }
 
-    return Objects.equals(get(property), entity.get(attribute));
+    return Objects.equals(get(attributeDefinition), entity.get(attribute));
   }
 
   private boolean isModifiedInternal(Attribute<?> attribute) {
@@ -797,7 +803,7 @@ class DefaultEntity implements Entity, Serializable {
   private static Map<Attribute<?>, Object> validateTypes(EntityDefinition definition, Map<Attribute<?>, Object> values) {
     if (values != null && !values.isEmpty()) {
       for (Map.Entry<Attribute<?>, Object> valueEntry : values.entrySet()) {
-        definition.property((Attribute<Object>) valueEntry.getKey()).attribute().validateType(valueEntry.getValue());
+        definition.attributeDefinition((Attribute<Object>) valueEntry.getKey()).attribute().validateType(valueEntry.getValue());
       }
     }
 
@@ -814,7 +820,7 @@ class DefaultEntity implements Entity, Serializable {
     return values;
   }
 
-  private static final class DefaultSourceValues implements DerivedProperty.SourceValues {
+  private static final class DefaultSourceValues implements DerivedAttribute.SourceValues {
 
     private final Attribute<?> derivedAttribute;
     private final Map<Attribute<?>, Object> values;
@@ -828,7 +834,7 @@ class DefaultEntity implements Entity, Serializable {
     public <T> T get(Attribute<T> attribute) {
       if (!values.containsKey(attribute)) {
         throw new IllegalArgumentException("Attribute " + attribute +
-                " is not specified as a source attribute for derived property: " + derivedAttribute);
+                " is not specified as a source attribute for derived attribute: " + derivedAttribute);
       }
 
       return (T) values.get(attribute);

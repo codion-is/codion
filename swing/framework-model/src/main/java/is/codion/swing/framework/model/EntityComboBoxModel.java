@@ -8,14 +8,14 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.property.ForeignKeyProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.EntityEditEvents;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
 
@@ -370,7 +370,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @return a {@link Value} for selecting items by attribute value
    */
   public final <T> Value<T> createSelectorValue(Attribute<T> attribute) {
-    if (!entities.definition(entityType()).containsAttribute(attribute)) {
+    if (!entities.definition(entityType()).contains(attribute)) {
       throw new IllegalArgumentException("Attribute " + attribute + " is not part of entity: " + entityType());
     }
 
@@ -405,8 +405,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   }
 
   private EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey, boolean filter) {
-    ForeignKeyProperty foreignKeyProperty = entities.definition(entityType).foreignKeyProperty(foreignKey);
-    EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider);
+    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeyDefinition(foreignKey);
+    EntityComboBoxModel foreignKeyModel = new EntityComboBoxModel(foreignKeyDefinition.referencedType(), connectionProvider);
     foreignKeyModel.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKey, foreignKeyModel, filter);
@@ -417,10 +417,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   private void linkForeignKeyComboBoxModel(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel,
                                            boolean filter) {
-    ForeignKeyProperty foreignKeyProperty = entities.definition(entityType).foreignKeyProperty(foreignKey);
-    if (!foreignKeyProperty.referencedType().equals(foreignKeyModel.entityType())) {
+    ForeignKeyDefinition foreignKeyDefinition = entities.definition(entityType).foreignKeyDefinition(foreignKey);
+    if (!foreignKeyDefinition.referencedType().equals(foreignKeyModel.entityType())) {
       throw new IllegalArgumentException("EntityComboBoxModel is of type: " + foreignKeyModel.entityType()
-              + ", should be: " + foreignKeyProperty.referencedType());
+              + ", should be: " + foreignKeyDefinition.referencedType());
     }
     //if foreign key filter keys have been set previously, initialize with one of those
     Collection<Key> filterKeys = getForeignKeyFilterKeys(foreignKey);

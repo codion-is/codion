@@ -5,9 +5,9 @@ package is.codion.framework.db.condition;
 
 import is.codion.common.Conjunction;
 import is.codion.framework.db.condition.Condition.Combination;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.io.Serializable;
 import java.util.ArrayList;

@@ -3,8 +3,8 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.Builder;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 

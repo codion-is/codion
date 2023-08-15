@@ -5,23 +5,20 @@ package is.codion.framework.demos.manual.store.minimal.domain;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.property.Property.*;
 
 public class Store extends DefaultDomain {
 
@@ -51,17 +48,17 @@ public class Store extends DefaultDomain {
   public Store() {
     super(DOMAIN);
 
-    add(definition(
-            primaryKeyProperty(Customer.ID),
-            columnProperty(Customer.FIRST_NAME, "First name")
+    add(Customer.TYPE.define(
+            Customer.ID.primaryKey(),
+            Customer.FIRST_NAME.column("First name")
                     .nullable(false)
                     .maximumLength(40),
-            columnProperty(Customer.LAST_NAME, "Last name")
+            Customer.LAST_NAME.column("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            columnProperty(Customer.EMAIL, "Email")
+            Customer.EMAIL.column("Email")
                     .maximumLength(100),
-            columnProperty(Customer.IS_ACTIVE, "Is active")
+            Customer.IS_ACTIVE.column("Is active")
                     .nullable(false)
                     .defaultValue(true))
             .keyGenerator(identity())
@@ -72,15 +69,15 @@ public class Store extends DefaultDomain {
                     .build())
             .caption("Customer"));
 
-    add(definition(
-            primaryKeyProperty(Address.ID),
-            columnProperty(Address.CUSTOMER_ID)
+    add(Address.TYPE.define(
+            Address.ID.primaryKey(),
+            Address.CUSTOMER_ID.column()
                     .nullable(false),
-            foreignKeyProperty(Address.CUSTOMER_FK, "Customer"),
-            columnProperty(Address.STREET, "Street")
+            Address.CUSTOMER_FK.foreignKey("Customer"),
+            Address.STREET.column("Street")
                     .nullable(false)
                     .maximumLength(100),
-            columnProperty(Address.CITY, "City")
+            Address.CITY.column("City")
                     .nullable(false)
                     .maximumLength(50))
             .keyGenerator(identity())
@@ -93,23 +90,23 @@ public class Store extends DefaultDomain {
   }
 
   void addressExpanded() {
-    ColumnProperty.Builder<Long, ?> id =
-            Property.primaryKeyProperty(Address.ID);
+    ColumnDefinition.Builder<Long, ?> id =
+            Address.ID.primaryKey();
 
-    ColumnProperty.Builder<Long, ?> customerId =
-            Property.columnProperty(Address.CUSTOMER_ID)
+    ColumnDefinition.Builder<Long, ?> customerId =
+            Address.CUSTOMER_ID.column()
                     .nullable(false);
 
-    ForeignKeyProperty.Builder customerFk =
-            Property.foreignKeyProperty(Address.CUSTOMER_FK, "Customer");
+    ForeignKeyDefinition.Builder customerFk =
+            Address.CUSTOMER_FK.foreignKey("Customer");
 
-    ColumnProperty.Builder<String, ?> street =
-            Property.columnProperty(Address.STREET, "Street")
+    ColumnDefinition.Builder<String, ?> street =
+            Address.STREET.column("Street")
                     .nullable(false)
                     .maximumLength(100);
 
-    ColumnProperty.Builder<String, ?> city =
-            Property.columnProperty(Address.CITY, "City")
+    ColumnDefinition.Builder<String, ?> city =
+            Address.CITY.column("City")
                     .nullable(false)
                     .maximumLength(50);
 
@@ -122,7 +119,7 @@ public class Store extends DefaultDomain {
             .build();
 
     EntityDefinition.Builder address =
-            EntityDefinition.definition(id, customerId, customerFk, street, city)
+            Customer.TYPE.define(id, customerId, customerFk, street, city)
                     .keyGenerator(keyGenerator)
                     .stringFactory(stringFactory)
                     .caption("Address");

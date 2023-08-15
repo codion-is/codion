@@ -13,13 +13,13 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.test.EntityTestUnit;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
@@ -35,9 +35,7 @@ import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.demos.manual.quickstart.Example.Store.*;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.property.Property.*;
 import static java.util.UUID.randomUUID;
 
 public final class Example {
@@ -66,12 +64,12 @@ public final class Example {
     }
 
     void customer() {
-      add(definition(
-              primaryKeyProperty(Customer.ID),
-              columnProperty(Customer.FIRST_NAME, "First name")
+      add(Customer.TYPE.define(
+              Customer.ID.primaryKey(),
+              Customer.FIRST_NAME.column("First name")
                       .nullable(false)
                       .maximumLength(40),
-              columnProperty(Customer.LAST_NAME, "Last name")
+              Customer.LAST_NAME.column("Last name")
                       .nullable(false)
                       .maximumLength(40))
               .keyGenerator(new CustomerKeyGenerator())
@@ -100,12 +98,12 @@ public final class Example {
     }
 
     void address() {
-      add(definition(
-              primaryKeyProperty(Address.ID),
-              columnProperty(Address.STREET, "Street")
+      add(Address.TYPE.define(
+                      Address.ID.primaryKey(),
+                      Address.STREET.column("Street")
                       .nullable(false)
                       .maximumLength(120),
-              columnProperty(Address.CITY, "City")
+              Address.CITY.column("City")
                       .nullable(false)
                       .maximumLength(50))
               .keyGenerator(automatic("store.address"))
@@ -129,14 +127,14 @@ public final class Example {
     }
 
     void customerAddress() {
-      add(definition(
-              primaryKeyProperty(CustomerAddress.ID),
-              columnProperty(CustomerAddress.CUSTOMER_ID)
+      add(CustomerAddress.TYPE.define(
+                      CustomerAddress.ID.primaryKey(),
+                      CustomerAddress.CUSTOMER_ID.column()
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer"),
-              columnProperty(CustomerAddress.ADDRESS_ID)
+              CustomerAddress.CUSTOMER_FK.foreignKey("Customer"),
+              CustomerAddress.ADDRESS_ID.column()
                       .nullable(false),
-              foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
+              CustomerAddress.ADDRESS_FK.foreignKey("Address"))
               .keyGenerator(automatic("store.customer_address"))
               .caption("Customer address"));
     }

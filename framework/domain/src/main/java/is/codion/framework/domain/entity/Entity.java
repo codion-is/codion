@@ -3,9 +3,11 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.property.BlobProperty;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -80,7 +82,7 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * This method returns a String representation of the value associated with the given attribute,
-   * if the associated property has a format it is used.
+   * if the associated attribute has a format it is used.
    * @param attribute the attribute for which to retrieve the value
    * @param <T> the value type
    * @return a String representation of the value associated with {@code attribute}
@@ -324,8 +326,8 @@ public interface Entity extends Comparable<Entity> {
     /**
      * Sets the default value for all attributes which have a default value.
      * @return this builder instance
-     * @see Property#defaultValue()
-     * @see Property#hasDefaultValue()
+     * @see AttributeDefinition#defaultValue()
+     * @see AttributeDefinition#hasDefaultValue()
      */
     Builder withDefaultValues();
 
@@ -384,20 +386,20 @@ public interface Entity extends Comparable<Entity> {
    * @param entity the entity instance to check
    * @param comparison the entity instance to compare with
    * @return the updatable column attributes which values differ from the ones in the comparison entity
-   * @see BlobProperty#isEagerlyLoaded()
+   * @see BlobColumnDefinition#isEagerlyLoaded()
    */
   static Collection<Attribute<?>> modifiedColumnAttributes(Entity entity, Entity comparison) {
     requireNonNull(entity);
     requireNonNull(comparison);
     return comparison.entrySet().stream()
-            .map(entry -> entity.definition().property(entry.getKey()))
-            .filter(property -> {
-              boolean updatableColumnProperty = property instanceof ColumnProperty && ((ColumnProperty<?>) property).isUpdatable();
-              boolean lazilyLoadedBlobProperty = property instanceof BlobProperty && !((BlobProperty) property).isEagerlyLoaded();
+            .map(entry -> entity.definition().attributeDefinition(entry.getKey()))
+            .filter(attributeDefinition -> {
+              boolean updatableColumn = attributeDefinition instanceof ColumnDefinition && ((ColumnDefinition<?>) attributeDefinition).isUpdatable();
+              boolean lazilyLoadedBlob = attributeDefinition instanceof BlobColumnDefinition && !((BlobColumnDefinition) attributeDefinition).isEagerlyLoaded();
 
-              return updatableColumnProperty && !lazilyLoadedBlobProperty && isValueMissingOrModified(entity, comparison, property.attribute());
+              return updatableColumn && !lazilyLoadedBlob && isValueMissingOrModified(entity, comparison, attributeDefinition.attribute());
             })
-            .map(Property::attribute)
+            .map(AttributeDefinition::attribute)
             .collect(toList());
   }
 

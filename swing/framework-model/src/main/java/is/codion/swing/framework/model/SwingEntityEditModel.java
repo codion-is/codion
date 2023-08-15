@@ -8,14 +8,14 @@ import is.codion.common.proxy.ProxyBuilder;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ForeignKeyProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
@@ -119,7 +119,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @see #createForeignKeyComboBoxModel(ForeignKey)
    */
   public final EntityComboBoxModel foreignKeyComboBoxModel(ForeignKey foreignKey) {
-    entityDefinition().foreignKeyProperty(foreignKey);
+    entityDefinition().foreignKeyDefinition(foreignKey);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent() here, since that prevents recursive initialization of interdepending combo
       // box models, createForeignKeyComboBoxModel() may for example call this function
@@ -142,7 +142,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * @see #createComboBoxModel(Column)
    */
   public final <T> FilteredComboBoxModel<T> comboBoxModel(Column<T> column) {
-    entityDefinition().property(column);
+    entityDefinition().columnDefinition(column);
     synchronized (comboBoxModels) {
       // can't use computeIfAbsent here, see foreignKeyComboBoxModel() comment
       FilteredComboBoxModel<T> comboBoxModel = (FilteredComboBoxModel<T>) comboBoxModels.get(column);
@@ -172,18 +172,18 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
    * fields used when editing a single record.
    * This default implementation returns a sorted {@link EntityComboBoxModel} with the default
    * nullValueCaption if the underlying attribute is nullable.
-   * If the foreign key property has select attributes defined, those are set in the combo box model.
+   * If the foreign key has select attributes defined, those are set in the combo box model.
    * @param foreignKey the foreign key for which to create a {@link EntityComboBoxModel}
    * @return a {@link EntityComboBoxModel} for the given foreign key
    * @see FilteredComboBoxModel#COMBO_BOX_NULL_CAPTION
-   * @see Property#isNullable()
+   * @see AttributeDefinition#isNullable()
    * @see EntityComboBoxModel#setAttributes(Collection)
-   * @see ForeignKeyProperty#attributes()
+   * @see ForeignKeyDefinition#attributes()
    */
   public EntityComboBoxModel createForeignKeyComboBoxModel(ForeignKey foreignKey) {
-    ForeignKeyProperty foreignKeyProperty = entityDefinition().foreignKeyProperty(foreignKey);
-    EntityComboBoxModel model = new EntityComboBoxModel(foreignKeyProperty.referencedType(), connectionProvider());
-    model.setAttributes(foreignKeyProperty.attributes());
+    ForeignKeyDefinition foreignKeyDefinition = entityDefinition().foreignKeyDefinition(foreignKey);
+    EntityComboBoxModel model = new EntityComboBoxModel(foreignKeyDefinition.referencedType(), connectionProvider());
+    model.setAttributes(foreignKeyDefinition.attributes());
     if (isNullable(foreignKey)) {
       model.setNullCaption(FilteredComboBoxModel.COMBO_BOX_NULL_CAPTION.get());
     }

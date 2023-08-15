@@ -17,10 +17,10 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.BlobProperty;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -244,9 +244,9 @@ public class EntityTestUnit {
 
     Entity updatedEntity = connection.update(testEntity);
     assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
-    testEntity.definition().columnProperties().stream()
-            .filter(ColumnProperty::isUpdatable)
-            .forEach(property -> assertValueEqual(testEntity, updatedEntity, property));
+    testEntity.definition().columnDefinitions().stream()
+            .filter(ColumnDefinition::isUpdatable)
+            .forEach(columnDefinition -> assertValueEqual(testEntity, updatedEntity, columnDefinition));
   }
 
   /**
@@ -291,17 +291,17 @@ public class EntityTestUnit {
     }
   }
 
-  private static void assertValueEqual(Entity testEntity, Entity updated, ColumnProperty<?> property) {
-    Object beforeUpdate = testEntity.get(property.attribute());
-    Object afterUpdate = updated.get(property.attribute());
-    String message = "Values of property " + property + " should be equal after update ["
+  private static void assertValueEqual(Entity testEntity, Entity updated, ColumnDefinition<?> columnDefinition) {
+    Object beforeUpdate = testEntity.get(columnDefinition.attribute());
+    Object afterUpdate = updated.get(columnDefinition.attribute());
+    String message = "Values of column " + columnDefinition + " should be equal after update ["
             + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
             + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]";
-    if (property.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
+    if (columnDefinition.attribute().isBigDecimal()) {//special case, scale is not necessarily the same, hence not equal
       assertTrue((afterUpdate == beforeUpdate) || (afterUpdate != null
               && ((BigDecimal) afterUpdate).compareTo((BigDecimal) beforeUpdate) == 0));
     }
-    else if (property.attribute().isByteArray() && property instanceof BlobProperty && ((BlobProperty) property).isEagerlyLoaded()) {
+    else if (columnDefinition.attribute().isByteArray() && columnDefinition instanceof BlobColumnDefinition && ((BlobColumnDefinition) columnDefinition).isEagerlyLoaded()) {
       assertArrayEquals((byte[]) beforeUpdate, (byte[]) afterUpdate, message);
     }
     else {

@@ -7,15 +7,11 @@ import is.codion.common.db.operation.FunctionType;
 import is.codion.common.db.operation.ProcedureType;
 import is.codion.common.db.report.AbstractReport;
 import is.codion.common.db.report.ReportType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.sql.Connection;
-
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.columnProperty;
-import static is.codion.framework.domain.property.Property.foreignKeyProperty;
 
 public final class TestDomainExtended extends DefaultDomain {
 
@@ -45,11 +41,11 @@ public final class TestDomainExtended extends DefaultDomain {
   }
 
   void extended() {
-    add(definition(
-            columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-            columnProperty(EXTENDED_NAME),
-            columnProperty(EXTENDED_DEPT_ID),
-            foreignKeyProperty(EXTENDED_DEPT_FK)));
+    add(T_EXTENDED.define(
+            EXTENDED_ID.primaryKey().primaryKeyIndex(0),
+            EXTENDED_NAME.column(),
+            EXTENDED_DEPT_ID.column(),
+            EXTENDED_DEPT_FK.foreignKey()));
   }
 
   void procedure() {
@@ -89,9 +85,9 @@ public final class TestDomainExtended extends DefaultDomain {
     }
 
     void extendedSecond() {
-      add(definition(
-              columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-              columnProperty(EXTENDED_NAME)));
+      add(T_SECOND_EXTENDED.define(
+              EXTENDED_ID.column().primaryKeyIndex(0),
+              EXTENDED_NAME.column()));
     }
   }
 
@@ -110,9 +106,9 @@ public final class TestDomainExtended extends DefaultDomain {
     }
 
     void extendedThird() {
-      add(definition(
-              columnProperty(EXTENDED_ID).primaryKeyIndex(0),
-              columnProperty(EXTENDED_NAME)));
+      add(T_THIRD_EXTENDED.define(
+              EXTENDED_ID.column().primaryKeyIndex(0),
+              EXTENDED_NAME.column()));
     }
   }
 }

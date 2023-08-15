@@ -4,10 +4,10 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.model.table.ColumnConditionModel;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntitySearchModel;
 import is.codion.framework.model.EntitySearchModelConditionModel;
 import is.codion.swing.common.ui.Sizes;

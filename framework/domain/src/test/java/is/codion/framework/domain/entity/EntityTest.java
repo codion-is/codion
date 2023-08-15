@@ -8,7 +8,8 @@ import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
 import is.codion.framework.domain.TestDomain.NoPk;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 
 import org.junit.jupiter.api.Test;
 
@@ -241,14 +242,14 @@ public final class EntityTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> propertyValues = Entity.distinct(Department.NO, entityList);
-    assertEquals(4, propertyValues.size());
-    assertTrue(propertyValues.containsAll(values));
+    Collection<Integer> attributeValues = Entity.distinct(Department.NO, entityList);
+    assertEquals(4, attributeValues.size());
+    assertTrue(attributeValues.containsAll(values));
 
-    propertyValues = Entity.distinctIncludingNull(Department.NO, entityList);
-    assertEquals(5, propertyValues.size());
+    attributeValues = Entity.distinctIncludingNull(Department.NO, entityList);
+    assertEquals(5, attributeValues.size());
     values.add(null);
-    assertTrue(propertyValues.containsAll(values));
+    assertTrue(attributeValues.containsAll(values));
 
     assertEquals(0, Entity.distinctIncludingNull(Department.NO, new ArrayList<>()).size());
   }
@@ -355,7 +356,7 @@ public final class EntityTest {
             .build();
 
     List<Attribute<?>> attributes = entities.definition(Department.TYPE)
-            .columnProperties().stream().map(Property::attribute).collect(Collectors.toList());
+            .columnDefinitions().stream().map(AttributeDefinition::attribute).collect(Collectors.toList());
 
     List<List<String>> strings =
             Entity.valuesAsString(attributes, asList(dept1, dept2));
@@ -368,7 +369,7 @@ public final class EntityTest {
   }
 
   @Test
-  void testSetPropertyValue() {
+  void testSetAttributeValue() {
     Collection<Entity> collection = new ArrayList<>();
     collection.add(entities.entity(Department.TYPE));
     collection.add(entities.entity(Department.TYPE));
@@ -387,7 +388,7 @@ public final class EntityTest {
   }
 
   @Test
-  void mapToPropertyValue() {
+  void mapToAttributeValue() {
     List<Entity> entityList = new ArrayList<>();
 
     Entity entityOne = entities.builder(Department.TYPE)
@@ -452,20 +453,20 @@ public final class EntityTest {
   @Test
   void putNull() {
     Entity dept = entities.entity(Department.TYPE);
-    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
-      assertFalse(dept.contains(property.attribute()));
-      assertTrue(dept.isNull(property.attribute()));
-      assertFalse(dept.isNotNull(property.attribute()));
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+      assertFalse(dept.contains(definition.attribute()));
+      assertTrue(dept.isNull(definition.attribute()));
+      assertFalse(dept.isNotNull(definition.attribute()));
     }
-    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
-      dept.put(property.attribute(), null);
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+      dept.put(definition.attribute(), null);
     }
     //putting nulls should not have an effect
     assertFalse(dept.isModified());
-    for (Property<?> property : entities.definition(Department.TYPE).properties()) {
-      assertTrue(dept.contains(property.attribute()));
-      assertTrue(dept.isNull(property.attribute()));
-      assertFalse(dept.isNotNull(property.attribute()));
+    for (AttributeDefinition<?> definition : entities.definition(Department.TYPE).attributeDefinitions()) {
+      assertTrue(dept.contains(definition.attribute()));
+      assertTrue(dept.isNull(definition.attribute()));
+      assertFalse(dept.isNotNull(definition.attribute()));
     }
   }
 

@@ -14,11 +14,11 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnection.Select;
 import is.codion.framework.db.EntityConnection.Update;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -229,13 +229,12 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   int delete(Condition condition) throws RemoteException, DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given column, note that the column
-   * must be associated with a {@link is.codion.framework.domain.property.ColumnProperty}.
+   * Selects ordered and distinct non-null values of the given column
    * @param column the column
    * @param <T> the value type
    * @return all the values of the given column
    * @throws DatabaseException in case of a db exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
@@ -248,7 +247,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
@@ -262,7 +261,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a db exception
-   * @throws IllegalArgumentException in case the given property is not a column based column
+   * @throws IllegalArgumentException in case the given column has not associated with a table column
    * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */

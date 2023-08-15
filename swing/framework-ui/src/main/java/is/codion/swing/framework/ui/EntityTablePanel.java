@@ -10,13 +10,13 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.ColumnProperty;
-import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.i18n.FrameworkMessages;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.framework.model.EntityTableModel;
@@ -364,7 +364,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void excludeFromEditMenu(Attribute<?> attribute) {
     checkIfInitialized();
-    tableModel().entityDefinition().property(attribute);//just validating that the property exists
+    tableModel().entityDefinition().attributeDefinition(attribute);//just validating that the attribute exists
     excludeFromEditMenu.add(attribute);
   }
 
@@ -529,7 +529,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setEditSelectedComponentFactory(A attribute,
                                                                                                       EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().property(attribute);
+    tableModel().entityDefinition().attributeDefinition(attribute);
     editSelectedComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -543,7 +543,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final <T, A extends Attribute<T>, C extends JComponent> void setTableCellEditorComponentFactory(A attribute,
                                                                                                          EntityComponentFactory<T, A, C> componentFactory) {
-    tableModel().entityDefinition().property(attribute);
+    tableModel().entityDefinition().attributeDefinition(attribute);
     tableCellEditorComponentFactories.put(attribute, requireNonNull(componentFactory));
   }
 
@@ -634,7 +634,7 @@ public class EntityTablePanel extends JPanel {
    * Retrieves a new value via input dialog and performs an update on the selected entities
    * assigning the value to the attribute
    * @param attributeToEdit the attribute which value to edit
-   * @param <T> the property value type
+   * @param <T> the attribute value type
    * @see #setEditSelectedComponentFactory(Attribute, EntityComponentFactory)
    */
   public final <T> void editSelectedEntities(Attribute<T> attributeToEdit) {
@@ -643,18 +643,18 @@ public class EntityTablePanel extends JPanel {
       return;
     }
 
-    Property<T> property = tableModel.entityDefinition().property(attributeToEdit);
+    AttributeDefinition<T> attributeDefinition = tableModel.entityDefinition().attributeDefinition(attributeToEdit);
     Collection<Entity> selectedEntities = Entity.copy(tableModel.selectionModel().getSelectedItems());
     Collection<T> values = Entity.distinct(attributeToEdit, selectedEntities);
     T initialValue = values.size() == 1 ? values.iterator().next() : null;
     ComponentValue<T, ?> componentValue = editSelectedComponentValue(attributeToEdit, initialValue);
-    InputValidator<T> inputValidator = new InputValidator<>(property, componentValue);
+    InputValidator<T> inputValidator = new InputValidator<>(attributeDefinition, componentValue);
     boolean updatePerformed = false;
     while (!updatePerformed) {
       T newValue = Dialogs.inputDialog(componentValue)
               .owner(this)
               .title(FrameworkMessages.edit())
-              .caption(property.caption())
+              .caption(attributeDefinition.caption())
               .inputValidator(inputValidator)
               .show();
       Entity.put(attributeToEdit, newValue, selectedEntities);
@@ -735,7 +735,7 @@ public class EntityTablePanel extends JPanel {
     requireNonNull(exception);
     String title = tableModel.entities()
             .definition(exception.attribute().entityType())
-            .property(exception.attribute())
+            .attributeDefinition(exception.attribute())
             .caption();
     JOptionPane.showMessageDialog(this, exception.getMessage(), title, JOptionPane.ERROR_MESSAGE);
   }
@@ -1056,13 +1056,13 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Creates a TableCellEditor for the given attribute, returns an empty Optional if no editor is available,
-   * such as for non-updatable properties.
+   * such as for non-updatable attributes.
    * @param attribute the attribute
    * @return a TableCellEditor for the given attribute, an empty Optional in case none is available
    */
   protected Optional<TableCellEditor> createTableCellEditor(Attribute<?> attribute) {
-    Property<?> property = tableModel.entityDefinition().property(attribute);
-    if (attribute instanceof ColumnProperty && !((ColumnProperty<?>) property).isUpdatable()) {
+    AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributeDefinition(attribute);
+    if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).isUpdatable()) {
       return Optional.empty();
     }
     if (isNonUpdatableForeignKey(attribute)) {
@@ -1140,11 +1140,11 @@ public class EntityTablePanel extends JPanel {
             .smallIcon(FrameworkIcons.instance().edit())
             .description(FrameworkMessages.editSelectedTip())
             .build();
-    tableModel.entityDefinition().updatableProperties().stream()
-            .filter(property -> !excludeFromEditMenu.contains(property.attribute()))
-            .sorted(Property.propertyComparator())
-            .forEach(property -> editControls.add(Control.builder(() -> editSelectedEntities(property.attribute()))
-                    .name(property.caption() == null ? property.attribute().name() : property.caption())
+    tableModel.entityDefinition().updatableAttributeDefinitions().stream()
+            .filter(attributeDefinition -> !excludeFromEditMenu.contains(attributeDefinition.attribute()))
+            .sorted(AttributeDefinition.definitionComparator())
+            .forEach(attributeDefinition -> editControls.add(Control.builder(() -> editSelectedEntities(attributeDefinition.attribute()))
+                    .name(attributeDefinition.caption() == null ? attributeDefinition.attribute().name() : attributeDefinition.caption())
                     .enabledObserver(enabledState)
                     .build()));
 
@@ -1290,8 +1290,8 @@ public class EntityTablePanel extends JPanel {
   }
 
   private boolean includeEditSelectedControls() {
-    long updatableAttributeCount = tableModel.entityDefinition().updatableProperties().stream()
-            .map(Property::attribute)
+    long updatableAttributeCount = tableModel.entityDefinition().updatableAttributeDefinitions().stream()
+            .map(AttributeDefinition::attribute)
             .filter(attribute -> !excludeFromEditMenu.contains(attribute))
             .count();
 
@@ -1524,9 +1524,9 @@ public class EntityTablePanel extends JPanel {
 
   private boolean includeViewDependenciesControl() {
     return tableModel.entities().definitions().stream()
-            .flatMap(entityDefinition -> entityDefinition.foreignKeyProperties().stream())
-            .filter(foreignKeyProperty -> !foreignKeyProperty.isSoftReference())
-            .anyMatch(foreignKeyProperty -> foreignKeyProperty.referencedType().equals(tableModel.entityType()));
+            .flatMap(entityDefinition -> entityDefinition.foreignKeyDefinitions().stream())
+            .filter(foreignKeyDefinition -> !foreignKeyDefinition.isSoftReference())
+            .anyMatch(foreignKeyDefinition -> foreignKeyDefinition.referencedType().equals(tableModel.entityType()));
   }
 
   private void setupTable() {
@@ -1673,10 +1673,10 @@ public class EntityTablePanel extends JPanel {
 
       return foreignKey.references().stream()
               .map(ForeignKey.Reference::column)
-              .map(referenceAttribute -> tableModel.entityDefinition().property(referenceAttribute))
-              .filter(ColumnProperty.class::isInstance)
-              .map(ColumnProperty.class::cast)
-              .noneMatch(ColumnProperty::isUpdatable);
+              .map(referenceAttribute -> tableModel.entityDefinition().columnDefinition(referenceAttribute))
+              .filter(ColumnDefinition.class::isInstance)
+              .map(ColumnDefinition.class::cast)
+              .noneMatch(ColumnDefinition::isUpdatable);
     }
 
     return false;
@@ -1721,20 +1721,20 @@ public class EntityTablePanel extends JPanel {
       if (!(conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible())) {
         conditionPanelVisibleState.set(true);
       }
-      List<Property<?>> properties = tableConditionPanel.componentPanel().columnComponents().values().stream()
+      List<AttributeDefinition<?>> attributeDefinitions = tableConditionPanel.componentPanel().columnComponents().values().stream()
               .filter(panel -> tableModel.columnModel().isColumnVisible(panel.model().columnIdentifier()))
-              .map(panel -> tableModel.entityDefinition().property(panel.model().columnIdentifier()))
-              .sorted(Property.propertyComparator())
+              .map(panel -> tableModel.entityDefinition().attributeDefinition(panel.model().columnIdentifier()))
+              .sorted(AttributeDefinition.definitionComparator())
               .collect(toList());
-      if (properties.size() == 1) {
-        tableConditionPanel.conditionPanel(properties.get(0).attribute()).requestInputFocus();
+      if (attributeDefinitions.size() == 1) {
+        tableConditionPanel.conditionPanel(attributeDefinitions.get(0).attribute()).requestInputFocus();
       }
-      else if (!properties.isEmpty()) {
-        Dialogs.selectionDialog(properties)
+      else if (!attributeDefinitions.isEmpty()) {
+        Dialogs.selectionDialog(attributeDefinitions)
                 .owner(dialogOwner)
                 .title(dialogTitle)
                 .selectSingle()
-                .ifPresent(property -> tableConditionPanel.conditionPanel(property.attribute()).requestInputFocus());
+                .ifPresent(attributeDefinition -> tableConditionPanel.conditionPanel(attributeDefinition.attribute()).requestInputFocus());
       }
     }
   }
@@ -1899,9 +1899,9 @@ public class EntityTablePanel extends JPanel {
     public ComponentValue<T, C> createComponentValue(A attribute, SwingEntityEditModel editModel, T initialValue) {
       requireNonNull(attribute, "attribute");
       requireNonNull(editModel, "editModel");
-      Property<T> property = editModel.entityDefinition().property(attribute);
-      if (!(property instanceof ItemProperty) && attribute.isString()) {
-        //special handling for non-item based String properties, text input panel instead of a text field
+      AttributeDefinition<T> attributeDefinition = editModel.entityDefinition().attributeDefinition(attribute);
+      if (!(attributeDefinition instanceof ItemColumnDefinition) && attribute.isString()) {
+        //special handling for non-item based String attributes, text input panel instead of a text field
         return (ComponentValue<T, C>) new EntityComponents(editModel.entityDefinition())
                 .textInputPanel((Attribute<String>) attribute)
                 .initialValue((String) initialValue)
@@ -1914,17 +1914,17 @@ public class EntityTablePanel extends JPanel {
 
   private static final class InputValidator<T> implements Predicate<T> {
 
-    private final Property<T> property;
+    private final AttributeDefinition<T> attributeDefinition;
     private final ComponentValue<T, ?> componentValue;
 
-    private InputValidator(Property<T> property, ComponentValue<T, ?> componentValue) {
-      this.property = property;
+    private InputValidator(AttributeDefinition<T> attributeDefinition, ComponentValue<T, ?> componentValue) {
+      this.attributeDefinition = attributeDefinition;
       this.componentValue = componentValue;
     }
 
     @Override
     public boolean test(T value) {
-      if (value == null && !property.isNullable()) {
+      if (value == null && !attributeDefinition.isNullable()) {
         return false;
       }
       try {

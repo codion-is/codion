@@ -6,12 +6,12 @@ package is.codion.framework.model;
 import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -44,15 +44,15 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
               EntitySearchModel.builder(foreignKey.referencedType(), connectionProvider).build()));
     }
 
-    ColumnProperty<?> property = definition(attribute.entityType()).columnProperty((Column<?>) attribute);
-    if (property.isAggregateColumn()) {
+    ColumnDefinition<?> definition = definition(attribute.entityType()).columnDefinition((Column<?>) attribute);
+    if (definition.isAggregateColumn()) {
       return Optional.empty();
     }
 
     return Optional.ofNullable(ColumnConditionModel.builder(attribute, attribute.valueClass())
             .operators(operators(attribute))
-            .format(property.format())
-            .dateTimePattern(property.dateTimePattern())
+            .format(definition.format())
+            .dateTimePattern(definition.dateTimePattern())
             .build());
   }
 

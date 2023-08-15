@@ -20,7 +20,7 @@ A unique identifier for a domain model and a factory for *EntityType* instances 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType]*::
 A unique identifier for an entity type (based on a table or query) and a factory for *Attribute* instances associated with that entity type.
 
-*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Attribute.html[Attribute]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Attribute.html[Attribute]*::
 A typed identifier for a column, foreign key or transient value, usually a *Column* or *ForeignKey*, allowing for type safe access to the associated value. Attributes are usually wrapped in an interface, serving as a convenient namespace.
 
 [plantuml, attribute-diagram, svg, align=center]
@@ -39,17 +39,17 @@ Attribute --> Column
 Attribute --> ForeignKey
 -------------------------------------------
 
-*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Column.html[Column]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column]*::
 An Attribute subclass representing a table column.
 
-*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey]*::
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey]*::
 An attribute subclass representing a foreign key relationship.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html[EntityDefinition]*::
 Encapsulates the meta-data required for presenting and persisting an entity.
 
-*{url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property]*::
-Each *Attribute* has an associated *Property* (or one of its subclasses) which encapsulates the meta-data required for presenting and persisting the associated value.
+*{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeDefinition.html[AttributeDefinition]*::
+Each *Attribute* has an associated *AttributeDefinition* (or one of its subclasses) which encapsulates the meta-data required for presenting and persisting the associated value.
 
 *{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Entity.html[Entity]*::
 Represents a row in a table (or query) and maps *Attributes* to their associated values while keeping track of values which have been modified since they were initially set.
@@ -73,7 +73,7 @@ To define a domain model API we:
 
 * Create a {url-javadoc}{framework-domain}/is/codion/framework/domain/DomainType.html[DomainType] constant representing the domain.
 * Use the *DomainType* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html[EntityType] constants for each table, wrapped in a namespace interface.
-* Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/ForeignKey.html[ForeignKey] constant for each foreign key.
+* Use the *EntityTypes* to create {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.html[Column] constants for each column and a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKey.html[ForeignKey] constant for each foreign key.
 
 These constants represent the domain API and are used when referring to tables, columns or foreign keys.
 
@@ -86,14 +86,14 @@ include::{dir-source}/is/codion/framework/demos/manual/store/minimal/ManualDomai
 
 Typically the underlying table name is used as the *EntityType* name, but you can use whatever identifying string you want and specify the table name via the *tableName()* builder method when defining the entity.
 
-The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when defining the associated *Property*.
+The underlying column name is typically used as the *Column* name, but as with the *EntityType* you can use whatever value you want and specify the column name via the *columnName()* method when creating the associated *ColumnDefinition*.
 
 == Domain implementation
 The domain model is implemented by extending the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class and populating it with *EntityDefinitions* based on the domain tables. An *EntityDefinition* is comprised of *Properties* based on the *Attributes* associated with the entity.
 
 The factory methods for creating *EntityDefinitions* and *Properties* used below return builders which provide further configuration options (such as nullability and maximum length for properties and the caption and primary key generator for the entity definition). These factory methods are usually statically imported, but the class names are included here for clarity.
 
-NOTE: If a caption is not specified for a property, it is marked as hidden and is not visible in table views.
+NOTE: If a caption is not specified for an attribute, it is marked as hidden and is not visible in table views.
 
 [source,java,indent=0]
 ----
@@ -196,13 +196,13 @@ Domain constant definitions for the World demo application (simplified).
 include::{dir-source}/is/codion/framework/demos/manual/world/domain/World.java[tags=entityTypesAndAttributes]
 ----
 
-== Properties
+== AttributeDefinitions
 
-=== Property
+=== AttributeDefinition
 
-Each column is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] class or one of its subclasses, which encapsulate the metadata required for presenting and persisting the associated value. This class also provides factory methods for constructing Property instances and is usually statically imported, as will be assumed in the following examples. Each Property is based on an Attribute, Column or ForeignKey.
+Each attribute is represented by the {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeDefinition.html[AttributeDefinition] class or one of its subclasses, which encapsulate the metadata required for presenting and persisting the associated value.
 
-A {url-javadoc}{framework-domain}/is/codion/framework/domain/property/Property.html[Property] can be transient or based on table columns.
+A {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/AttributeDefinition.html[AttributeDefinition] can be transient or based on table columns.
 
 === Primary key
 
@@ -217,77 +217,77 @@ If no primary key properties are specified, equals() will not work (since it is 
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=primaryKey]
 ----
 
-In case of composite primary keys you create a ColumnProperty and specify the primary key index.
+In case of composite primary keys you create a ColumnDefinition and specify the primary key index.
 
 [source,java,indent=0]
 ----
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=compositePrimaryKey]
 ----
 
-=== ColumnProperty
+=== ColumnDefinition
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/ColumnProperty.html[ColumnProperty] is used to represent properties that are based on table columns.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ColumnDefinition.html[ColumnDefinition] is used to represent attributes that are based on table columns.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=columnAttribute]
 ----
 
 ==== Subquery
 
-A ColumnProperty can represent a subquery returning a single value.
+A ColumnDefinition can represent a subquery returning a single value.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=subqueryColumn]
 ----
 
-=== BlobProperty
+=== BlobColumnDefinition
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/BlobProperty.html[BlobProperty] is a specific ColumnProperty for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnProperty with a byte array type works fine, but for lazy loading you have to use BlobProperty.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/BlobColumnDefinition.html[BlobColumnDefinition] is a specific ColumnDefinition for the Types.BLOB type which provides lazy loading for BLOB values. Using a standard ColumnDefinition with a byte array type works fine, but for lazy loading you have to use BlobColumnDefinition.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=blobProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=blobColumn]
 ----
 
-[#_foreignkeyproperty]
-=== ForeignKeyProperty
+[#_foreignkeydefinition]
+=== ForeignKeyDefinition
 
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/ForeignKeyProperty.html[ForeignKeyProperty] is a property used to represent a foreign key relation.
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/ForeignKeyDefinition.html[ForeignKeyDefinition] is an attribute used to represent a foreign key relation.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyPropertyCapital]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=foreignKeyCapital]
 ----
 
-=== Boolean Properties
+=== Boolean Attributes
 
-For databases supporting *Types.BOOLEAN* you simply use *Property.columnProperty*.
+For databases supporting *Types.BOOLEAN* you simply use *ColumnDefinition*.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=booleanProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=booleanColumn]
 ----
 
-For databases lacking native boolean support we use the *Property.booleanProperty* method, specifying the underlying type and the true/false values.
+For databases lacking native boolean support we use the *Column.bool()* method, specifying the underlying type and the true/false values.
 
 [source,java]
 ----
-booleanProperty(Customer.IS_ACTIVE, "Is active", Integer.class, 1, 0)
-----
-
-[source,java]
-----
-booleanProperty(Customer.IS_ACTIVE, "Is active", String.class, "true", "false")
+Customer.IS_ACTIVE.bool("Is active", Integer.class, 1, 0)
 ----
 
 [source,java]
 ----
-booleanProperty(Customer.IS_ACTIVE, "Is active", Character.class, 'T', 'F')
+Customer.IS_ACTIVE.bool("Is active", String.class, "true", "false")
 ----
 
-Note that boolean properties always use the boolean Java type, the framework handles translating to and from the actual column values.
+[source,java]
+----
+Customer.IS_ACTIVE.bool("Is active", Character.class, 'T', 'F')
+----
+
+Note that boolean attributes always use the boolean Java type, the framework handles translating to and from the actual column values.
 
 [source,java]
 ----
@@ -296,9 +296,9 @@ entity.put(Customer.IS_ACTIVE, true);
 Boolean isActive = entity.get(Customer.IS_ACTIVE);
 ----
 
-=== ItemProperty
+=== ItemColumnDefinition
 
-A property based on a list of valid items.
+A column based on a list of valid items.
 
 [source,java,indent=0]
 ----
@@ -310,36 +310,36 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=item]
 ----
 
-=== DenormalizedProperty
+=== DenormalizedAttributeDefinition
 
-An entity can include a read-only property value from an entity referenced via foreign key, by defining a denormalized property.
-
-[source,java,indent=0]
-----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedProperty]
-----
-
-=== TransientProperty
-
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/TransientProperty.html[TransientProperty] is used to represent a property which is not based on an underlying column, these properties all have a default value of null and can be set and retrieved just like normal properties.
-
-=== DerivedProperty
-
-{url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.html[DerivedProperty] is used to represent a value which is derived from one or more properties in the same entity. The value of a derived property is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/property/DerivedProperty.Provider.html[DerivedProperty.Provider] implementation as shown below.
+An entity can include a read-only attribute value from an entity referenced via foreign key, by defining a denormalized attribute.
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedProperty]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=denormalizedAttribute]
+----
+
+=== TransientAttributeDefinition
+
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/TransientAttributeDefinition.html[TransientAttributeDefinition] is used to represent an attribute which is not based on an underlying column, these attributes all have a default value of null and can be set and retrieved just like normal attributes.
+
+=== DerivedAttributeDefinition
+
+{url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedAttributeDefinition.html[DerivedAttributeDefinition] is used to represent a value which is derived from one or more attributes in the same entity. The value of a derived attribute is provided via a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/DerivedAttribute.Provider.html[DerivedAttribute.Provider] implementation as shown below.
+
+[source,java,indent=0]
+----
+include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.java[tags=derivedAttribute]
 ----
 
 [source,java,indent=0]
 ----
-include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=derivedPropertyProvider]
+include::{dir-world-source}/is/codion/framework/demos/world/domain/api/World.java[tags=derivedAttributeProvider]
 ----
 
 == Domain
 
-Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.html#definition{opar}is.codion.framework.domain.property.Property.Builder\...{cpar}[EntityDefinition.definition()] (statically imported in the example below) and adding it to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] or {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition.Builder{cpar}[add(EntityDefinition.Builder)] methods in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class.
+Each entity is defined by creating a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html[EntityDefinition.Builder] instance via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityType.html#define{opar}is.codion.framework.domain.entity.attribute.AttributeDefinition.Builder\...{cpar}[EntityType.define()] and adding it to the domain model, via the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition{cpar}[add(EntityDefinition)] or {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html#add{opar}is.codion.framework.domain.entity.EntityDefinition.Builder{cpar}[add(EntityDefinition.Builder)] methods in the {url-javadoc}{framework-domain}/is/codion/framework/domain/DefaultDomain.html[DefaultDomain] class.
 The framework assumes the *entityType* name is the underlying table name, but the *tableName* can be specified via {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/EntityDefinition.Builder.html#tableName{opar}java.lang.String{cpar}[EntityDefinition.Builder.tableName(String)] method.
 
 [source,java,indent=0]
@@ -482,8 +482,8 @@ include::{dir-world-source}/is/codion/framework/demos/world/domain/WorldImpl.jav
 
 == Custom data types
 
-When using a custom data type you must specify the *columnClass* of a ColumnProperty and
-provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/property/ColumnProperty.ValueConverter.html[ValueConverter] implementation.
+When using a custom data type you must specify the *columnClass* of a ColumnDefinition and
+provide a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/attribute/Column.ValueConverter.html[ValueConverter] implementation.
 
 [source,java,indent=0]
 ----

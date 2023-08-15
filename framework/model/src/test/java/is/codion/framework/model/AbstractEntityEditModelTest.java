@@ -16,10 +16,10 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Property;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Detail;
@@ -167,7 +167,7 @@ public final class AbstractEntityEditModelTest {
     //clear the department foreign key value
     Entity dept = employeeEditModel.referencedEntity(Employee.DEPARTMENT_FK);
     employeeEditModel.put(Employee.DEPARTMENT_FK, null);
-    //set the reference key property value
+    //set the reference key attribute value
     assertTrue(employeeEditModel.isNull(Employee.DEPARTMENT_FK));
     assertFalse(employeeEditModel.isNotNull(Employee.DEPARTMENT_FK));
     employeeEditModel.put(Employee.DEPARTMENT, dept.get(Department.ID));
@@ -305,9 +305,9 @@ public final class AbstractEntityEditModelTest {
     catch (ValidationException e) {
       assertEquals(Employee.COMMISSION, e.attribute());
       assertEquals(50d, e.value());
-      Property<?> property = ENTITIES.definition(Employee.TYPE).property(e.attribute());
-      assertTrue(e.getMessage().contains(property.toString()));
-      assertTrue(e.getMessage().contains(property.minimumValue().toString()));
+      AttributeDefinition<?> attributeDefinition = ENTITIES.definition(Employee.TYPE).attributeDefinition(e.attribute());
+      assertTrue(e.getMessage().contains(attributeDefinition.toString()));
+      assertTrue(e.getMessage().contains(attributeDefinition.minimumValue().toString()));
     }
 
     employeeEditModel.setDefaultValues();
@@ -549,7 +549,7 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void derivedProperties() {
+  void derivedAttributes() {
     EntityEditModel editModel = new DetailEditModel(employeeEditModel.connectionProvider());
 
     AtomicInteger derivedCounter = new AtomicInteger();
@@ -581,7 +581,7 @@ public final class AbstractEntityEditModelTest {
   }
 
   @Test
-  void foreignKeyProperties() throws DatabaseException {
+  void foreignKeys() throws DatabaseException {
     AtomicInteger deptNoChange = new AtomicInteger();
     employeeEditModel.addValueListener(Employee.DEPARTMENT, value -> deptNoChange.incrementAndGet());
     AtomicInteger deptChange = new AtomicInteger();

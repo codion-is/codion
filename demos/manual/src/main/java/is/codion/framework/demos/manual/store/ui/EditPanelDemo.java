@@ -4,7 +4,7 @@
 package is.codion.framework.demos.manual.store.ui;
 
 import is.codion.framework.demos.manual.store.domain.Store.Customer;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.swing.common.ui.component.text.AbstractTextComponentValue;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.ui.EntityEditPanel;
@@ -41,13 +41,13 @@ final class EditPanelDemo extends EntityEditPanel {
 
   private void initializeUIExpanded() {
     // tag::expanded[]
-    Property<String> firstNameProperty =
-            editModel().entityDefinition().property(Customer.FIRST_NAME);
+    ColumnDefinition<String> firstNameDefinition =
+            editModel().entityDefinition().columnDefinition(Customer.FIRST_NAME);
 
     //create the text field
     JTextField firstNameField = new JTextField();
     firstNameField.setColumns(12);
-    firstNameField.setToolTipText(firstNameProperty.description());
+    firstNameField.setToolTipText(firstNameDefinition.description());
     //associate the text field with the first name attribute
     setComponent(Customer.FIRST_NAME, firstNameField);
 
@@ -68,7 +68,7 @@ final class EditPanelDemo extends EntityEditPanel {
     firstNameFieldValue.link(editModel().value(Customer.FIRST_NAME));
 
     //create the first name label
-    JLabel firstNameLabel = new JLabel(firstNameProperty.caption());
+    JLabel firstNameLabel = new JLabel(firstNameDefinition.caption());
     //associate the label with the text field
     firstNameLabel.setLabelFor(firstNameField);
 

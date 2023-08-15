@@ -10,16 +10,16 @@ import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.Key;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.Property;
 
 import java.util.Collection;
 import java.util.Map;
@@ -67,7 +67,7 @@ public interface EntityEditModel {
   /**
    * Populates this edit model with default values.
    * @see #setDefaultValueSupplier(Attribute, Supplier)
-   * @see Property#defaultValue()
+   * @see AttributeDefinition#defaultValue()
    */
   void setDefaultValues();
 

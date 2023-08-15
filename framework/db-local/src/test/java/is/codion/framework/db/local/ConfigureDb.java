@@ -8,13 +8,10 @@ import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.sql.SQLException;
-
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.primaryKeyProperty;
 
 final class ConfigureDb extends DefaultDomain {
 
@@ -31,7 +28,7 @@ final class ConfigureDb extends DefaultDomain {
   }
 
   void configured() {
-    add(definition(primaryKeyProperty(Configured.ID)));
+    add(Configured.TYPE.define(Configured.ID.primaryKey()));
   }
 
   @Override

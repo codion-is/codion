@@ -1,7 +1,10 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.entity;
+package is.codion.framework.domain.entity.attribute;
+
+import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityType;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
@@ -53,7 +56,7 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   public final T validateType(T value) {
     if (value != null && valueClass != value.getClass() && !valueClass.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + valueClass +
-              " expected for property " + this + " in entity " + entityType + ", got: " + value.getClass());
+              " expected for attribute " + this + " in entity " + entityType + ", got: " + value.getClass());
     }
 
     return value;
@@ -170,6 +173,43 @@ class DefaultAttribute<T> implements Attribute<T>, Serializable {
   @Override
   public final String toString() {
     return entityType.name() + "." + name;
+  }
+
+  @Override
+  public final <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute() {
+    return attribute(null);
+  }
+
+  @Override
+  public final <B extends TransientAttributeDefinition.Builder<T, B>> TransientAttributeDefinition.Builder<T, B> attribute(String caption) {
+    return new DefaultTransientAttributeDefinition.DefaultTransientAttributeDefinitionBuilder<>(this, caption);
+  }
+
+  @Override
+  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(Attribute<Entity> entityAttribute,
+                                                                                                            Attribute<T> denormalizedAttribute) {
+    return denormalized(null, entityAttribute, denormalizedAttribute);
+  }
+
+  @Override
+  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> denormalized(String caption,
+                                                                                                            Attribute<Entity> entityAttribute,
+                                                                                                            Attribute<T> denormalizedAttribute) {
+    return new DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder<>(this, caption,
+            new DenormalizedValueProvider<>(entityAttribute, denormalizedAttribute), entityAttribute);
+  }
+
+  @Override
+  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(DerivedAttribute.Provider<T> valueProvider,
+                                                                                                       Attribute<?>... sourceAttributes) {
+    return derived(null, valueProvider, sourceAttributes);
+  }
+
+  @Override
+  public final <B extends AttributeDefinition.Builder<T, B>> AttributeDefinition.Builder<T, B> derived(String caption,
+                                                                                                       DerivedAttribute.Provider<T> valueProvider,
+                                                                                                       Attribute<?>... sourceAttributes) {
+    return new DefaultDerivedAttributeDefinition.DefaultDerivedAttributeDefinitionBuilder<>(this, caption, valueProvider, sourceAttributes);
   }
 
   private boolean isType(Class<?> valueClass) {

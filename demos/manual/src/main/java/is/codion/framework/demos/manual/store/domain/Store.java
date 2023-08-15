@@ -7,12 +7,12 @@ import is.codion.common.db.connection.DatabaseConnection;
 import is.codion.common.db.report.ReportType;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.StringFactory;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.plugin.jasperreports.model.JasperReports;
 
 import net.sf.jasperreports.engine.JasperPrint;
@@ -24,9 +24,7 @@ import java.util.UUID;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.property.Property.*;
 
 public final class Store extends DefaultDomain {
 
@@ -74,16 +72,16 @@ public final class Store extends DefaultDomain {
 
   private void customer() {
     // tag::customer[]
-    add(definition(
-            primaryKeyProperty(Customer.ID),
-            columnProperty(Customer.FIRST_NAME, "First name")
+    add(Customer.TYPE.define(
+            Customer.ID.primaryKey(),
+            Customer.FIRST_NAME.column("First name")
                     .nullable(false)
                     .maximumLength(40),
-            columnProperty(Customer.LAST_NAME, "Last name")
+            Customer.LAST_NAME.column("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            columnProperty(Customer.EMAIL, "Email"),
-            columnProperty(Customer.IS_ACTIVE, "Is active")
+            Customer.EMAIL.column("Email"),
+            Customer.IS_ACTIVE.column("Is active")
                     .columnHasDefaultValue(true)
                     .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
@@ -96,15 +94,15 @@ public final class Store extends DefaultDomain {
 
   private void address() {
     // tag::address[]
-    add(definition(
-            primaryKeyProperty(Address.ID),
-            columnProperty(Address.STREET, "Street")
+    add(Address.TYPE.define(
+                    Address.ID.primaryKey(),
+                    Address.STREET.column("Street")
                     .nullable(false)
                     .maximumLength(120),
-            columnProperty(Address.CITY, "City")
+            Address.CITY.column("City")
                     .nullable(false)
                     .maximumLength(50),
-            columnProperty(Address.VALID, "Valid")
+            Address.VALID.column("Valid")
                     .columnHasDefaultValue(true)
                     .nullable(false))
             .stringFactory(StringFactory.builder()
@@ -120,14 +118,14 @@ public final class Store extends DefaultDomain {
 
   private void customerAddress() {
     // tag::customerAddress[]
-    add(definition(
-            primaryKeyProperty(CustomerAddress.ID),
-            columnProperty(CustomerAddress.CUSTOMER_ID)
+    add(CustomerAddress.TYPE.define(
+            CustomerAddress.ID.primaryKey(),
+            CustomerAddress.CUSTOMER_ID.column()
                     .nullable(false),
-            foreignKeyProperty(CustomerAddress.CUSTOMER_FK, "Customer"),
-            columnProperty(CustomerAddress.ADDRESS_ID)
+            CustomerAddress.CUSTOMER_FK.foreignKey("Customer"),
+            CustomerAddress.ADDRESS_ID.column()
                     .nullable(false),
-            foreignKeyProperty(CustomerAddress.ADDRESS_FK, "Address"))
+            CustomerAddress.ADDRESS_FK.foreignKey("Address"))
             .keyGenerator(identity())
             .caption("Customer address"));
     // end::customerAddress[]

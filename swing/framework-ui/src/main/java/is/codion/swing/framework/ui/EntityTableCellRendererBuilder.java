@@ -3,10 +3,10 @@
  */
 package is.codion.swing.framework.ui;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.ItemProperty;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.ItemColumnDefinition;
 import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.common.ui.component.table.DefaultFilteredTableCellRendererBuilder;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer.CellColorProvider;
@@ -22,14 +22,14 @@ import static java.util.Objects.requireNonNull;
 final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRendererBuilder<Entity, Attribute<?>> {
 
   EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Attribute<?> attribute) {
-    this(requireNonNull(tableModel), tableModel.entityDefinition().property(attribute));
+    this(requireNonNull(tableModel), tableModel.entityDefinition().attributeDefinition(attribute));
   }
 
-  private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, Property<?> property) {
-    super(requireNonNull(tableModel), requireNonNull(property).attribute(), property.attribute().valueClass(),
-            property.attribute().isBoolean() && !(property instanceof ItemProperty));
-    tableModel.entityDefinition().property(property.attribute());
-    displayValueProvider(new DefaultDisplayValueProvider(property));
+  private EntityTableCellRendererBuilder(SwingEntityTableModel tableModel, AttributeDefinition<?> attributeDefinition) {
+    super(requireNonNull(tableModel), requireNonNull(attributeDefinition).attribute(), attributeDefinition.attribute().valueClass(),
+            attributeDefinition.attribute().isBoolean() && !(attributeDefinition instanceof ItemColumnDefinition));
+    tableModel.entityDefinition().attributeDefinition(attributeDefinition.attribute());
+    displayValueProvider(new DefaultDisplayValueProvider(attributeDefinition));
     cellColorProvider(new EntityCellColorProvider(tableModel));
   }
 
@@ -80,15 +80,15 @@ final class EntityTableCellRendererBuilder extends DefaultFilteredTableCellRende
 
   private static final class DefaultDisplayValueProvider implements Function<Object, Object> {
 
-    private final Property<Object> objectProperty;
+    private final AttributeDefinition<Object> objectAttributeDefinition;
 
-    private DefaultDisplayValueProvider(Property<?> property) {
-      this.objectProperty = (Property<Object>) property;
+    private DefaultDisplayValueProvider(AttributeDefinition<?> attributeDefinition) {
+      this.objectAttributeDefinition = (AttributeDefinition<Object>) attributeDefinition;
     }
 
     @Override
     public Object apply(Object value) {
-      return objectProperty.toString(value);
+      return objectAttributeDefinition.toString(value);
     }
   }
 

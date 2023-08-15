@@ -1,10 +1,11 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.framework.domain.entity.Column;
+import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
+import is.codion.framework.domain.entity.attribute.Column.ValueFetcher;
 
 import java.math.BigDecimal;
 import java.sql.ResultSet;
@@ -20,12 +21,11 @@ import java.time.OffsetDateTime;
 import java.time.OffsetTime;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Objects;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.Objects.requireNonNull;
 
-class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProperty<T> {
+class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implements ColumnDefinition<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -38,9 +38,9 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private final boolean columnHasDefaultValue;
   private final boolean insertable;
   private final boolean updatable;
-  private final boolean searchProperty;
+  private final boolean searchColumn;
 
-  private final transient ResultPacker<T> resultPacker = new PropertyResultPacker();
+  private final transient ResultPacker<T> resultPacker = new ColumnResultPacker();
   private final transient String columnName;
   private final transient String columnExpression;
   private final transient ValueFetcher<Object> valueFetcher;
@@ -49,14 +49,14 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   private final transient boolean aggregateColumn;
   private final transient boolean selectable;
 
-  protected DefaultColumnProperty(DefaultColumnPropertyBuilder<T, ?> builder) {
+  protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
     super(builder);
     this.columnType = builder.columnType;
     this.primaryKeyIndex = builder.primaryKeyIndex;
     this.columnHasDefaultValue = builder.columnHasDefaultValue;
     this.insertable = builder.insertable;
     this.updatable = builder.updatable;
-    this.searchProperty = builder.searchProperty;
+    this.searchColumn = builder.searchColumn;
     this.columnName = builder.columnName;
     this.columnExpression = builder.columnExpression;
     this.valueFetcher = builder.valueFetcher;
@@ -137,8 +137,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
   }
 
   @Override
-  public final boolean isSearchProperty() {
-    return searchProperty;
+  public final boolean isSearchColumn() {
+    return searchColumn;
   }
 
   @Override
@@ -151,47 +151,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     return resultPacker;
   }
 
-  private class PropertyResultPacker implements ResultPacker<T> {
+  private class ColumnResultPacker implements ResultPacker<T> {
 
     @Override
     public T get(ResultSet resultSet) throws SQLException {
-      return DefaultColumnProperty.this.get(resultSet, 1);
-    }
-  }
-
-  static final class BooleanValueConverter<T> implements ValueConverter<Boolean, T> {
-
-    private final T trueValue;
-    private final T falseValue;
-
-    BooleanValueConverter(T trueValue, T falseValue) {
-      this.trueValue = requireNonNull(trueValue);
-      this.falseValue = requireNonNull(falseValue);
-    }
-
-    @Override
-    public Boolean fromColumnValue(T columnValue) {
-      if (Objects.equals(trueValue, columnValue)) {
-        return true;
-      }
-      else if (Objects.equals(falseValue, columnValue)) {
-        return false;
-      }
-
-      return null;
-    }
-
-    @Override
-    public T toColumnValue(Boolean value, Statement statement) {
-      if (value == null) {
-        return null;
-      }
-
-      if (value) {
-        return trueValue;
-      }
-
-      return falseValue;
+      return DefaultColumnDefinition.this.get(resultSet, 1);
     }
   }
 
@@ -251,15 +215,15 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     return valueFetchers;
   }
 
-  static class DefaultColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends AbstractPropertyBuilder<T, B> implements ColumnProperty.Builder<T, B> {
+  static class DefaultColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+          extends AbstractAttributeDefinitionBuilder<T, B> implements ColumnDefinition.Builder<T, B> {
 
     private int columnType;
     private int primaryKeyIndex;
     private boolean columnHasDefaultValue;
     private boolean insertable;
     private boolean updatable;
-    private boolean searchProperty;
+    private boolean searchColumn;
     private String columnName;
     private String columnExpression;
     private ValueFetcher<Object> valueFetcher;
@@ -268,14 +232,14 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     private boolean aggregateColumn;
     private boolean selectable;
 
-    DefaultColumnPropertyBuilder(Column<T> column, String caption) {
+    DefaultColumnDefinitionBuilder(Column<T> column, String caption) {
       super(column, caption);
       this.primaryKeyIndex = -1;
       this.columnType = sqlType(column.valueClass());
       this.columnHasDefaultValue = false;
       this.insertable = true;
       this.updatable = true;
-      this.searchProperty = false;
+      this.searchColumn = false;
       this.columnName = column.name();
       this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
@@ -285,8 +249,8 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public Property<T> build() {
-      return new DefaultColumnProperty<>(this);
+    public AttributeDefinition<T> build() {
+      return new DefaultColumnDefinition<>(this);
     }
 
     @Override
@@ -375,11 +339,11 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
 
     @Override
-    public final B searchProperty(boolean searchProperty) {
-      if (searchProperty && !attribute.isString()) {
-        throw new IllegalStateException("Search properties must be String based: " + attribute);
+    public final B searchColumn(boolean searchColumn) {
+      if (searchColumn && !attribute.isString()) {
+        throw new IllegalStateException("Search columns must be String based: " + attribute);
       }
-      this.searchProperty = searchProperty;
+      this.searchColumn = searchColumn;
       return (B) this;
     }
 
@@ -405,10 +369,10 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
     }
   }
 
-  abstract static class AbstractReadOnlyColumnPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends DefaultColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+  abstract static class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+          extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
 
-    protected AbstractReadOnlyColumnPropertyBuilder(Column<T> column, String caption) {
+    protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column, String caption) {
       super(column, caption);
       super.readOnly(true);
     }
@@ -420,26 +384,26 @@ class DefaultColumnProperty<T> extends AbstractProperty<T> implements ColumnProp
 
     @Override
     public final B insertable(boolean insertable) {
-      throw new UnsupportedOperationException("Property is not insertable: " + attribute);
+      throw new UnsupportedOperationException("Column is not insertable: " + attribute);
     }
 
     @Override
     public final B updatable(boolean updatable) {
-      throw new UnsupportedOperationException("Property is not updatable: " + attribute);
+      throw new UnsupportedOperationException("Column is not updatable: " + attribute);
     }
   }
 
-  static final class DefaultSubqueryPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>>
-          extends AbstractReadOnlyColumnPropertyBuilder<T, B> implements Property.Builder<T, B> {
+  static final class DefaultSubqueryColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
+          extends AbstractReadOnlyColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
 
-    DefaultSubqueryPropertyBuilder(Column<T> column, String caption, String subquery) {
+    DefaultSubqueryColumnDefinitionBuilder(Column<T> column, String caption, String subquery) {
       super(column, caption);
       super.columnExpression("(" + subquery + ")");
     }
 
     @Override
     public B columnExpression(String columnExpression) {
-      throw new UnsupportedOperationException("Column expression can not be set on a subquery property: " + attribute);
+      throw new UnsupportedOperationException("Column expression can not be set on a subquery column: " + attribute);
     }
   }
 

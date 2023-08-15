@@ -4,10 +4,10 @@
 package is.codion.framework.db.condition;
 
 import is.codion.common.Operator;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
-import is.codion.framework.domain.entity.ForeignKey.Reference;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.Collection;
 import java.util.HashMap;

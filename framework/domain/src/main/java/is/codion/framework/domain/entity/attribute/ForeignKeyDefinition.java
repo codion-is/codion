@@ -1,23 +1,20 @@
 /*
- * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
-import is.codion.framework.domain.entity.Attribute;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
 
 import java.util.List;
 
 /**
- * A property that represents a reference to another entity, typically but not necessarily based on a foreign key.
+ * Represents a reference to another entity, typically but not necessarily based on a foreign key.
  */
-public interface ForeignKeyProperty extends Property<Entity> {
+public interface ForeignKeyDefinition extends AttributeDefinition<Entity> {
 
   /**
-   * @return the foreign key attribute this property is based on.
+   * @return the foreign key attribute this foreign key is based on.
    */
   @Override
   ForeignKey attribute();
@@ -56,15 +53,15 @@ public interface ForeignKeyProperty extends Property<Entity> {
   List<Attribute<?>> attributes();
 
   /**
-   * Provides setters for ForeignKeyProperty properties
+   * Builds a {@link ForeignKeyDefinition}.
    */
-  interface Builder extends Property.Builder<Entity, Builder> {
+  interface Builder extends AttributeDefinition.Builder<Entity, Builder> {
 
     /**
      * @param fetchDepth the default query fetch depth for this foreign key
      * @return this instance
      */
-    ForeignKeyProperty.Builder fetchDepth(int fetchDepth);
+    Builder fetchDepth(int fetchDepth);
 
     /**
      * Specifies that this foreign key is not based on a physical (table) foreign key
@@ -72,14 +69,14 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @param softReference true if this is a soft foreign key, which does not prevent deletion
      * @return this instance
      */
-    ForeignKeyProperty.Builder softReference(boolean softReference);
+    Builder softReference(boolean softReference);
 
     /**
      * Marks the given foreign key reference column as read-only, as in, not updated when the foreign key value is set.
      * @param referenceColumn the reference column
      * @return this instance
      */
-    ForeignKeyProperty.Builder readOnly(Column<?> referenceColumn);
+    Builder readOnly(Column<?> referenceColumn);
 
     /**
      * Specifies the attributes from the referenced entity to select. Note that the primary key attributes
@@ -87,6 +84,6 @@ public interface ForeignKeyProperty extends Property<Entity> {
      * @param attributes the attributes to select
      * @return this instance
      */
-    ForeignKeyProperty.Builder attributes(Attribute<?>... attributes);
+    Builder attributes(Attribute<?>... attributes);
   }
 }

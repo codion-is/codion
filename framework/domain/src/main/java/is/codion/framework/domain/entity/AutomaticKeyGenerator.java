@@ -26,7 +26,7 @@ final class AutomaticKeyGenerator extends AbstractQueriedKeyGenerator {
 
   @Override
   public void afterInsert(Entity entity, DatabaseConnection connection, Statement insertStatement) throws SQLException {
-    selectAndPut(entity, entity.definition().primaryKeyProperties().get(0), connection);
+    selectAndPut(entity, entity.definition().primaryKeyColumnDefinitions().get(0), connection);
   }
 
   @Override

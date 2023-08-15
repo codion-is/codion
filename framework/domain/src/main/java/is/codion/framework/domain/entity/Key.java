@@ -3,6 +3,9 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;

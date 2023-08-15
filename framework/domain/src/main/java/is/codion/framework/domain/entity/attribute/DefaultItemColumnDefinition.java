@@ -1,10 +1,9 @@
 /*
  * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.item.Item;
-import is.codion.framework.domain.entity.Column;
 
 import java.util.List;
 import java.util.Map;
@@ -14,17 +13,17 @@ import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
-final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements ItemProperty<T> {
+final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> implements ItemColumnDefinition<T> {
 
   private static final long serialVersionUID = 1;
 
   private static final String INVALID_ITEM_SUFFIX_KEY = "invalid_item_suffix";
-  private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(DefaultItemProperty.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
+  private static final String INVALID_ITEM_SUFFIX = ResourceBundle.getBundle(DefaultItemColumnDefinition.class.getName()).getString(INVALID_ITEM_SUFFIX_KEY);
 
   private final List<Item<T>> items;
   private final Map<T, Item<T>> itemMap;
 
-  private DefaultItemProperty(DefaultItemPropertyBuilder<T, ?> builder) {
+  private DefaultItemColumnDefinition(DefaultItemColumnDefinitionBuilder<T, ?> builder) {
     super(builder);
     this.items = builder.items;
     this.itemMap = items.stream()
@@ -66,19 +65,19 @@ final class DefaultItemProperty<T> extends DefaultColumnProperty<T> implements I
     return item.caption();
   }
 
-  static final class DefaultItemPropertyBuilder<T, B extends ColumnProperty.Builder<T, B>> extends DefaultColumnPropertyBuilder<T, B> {
+  static final class DefaultItemColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>> extends DefaultColumnDefinitionBuilder<T, B> {
 
     private final List<Item<T>> items;
 
-    DefaultItemPropertyBuilder(Column<T> column, String caption, List<Item<T>> items) {
+    DefaultItemColumnDefinitionBuilder(Column<T> column, String caption, List<Item<T>> items) {
       super(column, caption);
       validateItems(items);
       this.items = items;
     }
 
     @Override
-    public Property<T> build() {
-      return new DefaultItemProperty<>(this);
+    public AttributeDefinition<T> build() {
+      return new DefaultItemColumnDefinition<>(this);
     }
 
     private static <T> void validateItems(List<Item<T>> items) {

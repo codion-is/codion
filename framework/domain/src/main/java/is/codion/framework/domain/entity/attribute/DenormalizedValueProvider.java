@@ -1,12 +1,11 @@
 /*
  * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.Entity;
 
-final class DenormalizedValueProvider<T> implements DerivedProperty.Provider<T> {
+final class DenormalizedValueProvider<T> implements DerivedAttribute.Provider<T> {
 
   private static final long serialVersionUID = 1;
 
@@ -19,7 +18,7 @@ final class DenormalizedValueProvider<T> implements DerivedProperty.Provider<T> 
   }
 
   @Override
-  public T get(DerivedProperty.SourceValues sourceValues) {
+  public T get(DerivedAttribute.SourceValues sourceValues) {
     Entity foreignKeyValue = sourceValues.get(entityAttribute);
 
     return foreignKeyValue == null ? null : foreignKeyValue.get(denormalizedAttribute);

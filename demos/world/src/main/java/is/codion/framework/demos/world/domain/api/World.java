@@ -3,16 +3,16 @@ package is.codion.framework.demos.world.domain.api;
 import is.codion.common.db.operation.FunctionType;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DomainType;
-import is.codion.framework.domain.entity.Attribute;
 import is.codion.framework.domain.entity.ColorProvider;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.DefaultEntityValidator;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.DerivedAttribute;
+import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.framework.domain.property.DerivedProperty;
-import is.codion.framework.domain.property.DerivedProperty.SourceValues;
 
 import java.io.Serializable;
 import java.util.Comparator;
@@ -258,8 +258,8 @@ public interface World {
   }
   // end::validator[]
 
-  // tag::derivedPropertyProvider[]
-  final class NoOfSpeakersProvider implements DerivedProperty.Provider<Integer> {
+  // tag::derivedAttributeProvider[]
+  final class NoOfSpeakersProvider implements DerivedAttribute.Provider<Integer> {
 
     private static final long serialVersionUID = 1;
 
@@ -274,7 +274,7 @@ public interface World {
       return null;
     }
   }
-  // end::derivedPropertyProvider[]
+  // end::derivedAttributeProvider[]
 
   final class LocationComparator implements Comparator<Location>, Serializable {
 

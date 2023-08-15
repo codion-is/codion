@@ -1,20 +1,19 @@
 /*
- * Copyright (c) 2019 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.framework.domain.property;
+package is.codion.framework.domain.entity.attribute;
 
 import is.codion.common.db.result.ResultPacker;
-import is.codion.framework.domain.entity.Column;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
 /**
- * Specifies a property based on a table column
+ * Specifies a attribute definition based on a table column
  * @param <T> the underlying type
  */
-public interface ColumnProperty<T> extends Property<T> {
+public interface ColumnDefinition<T> extends AttributeDefinition<T> {
 
   @Override
   Column<T> attribute();
@@ -47,12 +46,12 @@ public interface ColumnProperty<T> extends Property<T> {
   <C> C toColumnValue(T value, Statement statement) throws SQLException;
 
   /**
-   * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
+   * @return this columns zero based index in the primary key, -1 if this column is not part of a primary key
    */
   int primaryKeyIndex();
 
   /**
-   * @return true if this property is part of a primary key
+   * @return true if this column is part of a primary key
    */
   boolean isPrimaryKeyColumn();
 
@@ -67,13 +66,13 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isAggregateColumn();
 
   /**
-   * @return true if this property should be included in select queries
+   * @return true if this column should be included in select queries
    */
   boolean isSelectable();
 
   /**
-   * Specifies whether this property is insertable
-   * @return true if this property is insertable
+   * Specifies whether this column is insertable
+   * @return true if this column is insertable
    */
   boolean isInsertable();
 
@@ -84,7 +83,7 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean isUpdatable();
 
   /**
-   * @return true if this property is neither insertable nor updatable.
+   * @return true if this column is neither insertable nor updatable.
    */
   boolean isReadOnly();
 
@@ -94,92 +93,49 @@ public interface ColumnProperty<T> extends Property<T> {
   boolean columnHasDefaultValue();
 
   /**
-   * @return true if this property should be included when searching by string
+   * @return true if this column should be included when searching by string
    */
-  boolean isSearchProperty();
+  boolean isSearchColumn();
 
   /**
-   * Fetches a value for this property from a ResultSet
+   * Fetches a value for this column from a ResultSet
    * @param resultSet the ResultSet
    * @param index the index of the column to fetch
    * @return a single value fetched from the given ResultSet
-   * @throws java.sql.SQLException in case of an exception
+   * @throws SQLException in case of an exception
    */
   T get(ResultSet resultSet, int index) throws SQLException;
 
   /**
-   * @return a ResultPacker responsible for packing this property
+   * @return a ResultPacker responsible for packing this column
    */
   ResultPacker<T> resultPacker();
 
   /**
-   * Fetches a single value from a result set.
-   * @param <C> the type of the column value being fetched
-   */
-  interface ValueFetcher<C> {
-
-    /**
-     * Fetches a single value from a ResultSet
-     * @param resultSet the ResultSet
-     * @param index the index of the column to fetch
-     * @return a single value fetched from the given ResultSet
-     * @throws java.sql.SQLException in case of an exception
-     */
-    C get(ResultSet resultSet, int index) throws SQLException;
-  }
-
-  /**
-   * Converts to and from SQL values, such as integers being used to represent booleans in a database.
-   * @param <T> the type of the value
-   * @param <C> the type of the underlying column
-   */
-  interface ValueConverter<T, C> {
-
-    /**
-     * Translates the given value into a sql value, usually this is not required
-     * but for certain types this may be necessary, such as boolean values where
-     * the values are represented by a non-boolean data type in the underlying database
-     * @param value the value to translate
-     * @param statement the statement using the value, may be null
-     * @return the sql value used to represent the given value
-     * @throws java.sql.SQLException in case of an exception
-     */
-    C toColumnValue(T value, Statement statement) throws SQLException;
-
-    /**
-     * Translates the given sql column value into a property value.
-     * @param columnValue the sql value to translate from
-     * @return the value of sql {@code columnValue}
-     * @throws java.sql.SQLException in case of an exception
-     */
-    T fromColumnValue(C columnValue) throws SQLException;
-  }
-
-  /**
-   * Provides setters for ColumnProperty properties
+   * Builds a {@link ColumnDefinition}
    * @param <T> the underlying type
    * @param <B> the builder type
    */
-  interface Builder<T, B extends Builder<T, B>> extends Property.Builder<T, B> {
+  interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
 
     /**
-     * Sets the actual column type, and the required {@link ValueConverter}.
+     * Sets the actual column type, and the required {@link Column.ValueConverter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
      * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
+    <C> B columnClass(Class<C> columnClass, Column.ValueConverter<T, C> valueConverter);
 
     /**
-     * Sets the actual column type, and the required {@link ValueConverter}.
+     * Sets the actual column type, and the required {@link Column.ValueConverter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
      * @param valueConverter the converter to use when converting to and from column values
      * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter, ValueFetcher<C> valueFetcher);
+    <C> B columnClass(Class<C> columnClass, Column.ValueConverter<T, C> valueConverter, Column.ValueFetcher<C> valueFetcher);
 
     /**
      * Sets the actual string used as column when querying
@@ -195,20 +151,20 @@ public interface ColumnProperty<T> extends Property<T> {
     B columnExpression(String columnExpression);
 
     /**
-     * Specifies whether this property should be included during insert and update operations
-     * @param readOnly true if this property should be read-only
+     * Specifies whether this column should be included during insert and update operations
+     * @param readOnly true if this column should be read-only
      * @return this instance
      */
     B readOnly(boolean readOnly);
 
     /**
-     * @param insertable specifies whether this property should be included during insert operations
+     * @param insertable specifies whether this column should be included during insert operations
      * @return this instance
      */
     B insertable(boolean insertable);
 
     /**
-     * @param updatable specifies whether this property is updatable
+     * @param updatable specifies whether this column is updatable
      * @return this instance
      */
     B updatable(boolean updatable);
@@ -221,8 +177,8 @@ public interface ColumnProperty<T> extends Property<T> {
     B columnHasDefaultValue(boolean columnHasDefaultValue);
 
     /**
-     * Sets the zero based primary key index of this property.
-     * Note that setting the primary key index renders this property non-null and non-updatable by default,
+     * Sets the zero based primary key index of this column.
+     * Note that setting the primary key index renders this column non-null and non-updatable by default,
      * these can be reverted by setting it as updatable and/or nullable after setting the primary key index.
      * @param index the zero based index
      * @return this instance
@@ -249,19 +205,19 @@ public interface ColumnProperty<T> extends Property<T> {
     B aggregateColumn(boolean aggregateColumn);
 
     /**
-     * Specifies whether this property should be included in select queries
-     * @param selectable true if this property should be included in select queries
+     * Specifies whether this column should be included in select queries
+     * @param selectable true if this column should be included in select queries
      * @return this instance
      */
     B selectable(boolean selectable);
 
     /**
-     * Specifies whether this property should be included when searching for an entity by a string value.
-     * Only applicable to properties of type {@link java.sql.Types#VARCHAR}.
-     * @param searchProperty true if this property is a search property
+     * Specifies whether this column should be included when searching for an entity by a string value.
+     * Only applicable to attributes of type {@link java.sql.Types#VARCHAR}.
+     * @param searchColumn true if this column is a search column
      * @return this instance
-     * @throws IllegalStateException in case this property type is not String
+     * @throws IllegalStateException in case this column type is not String
      */
-    B searchProperty(boolean searchProperty);
+    B searchColumn(boolean searchColumn);
   }
 }

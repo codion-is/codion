@@ -8,10 +8,10 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import java.util.Collection;
 import java.util.Comparator;
@@ -247,7 +247,7 @@ public interface EntitySearchModel {
   }
 
   /**
-   * Instantiates a new {@link EntitySearchModel.Builder}, initialized with the search properties for the given entity type
+   * Instantiates a new {@link EntitySearchModel.Builder}, initialized with the search columns for the given entity type
    * @param entityType the type of the entity to search
    * @param connectionProvider the EntityConnectionProvider to use when performing the search
    * @return a new {@link EntitySearchModel.Builder} instance

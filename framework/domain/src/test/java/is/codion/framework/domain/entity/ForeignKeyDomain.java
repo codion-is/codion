@@ -5,9 +5,8 @@ package is.codion.framework.domain.entity;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
-
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.*;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 class ForeignKeyDomain extends DefaultDomain {
 
@@ -28,9 +27,9 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void species() {
-    add(definition(
-            primaryKeyProperty(Species.NO, "Number"),
-            columnProperty(Species.NAME, "Name")
+    add(Species.TYPE.define(
+            Species.NO.primaryKey("Number"),
+            Species.NAME.column("Name")
                     .maximumLength(50)));
   }
 
@@ -42,12 +41,12 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void maturity() {
-    add(definition(
-            columnProperty(Maturity.NO)
+    add(Maturity.TYPE.define(
+            Maturity.NO.column()
                     .primaryKeyIndex(0),
-            columnProperty(Maturity.SPECIES_NO)
+            Maturity.SPECIES_NO.column()
                     .primaryKeyIndex(1),
-            foreignKeyProperty(Maturity.SPECIES_FK)));
+            Maturity.SPECIES_FK.foreignKey()));
   }
 
   public interface OtolithCategory {
@@ -58,12 +57,12 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void otolithCategory() {
-    add(definition(
-            columnProperty(OtolithCategory.NO)
+    add(OtolithCategory.TYPE.define(
+            OtolithCategory.NO.column()
                     .primaryKeyIndex(0),
-            columnProperty(OtolithCategory.SPECIES_NO)
+            OtolithCategory.SPECIES_NO.column()
                     .primaryKeyIndex(1),
-            foreignKeyProperty(OtolithCategory.SPECIES_FK)));
+            OtolithCategory.SPECIES_FK.foreignKey()));
   }
 
   public interface Otolith {
@@ -82,19 +81,19 @@ class ForeignKeyDomain extends DefaultDomain {
   }
 
   void otolith() {
-    add(definition(
-            columnProperty(Otolith.STATION_ID)
+    add(Otolith.TYPE.define(
+            Otolith.STATION_ID.column()
                     .primaryKeyIndex(0),
-            columnProperty(Otolith.SPECIES_NO)
+            Otolith.SPECIES_NO.column()
                     .primaryKeyIndex(1)
                     .updatable(true)
                     .nullable(false),
-            foreignKeyProperty(Otolith.SPECIES_FK),
-            columnProperty(Otolith.MATURITY_NO),
-            foreignKeyProperty(Otolith.MATURITY_FK)
+            Otolith.SPECIES_FK.foreignKey(),
+            Otolith.MATURITY_NO.column(),
+            Otolith.MATURITY_FK.foreignKey()
                     .readOnly(Otolith.SPECIES_NO),
-            columnProperty(Otolith.OTOLITH_CATEGORY_NO),
-            foreignKeyProperty(Otolith.OTOLITH_CATEGORY_FK)
+            Otolith.OTOLITH_CATEGORY_NO.column(),
+            Otolith.OTOLITH_CATEGORY_FK.foreignKey()
                     .readOnly(Otolith.SPECIES_NO)));
   }
 }

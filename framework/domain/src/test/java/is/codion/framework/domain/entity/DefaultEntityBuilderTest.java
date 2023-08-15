@@ -8,12 +8,12 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Employee;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class DefaultEntityBuilderTest {
@@ -60,13 +60,13 @@ public final class DefaultEntityBuilderTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(domainType);
-        add(definition(
-                primaryKeyProperty(id),
-                columnProperty(name)
+        add(entityType.define(
+                id.primaryKey(),
+                name.column()
                         .defaultValue("DefName"),
-                columnProperty(value)
+                value.column()
                         .defaultValue(42),
-                derivedProperty(derivedValue, sourceValues -> {
+                derivedValue.derived(sourceValues -> {
                   Integer sourceValue = sourceValues.get(value);
 
                   return sourceValue == null ? null : sourceValue + 1;

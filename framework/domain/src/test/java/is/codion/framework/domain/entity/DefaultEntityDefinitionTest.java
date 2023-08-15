@@ -13,6 +13,9 @@ import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Department;
 import is.codion.framework.domain.TestDomain.Detail;
 import is.codion.framework.domain.TestDomain.Employee;
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import org.junit.jupiter.api.Test;
@@ -24,9 +27,7 @@ import java.util.Locale;
 import java.util.function.Function;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
 import static is.codion.framework.domain.entity.KeyGenerator.automatic;
-import static is.codion.framework.domain.property.Property.*;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class DefaultEntityDefinitionTest {
@@ -43,9 +44,9 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(
-                primaryKeyProperty(id),
-                columnProperty(name)
+        add(entityType.define(
+                id.primaryKey(),
+                name.column()
                         .groupingColumn(true))
                 .tableName("tableName")
                 .selectQuery(SelectQuery.builder()
@@ -127,11 +128,12 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void entityWithoutProperties() {
+  void entityWithoutAttributes() {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition()
+        EntityType entityType = DOMAIN_TYPE.entityType("entityWithoutAttributes");
+        add(entityType.define()
                 .tableName("tableName"));
       }
     }
@@ -144,29 +146,29 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         EntityType entityType = DOMAIN_TYPE.entityType("duplicateAttributes");
-        add(definition(
-                primaryKeyProperty(entityType.integerColumn("id")),
-                columnProperty(entityType.stringColumn("name")),
-                columnProperty(entityType.integerColumn("id"))));
+        add(entityType.define(
+                entityType.integerColumn("id").primaryKey(),
+                entityType.stringColumn("name").column(),
+                entityType.integerColumn("id").column()));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
-  void testDerivedProperty() {
-    EntityType entityType = DOMAIN_TYPE.entityType("derivedProperty");
+  void testDerivedAttribute() {
+    EntityType entityType = DOMAIN_TYPE.entityType("derivedAttribute");
     Column<Integer> name = entityType.integerColumn("name");
     Column<String> info = entityType.stringColumn("info");
     Attribute<String> derived = entityType.stringAttribute("derived");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(
-                primaryKeyProperty(entityType.integerColumn("id")),
-                columnProperty(name),
-                columnProperty(info),
-                derivedProperty(derived, linkedValues ->
+        add(entityType.define(
+                entityType.integerColumn("id").primaryKey(),
+                name.column(),
+                info.column(),
+                derived.derived(linkedValues ->
                         linkedValues.get(name).toString() + linkedValues.get(info), name, info)));
       }
     }
@@ -182,15 +184,15 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void testGroupingProperties() {
-    EntityType entityType = DOMAIN_TYPE.entityType("testGroupingProperties");
+  void testGroupingColumns() {
+    EntityType entityType = DOMAIN_TYPE.entityType("testGroupingColumns");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(
-                primaryKeyProperty(entityType.integerColumn("p0")).aggregateColumn(true),
-                columnProperty(entityType.integerColumn("p1")).groupingColumn(true),
-                columnProperty(entityType.integerColumn("p2")).groupingColumn(true)));
+        add(entityType.define(
+                entityType.integerColumn("p0").primaryKey().aggregateColumn(true),
+                entityType.integerColumn("p1").column().groupingColumn(true),
+                entityType.integerColumn("p2").column().groupingColumn(true)));
       }
     }
     Domain domain = new TestDomain();
@@ -206,7 +208,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("p0")))
+        add(entityType.define(entityType.integerColumn("p0").primaryKey())
                 .selectQuery(SelectQuery.builder()
                         .having(havingClause)
                         .build()));
@@ -221,8 +223,8 @@ public class DefaultEntityDefinitionTest {
   @Test
   void testForeignKeyNullability() {
     Domain domain = new TestDomain();
-    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeyProperty(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
-    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyProperty(Detail.MASTER_FK).isNullable());
+    assertFalse(domain.entities().definition(CompositeDetail.TYPE).foreignKeyDefinition(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK).isNullable());
+    assertTrue(domain.entities().definition(Detail.TYPE).foreignKeyDefinition(Detail.MASTER_FK).isNullable());
   }
 
   @Test
@@ -235,9 +237,9 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         setStrictForeignKeys(false);
-        add(definition(
-                primaryKeyProperty(integerColumn),
-                foreignKeyProperty(foreignKey, "caption")));
+        add(entityType.define(
+                integerColumn.primaryKey(),
+                foreignKey.foreignKey("caption")));
         setStrictForeignKeys(true);
       }
     }
@@ -251,18 +253,18 @@ public class DefaultEntityDefinitionTest {
       public TestDomain() {
         super(DOMAIN_TYPE);
         Column<Integer> integerColumn = entityType.integerColumn("col");
-        add(definition(
-                primaryKeyProperty(entityType.integerColumn("pk")),
-                columnProperty(integerColumn),
-                columnProperty(integerColumn)));
+        add(entityType.define(
+                entityType.integerColumn("pk").primaryKey(),
+                integerColumn.column(),
+                integerColumn.column()));
       }
     }
     assertThrows(IllegalArgumentException.class, () -> new TestDomain());
   }
 
   @Test
-  void testLinkedProperties() {
-    EntityType entityType = DOMAIN_TYPE.entityType("testLinkedProperties");
+  void testLinkedAttributes() {
+    EntityType entityType = DOMAIN_TYPE.entityType("testLinkedAttributes");
     Column<Integer> pk = entityType.integerColumn("pk");
     Column<Integer> column1 = entityType.integerColumn("1");
     Column<Integer> column2 = entityType.integerColumn("2");
@@ -270,11 +272,11 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(
-                primaryKeyProperty(pk),
-                columnProperty(column1),
-                columnProperty(column2),
-                derivedProperty(der, "cap", linkedValues -> null, column1, column2)));
+        add(entityType.define(
+                pk.primaryKey(),
+                column1.column(),
+                column2.column(),
+                der.derived("cap", linkedValues -> null, column1, column2)));
       }
     }
     Domain domain = new TestDomain();
@@ -292,7 +294,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .backgroundColorProvider((entity1, attribute) -> colorBlue)
                 .foregroundColorProvider((entity1, attribute) -> colorYellow));
       }
@@ -312,7 +314,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(attribute)));
+        add(entityType.define(attribute.primaryKey()));
       }
     }
     Entities entities = new TestDomain().entities();
@@ -328,7 +330,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .stringFactory((Function<Entity, String>) null));
       }
     }
@@ -341,7 +343,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .stringFactory(entity -> "test"));
       }
     }
@@ -357,7 +359,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute"))));
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey()));
       }
     }
     Domain domain = new TestDomain();
@@ -374,7 +376,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .keyGenerator(null));
       }
     }
@@ -387,7 +389,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .keyGenerator(automatic("table")));
       }
     }
@@ -417,7 +419,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(columnProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").column())
                 .keyGenerator(KeyGenerator.queried("select 1")));
       }
     }
@@ -430,7 +432,7 @@ public class DefaultEntityDefinitionTest {
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
-        add(definition(primaryKeyProperty(entityType.integerColumn("attribute")))
+        add(entityType.define(entityType.integerColumn("attribute").primaryKey())
                 .captionResourceKey("test"));
       }
     }

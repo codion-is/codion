@@ -15,7 +15,7 @@ import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.Key;
-import is.codion.framework.domain.property.ColumnProperty;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -408,17 +408,17 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     private static String entityToString(Entity entity) {
       StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
-      List<ColumnProperty<?>> columnProperties = entity.definition().columnProperties();
-      for (int i = 0; i < columnProperties.size(); i++) {
-        ColumnProperty<?> property = columnProperties.get(i);
-        boolean modified = entity.isModified(property.attribute());
-        if (property.isPrimaryKeyColumn() || modified) {
+      List<ColumnDefinition<?>> columnDefinitions = entity.definition().columnDefinitions();
+      for (int i = 0; i < columnDefinitions.size(); i++) {
+        ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
+        boolean modified = entity.isModified(columnDefinition.attribute());
+        if (columnDefinition.isPrimaryKeyColumn() || modified) {
           StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.original(property.attribute())).append("->");
+            valueString.append(entity.original(columnDefinition.attribute())).append("->");
           }
-          valueString.append(entity.toString(property.attribute()));
-          builder.append(property.attribute()).append(":").append(valueString).append(",");
+          valueString.append(entity.toString(columnDefinition.attribute()));
+          builder.append(columnDefinition.attribute()).append(":").append(valueString).append(",");
         }
       }
       builder.deleteCharAt(builder.length() - 1);

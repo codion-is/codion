@@ -3,6 +3,11 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.AttributeDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -38,6 +43,22 @@ public interface EntityType {
    * @return the name of the resource bundle, containing captions for this entity type, if any
    */
   String resourceBundleName();
+
+  /**
+   * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
+   * @param definitionBuilders builders for the attribute definitions comprising the entity
+   * @return a {@link EntityDefinition.Builder} instance
+   * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
+   */
+  EntityDefinition.Builder define(List<AttributeDefinition.Builder<?, ?>> definitionBuilders);
+
+  /**
+   * Creates a {@link EntityDefinition.Builder} instance based on the given attribute definition builders.
+   * @param definitionBuilders builders for the attribute definitions comprising the entity
+   * @return a {@link EntityDefinition.Builder} instance
+   * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
+   */
+  EntityDefinition.Builder define(AttributeDefinition.Builder<?, ?>... definitionBuilders);
 
   /**
    * Creates a new {@link Attribute}, associated with this EntityType.

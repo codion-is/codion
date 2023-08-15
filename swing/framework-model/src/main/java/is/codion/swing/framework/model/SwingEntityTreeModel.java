@@ -6,7 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.common.model.table.TableSelectionModel;
 import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.ForeignKey;
+import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;

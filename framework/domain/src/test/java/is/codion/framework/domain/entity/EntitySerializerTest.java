@@ -8,6 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.TestDomain;
 import is.codion.framework.domain.TestDomain.CompositeMaster;
 import is.codion.framework.domain.TestDomain.Employee;
+import is.codion.framework.domain.entity.attribute.Column;
 
 import org.junit.jupiter.api.Test;
 
@@ -18,9 +19,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.LocalDateTime;
 
-import static is.codion.framework.domain.entity.EntityDefinition.definition;
-import static is.codion.framework.domain.property.Property.columnProperty;
-import static is.codion.framework.domain.property.Property.primaryKeyProperty;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntitySerializerTest {
@@ -34,14 +32,14 @@ public final class EntitySerializerTest {
 
   @Test
   void mismatch() throws IOException, ClassNotFoundException {
-    SerialDomain domain1 = new SerialDomain(definition(
-            primaryKeyProperty(TestTable.ID),
-            columnProperty(TestTable.NAME))
+    SerialDomain domain1 = new SerialDomain(TestTable.TYPE.define(
+            TestTable.ID.primaryKey(),
+            TestTable.NAME.column())
             .build());
-    SerialDomain domain2 = new SerialDomain(definition(
-            primaryKeyProperty(TestTable.ID),
-            columnProperty(TestTable.NAME),
-            columnProperty(TestTable.EXTRA))
+    SerialDomain domain2 = new SerialDomain(TestTable.TYPE.define(
+            TestTable.ID.primaryKey(),
+            TestTable.NAME.column(),
+            TestTable.EXTRA.column())
             .build());
 
     EntitySerializer serializer1 = new DefaultEntitySerializer(domain1.entities(), true);

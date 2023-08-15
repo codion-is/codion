@@ -7,10 +7,10 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.framework.domain.entity.Column;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.property.Property;
+import is.codion.framework.domain.entity.attribute.Column;
+import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
@@ -55,17 +55,17 @@ public final class DefaultEntitySearchModelTest {
   }
 
   @Test
-  void constructorNullSearchProperties() {
+  void constructorNullSearchColumns() {
     assertThrows(NullPointerException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(null));
   }
 
   @Test
-  void searchWithNoSearchProperties() {
+  void searchWithNoSearchColumns() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER).searchColumns(emptyList()));
   }
 
   @Test
-  void constructorIncorrectEntitySearchProperty() {
+  void constructorIncorrectEntitySearchColumn() {
     assertThrows(IllegalArgumentException.class, () -> new DefaultEntitySearchModel.DefaultBuilder(Employee.TYPE, CONNECTION_PROVIDER)
             .searchColumns(singletonList(Department.NAME)));
   }
@@ -93,7 +93,7 @@ public final class DefaultEntitySearchModelTest {
 
   @Test
   void setToStringProvider() {
-    Property<?> job = ENTITIES.definition(Employee.TYPE).property(Employee.JOB);
+    ColumnDefinition<?> job = ENTITIES.definition(Employee.TYPE).columnDefinition(Employee.JOB);
     searchModel.setToStringProvider(entity -> entity.toString(job.attribute()));
     Entity employee = ENTITIES.builder(Employee.TYPE)
             .with(Employee.NAME, "Darri")

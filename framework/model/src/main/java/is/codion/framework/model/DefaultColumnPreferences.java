@@ -4,7 +4,7 @@
 package is.codion.framework.model;
 
 import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
-import is.codion.framework.domain.entity.Attribute;
+import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.model.EntityTableModel.ColumnPreferences;
 
 import org.json.JSONObject;
