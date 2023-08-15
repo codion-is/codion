@@ -3,10 +3,8 @@
  */
 package is.codion.swing.common.ui.dialog;
 
-import is.codion.common.Configuration;
 import is.codion.common.i18n.Messages;
 import is.codion.common.property.PropertyStore;
-import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.swing.common.ui.KeyEvents;
 import is.codion.swing.common.ui.Utilities;
@@ -48,14 +46,6 @@ import static java.awt.event.KeyEvent.VK_ESCAPE;
 final class ExceptionPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(ExceptionPanel.class.getName());
-
-  /**
-   * Specifies whether an ExceptionPanel should display system properties in the detail panel<br>
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  public static final PropertyValue<Boolean> DISPLAY_SYSTEM_PROPERTIES =
-          Configuration.booleanValue("is.codion.swing.common.ui.dialog.ExceptionPanel.displaySystemProperties", true);
 
   private static final int MESSAGE_AREA_WIDTH = 500;
   private static final int SCROLL_PANE_WIDTH = 500;
@@ -190,7 +180,7 @@ final class ExceptionPanel extends JPanel {
     StringWriter stringWriter = new StringWriter();
     exception.printStackTrace(new PrintWriter(stringWriter));
     StringBuilder builder = new StringBuilder(stringWriter.toString());
-    if (DISPLAY_SYSTEM_PROPERTIES.get()) {
+    if (ExceptionDialogBuilder.DISPLAY_SYSTEM_PROPERTIES.get()) {
       builder.append("\n");
       builder.append("--------------------------------------------Properties--------------------------------------------\n\n");
       builder.append(PropertyStore.systemProperties());
