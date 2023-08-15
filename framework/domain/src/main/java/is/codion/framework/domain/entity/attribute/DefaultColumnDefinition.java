@@ -232,8 +232,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private boolean aggregateColumn;
     private boolean selectable;
 
-    DefaultColumnDefinitionBuilder(Column<T> column, String caption) {
-      super(column, caption);
+    DefaultColumnDefinitionBuilder(Column<T> column) {
+      super(column);
       this.primaryKeyIndex = -1;
       this.columnType = sqlType(column.valueClass());
       this.columnHasDefaultValue = false;
@@ -372,8 +372,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   abstract static class AbstractReadOnlyColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
           extends DefaultColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
 
-    protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column, String caption) {
-      super(column, caption);
+    protected AbstractReadOnlyColumnDefinitionBuilder(Column<T> column) {
+      super(column);
       super.readOnly(true);
     }
 
@@ -396,8 +396,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   static final class DefaultSubqueryColumnDefinitionBuilder<T, B extends ColumnDefinition.Builder<T, B>>
           extends AbstractReadOnlyColumnDefinitionBuilder<T, B> implements AttributeDefinition.Builder<T, B> {
 
-    DefaultSubqueryColumnDefinitionBuilder(Column<T> column, String caption, String subquery) {
-      super(column, caption);
+    DefaultSubqueryColumnDefinitionBuilder(Column<T> column, String subquery) {
+      super(column);
       super.columnExpression("(" + subquery + ")");
     }
 

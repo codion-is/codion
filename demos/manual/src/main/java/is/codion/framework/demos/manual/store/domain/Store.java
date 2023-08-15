@@ -74,14 +74,18 @@ public final class Store extends DefaultDomain {
     // tag::customer[]
     add(Customer.TYPE.define(
             Customer.ID.primaryKey(),
-            Customer.FIRST_NAME.column("First name")
+            Customer.FIRST_NAME.column()
+                    .caption("First name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.LAST_NAME.column("Last name")
+            Customer.LAST_NAME.column()
+                    .caption("Last name")
                     .nullable(false)
                     .maximumLength(40),
-            Customer.EMAIL.column("Email"),
-            Customer.IS_ACTIVE.column("Is active")
+            Customer.EMAIL.column()
+                    .caption("Email"),
+            Customer.IS_ACTIVE.column()
+                    .caption("Is active")
                     .columnHasDefaultValue(true)
                     .defaultValue(true))
             .keyGenerator(new UUIDKeyGenerator())
@@ -96,13 +100,16 @@ public final class Store extends DefaultDomain {
     // tag::address[]
     add(Address.TYPE.define(
                     Address.ID.primaryKey(),
-                    Address.STREET.column("Street")
+                    Address.STREET.column()
+                            .caption("Street")
                     .nullable(false)
                     .maximumLength(120),
-            Address.CITY.column("City")
+            Address.CITY.column()
+                    .caption("City")
                     .nullable(false)
                     .maximumLength(50),
-            Address.VALID.column("Valid")
+            Address.VALID.column()
+                    .caption("Valid")
                     .columnHasDefaultValue(true)
                     .nullable(false))
             .stringFactory(StringFactory.builder()
@@ -122,10 +129,12 @@ public final class Store extends DefaultDomain {
             CustomerAddress.ID.primaryKey(),
             CustomerAddress.CUSTOMER_ID.column()
                     .nullable(false),
-            CustomerAddress.CUSTOMER_FK.foreignKey("Customer"),
+            CustomerAddress.CUSTOMER_FK.foreignKey()
+                    .caption("Customer"),
             CustomerAddress.ADDRESS_ID.column()
                     .nullable(false),
-            CustomerAddress.ADDRESS_FK.foreignKey("Address"))
+            CustomerAddress.ADDRESS_FK.foreignKey()
+                    .caption("Address"))
             .keyGenerator(identity())
             .caption("Customer address"));
     // end::customerAddress[]

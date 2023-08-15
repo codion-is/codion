@@ -21,29 +21,12 @@ public interface Column<T> extends Attribute<T> {
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance.
-   * @param caption the caption
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> column(String caption);
-
-  /**
    * A convenience method for creating a new {@link ColumnDefinition.Builder} instance,
    * with the primary key index set to 0.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder} with primary key index 0
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
-
-  /**
-   * A convenience method for creating a new {@link ColumnDefinition.Builder} instance,
-   * with the primary key index set to 0.
-   * @param caption the caption
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder} with primary key index 0
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey(String caption);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
@@ -54,15 +37,6 @@ public interface Column<T> extends Attribute<T> {
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
-   * @param caption the caption
-   * @param subquery the sql query
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String caption, String subquery);
-
-  /**
    * Creates a new {@link ColumnDefinition.Builder} instance, based on the given items.
    * @param validItems the Items representing all the valid values for this attribute
    * @param <B> the builder type
@@ -70,16 +44,6 @@ public interface Column<T> extends Attribute<T> {
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> item(List<Item<T>> validItems);
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, based on the given items.
-   * @param caption the caption
-   * @param validItems the Items representing all the valid values for this attribute
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   * @throws IllegalArgumentException in case the valid item list contains duplicate values
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> item(String caption, List<Item<T>> validItems);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
@@ -94,30 +58,10 @@ public interface Column<T> extends Attribute<T> {
                                                                                                 C trueValue, C falseValue);
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
-   * @param <C> the column type
-   * @param <B> the builder type
-   * @param caption the caption
-   * @param columnClass the underlying column data type class
-   * @param trueValue the value representing 'true' in the underlying column
-   * @param falseValue the value representing 'false' in the underlying column
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> bool(String caption,
-                                                                                                Class<C> columnClass, C trueValue, C falseValue);
-
-  /**
    * Creates a new {@link BlobColumnDefinition.Builder} instance.
    * @return a new {@link BlobColumnDefinition.Builder}
    */
   BlobColumnDefinition.Builder blob();
-
-  /**
-   * Creates a new {@link BlobColumnDefinition.Builder} instance.
-   * @param caption the caption
-   * @return a new {@link BlobColumnDefinition.Builder}
-   */
-  BlobColumnDefinition.Builder blob(String caption);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was inserted.
@@ -127,27 +71,11 @@ public interface Column<T> extends Attribute<T> {
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTime();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was inserted.
-   * @param caption the caption
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTime(String caption);
-
-  /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was updated.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTime();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was updated.
-   * @param caption the caption
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTime(String caption);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a record.
@@ -157,27 +85,11 @@ public interface Column<T> extends Attribute<T> {
   <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUser();
 
   /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a record.
-   * @param <B> the builder type
-   * @param caption the caption
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUser(String caption);
-
-  /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a record.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
   <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUser();
-
-  /**
-   * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a record.
-   * @param caption the caption
-   * @param <B> the builder type
-   * @return a new {@link ColumnDefinition.Builder}
-   */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUser(String caption);
 
   /**
    * Creates a new {@link Column}, associated with the given entityType.

@@ -15,24 +15,32 @@ public interface Address {
 void address() {
 	add(Address.TYPE.define(
 		Address.ADDRESSID.primaryKey(),
-		Address.STREET1.column("Street1")
+		Address.STREET1.column()
+			.caption("Street1")
 			.nullable(false)
 			.maximumLength(55),
-		Address.STREET2.column("Street2")
+		Address.STREET2.column()
+			.caption("Street2")
 			.maximumLength(55),
-		Address.CITY.column("City")
+		Address.CITY.column()
+			.caption("City")
 			.nullable(false)
 			.maximumLength(55),
-		Address.STATE.column("State")
+		Address.STATE.column()
+			.caption("State")
 			.nullable(false)
 			.maximumLength(25),
-		Address.ZIP.column("Zip")
+		Address.ZIP.column()
+			.caption("Zip")
 			.nullable(false),
-		Address.LATITUDE.column("Latitude")
+		Address.LATITUDE.column()
+			.caption("Latitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		Address.LONGITUDE.column("Longitude")
+		Address.LONGITUDE.column()
+			.caption("Longitude")
 			.nullable(false)
 			.maximumFractionDigits(2),
-		Address.IMAGE.blob("Image")));
+		Address.IMAGE.blob()
+			.caption("Image")));
 }

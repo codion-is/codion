@@ -49,12 +49,7 @@ final class DefaultForeignKey extends DefaultAttribute<Entity> implements Foreig
 
   @Override
   public ForeignKeyDefinition.Builder foreignKey() {
-    return foreignKey(null);
-  }
-
-  @Override
-  public ForeignKeyDefinition.Builder foreignKey(String caption) {
-    return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(this, caption);
+    return new DefaultForeignKeyDefinition.DefaultForeignKeyDefinitionBuilder(this);
   }
 
   private List<Reference<?>> validate(List<Reference<?>> references) {

@@ -34,13 +34,6 @@ public interface ForeignKey extends Attribute<Entity> {
   ForeignKeyDefinition.Builder foreignKey();
 
   /**
-   * Instantiates a {@link ForeignKeyDefinition.Builder} instance.
-   * @param caption the caption
-   * @return a new {@link ForeignKeyDefinition.Builder}
-   */
-  ForeignKeyDefinition.Builder foreignKey(String caption);
-
-  /**
    * Represents a foreign key reference between columns.
    * @param <T> the attribute type
    */

@@ -104,7 +104,9 @@ final class DomainToString {
     StringBuilder builder = new StringBuilder();
     String foreignKey = definition.attribute().name().toUpperCase();
     builder.append(DOUBLE_INDENT).append(interfaceName).append(".").append(foreignKey)
-            .append(".foreignKey(").append("\"").append(definition.caption()).append("\")");
+            .append(".foreignKey()")
+            .append(LINE_SEPARATOR)
+            .append(TRIPLE_INDENT).append(".caption(\"").append(definition.caption()).append("\")");
 
     return builder.toString();
   }
@@ -116,10 +118,7 @@ final class DomainToString {
             .append(definitionType(column.attribute(),
                     column.isPrimaryKeyColumn() && !compositePrimaryKey));
     if (!isForeignKey && !column.isPrimaryKeyColumn()) {
-      builder.append("\"").append(column.caption()).append("\")");
-    }
-    else {
-      builder.append(")");
+      builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".caption(").append("\"").append(column.caption()).append("\")");
     }
     if (column instanceof BlobColumnDefinition && ((BlobColumnDefinition) column).isEagerlyLoaded()) {
       builder.append(LINE_SEPARATOR).append(TRIPLE_INDENT).append(".eagerlyLoaded()");
@@ -160,10 +159,10 @@ final class DomainToString {
 
   private static String definitionType(Attribute<?> attribute, boolean primaryKey) {
     if (attribute.isByteArray()) {
-      return "blob(";
+      return "blob()";
     }
 
-    return primaryKey ? "primaryKey(" : "column(";
+    return primaryKey ? "primaryKey()" : "column()";
   }
 
   private static String interfaceName(String tableName, boolean uppercase) {

@@ -69,8 +69,8 @@ final class DefaultItemColumnDefinition<T> extends DefaultColumnDefinition<T> im
 
     private final List<Item<T>> items;
 
-    DefaultItemColumnDefinitionBuilder(Column<T> column, String caption, List<Item<T>> items) {
-      super(column, caption);
+    DefaultItemColumnDefinitionBuilder(Column<T> column, List<Item<T>> items) {
+      super(column);
       validateItems(items);
       this.items = items;
     }

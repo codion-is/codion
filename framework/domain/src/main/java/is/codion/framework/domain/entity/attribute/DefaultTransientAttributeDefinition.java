@@ -24,8 +24,8 @@ class DefaultTransientAttributeDefinition<T> extends AbstractAttributeDefinition
 
     private boolean modifiesEntity = true;
 
-    DefaultTransientAttributeDefinitionBuilder(Attribute<T> attribute, String caption) {
-      super(attribute, caption);
+    DefaultTransientAttributeDefinitionBuilder(Attribute<T> attribute) {
+      super(attribute);
     }
 
     @Override
