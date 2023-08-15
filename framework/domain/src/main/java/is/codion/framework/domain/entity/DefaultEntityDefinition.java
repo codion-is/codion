@@ -786,11 +786,22 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<TransientAttributeDefinition<?>> transientAttributeDefinitions;
     private final List<Attribute<?>> selectAttributes;
 
-    private EntityAttributes(List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+    private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+      requireNonNull(entityType);
       if (requireNonNull(attributeDefinitionBuilders, "attributeDefinitionBuilders").isEmpty()) {
         throw new IllegalArgumentException("One of more attribute definition builder must be specified for an entity");
       }
-      this.entityType = attributeDefinitionBuilders.get(0).attribute().entityType();
+      List<EntityType> entityTypes = attributeDefinitionBuilders.stream()
+              .map(builder -> builder.attribute().entityType())
+              .distinct()
+              .collect(toList());
+      if (entityTypes.size() > 1) {
+        throw new IllegalArgumentException("Multiple entityTypes found among attribute definitions: " + entityTypes);
+      }
+      this.entityType = entityTypes.get(0);
+      if (!this.entityType.equals(entityType)) {
+        throw new IllegalArgumentException("Entity type mismatch, expected attributes for entity: " + entityType + ", got: " + this.entityType);
+      }
       this.attributeMap = unmodifiableMap(attributeMap(attributeDefinitionBuilders));
       this.attributeNameMap = unmodifiableMap(attributeNameMap(attributeMap));
       this.attributeDefinitions = unmodifiableList(new ArrayList<>(attributeMap.values()));
@@ -1034,8 +1045,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private Comparator<Entity> comparator = Text.spaceAwareCollator();
     private EntityValidator validator = new DefaultEntityValidator();
 
-    DefaultBuilder(List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
-      this.attributes = new EntityAttributes(attributeDefinitionBuilders);
+    DefaultBuilder(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
+      this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);
       this.tableName = attributes.entityType.name();
       this.captionResourceKey = attributes.entityType.name();
     }

@@ -49,6 +49,7 @@ public interface EntityType {
    * @param definitionBuilders builders for the attribute definitions comprising the entity
    * @return a {@link EntityDefinition.Builder} instance
    * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
+   * @throws IllegalArgumentException in case of a entityType mismatch
    */
   EntityDefinition.Builder define(List<AttributeDefinition.Builder<?, ?>> definitionBuilders);
 
@@ -57,6 +58,7 @@ public interface EntityType {
    * @param definitionBuilders builders for the attribute definitions comprising the entity
    * @return a {@link EntityDefinition.Builder} instance
    * @throws IllegalArgumentException in case {@code definitionBuilders} is empty
+   * @throws IllegalArgumentException in case of a entityType mismatch
    */
   EntityDefinition.Builder define(AttributeDefinition.Builder<?, ?>... definitionBuilders);
 
