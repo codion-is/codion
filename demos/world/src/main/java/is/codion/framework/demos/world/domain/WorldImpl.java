@@ -277,7 +277,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .columnClass(String.class, new LocationConverter())
                     .comparator(new LocationComparator()))
             .selectQuery(SelectQuery.builder()
-                    .from("world.country join world.city on city.countrycode = country.code")
+                    .from("world.country left outer join world.city on city.countrycode = country.code")
                     .build())
             .orderBy(OrderBy.builder()
                     .ascending(Lookup.COUNTRY_NAME)
