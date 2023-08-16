@@ -54,7 +54,7 @@ class ManualDomainModel {
     void city() {
       add(City.TYPE.define(
               City.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               City.NAME
                       .column()
                       .caption("Name")
@@ -66,7 +66,7 @@ class ManualDomainModel {
     void customer() {
       add(Customer.TYPE.define(
               Customer.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Customer.NAME
                       .column()
                       .caption("Name")

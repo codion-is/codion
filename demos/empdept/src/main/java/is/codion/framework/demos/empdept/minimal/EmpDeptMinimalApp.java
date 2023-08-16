@@ -82,7 +82,7 @@ public final class EmpDeptMinimalApp {
        */
       add(Department.TYPE.define(
               Department.DEPTNO
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Department.DEPTNO
                       .column()
                       .caption("Department name")
@@ -103,7 +103,7 @@ public final class EmpDeptMinimalApp {
        */
       add(Employee.TYPE.define(
               Employee.EMPNO
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Employee.ENAME
                       .column()
                       .caption("Name")

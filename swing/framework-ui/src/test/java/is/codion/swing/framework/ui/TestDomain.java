@@ -46,7 +46,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKey(),
+            Master.ID.primaryKeyColumn(),
             Master.NAME.column()
                     .searchColumn(true),
             Master.CODE.column())
@@ -90,7 +90,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKey(),
+            Detail.ID.primaryKeyColumn(),
             Detail.INT.column()
                     .caption(Detail.INT.name())
                     .valueRange(-10_000, 10_000),
@@ -123,13 +123,13 @@ public final class TestDomain extends DefaultDomain {
             Detail.DETAIL_ID.column(),
             Detail.DETAIL_FK.foreignKey()
                     .caption(Detail.DETAIL_FK.name()),
-            Detail.MASTER_NAME.denormalized(Detail.MASTER_FK, Master.NAME)
+            Detail.MASTER_NAME.denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
-            Detail.MASTER_CODE.denormalized(Detail.MASTER_FK, Master.CODE)
+            Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.item(ITEMS)
+            Detail.INT_VALUE_LIST.itemColumn(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.derived(linkedValues -> {
+            Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
@@ -155,7 +155,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKey()
+            Department.ID.primaryKeyColumn()
                     .caption(Department.ID.name())
                     .updatable(true)
                     .nullable(false),
@@ -197,7 +197,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey()
+            Employee.ID.primaryKeyColumn()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())
@@ -208,7 +208,7 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.item(
+            Employee.JOB.itemColumn(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
@@ -227,7 +227,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.HIREDATE.column()
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))

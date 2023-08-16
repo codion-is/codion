@@ -49,7 +49,7 @@ public final class WorldImpl extends DefaultDomain implements World {
   void city() {
     add(City.TYPE.define(
             City.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             City.NAME
                     .column()
                     .caption("Name")
@@ -99,7 +99,7 @@ public final class WorldImpl extends DefaultDomain implements World {
     add(Country.TYPE.define(
             // tag::primaryKey[]
             Country.CODE
-                    .primaryKey()
+                    .primaryKeyColumn()
                     .caption("Code")
                     .updatable(true)
                     .maximumLength(3),
@@ -112,7 +112,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .maximumLength(52),
             // tag::item[]
             Country.CONTINENT
-                    .item(CONTINENT_ITEMS)
+                    .itemColumn(CONTINENT_ITEMS)
                     .caption("Continent")
                     .nullable(false),
             // end::item[]
@@ -180,23 +180,23 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::foreignKeyCapital[]
             // tag::denormalizedAttribute[]
             Country.CAPITAL_POPULATION
-                    .denormalized(Country.CAPITAL_FK, City.POPULATION)
+                    .denormalizedAttribute(Country.CAPITAL_FK, City.POPULATION)
                     .caption("Capital pop.")
                     .numberFormatGrouping(true),
             // end::denormalizedAttribute[]
             // tag::subqueryColumn[]
             Country.NO_OF_CITIES
-                    .subquery("select count(*) from world.city " +
+                    .subqueryColumn("select count(*) from world.city " +
                             "where city.countrycode = country.code")
                     .caption("No. of cities"),
             // end::subqueryColumn[]
             Country.NO_OF_LANGUAGES
-                    .subquery("select count(*) from world.countrylanguage " +
+                    .subqueryColumn("select count(*) from world.countrylanguage " +
                             "where countrylanguage.countrycode = country.code")
                     .caption("No. of languages"),
             // tag::blobColumn[]
             Country.FLAG
-                    .blob()
+                    .blobColumn()
                     .caption("Flag")
                     .eagerlyLoaded(true),
             // end::blobColumn[]
@@ -238,7 +238,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::booleanColumn[]
             // tag::derivedAttribute[]
             CountryLanguage.NO_OF_SPEAKERS
-                    .derived(new NoOfSpeakersProvider(),
+                    .derivedAttribute(new NoOfSpeakersProvider(),
                             CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
                     .caption("No. of speakers")
                     .numberFormatGrouping(true),
@@ -266,7 +266,8 @@ public final class WorldImpl extends DefaultDomain implements World {
             Lookup.COUNTRY_NAME
                     .column()
                     .caption("Country name"),
-            Lookup.COUNTRY_CONTINENT.item(CONTINENT_ITEMS)
+            Lookup.COUNTRY_CONTINENT
+                    .itemColumn(CONTINENT_ITEMS)
                     .caption("Continent"),
             Lookup.COUNTRY_REGION
                     .column()
@@ -302,7 +303,8 @@ public final class WorldImpl extends DefaultDomain implements World {
             Lookup.COUNTRY_HEADOFSTATE
                     .column()
                     .caption("Head of state"),
-            Lookup.COUNTRY_FLAG.blob()
+            Lookup.COUNTRY_FLAG
+                    .blobColumn()
                     .caption("Flag"),
             Lookup.COUNTRY_CODE2
                     .column()

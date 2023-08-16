@@ -265,8 +265,12 @@ public interface AttributeDefinition<T> {
     Attribute<T> attribute();
 
     /**
+     * Note that this method has a side-effect, when setting the caption to a null value
+     * this attribute is automatically hidden via {@link #hidden(boolean)}, when
+     * a non-null value is used it is automatically made visible (as in, not hidden).
      * @param caption the caption
      * @return this builder instance
+     * @see #hidden(boolean)
      */
     B caption(String caption);
 

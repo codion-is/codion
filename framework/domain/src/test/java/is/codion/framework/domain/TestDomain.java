@@ -100,7 +100,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKey()
+            Master.ID.primaryKeyColumn()
                     .beanProperty("id"),
             Master.NAME.column()
                     .beanProperty("name"),
@@ -170,7 +170,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKey()
+            Detail.ID.primaryKeyColumn()
                     .beanProperty("id"),
             Detail.SHORT.column()
                     .caption(Detail.SHORT.name()),
@@ -205,13 +205,13 @@ public final class TestDomain extends DefaultDomain {
             Detail.MASTER_VIA_CODE_FK.foreignKey()
                     .caption(Detail.MASTER_FK.name())
                     .beanProperty("master"),
-            Detail.MASTER_NAME.denormalized(Detail.MASTER_FK, Master.NAME)
+            Detail.MASTER_NAME.denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
-            Detail.MASTER_CODE.denormalized(Detail.MASTER_FK, Master.CODE)
+            Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.item(ITEMS)
+            Detail.INT_VALUE_LIST.itemColumn(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.derived(linkedValues -> {
+            Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
 
@@ -253,7 +253,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.NO.primaryKey()
+            Department.NO.primaryKeyColumn()
                     .caption(Department.NO.name())
                     .updatable(true).nullable(false)
                     .beanProperty("deptNo"),
@@ -267,10 +267,10 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Department.LOCATION.name())
                     .maximumLength(13)
                     .beanProperty("location"),
-            Department.ACTIVE.bool(Integer.class, 1, 0)
+            Department.ACTIVE.booleanColumn(Integer.class, 1, 0)
                     .readOnly(true)
                     .beanProperty("active"),
-            Department.DATA.blob())
+            Department.DATA.blobColumn())
             .tableName("scott.dept")
             .smallDataset(true)
             .orderBy(ascending(Department.NAME))
@@ -317,7 +317,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey()
+            Employee.ID.primaryKeyColumn()
                     .caption(Employee.ID.name())
                     .columnName("empno")
                     .beanProperty("id"),
@@ -332,7 +332,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name())
                     .beanProperty("department"),
-            Employee.JOB.item(
+            Employee.JOB.itemColumn(
                     asList(item("ANALYST"), item("CLERK"),
                             item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
@@ -360,10 +360,10 @@ public final class TestDomain extends DefaultDomain {
                             .build())
                     .nullable(false)
                     .beanProperty("hiredate"),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()),
-            Employee.DEPARTMENT_NAME.derived(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
-            Employee.DATA.blob()
+            Employee.DEPARTMENT_NAME.derivedAttribute(new DepartmentNameProvider(), Employee.NAME, Employee.DEPARTMENT_FK),
+            Employee.DATA.blobColumn()
                     .caption("Data")
                     .eagerlyLoaded(true))
             .tableName("scott.emp")
@@ -398,11 +398,11 @@ public final class TestDomain extends DefaultDomain {
 
   void keyTest() {
     add(KeyTest.TYPE.define(
-            KeyTest.ID1.primaryKey()
+            KeyTest.ID1.primaryKeyColumn()
                     .primaryKeyIndex(0),
-            KeyTest.ID2.primaryKey()
+            KeyTest.ID2.primaryKeyColumn()
                     .primaryKeyIndex(1),
-            KeyTest.ID3.primaryKey()
+            KeyTest.ID3.primaryKeyColumn()
                     .primaryKeyIndex(2)
                     .nullable(true)));
   }
@@ -430,7 +430,7 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifies() {
     add(TransModifies.TYPE.define(
-            TransModifies.ID.primaryKey(),
+            TransModifies.ID.primaryKeyColumn(),
             TransModifies.TRANS.attribute()));
   }
 
@@ -443,7 +443,7 @@ public final class TestDomain extends DefaultDomain {
 
   void transientModifiesNot() {
     add(TransModifiesNot.TYPE.define(
-            TransModifiesNot.ID.primaryKey(),
+            TransModifiesNot.ID.primaryKeyColumn(),
             TransModifiesNot.TRANS.attribute()
                     .modifiesEntity(false)));
   }
@@ -458,7 +458,7 @@ public final class TestDomain extends DefaultDomain {
 
   void nullString() {
     add(NullString.TYPE.define(
-            NullString.ID.primaryKey(),
+            NullString.ID.primaryKeyColumn(),
             NullString.ATTR.column(),
             NullString.ATTR2.column())
             .stringFactory(entity -> null));
@@ -474,9 +474,9 @@ public final class TestDomain extends DefaultDomain {
 
   void invalidDerived() {
     add(InvalidDerived.TYPE.define(
-            InvalidDerived.ID.primaryKey(),
+            InvalidDerived.ID.primaryKeyColumn(),
             InvalidDerived.INT.column(),
-            InvalidDerived.INVALID_DERIVED.derived(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
+            InvalidDerived.INVALID_DERIVED.derivedAttribute(linkedValues -> linkedValues.get(InvalidDerived.INT).intValue(), InvalidDerived.ID))
             .caption(InvalidDerived.INVALID_DERIVED.name())//incorrect source value, trigger exception
             .stringFactory(entity -> null));
   }

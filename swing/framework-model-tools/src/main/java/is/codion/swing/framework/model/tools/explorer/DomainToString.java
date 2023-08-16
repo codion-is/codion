@@ -161,10 +161,10 @@ final class DomainToString {
 
   private static String definitionType(Attribute<?> attribute, boolean primaryKey) {
     if (attribute.isByteArray()) {
-      return "blob()";
+      return "blobColumn()";
     }
 
-    return primaryKey ? "primaryKey()" : "column()";
+    return primaryKey ? "primaryKeyColumn()" : "column()";
   }
 
   private static String interfaceName(String tableName, boolean uppercase) {

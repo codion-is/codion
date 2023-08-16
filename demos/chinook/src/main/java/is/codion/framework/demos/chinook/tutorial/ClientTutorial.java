@@ -65,7 +65,7 @@ public final class ClientTutorial {
       super(DOMAIN);
       add(Artist.TYPE.define(
               Artist.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Artist.NAME
                       .column()
                       .caption("Name")
@@ -73,7 +73,7 @@ public final class ClientTutorial {
                       .nullable(false)
                       .maximumLength(120),
               Artist.NUMBER_OF_ALBUMS
-                      .subquery("select count(*) from chinook.album " +
+                      .subqueryColumn("select count(*) from chinook.album " +
                               "where album.artistid = artist.artistid")
                       .caption("Albums"))
               .keyGenerator(automatic("chinook.artist"))
@@ -82,7 +82,7 @@ public final class ClientTutorial {
 
       add(Artist.TYPE.define(
               Album.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Album.ARTIST_ID
                       .column()
                       .nullable(false),

@@ -50,7 +50,7 @@ public class Store extends DefaultDomain {
 
     add(Customer.TYPE.define(
             Customer.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             Customer.FIRST_NAME
                     .column()
                     .caption("First name")
@@ -80,7 +80,7 @@ public class Store extends DefaultDomain {
 
     add(Address.TYPE.define(
             Address.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             Address.CUSTOMER_ID
                     .column()
                     .nullable(false),
@@ -109,7 +109,7 @@ public class Store extends DefaultDomain {
   void addressExpanded() {
     ColumnDefinition.Builder<Long, ?> id =
             Address.ID
-                    .primaryKey();
+                    .primaryKeyColumn();
 
     ColumnDefinition.Builder<Long, ?> customerId =
             Address.CUSTOMER_ID

@@ -82,7 +82,7 @@ public final class TestKeysDomain extends DefaultDomain {
 //                    .primaryKeyIndex(1)
     ));
     add(TestFkMaster.TYPE.define(
-            TestFkDetail.ID.primaryKey(),
+            TestFkDetail.ID.primaryKeyColumn(),
             TestFkDetail.MASTER_ID1.column(),
             TestFkDetail.MASTER_ID2.column(),
             TestFkDetail.MASTER_FK.foreignKey()));

@@ -101,7 +101,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.DEPTNO.primaryKey()
+            Department.DEPTNO.primaryKeyColumn()
                     .caption(Department.DEPTNO.name())
                     .updatable(true)
                     .nullable(false)
@@ -155,7 +155,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey()
+            Employee.ID.primaryKeyColumn()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())
@@ -164,7 +164,7 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name()),
-            Employee.JOB.item(
+            Employee.JOB.itemColumn(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
@@ -184,10 +184,10 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.HIRETIME.column()
                     .caption(Employee.HIRETIME.name()),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOC)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOC)
                     .caption(Department.LOC.name()),
             Employee.DATA_LAZY.column(),
-            Employee.DATA.blob()
+            Employee.DATA.blobColumn()
                     .eagerlyLoaded(true))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
@@ -206,7 +206,7 @@ public final class TestDomain extends DefaultDomain {
 
   void departmentFk() {
     add(DepartmentFk.TYPE.define(
-            DepartmentFk.DEPTNO.primaryKey()
+            DepartmentFk.DEPTNO.primaryKeyColumn()
                     .caption(Department.DEPTNO.name()),
             DepartmentFk.DNAME.column()
                     .caption(DepartmentFk.DNAME.name()),
@@ -235,7 +235,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employeeFk() {
     add(EmployeeFk.TYPE.define(
-            EmployeeFk.ID.primaryKey()
+            EmployeeFk.ID.primaryKeyColumn()
                     .caption(EmployeeFk.ID.name()),
             EmployeeFk.NAME.column()
                     .caption(EmployeeFk.NAME.name())
@@ -291,7 +291,7 @@ public final class TestDomain extends DefaultDomain {
       }
     };
     add(UUIDTestDefault.TYPE.define(
-            UUIDTestDefault.ID.primaryKey()
+            UUIDTestDefault.ID.primaryKeyColumn()
                     .caption("Id"),
             UUIDTestDefault.DATA.column()
                     .caption("Data"))
@@ -313,7 +313,7 @@ public final class TestDomain extends DefaultDomain {
       }
     };
     add(UUIDTestNoDefault.TYPE.define(
-            UUIDTestNoDefault.ID.primaryKey()
+            UUIDTestNoDefault.ID.primaryKeyColumn()
                     .caption("Id"),
             UUIDTestNoDefault.DATA.column()
                     .caption("Data"))
@@ -387,7 +387,7 @@ public final class TestDomain extends DefaultDomain {
   private void empnoDeptno() {
     add(EmpnoDeptno.TYPE.define(
             EmpnoDeptno.DEPTNO.column(),
-            EmpnoDeptno.EMPNO.primaryKey())
+            EmpnoDeptno.EMPNO.primaryKeyColumn())
             .selectQuery(SelectQuery.builder()
                     .from("scott.emp e, scott.dept d")
                     .where("e.deptno = d.deptno")
@@ -481,7 +481,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKey(),
+            Master.ID.primaryKeyColumn(),
             Master.DATA.column())
             .keyGenerator(identity()));
   }
@@ -499,7 +499,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKey(),
+            Detail.ID.primaryKeyColumn(),
             Detail.MASTER_1_ID.column(),
             Detail.MASTER_1_FK.foreignKey(),
             Detail.MASTER_2_ID.column(),
@@ -516,7 +516,7 @@ public final class TestDomain extends DefaultDomain {
 
   void masterFk() {
     add(MasterFk.TYPE.define(
-            MasterFk.ID.primaryKey(),
+            MasterFk.ID.primaryKeyColumn(),
             MasterFk.NAME.column()));
   }
 
@@ -531,7 +531,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detailFk() {
     add(DetailFk.TYPE.define(
-            DetailFk.ID.primaryKey(),
+            DetailFk.ID.primaryKeyColumn(),
             DetailFk.MASTER_NAME.column(),
             DetailFk.MASTER_FK.foreignKey()));
   }

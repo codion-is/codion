@@ -70,7 +70,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.DEPTNO.primaryKey()
+            Department.DEPTNO.primaryKeyColumn()
                     .updatable(true).nullable(false),
             Department.NAME.column()
                     .searchColumn(true)
@@ -100,13 +100,13 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.EMPNO.primaryKey(),
+            Employee.EMPNO.primaryKeyColumn(),
             Employee.NAME.column()
                     .searchColumn(true).maximumLength(10).nullable(false),
             Employee.DEPARTMENT.column()
                     .nullable(false),
             Employee.DEPARTMENT_FK.foreignKey(),
-            Employee.JOB.item(
+            Employee.JOB.itemColumn(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .searchColumn(true),
             Employee.SALARY.column()
@@ -117,7 +117,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.MGR_FK.foreignKey(),
             Employee.HIREDATE.column()
                     .nullable(false),
-            Employee.EMP_DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
+            Employee.EMP_DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));
