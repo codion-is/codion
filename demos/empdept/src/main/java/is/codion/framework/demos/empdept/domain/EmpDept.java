@@ -217,7 +217,7 @@ public final class EmpDept extends DefaultDomain {
                             .yearTwoDigits()
                             .build()),
             Employee.DEPARTMENT_LOCATION
-                    .denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+                    .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption("Location"))
             .keyGenerator(increment("scott.emp", Employee.ID.name()))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

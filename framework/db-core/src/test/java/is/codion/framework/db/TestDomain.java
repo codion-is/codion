@@ -124,13 +124,13 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.MASTER_FK.name()),
             Detail.MASTER_VIA_CODE_FK.foreignKey()
                     .caption(Detail.MASTER_FK.name()),
-            Detail.MASTER_NAME.denormalized(Detail.MASTER_FK, Master.NAME)
+            Detail.MASTER_NAME.denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.column()
                     .caption(Detail.MASTER_CODE.name()),
             Detail.INT_VALUE_LIST.itemColumn(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.derived(linkedValues -> {
+            Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
@@ -234,7 +234,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.HIREDATE.column()
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .tableName("scott.emp")
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))

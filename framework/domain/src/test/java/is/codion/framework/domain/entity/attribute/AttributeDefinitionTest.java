@@ -30,21 +30,21 @@ public final class AttributeDefinitionTest {
   @Test
   void derivedAttribute() {
     Attribute<Integer> derived = ENTITY_TYPE.integerAttribute("derived");
-    assertThrows(IllegalArgumentException.class, () -> derived.derived(linkedValues -> null));
+    assertThrows(IllegalArgumentException.class, () -> derived.derivedAttribute(linkedValues -> null));
     Attribute<Integer> source = ENTITY_TYPE.integerColumn("source");
-    assertThrows(UnsupportedOperationException.class, () -> derived.derived(
+    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
             linkedValues -> null, source)
             .nullable(false));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derived(
+    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
             linkedValues -> null, source)
             .defaultValue(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derived(
+    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
             linkedValues -> null, source)
             .maximumLength(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derived(
+    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
             linkedValues -> null, source)
             .minimumValue(10));
-    assertThrows(UnsupportedOperationException.class, () -> derived.derived(
+    assertThrows(UnsupportedOperationException.class, () -> derived.derivedAttribute(
             linkedValues -> null, source)
             .valueRange(10, 20));
   }

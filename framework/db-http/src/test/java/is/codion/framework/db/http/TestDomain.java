@@ -126,7 +126,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.HIREDATE.column()
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()),
             Employee.DATA.column()
                     .caption("Data"))

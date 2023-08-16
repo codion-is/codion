@@ -106,13 +106,13 @@ public final class TestDomain extends DefaultDomain {
                     .readOnly(true),//AbstractEntityEditModelTest.persistWritableForeignKey()
             Detail.MASTER_FK.foreignKey()
                     .caption(Detail.MASTER_FK.name()),
-            Detail.MASTER_NAME.denormalized(Detail.MASTER_FK, Master.NAME)
+            Detail.MASTER_NAME.denormalizedAttribute(Detail.MASTER_FK, Master.NAME)
                     .caption(Detail.MASTER_NAME.name()),
-            Detail.MASTER_CODE.denormalized(Detail.MASTER_FK, Master.CODE)
+            Detail.MASTER_CODE.denormalizedAttribute(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
             Detail.INT_VALUE_LIST.itemColumn(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
-            Detail.INT_DERIVED.derived(linkedValues -> {
+            Detail.INT_DERIVED.derivedAttribute(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
               if (intValue == null) {
                 return null;
@@ -208,7 +208,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.HIREDATE.column()
                     .caption(Employee.HIREDATE.name())
                     .nullable(false),
-            Employee.DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION)
+            Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))

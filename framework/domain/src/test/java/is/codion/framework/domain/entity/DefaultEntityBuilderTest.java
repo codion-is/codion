@@ -66,7 +66,7 @@ public final class DefaultEntityBuilderTest {
                         .defaultValue("DefName"),
                 value.column()
                         .defaultValue(42),
-                derivedValue.derived(sourceValues -> {
+                derivedValue.derivedAttribute(sourceValues -> {
                   Integer sourceValue = sourceValues.get(value);
 
                   return sourceValue == null ? null : sourceValue + 1;

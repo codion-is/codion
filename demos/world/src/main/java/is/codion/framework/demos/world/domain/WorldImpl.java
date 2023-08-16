@@ -180,7 +180,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::foreignKeyCapital[]
             // tag::denormalizedAttribute[]
             Country.CAPITAL_POPULATION
-                    .denormalized(Country.CAPITAL_FK, City.POPULATION)
+                    .denormalizedAttribute(Country.CAPITAL_FK, City.POPULATION)
                     .caption("Capital pop.")
                     .numberFormatGrouping(true),
             // end::denormalizedAttribute[]
@@ -238,7 +238,7 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::booleanColumn[]
             // tag::derivedAttribute[]
             CountryLanguage.NO_OF_SPEAKERS
-                    .derived(new NoOfSpeakersProvider(),
+                    .derivedAttribute(new NoOfSpeakersProvider(),
                             CountryLanguage.COUNTRY_FK, CountryLanguage.PERCENTAGE)
                     .caption("No. of speakers")
                     .numberFormatGrouping(true),

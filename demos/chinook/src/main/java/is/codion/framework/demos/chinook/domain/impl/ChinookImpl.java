@@ -91,7 +91,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .eagerlyLoaded(true)
                     .format(new CoverFormatter()),
             Album.COVERIMAGE
-                    .derived(new CoverArtImageProvider(), Album.COVER),
+                    .derivedAttribute(new CoverArtImageProvider(), Album.COVER),
             Album.NUMBER_OF_TRACKS
                     .subqueryColumn("select count(*) " +"from chinook.track " +
                             "where track.albumid = album.albumid"))
@@ -260,7 +260,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             Track.ID
                     .primaryKeyColumn(),
             Track.ARTIST_DENORM
-                    .denormalized(Track.ALBUM_FK, Album.ARTIST_FK),
+                    .denormalizedAttribute(Track.ALBUM_FK, Album.ARTIST_FK),
             Track.ALBUM_ID
                     .column(),
             // tag::fetchDepth2[]
@@ -290,7 +290,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .column()
                     .nullable(false)
                     .format(NumberFormat.getIntegerInstance()),
-            Track.MINUTES_SECONDS_DERIVED.derived(
+            Track.MINUTES_SECONDS_DERIVED.derivedAttribute(
                     new TrackMinSecProvider(), Track.MILLISECONDS),
             Track.BYTES
                     .column()
@@ -392,7 +392,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .nullable(false)
                     .defaultValue(1),
             InvoiceLine.TOTAL
-                    .derived(new InvoiceLineTotalProvider(),
+                    .derivedAttribute(new InvoiceLineTotalProvider(),
                             InvoiceLine.QUANTITY, InvoiceLine.UNITPRICE))
             .tableName("chinook.invoiceline")
             .keyGenerator(identity()));
@@ -425,7 +425,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
             PlaylistTrack.PLAYLIST_FK
                     .foreignKey(),
             PlaylistTrack.ARTIST_DENORM
-                    .denormalized(PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK),
+                    .denormalizedAttribute(PlaylistTrack.ALBUM_DENORM, Album.ARTIST_FK),
             PlaylistTrack.TRACK_ID
                     .column()
                     .nullable(false),
@@ -433,7 +433,7 @@ public final class ChinookImpl extends DefaultDomain implements Chinook {
                     .foreignKey()
                     .fetchDepth(3),
             PlaylistTrack.ALBUM_DENORM
-                    .denormalized(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
+                    .denormalizedAttribute(PlaylistTrack.TRACK_FK, Track.ALBUM_FK))
             .tableName("chinook.playlisttrack")
             .keyGenerator(identity())
             .stringFactory(StringFactory.builder()

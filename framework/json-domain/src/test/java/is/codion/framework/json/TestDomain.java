@@ -117,7 +117,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.MGR_FK.foreignKey(),
             Employee.HIREDATE.column()
                     .nullable(false),
-            Employee.EMP_DEPARTMENT_LOCATION.denormalized(Employee.DEPARTMENT_FK, Department.LOCATION))
+            Employee.EMP_DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
             .keyGenerator(increment("scott.emp", "empno"))
             .caption("Employee"));
