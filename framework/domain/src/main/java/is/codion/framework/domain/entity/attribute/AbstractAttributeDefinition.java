@@ -461,8 +461,8 @@ abstract class AbstractAttributeDefinition<T> implements AttributeDefinition<T>,
 
     @Override
     public final B caption(String caption) {
-      this.caption = requireNonNull(caption);
-      this.hidden = false;
+      this.caption = caption;
+      this.hidden = caption == null;
       return (B) this;
     }
 

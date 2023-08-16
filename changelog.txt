@@ -9428,3 +9428,4 @@
   AttributeDefinition.Builder.caption() added, methods overloaded with caption parameter removed
   ExceptionPanel.DISPLAY_SYSTEM_PROPERTIES configuration value moved to ExceptionDialogBuilder
   EntityType.define() now throws exception in case of entity type mismatch
+  AbstractAttributeDefinition, null caption allowed
