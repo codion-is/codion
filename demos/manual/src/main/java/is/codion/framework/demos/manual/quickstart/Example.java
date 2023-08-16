@@ -66,7 +66,7 @@ public final class Example {
     void customer() {
       add(Customer.TYPE.define(
               Customer.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Customer.FIRST_NAME
                       .column()
                       .caption("First name")
@@ -105,7 +105,7 @@ public final class Example {
     void address() {
       add(Address.TYPE.define(
               Address.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               Address.STREET
                       .column()
                       .caption("Street")
@@ -139,7 +139,7 @@ public final class Example {
     void customerAddress() {
       add(CustomerAddress.TYPE.define(
               CustomerAddress.ID
-                      .primaryKey(),
+                      .primaryKeyColumn(),
               CustomerAddress.CUSTOMER_ID
                       .column()
                       .nullable(false),

@@ -28,7 +28,7 @@ class ForeignKeyDomain extends DefaultDomain {
 
   void species() {
     add(Species.TYPE.define(
-            Species.NO.primaryKey()
+            Species.NO.primaryKeyColumn()
                     .caption("Number"),
             Species.NAME.column()
                     .caption("Name")

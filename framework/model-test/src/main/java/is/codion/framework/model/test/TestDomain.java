@@ -44,7 +44,7 @@ public final class TestDomain extends DefaultDomain {
 
   void master() {
     add(Master.TYPE.define(
-            Master.ID.primaryKey(),
+            Master.ID.primaryKeyColumn(),
             Master.NAME.column(),
             Master.CODE.column())
             .comparator((o1, o2) -> {//keep like this for equality test in SwingEntityTableModelTest.testSortComparator()
@@ -83,7 +83,7 @@ public final class TestDomain extends DefaultDomain {
 
   void detail() {
     add(Detail.TYPE.define(
-            Detail.ID.primaryKey(),
+            Detail.ID.primaryKeyColumn(),
             Detail.INT.column()
                     .caption(Detail.INT.name()),
             Detail.DOUBLE.column()
@@ -110,7 +110,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption(Detail.MASTER_NAME.name()),
             Detail.MASTER_CODE.denormalized(Detail.MASTER_FK, Master.CODE)
                     .caption(Detail.MASTER_CODE.name()),
-            Detail.INT_VALUE_LIST.item(ITEMS)
+            Detail.INT_VALUE_LIST.itemColumn(ITEMS)
                     .caption(Detail.INT_VALUE_LIST.name()),
             Detail.INT_DERIVED.derived(linkedValues -> {
               Integer intValue = linkedValues.get(Detail.INT);
@@ -137,7 +137,7 @@ public final class TestDomain extends DefaultDomain {
 
   void department() {
     add(Department.TYPE.define(
-            Department.ID.primaryKey()
+            Department.ID.primaryKeyColumn()
                     .caption(Department.ID.name())
                     .updatable(true).nullable(false),
             Department.NAME.column()
@@ -177,7 +177,7 @@ public final class TestDomain extends DefaultDomain {
 
   void employee() {
     add(Employee.TYPE.define(
-            Employee.ID.primaryKey()
+            Employee.ID.primaryKeyColumn()
                     .caption(Employee.ID.name()),
             Employee.NAME.column()
                     .caption(Employee.NAME.name())
@@ -189,7 +189,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_FK.foreignKey()
                     .caption(Employee.DEPARTMENT_FK.name())
                     .attributes(Department.NAME),
-            Employee.JOB.item(
+            Employee.JOB.itemColumn(
                     asList(item("ANALYST"), item("CLERK"), item("MANAGER"), item("PRESIDENT"), item("SALESMAN")))
                     .caption(Employee.JOB.name())
                     .searchColumn(true),
@@ -239,7 +239,7 @@ public final class TestDomain extends DefaultDomain {
 
   void enumEntity() {
     add(EnumEntity.TYPE.define(
-            EnumEntity.ID.primaryKey(),
+            EnumEntity.ID.primaryKeyColumn(),
             EnumEntity.ENUM_TYPE.column()));
   }
 }

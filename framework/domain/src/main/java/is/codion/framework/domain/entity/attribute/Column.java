@@ -26,7 +26,7 @@ public interface Column<T> extends Attribute<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder} with primary key index 0
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey();
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKeyColumn();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, based on a subquery.
@@ -34,7 +34,7 @@ public interface Column<T> extends Attribute<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery);
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, based on the given items.
@@ -43,7 +43,7 @@ public interface Column<T> extends Attribute<T> {
    * @return a new {@link ColumnDefinition.Builder}
    * @throws IllegalArgumentException in case the valid item list contains duplicate values
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> item(List<Item<T>> validItems);
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> itemColumn(List<Item<T>> validItems);
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance representing a Boolean value.
@@ -54,42 +54,42 @@ public interface Column<T> extends Attribute<T> {
    * @param falseValue the value representing 'false' in the underlying column
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> bool(Class<C> columnClass,
-                                                                                                C trueValue, C falseValue);
+  <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
+                                                                                                         C trueValue, C falseValue);
 
   /**
    * Creates a new {@link BlobColumnDefinition.Builder} instance.
    * @return a new {@link BlobColumnDefinition.Builder}
    */
-  BlobColumnDefinition.Builder blob();
+  BlobColumnDefinition.Builder blobColumn();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was inserted.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTime();
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the time a record was updated.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTime();
+  <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who inserted a record.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUser();
+  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn();
 
   /**
    * Creates a new {@link ColumnDefinition.Builder} instance, representing the username of the user who updated a record.
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUser();
+  <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn();
 
   /**
    * Creates a new {@link Column}, associated with the given entityType.

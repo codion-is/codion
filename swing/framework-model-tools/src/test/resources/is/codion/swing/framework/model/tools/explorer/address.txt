@@ -15,7 +15,7 @@ public interface Address {
 void address() {
 	add(Address.TYPE.define(
 		Address.ADDRESSID
-			.primaryKey(),
+			.primaryKeyColumn(),
 		Address.STREET1
 			.column()
 			.caption("Street1")
@@ -50,6 +50,6 @@ void address() {
 			.nullable(false)
 			.maximumFractionDigits(2),
 		Address.IMAGE
-			.blob()
+			.blobColumn()
 			.caption("Image")));
 }

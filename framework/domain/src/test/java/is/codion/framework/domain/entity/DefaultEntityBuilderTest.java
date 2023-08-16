@@ -61,7 +61,7 @@ public final class DefaultEntityBuilderTest {
       public TestDomain() {
         super(domainType);
         add(entityType.define(
-                id.primaryKey(),
+                id.primaryKeyColumn(),
                 name.column()
                         .defaultValue("DefName"),
                 value.column()

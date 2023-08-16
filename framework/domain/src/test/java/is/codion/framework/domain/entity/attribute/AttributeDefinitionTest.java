@@ -186,11 +186,11 @@ public final class AttributeDefinitionTest {
 
   @Test
   void subqueryColumns() {
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(true));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").readOnly(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").updatable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").insertable(false));
-    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subquery("select").columnExpression("expression"));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").readOnly(true));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").readOnly(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").updatable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").insertable(false));
+    assertThrows(UnsupportedOperationException.class, () -> ENTITY_TYPE.integerColumn("test").subqueryColumn("select").columnExpression("expression"));
   }
 
   @Test
@@ -227,10 +227,10 @@ public final class AttributeDefinitionTest {
   @Test
   void itemAttribute() {
     List<Item<Integer>> itemsDuplicate = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(1));
-    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").item(itemsDuplicate));
+    assertThrows(IllegalArgumentException.class, () -> ENTITY_TYPE.integerColumn("item").itemColumn(itemsDuplicate));
 
     List<Item<Integer>> items = Arrays.asList(Item.item(null), Item.item(1), Item.item(2), Item.item(3));
-    ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").item(items).build();
+    ItemColumnDefinition<Integer> attribute = (ItemColumnDefinition<Integer>) ENTITY_TYPE.integerColumn("item").itemColumn(items).build();
     assertFalse(attribute.isValid(4));
     assertThrows(IllegalArgumentException.class, () -> attribute.item(4));
     assertTrue(attribute.isValid(null));

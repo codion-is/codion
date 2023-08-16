@@ -42,7 +42,7 @@ public final class TestDomainExtended extends DefaultDomain {
 
   void extended() {
     add(T_EXTENDED.define(
-            EXTENDED_ID.primaryKey().primaryKeyIndex(0),
+            EXTENDED_ID.primaryKeyColumn().primaryKeyIndex(0),
             EXTENDED_NAME.column(),
             EXTENDED_DEPT_ID.column(),
             EXTENDED_DEPT_FK.foreignKey()));

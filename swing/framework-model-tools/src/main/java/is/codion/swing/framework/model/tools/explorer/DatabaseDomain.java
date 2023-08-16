@@ -100,7 +100,7 @@ final class DatabaseDomain extends DefaultDomain {
     Column<?> column = column(entityType, metadataColumn);
     ColumnDefinition.Builder<?, ?> builder;
     if (column.isByteArray()) {
-      builder = column.blob().caption(caption);
+      builder = column.blobColumn().caption(caption);
     }
     else {
       builder = column.column().caption(caption);

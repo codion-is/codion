@@ -28,29 +28,29 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKey() {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> primaryKeyColumn() {
     return (ColumnDefinition.Builder<T, B>) column().primaryKeyIndex(0);
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subquery(String subquery) {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> subqueryColumn(String subquery) {
     return new DefaultColumnDefinition.DefaultSubqueryColumnDefinitionBuilder<>(this, subquery);
   }
 
   @Override
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> item(List<Item<T>> validItems) {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> itemColumn(List<Item<T>> validItems) {
     return new DefaultItemColumnDefinition.DefaultItemColumnDefinitionBuilder<>(this, validItems);
   }
 
   @Override
-  public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> bool(Class<C> columnClass,
-                                                                                                       C trueValue, C falseValue) {
+  public <C, B extends ColumnDefinition.Builder<Boolean, B>> ColumnDefinition.Builder<Boolean, B> booleanColumn(Class<C> columnClass,
+                                                                                                                C trueValue, C falseValue) {
     return (ColumnDefinition.Builder<Boolean, B>) new DefaultColumnDefinition.DefaultColumnDefinitionBuilder<>(this)
             .columnClass(columnClass, booleanValueConverter(trueValue, falseValue));
   }
 
   @Override
-  public BlobColumnDefinition.Builder blob() {
+  public BlobColumnDefinition.Builder blobColumn() {
     if (!isByteArray()) {
       throw new IllegalStateException(this + " is not a byte array column");
     }
@@ -65,7 +65,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTime() {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditInsertTimeColumn() {
     if (!isTemporal()) {
       throw new IllegalArgumentException("Column " + this + " is not a temporal column");
     }
@@ -80,7 +80,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
    * @param <B> the builder type
    * @return a new {@link ColumnDefinition.Builder}
    */
-  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTime() {
+  public <B extends ColumnDefinition.Builder<T, B>> ColumnDefinition.Builder<T, B> auditUpdateTimeColumn() {
     if (!isTemporal()) {
       throw new IllegalArgumentException("Column " + this + " is not a temporal column");
     }
@@ -95,7 +95,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
    * @return a new {@link ColumnDefinition.Builder}
    * @throws IllegalArgumentException in case this is not a string attribute
    */
-  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUser() {
+  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditInsertUserColumn() {
     if (!isString()) {
       throw new IllegalArgumentException("Column " + this + " is not a string column");
     }
@@ -110,7 +110,7 @@ final class DefaultColumn<T> extends DefaultAttribute<T> implements Column<T> {
    * @return a new {@link ColumnDefinition.Builder}
    * @throws IllegalArgumentException in case this is not a string attribute
    */
-  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUser() {
+  public <B extends ColumnDefinition.Builder<String, B>> ColumnDefinition.Builder<String, B> auditUpdateUserColumn() {
     if (!isString()) {
       throw new IllegalArgumentException("Column " + this + " is not a string column");
     }

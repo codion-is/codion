@@ -13,7 +13,7 @@ public interface Product {
 void product() {
 	add(Product.TYPE.define(
 		Product.PRODUCTID
-			.primaryKey(),
+			.primaryKeyColumn(),
 		Product.CATEGORYID
 			.column()
 			.nullable(false),

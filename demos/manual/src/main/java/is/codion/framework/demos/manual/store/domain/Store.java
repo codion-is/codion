@@ -74,7 +74,7 @@ public final class Store extends DefaultDomain {
     // tag::customer[]
     add(Customer.TYPE.define(
             Customer.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             Customer.FIRST_NAME
                     .column()
                     .caption("First name")
@@ -105,7 +105,7 @@ public final class Store extends DefaultDomain {
     // tag::address[]
     add(Address.TYPE.define(
             Address.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             Address.STREET
                     .column()
                     .caption("Street")
@@ -136,7 +136,7 @@ public final class Store extends DefaultDomain {
     // tag::customerAddress[]
     add(CustomerAddress.TYPE.define(
             CustomerAddress.ID
-                    .primaryKey(),
+                    .primaryKeyColumn(),
             CustomerAddress.CUSTOMER_ID
                     .column()
                     .nullable(false),
