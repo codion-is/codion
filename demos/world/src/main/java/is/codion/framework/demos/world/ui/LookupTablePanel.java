@@ -88,11 +88,7 @@ final class LookupTablePanel extends EntityTablePanel {
                             .name("JSON..."))
                     .build())
             .addSeparatorAt(5)
-            .addAt(6, toggleMapControl)
-            .addSeparatorAt(9)
-            .addAt(10, ToggleControl.builder(columnSelectionPanelVisibleState)
-                    .name("Columns")
-                    .build());
+            .addAt(6, toggleMapControl);
   }
 
   @Override
@@ -128,13 +124,13 @@ final class LookupTablePanel extends EntityTablePanel {
   private void setMapDialogVisible(boolean mapDialogVisible) {
     if (mapKitDialog == null) {
       mapKitDialog = Dialogs.componentDialog(mapKit)
-          .owner(this)
-          .modal(false)
-          .title("World Map")
-          .size(DEFAULT_MAP_SIZE)
-          .onShown(dialog -> displayCityLocations())
-          .onClosed(e -> mapDialogVisibleState.set(false))
-          .build();
+              .owner(this)
+              .modal(false)
+              .title("World Map")
+              .size(DEFAULT_MAP_SIZE)
+              .onShown(dialog -> displayCityLocations())
+              .onClosed(e -> mapDialogVisibleState.set(false))
+              .build();
     }
     mapKitDialog.setVisible(mapDialogVisible);
   }
@@ -194,8 +190,9 @@ final class LookupTablePanel extends EntityTablePanel {
             .mnemonic('C')
             .smallIcon(FrameworkIcons.instance().clear())
             .build());
-    //Get rid of the column selection menu
-    setControl(ControlCode.SELECT_COLUMNS, null);
+    setControl(ControlCode.SELECT_COLUMNS, ToggleControl.builder(columnSelectionPanelVisibleState)
+            .name("Select")
+            .build());
   }
 
   private void clearTableAndConditions() {
