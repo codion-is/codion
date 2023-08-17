@@ -61,11 +61,11 @@ public class Store extends DefaultDomain {
     // Use the Customer.TYPE constant to create a new entity definition,
     // based on attribute definitions created using the Column constants.
     // This entity definition is then added to the domain model.
-    add(Customer.TYPE.define(
+    add(Customer.TYPE.define(           // returns EntityDefinition.Builder
             Customer.ID
-                    .primaryKeyColumn(),
+                    .primaryKeyColumn(),// returns ColumnDefinition.Builder
             Customer.FIRST_NAME
-                    .column()
+                    .column()           // returns ColumnDefinition.Builder
                     .caption("First name")
                     .nullable(false)
                     .maximumLength(40),
@@ -101,7 +101,7 @@ public class Store extends DefaultDomain {
                     .column()
                     .nullable(false),
             Address.CUSTOMER_FK
-                    .foreignKey()
+                    .foreignKey()       // returns ForeignKeyDefinition.Builder
                     .caption("Customer"),
             Address.STREET
                     .column()
