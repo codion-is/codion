@@ -9,14 +9,14 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import java.util.HashMap;
 import java.util.Map;
 
-final class DefaultKeyBuilder implements Key.Builder {
+final class DefaultKeyBuilder implements Entity.Key.Builder {
 
   private final EntityDefinition definition;
   private final Map<Column<?>, Object> columnValues = new HashMap<>();
 
   private boolean primaryKey = true;
 
-  DefaultKeyBuilder(Key key) {
+  DefaultKeyBuilder(Entity.Key key) {
     this(key.definition());
     this.primaryKey = key.isPrimaryKey();
     key.columns().forEach(column -> columnValues.put(column, key.get(column)));
@@ -27,7 +27,7 @@ final class DefaultKeyBuilder implements Key.Builder {
   }
 
   @Override
-  public <T> Key.Builder with(Column<T> column, T value) {
+  public <T> Entity.Key.Builder with(Column<T> column, T value) {
     ColumnDefinition<T> columnDefinition = definition.columnDefinition(column);
     if (!columnDefinition.isPrimaryKeyColumn()) {
       primaryKey = false;
@@ -38,7 +38,7 @@ final class DefaultKeyBuilder implements Key.Builder {
   }
 
   @Override
-  public Key build() {
+  public Entity.Key build() {
     return new DefaultKey(definition, initializeValues(new HashMap<>(columnValues)), primaryKey);
   }
 

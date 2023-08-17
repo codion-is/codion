@@ -364,14 +364,14 @@ public interface EntityDefinition {
   Entity entity(Map<Attribute<?>, Object> values, Map<Attribute<?>, Object> originalValues);
 
   /**
-   * Creates a new {@link Key} instance based on this definition, initialised with the given value
+   * Creates a new {@link Entity.Key} instance based on this definition, initialised with the given value
    * @param value the key value, assuming a single value key
    * @param <T> the key value type
-   * @return a new {@link Key} instance
+   * @return a new {@link Entity.Key} instance
    * @throws IllegalStateException in case the given primary key is a composite key
    * @throws IllegalArgumentException in case the value is not of the correct type
    */
-  <T> Key primaryKey(T value);
+  <T> Entity.Key primaryKey(T value);
 
   /**
    * Returns the Attribute for the getter this method represents in the {@link EntityType#entityClass()},

@@ -16,7 +16,6 @@ import is.codion.framework.db.http.TestDomain.Department;
 import is.codion.framework.db.http.TestDomain.Employee;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.server.EntityServer;
 import is.codion.framework.server.EntityServerConfiguration;
 import is.codion.framework.servlet.EntityService;
@@ -82,22 +81,22 @@ abstract class AbstractHttpEntityConnectionTest {
             .with(Department.NAME, "name")
             .with(Department.LOCATION, "loc")
             .build();
-    Key key = connection.insert(entity);
+    Entity.Key key = connection.insert(entity);
     assertEquals(Integer.valueOf(33), key.get());
     connection.delete(key);
   }
 
   @Test
   void selectByKey() throws DatabaseException {
-    Key key = connection.entities().primaryKey(Department.TYPE, 10);
+    Entity.Key key = connection.entities().primaryKey(Department.TYPE, 10);
     Collection<Entity> depts = connection.select(singletonList(key));
     assertEquals(1, depts.size());
   }
 
   @Test
   void selectByKeyDifferentEntityTypes() throws DatabaseException {
-    Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
-    Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
+    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 10);
+    Entity.Key empKey = connection.entities().primaryKey(Employee.TYPE, 8);
 
     Collection<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -155,8 +154,8 @@ abstract class AbstractHttpEntityConnectionTest {
 
   @Test
   void deleteByKeyDifferentEntityTypes() throws DatabaseException {
-    Key deptKey = connection.entities().primaryKey(Department.TYPE, 40);
-    Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
+    Entity.Key deptKey = connection.entities().primaryKey(Department.TYPE, 40);
+    Entity.Key empKey = connection.entities().primaryKey(Employee.TYPE, 1);
     connection.beginTransaction();
     try {
       assertEquals(2, connection.select(asList(deptKey, empKey)).size());

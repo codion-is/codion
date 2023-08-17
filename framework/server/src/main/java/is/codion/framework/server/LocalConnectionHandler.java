@@ -14,7 +14,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.slf4j.Logger;
@@ -399,8 +398,8 @@ final class LocalConnectionHandler implements InvocationHandler {
       if (object instanceof Entity) {
         return entityToString((Entity) object);
       }
-      else if (object instanceof Key) {
-        return entityKeyToString((Key) object);
+      else if (object instanceof Entity.Key) {
+        return entityKeyToString((Entity.Key) object);
       }
 
       return super.toString(object);
@@ -426,7 +425,7 @@ final class LocalConnectionHandler implements InvocationHandler {
       return builder.append("}").toString();
     }
 
-    private static String entityKeyToString(Key key) {
+    private static String entityKeyToString(Entity.Key key) {
       return key.type() + " {" + key + "}";
     }
   }

@@ -19,7 +19,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
@@ -138,7 +137,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Refreshes the entities with the given keys by re-selecting them from the underlying database.
    * @param keys the keys of the entities to refresh
    */
-  void refreshEntities(Collection<Key> keys);
+  void refreshEntities(Collection<Entity.Key> keys);
 
   /**
    * @return the {@link EntityTableConditionModel} instance used by this table model
@@ -307,25 +306,25 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in {@code keys}
    */
-  Collection<Entity> entitiesByKey(Collection<Key> keys);
+  Collection<Entity> entitiesByKey(Collection<Entity.Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in {@code primaryKeys}
    * @param keys the primary keys of the entities to select
    */
-  void selectEntitiesByKey(Collection<Key> keys);
+  void selectEntitiesByKey(Collection<Entity.Key> keys);
 
   /**
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity entityByKey(Key primaryKey);
+  Entity entityByKey(Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key
    * @return the row index of the entity with the given primary key, -1 if not found
    */
-  int indexOf(Key primaryKey);
+  int indexOf(Entity.Key primaryKey);
 
   /**
    * Saves any user preferences. Note that if {@link EntityModel#USE_CLIENT_PREFERENCES} is set to 'false',

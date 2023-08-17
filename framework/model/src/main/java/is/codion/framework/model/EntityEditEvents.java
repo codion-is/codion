@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public final class EntityEditEvents {
    * @param entityType the type of entity to listen for
    * @param listener the listener
    */
-  public static void addUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
+  public static void addUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
     EDIT_LISTENER.addUpdateListener(entityType, listener);
   }
 
@@ -81,7 +80,7 @@ public final class EntityEditEvents {
    * @param entityType the entityType
    * @param listener the listener to remove
    */
-  public static void removeUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
+  public static void removeUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
     EDIT_LISTENER.removeUpdateListener(entityType, listener);
   }
 
@@ -106,7 +105,7 @@ public final class EntityEditEvents {
    * Notifies update
    * @param updatedEntities the updated entities mapped to their original primary key
    */
-  public static void notifyUpdated(Map<Key, Entity> updatedEntities) {
+  public static void notifyUpdated(Map<Entity.Key, Entity> updatedEntities) {
     EDIT_LISTENER.notifyUpdated(requireNonNull(updatedEntities));
   }
 
@@ -121,7 +120,7 @@ public final class EntityEditEvents {
   private static final class EntityEditListener {
 
     private final Map<EntityType, Listeners<Collection<Entity>>> insertListeners = new ConcurrentHashMap<>();
-    private final Map<EntityType, Listeners<Map<Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
+    private final Map<EntityType, Listeners<Map<Entity.Key, Entity>>> updateListeners = new ConcurrentHashMap<>();
     private final Map<EntityType, Listeners<Collection<Entity>>> deleteListeners = new ConcurrentHashMap<>();
 
     private void addInsertListener(EntityType entityType, Consumer<Collection<Entity>> listener) {
@@ -132,11 +131,11 @@ public final class EntityEditEvents {
       insertListeners(entityType).removeDataListener(listener);
     }
 
-    private void addUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
+    private void addUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
       updateListeners(entityType).addDataListener(listener);
     }
 
-    private void removeUpdateListener(EntityType entityType, Consumer<Map<Key, Entity>> listener) {
+    private void removeUpdateListener(EntityType entityType, Consumer<Map<Entity.Key, Entity>> listener) {
       updateListeners(entityType).removeDataListener(listener);
     }
 
@@ -159,15 +158,15 @@ public final class EntityEditEvents {
       }
     }
 
-    private void notifyUpdated(Map<Key, Entity> updated) {
+    private void notifyUpdated(Map<Entity.Key, Entity> updated) {
       updated.entrySet()
               .stream()
               .collect(groupingBy(entry -> entry.getKey().type(), LinkedHashMap::new, toList()))
               .forEach(this::notifyUpdated);
     }
 
-    private void notifyUpdated(EntityType entityType, List<Map.Entry<Key, Entity>> updated) {
-      Listeners<Map<Key, Entity>> listeners = updateListeners.get(entityType);
+    private void notifyUpdated(EntityType entityType, List<Map.Entry<Entity.Key, Entity>> updated) {
+      Listeners<Map<Entity.Key, Entity>> listeners = updateListeners.get(entityType);
       if (listeners != null) {
         listeners.onEvent(updated.stream()
                 .collect(toMap(Map.Entry::getKey, Map.Entry::getValue)));
@@ -189,7 +188,7 @@ public final class EntityEditEvents {
       return insertListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 
-    private Listeners<Map<Key, Entity>> updateListeners(EntityType entityType) {
+    private Listeners<Map<Entity.Key, Entity>> updateListeners(EntityType entityType) {
       return updateListeners.computeIfAbsent(requireNonNull(entityType), type -> new Listeners<>());
     }
 

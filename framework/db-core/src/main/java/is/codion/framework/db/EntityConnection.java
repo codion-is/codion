@@ -15,7 +15,6 @@ import is.codion.framework.domain.Domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -34,7 +33,7 @@ import java.util.function.Consumer;
  * operations specified by a single {@link Domain} model.
  * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
  * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)},
- * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Key)} and {@link #delete(Collection)}
+ * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Entity.Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
  * @see #beginTransaction()
@@ -152,7 +151,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the primary key of the inserted entity
    * @throws DatabaseException in case of a database exception
    */
-  Key insert(Entity entity) throws DatabaseException;
+  Entity.Key insert(Entity entity) throws DatabaseException;
 
   /**
    * Inserts the given entities, returning the primary keys in the same order as they were received.
@@ -161,7 +160,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values. Returns the updated entity.
@@ -203,7 +202,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.DeleteException in case no row or multiple rows were deleted
    */
-  void delete(Key entityKey) throws DatabaseException;
+  void delete(Entity.Key entityKey) throws DatabaseException;
 
   /**
    * Deletes the entities with the given primary keys.
@@ -212,7 +211,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.DeleteException in case the number of deleted rows does not match the number of keys
    */
-  void delete(Collection<Key> entityKeys) throws DatabaseException;
+  void delete(Collection<Entity.Key> entityKeys) throws DatabaseException;
 
   /**
    * Deletes the entities specified by the given condition.
@@ -267,7 +266,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.RecordNotFoundException in case the entity was not found
    * @throws is.codion.common.db.exception.MultipleRecordsFoundException in case multiple entities were found
    */
-  Entity select(Key key) throws DatabaseException;
+  Entity select(Entity.Key key) throws DatabaseException;
 
   /**
    * Selects a single entity based on the specified condition
@@ -295,7 +294,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return entities based on {@code keys}
    * @throws DatabaseException in case of a database exception
    */
-  Collection<Entity> select(Collection<Key> keys) throws DatabaseException;
+  Collection<Entity> select(Collection<Entity.Key> keys) throws DatabaseException;
 
   /**
    * Selects entities based on the given condition
@@ -352,7 +351,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case multiple rows were affected
    * @throws DatabaseException in case of a database exception
    */
-  void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException;
+  void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob value associated with {@code blobColumn} from the given entity,
@@ -362,7 +361,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return a byte array containing the blob data or null if no blob data is found
    * @throws DatabaseException in case of a database exception
    */
-  byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
+  byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException;
 
   /**
    * Creates a new {@link Copy.Builder} instance for copying entities from source to destination, with a default batch size of 100.
@@ -480,7 +479,7 @@ public interface EntityConnection extends AutoCloseable {
        * @param onInsert notified each time a batch is inserted, providing the inserted keys
        * @return this builder instance
        */
-      Builder onInsert(Consumer<Collection<Key>> onInsert);
+      Builder onInsert(Consumer<Collection<Entity.Key>> onInsert);
 
       /**
        * Builds and executes this insert operation

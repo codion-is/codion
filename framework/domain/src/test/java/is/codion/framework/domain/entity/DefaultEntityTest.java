@@ -103,7 +103,7 @@ public class DefaultEntityTest {
     assertTrue(entityFromFile.isModified(Detail.STRING));
     assertEquals(originalStringValue, entityFromFile.original(Detail.STRING));
 
-    Key key = entity.primaryKey();
+    Entity.Key key = entity.primaryKey();
     byte[] serialized = Serializer.serialize(singletonList(key));
     List<Object> keyFromFile = Serializer.deserialize(serialized);
     assertEquals(1, keyFromFile.size());
@@ -285,8 +285,8 @@ public class DefaultEntityTest {
             .with(CompositeDetail.COMPOSITE_DETAIL_MASTER_ID_2, 2)
             .build();
 
-    Key referencedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
-    Key cachedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
+    Entity.Key referencedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
+    Entity.Key cachedKey = compositeDetail.referencedKey(CompositeDetail.COMPOSITE_DETAIL_MASTER_FK);
 
     assertSame(cachedKey, referencedKey);
 
@@ -298,9 +298,9 @@ public class DefaultEntityTest {
             .with(Detail.MASTER_VIA_CODE_FK, master)
             .build();
 
-    Key codeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
+    Entity.Key codeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
     assertEquals(Integer.valueOf(3), codeKey.get());
-    Key cachedCodeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
+    Entity.Key cachedCodeKey = detail.referencedKey(Detail.MASTER_VIA_CODE_FK);
     assertEquals(Integer.valueOf(3), cachedCodeKey.get());
 
     assertSame(codeKey, cachedCodeKey);
@@ -354,9 +354,9 @@ public class DefaultEntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    Key key = noPk.primaryKey();
+    Entity.Key key = noPk.primaryKey();
     assertTrue(key.isNull());
-    Key originalKey = noPk.originalPrimaryKey();
+    Entity.Key originalKey = noPk.originalPrimaryKey();
     assertTrue(originalKey.isNull());
   }
 

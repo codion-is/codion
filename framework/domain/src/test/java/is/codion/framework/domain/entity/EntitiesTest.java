@@ -194,7 +194,7 @@ public final class EntitiesTest {
 
   @Test
   void key() {
-    Key key = entities.keyBuilder(KeyTest.TYPE).build();
+    Entity.Key key = entities.keyBuilder(KeyTest.TYPE).build();
     assertEquals(0, key.hashCode());
     assertTrue(key.columns().isEmpty());
     assertTrue(key.isNull());
@@ -248,23 +248,23 @@ public final class EntitiesTest {
             .with(TestDomain.NoPk.COL1, 1)
             .build()
             .isPrimaryKey());
-    Key noPk = entities.keyBuilder(TestDomain.NoPk.TYPE).build();
+    Entity.Key noPk = entities.keyBuilder(TestDomain.NoPk.TYPE).build();
     assertThrows(IllegalArgumentException.class, () -> noPk.get(TestDomain.NoPk.COL1));
   }
 
   @Test
   void keys() {
-    List<Key> intKeys = entities.primaryKeys(TestDomain.Employee.TYPE, 1, 2, 3, 4);
+    List<Entity.Key> intKeys = entities.primaryKeys(TestDomain.Employee.TYPE, 1, 2, 3, 4);
     assertEquals(4, intKeys.size());
     assertEquals(Integer.valueOf(3), intKeys.get(2).get());
-    List<Key> longKeys = entities.primaryKeys(TestDomain.Detail.TYPE, 1L, 2L, 3L, 4L);
+    List<Entity.Key> longKeys = entities.primaryKeys(TestDomain.Detail.TYPE, 1L, 2L, 3L, 4L);
     assertEquals(4, longKeys.size());
     assertEquals(Long.valueOf(3), longKeys.get(2).get());
   }
 
   @Test
   void entity() {
-    Key key = entities.primaryKey(TestDomain.Master.TYPE, 10L);
+    Entity.Key key = entities.primaryKey(TestDomain.Master.TYPE, 10L);
 
     Entity master = Entity.entity(key);
     assertEquals(TestDomain.Master.TYPE, master.type());

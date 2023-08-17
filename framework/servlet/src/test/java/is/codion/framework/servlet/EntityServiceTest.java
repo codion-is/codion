@@ -14,7 +14,6 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.json.db.ConditionObjectMapper;
 import is.codion.framework.json.domain.EntityObjectMapper;
 import is.codion.framework.server.EntityServer;
@@ -271,8 +270,8 @@ public class EntityServiceTest {
 
   @Test
   void dependencies() throws Exception {
-    Key key1 = ENTITIES.primaryKey(Department.TYPE, 10);
-    Key key2 = ENTITIES.primaryKey(Department.TYPE, 20);
+    Entity.Key key1 = ENTITIES.primaryKey(Department.TYPE, 10);
+    Entity.Key key2 = ENTITIES.primaryKey(Department.TYPE, 20);
     List<Entity> entitiesDep = Arrays.asList(Entity.entity(key1), Entity.entity(key2));
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
@@ -342,7 +341,7 @@ public class EntityServiceTest {
 
   @Test
   void selectByKey() throws Exception {
-    List<Key> keys = new ArrayList<>();
+    List<Entity.Key> keys = new ArrayList<>();
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
 
@@ -365,7 +364,7 @@ public class EntityServiceTest {
 
   @Test
   void select() throws Exception {
-    List<Key> keys = new ArrayList<>();
+    List<Entity.Key> keys = new ArrayList<>();
     keys.add(ENTITIES.primaryKey(Department.TYPE, 10));
     keys.add(ENTITIES.primaryKey(Department.TYPE, 20));
     Select select = Select.where(keys(keys)).build();
@@ -405,7 +404,7 @@ public class EntityServiceTest {
       post.setEntity(new ByteArrayEntity(Serializer.serialize(entities)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
-        assertEquals(2, EntityServiceTest.<List<Key>>deserialize(response.getEntity().getContent()).size());
+        assertEquals(2, EntityServiceTest.<List<Entity.Key>>deserialize(response.getEntity().getContent()).size());
       }
       entities.forEach(entity -> entity.put(Department.ID, entity.get(Department.ID) + 1));
       post = new HttpPost(createJsonURI("insert"));

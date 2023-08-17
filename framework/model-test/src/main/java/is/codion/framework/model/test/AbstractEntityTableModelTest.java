@@ -11,7 +11,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.EntityEditModel;
@@ -63,9 +62,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
-    List<Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
-    Key pk1 = keys.get(0);
-    Key pk2 = keys.get(1);
+    List<Entity.Key> keys = tableModel.entities().primaryKeys(Employee.TYPE, 1, 2);
+    Entity.Key pk1 = keys.get(0);
+    Entity.Key pk2 = keys.get(1);
 
     tableModel.selectEntitiesByKey(singletonList(pk1));
     Entity selectedPK1 = tableModel.selectionModel().getSelectedItem();
@@ -145,8 +144,8 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
-    Key pk1 = entities.primaryKey(Employee.TYPE, 1);
-    Key pk2 = entities.primaryKey(Employee.TYPE, 2);
+    Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
+    Entity.Key pk2 = entities.primaryKey(Employee.TYPE, 2);
     tableModel.connectionProvider().connection().beginTransaction();
     try {
       tableModel.selectEntitiesByKey(singletonList(pk1));
@@ -175,10 +174,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     tableModel.refresh();
 
     Entities entities = tableModel.entities();
-    Key pk1 = entities.primaryKey(Employee.TYPE, 1);
+    Entity.Key pk1 = entities.primaryKey(Employee.TYPE, 1);
     assertNotNull(tableModel.entityByKey(pk1));
 
-    Key pk2 = entities.primaryKey(Employee.TYPE, -66);
+    Entity.Key pk2 = entities.primaryKey(Employee.TYPE, -66);
     assertNull(tableModel.entityByKey(pk2));
   }
 
@@ -256,7 +255,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             .with(Detail.ID, 3L)
             .build();
     assertEquals("c", testModel.entityByKey(tmpEnt.primaryKey()).get(Detail.STRING));
-    List<Key> keys = new ArrayList<>();
+    List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.primaryKey());
     tmpEnt = entities.builder(Detail.TYPE)
             .with(Detail.ID, 2L)

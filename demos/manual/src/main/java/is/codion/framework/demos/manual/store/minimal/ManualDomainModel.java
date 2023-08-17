@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -92,7 +91,7 @@ class ManualDomainModel {
             .with(City.NAME, "Reykjavík")
             .build();
 
-    Key customerKey = entities.keyBuilder(Customer.TYPE)
+    Entity.Key customerKey = entities.keyBuilder(Customer.TYPE)
             .with(Customer.ID, 42)
             .build();
 

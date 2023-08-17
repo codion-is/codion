@@ -16,7 +16,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -55,8 +54,8 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private final Event<Collection<Entity>> beforeInsertEvent = Event.event();
   private final Event<Collection<Entity>> afterInsertEvent = Event.event();
-  private final Event<Map<Key, Entity>> beforeUpdateEvent = Event.event();
-  private final Event<Map<Key, Entity>> afterUpdateEvent = Event.event();
+  private final Event<Map<Entity.Key, Entity>> beforeUpdateEvent = Event.event();
+  private final Event<Map<Entity.Key, Entity>> afterUpdateEvent = Event.event();
   private final Event<Collection<Entity>> beforeDeleteEvent = Event.event();
   private final Event<Collection<Entity>> afterDeleteEvent = Event.event();
   private final Event<?> entitiesEditedEvent = Event.event();
@@ -705,22 +704,22 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final void removeBeforeUpdateListener(Consumer<Map<Key, Entity>> listener) {
+  public final void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addBeforeUpdateListener(Consumer<Map<Key, Entity>> listener) {
+  public final void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
     beforeUpdateEvent.addDataListener(listener);
   }
 
   @Override
-  public final void removeAfterUpdateListener(Consumer<Map<Key, Entity>> listener) {
+  public final void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.removeDataListener(listener);
   }
 
   @Override
-  public final void addAfterUpdateListener(Consumer<Map<Key, Entity>> listener) {
+  public final void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener) {
     afterUpdateEvent.addDataListener(listener);
   }
 
@@ -780,7 +779,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return the primary keys of the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Entity.Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
     return connectionProvider.connection().insert(entities);
   }
 
@@ -874,7 +873,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesToUpdate the entities about to be updated
    * @see #addBeforeUpdateListener(Consumer)
    */
-  protected final void notifyBeforeUpdate(Map<Key, Entity> entitiesToUpdate) {
+  protected final void notifyBeforeUpdate(Map<Entity.Key, Entity> entitiesToUpdate) {
     beforeUpdateEvent.accept(entitiesToUpdate);
   }
 
@@ -883,7 +882,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param updatedEntities the updated entities
    * @see #addAfterUpdateListener(Consumer)
    */
-  protected final void notifyAfterUpdate(Map<Key, Entity> updatedEntities) {
+  protected final void notifyAfterUpdate(Map<Entity.Key, Entity> updatedEntities) {
     afterUpdateEvent.accept(updatedEntities);
     if (postEditEvents) {
       EntityEditEvents.notifyUpdated(updatedEntities);
@@ -1086,10 +1085,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @param entitiesAfterUpdate the entities after update
    * @return the updated entities mapped to their respective original primary keys
    */
-  private static Map<Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
-                                                          Collection<? extends Entity> entitiesAfterUpdate) {
+  private static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(Collection<Entity> entitiesBeforeUpdate,
+                                                                 Collection<? extends Entity> entitiesAfterUpdate) {
     List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
-    Map<Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (Entity entity : entitiesBeforeUpdate) {
       keyMap.put(entity.originalPrimaryKey(), findAndRemove(entity.primaryKey(), entitiesAfterUpdateCopy.listIterator()));
     }
@@ -1097,7 +1096,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     return unmodifiableMap(keyMap);
   }
 
-  private static Entity findAndRemove(Key primaryKey, ListIterator<Entity> iterator) {
+  private static Entity findAndRemove(Entity.Key primaryKey, ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
       Entity current = iterator.next();
       if (current.primaryKey().equals(primaryKey)) {

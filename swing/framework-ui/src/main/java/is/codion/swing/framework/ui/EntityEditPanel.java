@@ -12,7 +12,6 @@ import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -1126,10 +1125,10 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
       }
     }
 
-    private final class PopulateUpdatedEntities implements Consumer<Map<Key, Entity>> {
+    private final class PopulateUpdatedEntities implements Consumer<Map<Entity.Key, Entity>> {
 
       @Override
-      public void accept(Map<Key, Entity> updated) {
+      public void accept(Map<Entity.Key, Entity> updated) {
         updatedEntities.clear();
         updatedEntities.addAll(updated.values());
       }

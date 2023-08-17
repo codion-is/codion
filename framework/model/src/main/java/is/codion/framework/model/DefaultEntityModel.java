@@ -8,7 +8,6 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
@@ -280,7 +279,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onInsert(insertedEntities));
   }
 
-  private void onUpdate(Map<Key, Entity> updatedEntities) {
+  private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
     detailModels.keySet().forEach(detailModel -> detailModels.get(detailModel).onUpdate(updatedEntities));
   }
 

@@ -9431,3 +9431,4 @@
   AbstractAttributeDefinition, null caption allowed
   Column, Column postfix added to ColumnDefinition.Builder methods
   Attribute, Attribute postfix added to AttributeDefinition.Builder methods
+  Key moved back to Entity

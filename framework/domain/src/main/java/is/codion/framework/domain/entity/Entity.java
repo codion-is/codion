@@ -6,6 +6,7 @@ package is.codion.framework.domain.entity;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
+import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -15,6 +16,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.Set;
@@ -713,5 +715,129 @@ public interface Entity extends Comparable<Entity> {
     }
 
     return !Objects.equals(originalValue, comparisonValue);
+  }
+
+  /**
+   * Represents a unique column combination for a given entity.
+   */
+  interface Key {
+
+    /**
+     * @return the entity type
+     */
+    EntityType type();
+
+    /**
+     * @return the entity definition
+     */
+    EntityDefinition definition();
+
+    /**
+     * @return the columns comprising this key
+     */
+    List<Column<?>> columns();
+
+    /**
+     * @return true if this key represents a primary key for an entity, note that this is true
+     * for empty keys representing entities without a defined primary key
+     */
+    boolean isPrimaryKey();
+
+    /**
+     * @return true if this key contains no values or if it contains a null value for a non-nullable key attribute
+     */
+    boolean isNull();
+
+    /**
+     * @return true if no non-nullable values are null
+     */
+    boolean isNotNull();
+
+    /**
+     * Returns true if a null value is mapped to the given attribute or no mapping exists.
+     * @param attribute the attribute
+     * @return true if the value mapped to the given attribute is null or none exists
+     */
+    boolean isNull(Attribute<?> attribute);
+
+    /**
+     * Returns true if a non-null value is mapped to the given attribute.
+     * @param attribute the attribute
+     * @return true if a non-null value is mapped to the given attribute
+     */
+    boolean isNotNull(Attribute<?> attribute);
+
+    /**
+     * Returns this keys column. Note that this method throws an exception if this key is a composite key.
+     * @param <T> the column type
+     * @return the key column, useful for single column keys
+     * @throws IllegalStateException in case this is a composite key
+     * @throws NoSuchElementException in case this key contains no values
+     */
+    <T> Column<T> column();
+
+    /**
+     * Returns the value of this key. Note that this method throws an exception if this key is a composite key.
+     * @param <T> the value type
+     * @return the first value contained in this key, useful for single attribute keys
+     * @throws IllegalStateException in case this is a composite key
+     * @throws NoSuchElementException in case this key contains no values
+     */
+    <T> T get();
+
+    /**
+     * Returns the value of this key, wrapped in an {@link Optional}. Note that this method throws an exception if this key is a composite key.
+     * @param <T> the value type
+     * @return the first value contained in this key, wrapped in an {@link Optional}, useful for single attribute keys
+     * @throws IllegalStateException in case this is a composite key
+     * @throws NoSuchElementException in case this key contains no values
+     */
+    <T> Optional<T> optional();
+
+    /**
+     * @param column the column
+     * @param <T> the value type
+     * @return the value associated with the given column
+     * @throws IllegalArgumentException in case this column is not part of this key
+     */
+    <T> T get(Column<T> column);
+
+    /**
+     * @param column the column
+     * @param <T> the value type
+     * @return the value associated with the given column, wrapped in an {@link Optional}
+     * @throws IllegalArgumentException in case this column is not part of this key
+     */
+    <T> Optional<T> optional(Column<T> column);
+
+    /**
+     * Creates a new {@link Builder} instance, initialized with the values in this key.
+     * @return a new builder based on this key
+     */
+    Builder copyBuilder();
+
+    /**
+     * A builder for {@link Key} instances.
+     * Note that the resulting key is assumed to be a primary key
+     * if any of the values is associated with a primary key column.
+     */
+    interface Builder {
+
+      /**
+       * Adds the given column value to this builder
+       * @param column the column
+       * @param value the value
+       * @param <T> the value type
+       * @return this builder instance
+       * @throws IllegalArgumentException in case this column is not part of the entity
+       */
+      <T> Builder with(Column<T> column, T value);
+
+      /**
+       * Builds the key instance
+       * @return a new Key instance
+       */
+      Key build();
+    }
   }
 }

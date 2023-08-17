@@ -15,7 +15,6 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -99,7 +98,7 @@ public interface EntityEditModel {
    * as in, every time an attribute value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #primaryKeyNullObserver
-   * @see Key#isNull()
+   * @see Entity.Key#isNull()
    */
   boolean isEntityNew();
 
@@ -640,26 +639,26 @@ public interface EntityEditModel {
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(Consumer<Map<Key, Entity>> listener);
+  void addBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(Consumer<Map<Key, Entity>> listener);
+  void removeBeforeUpdateListener(Consumer<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed,
    * with the updated entities, mapped to their respective original primary keys, that is,
    * the primary keys before the update was performed
    */
-  void addAfterUpdateListener(Consumer<Map<Key, Entity>> listener);
+  void addAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener);
 
   /**
    * Removes the given listener.
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(Consumer<Map<Key, Entity>> listener);
+  void removeAfterUpdateListener(Consumer<Map<Entity.Key, Entity>> listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed

@@ -23,7 +23,6 @@ import is.codion.framework.db.local.ConfigureDb.Configured;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 
 import org.junit.jupiter.api.AfterEach;
@@ -88,7 +87,7 @@ public class DefaultLocalEntityConnectionTest {
   void delete() throws Exception {
     connection.beginTransaction();
     try {
-      Key key = ENTITIES.primaryKey(Department.TYPE, 40);
+      Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       connection.delete(new ArrayList<>());
       connection.delete(key);
       try {
@@ -102,7 +101,7 @@ public class DefaultLocalEntityConnectionTest {
     }
     connection.beginTransaction();
     try {
-      Key key = ENTITIES.primaryKey(Department.TYPE, 40);
+      Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 40);
       assertEquals(1, connection.delete(key(key)));
       try {
         connection.select(key);
@@ -127,15 +126,15 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void deleteRowNumberMismatch() {
-    Key key400 = ENTITIES.primaryKey(Department.TYPE, 400);
+    Entity.Key key400 = ENTITIES.primaryKey(Department.TYPE, 400);
     assertThrows(DeleteException.class, () -> connection.delete(key400));
-    Key key40 = ENTITIES.primaryKey(Department.TYPE, 40);
+    Entity.Key key40 = ENTITIES.primaryKey(Department.TYPE, 40);
     assertThrows(DeleteException.class, () -> connection.delete(asList(key40, key400)));
   }
 
   @Test
   void deleteReferentialIntegrity() {
-    Key key = ENTITIES.primaryKey(Department.TYPE, 10);
+    Entity.Key key = ENTITIES.primaryKey(Department.TYPE, 10);
     assertThrows(ReferentialIntegrityException.class, () -> connection.delete(key));
   }
 
@@ -175,7 +174,7 @@ public class DefaultLocalEntityConnectionTest {
             .with(NoPrimaryKey.COL_4, 10)
             .build();
 
-    Key key = connection.insert(noPk);
+    Entity.Key key = connection.insert(noPk);
     assertTrue(key.isNull());
   }
 
@@ -380,8 +379,8 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void selectByKey() throws DatabaseException {
-    Key deptKey = ENTITIES.primaryKey(Department.TYPE, 10);
-    Key empKey = ENTITIES.primaryKey(Employee.TYPE, 8);
+    Entity.Key deptKey = ENTITIES.primaryKey(Department.TYPE, 10);
+    Entity.Key empKey = ENTITIES.primaryKey(Employee.TYPE, 8);
 
     Collection<Entity> selected = connection.select(asList(deptKey, empKey));
     assertEquals(2, selected.size());
@@ -1073,7 +1072,7 @@ public class DefaultLocalEntityConnectionTest {
       newDept2.setName("hello2");
       newDept2.setLocation("location");
 
-      List<Key> keys = new ArrayList<>(connection.insert(asList(newDept1, newDept2)));
+      List<Entity.Key> keys = new ArrayList<>(connection.insert(asList(newDept1, newDept2)));
       assertEquals(Integer.valueOf(-1), keys.get(0).get());
       assertEquals(Integer.valueOf(-2), keys.get(1).get());
     }

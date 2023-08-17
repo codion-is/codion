@@ -11,7 +11,6 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -50,12 +49,12 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private final Collection<Attribute<?>> attributes = new ArrayList<>(0);
   private final Entities entities;
   /** A map of keys used to filter the contents of this model by foreign key value. */
-  private final Map<ForeignKey, Set<Key>> foreignKeyFilterKeys = new HashMap<>();
+  private final Map<ForeignKey, Set<Entity.Key>> foreignKeyFilterKeys = new HashMap<>();
   private final Predicate<Entity> foreignKeyIncludeCondition = new ForeignKeyIncludeCondition();
 
   //we keep references to these listeners, since they will only be referenced via a WeakReference elsewhere
   private final Consumer<Collection<Entity>> insertListener = new InsertListener();
-  private final Consumer<Map<Key, Entity>> updateListener = new UpdateListener();
+  private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
   private final Consumer<Collection<Entity>> deleteListener = new DeleteListener();
 
   /** true if the data should only be fetched once, unless {@link #forceRefresh()} is called */
@@ -203,7 +202,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param primaryKey the primary key of the entity to fetch from this model
    * @return the entity with the given key if found in the model, an empty Optional otherwise
    */
-  public final Optional<Entity> entity(Key primaryKey) {
+  public final Optional<Entity> entity(Entity.Key primaryKey) {
     requireNonNull(primaryKey);
 
     return items().stream()
@@ -216,7 +215,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * in the model this method returns silently without changing the selection
    * @param primaryKey the primary key of the entity to select
    */
-  public final void selectByKey(Key primaryKey) {
+  public final void selectByKey(Entity.Key primaryKey) {
     requireNonNull(primaryKey);
     Optional<Entity> entity = entity(primaryKey);
     if (entity.isPresent()) {
@@ -279,7 +278,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKey the foreign key
    * @param keys the keys, null or empty for none
    */
-  public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Key> keys) {
+  public final void setForeignKeyFilterKeys(ForeignKey foreignKey, Collection<Entity.Key> keys) {
     requireNonNull(foreignKey);
     if (nullOrEmpty(keys)) {
       foreignKeyFilterKeys.remove(foreignKey);
@@ -294,7 +293,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
    * @param foreignKey the foreign key
    * @return the keys currently used to filter the items of this model by foreign key, an empty collection for none
    */
-  public final Collection<Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
+  public final Collection<Entity.Key> getForeignKeyFilterKeys(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
     if (foreignKeyFilterKeys.containsKey(foreignKey)) {
       return unmodifiableCollection(new ArrayList<>(foreignKeyFilterKeys.get(foreignKey)));
@@ -398,7 +397,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private Optional<Entity> filteredEntity(Key primaryKey) {
+  private Optional<Entity> filteredEntity(Entity.Key primaryKey) {
     return filteredItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst();
@@ -423,7 +422,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
               + ", should be: " + foreignKeyDefinition.referencedType());
     }
     //if foreign key filter keys have been set previously, initialize with one of those
-    Collection<Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
+    Collection<Entity.Key> filterKeys = getForeignKeyFilterKeys(foreignKey);
     if (!nullOrEmpty(filterKeys)) {
       foreignKeyModel.selectByKey(filterKeys.iterator().next());
     }
@@ -527,10 +526,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     }
   }
 
-  private final class UpdateListener implements Consumer<Map<Key, Entity>> {
+  private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
 
     @Override
-    public void accept(Map<Key, Entity> updated) {
+    public void accept(Map<Entity.Key, Entity> updated) {
       updated.forEach((key, entity) -> replaceItem(Entity.entity(key), entity));
     }
   }
@@ -547,8 +546,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public boolean test(Entity item) {
-      for (Map.Entry<ForeignKey, Set<Key>> entry : foreignKeyFilterKeys.entrySet()) {
-        Key referencedKey = item.referencedKey(entry.getKey());
+      for (Map.Entry<ForeignKey, Set<Entity.Key>> entry : foreignKeyFilterKeys.entrySet()) {
+        Entity.Key referencedKey = item.referencedKey(entry.getKey());
         if (referencedKey == null) {
           return !strictForeignKeyFiltering;
         }

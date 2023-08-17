@@ -6,7 +6,6 @@ package is.codion.framework.json.domain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -26,14 +25,14 @@ import java.util.List;
 import static java.util.Objects.requireNonNull;
 
 /**
- * Entity object mapper for mapping {@link Entity} and {@link Key} to and from JSON.<br><br>
+ * Entity object mapper for mapping {@link Entity} and {@link Entity.Key} to and from JSON.<br><br>
  * For instances use the {@link #entityObjectMapper(Entities)} factory method.
  */
 public final class EntityObjectMapper extends ObjectMapper {
 
   private static final long serialVersionUID = 1;
 
-  public static final TypeReference<List<Key>> KEY_LIST_REFERENCE = new TypeReference<List<Key>>() {};
+  public static final TypeReference<List<Entity.Key>> KEY_LIST_REFERENCE = new TypeReference<List<Entity.Key>>() {};
   public static final TypeReference<List<Entity>> ENTITY_LIST_REFERENCE = new TypeReference<List<Entity>>() {};
 
   private final SimpleModule module = new SimpleModule();
@@ -47,8 +46,8 @@ public final class EntityObjectMapper extends ObjectMapper {
     this.entityDeserializer = new EntityDeserializer(entities, this);
     module.addSerializer(Entity.class, entitySerializer);
     module.addDeserializer(Entity.class, entityDeserializer);
-    module.addSerializer(Key.class, new EntityKeySerializer(this));
-    module.addDeserializer(Key.class, new EntityKeyDeserializer(entities, this));
+    module.addSerializer(Entity.Key.class, new EntityKeySerializer(this));
+    module.addDeserializer(Entity.Key.class, new EntityKeyDeserializer(entities, this));
     module.addKeyDeserializer(EntityType.class, new EntityTypeKeyDeserializer(entities));
     registerModule(module);
     registerModule(new JavaTimeModule());
@@ -117,7 +116,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a JSON string representation of the given entity keys
    * @throws JsonProcessingException in case of an exception
    */
-  public String serializeKeys(Collection<Key> keys) throws JsonProcessingException {
+  public String serializeKeys(Collection<Entity.Key> keys) throws JsonProcessingException {
     return writeValueAsString(keys);
   }
 
@@ -127,7 +126,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Key instances represented by the given JSON string
    * @throws JsonProcessingException in case of an exception
    */
-  public List<Key> deserializeKeys(String jsonString) throws JsonProcessingException {
+  public List<Entity.Key> deserializeKeys(String jsonString) throws JsonProcessingException {
     return readValue(jsonString, KEY_LIST_REFERENCE);
   }
 
@@ -137,7 +136,7 @@ public final class EntityObjectMapper extends ObjectMapper {
    * @return a List containing the Key instances represented by the given JSON input stream
    * @throws IOException in case of an exception
    */
-  public List<Key> deserializeKeys(InputStream inputStream) throws IOException {
+  public List<Entity.Key> deserializeKeys(InputStream inputStream) throws IOException {
     return readValue(inputStream, KEY_LIST_REFERENCE);
   }
 

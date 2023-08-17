@@ -11,7 +11,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Invoice;
 import is.codion.framework.demos.chinook.domain.Chinook.InvoiceLine;
 import is.codion.framework.demos.chinook.domain.Chinook.Track;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Collection;
@@ -31,11 +30,11 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected Collection<Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Entity.Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      Collection<Key> keys = connection.insert(entities);
+      Collection<Entity.Key> keys = connection.insert(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 
