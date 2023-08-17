@@ -17,7 +17,6 @@ import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Column;
 
 import org.slf4j.Logger;
@@ -272,12 +271,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Key insert(Entity entity) throws DatabaseException {
+  public Entity.Key insert(Entity entity) throws DatabaseException {
     return insert(singletonList(entity)).iterator().next();
   }
 
   @Override
-  public Collection<Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
+  public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
@@ -333,12 +332,12 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void delete(Key entityKey) throws DatabaseException {
+  public void delete(Entity.Key entityKey) throws DatabaseException {
     delete(singletonList(entityKey));
   }
 
   @Override
-  public void delete(Collection<Key> keys) throws DatabaseException {
+  public void delete(Collection<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys);
     try {
       synchronized (this.entities) {
@@ -403,7 +402,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public Entity select(Key key) throws DatabaseException {
+  public Entity select(Entity.Key key) throws DatabaseException {
     return selectSingle(key(key));
   }
 
@@ -426,7 +425,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public List<Entity> select(Collection<Key> keys) throws DatabaseException {
+  public List<Entity> select(Collection<Entity.Key> keys) throws DatabaseException {
     Objects.requireNonNull(keys, "keys");
     try {
       synchronized (this.entities) {
@@ -516,7 +515,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public void writeBlob(Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
+  public void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData)
           throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobColumn, "blobColumn");
@@ -536,7 +535,7 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
-  public byte[] readBlob(Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
+  public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     Objects.requireNonNull(primaryKey, "primaryKey");
     Objects.requireNonNull(blobColumn, "blobColumn");
     try {
