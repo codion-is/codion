@@ -588,7 +588,7 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public <T> Key primaryKey(T value) {
+  public <T> Entity.Key primaryKey(T value) {
     if (!hasPrimaryKey()) {
       throw new IllegalArgumentException("Entity '" + entityType + "' has no primary key");
     }

@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.util.Collection;
@@ -99,7 +98,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   }
 
   @Override
-  public void onUpdate(Map<Key, Entity> updatedEntities) {
+  public void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
     Collection<Entity> entities = ofReferencedType(updatedEntities.values());
     detailModel().editModel().replaceForeignKeyValues(foreignKey, entities);
     if (detailModel().containsTableModel()) {

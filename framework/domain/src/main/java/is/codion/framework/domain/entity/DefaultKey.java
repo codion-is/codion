@@ -27,7 +27,7 @@ import static java.util.stream.Collectors.joining;
 /**
  * A class representing a unique key for entities.
  */
-class DefaultKey implements Key, Serializable {
+class DefaultKey implements Entity.Key, Serializable {
 
   private static final long serialVersionUID = 1;
 

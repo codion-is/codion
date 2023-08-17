@@ -116,7 +116,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .caption("Continent")
                     .nullable(false),
             // end::item[]
-            // tag::columnAttribute[]
+            // tag::column[]
             Country.REGION
                     .column()
                     .caption("Region")
@@ -147,7 +147,7 @@ public final class WorldImpl extends DefaultDomain implements World {
                     .caption("Life expectancy")
                     .maximumFractionDigits(1)
                     .valueRange(0, 99),
-            // end::columnAttribute[]
+            // end::column[]
             Country.GNP
                     .column()
                     .caption("GNP")
@@ -186,12 +186,14 @@ public final class WorldImpl extends DefaultDomain implements World {
             // end::denormalizedAttribute[]
             // tag::subqueryColumn[]
             Country.NO_OF_CITIES
-                    .subqueryColumn("select count(*) from world.city " +
+                    .subqueryColumn(
+                            "select count(*) from world.city " +
                             "where city.countrycode = country.code")
                     .caption("No. of cities"),
             // end::subqueryColumn[]
             Country.NO_OF_LANGUAGES
-                    .subqueryColumn("select count(*) from world.countrylanguage " +
+                    .subqueryColumn(
+                            "select count(*) from world.countrylanguage " +
                             "where countrylanguage.countrycode = country.code")
                     .caption("No. of languages"),
             // tag::blobColumn[]

@@ -12,7 +12,7 @@ import java.util.List;
 
 /**
  * A repository containing the {@link EntityDefinition}s for a given domain.
- * Factory for {@link Entity} and {@link Key} instances.
+ * Factory for {@link Entity} and {@link Entity.Key} instances.
  * @see #entity(EntityType)
  * @see #builder(EntityType)
  * @see #primaryKey(EntityType, Object)
@@ -78,33 +78,33 @@ public interface Entities {
   Entity.Builder builder(EntityType entityType);
 
   /**
-   * Creates a new {@link Key} instance of the given entityType, initialised with the given value
+   * Creates a new {@link Entity.Key} instance of the given entityType, initialised with the given value
    * @param entityType the entityType
    * @param value the key value, assumes a single value key
    * @param <T> the key value type
-   * @return a new {@link Key} instance
+   * @return a new {@link Entity.Key} instance
    * @throws IllegalStateException in case the given primary key is a composite key
    * @throws IllegalArgumentException in case the value is not of the correct type
    * @throws NullPointerException in case entityType is null
    */
-  <T> Key primaryKey(EntityType entityType, T value);
+  <T> Entity.Key primaryKey(EntityType entityType, T value);
 
   /**
-   * Creates new {@link Key} instances of the given entityType, initialised with the given values
+   * Creates new {@link Entity.Key} instances of the given entityType, initialised with the given values
    * @param entityType the entityType
    * @param values the key values, assumes a single value key
    * @param <T> the key value type
-   * @return new {@link Key} instances
+   * @return new {@link Entity.Key} instances
    * @throws IllegalStateException in case the given primary key is a composite key
    * @throws IllegalArgumentException in case any of the values is not of the correct type
    * @throws NullPointerException in case entityType or values is null
    */
-  <T> List<Key> primaryKeys(EntityType entityType, T... values);
+  <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values);
 
   /**
-   * Creates a new {@link Key.Builder} instance for the given entity type
+   * Creates a new {@link Entity.Key.Builder} instance for the given entity type
    * @param entityType the entity type
    * @return a new builder
    */
-  Key.Builder keyBuilder(EntityType entityType);
+  Entity.Key.Builder keyBuilder(EntityType entityType);
 }

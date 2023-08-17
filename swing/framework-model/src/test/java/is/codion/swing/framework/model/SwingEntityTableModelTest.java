@@ -10,7 +10,6 @@ import is.codion.common.model.table.ColumnConditionModel.AutomaticWildcard;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -192,10 +191,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     tableModel.sortModel().setSortOrder(Employee.NAME, SortOrder.ASCENDING);
     assertEquals(SortOrder.ASCENDING, tableModel.sortModel().sortOrder(Employee.NAME));
 
-    Key pk1 = connectionProvider().entities().primaryKey(Employee.TYPE, 10);//ADAMS
+    Entity.Key pk1 = connectionProvider().entities().primaryKey(Employee.TYPE, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    Key pk2 = connectionProvider().entities().primaryKey(Employee.TYPE, -66);
+    Entity.Key pk2 = connectionProvider().entities().primaryKey(Employee.TYPE, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 

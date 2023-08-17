@@ -8,7 +8,6 @@ import is.codion.framework.db.TestDomain;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
 import org.junit.jupiter.api.Test;
@@ -160,14 +159,14 @@ public final class ConditionTest {
 
   @Test
   void compositePrimaryKeyConditionWithNullValues() {
-    Key masterKey = ENTITIES.keyBuilder(Master.TYPE)
+    Entity.Key masterKey = ENTITIES.keyBuilder(Master.TYPE)
             .with(Master.ID_1, 1)
             .with(Master.ID_2, null)
             .with(Master.CODE, 3)
             .build();
     key(masterKey);
 
-    Key masterKey2 = ENTITIES.keyBuilder(Master.TYPE)
+    Entity.Key masterKey2 = ENTITIES.keyBuilder(Master.TYPE)
             .with(Master.ID_1, null)
             .with(Master.ID_2, null)
             .with(Master.CODE, 42)
@@ -382,8 +381,8 @@ public final class ConditionTest {
     condition2 = all(Employee.TYPE);
     assertNotEquals(condition1, condition2);
 
-    Key key1 = ENTITIES.primaryKey(Employee.TYPE, 1);
-    Key key2 = ENTITIES.primaryKey(Employee.TYPE, 2);
+    Entity.Key key1 = ENTITIES.primaryKey(Employee.TYPE, 1);
+    Entity.Key key2 = ENTITIES.primaryKey(Employee.TYPE, 2);
     condition1 = key(key1);
     condition2 = key(key1);
     assertEquals(condition1, condition2);

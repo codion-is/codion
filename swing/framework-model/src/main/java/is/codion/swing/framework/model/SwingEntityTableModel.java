@@ -20,7 +20,6 @@ import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
@@ -99,7 +98,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
   private final Value<String> statusMessageValue = Value.value("", "");
   private final State conditionChangedState = State.state();
-  private final Consumer<Map<Key, Entity>> updateListener = new UpdateListener();
+  private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   /**
    * the condition used during the last successful refresh
@@ -434,7 +433,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Entity entityByKey(Key primaryKey) {
+  public final Entity entityByKey(Entity.Key primaryKey) {
     return visibleItems().stream()
             .filter(entity -> entity.primaryKey().equals(primaryKey))
             .findFirst()
@@ -442,7 +441,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final int indexOf(Key primaryKey) {
+  public final int indexOf(Entity.Key primaryKey) {
     return indexOf(entityByKey(primaryKey));
   }
 
@@ -452,7 +451,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void refreshEntities(Collection<Key> keys) {
+  public final void refreshEntities(Collection<Entity.Key> keys) {
     try {
       replaceEntities(connectionProvider().connection().select(keys));
     }
@@ -490,12 +489,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final void selectEntitiesByKey(Collection<Key> keys) {
+  public final void selectEntitiesByKey(Collection<Entity.Key> keys) {
     selectionModel().setSelectedItems(new SelectByKeyPredicate(requireNonNull(keys, "keys")));
   }
 
   @Override
-  public final Collection<Entity> entitiesByKey(Collection<Key> keys) {
+  public final Collection<Entity> entitiesByKey(Collection<Entity.Key> keys) {
     requireNonNull(keys, "keys");
     return items().stream()
             .filter(entity -> keys.contains(entity.primaryKey()))
@@ -1029,7 +1028,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     }
   }
 
-  private void onUpdate(Map<Key, Entity> updatedEntities) {
+  private void onUpdate(Map<Entity.Key, Entity> updatedEntities) {
     replaceEntitiesByKey(new HashMap<>(updatedEntities));
   }
 
@@ -1057,11 +1056,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * Note that this does not trigger {@link #filterItems()}, that must be done explicitly.
    * @param entitiesByKey the entities to replace mapped to the corresponding primary key found in this table model
    */
-  private void replaceEntitiesByKey(Map<Key, Entity> entitiesByKey) {
+  private void replaceEntitiesByKey(Map<Entity.Key, Entity> entitiesByKey) {
     for (Entity entity : items()) {
-      Iterator<Map.Entry<Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
+      Iterator<Map.Entry<Entity.Key, Entity>> iterator = entitiesByKey.entrySet().iterator();
       while (iterator.hasNext()) {
-        Map.Entry<Key, Entity> entry = iterator.next();
+        Map.Entry<Entity.Key, Entity> entry = iterator.next();
         if (entity.primaryKey().equals(entry.getKey())) {
           iterator.remove();
           entity.set(entry.getValue());
@@ -1173,10 +1172,10 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             STATUS_MESSAGE_NUMBER_FORMAT.format(filteredItemCount) + " " + MESSAGES.getString("hidden") + ")" : ")");
   }
 
-  private final class UpdateListener implements Consumer<Map<Key, Entity>> {
+  private final class UpdateListener implements Consumer<Map<Entity.Key, Entity>> {
 
     @Override
-    public void accept(Map<Key, Entity> updated) {
+    public void accept(Map<Entity.Key, Entity> updated) {
       updated.values().stream()
               .collect(groupingBy(Entity::type, HashMap::new, toList()))
               .forEach((entityType, entities) ->
@@ -1187,9 +1186,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private static final class SelectByKeyPredicate implements Predicate<Entity> {
 
-    private final List<Key> keyList;
+    private final List<Entity.Key> keyList;
 
-    private SelectByKeyPredicate(Collection<Key> keys) {
+    private SelectByKeyPredicate(Collection<Entity.Key> keys) {
       this.keyList = new ArrayList<>(keys);
     }
 

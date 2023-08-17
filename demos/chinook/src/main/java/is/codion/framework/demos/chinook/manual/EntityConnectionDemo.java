@@ -19,7 +19,6 @@ import is.codion.framework.demos.chinook.domain.Chinook.Track.RaisePriceParamete
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -142,8 +141,8 @@ public final class EntityConnectionDemo {
 
     Entities entities = connection.entities();
 
-    Key key42 = entities.primaryKey(Artist.TYPE, 42L);
-    Key key43 = entities.primaryKey(Artist.TYPE, 43L);
+    Entity.Key key42 = entities.primaryKey(Artist.TYPE, 42L);
+    Entity.Key key43 = entities.primaryKey(Artist.TYPE, 43L);
 
     Collection<Entity> artists = connection.select(asList(key42, key43));
     // end::selectKeys[]
@@ -155,7 +154,7 @@ public final class EntityConnectionDemo {
 
     Entities entities = connection.entities();
 
-    Key key42 = entities.primaryKey(Artist.TYPE, 42L);
+    Entity.Key key42 = entities.primaryKey(Artist.TYPE, 42L);
 
     Entity artists = connection.select(key42);
     // end::selectKey[]
@@ -224,7 +223,7 @@ public final class EntityConnectionDemo {
             .with(Album.TITLE, "Second album")
             .build();
 
-    Collection<Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
+    Collection<Entity.Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
     // end::insert[]
   }
 
@@ -297,7 +296,7 @@ public final class EntityConnectionDemo {
     List<Entity> playlistTracks = connection.select(foreignKey(PlaylistTrack.TRACK_FK).in(tracks));
     List<Entity> invoiceLines = connection.select(foreignKey(InvoiceLine.TRACK_FK).in(tracks));
 
-    List<Key> toDelete = new ArrayList<>();
+    List<Entity.Key> toDelete = new ArrayList<>();
     toDelete.addAll(Entity.primaryKeys(invoiceLines));
     toDelete.addAll(Entity.primaryKeys(playlistTracks));
     toDelete.addAll(Entity.primaryKeys(tracks));

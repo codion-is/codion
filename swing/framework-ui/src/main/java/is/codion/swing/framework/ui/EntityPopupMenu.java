@@ -11,7 +11,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityValidator;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
@@ -62,7 +61,7 @@ final class EntityPopupMenu extends JPopupMenu {
    * @param connection the connection to use when selecting foreign key references
    * @param visitedKeys used to prevent cyclical dependencies wreaking havoc
    */
-  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Key> visitedKeys) {
+  private static void populateEntityMenu(JComponent rootMenu, Entity entity, EntityConnection connection, Set<Entity.Key> visitedKeys) {
     populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(entity.definition().primaryKeyColumnDefinitions()));
     populateForeignKeyMenu(rootMenu, entity, connection, new ArrayList<>(entity.definition().foreignKeyDefinitions()), visitedKeys);
     populateValueMenu(rootMenu, entity, new ArrayList<>(entity.definition().attributeDefinitions()));
@@ -83,7 +82,7 @@ final class EntityPopupMenu extends JPopupMenu {
   }
 
   private static void populateForeignKeyMenu(JComponent rootMenu, Entity entity, EntityConnection connection,
-                                             List<ForeignKeyDefinition> fkDefinitions, Set<Key> visitedKeys) {
+                                             List<ForeignKeyDefinition> fkDefinitions, Set<Entity.Key> visitedKeys) {
     if (!visitedKeys.contains(entity.primaryKey())) {
       visitedKeys.add(entity.primaryKey());
       Text.collate(fkDefinitions);
@@ -92,7 +91,7 @@ final class EntityPopupMenu extends JPopupMenu {
       for (ForeignKeyDefinition fkDefinition : fkDefinitions) {
         ForeignKey foreignKey = fkDefinition.attribute();
         StringBuilder captionBuilder = new StringBuilder("[FK] ").append(fkDefinition.caption()).append(": ");
-        Key referencedKey = entity.referencedKey(foreignKey);
+        Entity.Key referencedKey = entity.referencedKey(foreignKey);
         if (referencedKey == null) {
           JMenuItem menuItem = new JMenuItem(captionBuilder.append(createValueString(entity, fkDefinition)).toString());
           setInvalidModified(menuItem, isValid(validator, entity, foreignKey), entity.isModified(foreignKey));
@@ -179,7 +178,7 @@ final class EntityPopupMenu extends JPopupMenu {
     }
   }
 
-  private static Entity selectEntity(Key primaryKey, EntityConnection connection) {
+  private static Entity selectEntity(Entity.Key primaryKey, EntityConnection connection) {
     try {
       return connection.selectSingle(where(key(primaryKey))
               .fetchDepth(0)

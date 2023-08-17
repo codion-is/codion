@@ -7,7 +7,6 @@ import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.framework.model.EntityComboBoxModel;
@@ -58,12 +57,12 @@ public class EntityComboBoxTest {
   void integerSelectorField() {
     EntityComboBoxModel comboBoxModel = new EntityComboBoxModel(Employee.TYPE, CONNECTION_PROVIDER);
     comboBoxModel.refresh();
-    Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
+    Entity.Key jonesKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 3);
     comboBoxModel.selectByKey(jonesKey);
     EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     NumberField<Integer> empIdValue = comboBox.integerSelectorField(Employee.ID).build();
     assertEquals(3, empIdValue.getNumber());
-    Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
+    Entity.Key blakeKey = comboBoxModel.connectionProvider().entities().primaryKey(Employee.TYPE, 5);
     comboBoxModel.selectByKey(blakeKey);
     assertEquals(5, empIdValue.getNumber());
     comboBoxModel.setSelectedItem(null);

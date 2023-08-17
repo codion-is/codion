@@ -8,7 +8,6 @@ import is.codion.common.value.AbstractValue;
 import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.test.AbstractEntityModelTest;
 import is.codion.framework.model.test.TestDomain.Department;
@@ -90,7 +89,7 @@ public final class SwingEntityModelTest
     SwingEntityEditModel employeeEditModel = employeeModel.editModel();
     EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.foreignKeyComboBoxModel(Employee.DEPARTMENT_FK);
     departmentsComboBoxModel.refresh();
-    Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
+    Entity.Key primaryKey = connectionProvider().entities().primaryKey(Department.TYPE, 40);//operations, no employees
     departmentModel.tableModel().selectEntitiesByKey(Collections.singletonList(primaryKey));
     Entity operations = departmentModel.tableModel().selectionModel().getSelectedItem();
     EntityConnection connection = departmentModel.connectionProvider().connection();

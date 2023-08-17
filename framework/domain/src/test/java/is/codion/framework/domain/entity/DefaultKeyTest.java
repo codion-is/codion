@@ -46,7 +46,7 @@ public final class DefaultKeyTest {
 
   @Test
   void singleKeyNull() {
-    Key key = ENTITIES.keyBuilder(Detail.TYPE).build();
+    Entity.Key key = ENTITIES.keyBuilder(Detail.TYPE).build();
     assertTrue(key.isNull());
     key = key.copyBuilder()
             .with(Detail.ID, null)
@@ -60,18 +60,18 @@ public final class DefaultKeyTest {
 
   @Test
   void keyEquality() {
-    List<Key> keys = ENTITIES.primaryKeys(Employee.TYPE, 1, 2);
-    Key empKey1 = keys.get(0);
-    Key empKey2 = keys.get(1);
+    List<Entity.Key> keys = ENTITIES.primaryKeys(Employee.TYPE, 1, 2);
+    Entity.Key empKey1 = keys.get(0);
+    Entity.Key empKey2 = keys.get(1);
     assertNotEquals(empKey1, empKey2);
 
     empKey2 = ENTITIES.primaryKey(Employee.TYPE, 1);
     assertEquals(empKey1, empKey2);
 
-    Key deptKey = ENTITIES.primaryKey(Department.TYPE, 1);
+    Entity.Key deptKey = ENTITIES.primaryKey(Department.TYPE, 1);
     assertNotEquals(empKey1, deptKey);
 
-    Key compMasterKey = ENTITIES.keyBuilder(CompositeMaster.TYPE)
+    Entity.Key compMasterKey = ENTITIES.keyBuilder(CompositeMaster.TYPE)
             .with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
             .with(CompositeMaster.COMPOSITE_MASTER_ID_2, 2)
             .build();
@@ -79,7 +79,7 @@ public final class DefaultKeyTest {
     assertNotEquals(empKey1, compMasterKey);
     assertNotEquals(compMasterKey, new Object());
 
-    Key compMasterKey2 = ENTITIES.keyBuilder(CompositeMaster.TYPE)
+    Entity.Key compMasterKey2 = ENTITIES.keyBuilder(CompositeMaster.TYPE)
             .with(CompositeMaster.COMPOSITE_MASTER_ID, 1)
             .build();
     assertNotEquals(compMasterKey, compMasterKey2);
@@ -107,8 +107,8 @@ public final class DefaultKeyTest {
     //not null since COMPOSITE_MASTER_ID is nullable
     assertEquals(compMasterKey, compMasterKey2);
 
-    Key detailKey = ENTITIES.primaryKey(Detail.TYPE, 1L);
-    Key detailKey2 = ENTITIES.primaryKey(Detail.TYPE, 2L);
+    Entity.Key detailKey = ENTITIES.primaryKey(Detail.TYPE, 1L);
+    Entity.Key detailKey2 = ENTITIES.primaryKey(Detail.TYPE, 2L);
     assertNotEquals(detailKey, detailKey2);
 
     detailKey2 = detailKey2.copyBuilder()
@@ -140,15 +140,15 @@ public final class DefaultKeyTest {
     department2.remove(Department.NO);
     assertNotEquals(department1.primaryKey(), department2.primaryKey());
 
-    Key departmentKey = ENTITIES.primaryKey(Department.TYPE, 42);
-    Key employeeKey = ENTITIES.primaryKey(Employee.TYPE, 42);
+    Entity.Key departmentKey = ENTITIES.primaryKey(Department.TYPE, 42);
+    Entity.Key employeeKey = ENTITIES.primaryKey(Employee.TYPE, 42);
     assertNotEquals(departmentKey, employeeKey);
   }
 
   @Test
   void nullKeyEquals() {
-    Key nullKey = ENTITIES.keyBuilder(Employee.TYPE).build();
-    Key zeroKey = ENTITIES.primaryKey(Employee.TYPE, 0);
+    Entity.Key nullKey = ENTITIES.keyBuilder(Employee.TYPE).build();
+    Entity.Key zeroKey = ENTITIES.primaryKey(Employee.TYPE, 0);
     assertNotEquals(nullKey, zeroKey);
   }
 }

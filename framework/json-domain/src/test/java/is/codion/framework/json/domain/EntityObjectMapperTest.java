@@ -5,7 +5,6 @@ package is.codion.framework.json.domain;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.json.TestDomain;
 import is.codion.framework.json.TestDomain.Department;
 import is.codion.framework.json.TestDomain.Employee;
@@ -108,24 +107,24 @@ public final class EntityObjectMapperTest {
   void key() throws JsonProcessingException {
     EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    Key deptKey1 = entities.primaryKey(Department.TYPE, 1);
-    Key deptKey2 = entities.primaryKey(Department.TYPE, 2);
+    Entity.Key deptKey1 = entities.primaryKey(Department.TYPE, 1);
+    Entity.Key deptKey2 = entities.primaryKey(Department.TYPE, 2);
 
     String jsonString = mapper.serializeKeys(asList(deptKey1, deptKey2));
 
-    List<Key> keys = mapper.deserializeKeys(jsonString);
+    List<Entity.Key> keys = mapper.deserializeKeys(jsonString);
     assertEquals(Department.TYPE, keys.get(0).type());
     assertEquals(Integer.valueOf(1), keys.get(0).get());
     assertEquals(Integer.valueOf(2), keys.get(1).get());
 
-    Key entityKey = entities.keyBuilder(TestEntity.TYPE)
+    Entity.Key entityKey = entities.keyBuilder(TestEntity.TYPE)
             .with(TestEntity.DECIMAL, BigDecimal.valueOf(1234L))
             .with(TestEntity.DATE_TIME, LocalDateTime.now())
             .build();
 
     jsonString = mapper.writeValueAsString(entityKey);
 
-    Key readKey = mapper.readValue(jsonString, Key.class);
+    Entity.Key readKey = mapper.readValue(jsonString, Entity.Key.class);
 
     assertEquals(entityKey, readKey);
   }
@@ -134,11 +133,11 @@ public final class EntityObjectMapperTest {
   void keyOld() throws Exception {
     EntityObjectMapper mapper = new EntityObjectMapper(entities);
 
-    Key key = entities.primaryKey(Department.TYPE, 42);
+    Entity.Key key = entities.primaryKey(Department.TYPE, 42);
 
     String keyJSON = mapper.writeValueAsString(singletonList(key));
     assertEquals("[{\"entityType\":\"scott.dept\",\"values\":{\"deptno\":42}}]", keyJSON);
-    Key keyParsed = mapper.deserializeKeys(keyJSON).get(0);
+    Entity.Key keyParsed = mapper.deserializeKeys(keyJSON).get(0);
     assertEquals(key.type(), keyParsed.type());
     assertEquals(key.column(), keyParsed.column());
     assertEquals((Integer) key.get(), keyParsed.get());

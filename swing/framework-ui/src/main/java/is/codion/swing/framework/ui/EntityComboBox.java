@@ -5,7 +5,6 @@ package is.codion.swing.framework.ui;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.i18n.FrameworkMessages;
@@ -183,7 +182,7 @@ public final class EntityComboBox extends JComboBox<Entity> {
 
   private Control.Command createForeignKeyFilterCommand(ForeignKey foreignKey) {
     return () -> {
-      Collection<Key> currentFilterKeys = getModel().getForeignKeyFilterKeys(foreignKey);
+      Collection<Entity.Key> currentFilterKeys = getModel().getForeignKeyFilterKeys(foreignKey);
       Dialogs.okCancelDialog(createForeignKeyFilterComboBox(foreignKey).build())
               .owner(this)
               .title(MESSAGES.getString("filter_by"))

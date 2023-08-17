@@ -77,12 +77,12 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final <T> Key primaryKey(EntityType entityType, T value) {
+  public final <T> Entity.Key primaryKey(EntityType entityType, T value) {
     return definition(entityType).primaryKey(value);
   }
 
   @Override
-  public final <T> List<Key> primaryKeys(EntityType entityType, T... values) {
+  public final <T> List<Entity.Key> primaryKeys(EntityType entityType, T... values) {
     EntityDefinition definition = definition(entityType);
 
     return Arrays.stream(requireNonNull(values, "values"))
@@ -91,7 +91,7 @@ public abstract class DefaultEntities implements Entities, Serializable {
   }
 
   @Override
-  public final Key.Builder keyBuilder(EntityType entityType) {
+  public final Entity.Key.Builder keyBuilder(EntityType entityType) {
     return new DefaultKeyBuilder(definition(entityType));
   }
 

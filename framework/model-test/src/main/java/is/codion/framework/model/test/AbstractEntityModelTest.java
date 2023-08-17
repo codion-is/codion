@@ -9,7 +9,6 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.DefaultEntityModel;
@@ -66,7 +65,7 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
     departmentModel.tableModel().refresh();
     EntityEditModel deptEditModel = departmentModel.editModel();
     TableModel deptTableModel = departmentModel.tableModel();
-    Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
+    Entity.Key operationsKey = deptEditModel.entities().primaryKey(Department.TYPE, 40);//operations
     deptTableModel.selectEntitiesByKey(singletonList(operationsKey));
 
     assertTrue(deptTableModel.selectionModel().isSelectionNotEmpty());

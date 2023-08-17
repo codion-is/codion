@@ -282,7 +282,7 @@ public final class EntityTest {
     dept1.put(Department.NO, 3);
     dept2.put(Department.NO, 4);
 
-    Collection<Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
+    Collection<Entity.Key> originalPrimaryKeys = Entity.originalPrimaryKeys(asList(dept1, dept2));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 1)));
     assertTrue(originalPrimaryKeys.contains(entities.primaryKey(Department.TYPE, 2)));
   }
@@ -322,7 +322,7 @@ public final class EntityTest {
     Entity emp = entities.builder(Employee.TYPE)
             .with(Employee.ID, 3)
             .build();
-    Map<Key, Entity> entityMap = Entity.mapToPrimaryKey(asList(dept, emp));
+    Map<Entity.Key, Entity> entityMap = Entity.mapToPrimaryKey(asList(dept, emp));
     assertEquals(dept, entityMap.get(dept.primaryKey()));
     assertEquals(emp, entityMap.get(emp.primaryKey()));
 
@@ -334,10 +334,10 @@ public final class EntityTest {
 
   @Test
   void mapKeysToType() {
-    Key dept = entities.primaryKey(Department.TYPE, 1);
-    Key emp = entities.primaryKey(Employee.TYPE, 3);
+    Entity.Key dept = entities.primaryKey(Department.TYPE, 1);
+    Entity.Key emp = entities.primaryKey(Employee.TYPE, 3);
 
-    LinkedHashMap<EntityType, List<Key>> mapped = Entity.mapKeysToType(asList(dept, emp));
+    LinkedHashMap<EntityType, List<Entity.Key>> mapped = Entity.mapKeysToType(asList(dept, emp));
     assertEquals(dept, mapped.get(Department.TYPE).get(0));
     assertEquals(emp, mapped.get(Employee.TYPE).get(0));
   }
@@ -519,7 +519,7 @@ public final class EntityTest {
     Entity emp4 = entities.builder(Employee.TYPE)
             .build();
 
-    Collection<Key> referencedKeys = Entity.referencedKeys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
+    Collection<Entity.Key> referencedKeys = Entity.referencedKeys(Employee.DEPARTMENT_FK, asList(emp1, emp2, emp3, emp4));
     assertEquals(2, referencedKeys.size());
     referencedKeys.forEach(key -> assertEquals(Department.TYPE, key.type()));
     Collection<Integer> values = Entity.values(new ArrayList<>(referencedKeys));
@@ -535,7 +535,7 @@ public final class EntityTest {
             .with(NoPk.COL2, 2)
             .with(NoPk.COL3, 3)
             .build();
-    Collection<Key> keys = Entity.primaryKeys(singletonList(noPk));
+    Collection<Entity.Key> keys = Entity.primaryKeys(singletonList(noPk));
     assertTrue(keys.iterator().next().isNull());
   }
 }

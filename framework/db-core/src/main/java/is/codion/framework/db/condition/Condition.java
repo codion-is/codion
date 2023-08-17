@@ -9,7 +9,6 @@ import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
-import is.codion.framework.domain.entity.Key;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -29,7 +28,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Specifies a query condition.
  * @see #all(EntityType)
- * @see #key(Key)
+ * @see #key(Entity.Key)
  * @see #keys(Collection)
  * @see #foreignKey(ForeignKey)
  * @see #column(Column)
@@ -99,7 +98,7 @@ public interface Condition {
    * @param key the key
    * @return a condition based on the given key
    */
-  static Condition key(Key key) {
+  static Condition key(Entity.Key key) {
     if (requireNonNull(key).columns().size() > 1) {
       Map<Column<?>, Column<?>> columnMap = key.columns().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));
@@ -118,11 +117,11 @@ public interface Condition {
    * @return a condition based on the given keys
    * @throws IllegalArgumentException in case {@code keys} is empty
    */
-  static Condition keys(Collection<Key> keys) {
+  static Condition keys(Collection<Entity.Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
     }
-    Key firstKey = (keys instanceof List) ? ((List<Key>) keys).get(0) : keys.iterator().next();
+    Entity.Key firstKey = (keys instanceof List) ? ((List<Entity.Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.columns().size() > 1) {
       Map<Column<?>, Column<?>> columnMap = firstKey.columns().stream()
               .collect(Collectors.toMap(Function.identity(), Function.identity()));

@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.state.StateObserver;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.domain.entity.Key;
 
 import java.util.Collection;
 import java.util.Map;
@@ -56,7 +55,7 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
    * Called when an update is performed in the master model, regardless of entity type.
    * @param updatedEntities the updated entities, mapped to their original primary keys
    */
-  default void onUpdate(Map<Key, Entity> updatedEntities) {}
+  default void onUpdate(Map<Entity.Key, Entity> updatedEntities) {}
 
   /**
    * Called when delete is performed in the master model, regardless of entity type.

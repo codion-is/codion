@@ -18,7 +18,7 @@ final class DefaultEntityBuilder implements Entity.Builder {
   private final Map<Attribute<?>, Object> originalValues;
   private final Map<Attribute<?>, Object> builderValues = new LinkedHashMap<>();
 
-  DefaultEntityBuilder(Key key) {
+  DefaultEntityBuilder(Entity.Key key) {
     this(requireNonNull(key).definition());
     key.columns().forEach(attribute -> with((Attribute<Object>) attribute, key.get(attribute)));
   }
