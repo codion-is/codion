@@ -20,13 +20,19 @@ import java.util.function.Function;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 
+// Extend the DefaultDomain class.
 public class Store extends DefaultDomain {
 
-  static final DomainType DOMAIN = domainType(Store.class);
+  // Create a DomainType constant identifying the domain model.
+  public static final DomainType DOMAIN = domainType(Store.class);
 
+  // Create a namespace interface for the Customer entity.
   public interface Customer {
+    // Use the DomainType and the table name to create an
+    // EntityType constant identifying the entity.
     EntityType TYPE = DOMAIN.entityType("store.customer");
 
+    // Use the EntityType to create typed Column constants for each column.
     Column<Long> ID = TYPE.longColumn("id");
     Column<String> FIRST_NAME = TYPE.stringColumn("first_name");
     Column<String> LAST_NAME = TYPE.stringColumn("last_name");
@@ -34,6 +40,7 @@ public class Store extends DefaultDomain {
     Column<Boolean> IS_ACTIVE = TYPE.booleanColumn("is_active");
   }
 
+  // Create a namespace interface for the Address entity.
   public interface Address {
     EntityType TYPE = DOMAIN.entityType("store.address");
 
@@ -42,12 +49,18 @@ public class Store extends DefaultDomain {
     Column<String> STREET = TYPE.stringColumn("street");
     Column<String> CITY = TYPE.stringColumn("city");
 
+    // Use the EntityType to create a ForeignKey
+    // constant for the foreign key relationship.
     ForeignKey CUSTOMER_FK = TYPE.foreignKey("customer_fk", CUSTOMER_ID, Customer.ID);
   }
 
   public Store() {
+    // The DomainType is provided to the superclass constructor.
     super(DOMAIN);
 
+    // Use the Customer.TYPE constant to create a new entity definition,
+    // based on attribute definitions created using the Column constants.
+    // This entity definition is then added to the domain model.
     add(Customer.TYPE.define(
             Customer.ID
                     .primaryKeyColumn(),
@@ -78,6 +91,9 @@ public class Store extends DefaultDomain {
                     .build())
             .caption("Customer"));
 
+    // Use the Address.TYPE constant to create a new entity definition, which is
+    // based on attribute definitions created using the Column and ForeignKey constants.
+    // This entity definition is then added to the domain model.
     add(Address.TYPE.define(
             Address.ID
                     .primaryKeyColumn(),
