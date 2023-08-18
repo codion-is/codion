@@ -786,20 +786,19 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final List<Attribute<?>> selectAttributes;
 
     private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
-      requireNonNull(entityType);
+      this.entityType = requireNonNull(entityType);
       if (requireNonNull(attributeDefinitionBuilders, "attributeDefinitionBuilders").isEmpty()) {
-        throw new IllegalArgumentException("One of more attribute definition builder must be specified for an entity");
+        throw new IllegalArgumentException("One or more attribute definition builder must be specified when defining an entity");
       }
-      List<EntityType> entityTypes = attributeDefinitionBuilders.stream()
+      List<EntityType> attributeEntityTypes = attributeDefinitionBuilders.stream()
               .map(builder -> builder.attribute().entityType())
               .distinct()
               .collect(toList());
-      if (entityTypes.size() > 1) {
-        throw new IllegalArgumentException("Multiple entityTypes found among attribute definitions: " + entityTypes);
+      if (attributeEntityTypes.size() > 1) {
+        throw new IllegalArgumentException("Multiple entityTypes found among attribute definitions: " + attributeEntityTypes);
       }
-      this.entityType = entityTypes.get(0);
-      if (!this.entityType.equals(entityType)) {
-        throw new IllegalArgumentException("Entity type mismatch, expected attributes for entity: " + entityType + ", got: " + this.entityType);
+      if (!entityType.equals(attributeEntityTypes.get(0))) {
+        throw new IllegalArgumentException("Entity definition: " + entityType + ", " + attributeEntityTypes.get(0) + " found in attribute definitions");
       }
       this.attributeMap = unmodifiableMap(attributeMap(attributeDefinitionBuilders));
       this.attributeNameMap = unmodifiableMap(attributeNameMap(attributeMap));

@@ -449,4 +449,29 @@ public class DefaultEntityDefinitionTest {
     Locale.setDefault(new Locale("is", "IS"));
     assertEquals("Prufa", definition.caption());
   }
+
+  @Test
+  void entityTypeMismatch() {
+    EntityType entityType1 = DOMAIN_TYPE.entityType("mismatch1");
+    EntityType entityType2 = DOMAIN_TYPE.entityType("mismatch2");
+
+    class TestDomain extends DefaultDomain {
+      public TestDomain() {
+        super(DOMAIN_TYPE);
+        add(entityType1.define(entityType2.integerColumn("attribute").primaryKeyColumn()));
+      }
+    }
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain());
+
+    class TestDomain2 extends DefaultDomain {
+      public TestDomain2() {
+        super(DOMAIN_TYPE);
+        add(entityType1.define(
+                entityType1.integerColumn("attribute").primaryKeyColumn(),
+                entityType2.integerColumn("attribute").column()));
+      }
+    }
+
+    assertThrows(IllegalArgumentException.class, () -> new TestDomain2());
+  }
 }
