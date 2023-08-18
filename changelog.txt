@@ -9432,3 +9432,5 @@
   Column, Column postfix added to ColumnDefinition.Builder methods
   Attribute, Attribute postfix added to AttributeDefinition.Builder methods
   Key moved back to Entity
+  Entity.Key.isNull() and isNotNull() parameter now Column instead of Attribute
+  Entity.columns() now returns Collection instead of List
