@@ -26,7 +26,7 @@ Codion is a full-stack, Java rich client desktop CRUD application framework, bas
 
 == Motivation
 
-My main motivation for developing Codion back in 2004 was the lack of Java application frameworks which were not based on Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
+My main motivation for developing Codion back in 2004 was the lack of Java application frameworks not based on the Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
 
 I figured a CRUD application framework should:
 
@@ -134,6 +134,9 @@ In the below example, we define a domain model with two entities, *Customer* and
 . Extend the *DefaultDomain* class and create a *DomainType* constant identifying the domain model.
 . Create a namespace interface for each *Entity* and use the *DomainType* to create *EntityType* constants.
 . Use the *EntityType* constant to create *Column* constants for each column and a *ForeignKey* constant for the foreign key relationship.
+
+NOTE:: The constants defined in the above steps represent the domain API and are usually all you need to work with the domain entities.
+
 . Create an *EntityDefinition* for each entity using the *EntityType* constant, based on *AttributeDefinitions* created using the *Column* and *ForeignKey* constants, and add the entity definitions to the domain model.
 
 [source,java]
@@ -249,7 +252,7 @@ NOTE: {url-technical}/technical.html#_live_templates[IntelliJ IDEA live template
 
 === Entity definition expanded
 
-Here's one entity definition from above, pulled apart, with the ingredients visible.
+Here's one entity definition from above, pulled apart, with the ingredients exposed.
 
 .Display code
 [%collapsible]

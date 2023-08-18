@@ -84,6 +84,8 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{cpar}[select(Column<T> column)]
+
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
 
 {url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.Select{cpar}[select(Column<T> column, Select condition)]
@@ -153,20 +155,20 @@ For updating one or more entity instances. These methods throw an exception if a
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateEntity]
 ----
 
 ==== Optimistic locking
 
 The framework performs optimistic locking during updates of entity instances using the methods above, by selecting the entities being updated *for update* (when supported by the underlying database) and comparing all original values to the current row values, throwing an exception if any value differs or the row is missing. Optimistic locking can be turned off system-wide using the *codion.db.useOptimisticLocking=false* system property or {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#USE_OPTIMISTIC_LOCKING[LocalEntityConnection.USE_OPTIMISTIC_LOCKING.set(false)], or on a connection instance via {url-javadoc}{framework-db-local}/is/codion/framework/db/local/LocalEntityConnection.html#setOptimisticLockingEnabled{opar}boolean{cpar}[connection.setOptimisticLockingEnabled(false)].
 
-For updating by where condition.
+For updating by condition.
 
 ** {url-entity-connection}#update{opar}is.codion.framework.db.Update{cpar}[update(Update update)]
 
 [source,java,indent=0]
 ----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=update]
+include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=updateCondition]
 ----
 
 === delete

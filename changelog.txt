@@ -9474,3 +9474,4 @@
   Key moved back to Entity
   Entity.Key.isNull() and isNotNull() parameter now Column instead of Attribute
   Entity.columns() now returns Collection instead of List
+  DefaultLocalEntityConnection.select(column) now only throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value

@@ -229,7 +229,7 @@ public interface EntityConnection extends AutoCloseable {
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
    * @throws IllegalArgumentException in case the given column has not associated with a table column
-   * @throws UnsupportedOperationException in case the entity is based on a select query
+   * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
    */
   <T> List<T> select(Column<T> column) throws DatabaseException;
 
@@ -240,8 +240,8 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given column has not associated with a table column
-   * @throws UnsupportedOperationException in case the entity is based on a select query
+   * @throws IllegalArgumentException in case the given column is not associated with a table column
+   * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
    */
   <T> List<T> select(Column<T> column, Condition condition) throws DatabaseException;
 
@@ -253,8 +253,8 @@ public interface EntityConnection extends AutoCloseable {
    * @param <T> the value type
    * @return the values of the given column
    * @throws DatabaseException in case of a database exception
-   * @throws IllegalArgumentException in case the given column has not associated with a table column
-   * @throws UnsupportedOperationException in case the entity is based on a select query
+   * @throws IllegalArgumentException in case the given column is not associated with a table column
+   * @throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
    */
   <T> List<T> select(Column<T> column, Select select) throws DatabaseException;
 

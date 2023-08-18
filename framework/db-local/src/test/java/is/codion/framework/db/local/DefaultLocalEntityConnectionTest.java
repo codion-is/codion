@@ -357,8 +357,6 @@ public class DefaultLocalEntityConnectionTest {
     assertEquals(1, connection.count(foreignKey(Employee.MGR_FK).isNull()));
 
     assertFalse(connection.select(foreignKey(Employee.DEPARTMENT_FK).in(connection.select(column(Department.DEPTNO).equalTo(20)))).isEmpty());
-
-    assertThrows(UnsupportedOperationException.class, () -> connection.select(Job.JOB, column(Job.JOB).equalTo("CLERK")));
   }
 
   @Test
@@ -699,6 +697,16 @@ public class DefaultLocalEntityConnectionTest {
     result = connection.select(Department.DNAME, column(Department.DEPTNO).equalTo(10));
     assertTrue(result.contains("ACCOUNTING"));
     assertFalse(result.contains("SALES"));
+  }
+
+  @Test
+  void selectValuesCustomQuery() throws Exception {
+    connection.select(EmpnoDeptno.DEPTNO);
+  }
+
+  @Test
+  void selectValuesAggregateColumn() {
+    assertThrows(UnsupportedOperationException.class, () -> connection.select(Job.MAX_SALARY));
   }
 
   @Test

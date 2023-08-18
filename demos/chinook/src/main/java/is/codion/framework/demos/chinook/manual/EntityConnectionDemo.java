@@ -228,7 +228,7 @@ public final class EntityConnectionDemo {
   }
 
   static void update(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::update[]
+    // tag::updateEntity[]
     EntityConnection connection = connectionProvider.connection();
 
     Entity myBand = connection.selectSingle(column(Artist.NAME).equalTo("My Band"));
@@ -243,11 +243,11 @@ public final class EntityConnectionDemo {
     Entity.put(Customer.PHONE, "<none>", customersWithoutPhoneNo);
 
     connection.update(customersWithoutPhoneNo);
-    // end::update[]
+    // end::updateEntity[]
   }
 
   static void updateDemo(EntityConnectionProvider connectionProvider) throws DatabaseException {
-    // tag::update[]
+    // tag::updateCondition[]
     EntityConnection connection = connectionProvider.connection();
 
     connection.update(
@@ -259,7 +259,7 @@ public final class EntityConnectionDemo {
             Update.where(column(Customer.EMAIL).isNull())
                     .set(Customer.EMAIL, "<none>")
                     .build());
-    // end::update[]
+    // end::updateCondition[]
   }
 
   static void deleteCondition(EntityConnectionProvider connectionProvider) throws DatabaseException {
