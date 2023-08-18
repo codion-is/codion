@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity;
 
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 
@@ -148,7 +147,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
   @Override
   public <T> T get(Column<T> column) {
-    if (!values.containsKey(column)) {
+    if (!values.containsKey(requireNonNull(column))) {
       throw new IllegalArgumentException("Column " + column + " is not part of key: " + definition.type());
     }
 
@@ -193,10 +192,10 @@ class DefaultKey implements Entity.Key, Serializable {
       }
 
       if (columns.size() == 1 && otherKey.columns.size() == 1) {
-        Attribute<?> attribute = columns.get(0);
-        Attribute<?> otherAttribute = otherKey.columns.get(0);
+        Column<?> column = columns.get(0);
+        Column<?> otherColumn = otherKey.columns.get(0);
 
-        return Objects.equals(values.get(attribute), otherKey.values.get(otherAttribute)) && attribute.equals(otherAttribute);
+        return Objects.equals(values.get(column), otherKey.values.get(otherColumn)) && column.equals(otherColumn);
       }
 
       return values.equals(otherKey.values);
@@ -234,13 +233,13 @@ class DefaultKey implements Entity.Key, Serializable {
   }
 
   @Override
-  public boolean isNull(Attribute<?> attribute) {
-    return values.get(attribute) == null;
+  public boolean isNull(Column<?> column) {
+    return values.get(column) == null;
   }
 
   @Override
-  public boolean isNotNull(Attribute<?> attribute) {
-    return !isNull(attribute);
+  public boolean isNotNull(Column<?> column) {
+    return !isNull(column);
   }
 
   private Integer computeHashCode() {
