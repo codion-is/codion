@@ -733,9 +733,11 @@ public interface Entity extends Comparable<Entity> {
     EntityDefinition definition();
 
     /**
+     * Note that the column order is undefined here, for the primary key columns
+     * in the correct (indexed) order use {@link EntityDefinition#primaryKeyColumns()}.
      * @return the columns comprising this key
      */
-    List<Column<?>> columns();
+    Collection<Column<?>> columns();
 
     /**
      * @return true if this key represents a primary key for an entity, note that this is true
