@@ -35,6 +35,7 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
+import is.codion.framework.domain.entity.query.SelectQuery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -545,14 +546,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public <T> List<T> select(Column<T> column, Select select) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(column, "column").entityType());
-    if (entityDefinition.selectQuery() != null) {
-      throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom select queries");
-    }
-    requireNonNull(select, "select");
-    if (!select.condition().entityType().equals(column.entityType())) {
+    if (!requireNonNull(select, "select").condition().entityType().equals(column.entityType())) {
       throw new IllegalArgumentException("Condition entity type " + column.entityType() + " required, got " + select.condition().entityType());
     }
     ColumnDefinition<T> columnDefinition = entityDefinition.columnDefinition(column);
+    verifyColumnIsSelectable(columnDefinition, entityDefinition);
     Condition combinedCondition = and(select.condition(), column(column).isNotNull());
     String selectQuery = selectQueries.builder(entityDefinition)
             .select(select, false)
@@ -1447,6 +1445,16 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         return "'" + string + "'";
       default:
         return string;
+    }
+  }
+
+  private static void verifyColumnIsSelectable(ColumnDefinition<?> columnDefinition, EntityDefinition entityDefinition) {
+    if (columnDefinition.isAggregateColumn()) {
+      throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate values");
+    }
+    SelectQuery selectQuery = entityDefinition.selectQuery();
+    if (selectQuery != null && selectQuery.columns() != null) {
+      throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom column clauses");
     }
   }
 
