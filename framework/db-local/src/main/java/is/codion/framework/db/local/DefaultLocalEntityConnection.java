@@ -1006,7 +1006,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private Map<Entity.Key, Entity> selectReferencedEntities(ForeignKeyDefinition foreignKeyDefinition, List<Entity.Key> referencedKeys,
                                                            int currentForeignKeyFetchDepth, int conditionFetchDepthLimit) throws SQLException {
     Entity.Key referencedKey = referencedKeys.get(0);
-    List<Column<?>> keyColumns = referencedKey.columns();
+    Collection<Column<?>> keyColumns = referencedKey.columns();
     List<Entity> referencedEntities = new ArrayList<>(referencedKeys.size());
     int maximumNumberOfParameters = connection.database().maximumNumberOfParameters();
     for (int i = 0; i < referencedKeys.size(); i += maximumNumberOfParameters) {
@@ -1028,7 +1028,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toMap(entity -> createKey(entity, keyColumns), Function.identity()));
   }
 
-  private Entity.Key createKey(Entity entity, List<Column<?>> keyColumns) {
+  private Entity.Key createKey(Entity entity, Collection<Column<?>> keyColumns) {
     Entity.Key.Builder keyBuilder = entities().keyBuilder(entity.type());
     keyColumns.forEach(column -> keyBuilder.with((Column<Object>) column, entity.get(column)));
 
@@ -1400,7 +1400,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static Collection<Attribute<?>> attributesToSelect(ForeignKeyDefinition foreignKeyDefinition,
-                                                             List<? extends Attribute<?>> referencedAttributes) {
+                                                             Collection<? extends Attribute<?>> referencedAttributes) {
     if (foreignKeyDefinition.attributes().isEmpty()) {
       return emptyList();
     }
