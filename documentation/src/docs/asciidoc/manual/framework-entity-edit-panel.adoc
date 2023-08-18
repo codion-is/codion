@@ -41,9 +41,9 @@ include::{dir-source}/is/codion/framework/demos/manual/store/ui/EditPanelDemo.ja
 
 === Boolean
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox{opar}is.codion.framework.domain.entity.Attribute{cpar}[createBooleanComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createBooleanComboBox{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createBooleanComboBox(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox{opar}is.codion.framework.domain.entity.Attribute{cpar}[createCheckBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createCheckBox{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createCheckBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -65,9 +65,9 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Temporal
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel{opar}is.codion.framework.domain.entity.Attribute{cpar}[createTemporalInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTemporalInputPanel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTemporalInputPanel(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField{opar}is.codion.framework.domain.entity.Attribute{cpar}[createLocalDateField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLocalDateField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createLocalDateField(attribute)]
 
 [source,java,indent=0]
 ----
@@ -83,13 +83,13 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Text
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField{opar}is.codion.framework.domain.entity.Attribute{cpar}[createTextField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTextField(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField{opar}is.codion.framework.domain.entity.Attribute{cpar}[createFormattedTextField(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createFormattedTextField{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createFormattedTextField(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea{opar}is.codion.framework.domain.entity.Attribute{cpar}[createTextArea(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextArea{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTextArea(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel{opar}is.codion.framework.domain.entity.Attribute{cpar}[createTextInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createTextInputPanel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createTextInputPanel(attribute)]
 
 [source,java,indent=0]
 ----
@@ -98,7 +98,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Selection
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox{opar}is.codion.framework.domain.entity.Attribute{comma}javax.swing.ComboBoxModel{cpar}[createComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createComboBox{opar}is.codion.framework.domain.entity.attribute.Attribute{comma}javax.swing.ComboBoxModel{cpar}[createComboBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -107,7 +107,7 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 === Items
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createItemComboBox{opar}is.codion.framework.domain.entity.Attribute{cpar}[createItemComboBox(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createItemComboBox{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createItemComboBox(attribute)]
 
 [source,java,indent=0]
 ----
@@ -116,9 +116,9 @@ include::{dir-source}/is/codion/framework/demos/manual/framework/EntityEditPanel
 
 == Panels & labels
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel{opar}is.codion.framework.domain.entity.Attribute{cpar}[createLabel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createLabel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createLabel(attribute)]
 
-{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createInputPanel{opar}is.codion.framework.domain.entity.Attribute{cpar}[createInputPanel(attribute)]
+{url-javadoc}{swing-framework-ui}/is/codion/swing/framework/ui/EntityEditComponentPanel.html#createInputPanel{opar}is.codion.framework.domain.entity.attribute.Attribute{cpar}[createInputPanel(attribute)]
 
 [source,java,indent=0]
 ----

@@ -12,8 +12,6 @@ The database layer is specified by the {url-entity-connection}[EntityConnection]
 
 The <<{dir-tutorials}/chinook/chinook.adoc#_domain, Chinook domain model>> is used in the examples below.
 
-NOTE: Static imports are used extensively in the examples, see <<#_full_example, full example code>>.
-
 == Selecting
 
 By default, when you select a row using {url-entity-connection}[EntityConnection] you receive an Entity instance along with a single level of foreign key references, that is a so-called fetch depth of one. This means that selecting a track you get all the entities referenced via foreign keys as well.
@@ -84,11 +82,11 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 For selecting the values of a single column.
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{cpar}[select(Column<T> column)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{cpar}[select(Column<T> column)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.condition.Condition{cpar}[select(Column<T> column, Condition condition)]
 
-{url-entity-connection}#select{opar}is.codion.framework.domain.entity.Column{comma}is.codion.framework.db.Select{cpar}[select(Column<T> column, Select condition)]
+{url-entity-connection}#select{opar}is.codion.framework.domain.entity.attribute.Column{comma}is.codion.framework.db.Select{cpar}[select(Column<T> column, Select select)]
 
 [source,java,indent=0]
 ----
@@ -220,18 +218,6 @@ Executing procedures is the same as executing functions, except without a return
 ----
 include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[tags=report]
 ----
-
-[#_full_example]
-== Full example
-
-.Show code
-[%collapsible]
-====
-[source,java,indent=0]
-----
-include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityConnectionDemo.java[lines=4..-1]
-----
-====
 
 == Transaction control
 
