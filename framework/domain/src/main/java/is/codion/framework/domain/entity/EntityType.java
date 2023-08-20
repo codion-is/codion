@@ -333,7 +333,7 @@ public interface EntityType {
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the domainType to associate this entity type with
+   * @param domainType the domainType to associate this entity type with
    * @param entityClass the entity representation class
    * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
@@ -353,7 +353,7 @@ public interface EntityType {
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the domainType to associate this entity type with
+   * @param domainType the domainType to associate this entity type with
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @return a {@link EntityType} instance with the given name
    */
@@ -365,7 +365,7 @@ public interface EntityType {
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the domainType to associate this entity type with
+   * @param domainType the domainType to associate this entity type with
    * @param entityClass the entity representation class
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @param <T> the entity representation type
