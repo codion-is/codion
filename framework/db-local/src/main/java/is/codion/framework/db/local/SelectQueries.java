@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.stream.Collectors.joining;
@@ -94,7 +95,7 @@ final class SelectQueries {
         where(select.condition());
       }
       if (groupBy == null) {
-        groupBy(definition.groupByClause());
+        groupBy(createGroupByClause());
       }
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
@@ -200,7 +201,7 @@ final class SelectQueries {
           }
         }
       }
-      if (groupBy != null) {
+      if (groupBy != null && !groupBy.isEmpty()) {
         builder.append(NEWLINE).append(GROUP_BY).append(groupBy);
       }
       if (having != null) {
@@ -287,6 +288,13 @@ final class SelectQueries {
       }
 
       return stringBuilder.toString();
+    }
+
+    private String createGroupByClause() {
+      return definition.columnDefinitions().stream()
+              .filter(ColumnDefinition::isGroupBy)
+              .map(ColumnDefinition::columnExpression)
+              .collect(Collectors.joining(", "));
     }
 
     private void setOrderBy(OrderBy orderBy) {

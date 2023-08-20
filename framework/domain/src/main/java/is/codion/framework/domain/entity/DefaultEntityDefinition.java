@@ -173,11 +173,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final transient String selectTableName;
 
   /**
-   * Holds the group by clause
-   */
-  private final transient String groupByClause;
-
-  /**
    * The primary key value generator
    */
   private final transient KeyGenerator keyGenerator;
@@ -225,7 +220,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     this.selectQuery = builder.selectQuery;
     this.conditionProviders = builder.conditionProviders == null ? null : new HashMap<>(builder.conditionProviders);
     this.entityAttributes = builder.attributes;
-    this.groupByClause = createGroupByClause();
     resolveEntityClassMethods();
   }
 
@@ -327,11 +321,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   @Override
   public OrderBy orderBy() {
     return orderBy;
-  }
-
-  @Override
-  public String groupByClause() {
-    return groupByClause;
   }
 
   @Override
@@ -634,21 +623,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
     stream.defaultReadObject();
     defaultMethodHandles = new ConcurrentHashMap<>();
-  }
-
-  /**
-   * @return a group by clause based on grouping columns, null if no grouping columns are defined
-   */
-  private String createGroupByClause() {
-    List<String> groupByColumns = entityAttributes.columnDefinitions.stream()
-            .filter(ColumnDefinition::isGroupBy)
-            .map(ColumnDefinition::columnExpression)
-            .collect(toList());
-    if (groupByColumns.isEmpty()) {
-      return null;
-    }
-
-    return String.join(", ", groupByColumns);
   }
 
   private void resolveEntityClassMethods() {

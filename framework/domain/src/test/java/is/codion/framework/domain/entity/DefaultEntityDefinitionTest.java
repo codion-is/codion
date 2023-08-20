@@ -74,7 +74,6 @@ public class DefaultEntityDefinitionTest {
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.selectTableName());
-    assertEquals("name", definition.groupByClause());
     assertEquals(stringFactory, definition.stringFactory());
     assertEquals(comparator, definition.comparator());
   }
@@ -198,7 +197,15 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertEquals("p1, p2", definition.groupByClause());
+
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p0")).isAggregate());
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p0")).isGroupBy());
+
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p1")).isAggregate());
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p1")).isGroupBy());
+
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p2")).isAggregate());
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p2")).isGroupBy());
   }
 
   @Test

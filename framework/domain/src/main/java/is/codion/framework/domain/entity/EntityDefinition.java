@@ -112,12 +112,6 @@ public interface EntityDefinition {
   OrderBy orderBy();
 
   /**
-   * @return the group by clause to use when querying entities of this type,
-   * without the "group by" keywords, null if no group by clause is available
-   */
-  String groupByClause();
-
-  /**
    * @return the name of the table to use when selecting entities of this type
    */
   String selectTableName();
