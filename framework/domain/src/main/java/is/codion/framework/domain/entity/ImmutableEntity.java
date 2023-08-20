@@ -72,8 +72,8 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.type().domainType().name());
-    serializerForDomain(definition.type().domainType().name()).serialize(this, stream);
+    stream.writeObject(definition.entityType().domainType().name());
+    serializerForDomain(definition.entityType().domainType().name()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {

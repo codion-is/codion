@@ -176,7 +176,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final String toString() {
-    return getClass() + ", " + entity.type();
+    return getClass() + ", " + entity.entityType();
   }
 
   @Override
@@ -296,7 +296,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityType entityType() {
-    return entity.type();
+    return entity.entityType();
   }
 
   @Override
@@ -429,7 +429,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public void validate(Entity entity) throws ValidationException {
-    if (entity.type().equals(entityType())) {
+    if (entity.entityType().equals(entityType())) {
       validator.validate(entity);
     }
     else {

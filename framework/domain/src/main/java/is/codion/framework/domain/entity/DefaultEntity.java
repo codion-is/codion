@@ -102,8 +102,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public final EntityType type() {
-    return definition.type();
+  public final EntityType entityType() {
+    return definition.entityType();
   }
 
   @Override
@@ -273,8 +273,8 @@ class DefaultEntity implements Entity, Serializable {
     if (entity == this) {
       return emptyMap();
     }
-    if (entity != null && !definition.type().equals(entity.type())) {
-      throw new IllegalArgumentException("Entity of type: " + definition.type() + " expected, got: " + entity.type());
+    if (entity != null && !definition.entityType().equals(entity.entityType())) {
+      throw new IllegalArgumentException("Entity of type: " + definition.entityType() + " expected, got: " + entity.entityType());
     }
     Map<Attribute<?>, Object> previousValues = new HashMap<>();
     definition.attributeDefinitions().forEach(attributeDefinition -> previousValues.put(attributeDefinition.attribute(), get(attributeDefinition)));
@@ -336,8 +336,8 @@ class DefaultEntity implements Entity, Serializable {
       // no wrapping required
       return (T) this;
     }
-    if (!type().entityClass().equals(entityClass)) {
-      throw new IllegalArgumentException("entityClass " + type().entityClass() + " expected, got: " + entityClass);
+    if (!entityType().entityClass().equals(entityClass)) {
+      throw new IllegalArgumentException("entityClass " + entityType().entityClass() + " expected, got: " + entityClass);
     }
 
     return (T) Proxy.newProxyInstance(getClass().getClassLoader(),
@@ -346,9 +346,9 @@ class DefaultEntity implements Entity, Serializable {
 
   @Override
   public final boolean columnValuesEqual(Entity entity) {
-    if (!definition.type().equals(requireNonNull(entity).type())) {
-      throw new IllegalArgumentException("Entity of type " + definition.type() +
-              " expected, got: " + entity.type());
+    if (!definition.entityType().equals(requireNonNull(entity).entityType())) {
+      throw new IllegalArgumentException("Entity of type " + definition.entityType() +
+              " expected, got: " + entity.entityType());
     }
 
     return definition.columnDefinitions().stream()
@@ -534,9 +534,9 @@ class DefaultEntity implements Entity, Serializable {
 
   private void validateForeignKeyValue(ForeignKeyDefinition foreignKeyDefinition, Entity foreignKeyValue) {
     EntityType referencedType = foreignKeyDefinition.referencedType();
-    if (!Objects.equals(referencedType, foreignKeyValue.type())) {
+    if (!Objects.equals(referencedType, foreignKeyValue.entityType())) {
       throw new IllegalArgumentException("Entity of type " + referencedType +
-              " expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.type());
+              " expected for foreign key " + foreignKeyDefinition + ", got: " + foreignKeyValue.entityType());
     }
     foreignKeyDefinition.references().forEach(reference -> throwIfModifiesReadOnlyReference(foreignKeyDefinition, foreignKeyValue, reference));
   }
@@ -792,8 +792,8 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.type().domainType().name());
-    serializerForDomain(definition.type().domainType().name()).serialize(this, stream);
+    stream.writeObject(definition.entityType().domainType().name());
+    serializerForDomain(definition.entityType().domainType().name()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
@@ -889,7 +889,7 @@ class DefaultEntity implements Entity, Serializable {
       if (value instanceof Entity) {
         Entity entityValue = (Entity) value;
 
-        value = entityValue.castTo(entityValue.type().entityClass());
+        value = entityValue.castTo(entityValue.entityType().entityClass());
       }
       if (getterReturnType.equals(Optional.class)) {
         return Optional.ofNullable(value);

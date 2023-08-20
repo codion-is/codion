@@ -218,14 +218,14 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     synchronized (connection) {
       try {
         for (Entity entity : entities) {
-          EntityDefinition entityDefinition = domainEntities.definition(entity.type());
+          EntityDefinition entityDefinition = domainEntities.definition(entity.entityType());
           KeyGenerator keyGenerator = entityDefinition.keyGenerator();
           keyGenerator.beforeInsert(entity, connection);
 
           populateColumnsAndValues(entity, insertableColumns(entityDefinition, keyGenerator.isInserted()),
                   statementColumns, statementValues, columnDefinition -> entity.contains(columnDefinition.attribute()));
           if (keyGenerator.isInserted() && statementColumns.isEmpty()) {
-            throw new SQLException("Unable to insert entity " + entity.type() + ", no values to insert");
+            throw new SQLException("Unable to insert entity " + entity.entityType() + ", no values to insert");
           }
 
           insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
@@ -287,7 +287,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
                     columnDefinition -> entity.isModified(columnDefinition.attribute()));
             if (statementColumns.isEmpty()) {
-              throw new SQLException("Unable to update entity " + entity.type() + ", no modified values found");
+              throw new SQLException("Unable to update entity " + entity.entityType() + ", no modified values found");
             }
 
             Condition condition = key(entity.originalPrimaryKey());
@@ -629,7 +629,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-    for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().type())) {
+    for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().entityType())) {
       List<Entity> dependencies = select(Select.where(foreignKey(foreignKeyReference.attribute()).in(entities))
               .fetchDepth(1)
               .build())
@@ -727,8 +727,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public void writeBlob(Entity.Key primaryKey, Column<byte[]> blobColumn, byte[] blobData) throws DatabaseException {
     requireNonNull(blobData, "blobData");
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").type());
-    checkIfReadOnly(entityDefinition.type());
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
+    checkIfReadOnly(entityDefinition.entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
     Condition condition = key(primaryKey);
     String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(columnDefinition), condition.toString(entityDefinition));
@@ -773,7 +773,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
-    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").type());
+    EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
     PreparedStatement statement = null;
     SQLException exception = null;
@@ -950,7 +950,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private void setForeignKeys(List<Entity> entities, Select select,
                               int currentForeignKeyFetchDepth) throws SQLException {
     List<ForeignKeyDefinition> foreignKeyDefinitions =
-            foreignKeysToSet(entities.get(0).type(), select.attributes());
+            foreignKeysToSet(entities.get(0).entityType(), select.attributes());
     for (int i = 0; i < foreignKeyDefinitions.size(); i++) {
       ForeignKeyDefinition foreignKeyDefinition = foreignKeyDefinitions.get(i);
       ForeignKey foreignKey = foreignKeyDefinition.attribute();
@@ -1027,7 +1027,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private Entity.Key createKey(Entity entity, Collection<Column<?>> keyColumns) {
-    Entity.Key.Builder keyBuilder = entities().keyBuilder(entity.type());
+    Entity.Key.Builder keyBuilder = entities().keyBuilder(entity.entityType());
     keyColumns.forEach(column -> keyBuilder.with((Column<Object>) column, entity.get(column)));
 
     return keyBuilder.build();
@@ -1168,12 +1168,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
                                                       boolean includePrimaryKeyColumns) {
-    return insertableColumnsCache.computeIfAbsent(entityDefinition.type(), entityType ->
+    return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
             entityDefinition.writableColumnDefinitions(includePrimaryKeyColumns, true));
   }
 
   private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {
-    return updatableColumnsCache.computeIfAbsent(entityDefinition.type(), entityType ->
+    return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
             entityDefinition.writableColumnDefinitions(true, false));
   }
 
@@ -1279,7 +1279,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private void checkIfReadOnly(Collection<? extends Entity> entities) throws DatabaseException {
     for (Entity entity : entities) {
-      checkIfReadOnly(entity.type());
+      checkIfReadOnly(entity.entityType());
     }
   }
 
@@ -1384,7 +1384,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                                        Collection<Attribute<?>> modifiedAttributes) {
     return modifiedAttributes.stream()
             .map(attribute -> " \n" + attribute + ": " + entity.original(attribute) + " -> " + modified.get(attribute))
-            .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.type(), ""));
+            .collect(joining("", MESSAGES.getString(RECORD_MODIFIED) + ", " + entity.entityType(), ""));
   }
 
   private static boolean containsReferenceAttributes(Entity entity, List<ForeignKey.Reference<?>> references) {

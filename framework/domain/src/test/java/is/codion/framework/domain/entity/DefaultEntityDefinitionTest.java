@@ -64,7 +64,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
     EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals(entityType.name(), definition.toString());
-    assertEquals(entityType, definition.type());
+    assertEquals(entityType, definition.entityType());
     assertEquals("tableName", definition.tableName());
     assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());

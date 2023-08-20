@@ -40,7 +40,7 @@ public interface Entity extends Comparable<Entity> {
   /**
    * @return the entity type
    */
-  EntityType type();
+  EntityType entityType();
 
   /**
    * @return the entity definition
@@ -609,7 +609,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static <T extends Entity> LinkedHashMap<EntityType, List<T>> mapToType(Collection<? extends T> entities) {
     return requireNonNull(entities).stream()
-            .collect(groupingBy(Entity::type, LinkedHashMap::new, toList()));
+            .collect(groupingBy(Entity::entityType, LinkedHashMap::new, toList()));
   }
 
   /**
@@ -620,7 +620,7 @@ public interface Entity extends Comparable<Entity> {
    */
   static LinkedHashMap<EntityType, List<Key>> mapKeysToType(Collection<Key> keys) {
     return requireNonNull(keys).stream()
-            .collect(groupingBy(Key::type, LinkedHashMap::new, toList()));
+            .collect(groupingBy(Key::entityType, LinkedHashMap::new, toList()));
   }
 
   /**
@@ -677,8 +677,8 @@ public interface Entity extends Comparable<Entity> {
    * @return true if the values of the given attributes are equal in the given entities
    */
   static boolean valuesEqual(Entity entityOne, Entity entityTwo, Attribute<?>... attributes) {
-    if (!requireNonNull(entityOne).type().equals(requireNonNull(entityTwo).type())) {
-      throw new IllegalArgumentException("Type mismatch: " + entityOne.type() + " - " + entityTwo.type());
+    if (!requireNonNull(entityOne).entityType().equals(requireNonNull(entityTwo).entityType())) {
+      throw new IllegalArgumentException("Type mismatch: " + entityOne.entityType() + " - " + entityTwo.entityType());
     }
     if (requireNonNull(attributes).length == 0) {
       throw new IllegalArgumentException("No attributes provided for equality check");
@@ -725,7 +725,7 @@ public interface Entity extends Comparable<Entity> {
     /**
      * @return the entity type
      */
-    EntityType type();
+    EntityType entityType();
 
     /**
      * @return the entity definition

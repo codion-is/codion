@@ -9438,3 +9438,4 @@
   ColumnDefinition.isGroupingColumn() and isAggregateColum() renamed isGroupBy() and isAggregate() respectively
   EntityDefinition.groupByClause() removed, SelectQueries now creates it dynamically
   EntityType.domainName field replaced with domainType, EntityType.domainName() removed, EntityDefinition.domainName() removed
+  EntityDefinition, Entity, Key.type() renamed entityType()

@@ -260,7 +260,7 @@ final class SelectQueries {
     }
 
     private List<ColumnDefinition<?>> selectableColumns() {
-      return selectableColumnsCache.computeIfAbsent(definition.type(), entityType ->
+      return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columnDefinitions().stream()
                       .filter(columnDefinition -> !definition.lazyLoadedBlobColumnDefinitions().contains(columnDefinition))
                       .filter(ColumnDefinition::isSelectable)
@@ -268,7 +268,7 @@ final class SelectQueries {
     }
 
     private String allColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(selectableColumns()));
+      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableColumns()));
     }
 
     private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {

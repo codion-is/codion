@@ -29,7 +29,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   @Override
   public void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
-    stream.writeObject(entity.definition.type().name());
+    stream.writeObject(entity.definition.entityType().name());
     serializeValues(entity, stream);
   }
 
@@ -41,7 +41,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
 
   @Override
   public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
-    stream.writeObject(key.definition.type().name());
+    stream.writeObject(key.definition.entityType().name());
     serializeValues(key, stream);
   }
 
@@ -94,7 +94,7 @@ final class DefaultEntitySerializer implements EntitySerializer {
   private Attribute<Object> attributeByName(EntityDefinition definition, String attributeName) throws IOException {
     Attribute<Object> attribute = definition.attribute(attributeName);
     if (attribute == null && strictDeserialization) {
-      throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.type().name() + "'");
+      throw new IOException("Attribute '" + attributeName + "' not found in entity '" + definition.entityType().name() + "'");
     }
 
     return attribute;

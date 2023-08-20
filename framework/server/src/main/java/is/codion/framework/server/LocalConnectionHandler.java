@@ -406,7 +406,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityToString(Entity entity) {
-      StringBuilder builder = new StringBuilder(entity.type().name()).append(" {");
+      StringBuilder builder = new StringBuilder(entity.entityType().name()).append(" {");
       List<ColumnDefinition<?>> columnDefinitions = entity.definition().columnDefinitions();
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
@@ -426,7 +426,7 @@ final class LocalConnectionHandler implements InvocationHandler {
     }
 
     private static String entityKeyToString(Entity.Key key) {
-      return key.type() + " {" + key + "}";
+      return key.entityType() + " {" + key + "}";
     }
   }
 }

@@ -185,8 +185,8 @@ public class EntityEditComponentPanel extends JPanel {
   protected EntityEditComponentPanel(SwingEntityEditModel editModel, EntityComponents entityComponents) {
     this.editModel = requireNonNull(editModel, "editModel");
     this.entityComponents = requireNonNull(entityComponents, "entityComponents");
-    if (!editModel.entityType().equals(entityComponents.entityDefinition().type())) {
-      throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().type());
+    if (!editModel.entityType().equals(entityComponents.entityDefinition().entityType())) {
+      throw new IllegalArgumentException("Entity type mismatch: " + editModel.entityType() + ", " + entityComponents.entityDefinition().entityType());
     }
     addFocusedComponentListener();
   }

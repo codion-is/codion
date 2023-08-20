@@ -493,7 +493,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
     @Override
     public boolean test(Entity entity) {
-      return entity.type().equals(entityType);
+      return entity.entityType().equals(entityType);
     }
   }
 

@@ -51,7 +51,7 @@ final class EntityResultPacker implements ResultPacker<Entity> {
       }
       catch (Exception e) {
         throw new SQLException("Exception fetching: " + columnDefinition + ", entity: " +
-                definition.type() + " [" + e.getMessage() + "]", e);
+                definition.entityType() + " [" + e.getMessage() + "]", e);
       }
     }
   }

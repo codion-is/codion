@@ -1012,7 +1012,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     selectionModel().clearSelection();
     if (!insertAction.equals(InsertAction.DO_NOTHING)) {
       Collection<Entity> entitiesToAdd = insertedEntities.stream()
-              .filter(entity -> entity.type().equals(entityType()))
+              .filter(entity -> entity.entityType().equals(entityType()))
               .collect(toList());
       switch (insertAction) {
         case ADD_TOP:
@@ -1177,7 +1177,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     @Override
     public void accept(Map<Entity.Key, Entity> updated) {
       updated.values().stream()
-              .collect(groupingBy(Entity::type, HashMap::new, toList()))
+              .collect(groupingBy(Entity::entityType, HashMap::new, toList()))
               .forEach((entityType, entities) ->
                       entityDefinition().foreignKeys(entityType).forEach(foreignKey ->
                               replaceForeignKeyValues(foreignKey, entities)));
@@ -1322,7 +1322,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
     @Override
     public boolean test(Entity entity) {
-      return entity.type().equals(entityDefinition.type());
+      return entity.entityType().equals(entityDefinition.entityType());
     }
   }
 }

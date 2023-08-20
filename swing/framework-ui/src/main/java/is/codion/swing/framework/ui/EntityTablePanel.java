@@ -1862,7 +1862,7 @@ public class EntityTablePanel extends JPanel {
     private final Collection<Entity> entities;
 
     private StaticSwingEntityTableModel(Collection<Entity> entities, EntityConnectionProvider connectionProvider) {
-      super(entities.iterator().next().type(), connectionProvider);
+      super(entities.iterator().next().entityType(), connectionProvider);
       this.entities = entities;
     }
 
