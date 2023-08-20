@@ -38,7 +38,7 @@ final class DefaultSelect implements Select, Serializable {
   private DefaultSelect(DefaultBuilder builder) {
     this.where = builder.where;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths == null ?
-            emptyMap() :
+            null :
             unmodifiableMap(builder.foreignKeyFetchDepths);
     this.attributes = builder.attributes;
     this.orderBy = builder.orderBy;
@@ -82,7 +82,7 @@ final class DefaultSelect implements Select, Serializable {
   @Override
   public Optional<Integer> fetchDepth(ForeignKey foreignKey) {
     requireNonNull(foreignKey);
-    if (foreignKeyFetchDepths.containsKey(foreignKey)) {
+    if (foreignKeyFetchDepths().containsKey(foreignKey)) {
       return Optional.of(foreignKeyFetchDepths.get(foreignKey));
     }
 
@@ -91,7 +91,7 @@ final class DefaultSelect implements Select, Serializable {
 
   @Override
   public Map<ForeignKey, Integer> foreignKeyFetchDepths() {
-    return foreignKeyFetchDepths;
+    return foreignKeyFetchDepths == null ? emptyMap() : foreignKeyFetchDepths;
   }
 
   @Override

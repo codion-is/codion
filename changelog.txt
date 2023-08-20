@@ -9441,3 +9441,4 @@
   EntityDefinition, Entity, Key.type() renamed entityType()
   SelectQueries, groupByClause now cached
   Select, Update.condition() renamed where()
+  DefaultSelect, refactoring, no longer keeps an empty foreignKeyFetchDepths map, in case none are specified
