@@ -45,8 +45,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final transient String columnExpression;
   private final transient ValueFetcher<Object> valueFetcher;
   private final transient ValueConverter<T, Object> valueConverter;
-  private final transient boolean groupingColumn;
-  private final transient boolean aggregateColumn;
+  private final transient boolean groupBy;
+  private final transient boolean aggregate;
   private final transient boolean selectable;
 
   protected DefaultColumnDefinition(DefaultColumnDefinitionBuilder<T, ?> builder) {
@@ -61,8 +61,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     this.columnExpression = builder.columnExpression;
     this.valueFetcher = builder.valueFetcher;
     this.valueConverter = builder.valueConverter;
-    this.groupingColumn = builder.groupingColumn;
-    this.aggregateColumn = builder.aggregateColumn;
+    this.groupBy = builder.groupBy;
+    this.aggregate = builder.aggregate;
     this.selectable = builder.selectable;
   }
 
@@ -117,13 +117,13 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final boolean isGroupingColumn() {
-    return groupingColumn;
+  public final boolean isGroupBy() {
+    return groupBy;
   }
 
   @Override
-  public final boolean isAggregateColumn() {
-    return aggregateColumn;
+  public final boolean isAggregate() {
+    return aggregate;
   }
 
   @Override
@@ -228,8 +228,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     private String columnExpression;
     private ValueFetcher<Object> valueFetcher;
     private ValueConverter<T, Object> valueConverter;
-    private boolean groupingColumn;
-    private boolean aggregateColumn;
+    private boolean groupBy;
+    private boolean aggregate;
     private boolean selectable;
 
     DefaultColumnDefinitionBuilder(Column<T> column) {
@@ -243,8 +243,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
       this.columnName = column.name();
       this.valueFetcher = (ValueFetcher<Object>) valueFetcher(this.columnType, column);
       this.valueConverter = (ValueConverter<T, Object>) DEFAULT_VALUE_CONVERTER;
-      this.groupingColumn = false;
-      this.aggregateColumn = false;
+      this.groupBy = false;
+      this.aggregate = false;
       this.selectable = true;
     }
 
@@ -319,16 +319,16 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
     }
 
     @Override
-    public final B groupingColumn(boolean groupingColumn) {
-      this.groupingColumn = groupingColumn;
-      this.aggregateColumn = !groupingColumn;
+    public final B groupBy(boolean groupBy) {
+      this.groupBy = groupBy;
+      this.aggregate = !groupBy;
       return (B) this;
     }
 
     @Override
-    public final B aggregateColumn(boolean aggregateColumn) {
-      this.aggregateColumn = aggregateColumn;
-      this.groupingColumn = !aggregateColumn;
+    public final B aggregate(boolean aggregate) {
+      this.aggregate = aggregate;
+      this.groupBy = !aggregate;
       return (B) this;
     }
 

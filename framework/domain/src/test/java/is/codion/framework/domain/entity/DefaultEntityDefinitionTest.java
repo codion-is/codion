@@ -47,7 +47,7 @@ public class DefaultEntityDefinitionTest {
         add(entityType.define(
                 id.primaryKeyColumn(),
                 name.column()
-                        .groupingColumn(true))
+                        .groupBy(true))
                 .tableName("tableName")
                 .selectQuery(SelectQuery.builder()
                         .columns("*")
@@ -184,15 +184,15 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void testGroupingColumns() {
-    EntityType entityType = DOMAIN_TYPE.entityType("testGroupingColumns");
+  void testGroupByColumns() {
+    EntityType entityType = DOMAIN_TYPE.entityType("testGroupByColumns");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
         add(entityType.define(
-                entityType.integerColumn("p0").primaryKeyColumn().aggregateColumn(true),
-                entityType.integerColumn("p1").column().groupingColumn(true),
-                entityType.integerColumn("p2").column().groupingColumn(true)));
+                entityType.integerColumn("p0").primaryKeyColumn().aggregate(true),
+                entityType.integerColumn("p1").column().groupBy(true),
+                entityType.integerColumn("p2").column().groupBy(true)));
       }
     }
     Domain domain = new TestDomain();

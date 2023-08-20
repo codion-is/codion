@@ -1449,8 +1449,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static void verifyColumnIsSelectable(ColumnDefinition<?> columnDefinition, EntityDefinition entityDefinition) {
-    if (columnDefinition.isAggregateColumn()) {
-      throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate values");
+    if (columnDefinition.isAggregate()) {
+      throw new UnsupportedOperationException("Selecting column values is not implemented for aggregate function values");
     }
     SelectQuery selectQuery = entityDefinition.selectQuery();
     if (selectQuery != null && selectQuery.columns() != null) {

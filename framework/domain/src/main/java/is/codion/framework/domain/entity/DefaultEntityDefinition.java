@@ -640,15 +640,15 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * @return a group by clause based on grouping columns, null if no grouping columns are defined
    */
   private String createGroupByClause() {
-    List<String> groupingColumnNames = entityAttributes.columnDefinitions.stream()
-            .filter(ColumnDefinition::isGroupingColumn)
+    List<String> groupByColumns = entityAttributes.columnDefinitions.stream()
+            .filter(ColumnDefinition::isGroupBy)
             .map(ColumnDefinition::columnExpression)
             .collect(toList());
-    if (groupingColumnNames.isEmpty()) {
+    if (groupByColumns.isEmpty()) {
       return null;
     }
 
-    return String.join(", ", groupingColumnNames);
+    return String.join(", ", groupByColumns);
   }
 
   private void resolveEntityClassMethods() {
