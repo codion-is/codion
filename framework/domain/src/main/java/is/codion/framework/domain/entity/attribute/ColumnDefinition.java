@@ -56,14 +56,14 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   boolean isPrimaryKeyColumn();
 
   /**
-   * @return true if this column is a group by column
+   * @return true if this column should be grouped by
    */
-  boolean isGroupingColumn();
+  boolean isGroupBy();
 
   /**
-   * @return true if this is an aggregate column
+   * @return true if this column is based on an aggregate function
    */
-  boolean isAggregateColumn();
+  boolean isAggregate();
 
   /**
    * @return true if this column should be included in select queries
@@ -189,20 +189,20 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
     B primaryKeyIndex(int index);
 
     /**
-     * Specifies that this column should be used in a group by clause.
-     * Also specifies that this column should not be an aggregate column.
-     * @param groupingColumn true if this is a grouping column
+     * Specifies that this column should be grouped by.
+     * Also specifies that this column is not an aggregate function column.
+     * @param groupBy true if this is a grouping column
      * @return this instance
      */
-    B groupingColumn(boolean groupingColumn);
+    B groupBy(boolean groupBy);
 
     /**
-     * Specifies that this column is an aggregate function column
-     * Also specifies that this column should not be a grouping column.
-     * @param aggregateColumn true if this is an aggregate column
+     * Specifies that this column is an aggregate function column.
+     * Also specifies that this column should not be grouped by.
+     * @param aggregate true if this is an aggregate function column
      * @return this instance
      */
-    B aggregateColumn(boolean aggregateColumn);
+    B aggregate(boolean aggregate);
 
     /**
      * Specifies whether this column should be included in select queries

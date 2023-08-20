@@ -188,7 +188,7 @@ public final class DatabaseExplorerModel {
         case DOMAIN:
           return row.domain.type().name();
         case ENTITY:
-          return row.definition.type().name();
+          return row.definition.entityType().name();
         default:
           throw new IllegalArgumentException("Unknown column: " + columnIdentifier);
       }

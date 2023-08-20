@@ -346,45 +346,45 @@ public final class WorldImpl extends DefaultDomain implements World {
             Continent.NAME
                     .column()
                     .caption("Continent")
-                    .groupingColumn(true)
+                    .groupBy(true)
                     .beanProperty("name"),
             Continent.SURFACE_AREA
                     .column()
                     .caption("Surface area")
                     .columnExpression("sum(surfacearea)")
-                    .aggregateColumn(true)
+                    .aggregate(true)
                     .numberFormatGrouping(true),
             Continent.POPULATION
                     .column()
                     .caption("Population")
                     .columnExpression("sum(population)")
-                    .aggregateColumn(true)
+                    .aggregate(true)
                     .numberFormatGrouping(true),
             Continent.MIN_LIFE_EXPECTANCY
                     .column()
                     .caption("Min. life expectancy")
                     .columnExpression("min(lifeexpectancy)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Continent.MAX_LIFE_EXPECTANCY
                     .column()
                     .caption("Max. life expectancy")
                     .columnExpression("max(lifeexpectancy)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Continent.MIN_INDEPENDENCE_YEAR
                     .column()
                     .caption("Min. ind. year")
                     .columnExpression("min(indepyear)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Continent.MAX_INDEPENDENCE_YEAR
                     .column()
                     .caption("Max. ind. year")
                     .columnExpression("max(indepyear)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Continent.GNP
                     .column()
                     .caption("GNP")
                     .columnExpression("sum(gnp)")
-                    .aggregateColumn(true)
+                    .aggregate(true)
                     .numberFormatGrouping(true))
             .tableName("world.country")
             .readOnly(true)

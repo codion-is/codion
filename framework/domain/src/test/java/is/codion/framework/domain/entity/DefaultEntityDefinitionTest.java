@@ -47,7 +47,7 @@ public class DefaultEntityDefinitionTest {
         add(entityType.define(
                 id.primaryKeyColumn(),
                 name.column()
-                        .groupingColumn(true))
+                        .groupBy(true))
                 .tableName("tableName")
                 .selectQuery(SelectQuery.builder()
                         .columns("*")
@@ -64,7 +64,7 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
     EntityDefinition definition = domain.entities().definition(entityType);
     assertEquals(entityType.name(), definition.toString());
-    assertEquals(entityType, definition.type());
+    assertEquals(entityType, definition.entityType());
     assertEquals("tableName", definition.tableName());
     assertNotNull(definition.keyGenerator());
     assertFalse(definition.isKeyGenerated());
@@ -74,7 +74,6 @@ public class DefaultEntityDefinitionTest {
     assertFalse(definition.isSmallDataset());
     assertTrue(definition.isReadOnly());
     assertEquals("selectTableName", definition.selectTableName());
-    assertEquals("name", definition.groupByClause());
     assertEquals(stringFactory, definition.stringFactory());
     assertEquals(comparator, definition.comparator());
   }
@@ -184,21 +183,29 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test
-  void testGroupingColumns() {
-    EntityType entityType = DOMAIN_TYPE.entityType("testGroupingColumns");
+  void testGroupByColumns() {
+    EntityType entityType = DOMAIN_TYPE.entityType("testGroupByColumns");
     class TestDomain extends DefaultDomain {
       public TestDomain() {
         super(DOMAIN_TYPE);
         add(entityType.define(
-                entityType.integerColumn("p0").primaryKeyColumn().aggregateColumn(true),
-                entityType.integerColumn("p1").column().groupingColumn(true),
-                entityType.integerColumn("p2").column().groupingColumn(true)));
+                entityType.integerColumn("p0").primaryKeyColumn().aggregate(true),
+                entityType.integerColumn("p1").column().groupBy(true),
+                entityType.integerColumn("p2").column().groupBy(true)));
       }
     }
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertEquals("p1, p2", definition.groupByClause());
+
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p0")).isAggregate());
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p0")).isGroupBy());
+
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p1")).isAggregate());
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p1")).isGroupBy());
+
+    assertFalse(definition.columnDefinition((Column<?>) definition.attribute("p2")).isAggregate());
+    assertTrue(definition.columnDefinition((Column<?>) definition.attribute("p2")).isGroupBy());
   }
 
   @Test

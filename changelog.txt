@@ -9475,3 +9475,8 @@
   Entity.Key.isNull() and isNotNull() parameter now Column instead of Attribute
   Entity.columns() now returns Collection instead of List
   DefaultLocalEntityConnection.select(column) now only throws UnsupportedOperationException in case the entity uses a custom column clause or if the column represents an aggregate value
+  ColumnDefinition.isGroupingColumn() and isAggregateColum() renamed isGroupBy() and isAggregate() respectively
+  EntityDefinition.groupByClause() removed, SelectQueries now creates it dynamically
+  EntityType.domainName field replaced with domainType, EntityType.domainName() removed, EntityDefinition.domainName() removed
+  EntityDefinition, Entity, Key.type() renamed entityType()
+  SelectQueries, groupByClause now cached

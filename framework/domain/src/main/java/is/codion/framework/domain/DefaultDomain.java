@@ -110,8 +110,8 @@ public abstract class DefaultDomain implements Domain {
    */
   protected final void add(EntityDefinition definition) {
     requireNonNull(definition, "definition");
-    if (!domainType.contains(definition.type())) {
-      throw new IllegalArgumentException("Entity type '" + definition.type() + "' is not part of domain: " + domainType);
+    if (!domainType.contains(definition.entityType())) {
+      throw new IllegalArgumentException("Entity type '" + definition.entityType() + "' is not part of domain: " + domainType);
     }
     entities.addEntityDefinition(definition);
   }
@@ -188,7 +188,7 @@ public abstract class DefaultDomain implements Domain {
    */
   protected final void addEntities(Domain domain) {
     requireNonNull(domain).entities().definitions().forEach(definition -> {
-      if (!entities.contains(definition.type())) {
+      if (!entities.contains(definition.entityType())) {
         entities.addEntityDefinition(definition);
       }
     });

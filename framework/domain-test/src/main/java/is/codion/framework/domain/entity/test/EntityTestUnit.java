@@ -200,7 +200,7 @@ public class EntityTestUnit {
       return connection.select(key);
     }
     catch (RecordNotFoundException e) {
-      fail("Inserted entity of type " + testEntity.type() + " not returned by select after insert");
+      fail("Inserted entity of type " + testEntity.entityType() + " not returned by select after insert");
       throw e;
     }
   }
@@ -217,7 +217,7 @@ public class EntityTestUnit {
                                  EntityConnection connection) throws DatabaseException {
     if (testEntity != null) {
       assertEquals(testEntity, connection.select(testEntity.primaryKey()),
-              "Entity of type " + testEntity.type() + " failed equals comparison");
+              "Entity of type " + testEntity.entityType() + " failed equals comparison");
     }
     else {
       connection.select(Select.all(entityType)
@@ -263,7 +263,7 @@ public class EntityTestUnit {
     catch (RecordNotFoundException e) {
       caught = true;
     }
-    assertTrue(caught, "Entity of type " + testEntity.type() + " failed delete test");
+    assertTrue(caught, "Entity of type " + testEntity.entityType() + " failed delete test");
   }
 
   /**

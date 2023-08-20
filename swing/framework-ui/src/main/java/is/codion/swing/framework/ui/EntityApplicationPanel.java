@@ -403,8 +403,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     requireNonNull(entities);
     DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
     for (EntityDefinition definition : entities.definitions()) {
-      if (definition.foreignKeys().isEmpty() || referencesOnlySelf(entities, definition.type())) {
-        root.add(new EntityDependencyTreeNode(definition.type(), entities));
+      if (definition.foreignKeys().isEmpty() || referencesOnlySelf(entities, definition.entityType())) {
+        root.add(new EntityDependencyTreeNode(definition.entityType(), entities));
       }
     }
 
@@ -1087,7 +1087,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         for (ForeignKeyDefinition foreignKeyDefinition : definition.foreignKeyDefinitions()) {
           if (foreignKeyDefinition.referencedType().equals(entityType()) && !foreignKeyDefinition.isSoftReference()
                   && !foreignKeyCycle(foreignKeyDefinition.referencedType())) {
-            childrenList.add(new EntityDependencyTreeNode(definition.type(), entities));
+            childrenList.add(new EntityDependencyTreeNode(definition.entityType(), entities));
           }
         }
       }

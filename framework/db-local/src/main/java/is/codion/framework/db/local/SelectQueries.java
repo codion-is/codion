@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static java.util.stream.Collectors.joining;
@@ -33,6 +34,7 @@ final class SelectQueries {
   private final Database database;
   private final Map<EntityType, List<ColumnDefinition<?>>> selectableColumnsCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
     this.database = database;
@@ -94,7 +96,7 @@ final class SelectQueries {
         where(select.condition());
       }
       if (groupBy == null) {
-        groupBy(definition.groupByClause());
+        groupBy(groupByClause());
       }
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
@@ -200,7 +202,7 @@ final class SelectQueries {
           }
         }
       }
-      if (groupBy != null) {
+      if (groupBy != null && !groupBy.isEmpty()) {
         builder.append(NEWLINE).append(GROUP_BY).append(groupBy);
       }
       if (having != null) {
@@ -259,7 +261,7 @@ final class SelectQueries {
     }
 
     private List<ColumnDefinition<?>> selectableColumns() {
-      return selectableColumnsCache.computeIfAbsent(definition.type(), entityType ->
+      return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columnDefinitions().stream()
                       .filter(columnDefinition -> !definition.lazyLoadedBlobColumnDefinitions().contains(columnDefinition))
                       .filter(ColumnDefinition::isSelectable)
@@ -267,7 +269,14 @@ final class SelectQueries {
     }
 
     private String allColumnsClause() {
-      return allColumnsClauseCache.computeIfAbsent(definition.type(), type -> columnsClause(selectableColumns()));
+      return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableColumns()));
+    }
+
+    private String groupByClause() {
+      return groupByClauseCache.computeIfAbsent(definition.entityType(), type -> definition.columnDefinitions().stream()
+              .filter(ColumnDefinition::isGroupBy)
+              .map(ColumnDefinition::columnExpression)
+              .collect(Collectors.joining(", ")));
     }
 
     private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {

@@ -267,7 +267,7 @@ public final class EntitiesTest {
     Entity.Key key = entities.primaryKey(TestDomain.Master.TYPE, 10L);
 
     Entity master = Entity.entity(key);
-    assertEquals(TestDomain.Master.TYPE, master.type());
+    assertEquals(TestDomain.Master.TYPE, master.entityType());
     assertTrue(master.contains(TestDomain.Master.ID));
     assertEquals(10L, master.get(TestDomain.Master.ID));
 

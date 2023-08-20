@@ -339,19 +339,19 @@ public final class TestDomain extends DefaultDomain {
     add(Job.TYPE.define(
             Job.JOB.column()
                     .primaryKeyIndex(0)
-                    .groupingColumn(true),
+                    .groupBy(true),
             Job.MAX_SALARY.column()
                     .columnExpression("max(sal)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Job.MIN_SALARY.column()
                     .columnExpression("min(sal)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Job.MAX_COMMISSION.column()
                     .columnExpression("max(comm)")
-                    .aggregateColumn(true),
+                    .aggregate(true),
             Job.MIN_COMMISSION.column()
                     .columnExpression("min(comm)")
-                    .aggregateColumn(true))
+                    .aggregate(true))
             .tableName("scott.emp")
             .selectQuery(SelectQuery.builder()
                     .having("job <> 'PRESIDENT'")

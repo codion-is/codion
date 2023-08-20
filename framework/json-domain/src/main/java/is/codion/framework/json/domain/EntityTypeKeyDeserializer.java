@@ -23,6 +23,6 @@ final class EntityTypeKeyDeserializer extends KeyDeserializer {
 
   @Override
   public Object deserializeKey(String key, DeserializationContext ctxt) {
-    return definitions.computeIfAbsent(key, entities::definition).type();
+    return definitions.computeIfAbsent(key, entities::definition).entityType();
   }
 }

@@ -45,7 +45,7 @@ public class EntityConditionModelFactory implements ColumnConditionModel.Factory
     }
 
     ColumnDefinition<?> definition = definition(attribute.entityType()).columnDefinition((Column<?>) attribute);
-    if (definition.isAggregateColumn()) {
+    if (definition.isAggregate()) {
       return Optional.empty();
     }
 

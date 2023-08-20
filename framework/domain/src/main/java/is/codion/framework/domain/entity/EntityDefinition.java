@@ -38,7 +38,7 @@ public interface EntityDefinition {
   /**
    * @return the entity type
    */
-  EntityType type();
+  EntityType entityType();
 
   /**
    * @return the name of the underlying table, with schema prefix if applicable
@@ -52,11 +52,6 @@ public interface EntityDefinition {
    * @throws IllegalArgumentException in case no ConditionProvider is associated with the given conditionType
    */
   ConditionProvider conditionProvider(ConditionType conditionType);
-
-  /**
-   * @return the name of the domain this entity type belongs to
-   */
-  String domainName();
 
   /**
    * @return the validator for this entity type
@@ -110,12 +105,6 @@ public interface EntityDefinition {
    * @return the default order by clause to use when querying entities of this type, null if none is available
    */
   OrderBy orderBy();
-
-  /**
-   * @return the group by clause to use when querying entities of this type,
-   * without the "group by" keywords, null if no group by clause is available
-   */
-  String groupByClause();
 
   /**
    * @return the name of the table to use when selecting entities of this type

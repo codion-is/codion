@@ -21,4 +21,4 @@ FilteredTable --|> JTable
 FilteredTable --o FilteredTableConditionPanel
 -------------------------------------------
 
-The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilteredTable.html[FilteredTable] is a *JTable* sublclass central to the framework.
+The {url-javadoc}{swing-common-ui}/is/codion/swing/common/ui/component/table/FilteredTable.html[FilteredTable] is a *JTable* subclass central to the framework.
