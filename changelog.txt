@@ -9440,3 +9440,4 @@
   EntityType.domainName field replaced with domainType, EntityType.domainName() removed, EntityDefinition.domainName() removed
   EntityDefinition, Entity, Key.type() renamed entityType()
   SelectQueries, groupByClause now cached
+  Select, Update.condition() renamed where()

@@ -54,7 +54,7 @@ public final class ConditionObjectMapperTest {
 
     assertEquals(select, readCondition);
     assertEquals("(deptno not in (?, ?) and upper(ename) = upper(?) and (empno >= ? and empno <= ?) and comm is not null)",
-            select.condition().toString(entities.definition(Employee.TYPE)));
+            select.where().toString(entities.definition(Employee.TYPE)));
   }
 
   @Test
@@ -78,7 +78,7 @@ public final class ConditionObjectMapperTest {
 
     String jsonString = mapper.writeValueAsString(select);
     Select readCondition = mapper.readValue(jsonString, Select.class);
-    CustomCondition readCustom = (CustomCondition) readCondition.condition();
+    CustomCondition readCustom = (CustomCondition) readCondition.where();
 
     assertEquals(customedCondition.conditionType(), readCustom.conditionType());
     assertEquals(customedCondition.columns(), readCustom.columns());
@@ -105,12 +105,12 @@ public final class ConditionObjectMapperTest {
     String jsonString = mapper.writeValueAsString(select);
     Select readCondition = mapper.readValue(jsonString, Select.class);
 
-    assertEquals(select.condition(), readCondition.condition());
+    assertEquals(select.where(), readCondition.where());
     assertEquals(select.orderBy().orElse(null).orderByColumns(), readCondition.orderBy().get().orderByColumns());
     assertEquals(select.limit(), readCondition.limit());
     assertEquals(select.offset(), readCondition.offset());
     assertEquals(select.fetchDepth().orElse(null), readCondition.fetchDepth().orElse(null));
-    for (ForeignKey foreignKey : entities.definition(select.condition().entityType()).foreignKeys()) {
+    for (ForeignKey foreignKey : entities.definition(select.where().entityType()).foreignKeys()) {
       assertEquals(select.foreignKeyFetchDepths().get(foreignKey), readCondition.foreignKeyFetchDepths().get(foreignKey));
     }
     assertEquals(select.attributes(), readCondition.attributes());
@@ -143,7 +143,7 @@ public final class ConditionObjectMapperTest {
     String jsonString = mapper.writeValueAsString(update);
     Update readCondition = mapper.readValue(jsonString, Update.class);
 
-    assertEquals(update.condition(), readCondition.condition());
+    assertEquals(update.where(), readCondition.where());
     assertEquals(update.columnValues(), readCondition.columnValues());
   }
 

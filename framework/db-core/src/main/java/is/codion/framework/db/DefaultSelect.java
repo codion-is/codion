@@ -25,7 +25,7 @@ final class DefaultSelect implements Select, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final Condition condition;
+  private final Condition where;
   private final Map<ForeignKey, Integer> foreignKeyFetchDepths;
   private final Collection<Attribute<?>> attributes;
   private final OrderBy orderBy;
@@ -36,7 +36,7 @@ final class DefaultSelect implements Select, Serializable {
   private final int queryTimeout;
 
   private DefaultSelect(DefaultBuilder builder) {
-    this.condition = builder.condition;
+    this.where = builder.where;
     this.foreignKeyFetchDepths = builder.foreignKeyFetchDepths == null ?
             emptyMap() :
             unmodifiableMap(builder.foreignKeyFetchDepths);
@@ -50,8 +50,8 @@ final class DefaultSelect implements Select, Serializable {
   }
 
   @Override
-  public Condition condition() {
-    return condition;
+  public Condition where() {
+    return where;
   }
 
   @Override
@@ -116,7 +116,7 @@ final class DefaultSelect implements Select, Serializable {
     return forUpdate == that.forUpdate &&
             limit == that.limit &&
             offset == that.offset &&
-            condition.equals(that.condition) &&
+            where.equals(that.where) &&
             Objects.equals(foreignKeyFetchDepths, that.foreignKeyFetchDepths) &&
             attributes.equals(that.attributes) &&
             Objects.equals(orderBy, that.orderBy) &&
@@ -125,12 +125,12 @@ final class DefaultSelect implements Select, Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(forUpdate, limit, offset, condition, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
+    return Objects.hash(forUpdate, limit, offset, where, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
   }
 
   static final class DefaultBuilder implements Select.Builder {
 
-    private final Condition condition;
+    private final Condition where;
 
     private Map<ForeignKey, Integer> foreignKeyFetchDepths;
     private Collection<Attribute<?>> attributes = emptyList();
@@ -142,8 +142,8 @@ final class DefaultSelect implements Select, Serializable {
     private int offset = -1;
     private int queryTimeout = EntityConnection.DEFAULT_QUERY_TIMEOUT_SECONDS;
 
-    DefaultBuilder(Condition condition) {
-      this.condition = requireNonNull(condition);
+    DefaultBuilder(Condition where) {
+      this.where = requireNonNull(where);
     }
 
     @Override

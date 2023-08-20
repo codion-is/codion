@@ -32,9 +32,9 @@ final class SelectSerializer extends StdSerializer<Select> {
   public void serialize(Select select, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", select.condition().entityType().name());
-    generator.writeFieldName("condition");
-    conditionSerializer.serialize(select.condition(), generator);
+    generator.writeStringField("entityType", select.where().entityType().name());
+    generator.writeFieldName("where");
+    conditionSerializer.serialize(select.where(), generator);
     OrderBy orderBy = select.orderBy().orElse(null);
     if (orderBy != null) {
       generator.writeFieldName("orderBy");

@@ -42,10 +42,10 @@ final class SelectDeserializer extends StdDeserializer<Select> {
     JsonNode jsonNode = parser.getCodec().readTree(parser);
     EntityType entityType = entities.domainType().entityType(jsonNode.get("entityType").asText());
     EntityDefinition definition = entities.definition(entityType);
-    JsonNode conditionNode = jsonNode.get("condition");
-    Condition condition = conditionDeserializer.deserialize(definition, conditionNode);
+    JsonNode whereConditionNode = jsonNode.get("where");
+    Condition whereCondition = conditionDeserializer.deserialize(definition, whereConditionNode);
 
-    Select.Builder selectBuilder = Select.where(condition);
+    Select.Builder selectBuilder = Select.where(whereCondition);
     JsonNode orderBy = jsonNode.get("orderBy");
     if (orderBy != null && !orderBy.isNull()) {
       selectBuilder.orderBy(deserializeOrderBy(definition, orderBy));

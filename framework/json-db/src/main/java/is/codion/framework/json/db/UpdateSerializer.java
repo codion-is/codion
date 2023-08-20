@@ -31,9 +31,9 @@ final class UpdateSerializer extends StdSerializer<Update> {
   public void serialize(Update update, JsonGenerator generator,
                         SerializerProvider provider) throws IOException {
     generator.writeStartObject();
-    generator.writeStringField("entityType", update.condition().entityType().name());
+    generator.writeStringField("entityType", update.where().entityType().name());
     generator.writeFieldName("condition");
-    conditionSerializer.serialize(update.condition(), generator);
+    conditionSerializer.serialize(update.where(), generator);
     generator.writeFieldName("values");
     generator.writeStartObject();
     for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
