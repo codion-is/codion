@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -24,9 +25,9 @@ import java.util.ResourceBundle;
 public interface EntityType {
 
   /**
-   * @return the name of the domain this entity type is associated with
+   * @return the domain type this entity type is associated with
    */
-  String domainName();
+  DomainType domainType();
 
   /**
    * @return the entity type name, unique within a domain.
@@ -332,12 +333,12 @@ public interface EntityType {
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the name of the domain to associate this entity type with
+   * @param domainName the domainType to associate this entity type with
    * @param entityClass the entity representation class
    * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
-  static <T extends Entity> EntityType entityType(String name, String domainName,
+  static <T extends Entity> EntityType entityType(String name, DomainType domainType,
                                                   Class<T> entityClass) {
     String bundleName = null;
     try {
@@ -346,32 +347,32 @@ public interface EntityType {
     }
     catch (MissingResourceException e) {/* Non-existing bundle */}
 
-    return new DefaultEntityType(domainName, name, entityClass, bundleName);
+    return new DefaultEntityType(domainType, name, entityClass, bundleName);
   }
 
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the name of the domain to associate this entity type with
+   * @param domainName the domainType to associate this entity type with
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @return a {@link EntityType} instance with the given name
    */
-  static EntityType entityType(String name, String domainName,
+  static EntityType entityType(String name, DomainType domainType,
                                String resourceBundleName) {
-    return new DefaultEntityType(domainName, name, Entity.class, resourceBundleName);
+    return new DefaultEntityType(domainType, name, Entity.class, resourceBundleName);
   }
 
   /**
    * Creates a new EntityType instance.
    * @param name the entity type name
-   * @param domainName the name of the domain to associate this entity type with
+   * @param domainName the domainType to associate this entity type with
    * @param entityClass the entity representation class
    * @param resourceBundleName the name of a resource bundle to use for captions, if any
    * @param <T> the entity representation type
    * @return a {@link EntityType} instance with the given name
    */
-  static <T extends Entity> EntityType entityType(String name, String domainName,
+  static <T extends Entity> EntityType entityType(String name, DomainType domainType,
                                                   Class<T> entityClass, String resourceBundleName) {
-    return new DefaultEntityType(domainName, name, entityClass, resourceBundleName);
+    return new DefaultEntityType(domainType, name, entityClass, resourceBundleName);
   }
 }

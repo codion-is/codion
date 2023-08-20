@@ -3,6 +3,7 @@
  */
 package is.codion.framework.domain.entity;
 
+import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
@@ -29,33 +30,30 @@ final class DefaultEntityType implements EntityType, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final String domainName;
+  private final DomainType domainType;
   private final String name;
   private final Class<? extends Entity> entityClass;
   private final String resourceBundleName;
   private final int hashCode;
 
-  DefaultEntityType(String domainName, String name, Class<? extends Entity> entityClass,
+  DefaultEntityType(DomainType domainType, String name, Class<? extends Entity> entityClass,
                     String resourceBundleName) {
+    this.domainType = requireNonNull(domainType);
     if (nullOrEmpty(name)) {
       throw new IllegalArgumentException("name must be a non-empty string");
     }
-    if (nullOrEmpty(domainName)) {
-      throw new IllegalArgumentException("domainName must be a non-empty string");
-    }
-    this.domainName = domainName;
     this.name = name;
     this.entityClass = entityClass;
     if (resourceBundleName != null) {
       ResourceBundle.getBundle(resourceBundleName);
     }
     this.resourceBundleName = resourceBundleName;
-    this.hashCode = Objects.hash(name, domainName);
+    this.hashCode = Objects.hash(name, domainType);
   }
 
   @Override
-  public String domainName() {
-    return domainName;
+  public DomainType domainType() {
+    return domainType;
   }
 
   @Override
@@ -283,6 +281,6 @@ final class DefaultEntityType implements EntityType, Serializable {
     }
     DefaultEntityType that = (DefaultEntityType) object;
 
-    return hashCode == that.hashCode && name.equals(that.name) && domainName.equals(that.domainName);
+    return hashCode == that.hashCode && name.equals(that.name) && domainType.equals(that.domainType);
   }
 }

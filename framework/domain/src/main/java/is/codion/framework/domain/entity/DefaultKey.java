@@ -292,8 +292,8 @@ class DefaultKey implements Entity.Key, Serializable {
   }
 
   private void writeObject(ObjectOutputStream stream) throws IOException {
-    stream.writeObject(definition.domainName());
-    serializerForDomain(definition.domainName()).serialize(this, stream);
+    stream.writeObject(definition.type().domainType().name());
+    serializerForDomain(definition.type().domainType().name()).serialize(this, stream);
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {

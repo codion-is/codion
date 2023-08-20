@@ -60,11 +60,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final String FOREIGN_KEY = "foreignKey";
 
   /**
-   * The domain name
-   */
-  private final String domainName;
-
-  /**
    * The entity type
    */
   private final EntityType entityType;
@@ -198,7 +193,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final EntityAttributes entityAttributes;
 
   private DefaultEntityDefinition(DefaultBuilder builder) {
-    this.domainName = builder.attributes.entityType.domainName();
     this.entityType = builder.attributes.entityType;
     this.caption = builder.caption;
     this.captionResourceKey = builder.captionResourceKey;
@@ -260,11 +254,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     throw new IllegalArgumentException("ConditionProvider for type " + conditionType + " not found");
-  }
-
-  @Override
-  public String domainName() {
-    return domainName;
   }
 
   @Override

@@ -54,11 +54,6 @@ public interface EntityDefinition {
   ConditionProvider conditionProvider(ConditionType conditionType);
 
   /**
-   * @return the name of the domain this entity type belongs to
-   */
-  String domainName();
-
-  /**
    * @return the validator for this entity type
    */
   EntityValidator validator();
