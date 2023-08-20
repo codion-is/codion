@@ -34,6 +34,7 @@ final class SelectQueries {
   private final Database database;
   private final Map<EntityType, List<ColumnDefinition<?>>> selectableColumnsCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
     this.database = database;
@@ -95,7 +96,7 @@ final class SelectQueries {
         where(select.condition());
       }
       if (groupBy == null) {
-        groupBy(createGroupByClause());
+        groupBy(groupByClause());
       }
       select.orderBy().ifPresent(this::setOrderBy);
       forUpdate(select.forUpdate());
@@ -271,6 +272,13 @@ final class SelectQueries {
       return allColumnsClauseCache.computeIfAbsent(definition.entityType(), type -> columnsClause(selectableColumns()));
     }
 
+    private String groupByClause() {
+      return groupByClauseCache.computeIfAbsent(definition.entityType(), type -> definition.columnDefinitions().stream()
+              .filter(ColumnDefinition::isGroupBy)
+              .map(ColumnDefinition::columnExpression)
+              .collect(Collectors.joining(", ")));
+    }
+
     private String columnsClause(List<ColumnDefinition<?>> columnDefinitions) {
       StringBuilder stringBuilder = new StringBuilder();
       for (int i = 0; i < columnDefinitions.size(); i++) {
@@ -288,13 +296,6 @@ final class SelectQueries {
       }
 
       return stringBuilder.toString();
-    }
-
-    private String createGroupByClause() {
-      return definition.columnDefinitions().stream()
-              .filter(ColumnDefinition::isGroupBy)
-              .map(ColumnDefinition::columnExpression)
-              .collect(Collectors.joining(", "));
     }
 
     private void setOrderBy(OrderBy orderBy) {
