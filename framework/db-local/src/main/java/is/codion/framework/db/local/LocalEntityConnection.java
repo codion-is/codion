@@ -163,4 +163,10 @@ public interface LocalEntityConnection extends EntityConnection {
   static Database configureDatabase(Database database, Domain domain) throws DatabaseException {
     return DefaultLocalEntityConnection.configureDatabase(database, domain);
   }
+
+  static String selectQuery(Database database, Entities entities, Select select) {
+    SelectQueries queries = new SelectQueries(requireNonNull(database));
+
+    return queries.builder(requireNonNull(entities).definition(select.where().entityType())).select(select).build();
+  }
 }

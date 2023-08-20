@@ -502,9 +502,9 @@ public interface EntityConnection extends AutoCloseable {
   interface Select {
 
     /**
-     * @return the underlying condition instance
+     * @return the where condition
      */
-    Condition condition();
+    Condition where();
 
     /**
      * @return the OrderBy for this condition, an empty Optional if none is specified
@@ -642,7 +642,7 @@ public interface EntityConnection extends AutoCloseable {
     }
 
     /**
-     * @param condition the condition
+     * @param condition the where condition
      * @return a new {@link Builder} instance
      */
     static Builder where(Condition condition) {
@@ -658,9 +658,9 @@ public interface EntityConnection extends AutoCloseable {
   interface Update {
 
     /**
-     * @return the underlying condition instance
+     * @return the where condition
      */
-    Condition condition();
+    Condition where();
 
     /**
      * @return an unmodifiable view of the new values mapped to their respective columns
@@ -697,7 +697,7 @@ public interface EntityConnection extends AutoCloseable {
     }
 
     /**
-     * @param condition the condition
+     * @param condition the where condition
      * @return a {@link Builder} instance
      */
     static Builder where(Condition condition) {

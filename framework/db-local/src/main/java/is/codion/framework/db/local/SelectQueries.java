@@ -93,7 +93,7 @@ final class SelectQueries {
       }
       //default from clause is handled by from()
       if (setWhereClause) {
-        where(select.condition());
+        where(select.where());
       }
       if (groupBy == null) {
         groupBy(groupByClause());
