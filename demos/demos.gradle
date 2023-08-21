@@ -7,6 +7,12 @@ java {
     }
 }
 
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of("$jdkVersion")
+    }
+}
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = "UTF-8"
     options.deprecation = true

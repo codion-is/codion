@@ -35,7 +35,7 @@ configure(project.frameworkModules) {
 
     java {
         toolchain {
-            languageVersion = JavaLanguageVersion.of(11)
+            languageVersion = JavaLanguageVersion.of("$jdkVersion")
         }
         withJavadocJar()
         withSourcesJar()
@@ -47,7 +47,7 @@ configure(project.frameworkModules) {
     }
 
     javadoc {
-        options.links "https://docs.oracle.com/en/java/javase/11/docs/api/"
+        options.links "https://docs.oracle.com/javase/$jdkVersion/docs/api/"
         options.encoding = "UTF-8"
     }
 
@@ -106,7 +106,7 @@ configure(project.frameworkModules) {
             System.setProperty("sonar.login", "${sonarLogin}")
             System.setProperty("sonar.password", "${sonarPassword}")
             System.setProperty("sonar.projectVersion", project.version.replace("-SNAPSHOT", ""))
-            System.setProperty("sonar.java.source", "8")
+            System.setProperty("sonar.java.source", "$jdkVersion")
             System.setProperty("sonar.sourceEncoding", "UTF-8")
             System.setProperty("sonar.exclusions", "**/*TestDomain.java")
             System.setProperty("sonar.coverage.exclusions",

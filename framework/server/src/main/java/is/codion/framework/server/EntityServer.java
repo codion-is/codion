@@ -376,7 +376,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
       });
       for (String className : domainModelClassNames) {
         LOG.info("Server loading domain model '" + className + "' from classpath");
-        Domain domain = (Domain) Class.forName(className).getConstructor().newInstance();
+        Domain domain = (Domain) Class.forName(className).getDeclaredConstructor().newInstance();
         domains.put(domain.type(), domain);
       }
 

@@ -764,9 +764,9 @@ public final class DefaultFilteredTableModelTest {
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
 
-    assertTrue(tableModel.visibleItems().size() > 0);
-    assertTrue(tableModel.filteredItems().size() > 0);
-    assertTrue(tableModel.items().size() > 0);
+    assertFalse(tableModel.visibleItems().isEmpty());
+    assertFalse(tableModel.filteredItems().isEmpty());
+    assertFalse(tableModel.items().isEmpty());
 
     tableModel.filterModel().conditionModel(0).setEnabled(false);
     assertFalse(tableModel.filterModel().conditionModel(0).isEnabled());

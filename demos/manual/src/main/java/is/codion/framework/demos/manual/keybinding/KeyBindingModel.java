@@ -154,7 +154,7 @@ final class KeyBindingModel {
       }
       String componentClassName = className(componentName);
       try {
-        JComponent component = (JComponent) Class.forName(componentClassName).newInstance();
+        JComponent component = (JComponent) Class.forName(componentClassName).getDeclaredConstructor().newInstance();
         ActionMap actionMap = component.getActionMap();
         Object[] allKeys = actionMap.allKeys();
         if (allKeys == null) {
