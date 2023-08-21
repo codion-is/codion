@@ -120,7 +120,7 @@ tasks.register("combinedJavadoc") {
         options.write(optionsFile)
 
         def javadocTool = javaToolchains.javadocToolFor {
-            languageVersion.set(JavaLanguageVersion.of($jdkVersion))
+            languageVersion.set(JavaLanguageVersion.of("$jdkVersion"))
         }
         exec {
             executable = javadocTool.get().getExecutablePath()
