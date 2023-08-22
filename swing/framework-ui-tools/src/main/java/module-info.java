@@ -1,5 +1,7 @@
 /**
- * Framework Swing tools UI classes.
+ * Framework Swing UI tools.<br>
+ * <br>
+ * {@link is.codion.swing.framework.ui.tools.explorer.DatabaseExplorerPanel}<br>
  */
 module is.codion.swing.framework.ui.tools {
   requires is.codion.swing.common.ui;

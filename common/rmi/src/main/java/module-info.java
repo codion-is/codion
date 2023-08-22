@@ -1,5 +1,11 @@
 /**
- * RMI client/server classes.
+ * RMI client/server classes, such as:<br>
+ * <br>
+ * {@link is.codion.common.rmi.client.ConnectionRequest}<br>
+ * {@link is.codion.common.rmi.server.Server}<br>
+ * {@link is.codion.common.rmi.server.ServerConfiguration}<br>
+ * {@link is.codion.common.rmi.server.LoginProxy}<br>
+ * {@link is.codion.common.rmi.server.RemoteClient}<br>
  */
 module is.codion.common.rmi {
   requires org.slf4j;

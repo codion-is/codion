@@ -1,6 +1,7 @@
 /**
- * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
- * implementations for the H2 database.
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for H2.<br>
+ * <br>
+ * {@link is.codion.dbms.h2database.H2DatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.h2database {

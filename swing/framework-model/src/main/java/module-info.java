@@ -1,5 +1,11 @@
 /**
- * Framework Swing model classes.
+ * Framework Swing model classes, such as:<br>
+ * <br>
+ * {@link is.codion.swing.framework.model.EntityComboBoxModel}<br>
+ * {@link is.codion.swing.framework.model.SwingEntityModel}<br>
+ * {@link is.codion.swing.framework.model.SwingEntityEditModel}<br>
+ * {@link is.codion.swing.framework.model.SwingEntityTableModel}<br>
+ * {@link is.codion.swing.framework.model.SwingEntityApplicationModel}<br>
  */
 module is.codion.swing.framework.model {
   requires org.slf4j;

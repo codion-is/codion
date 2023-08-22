@@ -1,6 +1,7 @@
 /**
- * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
- * implementations for the MySQL database.
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for MySQL.<br>
+ * <br>
+ * {@link is.codion.dbms.mysql.MySQLDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.mysql {

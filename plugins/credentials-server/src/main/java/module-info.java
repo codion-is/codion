@@ -1,5 +1,5 @@
 /**
- * A CredentialsProvider implementation with a server component
+ * A CredentialsProvider implementation with a server component, for supplying single sign on for applications running on localhost.
  * @provides is.codion.common.model.credentials.CredentialsProvider
  * @uses is.codion.common.model.credentials.CredentialsProvider
  */

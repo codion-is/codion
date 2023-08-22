@@ -1,5 +1,8 @@
 /**
- * Framework database connection classes for local JDBC connections.
+ * Local JDBC based database connection classes.<br>
+ * <br>
+ * {@link is.codion.framework.db.local.LocalEntityConnection}<br>
+ * {@link is.codion.framework.db.local.LocalEntityConnectionProvider}<br>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.local {

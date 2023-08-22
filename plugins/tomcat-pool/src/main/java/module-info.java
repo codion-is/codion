@@ -1,5 +1,5 @@
 /**
- * Tomcat connection pool.
+ * Tomcat implementation of {@link is.codion.common.db.pool.ConnectionPoolFactory}.
  */
 module is.codion.plugin.tomcat.pool {
   requires java.management;

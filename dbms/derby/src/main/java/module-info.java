@@ -1,6 +1,7 @@
 /**
- * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
- * implementations for the Derby database.
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for Derby.<br>
+ * <br>
+ * {@link is.codion.dbms.derby.DerbyDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.derby {

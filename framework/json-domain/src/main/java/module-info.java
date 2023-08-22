@@ -1,5 +1,8 @@
 /**
- * JSON Domain.
+ * JSON serialization for domain related classes.<br>
+ * <br>
+ * {@link is.codion.framework.json.domain.EntityObjectMapper}<br>
+ * {@link is.codion.framework.json.domain.EntityObjectMapperFactory}<br>
  */
 module is.codion.framework.json.domain {
   requires transitive com.fasterxml.jackson.databind;

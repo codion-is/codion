@@ -1,5 +1,5 @@
 /**
- * Java Util Logging.
+ * Java Util Logging implementation of {@link is.codion.common.logging.LoggerProxy}.
  */
 module is.codion.plugin.jul.proxy {
   requires java.logging;

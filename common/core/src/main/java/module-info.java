@@ -1,5 +1,12 @@
 /**
- * Common classes used throughout.<br>
+ * Common classes used throughout, such as:<br>
+ * <br>
+ * {@link is.codion.common.event.Event}<br>
+ * {@link is.codion.common.event.EventObserver}<br>
+ * {@link is.codion.common.state.State}<br>
+ * {@link is.codion.common.state.StateObserver}<br>
+ * {@link is.codion.common.value.Value}<br>
+ * {@link is.codion.common.value.ValueObserver}<br>
  * <br>
  * Configuration values:<br>
  * {@link is.codion.common.Text#DEFAULT_COLLATOR_LANGUAGE}<br>

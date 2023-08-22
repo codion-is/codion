@@ -1,5 +1,13 @@
 /**
- * Classes concerned with database connectivity via JDBC.
+ * Core classes concerned with JDBC connectivity, such as:<br>
+ * <br>
+ * {@link is.codion.common.db.database.Database}<br>
+ * {@link is.codion.common.db.database.DatabaseFactory}<br>
+ * {@link is.codion.common.db.connection.DatabaseConnection}<br>
+ * {@link is.codion.common.db.exception.DatabaseException}<br>
+ * {@link is.codion.common.db.operation.DatabaseFunction}<br>
+ * {@link is.codion.common.db.operation.DatabaseProcedure}<br>
+ * <br>
  * @uses is.codion.common.db.database.DatabaseFactory
  * @uses is.codion.common.db.pool.ConnectionPoolFactory
  * @provides is.codion.common.db.pool.ConnectionPoolFactory

@@ -1,5 +1,7 @@
 /**
- * Framework Swing tools model classes.
+ * Framework Swing model tools, such as:<br>
+ * <br>
+ * {@link is.codion.swing.framework.model.tools.loadtest.EntityLoadTestModel}<br>
  */
 module is.codion.swing.framework.model.tools {
   requires org.slf4j;

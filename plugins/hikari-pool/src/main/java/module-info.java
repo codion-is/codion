@@ -1,5 +1,5 @@
 /**
- * Hikari connection pool.
+ * Hikari implementation of {@link is.codion.common.db.pool.ConnectionPoolFactory}.
  */
 module is.codion.plugin.hikari.pool {
   requires com.zaxxer.hikari;

@@ -1,6 +1,7 @@
 /**
- * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
- * implementations for the HSQLDB database.
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for HSQLDB.<br>
+ * <br>
+ * {@link is.codion.dbms.hsqldb.HSQLDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.hsqldb {

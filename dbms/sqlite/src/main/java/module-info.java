@@ -1,6 +1,7 @@
 /**
- * {@link is.codion.common.db.database.Database} and {@link is.codion.common.db.database.DatabaseFactory}
- * implementations for the SQLite database.
+ * {@link is.codion.common.db.database.DatabaseFactory} implementation for SQLite.<br>
+ * <br>
+ * {@link is.codion.dbms.sqlite.SQLiteDatabaseFactory}
  * @provides is.codion.common.db.database.DatabaseFactory
  */
 module is.codion.dbms.sqlite {

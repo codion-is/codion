@@ -1,5 +1,16 @@
 /**
- * Framework domain model classes.
+ * Framework domain model classes, such as:<br>
+ * <br>
+ * {@link is.codion.framework.domain.Domain}<br>
+ * {@link is.codion.framework.domain.entity.Entity}<br>
+ * {@link is.codion.framework.domain.entity.EntityDefinition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.Attribute}<br>
+ * {@link is.codion.framework.domain.entity.attribute.AttributeDefinition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.Column}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ColumnDefinition}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ForeignKey}<br>
+ * {@link is.codion.framework.domain.entity.attribute.ForeignKeyDefinition}<br>
+ * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.domain {
   requires org.slf4j;

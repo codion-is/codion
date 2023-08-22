@@ -1,5 +1,7 @@
 /**
- * JSON Db.
+ * JSON serialization for db related classes.<br>
+ * <br>
+ * {@link is.codion.framework.json.db.ConditionObjectMapper}<br>
  */
 module is.codion.framework.json.db {
   requires transitive com.fasterxml.jackson.databind;

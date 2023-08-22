@@ -1,5 +1,7 @@
 /**
- * Common Swing tools UI classes.
+ * Common Swing UI tools.<br>
+ * <br>
+ * {@link is.codion.swing.common.ui.tools.loadtest.LoadTestPanel}<br>
  */
 module is.codion.swing.common.ui.tools {
   requires org.jfree.jfreechart;

@@ -1,5 +1,5 @@
 /**
- * Logback.
+ * Logback implementation of {@link is.codion.common.logging.LoggerProxy}.
  */
 module is.codion.plugin.logback.proxy {
   requires org.slf4j;

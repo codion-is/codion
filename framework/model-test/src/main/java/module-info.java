@@ -1,5 +1,9 @@
 /**
- * Unit test base classes.
+ * Base classes for unit testing framework application model classes:<br>
+ * <br>
+ * {@link is.codion.framework.model.test.AbstractEntityModelTest}<br>
+ * {@link is.codion.framework.model.test.AbstractEntityTableModelTest}<br>
+ * {@link is.codion.framework.model.test.AbstractEntityApplicationModelTest}<br>
  */
 module is.codion.framework.model.test {
   requires org.slf4j;

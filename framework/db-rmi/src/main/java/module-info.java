@@ -1,5 +1,8 @@
 /**
- * Framework database connection classes for connection via RMI.
+ * RMI based database connection classes.<br>
+ * <br>
+ * {@link is.codion.framework.db.rmi.RemoteEntityConnection}<br>
+ * {@link is.codion.framework.db.rmi.RemoteEntityConnectionProvider}<br>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.rmi {

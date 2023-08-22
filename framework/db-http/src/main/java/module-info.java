@@ -1,5 +1,8 @@
 /**
- * Framework database connection classes for connections via http.
+ * HTTP based database connection classes.<br>
+ * <br>
+ * {@link is.codion.framework.db.http.HttpEntityConnection}<br>
+ * {@link is.codion.framework.db.http.HttpEntityConnectionProvider}<br>
  * @provides is.codion.framework.db.EntityConnectionProvider
  */
 module is.codion.framework.db.http {

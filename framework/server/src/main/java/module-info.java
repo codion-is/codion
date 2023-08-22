@@ -1,5 +1,9 @@
 /**
- * RMI application server.
+ * RMI application server.<br>
+ * <br>
+ * {@link is.codion.framework.server.EntityServer}<br>
+ * {@link is.codion.framework.server.EntityServerAdmin}<br>
+ * {@link is.codion.framework.server.EntityServerConfiguration}<br>
  */
 module is.codion.framework.server {
   requires org.slf4j;

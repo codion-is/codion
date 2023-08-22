@@ -1,5 +1,5 @@
 /**
- * Server monitor.
+ * Framework EntityServer monitor.
  */
 module is.codion.swing.framework.server.monitor {
   requires org.slf4j;

@@ -1,5 +1,5 @@
 /**
- * Log4J.
+ * Log4J implementation of {@link is.codion.common.logging.LoggerProxy}.
  */
 module is.codion.plugin.log4j.proxy {
   requires org.apache.logging.log4j.core;
