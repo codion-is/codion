@@ -6,6 +6,7 @@ package is.codion.swing.framework.model;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.AbstractForeignKeyConditionModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
 import java.util.function.Consumer;

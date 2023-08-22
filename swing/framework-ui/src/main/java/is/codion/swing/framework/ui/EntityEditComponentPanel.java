@@ -33,9 +33,11 @@ import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 import is.codion.swing.framework.ui.component.EntityComponents;
+import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
@@ -74,8 +76,8 @@ import java.util.stream.Collectors;
 
 import static is.codion.swing.common.ui.Utilities.parentWindow;
 import static is.codion.swing.common.ui.layout.Layouts.borderLayout;
-import static is.codion.swing.framework.ui.EntityComponentValidators.addFormattedValidator;
-import static is.codion.swing.framework.ui.EntityComponentValidators.addValidator;
+import static is.codion.swing.framework.ui.component.EntityComponentValidators.addFormattedValidator;
+import static is.codion.swing.framework.ui.component.EntityComponentValidators.addValidator;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.collectingAndThen;
 

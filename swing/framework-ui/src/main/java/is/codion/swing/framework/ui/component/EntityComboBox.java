@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.value.Value;
 import is.codion.framework.domain.entity.Entity;
@@ -17,7 +17,7 @@ import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.dialog.Dialogs;
-import is.codion.swing.framework.model.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.JComboBox;

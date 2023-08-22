@@ -11,6 +11,7 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.model.test.TestDomain;
 import is.codion.framework.model.test.TestDomain.Department;
 import is.codion.framework.model.test.TestDomain.Employee;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.Test;
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.i18n.Messages;
 import is.codion.common.item.Item;
@@ -37,6 +37,7 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityTableCellRenderer;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.Action;

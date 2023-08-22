@@ -15,6 +15,7 @@ import is.codion.framework.model.test.TestDomain.Employee;
 import is.codion.framework.model.test.TestDomain.EnumEntity;
 import is.codion.framework.model.test.TestDomain.EnumEntity.EnumType;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

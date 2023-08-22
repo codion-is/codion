@@ -7,8 +7,8 @@ import is.codion.framework.demos.chinook.ui.MinutesSecondsPanelValue.MinutesSeco
 import is.codion.swing.common.ui.component.value.ComponentValue;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.JPanel;
 import java.util.function.Supplier;

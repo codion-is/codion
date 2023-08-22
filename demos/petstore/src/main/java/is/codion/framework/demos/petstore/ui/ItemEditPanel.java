@@ -5,8 +5,8 @@ package is.codion.framework.demos.petstore.ui;
 
 import is.codion.swing.common.ui.layout.Layouts;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
 import static is.codion.swing.common.ui.component.button.ButtonPanelBuilder.createEastButtonPanel;

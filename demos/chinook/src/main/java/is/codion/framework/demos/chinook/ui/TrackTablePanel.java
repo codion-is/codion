@@ -15,8 +15,8 @@ import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
-import is.codion.swing.framework.ui.DefaultEntityComponentFactory;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
 
 import java.math.BigDecimal;
 import java.util.List;

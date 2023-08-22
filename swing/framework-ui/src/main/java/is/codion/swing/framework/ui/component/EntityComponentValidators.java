@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.exception.ValidationException;

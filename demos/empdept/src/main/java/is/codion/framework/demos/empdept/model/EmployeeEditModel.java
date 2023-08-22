@@ -6,8 +6,8 @@ package is.codion.framework.demos.empdept.model;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.demos.empdept.domain.EmpDept.Employee;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Objects;
 

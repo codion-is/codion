@@ -15,8 +15,8 @@ import is.codion.swing.common.ui.component.combobox.Completion;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel;
 import is.codion.swing.common.ui.component.table.ColumnConditionPanel.BoundFieldFactory;
 import is.codion.swing.common.ui.component.text.TextComponents;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.EntityComboBoxModelConditionModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.component.EntityComponents;
 
 import javax.swing.JCheckBox;

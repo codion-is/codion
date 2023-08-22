@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.ui;
+package is.codion.swing.framework.ui.component;
 
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -9,7 +9,8 @@ import is.codion.framework.db.local.LocalEntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.swing.common.ui.component.text.NumberField;
 import is.codion.swing.common.ui.component.value.ComponentValue;
-import is.codion.swing.framework.model.EntityComboBoxModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.TestDomain;
 import is.codion.swing.framework.ui.TestDomain.Department;
 import is.codion.swing.framework.ui.TestDomain.Employee;
 
