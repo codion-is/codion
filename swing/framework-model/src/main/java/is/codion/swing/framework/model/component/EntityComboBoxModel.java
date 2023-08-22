@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2008 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.swing.framework.model;
+package is.codion.swing.framework.model.component;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.proxy.ProxyBuilder;

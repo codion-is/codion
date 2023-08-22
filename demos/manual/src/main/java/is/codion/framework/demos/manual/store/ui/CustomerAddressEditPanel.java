@@ -7,8 +7,8 @@ import is.codion.framework.demos.manual.store.domain.Store.Address;
 import is.codion.framework.demos.manual.store.domain.Store.CustomerAddress;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditPanel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;

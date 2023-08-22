@@ -41,6 +41,8 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
 import is.codion.swing.framework.ui.EntityEditPanel.Confirmer;
+import is.codion.swing.framework.ui.component.DefaultEntityComponentFactory;
+import is.codion.swing.framework.ui.component.EntityComponentFactory;
 import is.codion.swing.framework.ui.component.EntityComponents;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 

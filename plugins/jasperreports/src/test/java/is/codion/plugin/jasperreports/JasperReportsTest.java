@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2010 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.report.Report;
@@ -12,7 +12,7 @@ import is.codion.dbms.h2database.H2DatabaseFactory;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.local.LocalEntityConnection;
 import is.codion.framework.db.local.LocalEntityConnectionProvider;
-import is.codion.plugin.jasperreports.model.TestDomain.Employee;
+import is.codion.plugin.jasperreports.TestDomain.Employee;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRField;

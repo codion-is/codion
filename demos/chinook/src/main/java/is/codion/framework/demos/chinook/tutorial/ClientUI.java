@@ -14,9 +14,9 @@ import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.exception.ValidationException;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.control.Control;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityComboBox;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
+import is.codion.swing.framework.ui.component.EntityComboBox;
 
 import javax.swing.BorderFactory;
 import javax.swing.JLabel;

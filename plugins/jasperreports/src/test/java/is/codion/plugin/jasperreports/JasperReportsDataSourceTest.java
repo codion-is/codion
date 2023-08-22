@@ -1,12 +1,12 @@
 /*
  * Copyright (c) 2010 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports;
 
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
-import is.codion.plugin.jasperreports.model.TestDomain.Department;
+import is.codion.plugin.jasperreports.TestDomain.Department;
 
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;

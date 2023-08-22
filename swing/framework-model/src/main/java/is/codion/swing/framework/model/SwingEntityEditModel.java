@@ -19,6 +19,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
 import is.codion.framework.model.AbstractEntityEditModel;
 import is.codion.framework.model.EntityEditModel;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Collection;
 import java.util.HashMap;

@@ -16,8 +16,8 @@ import is.codion.framework.domain.entity.attribute.DerivedAttribute;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute.SourceValues;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.plugin.jasperreports.model.JRReportType;
-import is.codion.plugin.jasperreports.model.JasperReports;
+import is.codion.plugin.jasperreports.JRReportType;
+import is.codion.plugin.jasperreports.JasperReports;
 
 import javax.imageio.ImageIO;
 import java.awt.Image;

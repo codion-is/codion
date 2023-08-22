@@ -13,9 +13,9 @@ import is.codion.swing.common.ui.component.text.TemporalField;
 import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
-import is.codion.swing.framework.ui.EntityComboBox;
 import is.codion.swing.framework.ui.EntityEditComponentPanel;
-import is.codion.swing.framework.ui.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntityComboBox;
+import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;

@@ -5,7 +5,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.demos.world.domain.api.World.City;
 import is.codion.framework.demos.world.domain.api.World.Country;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.plugin.jasperreports.model.JasperReportsDataSource;
+import is.codion.plugin.jasperreports.JasperReportsDataSource;
 import is.codion.swing.common.model.worker.ProgressWorker.ProgressReporter;
 
 import net.sf.jasperreports.engine.JRDataSource;

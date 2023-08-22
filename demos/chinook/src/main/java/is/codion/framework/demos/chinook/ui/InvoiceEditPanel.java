@@ -11,7 +11,7 @@ import is.codion.swing.common.model.component.table.FilteredTableModel;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.ui.EntityEditPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.EntitySearchField;
+import is.codion.swing.framework.ui.component.EntitySearchField;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;

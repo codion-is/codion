@@ -12,8 +12,8 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
-import is.codion.plugin.jasperreports.model.JRReportType;
-import is.codion.plugin.jasperreports.model.JasperReports;
+import is.codion.plugin.jasperreports.JRReportType;
+import is.codion.plugin.jasperreports.JasperReports;
 
 import java.awt.Color;
 import java.math.BigDecimal;
@@ -24,7 +24,7 @@ import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
 
 // tag::departmentConstants[]

@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.model.EntityConditionModelFactory;
 import is.codion.swing.common.model.component.combobox.FilteredComboBoxModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Optional;
 

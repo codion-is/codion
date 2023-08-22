@@ -12,8 +12,8 @@ import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
-import is.codion.swing.framework.model.EntityComboBoxModel;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 
 import java.util.Collection;
 import java.util.List;

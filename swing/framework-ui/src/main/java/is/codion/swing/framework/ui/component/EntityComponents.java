@@ -30,9 +30,7 @@ import is.codion.swing.common.ui.component.text.TemporalInputPanel;
 import is.codion.swing.common.ui.component.text.TextAreaBuilder;
 import is.codion.swing.common.ui.component.text.TextFieldBuilder;
 import is.codion.swing.common.ui.component.text.TextInputPanel;
-import is.codion.swing.framework.model.EntityComboBoxModel;
-import is.codion.swing.framework.ui.EntityComboBox;
-import is.codion.swing.framework.ui.EntitySearchField;
+import is.codion.swing.framework.model.component.EntityComboBoxModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.BoundedRangeModel;
