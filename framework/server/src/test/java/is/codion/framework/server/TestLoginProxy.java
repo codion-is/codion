@@ -11,6 +11,7 @@ import is.codion.common.user.User;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 import static is.codion.common.rmi.server.RemoteClient.remoteClient;
 
@@ -26,8 +27,8 @@ public final class TestLoginProxy implements LoginProxy {
   }
 
   @Override
-  public String clientTypeId() {
-    return "TestLoginProxy";
+  public Optional<String> clientTypeId() {
+    return Optional.of("TestLoginProxy");
   }
 
   @Override

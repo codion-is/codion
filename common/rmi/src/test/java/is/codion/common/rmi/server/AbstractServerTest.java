@@ -19,6 +19,7 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -144,6 +145,8 @@ public class AbstractServerTest {
     assertEquals(connectionRequest.clientId(), connection.remoteClient().clientId());
 
     server.disconnect(connectionRequest.clientId());
+
+    assertThrows(IllegalStateException.class, () -> server.addLoginProxy(new TestLoginProxy()));
   }
 
   @Test
@@ -295,18 +298,21 @@ public class AbstractServerTest {
     static final AtomicInteger CLOSE_COUNTER = new AtomicInteger();
 
     @Override
-    public String clientTypeId() {
-      return null;
+    public Optional<String> clientTypeId() {
+      return Optional.of(CLIENT_TYPE_ID);
     }
+
     @Override
     public RemoteClient login(RemoteClient remoteClient) {
       LOGIN_COUNTER.incrementAndGet();
       return remoteClient;
     }
+
     @Override
     public void logout(RemoteClient remoteClient) {
       LOGOUT_COUNTER.incrementAndGet();
     }
+
     @Override
     public void close() {
       CLOSE_COUNTER.incrementAndGet();

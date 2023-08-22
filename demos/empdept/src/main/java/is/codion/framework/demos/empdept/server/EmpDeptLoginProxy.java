@@ -11,6 +11,7 @@ import is.codion.common.user.User;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public final class EmpDeptLoginProxy implements LoginProxy {
 
@@ -24,8 +25,8 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   }
 
   @Override
-  public String clientTypeId() {
-    return "is.codion.framework.demos.empdept.ui.EmpDeptAppPanel";
+  public Optional<String> clientTypeId() {
+    return Optional.of("is.codion.framework.demos.empdept.ui.EmpDeptAppPanel");
   }
 
   @Override
