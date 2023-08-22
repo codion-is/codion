@@ -15,18 +15,18 @@
 === Petclinic
 link:{basedir}/tutorials/petclinic/petclinic.html[Petclinic tutorial]
 
-link:https://github.com/bjorndarri/petclinic[Petclinic project on Github]
+link:https://github.com/codion-is/petclinic[Petclinic project on Github]
 
 === World
 link:{basedir}/tutorials/world/world.html[World tutorial]
 
-link:https://github.com/bjorndarri/world[World project on Github]
+link:https://github.com/codion-is/world[World project on Github]
 
 === Chinook
 
 link:{basedir}/tutorials/chinook/chinook.html[Chinook tutorial]
 
-link:https://github.com/bjorndarri/chinook[Chinook project on Github]
+link:https://github.com/codion-is/chinook[Chinook project on Github]
 
 ==== Minimal
 <<{basedir}/tutorials/chinook-minimal.adoc#_chinook_minimal_tutorial, Chinook Minimal>>
