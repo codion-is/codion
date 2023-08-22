@@ -5,3 +5,5 @@ build/
 logs/
 #ignore all intellij build folders
 out/
+#ignore all vscode build folders
+bin/
