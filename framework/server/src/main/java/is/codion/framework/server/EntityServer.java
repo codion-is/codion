@@ -59,10 +59,7 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityServer.class);
 
-  protected static final String START = "start";
-  protected static final String STOP = "stop";
-  protected static final String SHUTDOWN = "shutdown";
-  protected static final String RESTART = "restart";
+  private static final String SHUTDOWN = "shutdown";
 
   private final EntityServerConfiguration configuration;
   private final Map<DomainType, Domain> domainModels;
@@ -495,26 +492,16 @@ public class EntityServer extends AbstractServer<AbstractRemoteEntityConnection,
 
   /**
    * If no arguments are supplied a new EntityServer is started.
-   * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
+   * @param arguments 'shutdown' (case-insensitive) causes a running server to be shut down, otherwise a server is started
    * @throws RemoteException in case of a remote exception during service export
    * @throws ServerAuthenticationException in case of missing or incorrect admin user information
    */
   public static void main(String[] arguments) throws RemoteException, ServerAuthenticationException {
-    String argument = arguments.length == 0 ? START : arguments[0];
-    switch (argument) {
-      case START:
-        startServer();
-        break;
-      case STOP:
-      case SHUTDOWN:
-        shutdownServer();
-        break;
-      case RESTART:
-        shutdownServer();
-        startServer();
-        break;
-      default:
-        startServer();
+    if (arguments.length > 0 && arguments[0].equalsIgnoreCase(SHUTDOWN)) {
+      shutdownServer();
+    }
+    else {
+      startServer();
     }
   }
 

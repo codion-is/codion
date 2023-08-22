@@ -34,6 +34,9 @@ import java.util.UUID;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
+/**
+ * A base server admin implementation.
+ */
 public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdmin {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultServerAdmin.class);
@@ -46,6 +49,12 @@ public class DefaultServerAdmin extends UnicastRemoteObject implements ServerAdm
   private final transient LinkedList<GcEvent> gcEventList = new LinkedList<>();
   private final transient PropertyFormatter propertyFormatter = new SystemPropertyFormatter();
 
+  /**
+   * Instantiates a new DefaultServerAdmin instance.
+   * @param server the server to administer
+   * @param configuration the server configuration
+   * @throws RemoteException in case of an exception
+   */
   public DefaultServerAdmin(AbstractServer<?, ? extends ServerAdmin> server, ServerConfiguration configuration) throws RemoteException {
     super(requireNonNull(configuration, "configuration").adminPort(),
             configuration.rmiClientSocketFactory(), configuration.rmiServerSocketFactory());

@@ -12,6 +12,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * Administration interface for a {@link java.rmi.server.RemoteServer}.
+ */
 public interface ServerAdmin extends Remote {
 
   /**

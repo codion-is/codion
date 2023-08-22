@@ -235,13 +235,24 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     shutdownEvent.run();
   }
 
+  /**
+   * Adds a {@link LoginProxy} instance to this server.
+   * If {@link LoginProxy#clientTypeId()} is empty, the login proxy
+   * is shared between all clients, otherwise it is only used for clients with the given id.
+   * @param loginProxy the login proxy to add
+   * @throws IllegalStateException in case a login proxy with the same clientTypeId has been added
+   */
   public final void addLoginProxy(LoginProxy loginProxy) {
     requireNonNull(loginProxy, "loginProxy");
-    if (loginProxy.clientTypeId() == null) {
-      sharedLoginProxies.add(loginProxy);
+    if (loginProxy.clientTypeId().isPresent()) {
+      String clientTypeId = loginProxy.clientTypeId().get();
+      if (loginProxies.containsKey(clientTypeId)) {
+        throw new IllegalStateException("LoginProxy for clientTypeId '" + clientTypeId + "' has alread been added");
+      }
+      loginProxies.put(clientTypeId, loginProxy);
     }
     else {
-      loginProxies.put(loginProxy.clientTypeId(), loginProxy);
+      sharedLoginProxies.add(loginProxy);
     }
   }
 
@@ -271,6 +282,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return clients(remoteClient -> remoteClient.user().equals(requireNonNull(user)));
   }
 
+  /**
+   * Sets the admin instance for this server
+   * @param admin the admin instance
+   * @throws IllegalStateException in case an admin instance has already been set
+   */
   protected final void setAdmin(A admin) {
     if (this.admin != null) {
       throw new IllegalStateException("Admin has already been set for this server");
@@ -278,6 +294,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     this.admin = admin;
   }
 
+  /**
+   * @return the admin instance associated with this server
+   * @throws IllegalStateException in case no admin instance has been set
+   * @see #setAdmin(ServerAdmin)
+   */
   protected final A getAdmin() {
     if (admin == null) {
       throw new IllegalStateException("No admin instance available");
@@ -324,6 +345,10 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return clients(remoteClient -> Objects.equals(remoteClient.clientTypeId(), requireNonNull(clientTypeId)));
   }
 
+  /**
+   * @return the Registry instance
+   * @throws RemoteException in case of an exception
+   */
   protected final Registry registry() throws RemoteException {
     if (registry == null) {
       registry = LocateRegistry.createRegistry(configuration.registryPort());
@@ -332,6 +357,12 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return registry;
   }
 
+  /**
+   * Logs the given exception and shuts down this server
+   * @param exception the exception
+   * @return the exception
+   * @param <T> the exception type
+   */
   protected final <T extends Throwable> T logShutdownAndReturn(T exception) {
     LOG.error("Exception on server startup", exception);
     shutdown();
@@ -339,6 +370,9 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
     return exception;
   }
 
+  /**
+   * @return an unmodifiable view of the auxialiary servers running along side this server
+   */
   protected final Collection<AuxiliaryServer> auxiliaryServers() {
     return unmodifiableCollection(auxiliaryServers);
   }
@@ -480,12 +514,17 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
 
   private void loadLoginProxies() {
     LoginProxy.loginProxies().forEach(loginProxy -> {
-      String clientTypeId = loginProxy.clientTypeId();
-      LOG.info("Server loading " + (clientTypeId == null ? "shared" : "") + "login proxy '" + loginProxy.getClass().getName() + "' as service");
+      String clientTypeId = loginProxy.clientTypeId().orElse(null);
+      LOG.info("Server loading login proxy '" + loginProxy.getClass().getName() + "' as service, " +
+              (clientTypeId == null ? "shared" : "(clientTypeId: '" + clientTypeId + "'"));
       addLoginProxy(loginProxy);
     });
   }
 
+  /**
+   * Represents a remote client connection.
+   * @param <T> the connection type
+   */
   protected static final class ClientConnection<T> {
 
     private final RemoteClient client;
@@ -496,10 +535,16 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
       this.connection = connection;
     }
 
+    /**
+     * @return the remote client
+     */
     public RemoteClient remoteClient() {
       return client;
     }
 
+    /**
+     * @return the connection
+     */
     public T connection() {
       return connection;
     }

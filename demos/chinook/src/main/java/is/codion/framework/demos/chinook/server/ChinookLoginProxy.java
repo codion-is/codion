@@ -19,6 +19,8 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.Column;
 
+import java.util.Optional;
+
 import static is.codion.framework.db.condition.Condition.and;
 import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.local.LocalEntityConnection.localEntityConnection;
@@ -60,8 +62,8 @@ public final class ChinookLoginProxy implements LoginProxy {
    * Handles logins from clients with this id
    */
   @Override
-  public String clientTypeId() {
-    return "is.codion.framework.demos.chinook.ui.ChinookAppPanel";
+  public Optional<String> clientTypeId() {
+    return Optional.of("is.codion.framework.demos.chinook.ui.ChinookAppPanel");
   }
 
   @Override

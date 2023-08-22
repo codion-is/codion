@@ -7,6 +7,7 @@ import is.codion.common.rmi.server.exception.LoginException;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ServiceLoader;
 
 /**
@@ -15,9 +16,13 @@ import java.util.ServiceLoader;
 public interface LoginProxy {
 
   /**
-   * @return the String identifying the client type for which to use this login proxy, null to share between all clients
+   * Returns the the id of the client type for which to use this login proxy.
+   * If none is specified, this login proxy is shared between all clients.
+   * @return the String identifying the client type for which to use this login proxy or an empty optional in case this login proxy should be shared
    */
-  String clientTypeId();
+  default Optional<String> clientTypeId() {
+    return Optional.empty();
+  }
 
   /**
    * Performs login validation for the user specified by the remote client
