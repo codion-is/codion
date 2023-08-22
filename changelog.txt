@@ -9442,3 +9442,4 @@
   SelectQueries, groupByClause now cached
   Select, Update.condition() renamed where()
   DefaultSelect, refactoring, no longer keeps an empty foreignKeyFetchDepths map, in case none are specified
+  AbstractServerTest, now uses a single test server instance instead of one for each test, hopefully a bit less flaky, related refactoring
