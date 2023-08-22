@@ -18,8 +18,8 @@ import java.util.Map;
 import java.util.function.Supplier;
 
 import static is.codion.framework.db.condition.Condition.column;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
-import static is.codion.plugin.jasperreports.model.JasperReports.fillReport;
+import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.fillReport;
 import static java.util.Collections.singletonMap;
 
 public final class CountryTableModel extends SwingEntityTableModel {

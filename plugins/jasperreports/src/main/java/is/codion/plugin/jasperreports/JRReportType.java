@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports;
 
 import is.codion.common.db.report.ReportType;
 

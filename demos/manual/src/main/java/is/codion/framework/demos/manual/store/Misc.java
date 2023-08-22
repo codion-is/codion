@@ -14,9 +14,9 @@ import is.codion.framework.demos.manual.store.model.CustomerEditModel;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.exception.ValidationException;
-import is.codion.plugin.jasperreports.model.JRReport;
-import is.codion.plugin.jasperreports.model.JasperReports;
-import is.codion.plugin.jasperreports.model.JasperReportsDataSource;
+import is.codion.plugin.jasperreports.JRReport;
+import is.codion.plugin.jasperreports.JasperReports;
+import is.codion.plugin.jasperreports.JasperReportsDataSource;
 
 import net.sf.jasperreports.engine.JasperPrint;
 
@@ -24,7 +24,7 @@ import java.util.Iterator;
 import java.util.UUID;
 
 import static is.codion.framework.db.condition.Condition.all;
-import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
+import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 
 public final class Misc {
 

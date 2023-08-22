@@ -26,7 +26,7 @@ import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.db.condition.Condition.foreignKey;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.util.stream.Collectors.toList;
 
 public final class ChinookImpl extends DefaultDomain implements Chinook {

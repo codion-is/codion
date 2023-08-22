@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports;
 
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
@@ -13,8 +13,8 @@ import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.increment;
-import static is.codion.plugin.jasperreports.model.JasperReports.classPathReport;
-import static is.codion.plugin.jasperreports.model.JasperReports.fileReport;
+import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
+import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {

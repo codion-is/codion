@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2009 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.plugin.jasperreports.model;
+package is.codion.plugin.jasperreports;
 
 import net.sf.jasperreports.engine.JRDataSource;
 import net.sf.jasperreports.engine.JRException;

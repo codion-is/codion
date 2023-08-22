@@ -9446,3 +9446,4 @@
   LoginProxy.clientTypeId() now returns Optional, related refactoring, javadoc improvements
   EntityServer, startup arguments START, STOP and RESTART removed, now only SHUTDOWN is supported
   EntityComboBoxModel, EntityComboBox moved to component subpackage, along with a few friends
+  JasperReports classes moved up one package, model package removed
