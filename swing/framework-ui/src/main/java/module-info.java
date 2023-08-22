@@ -1,11 +1,11 @@
 /**
  * Framework Swing UI classes, such as:<br>
  * <br>
- * {@link is.codion.swing.framework.ui.EntityComboBox}<br>
  * {@link is.codion.swing.framework.ui.EntityPanel}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel}<br>
+ * {@link is.codion.swing.framework.ui.component.EntityComboBox}<br>
  * {@link is.codion.swing.framework.ui.component.EntityComponents}<br>
  * {@link is.codion.swing.framework.ui.icon.FrameworkIcons}<br>
  */
