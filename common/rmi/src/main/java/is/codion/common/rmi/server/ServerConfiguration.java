@@ -21,8 +21,14 @@ import java.util.function.Supplier;
  */
 public interface ServerConfiguration {
 
+  /**
+   * The default idle connection timeout in milliseconds.
+   */
   int DEFAULT_IDLE_CONNECTION_TIMEOUT = 120_000;
 
+  /**
+   * The default connection maintenance interval in milliseconds.
+   */
   int DEFAULT_CONNECTION_MAINTENANCE_INTERVAL = 30_000;
 
   /**
