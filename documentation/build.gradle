@@ -88,7 +88,7 @@ tasks.register("combinedJavadoc") {
     def tempDir = project.layout.buildDirectory.dir("tmp").get()
     def combinedSrcDir = "${tempDir}/combinedSource";
     def outputDirectory = project.layout.buildDirectory.dir("javadoc").get()
-    def optionsFile = new File(tempDir, "javadoc.options")
+    def optionsFile = new File(tempDir.asFile, "javadoc.options")
 
     outputs.dir(outputDirectory)
     FileCollection classpath = getProject().files()
