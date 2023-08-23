@@ -20,9 +20,9 @@ final class DefaultDomainType implements DomainType, Serializable {
   private static final long serialVersionUID = 1;
 
   private static final Map<String, DefaultDomainType> DOMAIN_TYPES = new ConcurrentHashMap<>();
+  private static final Map<DomainType, Map<String, EntityType>> DOMAIN_ENTITY_TYPES = new ConcurrentHashMap<>();
 
   private final String domainName;
-  private final Map<String, EntityType> entityTypes = new ConcurrentHashMap<>();
 
   private DefaultDomainType(String domainName) {
     if (nullOrEmpty(domainName)) {
@@ -43,26 +43,26 @@ final class DefaultDomainType implements DomainType, Serializable {
 
   @Override
   public <T extends Entity> EntityType entityType(String name, Class<T> entityClass) {
-    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+    return entityTypes().computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this, entityClass));
   }
 
   @Override
   public EntityType entityType(String name, String resourceBundleName) {
-    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+    return entityTypes().computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this, resourceBundleName));
   }
 
   @Override
   public <T extends Entity> EntityType entityType(String name, Class<T> entityClass,
                                                   String resourceBundleName) {
-    return entityTypes.computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
+    return entityTypes().computeIfAbsent(requireNonNull(name, "name"), entityTypeName ->
             EntityType.entityType(entityTypeName, this, entityClass, resourceBundleName));
   }
 
   @Override
   public boolean contains(EntityType entityType) {
-    return entityTypes.containsKey(requireNonNull(entityType).name());
+    return entityTypes().containsKey(requireNonNull(entityType).name());
   }
 
   @Override
@@ -86,6 +86,10 @@ final class DefaultDomainType implements DomainType, Serializable {
   @Override
   public String toString() {
     return domainName;
+  }
+
+  private Map<String, EntityType> entityTypes() {
+    return DOMAIN_ENTITY_TYPES.computeIfAbsent(this, k -> new ConcurrentHashMap<>());
   }
 
   private void readObject(ObjectInputStream stream) throws IOException, ClassNotFoundException {
