@@ -14,7 +14,7 @@ tasks.register("copyModuleDependencyGraphs") {
             def moduleDir = it.projectDir
             def graphFilePath = "${moduleDir}/build/reports/dependency-graph/dependency-graph.svg"
             graphFilePath = graphFilePath.replace(rootDir.toString(), "").substring(1)
-            ant.copy(todir: "${buildDir}/asciidoc/images/modules") {
+            ant.copy(todir: project.layout.buildDirectory.dir("asciidoc/images/modules").get()) {
                 fileset(dir: rootDir, includes: graphFilePath)
             }
         }
@@ -34,7 +34,7 @@ asciidoctor {
     // config files
     inputs.dir(new File("../framework/server/src/main"))
 
-    outputDir = "${buildDir}/asciidoc"
+    outputDir = project.layout.buildDirectory.dir("asciidoc")
 
     baseDirFollowsSourceFile()
     sources {
@@ -43,7 +43,7 @@ asciidoctor {
     attributes "codion-version": documentationVersion,
             revnumber: documentationVersion, sectnums: 4, sectanchors: true, prewrap: false,
             experimental: true, reproducible: true, linkcss: true, googleAnalyticsId: "UA-159091863-1",
-            "diagram-cachedir": "${buildDir}/asciidoc/images/diagram-cache",
+            "diagram-cachedir": project.layout.buildDirectory.dir("asciidoc/images/diagram-cache").get().asFile.absolutePath,
             "opar": "-",
             "cpar": "-",
             "comma": "-",
@@ -83,7 +83,7 @@ tasks.register("combinedJavadoc", Javadoc) {
     title "Codion Framework API ${documentationVersion}"
     options.links "https://docs.oracle.com/javase/$jdkVersion/docs/api/"
     options.encoding = "UTF-8"
-    destinationDir = file("${buildDir}/javadoc")
+    destinationDir = file(project.layout.buildDirectory.dir("javadoc"))
     frameworkModules.each { module ->
         module.tasks.withType(Javadoc).each { javadocTask ->
             source += javadocTask.source
@@ -95,16 +95,16 @@ tasks.register("combinedJavadoc", Javadoc) {
 tasks.register("assembleDocs") {
     dependsOn combinedJavadoc, asciidoctor
     group "documentation"
-    def docFolder = "${buildDir}/${documentationDir}"
+    def docFolder = project.layout.buildDirectory.dir("${documentationDir}").get()
     doLast {
         ant.delete(dir: docFolder)
         ant.copy(todir: docFolder) {
-            fileset(dir: "${buildDir}/asciidoc")
+            fileset(dir: project.layout.buildDirectory.dir("asciidoc").get())
         }
-        ant.copy(todir: docFolder + "/api") {
-            fileset(dir: "${buildDir}/javadoc")
+        ant.copy(todir: docFolder.asFile.absolutePath + "/api") {
+            fileset(dir: project.layout.buildDirectory.dir("javadoc").get())
         }
-        ant.copy(todir: docFolder + "/utilities") {
+        ant.copy(todir: docFolder.asFile.absolutePath + "/utilities") {
             fileset(dir: project.projectDir.absolutePath + "/src/docs/utilities")
         }
     }
@@ -114,14 +114,14 @@ tasks.register("copyToGitHubPages", Sync) {
     dependsOn assembleDocs
     group "documentation"
     def ghPagesDocDir = "../../codion-pages/doc/${documentationDir}"
-    from "${buildDir}/${documentationDir}"
+    from project.layout.buildDirectory.dir("${documentationDir}")
     into ghPagesDocDir
 }
 
 tasks.register("documentationZip", Zip) {
     dependsOn assembleDocs
     group "documentation"
-    from "${buildDir}/${documentationDir}"
+    from project.layout.buildDirectory.dir("${documentationDir}")
 }
 
 artifacts {
