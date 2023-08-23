@@ -3,6 +3,7 @@
  */
 package is.codion.swing.common.model.component.table;
 
+import is.codion.common.Separators;
 import is.codion.common.event.Event;
 import is.codion.common.state.State;
 import is.codion.swing.common.model.component.table.DefaultFilteredTableSearchModel.DefaultRowColumn;
@@ -832,11 +833,12 @@ public final class DefaultFilteredTableModelTest {
   @Test
   public void tableDataAsDelimitedString() {
     tableModel.refresh();
-    String expected = "0\n" +
-            "a\n" +
-            "b\n" +
-            "c\n" +
-            "d\n" +
+
+    String expected = "0" + Separators.LINE_SEPARATOR +
+            "a" + Separators.LINE_SEPARATOR +
+            "b" + Separators.LINE_SEPARATOR +
+            "c" + Separators.LINE_SEPARATOR +
+            "d" + Separators.LINE_SEPARATOR +
             "e";
     assertEquals(expected, tableModel.rowsAsDelimitedString('\t'));
   }

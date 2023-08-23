@@ -6,7 +6,7 @@
 
 Codion uses a plugin oriented approach to report viewing and provides an implementation for https://github.com/TIBCOSoftware/jasperreports[JasperReports].
 
-With the Codion JasperReports plugin you can either design your report based on an SQL query in which case you use the JRReport class, which facilitates the report being filled using the active database connection, or you can design your report around the JRDataSource implementation provided by the {url-javadoc}{plugin-jasperreports}/is/codion/plugin/jasperreports/model/JasperReportsDataSource.html[JasperReportsDataSource] class, which is constructed around an iterator.
+With the Codion JasperReports plugin you can either design your report based on an SQL query in which case you use the JRReport class, which facilitates the report being filled using the active database connection, or you can design your report around the JRDataSource implementation provided by the {url-javadoc}{plugin-jasperreports}/is/codion/plugin/jasperreports/JasperReportsDataSource.html[JasperReportsDataSource] class, which is constructed around an iterator.
 
 == JDBC Reports
 
