@@ -22,6 +22,7 @@ public final class ProgressWorkerTest {
     List<Integer> stateChanges = new ArrayList<>();
 
     ProgressWorker.ProgressTask<Integer, String> task = progressReporter -> {
+      Thread.sleep(100);
       progressReporter.report(100);
       progressReporter.publish("Done");
 
