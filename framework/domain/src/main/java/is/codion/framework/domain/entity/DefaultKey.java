@@ -113,7 +113,7 @@ class DefaultKey implements Entity.Key, Serializable {
   }
 
   @Override
-  public EntityDefinition definition() {
+  public EntityDefinition entityDefinition() {
     return definition;
   }
 

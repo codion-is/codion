@@ -407,7 +407,7 @@ final class LocalConnectionHandler implements InvocationHandler {
 
     private static String entityToString(Entity entity) {
       StringBuilder builder = new StringBuilder(entity.entityType().name()).append(" {");
-      List<ColumnDefinition<?>> columnDefinitions = entity.definition().columnDefinitions();
+      List<ColumnDefinition<?>> columnDefinitions = entity.entityDefinition().columnDefinitions();
       for (int i = 0; i < columnDefinitions.size(); i++) {
         ColumnDefinition<?> columnDefinition = columnDefinitions.get(i);
         boolean modified = entity.isModified(columnDefinition.attribute());

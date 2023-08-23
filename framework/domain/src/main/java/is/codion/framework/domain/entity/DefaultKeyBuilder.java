@@ -17,7 +17,7 @@ final class DefaultKeyBuilder implements Entity.Key.Builder {
   private boolean primaryKey = true;
 
   DefaultKeyBuilder(Entity.Key key) {
-    this(key.definition());
+    this(key.entityDefinition());
     this.primaryKey = key.isPrimaryKey();
     key.columns().forEach(column -> columnValues.put(column, key.get(column)));
   }
