@@ -18,6 +18,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -112,14 +113,20 @@ public interface Condition {
   }
 
   /**
-   * Creates a {@link Condition} based on the given keys, assuming they are all based on the same columns.
+   * Creates a {@link Condition} based on the given keys.
    * @param keys the keys
    * @return a condition based on the given keys
-   * @throws IllegalArgumentException in case {@code keys} is empty
+   * @throws IllegalArgumentException in case {@code keys} is empty or if it contains keys from multiple entity types
    */
   static Condition keys(Collection<Entity.Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
       throw new IllegalArgumentException("No keys specified for key condition");
+    }
+    Set<EntityType> entityTypes = keys.stream()
+            .map(Entity.Key::entityType)
+            .collect(Collectors.toSet());
+    if (entityTypes.size() > 1) {
+      throw new IllegalArgumentException("Multiple entity types found among keys");
     }
     Entity.Key firstKey = (keys instanceof List) ? ((List<Entity.Key>) keys).get(0) : keys.iterator().next();
     if (firstKey.columns().size() > 1) {

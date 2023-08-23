@@ -5,7 +5,7 @@
 [#_core_classes]
 == Core classes
 
-Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value], their respective observers {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver] and {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver].
+Three common classes used throughout the framework are {url-javadoc}{common-core}/is/codion/common/event/Event.html[Event], {url-javadoc}{common-core}/is/codion/common/state/State.html[State] and {url-javadoc}{common-core}/is/codion/common/value/Value.html[Value] and their respective observers {url-javadoc}{common-core}/is/codion/common/event/EventObserver.html[EventObserver], {url-javadoc}{common-core}/is/codion/common/state/StateObserver.html[StateObserver] and {url-javadoc}{common-core}/is/codion/common/value/ValueObserver.html[ValueObserver].
 
 === Event
 

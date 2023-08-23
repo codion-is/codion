@@ -250,6 +250,19 @@ public final class ConditionTest {
   }
 
   @Test
+  void keyMismatch() {
+    Entity master1 = ENTITIES.builder(Master.TYPE)
+            .with(Master.ID_1, 1)
+            .with(Master.ID_2, 2)
+            .build();
+    Entity detail = ENTITIES.builder(Detail.TYPE)
+            .with(Detail.ID, 3L)
+            .build();
+
+    assertThrows(IllegalArgumentException.class, () -> keys(Arrays.asList(master1.primaryKey(), detail.primaryKey())));
+  }
+
+  @Test
   void conditionTest() {
     Entity entity = ENTITIES.builder(Department.TYPE)
             .with(Department.ID, 10)

@@ -60,7 +60,7 @@ final class EntitySerializer extends StdSerializer<Entity> {
 
   private void writeValues(Entity entity, JsonGenerator generator, Set<Map.Entry<Attribute<?>, Object>> entrySet) throws IOException {
     generator.writeStartObject();
-    EntityDefinition definition = entity.definition();
+    EntityDefinition definition = entity.entityDefinition();
     for (Map.Entry<Attribute<?>, Object> entry : entrySet) {
       AttributeDefinition<?> attributeDefinition = definition.attributeDefinition(entry.getKey());
       if (include(attributeDefinition, entity)) {

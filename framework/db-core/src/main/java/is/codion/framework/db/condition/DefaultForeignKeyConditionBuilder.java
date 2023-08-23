@@ -10,10 +10,10 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKey.Reference;
 
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 
 import static is.codion.common.Conjunction.AND;
 import static is.codion.common.Conjunction.OR;
@@ -22,6 +22,7 @@ import static is.codion.common.Operator.NOT_EQUAL;
 import static java.util.Arrays.asList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toList;
+import static java.util.stream.Collectors.toMap;
 
 final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Builder {
 
@@ -45,10 +46,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
       return new DefaultColumnConditionBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn()));
     }
 
-    return new DefaultConditionCombination(AND, references.stream()
+    List<Condition> conditions = references.stream()
             .map(reference -> (Reference<Object>) reference)
             .map(reference -> new DefaultColumnConditionBuilder<>(reference.column()).equalTo(value.get(reference.referencedColumn())))
-            .collect(toList()));
+            .collect(toList());
+
+    return new DefaultConditionCombination(AND, conditions);
   }
 
   @Override
@@ -64,10 +67,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
       return new DefaultColumnConditionBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn()));
     }
 
-    return new DefaultConditionCombination(AND, references.stream()
+    List<Condition> conditions = references.stream()
             .map(reference -> (Reference<Object>) reference)
             .map(reference -> new DefaultColumnConditionBuilder<>(reference.column()).notEqualTo(value.get(reference.referencedColumn())))
-            .collect(toList()));
+            .collect(toList());
+
+    return new DefaultConditionCombination(AND, conditions);
   }
 
   @Override
@@ -82,24 +87,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
 
   @Override
   public Condition in(Collection<? extends Entity> values) {
-    List<Column<?>> attributes = foreignKey.references().stream()
-            .map(Reference::referencedColumn)
-            .collect(toList());
-
-    return foreignKeyCondition(foreignKey, EQUAL, values.stream()
-            .map(entity -> valueMap(entity, attributes))
-            .collect(toList()));
+    return foreignKeyCondition(foreignKey, EQUAL, createValueMaps(values));
   }
 
   @Override
   public Condition notIn(Collection<? extends Entity> values) {
-    List<Column<?>> attributes = foreignKey.references().stream()
-            .map(Reference::referencedColumn)
-            .collect(toList());
-
-    return foreignKeyCondition(foreignKey, NOT_EQUAL, values.stream()
-            .map(entity -> valueMap(entity, attributes))
-            .collect(toList()));
+    return foreignKeyCondition(foreignKey, NOT_EQUAL, createValueMaps(values));
   }
 
   @Override
@@ -113,10 +106,12 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
       return new DefaultColumnConditionBuilder<>(column).isNull();
     }
 
-    return new DefaultConditionCombination(AND, columns.stream()
+    List<Condition> conditions = columns.stream()
             .map(column -> (Column<Object>) column)
             .map(column -> new DefaultColumnConditionBuilder<>(column).isNull())
-            .collect(toList()));
+            .collect(toList());
+
+    return new DefaultConditionCombination(AND, conditions);
   }
 
   @Override
@@ -130,53 +125,67 @@ final class DefaultForeignKeyConditionBuilder implements ForeignKeyCondition.Bui
       return new DefaultColumnConditionBuilder<>(column).isNotNull();
     }
 
-    return new DefaultConditionCombination(AND, columns.stream()
+    List<Condition> conditions = columns.stream()
             .map(column -> (Column<Object>) column)
             .map(column -> new DefaultColumnConditionBuilder<>(column).isNotNull())
-            .collect(toList()));
+            .collect(toList());
+
+    return new DefaultConditionCombination(AND, conditions);
   }
 
-  static Condition compositeKeyCondition(Map<Column<?>, Column<?>> attributes, Operator operator,
+  private List<Map<Column<?>, ?>> createValueMaps(Collection<? extends Entity> values) {
+    List<Column<?>> referencedColumns = foreignKey.references().stream()
+            .map(Reference::referencedColumn)
+            .collect(toList());
+
+    return values.stream()
+            .map(entity -> valueMap(entity, referencedColumns))
+            .collect(toList());
+  }
+
+  static Condition compositeKeyCondition(Map<Column<?>, Column<?>> columnReferenceMap, Operator operator,
                                          List<Map<Column<?>, ?>> valueMaps) {
     if (valueMaps.size() == 1) {
-      return compositeEqualCondition(attributes, operator, valueMaps.get(0));
+      return compositeEqualCondition(columnReferenceMap, operator, valueMaps.get(0));
     }
 
-    return new DefaultConditionCombination(OR, valueMaps.stream()
-            .map(valueMap -> compositeEqualCondition(attributes, operator, valueMap))
-            .collect(toList()));
+    List<Condition> conditions = valueMaps.stream()
+            .map(valueMap -> compositeEqualCondition(columnReferenceMap, operator, valueMap))
+            .collect(toList());
+
+    return new DefaultConditionCombination(OR, conditions);
   }
 
-  static Condition compositeEqualCondition(Map<Column<?>, Column<?>> attributes,
+  static Condition compositeEqualCondition(Map<Column<?>, Column<?>> columnReferenceMap,
                                            Operator operator, Map<Column<?>, ?> valueMap) {
-    return new DefaultConditionCombination(AND, attributes.entrySet().stream()
+    List<Condition> conditions = columnReferenceMap.entrySet().stream()
             .map(entry -> equalCondition(entry.getKey(), operator, valueMap.get(entry.getValue())))
-            .collect(toList()));
+            .collect(toList());
+
+    return new DefaultConditionCombination(AND, conditions);
   }
 
   private static Condition foreignKeyCondition(ForeignKey foreignKey, Operator operator,
                                                List<Map<Column<?>, ?>> valueMaps) {
     if (foreignKey.references().size() > 1) {
-      return compositeKeyCondition(attributeMap(foreignKey.references()), operator, valueMaps);
+      return compositeKeyCondition(columnReferenceMap(foreignKey.references()), operator, valueMaps);
     }
 
-    return inCondition(foreignKey.references().get(0), operator, valueMaps.stream()
+    List<Object> values = valueMaps.stream()
             .map(map -> map.get(foreignKey.references().get(0).referencedColumn()))
-            .collect(toList()));
+            .collect(toList());
+
+    return inCondition(foreignKey.references().get(0), operator, values);
   }
 
-  private static Map<Column<?>, Column<?>> attributeMap(List<Reference<?>> references) {
-    Map<Column<?>, Column<?>> map = new LinkedHashMap<>(references.size());
-    references.forEach(reference -> map.put(reference.column(), reference.referencedColumn()));
-
-    return map;
+  private static Map<Column<?>, Column<?>> columnReferenceMap(List<Reference<?>> references) {
+    return references.stream()
+            .collect(toMap(Reference::column, Reference::referencedColumn, (column, column2) -> column, LinkedHashMap::new));
   }
 
-  private static Map<Column<?>, Object> valueMap(Entity entity, List<Column<?>> attributes) {
-    Map<Column<?>, Object> values = new HashMap<>();
-    attributes.forEach(attribute -> values.put(attribute, entity.get(attribute)));
-
-    return values;
+  private static Map<Column<?>, Object> valueMap(Entity entity, List<Column<?>> columns) {
+    return columns.stream()
+            .collect(toMap(Function.identity(), entity::get));
   }
 
   private static ColumnCondition<Object> inCondition(Reference<?> reference, Operator operator, List<Object> values) {

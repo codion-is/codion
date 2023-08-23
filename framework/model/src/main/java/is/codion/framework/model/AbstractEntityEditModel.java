@@ -171,7 +171,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final EntityDefinition entityDefinition() {
-    return entity.definition();
+    return entity.entityDefinition();
   }
 
   @Override
@@ -433,7 +433,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
       validator.validate(entity);
     }
     else {
-      entity.definition().validator().validate(entity);
+      entity.entityDefinition().validator().validate(entity);
     }
   }
 

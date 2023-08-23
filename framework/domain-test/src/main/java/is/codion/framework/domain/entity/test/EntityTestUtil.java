@@ -86,7 +86,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entity,
-            entity.definition().writableColumnDefinitions(false, true),
+            entity.entityDefinition().writableColumnDefinitions(false, true),
             attributeDefinition -> createRandomValue(attributeDefinition, foreignKeyEntities));
   }
 
@@ -161,13 +161,13 @@ public final class EntityTestUtil {
   private static void populateEntity(Entity entity, Collection<ColumnDefinition<?>> columnDefinitions,
                                      Function<AttributeDefinition<?>, Object> valueProvider) {
     requireNonNull(valueProvider, "valueProvider");
-    EntityDefinition definition = entity.definition();
+    EntityDefinition definition = entity.entityDefinition();
     for (ColumnDefinition<?> columnDefinition : columnDefinitions) {
       if (!definition.isForeignKeyColumn(columnDefinition.attribute())) {
         entity.put((Attribute<Object>) columnDefinition.attribute(), valueProvider.apply(columnDefinition));
       }
     }
-    for (ForeignKeyDefinition foreignKeyDefinition : entity.definition().foreignKeyDefinitions()) {
+    for (ForeignKeyDefinition foreignKeyDefinition : entity.entityDefinition().foreignKeyDefinitions()) {
       Entity value = (Entity) valueProvider.apply(foreignKeyDefinition);
       if (value != null) {
         entity.put(foreignKeyDefinition.attribute(), value);

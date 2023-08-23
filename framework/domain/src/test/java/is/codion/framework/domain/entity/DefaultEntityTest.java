@@ -766,10 +766,10 @@ public class DefaultEntityTest {
             .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
 
     emp.saveAll();
-    emp.definition().foreignKeys().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
-    emp.definition().foreignKeys().forEach(emp::remove);
+    emp.entityDefinition().foreignKeys().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
+    emp.entityDefinition().foreignKeys().forEach(emp::remove);
     assertFalse(emp.isModified());
-    emp.definition().foreignKeys().forEach(foreignKey -> assertFalse(emp.isLoaded(foreignKey)));
+    emp.entityDefinition().foreignKeys().forEach(foreignKey -> assertFalse(emp.isLoaded(foreignKey)));
   }
 
   @Test

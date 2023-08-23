@@ -165,8 +165,7 @@ public interface EntityEditModel {
   /**
    * Returns the value associated with the given foreign key.
    * @param foreignKey the foreign key
-   * @return the value assuming it is an {@link Entity}
-   * @throws ClassCastException in case the value was not an {@link Entity}
+   * @return the foreign key value
    */
   Entity referencedEntity(ForeignKey foreignKey);
 
