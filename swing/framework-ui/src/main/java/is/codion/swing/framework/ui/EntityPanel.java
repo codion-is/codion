@@ -1855,6 +1855,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
      * Creates an EntityPanel based on this builder,
      * assuming a EntityModel is available.
      * @return an EntityPanel based on this builder
+     * @throws IllegalStateException in case no {@link SwingEntityModel} has been set
      */
     EntityPanel buildPanel();
 
@@ -1862,6 +1863,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
      * Creates an EntityPanel based on this builder
      * @param connectionProvider the connection provider
      * @return an EntityPanel based on this builder
+     * @throws IllegalStateException in case no {@link SwingEntityModel.Builder} has been set
      */
     EntityPanel buildPanel(EntityConnectionProvider connectionProvider);
 

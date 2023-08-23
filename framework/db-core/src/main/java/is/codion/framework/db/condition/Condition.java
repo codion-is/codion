@@ -113,10 +113,10 @@ public interface Condition {
   }
 
   /**
-   * Creates a {@link Condition} based on the given keys, assuming they are all based on the same columns.
+   * Creates a {@link Condition} based on the given keys.
    * @param keys the keys
    * @return a condition based on the given keys
-   * @throws IllegalArgumentException in case {@code keys} is empty or if keys contains multiple entity types
+   * @throws IllegalArgumentException in case {@code keys} is empty or if it contains keys from multiple entity types
    */
   static Condition keys(Collection<Entity.Key> keys) {
     if (requireNonNull(keys).isEmpty()) {
