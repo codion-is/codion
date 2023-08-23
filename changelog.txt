@@ -9448,3 +9448,4 @@
   EntityComboBoxModel, EntityComboBox moved to component subpackage, along with a few friends
   JasperReports classes moved up one package, model package removed
   Condition.keys() now throws exception in case the keys are not from the same entity type
+  DefaultForeignKeyConditionBuilder, refactoring and renaming
