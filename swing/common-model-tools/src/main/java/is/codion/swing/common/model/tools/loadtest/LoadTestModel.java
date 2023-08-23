@@ -301,24 +301,31 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   @Override
   public final void addApplicationBatch() {
-    for (int i = 0; i < applicationBatchSizeValue.get(); i++) {
-      int initialDelay = thinkTime();
-      if (loginDelayFactorValue.get() > 0) {
-        initialDelay *= loginDelayFactorValue.get();
+    synchronized (applications) {
+      int batchSize = applicationBatchSizeValue.get();
+      applicationCountValue.set(applicationCountValue.get() + batchSize);
+      for (int i = 0; i < batchSize; i++) {
+        int initialDelay = thinkTime();
+        if (loginDelayFactorValue.get() > 0) {
+          initialDelay *= loginDelayFactorValue.get();
+        }
+        scheduledExecutor.schedule(new ApplicationInitializer(userValue.get()), initialDelay, TimeUnit.MILLISECONDS);
       }
-      scheduledExecutor.schedule(new ApplicationInitializer(userValue.get()), initialDelay, TimeUnit.MILLISECONDS);
     }
   }
 
   @Override
   public final void removeApplicationBatch() {
-    int batchSize = applicationBatchSizeValue.get();
     synchronized (applications) {
-      List<ApplicationRunner> toStop = applications.stream()
-              .filter(applicationRunner -> !applicationRunner.stopped())
-              .limit(batchSize)
-              .collect(toList());
-      toStop.forEach(this::stop);
+      if (!applications.isEmpty()) {
+        int batchSize = applicationBatchSizeValue.get();
+        applicationCountValue.set(Math.max(0, applicationCountValue.get() - batchSize));
+        List<ApplicationRunner> toStop = applications.stream()
+                .filter(applicationRunner -> !applicationRunner.stopped())
+                .limit(batchSize)
+                .collect(toList());
+        toStop.forEach(this::stop);
+      }
     }
   }
 
@@ -440,7 +447,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     applicationRunner.stop();
     synchronized (applications) {
       applications.remove(applicationRunner);
-      applicationCountValue.set(applications.size());
     }
     disconnectApplication(applicationRunner.application);
     LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
@@ -501,7 +507,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       LOG.debug("LoadTestModel initialized application: {}", applicationRunner.application);
       synchronized (applications) {
         applications.add(applicationRunner);
-        applicationCountValue.set(applications.size());
       }
       scheduledExecutor.schedule(applicationRunner, thinkTime(), TimeUnit.MILLISECONDS);
     }

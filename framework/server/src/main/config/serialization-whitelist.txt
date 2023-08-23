@@ -138,4 +138,4 @@ is.codion.framework.demos.chinook.domain.Chinook$Track$RaisePriceParameters
 is.codion.framework.demos.empdept.domain.*
 is.codion.framework.demos.world.domain.api.*
 is.codion.framework.demos.petclinic.domain.*
-is.codion.plugin.jasperreports.model.DefaultJRReportType
+is.codion.plugin.jasperreports.DefaultJRReportType

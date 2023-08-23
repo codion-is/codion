@@ -9490,3 +9490,5 @@
   Condition.keys() now throws exception in case the keys are not from the same entity type
   DefaultForeignKeyConditionBuilder, refactoring and renaming
   Entity, Entity.Key.definition() renamed entityDefinition()
+  DefaultDomainType, entityTypes map replaced with static DOMAIN_ENTITY_TYPES
+  LoadTestModel.applicationCount value now updated when application batch is added, instead of dynamically as individual applications are added
