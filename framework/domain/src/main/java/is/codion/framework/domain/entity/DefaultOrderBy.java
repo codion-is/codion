@@ -45,6 +45,13 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     return Objects.hash(orderByColumns);
   }
 
+  @Override
+  public String toString() {
+    return "OrderBy{" +
+            "orderByColumns=" + orderByColumns +
+            '}';
+  }
+
   private static final class DefaultOrderByColumn implements OrderByColumn, Serializable {
 
     private static final long serialVersionUID = 1;
@@ -92,6 +99,15 @@ final class DefaultOrderBy implements OrderBy, Serializable {
     @Override
     public int hashCode() {
       return Objects.hash(column, nullOrder, ascending);
+    }
+
+    @Override
+    public String toString() {
+      return "OrderByColumn{" +
+              "column=" + column +
+              ", nullOrder=" + nullOrder +
+              ", ascending=" + ascending +
+              '}';
     }
   }
 

@@ -55,6 +55,13 @@ final class DefaultUpdate implements Update, Serializable {
     return Objects.hash(where, columnValues);
   }
 
+  @Override
+  public String toString() {
+    return "Update{" +
+            "columnValues=" + columnValues +
+            '}';
+  }
+
   static final class DefaultBuilder implements Update.Builder {
 
     private final Condition where;
