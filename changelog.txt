@@ -9454,3 +9454,4 @@
   LoadTestModel.applicationCount value now updated when application batch is added, instead of dynamically as individual applications are added
   LookAndFeelPanel, combo box colors improved a bit
   DefaultSelect, DefaultUpdate, DefaultOrderBy, toString() implementations added for logging
+  DefaultOrderBy, minor backwards compatibility code removed

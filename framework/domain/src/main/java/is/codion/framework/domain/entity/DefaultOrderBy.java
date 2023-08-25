@@ -91,8 +91,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
       }
       DefaultOrderByColumn that = (DefaultOrderByColumn) object;
       return column.equals(that.column) &&
-              //backwards compatability, nullOrder could be null after deserialization from older version
-              Objects.equals(nullOrder, that.nullOrder) &&
+              nullOrder.equals(that.nullOrder) &&
               ascending == that.ascending;
     }
 
