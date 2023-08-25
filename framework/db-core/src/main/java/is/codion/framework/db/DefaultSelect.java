@@ -128,6 +128,20 @@ final class DefaultSelect implements Select, Serializable {
     return Objects.hash(forUpdate, limit, offset, where, foreignKeyFetchDepths, attributes, orderBy, fetchDepth);
   }
 
+  @Override
+  public String toString() {
+    return "Select{" +
+            "foreignKeyFetchDepths=" + foreignKeyFetchDepths +
+            ", attributes=" + attributes +
+            ", orderBy=" + orderBy +
+            ", fetchDepth=" + fetchDepth +
+            ", forUpdate=" + forUpdate +
+            ", limit=" + limit +
+            ", offset=" + offset +
+            ", queryTimeout=" + queryTimeout +
+            '}';
+  }
+
   static final class DefaultBuilder implements Select.Builder {
 
     private final Condition where;
