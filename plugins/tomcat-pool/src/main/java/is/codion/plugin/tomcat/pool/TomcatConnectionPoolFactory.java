@@ -3,8 +3,8 @@
  */
 package is.codion.plugin.tomcat.pool;
 
+import is.codion.common.db.connection.ConnectionFactory;
 import is.codion.common.db.pool.AbstractConnectionPoolWrapper;
-import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.user.User;

@@ -4,8 +4,8 @@
 package is.codion.common.db.database;
 
 import is.codion.common.Configuration;
+import is.codion.common.db.connection.ConnectionFactory;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.pool.ConnectionFactory;
 import is.codion.common.db.pool.ConnectionPoolFactory;
 import is.codion.common.db.pool.ConnectionPoolWrapper;
 import is.codion.common.property.PropertyValue;

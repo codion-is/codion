@@ -9455,3 +9455,4 @@
   LookAndFeelPanel, combo box colors improved a bit
   DefaultSelect, DefaultUpdate, DefaultOrderBy, toString() implementations added for logging
   DefaultOrderBy, minor backwards compatibility code removed
+  ConnectionFactory moved to connection package
