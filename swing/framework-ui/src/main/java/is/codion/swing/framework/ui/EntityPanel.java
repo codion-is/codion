@@ -467,9 +467,10 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
    * Initializes this EntityPanel, in case of some specific initialization code you can override the
    * {@link #initializeUI()} method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether an exception occurs or not.
+   * @param <T> the entity panel type
    * @return this EntityPanel instance
    */
-  public final EntityPanel initialize() {
+  public final <T extends EntityPanel> T initialize() {
     if (!initialized) {
       WaitCursor.show(this);
       try {
@@ -481,7 +482,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
       }
     }
 
-    return this;
+    return (T) this;
   }
 
   /**
