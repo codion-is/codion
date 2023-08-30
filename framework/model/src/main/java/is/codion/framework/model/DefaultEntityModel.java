@@ -7,6 +7,7 @@ import is.codion.common.event.Event;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
 import is.codion.framework.domain.entity.Entity;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -98,6 +99,11 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final Entities entities() {
     return connectionProvider.entities();
+  }
+
+  @Override
+  public final EntityDefinition entityDefinition() {
+    return editModel.entityDefinition();
   }
 
   @Override
