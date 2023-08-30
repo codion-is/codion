@@ -364,10 +364,12 @@ public class EntityTablePanel extends JPanel {
    * @param attribute the attribute to exclude from the edit menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void excludeFromEditMenu(Attribute<?> attribute) {
+  public final void excludeFromEditMenu(Attribute<?>... attributes) {
     checkIfInitialized();
-    tableModel().entityDefinition().attributeDefinition(attribute);//just validating that the attribute exists
-    excludeFromEditMenu.add(attribute);
+    for (Attribute<?> attribute : requireNonNull(attributes)) {
+      tableModel().entityDefinition().attributeDefinition(attribute);//just validating that the attribute exists
+      excludeFromEditMenu.add(attribute);
+    }
   }
 
   /**

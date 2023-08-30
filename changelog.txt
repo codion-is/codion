@@ -9457,3 +9457,4 @@
   DefaultOrderBy, minor backwards compatibility code removed
   ConnectionFactory moved to connection package
   ColumnConditionPanel.Factory.createConditionPanel(), wildcard removed from column identifier type parameter
+  EntityTablePanel.excludeFromEditMenu() now with varargs
