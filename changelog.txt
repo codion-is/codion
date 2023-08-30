@@ -9461,3 +9461,4 @@
   EntityModel.entityDefinition() added
   EntityConditionPanelFactory, constructor overloaded with EntityComponents parameter
   EntityPanel.initialize() now with return type parameter
+  DefaultEntityApplicationPanelBuilder bug fixed, now enables the specified LookAndFeel even if a LookAndFeelProvider hasn't been added
