@@ -52,7 +52,7 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
   }
 
   @Override
-  public <T> Optional<ColumnConditionPanel<Attribute<?>, T>> createConditionPanel(ColumnConditionModel<? extends Attribute<?>, T> conditionModel) {
+  public <T> Optional<ColumnConditionPanel<Attribute<?>, T>> createConditionPanel(ColumnConditionModel<Attribute<?>, T> conditionModel) {
     requireNonNull(conditionModel);
     BoundFieldFactory boundFieldFactory = createBoundFieldFactory(conditionModel);
     if (boundFieldFactory != null) {
