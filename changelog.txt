@@ -9459,3 +9459,4 @@
   ColumnConditionPanel.Factory.createConditionPanel(), wildcard removed from column identifier type parameter
   EntityTablePanel.excludeFromEditMenu() now with varargs
   EntityModel.entityDefinition() added
+  EntityConditionPanelFactory, constructor overloaded with EntityComponents parameter

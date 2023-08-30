@@ -48,7 +48,15 @@ public class EntityConditionPanelFactory implements ColumnConditionPanel.Factory
    * @param entityDefinition the entity definition
    */
   public EntityConditionPanelFactory(EntityDefinition entityDefinition) {
-    this.entityComponents = new EntityComponents(entityDefinition);
+    this(new EntityComponents(entityDefinition));
+  }
+
+  /**
+   * Instantiates a new {@link EntityConditionPanelFactory}
+   * @param entityComponents the {@link EntityComponents} instance to use when creating bound fields
+   */
+  public EntityConditionPanelFactory(EntityComponents entityComponents)  {
+    this.entityComponents = requireNonNull(entityComponents);
   }
 
   @Override
