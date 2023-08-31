@@ -361,7 +361,7 @@ public class EntityTablePanel extends JPanel {
 
   /**
    * Specifies that the given attribute should be excluded from the edit selected entities menu.
-   * @param attribute the attribute to exclude from the edit menu
+   * @param attributes the attributes to exclude from the edit menu
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void excludeFromEditMenu(Attribute<?>... attributes) {
