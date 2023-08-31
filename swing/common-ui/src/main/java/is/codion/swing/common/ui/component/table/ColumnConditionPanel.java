@@ -211,7 +211,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported
    */
-  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel) {
+  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<C, T> conditionModel) {
     return columnConditionPanel(conditionModel, new DefaultBoundFieldFactory(conditionModel));
   }
 
@@ -223,7 +223,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param <T> the column value type
    * @return a new {@link ColumnConditionPanel} instance or an empty Optional in case the column type is not supported by the given bound field factory
    */
-  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel,
+  public static <C, T> Optional<ColumnConditionPanel<C, T>> columnConditionPanel(ColumnConditionModel<C, T> conditionModel,
                                                                                  BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel);
     requireNonNull(boundFieldFactory);
@@ -246,7 +246,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
      * @param conditionModel the column condition model
      * @return a ColumnConditionPanel or an empty Optional if none is available for the given column
      */
-    <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<? extends C, T> conditionModel);
+    <T> Optional<ColumnConditionPanel<C, T>> createConditionPanel(ColumnConditionModel<C, T> conditionModel);
   }
 
   /**

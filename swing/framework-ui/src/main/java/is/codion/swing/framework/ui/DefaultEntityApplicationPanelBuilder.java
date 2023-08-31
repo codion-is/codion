@@ -15,7 +15,6 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.dialog.LoginDialogBuilder.LoginValidator;
 import is.codion.swing.common.ui.icon.Icons;
-import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
@@ -29,6 +28,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -48,6 +48,7 @@ import static is.codion.swing.common.ui.Utilities.*;
 import static is.codion.swing.common.ui.border.Borders.createEmptyBorder;
 import static is.codion.swing.common.ui.dialog.Dialogs.displayExceptionDialog;
 import static is.codion.swing.common.ui.laf.LookAndFeelProvider.findLookAndFeelProvider;
+import static is.codion.swing.common.ui.laf.LookAndFeelProvider.lookAndFeelProvider;
 import static java.awt.KeyboardFocusManager.getCurrentKeyboardFocusManager;
 import static java.lang.Integer.parseInt;
 import static java.lang.Thread.setDefaultUncaughtExceptionHandler;
@@ -280,7 +281,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     }
     setVersionProperty();
-    findLookAndFeelProvider(lookAndFeelClassName()).ifPresent(LookAndFeelProvider::enable);
+    findLookAndFeelProvider(lookAndFeelClassName())
+            .orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", lookAndFeelClassName())))
+            .enable();
     configureFontsAndIcons();
     if (beforeApplicationStarted != null) {
       beforeApplicationStarted.run();

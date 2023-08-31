@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2020 - 2023, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package is.codion.common.db.pool;
+package is.codion.common.db.connection;
 
 import is.codion.common.db.exception.DatabaseException;
 import is.codion.common.user.User;

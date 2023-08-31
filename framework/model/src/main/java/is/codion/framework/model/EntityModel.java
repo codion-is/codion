@@ -7,6 +7,7 @@ import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entities;
+import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -43,6 +44,11 @@ public interface EntityModel<M extends EntityModel<M, E, T>, E extends EntityEdi
    * @return the underlying domain entities
    */
   Entities entities();
+
+  /**
+   * @return the definition of the underlying entity
+   */
+  EntityDefinition entityDefinition();
 
   /**
    * @param <C> the edit model type

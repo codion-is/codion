@@ -120,10 +120,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Specifies the URL to the application help<br>
    * Value type: String<br>
-   * Default value: https://codion.is/doc/{version}/{jdk}/help/client.html
+   * Default value: https://codion.is/doc/{version}/help/client.html
    */
   public static final PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl",
-          "https://codion.is/doc/" + Version.versionString() + "/jdk11/help/client.html");
+          "https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
   /**
    * Indicates whether the application should ask for confirmation when exiting<br>
