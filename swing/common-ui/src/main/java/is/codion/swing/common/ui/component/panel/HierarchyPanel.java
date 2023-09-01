@@ -41,9 +41,4 @@ public interface HierarchyPanel {
    * @return the next sibling panel, if one exists, with wrap around
    */
   Optional<HierarchyPanel> nextSiblingPanel();
-
-  /**
-   * Activates this panel, showing it and preparing it for input
-   */
-  void activatePanel();
 }

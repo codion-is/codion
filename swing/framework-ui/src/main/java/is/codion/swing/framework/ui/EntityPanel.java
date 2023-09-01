@@ -606,8 +606,15 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     return description;
   }
 
-  @Override
   public final void activatePanel() {
+    parentPanel()
+            .filter(EntityPanel.class::isInstance)
+            .map(EntityPanel.class::cast)
+            .ifPresent(parentPanel -> {
+              if (parentPanel.getDetailPanelState() == HIDDEN) {
+                parentPanel.setDetailPanelState(EMBEDDED);
+              }
+            });
     parentPanel().ifPresent(panel ->
             panel.selectChildPanel(this));
     initialize();
@@ -1646,7 +1653,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private final class SelectDetailPanelCommand implements Control.Command {
+  private static final class SelectDetailPanelCommand implements Control.Command {
 
     private final EntityPanel detailPanel;
 
@@ -1656,7 +1663,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     @Override
     public void perform() {
-      setDetailPanelState(EMBEDDED);
       detailPanel.activatePanel();
     }
   }
@@ -1674,29 +1680,26 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
+      Optional<HierarchyPanel> optionalPanel;
       switch (direction) {
         case LEFT:
-          entityPanel.previousSiblingPanel()
-                  .ifPresent(HierarchyPanel::activatePanel);
+          optionalPanel = entityPanel.previousSiblingPanel();
           break;
         case RIGHT:
-          entityPanel.nextSiblingPanel()
-                  .ifPresent(HierarchyPanel::activatePanel);
+          optionalPanel = entityPanel.nextSiblingPanel();
           break;
         case UP:
-          entityPanel.parentPanel()
-                  .ifPresent(HierarchyPanel::activatePanel);
+          optionalPanel = entityPanel.parentPanel();
           break;
         case DOWN:
-          if (entityPanel.getDetailPanelState() == HIDDEN) {
-            entityPanel.setDetailPanelState(EMBEDDED);
-          }
-          entityPanel.selectedChildPanel()
-                  .ifPresent(HierarchyPanel::activatePanel);
+          optionalPanel = entityPanel.selectedChildPanel();
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);
       }
+      optionalPanel.filter(EntityPanel.class::isInstance)
+              .map(EntityPanel.class::cast)
+              .ifPresent(EntityPanel::activatePanel);
     }
   }
 

@@ -302,9 +302,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Collections.unmodifiableList(entityPanels);
   }
 
-  @Override
-  public final void activatePanel() {}
-
   /**
    * Exits this application
    * @throws CancelException if the exit is cancelled
