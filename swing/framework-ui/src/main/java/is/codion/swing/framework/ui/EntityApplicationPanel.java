@@ -265,18 +265,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<EntityPanelParent> parentPanel() {
-    return Optional.empty();
-  }
-
-  @Override
   public final void selectChildPanel(EntityPanel childPanel) {
     panelLayout.selectPanel(childPanel);
-  }
-
-  @Override
-  public final List<EntityPanel> childPanels() {
-    return Collections.unmodifiableList(entityPanels);
   }
 
   /**
@@ -812,6 +802,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void addEntityPanel(EntityPanel entityPanel) {
     EntityPanel.linkAndAddEntityPanel(entityPanel, entityPanels);
+    entityPanel.addBeforeActivateListener(panelLayout::selectPanel);
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -923,8 +914,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (EntityPanel entityPanel : panels) {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
-      if (!entityPanel.childPanels().isEmpty()) {
-        addModelsToTree(node, entityPanel.childPanels());
+      if (!entityPanel.detailPanels().isEmpty()) {
+        addModelsToTree(node, entityPanel.detailPanels());
       }
     }
   }

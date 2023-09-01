@@ -9468,3 +9468,4 @@
   HierarchyPanel.selectedChildPanel() removed, related refactoring
   HierarchyPanel renamed EntityPanelParent and moved to framework.ui
   EntityPanelParent.previousSiblingPanel() and nextSiblingPanel() removed, EntityPanel.previousSiblingPanel and nextSiblingPanel added
+  EntityPanelParent.childPanels() and parentPanel() removed, related refactoring

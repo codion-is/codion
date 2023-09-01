@@ -4,6 +4,7 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.common.Configuration;
+import is.codion.common.event.Event;
 import is.codion.common.property.PropertyValue;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
@@ -45,7 +46,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -199,6 +199,11 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * The base panel containing the edit, control and table panels
    */
   private final JPanel editControlTablePanel = new JPanel(borderLayout());
+
+  /**
+   * Fired before this panel is activated.
+   */
+  private final Event<EntityPanel> beforeActivateEvent = Event.event();
 
   /**
    * The caption to use when presenting this entity panel
@@ -467,8 +472,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (detailEntityPanels.contains(requireNonNull(detailPanel))) {
       throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
     }
-    detailPanel.setParentPanel(this);
     linkAndAddEntityPanel(detailPanel, detailEntityPanels);
+    detailPanel.setParentPanel(this);
+    detailPanel.addBeforeActivateListener(this::selectChildPanel);
   }
 
   /**
@@ -603,28 +609,30 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * Sets the description text to use in f.ex. tool tips for tabbed panes
    * @param description the description
    */
-  public void setDescription(String description) {
+  public final void setDescription(String description) {
     this.description = description;
   }
 
   /**
    * @return the description
    */
-  public String getDescription() {
+  public final String getDescription() {
     return description;
   }
 
+  /**
+   * @param listener notified before this panel is activated
+   * @see #activatePanel()
+   */
+  public final void addBeforeActivateListener(Consumer<EntityPanel> listener) {
+    beforeActivateEvent.addDataListener(listener);
+  }
+
   public final void activatePanel() {
-    parentPanel()
-            .filter(EntityPanel.class::isInstance)
-            .map(EntityPanel.class::cast)
-            .ifPresent(parentPanel -> {
-              if (parentPanel.getDetailPanelState() == HIDDEN) {
-                parentPanel.setDetailPanelState(EMBEDDED);
-              }
-            });
-    parentPanel().ifPresent(panel ->
-            panel.selectChildPanel(this));
+    beforeActivateEvent.accept(this);
+    if (parentPanel != null && parentPanel.getDetailPanelState() == HIDDEN) {
+      parentPanel.setDetailPanelState(EMBEDDED);
+    }
     initialize();
     Window parentWindow = parentWindow(this);
     if (parentWindow != null) {
@@ -634,15 +642,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
       editPanelWindow.toFront();
     }
     requestInitialFocus();
-  }
-
-  @Override
-  public final Optional<EntityPanelParent> parentPanel() {
-    if (parentPanel == null) {
-      return Optional.ofNullable(parentOfType(EntityPanelParent.class, this));
-    }
-
-    return Optional.of(parentPanel);
   }
 
   @Override
@@ -658,11 +657,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
         entityModel.detailModelLink(detailModel).setActive(true);
       }
     }
-  }
-
-  @Override
-  public final List<? extends EntityPanel> childPanels() {
-    return Collections.unmodifiableList(detailEntityPanels);
   }
 
   /**
@@ -1663,10 +1657,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
           }
           break;
         case UP:
-          parentPanel()
-                  .filter(EntityPanel.class::isInstance)
-                  .map(EntityPanel.class::cast)
-                  .ifPresent(EntityPanel::activatePanel);
+          if (parentPanel != null) {
+            parentPanel.activatePanel();
+          }
           break;
         case DOWN:
           activeDetailPanel()

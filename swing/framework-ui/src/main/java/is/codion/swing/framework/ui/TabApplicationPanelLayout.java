@@ -37,13 +37,13 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
 
   @Override
   public void selectPanel(EntityPanel entityPanel) {
-    if (applicationTabPane != null && applicationTabPane.indexOfComponent(entityPanel) != -1) {//initializeUI() may have been overridden
+    if (applicationTabPane != null && applicationTabPane.indexOfComponent(entityPanel) != -1) {
       applicationTabPane.setSelectedComponent(entityPanel);
     }
   }
 
   private Optional<EntityPanel> selectedPanel() {
-    if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {//initializeUI() may have been overridden
+    if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {
       return Optional.of((EntityPanel) applicationTabPane.getSelectedComponent());
     }
 
