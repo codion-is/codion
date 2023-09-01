@@ -13,7 +13,6 @@ import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
-import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -81,7 +80,7 @@ import static javax.swing.SwingConstants.VERTICAL;
  *   frame.setVisible(true);
  * </pre>
  */
-public class EntityPanel extends JPanel implements HierarchyPanel {
+public class EntityPanel extends JPanel implements EntityPanelParent {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
@@ -629,19 +628,19 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> parentPanel() {
+  public final Optional<EntityPanelParent> parentPanel() {
     if (parentPanel == null) {
-      return Optional.ofNullable(parentOfType(HierarchyPanel.class, this));
+      return Optional.ofNullable(parentOfType(EntityPanelParent.class, this));
     }
 
     return Optional.of(parentPanel);
   }
 
   @Override
-  public final void selectChildPanel(HierarchyPanel childPanel) {
+  public final void selectChildPanel(EntityPanel childPanel) {
     requireNonNull(childPanel);
     if (detailPanelTabbedPane != null) {
-      detailPanelTabbedPane.setSelectedComponent((JComponent) childPanel);
+      detailPanelTabbedPane.setSelectedComponent(childPanel);
       for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
         entityModel.detailModelLink(activeModel).setActive(false);
       }
@@ -653,13 +652,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> previousSiblingPanel() {
-    Optional<HierarchyPanel> optionalParent = parentPanel();
+  public final Optional<EntityPanel> previousSiblingPanel() {
+    Optional<EntityPanelParent> optionalParent = parentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    HierarchyPanel panel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = panel.childPanels();
+    EntityPanelParent panel = optionalParent.get();
+    List<? extends EntityPanel> siblingPanels = panel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == 0) {//wrap around
@@ -673,13 +672,13 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> nextSiblingPanel() {
-    Optional<HierarchyPanel> optionalParent = parentPanel();
+  public final Optional<EntityPanel> nextSiblingPanel() {
+    Optional<EntityPanelParent> optionalParent = parentPanel();
     if (!optionalParent.isPresent()) {//no parent, no siblings
       return Optional.empty();
     }
-    HierarchyPanel panel = optionalParent.get();
-    List<? extends HierarchyPanel> siblingPanels = panel.childPanels();
+    EntityPanelParent panel = optionalParent.get();
+    List<? extends EntityPanel> siblingPanels = panel.childPanels();
     if (siblingPanels.contains(this)) {
       int index = siblingPanels.indexOf(this);
       if (index == siblingPanels.size() - 1) {//wrap around
@@ -693,7 +692,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final List<? extends HierarchyPanel> childPanels() {
+  public final List<? extends EntityPanel> childPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
 
@@ -1668,7 +1667,7 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      Optional<? extends HierarchyPanel> optionalPanel;
+      Optional<? extends EntityPanel> optionalPanel;
       switch (direction) {
         case LEFT:
           optionalPanel = previousSiblingPanel();
@@ -1677,10 +1676,12 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
           optionalPanel = nextSiblingPanel();
           break;
         case UP:
-          optionalPanel = parentPanel();
+          optionalPanel = parentPanel()
+                  .filter(EntityPanel.class::isInstance)
+                  .map(EntityPanel.class::cast);
           break;
         case DOWN:
-          optionalPanel = Optional.ofNullable(selectedDetailPanel());
+          optionalPanel = activeDetailPanel();
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);
@@ -1689,6 +1690,15 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
               .map(EntityPanel.class::cast)
               .ifPresent(EntityPanel::activatePanel);
     }
+  }
+
+  private Optional<EntityPanel> activeDetailPanel() {
+    Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
+    if (!activeDetailPanels.isEmpty()) {
+      return Optional.of(activeDetailPanels.iterator().next());
+    }
+
+    return Optional.empty();
   }
 
   private static final class ResizeHorizontallyAction extends AbstractAction {

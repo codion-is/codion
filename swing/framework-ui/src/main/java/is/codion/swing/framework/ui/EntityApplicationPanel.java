@@ -28,7 +28,6 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
@@ -94,7 +93,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(Class, Class)
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements HierarchyPanel {
+        extends JPanel implements EntityPanelParent {
 
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -266,27 +265,27 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<HierarchyPanel> parentPanel() {
+  public final Optional<EntityPanelParent> parentPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final void selectChildPanel(HierarchyPanel childPanel) {
-    panelLayout.selectChildPanel(childPanel);
+  public final void selectChildPanel(EntityPanel childPanel) {
+    panelLayout.selectPanel(childPanel);
   }
 
   @Override
-  public final Optional<HierarchyPanel> previousSiblingPanel() {
+  public final Optional<EntityPanel> previousSiblingPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final Optional<HierarchyPanel> nextSiblingPanel() {
+  public final Optional<EntityPanel> nextSiblingPanel() {
     return Optional.empty();
   }
 
   @Override
-  public final List<HierarchyPanel> childPanels() {
+  public final List<EntityPanel> childPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
@@ -931,7 +930,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
       if (!entityPanel.childPanels().isEmpty()) {
-        addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.childPanels());
+        addModelsToTree(node, entityPanel.childPanels());
       }
     }
   }
@@ -1018,7 +1017,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     void layoutPanel(EntityApplicationPanel<?> applicationPanel);
 
-    void selectChildPanel(HierarchyPanel childPanel);
+    void selectPanel(EntityPanel childPanel);
   }
 
   /**

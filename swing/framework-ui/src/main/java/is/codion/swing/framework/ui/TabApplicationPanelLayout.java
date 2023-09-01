@@ -4,11 +4,9 @@
 package is.codion.swing.framework.ui;
 
 import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationPanelLayout;
 
-import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -29,9 +27,7 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
     this.entityPanels = applicationPanel.entityPanels();
     applicationTabPane = createApplicationTabPane();
     //initialize first panel
-    selectedChildPanel()
-            .map(EntityPanel.class::cast)
-            .ifPresent(EntityPanel::initialize);
+    selectedPanel().ifPresent(EntityPanel::initialize);
     applicationPanel.setLayout(new BorderLayout());
     //tab pane added to a base panel for correct Look&Feel rendering
     applicationPanel.add(borderLayoutPanel()
@@ -40,15 +36,15 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
   }
 
   @Override
-  public void selectChildPanel(HierarchyPanel childPanel) {
-    if (applicationTabPane != null && applicationTabPane.indexOfComponent((JComponent) childPanel) != -1) {//initializeUI() may have been overridden
-      applicationTabPane.setSelectedComponent((JComponent) childPanel);
+  public void selectPanel(EntityPanel entityPanel) {
+    if (applicationTabPane != null && applicationTabPane.indexOfComponent(entityPanel) != -1) {//initializeUI() may have been overridden
+      applicationTabPane.setSelectedComponent(entityPanel);
     }
   }
 
-  private Optional<HierarchyPanel> selectedChildPanel() {
+  private Optional<EntityPanel> selectedPanel() {
     if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {//initializeUI() may have been overridden
-      return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
+      return Optional.of((EntityPanel) applicationTabPane.getSelectedComponent());
     }
 
     return entityPanels.isEmpty() ? Optional.empty() : Optional.of(entityPanels.get(0));
@@ -94,7 +90,7 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
     @Override
     public void accept(Boolean panelActivated) {
       if (panelActivated) {
-        selectChildPanel(entityPanel);
+        selectPanel(entityPanel);
       }
     }
   }

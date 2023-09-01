@@ -9466,3 +9466,4 @@
   HierarchyPanel.activatePanel() removed, related refactoring
   EntityApplicationPanel.ApplicationPanelLayout added, related refactoring
   HierarchyPanel.selectedChildPanel() removed, related refactoring
+  HierarchyPanel renamed EntityPanelParent and moved to framework.ui
