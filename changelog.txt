@@ -9464,3 +9464,4 @@
   DefaultEntityApplicationPanelBuilder bug fixed, now enables the specified LookAndFeel even if a LookAndFeelProvider hasn't been added
   EntityApplicationPanel bug fixed, help url still contained the jdk version
   HierarchyPanel.activatePanel() removed, related refactoring
+  EntityApplicationPanel.ApplicationPanelLayout added, related refactoring
