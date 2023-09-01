@@ -223,6 +223,16 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   private EntityPanel parentPanel;
 
   /**
+   * The previous sibling panel, if any
+   */
+  private EntityPanel previousSiblingPanel;
+
+  /**
+   * The next sibling panel, if any
+   */
+  private EntityPanel nextSiblingPanel;
+
+  /**
    * A tab pane for the detail panels, if any
    */
   private JTabbedPane detailPanelTabbedPane;
@@ -451,7 +461,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * Adds the given detail panel and sets this panel as the parent panel of the given detail panel.
    * @param detailPanel the detail panel to add
    * @throws IllegalStateException if the panel has been initialized or if it already contains the given detail panel
-   * @see #setParentPanel(EntityPanel)
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     checkIfInitialized();
@@ -459,7 +468,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
       throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
     }
     detailPanel.setParentPanel(this);
-    detailEntityPanels.add(detailPanel);
+    linkAndAddEntityPanel(detailPanel, detailEntityPanels);
   }
 
   /**
@@ -649,46 +658,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
         entityModel.detailModelLink(detailModel).setActive(true);
       }
     }
-  }
-
-  @Override
-  public final Optional<EntityPanel> previousSiblingPanel() {
-    Optional<EntityPanelParent> optionalParent = parentPanel();
-    if (!optionalParent.isPresent()) {//no parent, no siblings
-      return Optional.empty();
-    }
-    EntityPanelParent panel = optionalParent.get();
-    List<? extends EntityPanel> siblingPanels = panel.childPanels();
-    if (siblingPanels.contains(this)) {
-      int index = siblingPanels.indexOf(this);
-      if (index == 0) {//wrap around
-        return Optional.of(siblingPanels.get(siblingPanels.size() - 1));
-      }
-
-      return Optional.of(siblingPanels.get(index - 1));
-    }
-
-    return Optional.empty();
-  }
-
-  @Override
-  public final Optional<EntityPanel> nextSiblingPanel() {
-    Optional<EntityPanelParent> optionalParent = parentPanel();
-    if (!optionalParent.isPresent()) {//no parent, no siblings
-      return Optional.empty();
-    }
-    EntityPanelParent panel = optionalParent.get();
-    List<? extends EntityPanel> siblingPanels = panel.childPanels();
-    if (siblingPanels.contains(this)) {
-      int index = siblingPanels.indexOf(this);
-      if (index == siblingPanels.size() - 1) {//wrap around
-        return Optional.of(siblingPanels.get(0));
-      }
-
-      return Optional.of(siblingPanels.get(index + 1));
-    }
-
-    return Optional.empty();
   }
 
   @Override
@@ -1140,18 +1109,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   /**
-   * @param parentPanel the panel serving as parent panel for this entity panel
-   * @throws IllegalStateException in case a parent panel has already been set
-   */
-  protected final void setParentPanel(EntityPanel parentPanel) {
-    requireNonNull(parentPanel, "parentPanel");
-    if (this.parentPanel != null) {
-      throw new IllegalStateException("Parent panel has already been set for " + this);
-    }
-    this.parentPanel = parentPanel;
-  }
-
-  /**
    * Sets up the keyboard navigation actions.
    * CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
@@ -1356,6 +1313,33 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
         editControlPanel.add(controlPanel, controlPanelConstraints);
       }
     }
+  }
+
+  final void setParentPanel(EntityPanel parentPanel) {
+    if (this.parentPanel != null) {
+      throw new IllegalStateException("Parent panel has already been set for " + this);
+    }
+    this.parentPanel = requireNonNull(parentPanel);
+  }
+
+  final void setPreviousSiblingPanel(EntityPanel previousSiblingPanel) {
+    this.previousSiblingPanel = requireNonNull(previousSiblingPanel);
+  }
+
+  final void setNextSiblingPanel(EntityPanel nextSiblingPanel) {
+    this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
+  }
+
+  static void linkAndAddEntityPanel(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
+    if (!entityPanels.isEmpty()) {
+      EntityPanel leftSibling = entityPanels.get(entityPanels.size() - 1);
+      detailPanel.setPreviousSiblingPanel(leftSibling);
+      leftSibling.setNextSiblingPanel(detailPanel);
+      EntityPanel firstPanel = entityPanels.get(0);
+      detailPanel.setNextSiblingPanel(firstPanel);
+      firstPanel.setPreviousSiblingPanel(detailPanel);
+    }
+    entityPanels.add(detailPanel);
   }
 
   private void initializeTablePanel() {
@@ -1667,28 +1651,30 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      Optional<? extends EntityPanel> optionalPanel;
       switch (direction) {
         case LEFT:
-          optionalPanel = previousSiblingPanel();
+          if (previousSiblingPanel != null) {
+            previousSiblingPanel.activatePanel();
+          }
           break;
         case RIGHT:
-          optionalPanel = nextSiblingPanel();
+          if (nextSiblingPanel != null) {
+            nextSiblingPanel.activatePanel();
+          }
           break;
         case UP:
-          optionalPanel = parentPanel()
+          parentPanel()
                   .filter(EntityPanel.class::isInstance)
-                  .map(EntityPanel.class::cast);
+                  .map(EntityPanel.class::cast)
+                  .ifPresent(EntityPanel::activatePanel);
           break;
         case DOWN:
-          optionalPanel = activeDetailPanel();
+          activeDetailPanel()
+                  .ifPresent(EntityPanel::activatePanel);
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);
       }
-      optionalPanel.filter(EntityPanel.class::isInstance)
-              .map(EntityPanel.class::cast)
-              .ifPresent(EntityPanel::activatePanel);
     }
   }
 

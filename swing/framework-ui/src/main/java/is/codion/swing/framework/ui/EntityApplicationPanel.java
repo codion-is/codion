@@ -275,16 +275,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<EntityPanel> previousSiblingPanel() {
-    return Optional.empty();
-  }
-
-  @Override
-  public final Optional<EntityPanel> nextSiblingPanel() {
-    return Optional.empty();
-  }
-
-  @Override
   public final List<EntityPanel> childPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
@@ -367,8 +357,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void initialize() {
     if (!initialized) {
       try {
-        this.entityPanels.addAll(createEntityPanels());
-        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
+        createEntityPanels().forEach(this::addEntityPanel);
+        supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
         initializeUI();
         bindEventsInternal();
         bindEvents();
@@ -818,6 +808,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Control.builder(() -> displayEntityPanel(panelBuilder))
             .name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
             .build();
+  }
+
+  private void addEntityPanel(EntityPanel entityPanel) {
+    EntityPanel.linkAndAddEntityPanel(entityPanel, entityPanels);
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {

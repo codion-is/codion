@@ -22,16 +22,6 @@ public interface EntityPanelParent {
   List<? extends EntityPanel> childPanels();
 
   /**
-   * @return the previous sibling panel, if one exists, with wrap around
-   */
-  Optional<EntityPanel> previousSiblingPanel();
-
-  /**
-   * @return the next sibling panel, if one exists, with wrap around
-   */
-  Optional<EntityPanel> nextSiblingPanel();
-
-  /**
    * Activates (and shows) the given child panel
    * @param childPanel the child panel to activate and show
    */
