@@ -36,7 +36,7 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
   }
 
   @Override
-  public void selectPanel(EntityPanel entityPanel) {
+  public void selectEntityPanel(EntityPanel entityPanel) {
     if (applicationTabPane != null && applicationTabPane.indexOfComponent(entityPanel) != -1) {
       applicationTabPane.setSelectedComponent(entityPanel);
     }
@@ -90,7 +90,7 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
     @Override
     public void accept(Boolean panelActivated) {
       if (panelActivated) {
-        selectPanel(entityPanel);
+        selectEntityPanel(entityPanel);
       }
     }
   }

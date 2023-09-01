@@ -9,8 +9,8 @@ package is.codion.swing.framework.ui;
 public interface EntityPanelParent {
 
   /**
-   * Activates (and shows) the given child panel
-   * @param childPanel the child panel to activate and show
+   * Selects the given entity panel
+   * @param entityPanel the panel to show
    */
-  void selectChildPanel(EntityPanel childPanel);
+  void selectEntityPanel(EntityPanel entityPanel);
 }

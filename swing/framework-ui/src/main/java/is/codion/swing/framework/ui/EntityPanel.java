@@ -472,9 +472,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (detailEntityPanels.contains(requireNonNull(detailPanel))) {
       throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
     }
-    linkAndAddEntityPanel(detailPanel, detailEntityPanels);
+    addEntityPanelAndLinkSiblings(detailPanel, detailEntityPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addBeforeActivateListener(this::selectChildPanel);
+    detailPanel.addBeforeActivateListener(this::selectEntityPanel);
   }
 
   /**
@@ -645,14 +645,14 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   @Override
-  public final void selectChildPanel(EntityPanel childPanel) {
-    requireNonNull(childPanel);
+  public final void selectEntityPanel(EntityPanel entityPanel) {
+    requireNonNull(entityPanel);
     if (detailPanelTabbedPane != null) {
-      detailPanelTabbedPane.setSelectedComponent(childPanel);
+      detailPanelTabbedPane.setSelectedComponent(entityPanel);
       for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
         entityModel.detailModelLink(activeModel).setActive(false);
       }
-      SwingEntityModel detailModel = selectedDetailPanel().model();
+      SwingEntityModel detailModel = entityPanel.model();
       if (entityModel.containsDetailModel(detailModel)) {
         entityModel.detailModelLink(detailModel).setActive(true);
       }
@@ -1324,7 +1324,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
   }
 
-  static void linkAndAddEntityPanel(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
+  static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
     if (!entityPanels.isEmpty()) {
       EntityPanel leftSibling = entityPanels.get(entityPanels.size() - 1);
       detailPanel.setPreviousSiblingPanel(leftSibling);

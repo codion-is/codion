@@ -265,8 +265,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final void selectChildPanel(EntityPanel childPanel) {
-    panelLayout.selectPanel(childPanel);
+  public final void selectEntityPanel(EntityPanel entityPanel) {
+    panelLayout.selectEntityPanel(entityPanel);
   }
 
   /**
@@ -801,8 +801,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   private void addEntityPanel(EntityPanel entityPanel) {
-    EntityPanel.linkAndAddEntityPanel(entityPanel, entityPanels);
-    entityPanel.addBeforeActivateListener(panelLayout::selectPanel);
+    EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
+    entityPanel.addBeforeActivateListener(panelLayout::selectEntityPanel);
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -1002,7 +1002,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     void layoutPanel(EntityApplicationPanel<?> applicationPanel);
 
-    void selectPanel(EntityPanel childPanel);
+    void selectEntityPanel(EntityPanel entityPanel);
   }
 
   /**
