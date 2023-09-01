@@ -9465,3 +9465,4 @@
   EntityApplicationPanel bug fixed, help url still contained the jdk version
   HierarchyPanel.activatePanel() removed, related refactoring
   EntityApplicationPanel.ApplicationPanelLayout added, related refactoring
+  HierarchyPanel.selectedChildPanel() removed, related refactoring

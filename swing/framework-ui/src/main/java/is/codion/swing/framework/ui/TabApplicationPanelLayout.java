@@ -40,19 +40,18 @@ final class TabApplicationPanelLayout implements ApplicationPanelLayout {
   }
 
   @Override
-  public Optional<HierarchyPanel> selectedChildPanel() {
+  public void selectChildPanel(HierarchyPanel childPanel) {
+    if (applicationTabPane != null && applicationTabPane.indexOfComponent((JComponent) childPanel) != -1) {//initializeUI() may have been overridden
+      applicationTabPane.setSelectedComponent((JComponent) childPanel);
+    }
+  }
+
+  private Optional<HierarchyPanel> selectedChildPanel() {
     if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {//initializeUI() may have been overridden
       return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
     }
 
     return entityPanels.isEmpty() ? Optional.empty() : Optional.of(entityPanels.get(0));
-  }
-
-  @Override
-  public void selectChildPanel(HierarchyPanel childPanel) {
-    if (applicationTabPane != null && applicationTabPane.indexOfComponent((JComponent) childPanel) != -1) {//initializeUI() may have been overridden
-      applicationTabPane.setSelectedComponent((JComponent) childPanel);
-    }
   }
 
   private JTabbedPane createApplicationTabPane() {

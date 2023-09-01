@@ -638,16 +638,6 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
   }
 
   @Override
-  public final Optional<HierarchyPanel> selectedChildPanel() {
-    Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
-    if (!activeDetailPanels.isEmpty()) {
-      return Optional.of(activeDetailPanels.iterator().next());
-    }
-
-    return Optional.empty();
-  }
-
-  @Override
   public final void selectChildPanel(HierarchyPanel childPanel) {
     requireNonNull(childPanel);
     if (detailPanelTabbedPane != null) {
@@ -1315,43 +1305,43 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     KeyEvents.builder(VK_UP)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(this, UP))
+            .action(new NavigateAction(UP))
             .enable(this);
     KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(this, DOWN))
+            .action(new NavigateAction(DOWN))
             .enable(this);
     KeyEvents.builder(VK_RIGHT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(this, RIGHT))
+            .action(new NavigateAction(RIGHT))
             .enable(this);
     KeyEvents.builder(VK_LEFT)
             .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(new NavigateAction(this, LEFT))
+            .action(new NavigateAction(LEFT))
             .enable(this);
     if (containsEditPanel()) {
       KeyEvents.builder(VK_UP)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(this, UP))
+              .action(new NavigateAction(UP))
               .enable(editControlPanel);
       KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(this, DOWN))
+              .action(new NavigateAction(DOWN))
               .enable(editControlPanel);
       KeyEvents.builder(VK_RIGHT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(this, RIGHT))
+              .action(new NavigateAction(RIGHT))
               .enable(editControlPanel);
       KeyEvents.builder(VK_LEFT)
               .modifiers(ALT_DOWN_MASK | CTRL_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(new NavigateAction(this, LEFT))
+              .action(new NavigateAction(LEFT))
               .enable(editControlPanel);
     }
   }
@@ -1667,32 +1657,30 @@ public class EntityPanel extends JPanel implements HierarchyPanel {
     }
   }
 
-  private static final class NavigateAction extends AbstractAction {
+  private final class NavigateAction extends AbstractAction {
 
-    private final EntityPanel entityPanel;
     private final Direction direction;
 
-    private NavigateAction(EntityPanel entityPanel, Direction direction) {
+    private NavigateAction(Direction direction) {
       super("Navigate " + direction);
-      this.entityPanel = entityPanel;
       this.direction = direction;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      Optional<HierarchyPanel> optionalPanel;
+      Optional<? extends HierarchyPanel> optionalPanel;
       switch (direction) {
         case LEFT:
-          optionalPanel = entityPanel.previousSiblingPanel();
+          optionalPanel = previousSiblingPanel();
           break;
         case RIGHT:
-          optionalPanel = entityPanel.nextSiblingPanel();
+          optionalPanel = nextSiblingPanel();
           break;
         case UP:
-          optionalPanel = entityPanel.parentPanel();
+          optionalPanel = parentPanel();
           break;
         case DOWN:
-          optionalPanel = entityPanel.selectedChildPanel();
+          optionalPanel = Optional.ofNullable(selectedDetailPanel());
           break;
         default:
           throw new IllegalArgumentException("Unknown direction: " + direction);

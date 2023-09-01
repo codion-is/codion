@@ -22,11 +22,6 @@ public interface HierarchyPanel {
   List<? extends HierarchyPanel> childPanels();
 
   /**
-   * @return a child panel, if one exists, which child panel exactly is up the implementation
-   */
-  Optional<HierarchyPanel> selectedChildPanel();
-
-  /**
    * Activates (and shows) the given child panel
    * @param childPanel the child panel to activate and show
    */

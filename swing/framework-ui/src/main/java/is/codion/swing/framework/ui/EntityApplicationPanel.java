@@ -271,11 +271,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<HierarchyPanel> selectedChildPanel() {
-    return panelLayout.selectedChildPanel();
-  }
-
-  @Override
   public final void selectChildPanel(HierarchyPanel childPanel) {
     panelLayout.selectChildPanel(childPanel);
   }
@@ -1016,11 +1011,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     }
   }
 
+  /**
+   * Handles laying out an EntityApplicationPanel.
+   */
   public interface ApplicationPanelLayout {
 
     void layoutPanel(EntityApplicationPanel<?> applicationPanel);
-
-    Optional<HierarchyPanel> selectedChildPanel();
 
     void selectChildPanel(HierarchyPanel childPanel);
   }
