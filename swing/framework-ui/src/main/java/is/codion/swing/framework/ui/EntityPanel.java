@@ -867,22 +867,16 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @see #editControlPanel()
    * @see #editControlTablePanel()
    */
-  protected final void initializeUI() {
-    if (editPanel != null) {
-      initializeEditControlPanel();
-      setupEditPanelToggle();
-    }
+  protected void initializeUI() {
     panelLayout.layoutPanel(this);
-    if (tablePanel != null) {
-      initializeTablePanel();
-    }
     if (containsEditPanel()) {
+      initializeEditPanel();
       updateEditPanelState();
     }
-    setupKeyboardActions();
-    if (useKeyboardNavigation) {
-      setupNavigation();
+    if (containsTablePanel()) {
+      initializeTablePanel();
     }
+    setupKeyboardActions();
   }
 
   /**
@@ -1045,22 +1039,20 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(selectInputComponentControl)
               .enable(editControlPanel);
-    }
-  }
-
-  protected final void setupEditPanelToggle() {
-    ToggleEditPanelStateAction toggleEditPanelStateAction = new ToggleEditPanelStateAction(this);
-    KeyEvents.builder(VK_E)
-            .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(toggleEditPanelStateAction)
-            .enable(this);
-    if (containsEditPanel()) {
+      ToggleEditPanelStateAction toggleEditPanelStateAction = new ToggleEditPanelStateAction(this);
+      KeyEvents.builder(VK_E)
+              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
+              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+              .action(toggleEditPanelStateAction)
+              .enable(this);
       KeyEvents.builder(VK_E)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(toggleEditPanelStateAction)
               .enable(editControlPanel);
+    }
+    if (useKeyboardNavigation) {
+      setupNavigation();
     }
   }
 
@@ -1109,7 +1101,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
   }
 
-  protected final void initializeEditControlPanel() {
+  protected final void initializeEditPanel() {
     editPanel.initialize();
     editControlPanel.setBorder(Borders.createEmptyBorder());
     editControlPanel.setMinimumSize(new Dimension(0, 0));
@@ -1154,9 +1146,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   private void initializeTablePanel() {
-    Controls controls = Controls.controls();
     if (includeToggleEditPanelControl && editPanel != null) {
-      controls.add(createToggleEditPanelControl());
+      tablePanel.addToolBarControls(Controls.builder()
+              .control(createToggleEditPanelControl())
+              .build());
     }
     if (detailController != null) {
       detailController.setupTablePanelControls(tablePanel);
@@ -1364,7 +1357,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   public interface PanelLayout {
 
     /**
-     * Updates the UI of all associated components
+     * Updates the UI of all associated components.
+     * Override to update the UI of components that may be hidden and
+     * therefore not updated along with the component tree.
      */
     default void updateUI() {};
 
@@ -1373,7 +1368,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
      */
     default void layoutPanel(EntityPanel entityPanel) {
       requireNonNull(entityPanel);
-      if (entityPanel.tablePanel() != null) {
+      if (entityPanel.containsTablePanel()) {
         entityPanel.editControlTablePanel().add(entityPanel.tablePanel(), BorderLayout.CENTER);
       }
     }
