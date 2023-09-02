@@ -45,7 +45,7 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
-final class DefaultTabPanelLayout implements TabPanelLayout {
+final class DefaultTabPanelLayout implements TabbedPanelLayout {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultTabPanelLayout.class.getName());
 
@@ -71,7 +71,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     this.includeDetailTabPane = builder.includeDetailTabPane;
     this.includeDetailPanelControls = builder.includeDetailPanelControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
-    this.detailController = new TabDetailController();
+    this.detailController = new TabbedDetailController();
   }
 
   @Override
@@ -82,7 +82,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
   @Override
   public void layoutPanel(EntityPanel entityPanel) {
     this.entityPanel = entityPanel;
-    TabPanelLayout.super.layoutPanel(entityPanel);
+    TabbedPanelLayout.super.layoutPanel(entityPanel);
     tableDetailSplitPane = createTableDetailSplitPane();
     detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
@@ -227,7 +227,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     }
   }
 
-  private final class TabDetailController implements DetailController {
+  private final class TabbedDetailController implements DetailController {
 
     /**
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
@@ -263,10 +263,10 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
       if (previousPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
         for (EntityPanel detailPanel : entityPanel.detailPanels()) {
           detailPanel.panelLayout().detailController()
-                  .filter(TabDetailController.class::isInstance)
-                  .map(TabDetailController.class::cast)
+                  .filter(TabbedDetailController.class::isInstance)
+                  .map(TabbedDetailController.class::cast)
                   .ifPresent(detailPanelController -> {
-                    TabDetailController tabDetailPanelLayout = detailPanelController;
+                    TabbedDetailController tabDetailPanelLayout = detailPanelController;
                     if (tabDetailPanelLayout.detailPanelState == WINDOW) {
                       tabDetailPanelLayout.setDetailPanelState(HIDDEN);
                     }
@@ -471,7 +471,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     }
 
     @Override
-    public TabPanelLayout build() {
+    public TabbedPanelLayout build() {
       return new DefaultTabPanelLayout(this);
     }
   }

@@ -284,7 +284,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(requireNonNull(entityModel), TabPanelLayout.builder().build());
+    this(requireNonNull(entityModel), TabbedPanelLayout.builder().build());
   }
 
   /**
@@ -302,7 +302,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(requireNonNull(entityModel), editPanel, TabPanelLayout.builder().build());
+    this(requireNonNull(entityModel), editPanel, TabbedPanelLayout.builder().build());
   }
 
   /**
@@ -321,7 +321,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
-    this(entityModel, tablePanel, TabPanelLayout.builder().build());
+    this(entityModel, tablePanel, TabbedPanelLayout.builder().build());
   }
 
   /**
@@ -341,7 +341,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
-    this(entityModel, editPanel, tablePanel, TabPanelLayout.builder().build());
+    this(entityModel, editPanel, tablePanel, TabbedPanelLayout.builder().build());
   }
 
   /**
@@ -1462,8 +1462,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     Builder tableConditionPanelVisible(boolean tableConditionPanelVisible);
 
     /**
-     *
-     * @param panelLayout
+     * @param panelLayout the panel layout to use
      * @return this builder instane
      */
     Builder panelLayout(PanelLayout panelLayout);

@@ -9,7 +9,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
-import is.codion.swing.framework.ui.TabPanelLayout;
+import is.codion.swing.framework.ui.TabbedPanelLayout;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -38,14 +38,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
 
     EntityPanel categoryPanel = new EntityPanel(categoryModel,
             new CategoryEditPanel(categoryModel.editModel()),
-            TabPanelLayout.builder()
+            TabbedPanelLayout.builder()
                     .splitPaneResizeWeight(0.3)
                     .build());
     EntityPanel productPanel = new EntityPanel(productModel,
             new ProductEditPanel(productModel.editModel()));
     EntityPanel itemPanel = new EntityPanel(itemModel,
             new ItemEditPanel(itemModel.editModel()),
-            TabPanelLayout.builder()
+            TabbedPanelLayout.builder()
                     .detailPanelState(EntityPanel.PanelState.HIDDEN)
                     .build());
     EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
@@ -77,14 +77,14 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                             .editPanelClass(ItemEditPanel.class)
                             .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                                     .editPanelClass(TagItemEditPanel.class))
-                            .panelLayout(TabPanelLayout.builder()
+                            .panelLayout(TabbedPanelLayout.builder()
                                     .detailPanelState(EntityPanel.PanelState.HIDDEN)
                                     .build())),
             EntityPanel.builder(tagModelBuilder)
                     .editPanelClass(TagEditPanel.class)
                     .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                             .editPanelClass(TagItemEditPanel.class))
-                    .panelLayout(TabPanelLayout.builder()
+                    .panelLayout(TabbedPanelLayout.builder()
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)
                             .build()));
   }

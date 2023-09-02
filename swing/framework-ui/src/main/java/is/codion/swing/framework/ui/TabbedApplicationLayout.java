@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 
-final class TabApplicationLayout implements ApplicationLayout {
+final class TabbedApplicationLayout implements ApplicationLayout {
 
   private List<EntityPanel> entityPanels;
   private JTabbedPane applicationTabPane;

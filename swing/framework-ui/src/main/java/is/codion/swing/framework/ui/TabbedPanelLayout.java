@@ -11,7 +11,7 @@ import is.codion.swing.framework.ui.EntityPanel.PanelState;
 /**
  * A {@link PanelLayout} implementation based on a JTabbedPane.
  */
-public interface TabPanelLayout extends PanelLayout {
+public interface TabbedPanelLayout extends PanelLayout {
 
   /**
    * Specifies whether actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -22,14 +22,14 @@ public interface TabPanelLayout extends PanelLayout {
           Configuration.booleanValue("is.codion.swing.framework.ui.TabEntityPanelLayout.includeDetailPanelControls", true);
 
   /**
-   * @return a new {@link TabPanelLayout.Builder} instance
+   * @return a new {@link TabbedPanelLayout.Builder} instance
    */
   static Builder builder() {
     return new DefaultTabPanelLayout.DefaultBuilder();
   }
 
   /**
-   * Builds a {@link TabPanelLayout}.
+   * Builds a {@link TabbedPanelLayout}.
    */
   interface Builder {
 
@@ -58,8 +58,8 @@ public interface TabPanelLayout extends PanelLayout {
     Builder includeDetailPanelControls(boolean includeDetailPanelControls);
 
     /**
-     * @return a new {@link TabPanelLayout} instance based on this builder
+     * @return a new {@link TabbedPanelLayout} instance based on this builder
      */
-    TabPanelLayout build();
+    TabbedPanelLayout build();
   }
 }

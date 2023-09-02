@@ -9473,3 +9473,4 @@
   EntityPanel.PanelLayout added
   TabPanelLayout now interface, with a DefaultTabPanelLayout implementation
   ApplicationPanelLayout renamed ApplicationLayout
+  TabApplicationLayout and TabPanelLayout renamed TabbedApplicationLayout and TabbedPanelLayout respectively

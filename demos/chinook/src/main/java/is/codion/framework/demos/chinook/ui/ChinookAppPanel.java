@@ -21,7 +21,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
-import is.codion.swing.framework.ui.TabPanelLayout;
+import is.codion.swing.framework.ui.TabbedPanelLayout;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -83,7 +83,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(genreModelBuilder)
                     .editPanelClass(GenreEditPanel.class)
                     .detailPanelBuilder(trackPanelBuilder)
-                    .panelLayout(TabPanelLayout.builder()
+                    .panelLayout(TabbedPanelLayout.builder()
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)
                             .build());
 
@@ -95,7 +95,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(mediaTypeModelBuilder)
                     .editPanelClass(MediaTypeEditPanel.class)
                     .detailPanelBuilder(trackPanelBuilder)
-                    .panelLayout(TabPanelLayout.builder()
+                    .panelLayout(TabbedPanelLayout.builder()
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)
                             .build());
 
@@ -114,7 +114,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
                     .detailPanelBuilder(customerPanelBuilder)
-                    .panelLayout(TabPanelLayout.builder()
+                    .panelLayout(TabbedPanelLayout.builder()
                             .detailPanelState(EntityPanel.PanelState.HIDDEN)
                             .build())
                     .preferredSize(new Dimension(1000, 500));
