@@ -9474,3 +9474,4 @@
   TabPanelLayout now interface, with a DefaultTabPanelLayout implementation
   ApplicationPanelLayout renamed ApplicationLayout
   TabApplicationLayout and TabPanelLayout renamed TabbedApplicationLayout and TabbedPanelLayout respectively
+  TabbedPanelLayout.detailPanelState() and splitPaneResizeWeight() factory methods added

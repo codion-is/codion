@@ -22,6 +22,22 @@ public interface TabbedPanelLayout extends PanelLayout {
           Configuration.booleanValue("is.codion.swing.framework.ui.TabEntityPanelLayout.includeDetailPanelControls", true);
 
   /**
+   * @param detailPanelState the detail panel state
+   * @return a new {@link TabbedPanelLayout} with the given detail panel state
+   */
+  static TabbedPanelLayout detailPanelState(PanelState detailPanelState) {
+    return builder().detailPanelState(detailPanelState).build();
+  }
+
+  /**
+   * @param splitPaneResizeWeight the split pane resize weight
+   * @return a new {@link TabbedPanelLayout} with the given split pane resize weight
+   */
+  static TabbedPanelLayout splitPaneResizeWeight(double splitPaneResizeWeight) {
+    return builder().splitPaneResizeWeight(splitPaneResizeWeight).build();
+  }
+
+  /**
    * @return a new {@link TabbedPanelLayout.Builder} instance
    */
   static Builder builder() {

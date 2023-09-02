@@ -39,9 +39,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
     EntityPanel schemaPanel = new EntityPanel(schemaModel,
-            TabbedPanelLayout.builder()
-                    .splitPaneResizeWeight(0.3)
-                    .build());
+            TabbedPanelLayout.splitPaneResizeWeight(0.3));
     EntityPanel tablePanel = new EntityPanel(tableModel);
     EntityPanel columnPanel = new EntityPanel(columnModel);
     EntityPanel constraintPanel = new EntityPanel(constraintModel);

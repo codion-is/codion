@@ -13,9 +13,7 @@ public final class ArtistPanel extends EntityPanel {
 
   public ArtistPanel(SwingEntityModel artistModel) {
     super(artistModel, new ArtistEditPanel(artistModel.editModel()),
-            TabbedPanelLayout.builder()
-                    .splitPaneResizeWeight(0.25)
-                    .build());
+            TabbedPanelLayout.splitPaneResizeWeight(0.25));
 
     SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     EntityPanel albumPanel = new EntityPanel(albumModel,
