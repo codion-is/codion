@@ -45,9 +45,9 @@ import static java.awt.event.KeyEvent.VK_RIGHT;
 import static java.util.Objects.requireNonNull;
 import static javax.swing.JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT;
 
-final class DefaultTabPanelLayout implements TabbedPanelLayout {
+final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
 
-  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultTabPanelLayout.class.getName());
+  private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(DefaultTabbedPanelLayout.class.getName());
 
   private static final int RESIZE_AMOUNT = 30;
   private static final String DETAIL_TABLES = "detail_tables";
@@ -66,7 +66,7 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
   private final boolean includeDetailPanelControls;
   private final double splitPaneResizeWeight;
 
-  private DefaultTabPanelLayout(DefaultBuilder builder) {
+  private DefaultTabbedPanelLayout(DefaultBuilder builder) {
     this.detailPanelState = builder.detailPanelState;
     this.includeDetailTabPane = builder.includeDetailTabPane;
     this.includeDetailPanelControls = builder.includeDetailPanelControls;
@@ -193,7 +193,7 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
     }
 
     private static void resizePanel(EntityPanel panel, EntityPanel.Direction direction) {
-      DefaultTabPanelLayout detailPanelLayout = panel.panelLayout();
+      DefaultTabbedPanelLayout detailPanelLayout = panel.panelLayout();
       JSplitPane splitPane = detailPanelLayout.tableDetailSplitPane;
       switch (requireNonNull(direction)) {
         case RIGHT:
@@ -239,6 +239,7 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
       if (detailPanelTabbedPane != null) {
         detailPanelTabbedPane.setSelectedComponent(detailPanel);
       }
+      activateDetailModelLink(detailPanel.model());
     }
 
     @Override
@@ -319,6 +320,15 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
         tablePanel.addToolBarControls(controls);
       }
       detailPanelControls().ifPresent(tablePanel::addPopupMenuControls);
+    }
+
+    private void activateDetailModelLink(SwingEntityModel detailModel) {
+      SwingEntityModel model = entityPanel.model();
+      if (model.containsDetailModel(detailModel)) {
+        model.activeDetailModels().forEach(linkedDetailModel ->
+                model.detailModelLink(linkedDetailModel).setActive(false));
+        model.detailModelLink(detailModel).setActive(true);
+      }
     }
 
     private Optional<Control> toggleDetailPanelControl() {
@@ -472,7 +482,7 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
 
     @Override
     public TabbedPanelLayout build() {
-      return new DefaultTabPanelLayout(this);
+      return new DefaultTabbedPanelLayout(this);
     }
   }
 }

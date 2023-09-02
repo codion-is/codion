@@ -41,7 +41,7 @@ public interface TabbedPanelLayout extends PanelLayout {
    * @return a new {@link TabbedPanelLayout.Builder} instance
    */
   static Builder builder() {
-    return new DefaultTabPanelLayout.DefaultBuilder();
+    return new DefaultTabbedPanelLayout.DefaultBuilder();
   }
 
   /**
