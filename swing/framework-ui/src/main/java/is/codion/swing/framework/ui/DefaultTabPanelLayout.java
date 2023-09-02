@@ -239,6 +239,7 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
       if (detailPanelTabbedPane != null) {
         detailPanelTabbedPane.setSelectedComponent(detailPanel);
       }
+      activateDetailModelLink(detailPanel.model());
     }
 
     @Override
@@ -319,6 +320,15 @@ final class DefaultTabPanelLayout implements TabbedPanelLayout {
         tablePanel.addToolBarControls(controls);
       }
       detailPanelControls().ifPresent(tablePanel::addPopupMenuControls);
+    }
+
+    private void activateDetailModelLink(SwingEntityModel detailModel) {
+      SwingEntityModel model = entityPanel.model();
+      if (model.containsDetailModel(detailModel)) {
+        model.activeDetailModels().forEach(linkedDetailModel ->
+                model.detailModelLink(linkedDetailModel).setActive(false));
+        model.detailModelLink(detailModel).setActive(true);
+      }
     }
 
     private Optional<Control> toggleDetailPanelControl() {
