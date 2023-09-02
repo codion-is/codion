@@ -868,6 +868,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @see #editControlTablePanel()
    */
   protected void initializeUI() {
+    if (containsTablePanel()) {
+      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
+    }
     panelLayout.layoutPanel(this);
     if (containsEditPanel()) {
       initializeEditPanel();
@@ -1366,12 +1369,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     /**
      * @param entityPanel the panel to lay out
      */
-    default void layoutPanel(EntityPanel entityPanel) {
-      requireNonNull(entityPanel);
-      if (entityPanel.containsTablePanel()) {
-        entityPanel.editControlTablePanel().add(entityPanel.tablePanel(), BorderLayout.CENTER);
-      }
-    }
+    void layoutPanel(EntityPanel entityPanel);
 
     /**
      * @return the {@link DetailController} provided by this {@link PanelLayout}

@@ -82,7 +82,6 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
   @Override
   public void layoutPanel(EntityPanel entityPanel) {
     this.entityPanel = entityPanel;
-    TabbedPanelLayout.super.layoutPanel(entityPanel);
     tableDetailSplitPane = createTableDetailSplitPane();
     detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
