@@ -9,6 +9,7 @@ import is.codion.swing.common.ui.Windows;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.TabPanelLayout;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -36,19 +37,23 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
     SwingEntityModel tagItemModel = itemModel.detailModel(TagItem.TYPE);
 
     EntityPanel categoryPanel = new EntityPanel(categoryModel,
-            new CategoryEditPanel(categoryModel.editModel()));
+            new CategoryEditPanel(categoryModel.editModel()),
+            TabPanelLayout.builder()
+                    .splitPaneResizeWeight(0.3)
+                    .build());
     EntityPanel productPanel = new EntityPanel(productModel,
             new ProductEditPanel(productModel.editModel()));
     EntityPanel itemPanel = new EntityPanel(itemModel,
-            new ItemEditPanel(itemModel.editModel()));
+            new ItemEditPanel(itemModel.editModel()),
+            TabPanelLayout.builder()
+                    .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                    .build());
     EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
             new TagItemEditPanel(tagItemModel.editModel()));
 
     categoryPanel.addDetailPanel(productPanel);
-    categoryPanel.setDetailSplitPanelResizeWeight(0.3);
     productPanel.addDetailPanel(itemPanel);
     itemPanel.addDetailPanels(tagItemPanel);
-    itemPanel.setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
     return Collections.singletonList(categoryPanel);
   }
@@ -72,12 +77,16 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
                             .editPanelClass(ItemEditPanel.class)
                             .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                                     .editPanelClass(TagItemEditPanel.class))
-                            .detailPanelState(EntityPanel.PanelState.HIDDEN)),
+                            .panelLayout(TabPanelLayout.builder()
+                                    .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                                    .build())),
             EntityPanel.builder(tagModelBuilder)
                     .editPanelClass(TagEditPanel.class)
                     .detailPanelBuilder(EntityPanel.builder(TagItem.TYPE)
                             .editPanelClass(TagItemEditPanel.class))
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN));
+                    .panelLayout(TabPanelLayout.builder()
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                            .build()));
   }
 
   public static void main(String[] args) {

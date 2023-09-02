@@ -8,6 +8,7 @@ import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.framework.model.SwingEntityEditModel;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.model.SwingEntityTableModel;
+import is.codion.swing.framework.ui.EntityPanel.PanelLayout;
 
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
@@ -21,8 +22,6 @@ import static java.util.Objects.requireNonNull;
 
 final class EntityPanelBuilder implements EntityPanel.Builder {
 
-  private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
-
   private final EntityType entityType;
   private final SwingEntityModel.Builder modelBuilder;
   private final SwingEntityModel model;
@@ -30,9 +29,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   private String caption;
   private boolean refreshOnInit = true;
   private Dimension preferredSize;
-  private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
-  private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
   private boolean tableConditionPanelVisible = EntityTablePanel.CONDITION_PANEL_VISIBLE.get();
+  private PanelLayout panelLayout;
 
   private Class<? extends EntityPanel> panelClass;
   private Class<? extends EntityTablePanel> tablePanelClass;
@@ -94,14 +92,8 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
   }
 
   @Override
-  public EntityPanel.Builder detailPanelState(EntityPanel.PanelState detailPanelState) {
-    this.detailPanelState = detailPanelState;
-    return this;
-  }
-
-  @Override
-  public EntityPanel.Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
-    this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
+  public EntityPanel.Builder panelLayout(PanelLayout panelLayout) {
+    this.panelLayout = requireNonNull(panelLayout);
     return this;
   }
 
@@ -204,8 +196,6 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
         entityPanel.tablePanel().setConditionPanelVisible(tableConditionPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
-        entityPanel.setDetailPanelState(detailPanelState);
-        entityPanel.setDetailSplitPanelResizeWeight(detailSplitPanelResizeWeight);
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {
           SwingEntityModel detailModel = model.detailModel(detailPanelBuilder.entityType());
           EntityPanel detailPanel = detailPanelBuilder.buildPanel(detailModel);
@@ -243,8 +233,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       if (panelClass().equals(EntityPanel.class)) {
         EntityTablePanel tablePanel = entityModel.containsTableModel() ? createTablePanel(entityModel.tableModel()) : null;
         EntityEditPanel editPanel = editPanelClass() == null ? null : createEditPanel(entityModel.editModel());
-        entityPanel = panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
-                .newInstance(entityModel, editPanel, tablePanel);
+        entityPanel = createPanel(entityModel, editPanel, tablePanel);
       }
       else {
         entityPanel = findModelConstructor(panelClass()).newInstance(entityModel);
@@ -263,6 +252,17 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private EntityPanel createPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel)
+          throws Exception {
+    if (panelLayout != null) {
+      return panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class, PanelLayout.class)
+              .newInstance(entityModel, editPanel, tablePanel, panelLayout);
+    }
+
+    return  panelClass().getConstructor(SwingEntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
+            .newInstance(entityModel, editPanel, tablePanel);
   }
 
   private EntityEditPanel createEditPanel(SwingEntityEditModel editModel) {

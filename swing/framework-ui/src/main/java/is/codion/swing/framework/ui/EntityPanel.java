@@ -14,7 +14,6 @@ import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
 import is.codion.swing.common.ui.border.Borders;
 import is.codion.swing.common.ui.component.button.ButtonBuilder;
-import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
@@ -28,8 +27,6 @@ import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JSplitPane;
-import javax.swing.JTabbedPane;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
@@ -37,11 +34,8 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
-import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -164,12 +158,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     UP, DOWN, RIGHT, LEFT
   }
 
-  private static final String DETAIL_TABLES = "detail_tables";
-  private static final int RESIZE_AMOUNT = 30;
-  private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
-  private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
-  private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
-
   /**
    * The EntityModel instance used by this EntityPanel
    */
@@ -206,6 +194,16 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   private final Event<EntityPanel> beforeActivateEvent = Event.event();
 
   /**
+   * The panel layout
+   */
+  private final PanelLayout panelLayout;
+
+  /**
+   * The detail panel controller
+   */
+  private final DetailController detailController;
+
+  /**
    * The caption to use when presenting this entity panel
    */
   private String caption;
@@ -214,13 +212,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * The description to display for this entity panel
    */
   private String description;
-
-  /**
-   * The horizontal split pane, which is used in case this entity panel has detail panels.
-   * It splits the lower section of this EntityPanel into the EntityTablePanel
-   * on the left, and the detail panels on the right.
-   */
-  private JSplitPane tableDetailSplitPane;
 
   /**
    * The parent panel, if any, so that detail panels can refer to their parents
@@ -236,16 +227,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * The next sibling panel, if any
    */
   private EntityPanel nextSiblingPanel;
-
-  /**
-   * A tab pane for the detail panels, if any
-   */
-  private JTabbedPane detailPanelTabbedPane;
-
-  /**
-   * The window used when detail panels are undocked
-   */
-  private Window detailPanelWindow;
 
   /**
    * The window used when the edit panel is undocked
@@ -268,24 +249,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   private PanelState editPanelState = EMBEDDED;
 
   /**
-   * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
-   */
-  private PanelState detailPanelState = EMBEDDED;
-
-  /**
    * if true then the edit control panel should be included
    */
   private boolean includeControlPanel = true;
-
-  /**
-   * if true and detail panels are available then the detail panel tab pane should be included
-   */
-  private boolean includeDetailTabPane = true;
-
-  /**
-   * if true and detail panels are available the controls to hide and show detail panels are included
-   */
-  private boolean includeDetailPanelControls = INCLUDE_DETAIL_PANEL_CONTROLS.get();
 
   /**
    * if true and an edit panel is available the actions to toggle it is included
@@ -307,8 +273,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    */
   private boolean initialized = false;
 
-  private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
-
   static {
     if (EntityEditPanel.USE_FOCUS_ACTIVATION.get()) {
       KeyboardFocusManager.getCurrentKeyboardFocusManager().addPropertyChangeListener("focusOwner", new FocusActivationListener());
@@ -320,7 +284,16 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param entityModel the EntityModel
    */
   public EntityPanel(SwingEntityModel entityModel) {
-    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), TabPanelLayout.builder().build());
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+   * @param entityModel the EntityModel
+   * @param panelLayout the detail panel layout
+   */
+  public EntityPanel(SwingEntityModel entityModel, PanelLayout panelLayout) {
+    this(requireNonNull(entityModel), null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, panelLayout);
   }
 
   /**
@@ -329,7 +302,17 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param editPanel the edit panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel) {
-    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null);
+    this(requireNonNull(entityModel), editPanel, TabPanelLayout.builder().build());
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+   * @param entityModel the EntityModel
+   * @param editPanel the edit panel
+   * @param panelLayout the detail panel layout
+   */
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, PanelLayout panelLayout) {
+    this(requireNonNull(entityModel), editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.tableModel()) : null, panelLayout);
   }
 
   /**
@@ -338,7 +321,17 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel) {
-    this(entityModel, null, tablePanel);
+    this(entityModel, tablePanel, TabPanelLayout.builder().build());
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+   * @param entityModel the EntityModel
+   * @param tablePanel the table panel
+   * @param panelLayout the detail panel layout
+   */
+  public EntityPanel(SwingEntityModel entityModel, EntityTablePanel tablePanel, PanelLayout panelLayout) {
+    this(entityModel, null, tablePanel, panelLayout);
   }
 
   /**
@@ -348,6 +341,18 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @param tablePanel the table panel
    */
   public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel) {
+    this(entityModel, editPanel, tablePanel, TabPanelLayout.builder().build());
+  }
+
+  /**
+   * Instantiates a new EntityPanel instance. The panel is not laid out and initialized until {@link #initialize()} is called.
+   * @param entityModel the EntityModel
+   * @param editPanel the edit panel
+   * @param tablePanel the table panel
+   * @param panelLayout the detail panel layout
+   */
+  public EntityPanel(SwingEntityModel entityModel, EntityEditPanel editPanel, EntityTablePanel tablePanel,
+                     PanelLayout panelLayout) {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
@@ -355,14 +360,19 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
+    this.panelLayout = requireNonNull(panelLayout);
+    this.detailController = this.panelLayout.detailController().orElse(new NullDetailPanelController());
   }
 
   @Override
   public void updateUI() {
     super.updateUI();
-    Utilities.updateUI(editControlPanel, editControlTablePanel, tableDetailSplitPane, tablePanel, editPanel, detailPanelTabbedPane);
+    Utilities.updateUI(editControlPanel, editControlTablePanel, tablePanel, editPanel);
     if (detailEntityPanels != null) {
       Utilities.updateUI(detailEntityPanels);
+    }
+    if (panelLayout != null) {
+      panelLayout.updateUI();
     }
   }
 
@@ -389,6 +399,21 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    */
   public final <T extends SwingEntityTableModel> T tableModel() {
     return entityModel.tableModel();
+  }
+
+  /**
+   * @return the parent panel or an empty Optional in case of a root panel
+   */
+  public final Optional<EntityPanel> parentPanel() {
+    return Optional.ofNullable(parentPanel);
+  }
+
+  /**
+   * @return the detail panel controller
+   * @param <T> the detail panel controller type
+   */
+  public final <T extends DetailController> T detailPanelController() {
+    return (T) detailController;
   }
 
   /**
@@ -630,9 +655,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
   public final void activatePanel() {
     beforeActivateEvent.accept(this);
-    if (parentPanel != null && parentPanel.getDetailPanelState() == HIDDEN) {
-      parentPanel.setDetailPanelState(EMBEDDED);
-    }
     initialize();
     Window parentWindow = parentWindow(this);
     if (parentWindow != null) {
@@ -647,16 +669,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   @Override
   public final void selectEntityPanel(EntityPanel entityPanel) {
     requireNonNull(entityPanel);
-    if (detailPanelTabbedPane != null) {
-      detailPanelTabbedPane.setSelectedComponent(entityPanel);
-      for (SwingEntityModel activeModel : new ArrayList<>(entityModel.activeDetailModels())) {
-        entityModel.detailModelLink(activeModel).setActive(false);
-      }
-      SwingEntityModel detailModel = entityPanel.model();
-      if (entityModel.containsDetailModel(detailModel)) {
-        entityModel.detailModelLink(detailModel).setActive(true);
-      }
-    }
+    detailController.selectDetailPanel(entityPanel);
   }
 
   /**
@@ -670,40 +683,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
       focusOwner = EntityPanel.this;
     }
     Dialogs.displayExceptionDialog(exception, parentWindow(focusOwner));
-  }
-
-  /**
-   * @return the resize weight value to use when initializing the left/right split pane, which
-   * controls the initial divider placement (0 - 1).
-   * Override to control the initial divider placement
-   */
-  public final double getDetailSplitPaneResizeWeight() {
-    return detailSplitPanelResizeWeight;
-  }
-
-  /**
-   * @param detailSplitPanelResizeWeight the detail panel split size weight
-   * @throws IllegalStateException if the panel has been initialized
-   */
-  public final void setDetailSplitPanelResizeWeight(double detailSplitPanelResizeWeight) {
-    checkIfInitialized();
-    this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
-  }
-
-  /**
-   * @return true if the detail panel tab pane should be included
-   */
-  public final boolean isIncludeDetailTabPane() {
-    return includeDetailTabPane;
-  }
-
-  /**
-   * @param includeDetailTabPane true if the detail panel tab pane should be included
-   * @throws IllegalStateException if the panel has been initialized
-   */
-  public final void setIncludeDetailTabPane(boolean includeDetailTabPane) {
-    checkIfInitialized();
-    this.includeDetailTabPane = includeDetailTabPane;
   }
 
   /**
@@ -721,23 +700,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   public final void setIncludeToggleEditPanelControl(boolean includeToggleEditPanelControl) {
     checkIfInitialized();
     this.includeToggleEditPanelControl = includeToggleEditPanelControl;
-  }
-
-  /**
-   * @return true if detail panel controls should be included
-   * @see EntityPanel#INCLUDE_DETAIL_PANEL_CONTROLS
-   */
-  public final boolean isIncludeDetailPanelControls() {
-    return includeDetailPanelControls;
-  }
-
-  /**
-   * @param includeDetailPanelControls true if detail panel controls should be shown
-   * @throws IllegalStateException if the panel has been initialized
-   */
-  public final void setIncludeDetailPanelControls(boolean includeDetailPanelControls) {
-    checkIfInitialized();
-    this.includeDetailPanelControls = includeDetailPanelControls;
   }
 
   /**
@@ -788,21 +750,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   /**
-   * Toggles the detail panel state between WINDOW, HIDDEN and EMBEDDED
-   */
-  public final void toggleDetailPanelState() {
-    if (detailPanelState == WINDOW) {
-      setDetailPanelState(HIDDEN);
-    }
-    else if (detailPanelState == EMBEDDED) {
-      setDetailPanelState(WINDOW);
-    }
-    else {
-      setDetailPanelState(EMBEDDED);
-    }
-  }
-
-  /**
    * Toggles the edit panel state between WINDOW, HIDDEN and EMBEDDED
    */
   public final void toggleEditPanelState() {
@@ -818,64 +765,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   /**
-   * @return the detail panel state, either HIDDEN, EMBEDDED or WINDOW
-   */
-  public final PanelState getDetailPanelState() {
-    return detailPanelState;
-  }
-
-  /**
    * @return the edit panel state, either HIDDEN, EMBEDDED or WINDOW
    */
   public final PanelState getEditPanelState() {
     return editPanelState;
-  }
-
-  /**
-   * @param state the detail panel state (HIDDEN, EMBEDDED or WINDOW)
-   */
-  public final void setDetailPanelState(PanelState state) {
-    requireNonNull(state);
-    if (detailPanelTabbedPane == null) {
-      this.detailPanelState = state;
-      return;
-    }
-
-    if (state != HIDDEN) {
-      selectedDetailPanel().initialize();
-    }
-
-    if (detailPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
-      for (EntityPanel detailPanel : detailEntityPanels) {
-        if (detailPanel.detailPanelState == WINDOW) {
-          detailPanel.setDetailPanelState(HIDDEN);
-        }
-      }
-    }
-
-    SwingEntityModel detailModel = selectedDetailPanel().model();
-    if (entityModel.containsDetailModel(detailModel)) {
-      entityModel.detailModelLink(detailModel).setActive(state != HIDDEN);
-    }
-
-    detailPanelState = state;
-    if (state != WINDOW) {
-      disposeDetailWindow();
-    }
-
-    if (state == EMBEDDED) {
-      if (tableDetailSplitPane.getRightComponent() != detailPanelTabbedPane) {
-        tableDetailSplitPane.setRightComponent(detailPanelTabbedPane);
-      }
-    }
-    else if (state == HIDDEN) {
-      tableDetailSplitPane.setRightComponent(null);
-    }
-    else {
-      showDetailWindow();
-    }
-
-    revalidate();
   }
 
   /**
@@ -889,40 +782,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
     editPanelState = state;
     updateEditPanelState();
-  }
-
-  /**
-   * Resizes this panel in the given direction
-   * @param direction the resize direction
-   * @param pixelAmount the resize amount
-   */
-  public final void resizePanel(Direction direction, int pixelAmount) {
-    switch (requireNonNull(direction)) {
-      case UP:
-        setEditPanelState(HIDDEN);
-        break;
-      case DOWN:
-        if (editPanelState == EMBEDDED) {
-          setEditPanelState(WINDOW);
-        }
-        else {
-          setEditPanelState(EMBEDDED);
-        }
-        break;
-      case RIGHT:
-        if (tableDetailSplitPane != null) {
-          tableDetailSplitPane.setDividerLocation(Math.min(tableDetailSplitPane.getDividerLocation() + pixelAmount,
-                  tableDetailSplitPane.getMaximumDividerLocation()));
-        }
-        break;
-      case LEFT:
-        if (tableDetailSplitPane != null) {
-          tableDetailSplitPane.setDividerLocation(Math.max(tableDetailSplitPane.getDividerLocation() - pixelAmount, 0));
-        }
-        break;
-      default:
-        throw new IllegalArgumentException("Undefined resize direction: " + direction);
-    }
   }
 
   /**
@@ -1008,26 +867,14 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @see #editControlPanel()
    * @see #editControlTablePanel()
    */
-  protected void initializeUI() {
+  protected final void initializeUI() {
     if (editPanel != null) {
       initializeEditControlPanel();
     }
+    panelLayout.layoutPanel(this);
     if (tablePanel != null) {
       initializeTablePanel();
-      editControlTablePanel.add(tablePanel, BorderLayout.CENTER);
     }
-    setLayout(borderLayout());
-    if (!includeDetailTabPane || detailEntityPanels.isEmpty()) {
-      tableDetailSplitPane = null;
-      detailPanelTabbedPane = null;
-      add(editControlTablePanel, BorderLayout.CENTER);
-    }
-    else {
-      tableDetailSplitPane = createTableDetailSplitPane();
-      detailPanelTabbedPane = createDetailTabbedPane();
-      add(tableDetailSplitPane, BorderLayout.CENTER);
-    }
-    setDetailPanelState(detailPanelState);
     if (containsEditPanel()) {
       updateEditPanelState();
     }
@@ -1202,51 +1049,17 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   protected final void setupResizing() {
-    ResizeVerticallyAction resizeUpAction = new ResizeVerticallyAction(this, UP);
-    ResizeVerticallyAction resizeDownAction = new ResizeVerticallyAction(this, DOWN);
-    ResizeHorizontallyAction resizeRightAction = new ResizeHorizontallyAction(this, RIGHT);
-    ResizeHorizontallyAction resizeLeftAction = new ResizeHorizontallyAction(this, LEFT);
-
-    KeyEvents.builder(VK_UP)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeUpAction)
-            .enable(this);
+    ToggleEditPanelStateAction toggleEditPanelStateAction = new ToggleEditPanelStateAction(this);
     KeyEvents.builder(VK_DOWN)
             .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeDownAction)
-            .enable(this);
-    KeyEvents.builder(VK_RIGHT)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeRightAction)
-            .enable(this);
-    KeyEvents.builder(VK_LEFT)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-            .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-            .action(resizeLeftAction)
+            .action(toggleEditPanelStateAction)
             .enable(this);
     if (containsEditPanel()) {
-      KeyEvents.builder(VK_UP)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeUpAction)
-              .enable(editControlPanel);
       KeyEvents.builder(VK_DOWN)
               .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeDownAction)
-              .enable(editControlPanel);
-      KeyEvents.builder(VK_RIGHT)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeRightAction)
-              .enable(editControlPanel);
-      KeyEvents.builder(VK_LEFT)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
-              .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
-              .action(resizeLeftAction)
+              .action(toggleEditPanelStateAction)
               .enable(editControlPanel);
     }
   }
@@ -1324,6 +1137,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     this.nextSiblingPanel = requireNonNull(nextSiblingPanel);
   }
 
+  final <T extends PanelLayout> T panelLayout() {
+    return (T) panelLayout;
+  }
+
   static void addEntityPanelAndLinkSiblings(EntityPanel detailPanel, List<EntityPanel> entityPanels) {
     if (!entityPanels.isEmpty()) {
       EntityPanel leftSibling = entityPanels.get(entityPanels.size() - 1);
@@ -1341,14 +1158,8 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (includeToggleEditPanelControl && editPanel != null) {
       controls.add(createToggleEditPanelControl());
     }
-    if (includeDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      controls.add(createToggleDetailPanelControl());
-    }
-    if (controls.isNotEmpty()) {
-      tablePanel.addToolBarControls(controls);
-    }
-    if (includeDetailPanelControls && !detailEntityPanels.isEmpty()) {
-      tablePanel.addPopupMenuControls(createSelectDetailPanelControls());
+    if (detailController != null) {
+      detailController.setupTablePanelControls(tablePanel);
     }
     if (tablePanel.table().getDoubleClickAction() == null) {
       tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());
@@ -1357,40 +1168,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     tablePanel.setMinimumSize(new Dimension(0, 0));
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     tablePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
-  }
-
-  /**
-   * Creates the horizontal split pane, used in the case of detail panel(s)
-   * @return the horizontal split pane
-   */
-  private JSplitPane createTableDetailSplitPane() {
-    return splitPane()
-            .orientation(JSplitPane.HORIZONTAL_SPLIT)
-            .continuousLayout(true)
-            .oneTouchExpandable(true)
-            .border(BorderFactory.createEmptyBorder())//minor facelift when using metal laf
-            .resizeWeight(detailSplitPanelResizeWeight)
-            .leftComponent(editControlTablePanel)
-            .rightComponent(detailPanelTabbedPane)
-            .build();
-  }
-
-  /**
-   * Creates the JTabbedPane containing the detail panels, used in case of multiple detail panels
-   * @return the JTabbedPane for holding detail panels
-   */
-  private JTabbedPane createDetailTabbedPane() {
-    TabbedPaneBuilder builder = tabbedPane()
-            .focusable(false)
-            .changeListener(e -> selectedDetailPanel().activatePanel());
-    detailEntityPanels.forEach(detailPanel -> builder.tabBuilder(detailPanel.caption, detailPanel)
-            .toolTipText(detailPanel.description)
-            .add());
-    if (includeDetailPanelControls) {
-      builder.mouseListener(new TabbedPaneMouseReleasesListener());
-    }
-
-    return builder.build();
   }
 
   /**
@@ -1411,31 +1188,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
             .smallIcon(FrameworkIcons.instance().editPanel())
             .description(MESSAGES.getString("toggle_edit"))
             .build();
-  }
-
-  /**
-   * @return a control for toggling the detail panel
-   */
-  private Control createToggleDetailPanelControl() {
-    return Control.builder(this::toggleDetailPanelState)
-            .smallIcon(FrameworkIcons.instance().detail())
-            .description(MESSAGES.getString("toggle_detail"))
-            .build();
-  }
-
-  private Controls createSelectDetailPanelControls() {
-    if (detailEntityPanels.isEmpty()) {
-      return null;
-    }
-
-    Controls.Builder controls = Controls.builder()
-            .name(MESSAGES.getString(DETAIL_TABLES))
-            .smallIcon(FrameworkIcons.instance().detail());
-    detailEntityPanels.forEach(detailPanel ->
-            controls.control(Control.builder(new SelectDetailPanelCommand(detailPanel))
-                    .name(detailPanel.getCaption())));
-
-    return controls.build();
   }
 
   //#############################################################################################
@@ -1476,52 +1228,11 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   /**
-   * Shows the detail panels in a window
-   */
-  private void showDetailWindow() {
-    Window parent = parentWindow(this);
-    if (parent != null) {
-      Dimension parentSize = parent.getSize();
-      Dimension size = detailWindowSize(parentSize);
-      Point parentLocation = parent.getLocation();
-      int detailWindowX = parentLocation.x + (parentSize.width - size.width);
-      int detailWindowY = parentLocation.y + (parentSize.height - size.height) - DETAIL_WINDOW_OFFSET;
-      detailPanelWindow = createDetailPanelWindow();
-      detailPanelWindow.setSize(size);
-      detailPanelWindow.setLocation(new Point(detailWindowX, detailWindowY));
-      detailPanelWindow.setVisible(true);
-    }
-  }
-
-  /**
-   * @param parentSize the size of the parent window
-   * @return the size to use when showing the detail window
-   */
-  private Dimension detailWindowSize(Dimension parentSize) {
-    int detailWindowWidth = (int) (parentSize.width * DETAIL_WINDOW_SIZE_RATIO);
-    int detailWindowHeight = containsEditPanel() ? (int) (parentSize.height * DETAIL_WINDOW_SIZE_RATIO) : parentSize.height;
-
-    return new Dimension(detailWindowWidth, detailWindowHeight);
-  }
-
-  /**
    * Shows the edit panel in a window
    */
   private void showEditWindow() {
     editPanelWindow = createEditWindow();
     editPanelWindow.setVisible(true);
-  }
-
-  /**
-   * @return the detail panel selected in the detail tab pane.
-   * @throws IllegalStateException in case no detail panels are defined
-   */
-  private EntityPanel selectedDetailPanel() {
-    if (detailPanelTabbedPane == null) {
-      throw new IllegalStateException("No detail panels available");
-    }
-
-    return (EntityPanel) detailPanelTabbedPane.getSelectedComponent();
   }
 
   private Window createEditWindow() {
@@ -1543,46 +1254,11 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
             .build();
   }
 
-  private Window createDetailPanelWindow() {
-    if (USE_FRAME_PANEL_DISPLAY.get()) {
-      return Windows.frame(detailPanelTabbedPane)
-              .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
-              .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-              .onClosed(windowEvent -> {
-                //the frame can be closed when embedding the panel, don't hide if that's the case
-                if (getDetailPanelState() != EMBEDDED) {
-                  setDetailPanelState(HIDDEN);
-                }
-              })
-              .build();
-    }
-
-    return Dialogs.componentDialog(detailPanelTabbedPane)
-            .owner(this)
-            .title(caption + " - " + MESSAGES.getString(DETAIL_TABLES))
-            .modal(false)
-            .onClosed(e -> {
-              //the dialog can be closed when embedding the panel, don't hide if that's the case
-              if (getDetailPanelState() != EMBEDDED) {
-                setDetailPanelState(HIDDEN);
-              }
-            })
-            .build();
-  }
-
   private void disposeEditWindow() {
     if (editPanelWindow != null) {
       editPanelWindow.setVisible(false);
       editPanelWindow.dispose();
       editPanelWindow = null;
-    }
-  }
-
-  private void disposeDetailWindow() {
-    if (detailPanelWindow != null) {
-      detailPanelWindow.setVisible(false);
-      detailPanelWindow.dispose();
-      detailPanelWindow = null;
     }
   }
 
@@ -1592,45 +1268,13 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
   }
 
-  private final class TabbedPaneMouseReleasesListener extends MouseAdapter {
-
-    @Override
-    public void mouseReleased(MouseEvent e) {
-      if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-        setDetailPanelState(getDetailPanelState() == WINDOW ? EMBEDDED : WINDOW);
-      }
-      else if (e.getButton() == MouseEvent.BUTTON2) {
-        setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
-      }
-    }
-  }
-
   private final class TableDoubleClickCommand implements Control.Command {
 
     @Override
     public void perform() {
-      if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailTabPane)) {
-        if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-          setEditPanelState(WINDOW);
-        }
-        else if (getDetailPanelState() == HIDDEN) {
-          setDetailPanelState(WINDOW);
-        }
+      if (containsEditPanel() && getEditPanelState() == HIDDEN) {
+        setEditPanelState(WINDOW);
       }
-    }
-  }
-
-  private static final class SelectDetailPanelCommand implements Control.Command {
-
-    private final EntityPanel detailPanel;
-
-    private SelectDetailPanelCommand(EntityPanel detailPanel) {
-      this.detailPanel = detailPanel;
-    }
-
-    @Override
-    public void perform() {
-      detailPanel.activatePanel();
     }
   }
 
@@ -1680,39 +1324,18 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     return Optional.empty();
   }
 
-  private static final class ResizeHorizontallyAction extends AbstractAction {
+  private static final class ToggleEditPanelStateAction extends AbstractAction {
 
     private final EntityPanel panel;
-    private final Direction direction;
 
-    private ResizeHorizontallyAction(EntityPanel panel, Direction direction) {
-      super("Resize " + direction);
+    private ToggleEditPanelStateAction(EntityPanel panel) {
+      super("ToggleEditPanelState");
       this.panel = panel;
-      this.direction = direction;
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-      if (panel.parentPanel != null) {
-        panel.parentPanel.resizePanel(direction, RESIZE_AMOUNT);
-      }
-    }
-  }
-
-  private static final class ResizeVerticallyAction extends AbstractAction {
-
-    private final EntityPanel panel;
-    private final Direction direction;
-
-    private ResizeVerticallyAction(EntityPanel panel, Direction direction) {
-      super("Resize " + direction);
-      this.panel = panel;
-      this.direction = direction;
-    }
-
-    @Override
-    public void actionPerformed(ActionEvent e) {
-      panel.resizePanel(direction, RESIZE_AMOUNT);
+      panel.toggleEditPanelState();
     }
   }
 
@@ -1733,6 +1356,68 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
         }
       }
     }
+  }
+
+  /**
+   * Handles the layout of a EntityPanel
+   */
+  public interface PanelLayout {
+
+    /**
+     * Updates the UI of all associated components
+     */
+    default void updateUI() {};
+
+    /**
+     * @param entityPanel the panel to lay out
+     */
+    default void layoutPanel(EntityPanel entityPanel) {
+      requireNonNull(entityPanel);
+      if (entityPanel.tablePanel() != null) {
+        entityPanel.editControlTablePanel().add(entityPanel.tablePanel(), BorderLayout.CENTER);
+      }
+    }
+
+    /**
+     * @return the {@link DetailController} provided by this {@link PanelLayout}
+     * @param <T> the detail panel controller type
+     */
+    default <T extends DetailController> Optional<T> detailController() {
+      return Optional.empty();
+    }
+  }
+
+  /**
+   * Controls the detail panels of a entity panel
+   */
+  public interface DetailController {
+
+    /**
+     * Selects the given detail panel
+     * @param detailPanel the detail panel to select
+     */
+    void selectDetailPanel(EntityPanel detailPanel);
+
+    /**
+     * @param panelState the detail panel state
+     */
+    void setDetailPanelState(PanelState panelState);
+
+    /**
+     * @return the detail panel state
+     */
+    PanelState getDetailPanelState();
+
+    /**
+     * Toggles the detail panel state
+     */
+    void toggleDetailPanelState();
+
+    /**
+     * Adds any detail panel related controls to the table panel popup menu and toolbar
+     * @param tablePanel the table panel
+     */
+    void setupTablePanelControls(EntityTablePanel tablePanel);
   }
 
   /**
@@ -1777,17 +1462,11 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     Builder tableConditionPanelVisible(boolean tableConditionPanelVisible);
 
     /**
-     * @param detailPanelState the state of the detail panels when this panel is initialized
-     * @return this builder instance
+     *
+     * @param panelLayout
+     * @return this builder instane
      */
-    Builder detailPanelState(PanelState detailPanelState);
-
-    /**
-     * @param detailSplitPanelResizeWeight the split panel resize weight to use when initializing this panel
-     * with its detail panels
-     * @return this builder instance
-     */
-    Builder detailSplitPanelResizeWeight(double detailSplitPanelResizeWeight);
+    Builder panelLayout(PanelLayout panelLayout);
 
     /**
      * @param preferredSize the preferred panel size
@@ -1868,5 +1547,25 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
      * @return an EntityTablePanel based on this provider
      */
     EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
+  }
+
+  private static final class NullDetailPanelController implements DetailController {
+
+    @Override
+    public void selectDetailPanel(EntityPanel detailPanel) {}
+
+    @Override
+    public void setDetailPanelState(PanelState panelState) {}
+
+    @Override
+    public PanelState getDetailPanelState() {
+      return HIDDEN;
+    }
+
+    @Override
+    public void toggleDetailPanelState() {}
+
+    @Override
+    public void setupTablePanelControls(EntityTablePanel tablePanel) {}
   }
 }

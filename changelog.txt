@@ -9470,3 +9470,4 @@
   EntityPanelParent.previousSiblingPanel() and nextSiblingPanel() removed, EntityPanel.previousSiblingPanel and nextSiblingPanel added
   EntityPanelParent.childPanels() and parentPanel() removed, related refactoring
   DefaultEntityApplicationPanelBuilder.startApplication() bug fixed, no longer crashes if Look and Feel could not be enabled
+  EntityPanel.PanelLayout added

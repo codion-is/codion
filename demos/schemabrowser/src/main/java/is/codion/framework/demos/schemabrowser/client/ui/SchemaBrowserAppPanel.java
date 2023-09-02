@@ -18,6 +18,7 @@ import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
+import is.codion.swing.framework.ui.TabPanelLayout;
 
 import javax.swing.JTable;
 import java.util.Collections;
@@ -37,7 +38,10 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     SwingEntityModel constraintModel = tableModel.detailModel(Constraint.TYPE);
     SwingEntityModel columnConstraintModel = constraintModel.detailModel(ConstraintColumn.TYPE);
 
-    EntityPanel schemaPanel = new EntityPanel(schemaModel);
+    EntityPanel schemaPanel = new EntityPanel(schemaModel,
+            TabPanelLayout.builder()
+                    .splitPaneResizeWeight(0.3)
+                    .build());
     EntityPanel tablePanel = new EntityPanel(tableModel);
     EntityPanel columnPanel = new EntityPanel(columnModel);
     EntityPanel constraintPanel = new EntityPanel(constraintModel);
@@ -47,8 +51,6 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserA
     tablePanel.addDetailPanels(columnPanel);
     tablePanel.addDetailPanel(constraintPanel);
     constraintPanel.addDetailPanel(columnConstraintPanel);
-
-    schemaPanel.setDetailSplitPanelResizeWeight(0.3);
 
     schemaModel.tableModel().refresh();
 

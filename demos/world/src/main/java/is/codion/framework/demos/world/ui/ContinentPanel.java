@@ -27,60 +27,65 @@ final class ContinentPanel extends EntityPanel {
   private final EntityPanel countryPanel;
 
   ContinentPanel(SwingEntityModel continentModel) {
-    super(continentModel, new ContinentTablePanel(continentModel.tableModel()));
+    super(continentModel, new ContinentTablePanel(continentModel.tableModel()),
+            new ContinentPanelLayout());
     countryPanel = new EntityPanel(continentModel.detailModel(Country.TYPE));
     countryPanel.tablePanel().setIncludeConditionPanel(false);
   }
 
-  @Override
-  protected void initializeUI() {
-    ContinentModel model = model();
+  private static final class ContinentPanelLayout implements PanelLayout {
 
-    EntityTablePanel tablePanel = tablePanel();
-    tablePanel.setBorder(createEmptyBorder());
-    tablePanel.initialize();
-    setPreferredHeight(tablePanel, 200);
+    @Override
+    public void layoutPanel(EntityPanel entityPanel) {
+      ContinentPanel continentPanel = (ContinentPanel) entityPanel;
+      ContinentModel model = entityPanel.model();
 
-    ChartPanel populationChartPanel = createPieChartPanel(this, model.populationDataset(), "Population");
-    ChartPanel surfaceAreaChartPanel = createPieChartPanel(this, model.surfaceAreaDataset(), "Surface area");
-    ChartPanel gnpChartPanel = createPieChartPanel(this, model.gnpDataset(), "GNP");
-    ChartPanel lifeExpectancyChartPanel = createBarChartPanel(this, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
-    lifeExpectancyChartPanel.setPreferredSize(new Dimension(lifeExpectancyChartPanel.getPreferredSize().width, 120));
+      EntityTablePanel tablePanel = entityPanel.tablePanel();
+      tablePanel.setBorder(createEmptyBorder());
+      tablePanel.initialize();
+      setPreferredHeight(tablePanel, 200);
 
-    Dimension pieChartSize = new Dimension(260, 260);
-    populationChartPanel.setPreferredSize(pieChartSize);
-    surfaceAreaChartPanel.setPreferredSize(pieChartSize);
-    gnpChartPanel.setPreferredSize(pieChartSize);
+      ChartPanel populationChartPanel = createPieChartPanel(entityPanel, model.populationDataset(), "Population");
+      ChartPanel surfaceAreaChartPanel = createPieChartPanel(entityPanel, model.surfaceAreaDataset(), "Surface area");
+      ChartPanel gnpChartPanel = createPieChartPanel(entityPanel, model.gnpDataset(), "GNP");
+      ChartPanel lifeExpectancyChartPanel = createBarChartPanel(entityPanel, model.lifeExpectancyDataset(), "Life expectancy", "Continent", "Years");
+      lifeExpectancyChartPanel.setPreferredSize(new Dimension(lifeExpectancyChartPanel.getPreferredSize().width, 120));
 
-    JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
-            .add(populationChartPanel)
-            .add(surfaceAreaChartPanel)
-            .add(gnpChartPanel)
-            .build();
+      Dimension pieChartSize = new Dimension(260, 260);
+      populationChartPanel.setPreferredSize(pieChartSize);
+      surfaceAreaChartPanel.setPreferredSize(pieChartSize);
+      gnpChartPanel.setPreferredSize(pieChartSize);
 
-    JPanel chartPanel = borderLayoutPanel()
-            .northComponent(lifeExpectancyChartPanel)
-            .centerComponent(pieChartChartPanel)
-            .build();
+      JPanel pieChartChartPanel = gridLayoutPanel(1, 3)
+              .add(populationChartPanel)
+              .add(surfaceAreaChartPanel)
+              .add(gnpChartPanel)
+              .build();
 
-    countryPanel.initialize();
-    countryPanel.setPreferredSize(new Dimension(countryPanel.getPreferredSize().width, 100));
+      JPanel chartPanel = borderLayoutPanel()
+              .northComponent(lifeExpectancyChartPanel)
+              .centerComponent(pieChartChartPanel)
+              .build();
 
-    JTabbedPane tabbedPane = tabbedPane()
-            .tabBuilder("Charts", chartPanel)
-            .mnemonic(VK_1)
-            .add()
-            .tabBuilder("Countries", countryPanel)
-            .mnemonic(VK_2)
-            .add()
-            .build();
+      continentPanel.countryPanel.initialize();
+      continentPanel.countryPanel.setPreferredSize(new Dimension(continentPanel.countryPanel.getPreferredSize().width, 100));
 
-    setLayout(borderLayout());
+      JTabbedPane tabbedPane = tabbedPane()
+              .tabBuilder("Charts", chartPanel)
+              .mnemonic(VK_1)
+              .add()
+              .tabBuilder("Countries", continentPanel.countryPanel)
+              .mnemonic(VK_2)
+              .add()
+              .build();
 
-    add(tablePanel, BorderLayout.CENTER);
-    add(tabbedPane, BorderLayout.SOUTH);
+      continentPanel.setLayout(borderLayout());
 
-    setupKeyboardActions();
-    setupNavigation();
+      continentPanel.add(tablePanel, BorderLayout.CENTER);
+      continentPanel.add(tabbedPane, BorderLayout.SOUTH);
+
+      continentPanel.setupKeyboardActions();
+      continentPanel.setupNavigation();
+    }
   }
 }

@@ -21,6 +21,7 @@ import is.codion.swing.framework.ui.EntityApplicationPanel;
 import is.codion.swing.framework.ui.EntityPanel;
 import is.codion.swing.framework.ui.EntityTablePanel;
 import is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling;
+import is.codion.swing.framework.ui.TabPanelLayout;
 
 import com.formdev.flatlaf.intellijthemes.FlatAllIJThemes;
 
@@ -82,7 +83,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(genreModelBuilder)
                     .editPanelClass(GenreEditPanel.class)
                     .detailPanelBuilder(trackPanelBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+                    .panelLayout(TabPanelLayout.builder()
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                            .build());
 
     SwingEntityModel.Builder mediaTypeModelBuilder =
             SwingEntityModel.builder(MediaType.TYPE)
@@ -92,7 +95,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
             EntityPanel.builder(mediaTypeModelBuilder)
                     .editPanelClass(MediaTypeEditPanel.class)
                     .detailPanelBuilder(trackPanelBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN);
+                    .panelLayout(TabPanelLayout.builder()
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                            .build());
 
     EntityPanel.Builder customerPanelBuilder =
             EntityPanel.builder(Customer.TYPE)
@@ -109,7 +114,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppMode
                     .editPanelClass(EmployeeEditPanel.class)
                     .tablePanelClass(EmployeeTablePanel.class)
                     .detailPanelBuilder(customerPanelBuilder)
-                    .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                    .panelLayout(TabPanelLayout.builder()
+                            .detailPanelState(EntityPanel.PanelState.HIDDEN)
+                            .build())
                     .preferredSize(new Dimension(1000, 500));
 
     return Arrays.asList(genrePanelBuilder, mediaTypePanelBuilder, employeePanelBuilder);
