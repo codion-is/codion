@@ -28,10 +28,7 @@ import is.codion.swing.common.ui.UiManagerDefaults;
 import is.codion.swing.common.ui.Utilities;
 import is.codion.swing.common.ui.WaitCursor;
 import is.codion.swing.common.ui.Windows;
-import is.codion.swing.common.ui.component.Components;
-import is.codion.swing.common.ui.component.panel.HierarchyPanel;
 import is.codion.swing.common.ui.component.panel.PanelBuilder;
-import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
 import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.control.ToggleControl;
@@ -52,13 +49,10 @@ import javax.swing.JMenuBar;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.MutableTreeNode;
@@ -99,7 +93,7 @@ import static java.util.Objects.requireNonNull;
  * @see #builder(Class, Class)
  */
 public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements HierarchyPanel {
+        extends JPanel implements EntityPanelParent {
 
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -169,8 +163,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final M applicationModel;
   private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
-
-  private JTabbedPane applicationTabPane;
+  private final ApplicationLayout applicationLayout;
 
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
@@ -182,7 +175,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
+    this(applicationModel, new TabbedApplicationLayout());
+  }
+
+  public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {
     this.applicationModel = requireNonNull(applicationModel);
+    this.applicationLayout = requireNonNull(applicationLayout);
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -267,43 +265,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   @Override
-  public final Optional<HierarchyPanel> parentPanel() {
-    return Optional.empty();
+  public final void selectEntityPanel(EntityPanel entityPanel) {
+    applicationLayout.selectEntityPanel(entityPanel);
   }
-
-  @Override
-  public final Optional<HierarchyPanel> selectedChildPanel() {
-    if (applicationTabPane != null && applicationTabPane.getTabCount() > 0) {//initializeUI() may have been overridden
-      return Optional.of((HierarchyPanel) applicationTabPane.getSelectedComponent());
-    }
-
-    return entityPanels.isEmpty() ? Optional.empty() : Optional.of(entityPanels.get(0));
-  }
-
-  @Override
-  public final void selectChildPanel(HierarchyPanel childPanel) {
-    if (applicationTabPane != null && applicationTabPane.indexOfComponent((JComponent) childPanel) != -1) {//initializeUI() may have been overridden
-      applicationTabPane.setSelectedComponent((JComponent) childPanel);
-    }
-  }
-
-  @Override
-  public final Optional<HierarchyPanel> previousSiblingPanel() {
-    return Optional.empty();
-  }
-
-  @Override
-  public final Optional<HierarchyPanel> nextSiblingPanel() {
-    return Optional.empty();
-  }
-
-  @Override
-  public final List<HierarchyPanel> childPanels() {
-    return Collections.unmodifiableList(entityPanels);
-  }
-
-  @Override
-  public final void activatePanel() {}
 
   /**
    * Exits this application
@@ -383,8 +347,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public final void initialize() {
     if (!initialized) {
       try {
-        this.entityPanels.addAll(createEntityPanels());
-        this.supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
+        createEntityPanels().forEach(this::addEntityPanel);
+        supportPanelBuilders.addAll(createSupportEntityPanelBuilders());
         initializeUI();
         bindEventsInternal();
         bindEvents();
@@ -424,12 +388,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Returns the JTabbedPane used by the default UI, an empty Optional in case the default UI
-   * initialization has been overridden. Returns an empty Optional until the panel has been initialized via {@link #initialize()}.
-   * @return the default application tab pane or an empty Optional if none is available
+   * @return the panel layout
+   * @param <T> the panel layout type
    */
-  protected final Optional<JTabbedPane> applicationTabPane() {
-    return Optional.ofNullable(applicationTabPane);
+  protected final <T extends ApplicationLayout> T panelLayout() {
+    return (T) applicationLayout;
   }
 
   /**
@@ -764,25 +727,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Initializes this EntityApplicationPanel UI
    */
-  protected void initializeUI() {
-    applicationTabPane = createApplicationTabPane();
-    //initialize first panel
-    selectedChildPanel()
-            .map(EntityPanel.class::cast)
-            .ifPresent(EntityPanel::initialize);
-    setLayout(new BorderLayout());
-    //tab pane added to a base panel for correct Look&Feel rendering
-    add(borderLayoutPanel()
-            .centerComponent(applicationTabPane)
-            .build(), BorderLayout.CENTER);
-    JPanel northPanel = createNorthPanel();
-    if (northPanel != null) {
-      add(northPanel, BorderLayout.NORTH);
-    }
-    JPanel southPanel = createSouthPanel();
-    if (southPanel != null) {
-      add(southPanel, BorderLayout.SOUTH);
-    }
+  private void initializeUI() {
+    applicationLayout.layoutPanel(this);
   }
 
   /**
@@ -799,24 +745,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   protected Collection<EntityPanel.Builder> createSupportEntityPanelBuilders() {
     return Collections.emptyList();
-  }
-
-  /**
-   * Creates a panel to display in the NORTH position of this application panel.
-   * override to provide a north panel.
-   * @return a panel for the NORTH position
-   */
-  protected JPanel createNorthPanel() {
-    return null;
-  }
-
-  /**
-   * Creates a panel to display in the SOUTH position of this application frame,
-   * override to provide a south panel.
-   * @return a panel for the SOUTH position
-   */
-  protected JPanel createSouthPanel() {
-    return null;
   }
 
   /**
@@ -861,25 +789,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     applicationModel().savePreferences();
   }
 
-  private JTabbedPane createApplicationTabPane() {
-    TabbedPaneBuilder builder = Components.tabbedPane()
-            .tabPlacement(TAB_PLACEMENT.get())
-            .focusable(false)
-            .changeListener(new InitializeSelectedPanelListener());
-    entityPanels.stream()
-            .peek(entityPanel -> builder.tabBuilder(entityPanel.getCaption(), entityPanel)
-                    .toolTipText(entityPanel.getDescription())
-                    .add())
-            .filter(entityPanel -> entityPanel.editPanel() != null)
-            .forEach(this::addSelectActivatedPanelListener);
-
-    return builder.build();
-  }
-
-  private void addSelectActivatedPanelListener(EntityPanel entityPanel) {
-    entityPanel.editPanel().addActiveListener(new SelectActivatedPanelListener(entityPanel));
-  }
-
   private void bindEventsInternal() {
     alwaysOnTopState.addDataListener(alwaysOnTop ->
             parentWindow().ifPresent(parent -> parent.setAlwaysOnTop(alwaysOnTop)));
@@ -889,6 +798,11 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     return Control.builder(() -> displayEntityPanel(panelBuilder))
             .name(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
             .build();
+  }
+
+  private void addEntityPanel(EntityPanel entityPanel) {
+    EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
+    entityPanel.addBeforeActivateListener(applicationLayout::selectEntityPanel);
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -1000,8 +914,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     for (EntityPanel entityPanel : panels) {
       DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
       root.add(node);
-      if (!entityPanel.childPanels().isEmpty()) {
-        addModelsToTree(node, (Collection<? extends EntityPanel>) entityPanel.childPanels());
+      if (!entityPanel.detailPanels().isEmpty()) {
+        addModelsToTree(node, entityPanel.detailPanels());
       }
     }
   }
@@ -1009,33 +923,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private static boolean referencesOnlySelf(Entities entities, EntityType entityType) {
     return entities.definition(entityType).foreignKeys().stream()
             .allMatch(foreignKey -> foreignKey.referencedType().equals(entityType));
-  }
-
-  private final class SelectActivatedPanelListener implements Consumer<Boolean> {
-
-    private final EntityPanel entityPanel;
-
-    private SelectActivatedPanelListener(EntityPanel entityPanel) {
-      this.entityPanel = entityPanel;
-    }
-
-    @Override
-    public void accept(Boolean panelActivated) {
-      if (panelActivated) {
-        selectChildPanel(entityPanel);
-      }
-    }
-  }
-
-  private static final class InitializeSelectedPanelListener implements ChangeListener {
-
-    @Override
-    public void stateChanged(ChangeEvent e) {
-      JTabbedPane tabbedPane = (JTabbedPane) e.getSource();
-      if (tabbedPane.getTabCount() > 0) {
-        ((EntityPanel) tabbedPane.getSelectedComponent()).initialize();
-      }
-    }
   }
 
   private static final class SupportPanelBuilderComparator implements Comparator<EntityPanel.Builder> {
@@ -1106,6 +993,16 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
       return false;
     }
+  }
+
+  /**
+   * Handles laying out an EntityApplicationPanel.
+   */
+  public interface ApplicationLayout {
+
+    void layoutPanel(EntityApplicationPanel<?> applicationPanel);
+
+    void selectEntityPanel(EntityPanel entityPanel);
   }
 
   /**

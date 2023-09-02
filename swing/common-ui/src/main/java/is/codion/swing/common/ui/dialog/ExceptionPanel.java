@@ -95,7 +95,7 @@ final class ExceptionPanel extends JPanel {
           .build();
 
   ExceptionPanel(Throwable throwable, String message) {
-    setThrowable(throwable, message);
+    setThrowable(throwable, message == null ? throwable.getClass().getSimpleName() : message);
     setLayout(borderLayout());
     add(createMainPanel(), BorderLayout.CENTER);
     bindEvents();

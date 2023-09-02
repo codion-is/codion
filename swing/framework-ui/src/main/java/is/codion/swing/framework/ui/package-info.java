@@ -22,5 +22,6 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#REFRESH_BUTTON_VISIBLE}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#COLUMN_SELECTION}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
+ * {@link is.codion.swing.framework.ui.TabbedPanelLayout#INCLUDE_DETAIL_PANEL_CONTROLS}<br>
  */
 package is.codion.swing.framework.ui;

@@ -9503,3 +9503,17 @@
   EntityPanel.initialize() now with return type parameter
   DefaultEntityApplicationPanelBuilder bug fixed, now enables the specified LookAndFeel even if a LookAndFeelProvider hasn't been added
   EntityApplicationPanel bug fixed, help url still contained the jdk version
+  HierarchyPanel.activatePanel() removed, related refactoring
+  EntityApplicationPanel.ApplicationPanelLayout added, related refactoring
+  HierarchyPanel.selectedChildPanel() removed, related refactoring
+  HierarchyPanel renamed EntityPanelParent and moved to framework.ui
+  EntityPanelParent.previousSiblingPanel() and nextSiblingPanel() removed, EntityPanel.previousSiblingPanel and nextSiblingPanel added
+  EntityPanelParent.childPanels() and parentPanel() removed, related refactoring
+  DefaultEntityApplicationPanelBuilder.startApplication() bug fixed, no longer crashes if Look and Feel could not be enabled
+  EntityPanel.PanelLayout added
+  TabPanelLayout now interface, with a DefaultTabPanelLayout implementation
+  ApplicationPanelLayout renamed ApplicationLayout
+  TabApplicationLayout and TabPanelLayout renamed TabbedApplicationLayout and TabbedPanelLayout respectively
+  TabbedPanelLayout.detailPanelState() and splitPaneResizeWeight() factory methods added
+  EntityPanel, CTRL-ALT-E now toggles edit panel state
+  ExceptionPanel bug fixed, now displays the simple name of the exception class in case of no message

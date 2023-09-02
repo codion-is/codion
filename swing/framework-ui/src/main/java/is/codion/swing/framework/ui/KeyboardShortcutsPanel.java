@@ -71,7 +71,7 @@ final class KeyboardShortcutsPanel extends JPanel {
   private static JPanel resizing() {
     return gridLayoutPanel(0, 2)
             .addAll(new JLabel(MESSAGES.getString("resize_left_right")), new JLabel(SHIFT + ALT + LEFT_RIGHT))
-            .addAll(new JLabel(MESSAGES.getString("toggle_edit_panel")), new JLabel(SHIFT + ALT + UP_DOWN))
+            .addAll(new JLabel(MESSAGES.getString("toggle_edit_panel")), new JLabel(CTRL + ALT + "E"))
             .border(createTitledBorder(MESSAGES.getString("resizing")))
             .build();
   }

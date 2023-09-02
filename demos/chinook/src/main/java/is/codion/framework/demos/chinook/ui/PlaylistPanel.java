@@ -6,14 +6,15 @@ package is.codion.framework.demos.chinook.ui;
 import is.codion.framework.demos.chinook.domain.Chinook.PlaylistTrack;
 import is.codion.swing.framework.model.SwingEntityModel;
 import is.codion.swing.framework.ui.EntityPanel;
+import is.codion.swing.framework.ui.TabbedPanelLayout;
 
 public final class PlaylistPanel extends EntityPanel {
 
   public PlaylistPanel(SwingEntityModel playlistModel) {
     super(playlistModel,
             new PlaylistEditPanel(playlistModel.editModel()),
-            new PlaylistTablePanel(playlistModel.tableModel()));
-    setDetailSplitPanelResizeWeight(0.25);
+            new PlaylistTablePanel(playlistModel.tableModel()),
+            TabbedPanelLayout.splitPaneResizeWeight(0.25));
 
     SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
     EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel,
