@@ -9471,3 +9471,4 @@
   EntityPanelParent.childPanels() and parentPanel() removed, related refactoring
   DefaultEntityApplicationPanelBuilder.startApplication() bug fixed, no longer crashes if Look and Feel could not be enabled
   EntityPanel.PanelLayout added
+  TabPanelLayout now interface, with a DefaultTabPanelLayout implementation
