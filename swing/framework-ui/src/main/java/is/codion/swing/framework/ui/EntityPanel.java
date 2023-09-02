@@ -412,7 +412,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */
-  public final <T extends DetailController> T detailPanelController() {
+  public final <T extends DetailController> T detailController() {
     return (T) detailController;
   }
 
