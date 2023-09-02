@@ -5,7 +5,7 @@ package is.codion.swing.framework.ui;
 
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.tabbedpane.TabbedPaneBuilder;
-import is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationPanelLayout;
+import is.codion.swing.framework.ui.EntityApplicationPanel.ApplicationLayout;
 
 import javax.swing.JTabbedPane;
 import javax.swing.event.ChangeEvent;
@@ -17,7 +17,7 @@ import java.util.function.Consumer;
 
 import static is.codion.swing.common.ui.component.Components.borderLayoutPanel;
 
-final class TabApplicationPanelLayout implements ApplicationPanelLayout {
+final class TabApplicationLayout implements ApplicationLayout {
 
   private List<EntityPanel> entityPanels;
   private JTabbedPane applicationTabPane;

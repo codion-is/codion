@@ -163,7 +163,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private final M applicationModel;
   private final Collection<EntityPanel.Builder> supportPanelBuilders = new ArrayList<>();
   private final List<EntityPanel> entityPanels = new ArrayList<>();
-  private final ApplicationPanelLayout panelLayout;
+  private final ApplicationLayout applicationLayout;
 
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
@@ -175,12 +175,12 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
-    this(applicationModel, new TabApplicationPanelLayout());
+    this(applicationModel, new TabApplicationLayout());
   }
 
-  public EntityApplicationPanel(M applicationModel, ApplicationPanelLayout panelLayout) {
+  public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {
     this.applicationModel = requireNonNull(applicationModel);
-    this.panelLayout = requireNonNull(panelLayout);
+    this.applicationLayout = requireNonNull(applicationLayout);
     this.applicationDefaultUsernameProperty = DEFAULT_USERNAME_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationLookAndFeelProperty = LOOK_AND_FEEL_PROPERTY + "#" + getClass().getSimpleName();
     this.applicationFontSizeProperty = FONT_SIZE_PROPERTY + "#" + getClass().getSimpleName();
@@ -266,7 +266,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   @Override
   public final void selectEntityPanel(EntityPanel entityPanel) {
-    panelLayout.selectEntityPanel(entityPanel);
+    applicationLayout.selectEntityPanel(entityPanel);
   }
 
   /**
@@ -391,8 +391,8 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel layout
    * @param <T> the panel layout type
    */
-  protected final <T extends ApplicationPanelLayout> T panelLayout() {
-    return (T) panelLayout;
+  protected final <T extends ApplicationLayout> T panelLayout() {
+    return (T) applicationLayout;
   }
 
   /**
@@ -728,7 +728,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Initializes this EntityApplicationPanel UI
    */
   private void initializeUI() {
-    panelLayout.layoutPanel(this);
+    applicationLayout.layoutPanel(this);
   }
 
   /**
@@ -802,7 +802,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private void addEntityPanel(EntityPanel entityPanel) {
     EntityPanel.addEntityPanelAndLinkSiblings(entityPanel, entityPanels);
-    entityPanel.addBeforeActivateListener(panelLayout::selectEntityPanel);
+    entityPanel.addBeforeActivateListener(applicationLayout::selectEntityPanel);
   }
 
   private EntityPanel entityPanel(EntityPanel.Builder panelBuilder) {
@@ -998,7 +998,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Handles laying out an EntityApplicationPanel.
    */
-  public interface ApplicationPanelLayout {
+  public interface ApplicationLayout {
 
     void layoutPanel(EntityApplicationPanel<?> applicationPanel);
 

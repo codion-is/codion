@@ -166,7 +166,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   /**
    * A List containing the detail panels, if any
    */
-  private final List<EntityPanel> detailEntityPanels = new ArrayList<>();
+  private final List<EntityPanel> detailPanels = new ArrayList<>();
 
   /**
    * The EntityEditPanel instance
@@ -368,8 +368,8 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   public void updateUI() {
     super.updateUI();
     Utilities.updateUI(editControlPanel, editControlTablePanel, tablePanel, editPanel);
-    if (detailEntityPanels != null) {
-      Utilities.updateUI(detailEntityPanels);
+    if (detailPanels != null) {
+      Utilities.updateUI(detailPanels);
     }
     if (panelLayout != null) {
       panelLayout.updateUI();
@@ -494,10 +494,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    */
   public final void addDetailPanel(EntityPanel detailPanel) {
     checkIfInitialized();
-    if (detailEntityPanels.contains(requireNonNull(detailPanel))) {
+    if (detailPanels.contains(requireNonNull(detailPanel))) {
       throw new IllegalStateException("Panel already contains detail panel: " + detailPanel);
     }
-    addEntityPanelAndLinkSiblings(detailPanel, detailEntityPanels);
+    addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
     detailPanel.addBeforeActivateListener(this::selectEntityPanel);
   }
@@ -568,7 +568,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   public final Collection<EntityPanel> activeDetailPanels() {
     Collection<SwingEntityModel> activeDetailModels = entityModel.activeDetailModels();
 
-    return detailEntityPanels.stream()
+    return detailPanels.stream()
             .filter(detailPanel -> activeDetailModels.contains(detailPanel.entityModel))
             .collect(toList());
   }
@@ -582,7 +582,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    */
   public final <T extends EntityPanel> T detailPanel(EntityType entityType) {
     requireNonNull(entityType);
-    for (EntityPanel detailPanel : detailEntityPanels) {
+    for (EntityPanel detailPanel : detailPanels) {
       if (detailPanel.entityModel.entityType().equals(entityType)) {
         return (T) detailPanel;
       }
@@ -596,7 +596,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @return the detail panels
    */
   public final Collection<EntityPanel> detailPanels() {
-    return unmodifiableCollection(detailEntityPanels);
+    return unmodifiableCollection(detailPanels);
   }
 
   /**
@@ -606,7 +606,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    */
   public final boolean containsDetailPanel(EntityType entityType) {
     requireNonNull(entityType);
-    return detailEntityPanels.stream()
+    return detailPanels.stream()
             .anyMatch(detailPanel -> detailPanel.entityModel.entityType().equals(entityType));
   }
 
@@ -810,7 +810,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * Saves any user preferences for all entity panels and associated elements
    */
   public void savePreferences() {
-    detailEntityPanels.forEach(EntityPanel::savePreferences);
+    detailPanels.forEach(EntityPanel::savePreferences);
   }
 
   @Override

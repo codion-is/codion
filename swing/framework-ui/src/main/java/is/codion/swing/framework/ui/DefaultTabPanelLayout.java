@@ -12,6 +12,8 @@ import is.codion.swing.common.ui.control.Control;
 import is.codion.swing.common.ui.control.Controls;
 import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.framework.model.SwingEntityModel;
+import is.codion.swing.framework.ui.EntityPanel.DetailController;
+import is.codion.swing.framework.ui.EntityPanel.PanelState;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import javax.swing.AbstractAction;
@@ -53,13 +55,13 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
   private static final int DETAIL_WINDOW_OFFSET = 38;//titlebar height
   private static final double DETAIL_WINDOW_SIZE_RATIO = 0.66;
 
-  private final EntityPanel.DetailController detailController;
+  private final DetailController detailController;
 
   private EntityPanel entityPanel;
   private JTabbedPane detailPanelTabbedPane;
   private JSplitPane tableDetailSplitPane;
   private Window detailPanelWindow;
-  private EntityPanel.PanelState detailPanelState = EMBEDDED;
+  private PanelState detailPanelState = EMBEDDED;
   private final boolean includeDetailTabPane;
   private final boolean includeDetailPanelControls;
   private final double splitPaneResizeWeight;
@@ -69,7 +71,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     this.includeDetailTabPane = builder.includeDetailTabPane;
     this.includeDetailPanelControls = builder.includeDetailPanelControls;
     this.splitPaneResizeWeight = builder.splitPaneResizeWeight;
-    this.detailController = new TabDetailPanelController();
+    this.detailController = new TabDetailController();
   }
 
   @Override
@@ -94,7 +96,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
   }
 
   @Override
-  public <T extends EntityPanel.DetailController> Optional<T> detailController() {
+  public <T extends DetailController> Optional<T> detailController() {
     return Optional.of((T) detailController);
   }
 
@@ -215,7 +217,7 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      EntityPanel.PanelState panelState = detailController.getDetailPanelState();
+      PanelState panelState = detailController.getDetailPanelState();
       if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
         detailController.setDetailPanelState(panelState == WINDOW ? EMBEDDED : WINDOW);
       }
@@ -225,12 +227,12 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     }
   }
 
-  final class TabDetailPanelController implements EntityPanel.DetailController {
+  private final class TabDetailController implements DetailController {
 
     /**
      * Holds the current state of the detail panels (HIDDEN, EMBEDDED or WINDOW)
      */
-    private EntityPanel.PanelState detailPanelState = EMBEDDED;
+    private PanelState detailPanelState = EMBEDDED;
 
     @Override
     public void selectDetailPanel(EntityPanel detailPanel) {
@@ -240,14 +242,14 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
     }
 
     @Override
-    public EntityPanel.PanelState getDetailPanelState() {
+    public PanelState getDetailPanelState() {
       return detailPanelState;
     }
 
     @Override
-    public void setDetailPanelState(EntityPanel.PanelState detailPanelState) {
+    public void setDetailPanelState(PanelState detailPanelState) {
       requireNonNull(detailPanelState);
-      EntityPanel.PanelState previousPanelState = this.detailPanelState;
+      PanelState previousPanelState = this.detailPanelState;
       this.detailPanelState = detailPanelState;
       if (detailPanelTabbedPane == null) {
         this.detailPanelState = detailPanelState;
@@ -261,10 +263,10 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
       if (previousPanelState == WINDOW) {//if we are leaving the WINDOW state, hide all child detail windows
         for (EntityPanel detailPanel : entityPanel.detailPanels()) {
           detailPanel.panelLayout().detailController()
-                  .filter(TabDetailPanelController.class::isInstance)
-                  .map(TabDetailPanelController.class::cast)
+                  .filter(TabDetailController.class::isInstance)
+                  .map(TabDetailController.class::cast)
                   .ifPresent(detailPanelController -> {
-                    TabDetailPanelController tabDetailPanelLayout = (TabDetailPanelController) detailPanelController;
+                    TabDetailController tabDetailPanelLayout = detailPanelController;
                     if (tabDetailPanelLayout.detailPanelState == WINDOW) {
                       tabDetailPanelLayout.setDetailPanelState(HIDDEN);
                     }
@@ -439,13 +441,13 @@ final class DefaultTabPanelLayout implements TabPanelLayout {
 
   static final class DefaultBuilder implements Builder {
 
-    private EntityPanel.PanelState detailPanelState = EMBEDDED;
+    private PanelState detailPanelState = EMBEDDED;
     private double splitPaneResizeWeight = DEFAULT_SPLIT_PANE_RESIZE_WEIGHT;
     private boolean includeDetailTabPane = true;
     private boolean includeDetailPanelControls = INCLUDE_DETAIL_PANEL_CONTROLS.get();
 
     @Override
-    public Builder detailPanelState(EntityPanel.PanelState detailPanelState) {
+    public Builder detailPanelState(PanelState detailPanelState) {
       this.detailPanelState = requireNonNull(detailPanelState);
       return this;
     }
