@@ -281,9 +281,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       setDefaultUncaughtExceptionHandler((thread, exception) -> displayExceptionAndExit(exception));
     }
     setVersionProperty();
-    findLookAndFeelProvider(lookAndFeelClassName())
-            .orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", lookAndFeelClassName())))
-            .enable();
+    enableLookAndFeel();
     configureFontsAndIcons();
     if (beforeApplicationStarted != null) {
       beforeApplicationStarted.run();
@@ -302,6 +300,17 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     }
     else {
       startApplication(initializeApplicationModel(connectionProvider), initializationStarted);
+    }
+  }
+
+  private void enableLookAndFeel() {
+    try {
+      findLookAndFeelProvider(lookAndFeelClassName())
+              .orElse(lookAndFeelProvider(new LookAndFeelInfo("LookAndFeel", lookAndFeelClassName())))
+              .enable();
+    }
+    catch (Exception e) {
+      LOG.error("Exception while enabling Look and Feel", e);
     }
   }
 
