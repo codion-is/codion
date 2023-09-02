@@ -870,6 +870,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   protected final void initializeUI() {
     if (editPanel != null) {
       initializeEditControlPanel();
+      setupEditPanelToggle();
     }
     panelLayout.layoutPanel(this);
     if (tablePanel != null) {
@@ -882,7 +883,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (useKeyboardNavigation) {
       setupNavigation();
     }
-    setupResizing();
   }
 
   /**
@@ -1048,16 +1048,16 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
   }
 
-  protected final void setupResizing() {
+  protected final void setupEditPanelToggle() {
     ToggleEditPanelStateAction toggleEditPanelStateAction = new ToggleEditPanelStateAction(this);
-    KeyEvents.builder(VK_DOWN)
-            .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+    KeyEvents.builder(VK_E)
+            .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
             .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .action(toggleEditPanelStateAction)
             .enable(this);
     if (containsEditPanel()) {
-      KeyEvents.builder(VK_DOWN)
-              .modifiers(ALT_DOWN_MASK | SHIFT_DOWN_MASK)
+      KeyEvents.builder(VK_E)
+              .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .condition(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
               .action(toggleEditPanelStateAction)
               .enable(editControlPanel);

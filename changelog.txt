@@ -9475,3 +9475,4 @@
   ApplicationPanelLayout renamed ApplicationLayout
   TabApplicationLayout and TabPanelLayout renamed TabbedApplicationLayout and TabbedPanelLayout respectively
   TabbedPanelLayout.detailPanelState() and splitPaneResizeWeight() factory methods added
+  EntityPanel, CTRL-ALT-E now toggles edit panel state
