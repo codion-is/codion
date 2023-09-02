@@ -9478,3 +9478,4 @@
   EntityPanel, CTRL-ALT-E now toggles edit panel state
   ExceptionPanel bug fixed, now displays the simple name of the exception class in case of no message
   DefaultTabPanelLayout bug fixed, did not link detail model when detail panel was selected
+  DefaultTabPanelLayout renamed DefaultTabbedPanelLayout
