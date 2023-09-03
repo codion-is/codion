@@ -9486,3 +9486,4 @@
   ColumnConditionModel.isEnabled(), setEnabled() replaced with enabled()
   FilteredModel.set/getIncludeCondition() replaced with Value based includeCondition()
   ColumnConditionModel.getSetOperator() replaced with Value based operator()
+  ColumnSummaryModel.lockedState(), summaryValue() and summaryTextObserver() renamed locked(), summary() and summaryText() respectively
