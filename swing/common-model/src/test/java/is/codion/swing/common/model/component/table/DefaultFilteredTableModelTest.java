@@ -538,17 +538,17 @@ public final class DefaultFilteredTableModelTest {
     selectionModel.addSelectedItemListener(dataListener);
     selectionModel.addSelectedItemsListener(dataListener);
 
-    assertFalse(selectionModel.singleSelectionObserver().get());
-    assertTrue(selectionModel.selectionEmptyObserver().get());
-    assertFalse(selectionModel.selectionNotEmptyObserver().get());
-    assertFalse(selectionModel.multipleSelectionObserver().get());
+    assertFalse(selectionModel.singleSelection().get());
+    assertTrue(selectionModel.selectionEmpty().get());
+    assertFalse(selectionModel.selectionNotEmpty().get());
+    assertFalse(selectionModel.multipleSelection().get());
 
     tableModel.refresh();
     selectionModel.setSelectedIndex(2);
     assertEquals(4, events.get());
-    assertTrue(selectionModel.singleSelectionObserver().get());
-    assertFalse(selectionModel.selectionEmptyObserver().get());
-    assertFalse(selectionModel.multipleSelectionObserver().get());
+    assertTrue(selectionModel.singleSelection().get());
+    assertFalse(selectionModel.selectionEmpty().get());
+    assertFalse(selectionModel.multipleSelection().get());
     assertEquals(2, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionDown();
     assertEquals(8, events.get());
@@ -581,24 +581,24 @@ public final class DefaultFilteredTableModelTest {
     selectionModel.selectAll();
     assertEquals(5, selectionModel.getSelectedItems().size());
     selectionModel.clearSelection();
-    assertFalse(selectionModel.singleSelectionObserver().get());
-    assertTrue(selectionModel.selectionEmptyObserver().get());
-    assertFalse(selectionModel.multipleSelectionObserver().get());
+    assertFalse(selectionModel.singleSelection().get());
+    assertTrue(selectionModel.selectionEmpty().get());
+    assertFalse(selectionModel.multipleSelection().get());
     assertEquals(0, selectionModel.getSelectedItems().size());
 
     selectionModel.setSelectedItem(ITEMS.get(0));
-    assertFalse(selectionModel.multipleSelectionObserver().get());
+    assertFalse(selectionModel.multipleSelection().get());
     assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     assertEquals(0, selectionModel.getSelectedIndex());
     assertEquals(1, selectionModel.selectionCount());
     assertFalse(selectionModel.isSelectionEmpty());
     selectionModel.addSelectedIndex(1);
-    assertTrue(selectionModel.multipleSelectionObserver().get());
+    assertTrue(selectionModel.multipleSelection().get());
     assertEquals(ITEMS.get(0), selectionModel.getSelectedItem());
     assertEquals(asList(0, 1), selectionModel.getSelectedIndexes());
     assertEquals(0, selectionModel.getSelectedIndex());
     selectionModel.addSelectedIndex(4);
-    assertTrue(selectionModel.multipleSelectionObserver().get());
+    assertTrue(selectionModel.multipleSelection().get());
     assertEquals(asList(0, 1, 4), selectionModel.getSelectedIndexes());
     selectionModel.removeIndexInterval(1, 4);
     assertEquals(singletonList(0), selectionModel.getSelectedIndexes());
@@ -658,8 +658,8 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(0, selectionModel.getMinSelectionIndex());
 
     tableModel.clear();
-    assertTrue(selectionModel.selectionEmptyObserver().get());
-    assertFalse(selectionModel.selectionNotEmptyObserver().get());
+    assertTrue(selectionModel.selectionEmpty().get());
+    assertFalse(selectionModel.selectionNotEmpty().get());
     assertNull(selectionModel.getSelectedItem());
 
     selectionModel.clearSelection();

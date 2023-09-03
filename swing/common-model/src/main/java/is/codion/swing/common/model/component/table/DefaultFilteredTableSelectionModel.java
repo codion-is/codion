@@ -63,7 +63,7 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public State singleSelectionModeState() {
+  public State singleSelectionMode() {
     return singleSelectionModeState;
   }
 
@@ -374,22 +374,22 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   }
 
   @Override
-  public StateObserver multipleSelectionObserver() {
+  public StateObserver multipleSelection() {
     return multipleSelectionObserver;
   }
 
   @Override
-  public StateObserver singleSelectionObserver() {
+  public StateObserver singleSelection() {
     return singleSelectionState.observer();
   }
 
   @Override
-  public StateObserver selectionEmptyObserver() {
+  public StateObserver selectionEmpty() {
     return selectionEmptyState.observer();
   }
 
   @Override
-  public StateObserver selectionNotEmptyObserver() {
+  public StateObserver selectionNotEmpty() {
     return selectionEmptyState.reversed();
   }
 

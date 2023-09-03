@@ -449,7 +449,7 @@ public final class FilteredTable<R, C> extends JTable {
    * @return a ToggleControl for toggling the table selection mode (single or multiple)
    */
   public ToggleControl createSingleSelectionModeControl() {
-    return ToggleControl.builder(tableModel.selectionModel().singleSelectionModeState())
+    return ToggleControl.builder(tableModel.selectionModel().singleSelectionMode())
             .name(MESSAGES.getString(SINGLE_SELECTION_MODE))
             .build();
   }

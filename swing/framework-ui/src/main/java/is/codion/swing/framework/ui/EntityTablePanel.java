@@ -1135,7 +1135,7 @@ public class EntityTablePanel extends JPanel {
    * @see EntityEditModel#updateEnabledObserver()
    */
   private Controls createEditSelectedControls() {
-    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
+    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
     StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls editControls = Controls.builder()
@@ -1161,7 +1161,7 @@ public class EntityTablePanel extends JPanel {
   private Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
             .name(FrameworkMessages.dependencies())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
@@ -1176,7 +1176,7 @@ public class EntityTablePanel extends JPanel {
             .name(FrameworkMessages.delete())
             .enabledObserver(State.and(
                     tableModel.editModel().deleteEnabledObserver(),
-                    tableModel.selectionModel().selectionNotEmptyObserver()))
+                    tableModel.selectionModel().selectionNotEmpty()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(FrameworkIcons.instance().delete())
             .build();
@@ -1230,7 +1230,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createClearSelectionControl() {
     return Control.builder(tableModel.selectionModel()::clearSelection)
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .smallIcon(FrameworkIcons.instance().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
@@ -1283,7 +1283,7 @@ public class EntityTablePanel extends JPanel {
   private Control createCopyCellControl() {
     return Control.builder(table::copySelectedCell)
             .name(FrameworkMessages.copyCell())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .build();
   }
 

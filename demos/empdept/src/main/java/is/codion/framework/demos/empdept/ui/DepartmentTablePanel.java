@@ -51,13 +51,13 @@ public class DepartmentTablePanel extends EntityTablePanel {
   // tag::createPrintMenuControls[]
   @Override
   protected Controls createPrintMenuControls() {
-    StateObserver selectionNotEmptyObserver =
-            tableModel().selectionModel().selectionNotEmptyObserver();
+    StateObserver selectionNotEmpty =
+            tableModel().selectionModel().selectionNotEmpty();
 
     return super.createPrintMenuControls()
             .add(Control.builder(this::viewEmployeeReport)
                     .name("Employee Report")
-                    .enabledObserver(selectionNotEmptyObserver)
+                    .enabledObserver(selectionNotEmpty)
                     .build());
   }
 }
