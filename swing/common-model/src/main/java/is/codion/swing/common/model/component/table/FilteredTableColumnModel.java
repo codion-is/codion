@@ -39,14 +39,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * A locked column model does not allow adding or removing of columns, but columns can be reordered.
    * @return a {@link State} controlling whether this model is locked or not
    */
-  State lockedState();
+  State locked();
 
   /**
    * @param columnIdentifier the columnd identifier
    * @param visible true if the column should be visible, false if it should be hidden
    * @return true if the column visibility changed
    * @throws IllegalStateException in case this model is locked
-   * @see #lockedState()
+   * @see #locked()
    */
   boolean setColumnVisible(C columnIdentifier, boolean visible);
 

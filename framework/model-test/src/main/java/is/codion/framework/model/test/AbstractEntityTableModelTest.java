@@ -236,10 +236,10 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void testTheRest() {
     assertNotNull(testModel.connectionProvider());
-    testModel.conditionRequiredState().set(false);
-    assertFalse(testModel.conditionRequiredState().get());
-    testModel.conditionRequiredState().set(true);
-    assertTrue(testModel.conditionRequiredState().get());
+    testModel.conditionRequired().set(false);
+    assertFalse(testModel.conditionRequired().get());
+    testModel.conditionRequired().set(true);
+    assertTrue(testModel.conditionRequired().get());
     testModel.setLimit(10);
     assertEquals(10, testModel.getLimit());
     assertNotNull(testModel.editModel());

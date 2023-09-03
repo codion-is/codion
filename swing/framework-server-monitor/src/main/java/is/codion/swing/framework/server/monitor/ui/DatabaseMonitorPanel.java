@@ -57,7 +57,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     JPanel chartConfig = flexibleGridLayoutPanel(1, 3)
             .border(createTitledBorder("Charts"))
             .add(new JLabel("Update interval (s)"))
-            .add(integerSpinner(model.updateIntervalValue())
+            .add(integerSpinner(model.updateInterval())
                     .minimum(1)
                     .columns(SPINNER_COLUMNS)
                     .editable(false)

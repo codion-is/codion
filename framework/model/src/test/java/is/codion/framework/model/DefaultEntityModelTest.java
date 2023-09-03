@@ -61,7 +61,7 @@ public class DefaultEntityModelTest extends AbstractEntityModelTest<DefaultEntit
     @Override
     public void removeForeignKeyValues(ForeignKey foreignKey, Collection<Entity> entities) {}
     @Override
-    public StateObserver refreshingObserver() {
+    public StateObserver refreshing() {
       return null;
     }
   }

@@ -277,7 +277,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final State conditionRequiredState() {
+  public final State conditionRequired() {
     return conditionRequiredState;
   }
 
@@ -851,7 +851,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
-   * @see #conditionRequiredState()
+   * @see #conditionRequired()
    * @see #isConditionEnabled()
    * @see EntityTableConditionModel#condition()
    */
@@ -871,11 +871,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
-   * This can be done by enabling the {@link #conditionRequiredState()}, which prevents a refresh as long as this
+   * This can be done by enabling the {@link #conditionRequired()}, which prevents a refresh as long as this
    * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
    * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
    * @return true if enough conditions are enabled for a safe refresh
-   * @see #conditionRequiredState()
+   * @see #conditionRequired()
    */
   protected boolean isConditionEnabled() {
     return conditionModel.isEnabled();

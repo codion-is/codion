@@ -238,7 +238,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
-  public final State alwaysOnTopState() {
+  public final State alwaysOnTop() {
     return alwaysOnTopState;
   }
 

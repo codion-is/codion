@@ -352,7 +352,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     };
     tableModel.refresh();
     assertEquals(16, tableModel.getRowCount());
-    tableModel.conditionRequiredState().set(true);
+    tableModel.conditionRequired().set(true);
     tableModel.refresh();
     assertEquals(0, tableModel.getRowCount());
     ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);

@@ -96,7 +96,7 @@ public interface LoadTest<T> {
   /**
    * @return the state controlling the paused state of this load test
    */
-  State pausedState();
+  State paused();
 
   /**
    * @return the Value controlling the maximum number of milliseconds that should pass between work requests
@@ -118,12 +118,12 @@ public interface LoadTest<T> {
   /**
    * @return the state controlling whether this load test collects chart data
    */
-  State collectChartDataState();
+  State collectChartData();
 
   /**
    * @return the state controlling whether the applications table model is automatically refreshed
    */
-  State autoRefreshApplicationsState();
+  State autoRefreshApplications();
 
   /**
    * @return an observer notified each time the application count changes

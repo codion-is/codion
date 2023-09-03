@@ -250,7 +250,7 @@ public class SwingEntityEditModel extends AbstractEntityEditModel {
   }
 
   @Override
-  public final StateObserver refreshingObserver() {
+  public final StateObserver refreshing() {
     return refreshingObserver;
   }
 

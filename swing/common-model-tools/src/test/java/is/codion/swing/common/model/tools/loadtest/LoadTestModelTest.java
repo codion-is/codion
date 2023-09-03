@@ -88,7 +88,7 @@ public class LoadTestModelTest {
   void test() throws Exception {
     TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
     assertEquals(2, model.applicationBatchSizeValue().get());
-    model.collectChartDataState().set(true);
+    model.collectChartData().set(true);
 
     assertNotNull(model.memoryUsageDataset());
     assertNotNull(model.numberOfApplicationsDataset());
@@ -117,9 +117,9 @@ public class LoadTestModelTest {
     model.setScenarioEnabled(SCENARIO_II.name(), false);
     model.addApplicationBatch();
     Thread.sleep(500);
-    model.pausedState().set(true);
+    model.paused().set(true);
     Thread.sleep(200);
-    model.pausedState().set(false);
+    model.paused().set(false);
     assertEquals(5, model.applicationCount());
     assertEquals(0, SCENARIO_II.totalRunCount());
     assertTrue(SCENARIO.successfulRunCount() > 0);

@@ -406,13 +406,13 @@ public final class EntitySearchField extends HintTextField {
 
     private static JPanel createColumnSettingsPanel(EntitySearchModel.SearchSettings settings) {
       return Components.gridLayoutPanel(3, 1)
-              .add(Components.checkBox(settings.caseSensitiveState())
+              .add(Components.checkBox(settings.caseSensitive())
                       .text(MESSAGES.getString("case_sensitive"))
                       .build())
-              .add(Components.checkBox(settings.wildcardPrefixState())
+              .add(Components.checkBox(settings.wildcardPrefix())
                       .text(MESSAGES.getString("prefix_wildcard"))
                       .build())
-              .add(Components.checkBox(settings.wildcardPostfixState())
+              .add(Components.checkBox(settings.wildcardPostfix())
                       .text(MESSAGES.getString("postfix_wildcard"))
                       .build())
               .build();

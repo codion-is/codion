@@ -70,7 +70,7 @@ public final class ClientUserMonitorPanel extends JPanel {
             .add(new JLabel("Reaper interval (s)", SwingConstants.RIGHT))
             .add(createMaintenanceIntervalComponent())
             .add(new JLabel("Idle connection timeout (s)"))
-            .add(integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeoutValue())
+            .add(integerSpinner(new SpinnerNumberModel(), model.idleConnectionTimeout())
                     .columns(7)
                     .build())
             .add(button(control(model::disconnectTimedOut))
@@ -92,7 +92,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private JPanel createConnectionHistoryPanel() {
     JPanel configPanel = flowLayoutPanel(FlowLayout.LEFT)
             .add(new JLabel("Update interval (s)"))
-            .add(integerSpinner(model.updateIntervalValue())
+            .add(integerSpinner(model.updateInterval())
                     .minimum(1)
                     .columns(SPINNER_COLUMNS)
                     .editable(false)

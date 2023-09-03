@@ -389,7 +389,7 @@ public final class ServerMonitor {
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> updateIntervalValue() {
+  public Value<Integer> updateInterval() {
     return updateIntervalValue;
   }
 
@@ -403,14 +403,14 @@ public final class ServerMonitor {
   /**
    * @return a listener notified when the connection number limit is changed
    */
-  public Value<Integer> connectionLimitValue() {
+  public Value<Integer> connectionLimit() {
     return connectionLimitValue;
   }
 
   /**
    * @return a listener notified when the log level has changed
    */
-  public Value<Object> logLevelValue() {
+  public Value<Object> logLevel() {
     return logLevelValue;
   }
 

@@ -257,7 +257,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
         ColumnCondition.Builder<String> builder = column(searchColumn);
         String preparedSearchString = prepareSearchString(rawSearchString, searchSettings);
         boolean containsWildcards = containsWildcards(preparedSearchString);
-        if (searchSettings.caseSensitiveState().get()) {
+        if (searchSettings.caseSensitive().get()) {
           conditions.add(containsWildcards ? builder.like(preparedSearchString) : builder.equalTo(preparedSearchString));
         }
         else {
@@ -276,8 +276,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   private String prepareSearchString(String rawSearchString, SearchSettings searchSettings) {
-    boolean wildcardPrefix = searchSettings.wildcardPrefixState().get();
-    boolean wildcardPostfix = searchSettings.wildcardPostfixState().get();
+    boolean wildcardPrefix = searchSettings.wildcardPrefix().get();
+    boolean wildcardPostfix = searchSettings.wildcardPostfix().get();
 
     return rawSearchString.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
             ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
@@ -326,17 +326,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     private final State caseSensitiveState = State.state(false);
 
     @Override
-    public State wildcardPrefixState() {
+    public State wildcardPrefix() {
       return wildcardPrefixState;
     }
 
     @Override
-    public State wildcardPostfixState() {
+    public State wildcardPostfix() {
       return wildcardPostfixState;
     }
 
     @Override
-    public State caseSensitiveState() {
+    public State caseSensitive() {
       return caseSensitiveState;
     }
   }

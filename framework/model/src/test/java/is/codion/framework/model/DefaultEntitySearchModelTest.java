@@ -138,8 +138,8 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(contains(result, "Andy"));
     assertFalse(contains(result, "Andrew"));
 
-    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
-    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefix().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefix().set(false);
     searchModel.searchString().set("jo,cl");
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
@@ -148,16 +148,16 @@ public final class DefaultEntitySearchModelTest {
     assertFalse(contains(result, "Andrew"));
 
     searchModel.searchString().set("Joh");
-    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
-    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitive().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitive().set(true);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
-    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(false);
-    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(false);
-    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(false);
-    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefix().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefix().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitive().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitive().set(false);
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertTrue(contains(result, "johnson"));
@@ -180,20 +180,20 @@ public final class DefaultEntitySearchModelTest {
     assertTrue(searchModel.searchStringRepresentsSelected().get());
 
     searchModel.searchString().set("and; rew");
-    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefixState().set(true);
-    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefixState().set(true);
-    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfixState().set(false);
-    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfixState().set(false);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPrefix().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPrefix().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfix().set(false);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfix().set(false);
     result = searchModel.performQuery();
     assertEquals(1, result.size());
     assertFalse(contains(result, "Andy"));
     assertTrue(contains(result, "Andrew"));
 
     searchModel.searchString().set("Joh");
-    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitiveState().set(true);
-    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitiveState().set(true);
-    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfixState().set(true);
-    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfixState().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).caseSensitive().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).caseSensitive().set(true);
+    searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfix().set(true);
+    searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfix().set(true);
     searchModel.setAdditionalConditionSupplier(() -> column(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));

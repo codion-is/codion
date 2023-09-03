@@ -166,17 +166,17 @@ public interface EntitySearchModel {
     /**
      * @return a State representing whether a wildcard is automatically prepended to the search string
      */
-    State wildcardPrefixState();
+    State wildcardPrefix();
 
     /**
      * @return a State representing whether a wildcard is automatically appended to the search string
      */
-    State wildcardPostfixState();
+    State wildcardPostfix();
 
     /**
      * @return a State representing whether the search is case-sensitive
      */
-    State caseSensitiveState();
+    State caseSensitive();
   }
 
   /**

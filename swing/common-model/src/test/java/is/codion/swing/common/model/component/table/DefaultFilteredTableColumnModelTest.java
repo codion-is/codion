@@ -120,17 +120,17 @@ public class DefaultFilteredTableColumnModelTest {
     FilteredTableColumnModel<Integer> columnModel =
             new DefaultFilteredTableColumnModel<>(asList(column0, column1, column2, column3));
 
-    columnModel.lockedState().set(true);
+    columnModel.locked().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, false));
-    columnModel.lockedState().set(false);
+    columnModel.locked().set(false);
     columnModel.setColumnVisible(0, false);
-    columnModel.lockedState().set(true);
+    columnModel.locked().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setColumnVisible(0, true));
     assertThrows(IllegalStateException.class, () -> columnModel.setVisibleColumns(0));
 
-    columnModel.lockedState().set(false);
+    columnModel.locked().set(false);
     columnModel.setVisibleColumns(3, 2, 1);
-    columnModel.lockedState().set(true);
+    columnModel.locked().set(true);
     assertThrows(IllegalStateException.class, () -> columnModel.setVisibleColumns(1, 0, 2));
   }
 

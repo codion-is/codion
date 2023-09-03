@@ -19,22 +19,22 @@ public interface FilteredTableSearchModel {
   /**
    * @return the state controlling whether regular expressions should be used when searching
    */
-  State regularExpressionState();
+  State regularExpression();
 
   /**
    * @return the state controlling whether searching is case-sensitive
    */
-  State caseSensitiveState();
+  State caseSensitive();
 
   /**
    * @return the Value for the search string
    */
-  Value<String> searchStringValue();
+  Value<String> searchString();
 
   /**
    * @return the value for the search predicate
    */
-  Value<Predicate<String>> searchPredicateValue();
+  Value<Predicate<String>> searchPredicate();
 
   /**
    * Finds the next value and selects the row, if none is found the selection is cleared

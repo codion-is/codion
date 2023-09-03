@@ -94,7 +94,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   /**
    * @return a State controlling the alwaysOnTop state of this panels parent window
    */
-  public State alwaysOnTopState() {
+  public State alwaysOnTop() {
     return alwaysOnTopState;
   }
 

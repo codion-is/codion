@@ -34,7 +34,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A default combo box model implementation based on {@link FilteredModel}.
  * @param <T> the type of values in this combo box model
- * @see #setIncludeCondition(Predicate)
+ * @see #includeCondition()
  */
 public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel<T> {
 
@@ -220,7 +220,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    * Note that if the item does not satisfy the include condition, it will be filtered right away.
    * @param item the item to add
    * @throws IllegalArgumentException in case the item fails validation
-   * @see #setIncludeCondition(Predicate)
+   * @see #includeCondition()
    */
   public final void addItem(T item) {
     validate(item);

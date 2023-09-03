@@ -9492,3 +9492,4 @@
   DetailModelLink.active() replaces setter, getter and observer
   EntitySearchModel, Observer and State suffix removed from method names, some refactoring
   EntityTableModel.conditionChangedObserver() renamed conditionChanged()
+  Observer, State and Value suffix removed from method names

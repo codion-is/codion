@@ -30,7 +30,7 @@ public final class SwingEntityModelTest
     SwingEntityModel employeeModel = new SwingEntityModel(Employee.TYPE, departmentModel.connectionProvider());
     employeeModel.editModel().refreshComboBoxModels();
     departmentModel.addDetailModel(employeeModel, Employee.DEPARTMENT_FK).active().set(true);
-    employeeModel.tableModel().conditionRequiredState().set(false);
+    employeeModel.tableModel().conditionRequired().set(false);
 
     return departmentModel;
   }

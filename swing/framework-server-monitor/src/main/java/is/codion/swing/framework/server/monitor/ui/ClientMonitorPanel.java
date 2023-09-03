@@ -128,7 +128,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void toggleAdvancedFilters(Boolean advanced) {
-    clientInstanceTable.filterPanel().advancedViewState().set(advanced);
+    clientInstanceTable.filterPanel().advancedView().set(advanced);
     revalidate();
   }
 

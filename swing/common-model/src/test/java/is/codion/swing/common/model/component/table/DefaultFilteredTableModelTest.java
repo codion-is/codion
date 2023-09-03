@@ -317,36 +317,36 @@ public final class DefaultFilteredTableModelTest {
 
     testModel.refresh();
     FilteredTableSearchModel searchModel = testModel.searchModel();
-    searchModel.searchStringValue().set("b");
+    searchModel.searchString().set("b");
     RowColumn rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(1, 1), rowColumn);
-    searchModel.searchStringValue().set("e");
+    searchModel.searchString().set("e");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(4, 1), rowColumn);
-    searchModel.searchStringValue().set("c");
+    searchModel.searchString().set("c");
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(2, 1), rowColumn);
-    searchModel.searchStringValue().set("x");
+    searchModel.searchString().set("x");
     rowColumn = searchModel.nextResult().orElse(null);
     assertNull(rowColumn);
 
     testModel.sortModel().setSortOrder(1, SortOrder.DESCENDING);
 
-    searchModel.searchStringValue().set("b");
+    searchModel.searchString().set("b");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 1), rowColumn);
-    searchModel.searchStringValue().set("e");
+    searchModel.searchString().set("e");
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(0, 1), rowColumn);
 
-    searchModel.regularExpressionState().set(true);
-    searchModel.searchStringValue().set("(?i)B");
+    searchModel.regularExpression().set(true);
+    searchModel.searchString().set("(?i)B");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 1), rowColumn);
 
     Predicate<String> predicate = item -> item.equals("b") || item.equals("e");
 
-    searchModel.searchPredicateValue().set(predicate);
+    searchModel.searchPredicate().set(predicate);
     rowColumn = searchModel.selectPreviousResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 1), rowColumn);
     rowColumn = searchModel.selectPreviousResult().orElse(null);
@@ -361,36 +361,36 @@ public final class DefaultFilteredTableModelTest {
     testModel.columnModel().moveColumn(1, 0);
 
     testModel.refresh();
-    searchModel.searchStringValue().set("b");
+    searchModel.searchString().set("b");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(1, 0), rowColumn);
-    searchModel.searchStringValue().set("e");
+    searchModel.searchString().set("e");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(4, 0), rowColumn);
-    searchModel.searchStringValue().set("c");
+    searchModel.searchString().set("c");
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(2, 0), rowColumn);
-    searchModel.searchStringValue().set("x");
+    searchModel.searchString().set("x");
     rowColumn = searchModel.nextResult().orElse(null);
     assertNull(rowColumn);
 
     testModel.sortModel().setSortOrder(0, SortOrder.DESCENDING);
 
-    searchModel.searchStringValue().set("b");
+    searchModel.searchString().set("b");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 0), rowColumn);
-    searchModel.searchStringValue().set("e");
+    searchModel.searchString().set("e");
     rowColumn = searchModel.previousResult().orElse(null);
     assertEquals(new DefaultRowColumn(0, 0), rowColumn);
 
-    searchModel.regularExpressionState().set(true);
-    searchModel.searchStringValue().set("(?i)B");
+    searchModel.regularExpression().set(true);
+    searchModel.searchString().set("(?i)B");
     rowColumn = searchModel.nextResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 0), rowColumn);
 
     predicate = item -> item.equals("b") || item.equals("e");
 
-    searchModel.searchPredicateValue().set(predicate);
+    searchModel.searchPredicate().set(predicate);
     rowColumn = searchModel.selectPreviousResult().orElse(null);
     assertEquals(new DefaultRowColumn(3, 0), rowColumn);
     rowColumn = searchModel.selectPreviousResult().orElse(null);

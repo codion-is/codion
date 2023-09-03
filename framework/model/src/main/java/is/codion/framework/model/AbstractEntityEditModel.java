@@ -241,12 +241,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver entityNewObserver() {
+  public final StateObserver entityNew() {
     return entityNewState.observer();
   }
 
   @Override
-  public final StateObserver primaryKeyNullObserver() {
+  public final StateObserver primaryKeyNull() {
     return primaryKeyNullState.observer();
   }
 
@@ -290,7 +290,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public StateObserver modifiedObserver() {
+  public StateObserver modified() {
     return entityModifiedState.observer();
   }
 
@@ -371,12 +371,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver validObserver() {
+  public final StateObserver entityValid() {
     return entityValidState.observer();
   }
 
   @Override
-  public final boolean isValid() {
+  public final boolean isEntityValid() {
     return entityValidState.get();
   }
 
@@ -596,7 +596,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !isEntityNew() && modifiedObserver().get();
+    return !isEntityNew() && modified().get();
   }
 
   @Override

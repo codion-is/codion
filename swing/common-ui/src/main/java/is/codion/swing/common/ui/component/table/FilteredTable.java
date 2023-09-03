@@ -405,7 +405,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createSelectColumnsControl() {
     return Control.builder(this::selectColumns)
             .name(MESSAGES.getString(SELECT) + "...")
-            .enabledObserver(tableModel.columnModel().lockedState().reversed())
+            .enabledObserver(tableModel.columnModel().locked().reversed())
             .description(MESSAGES.getString(SELECT_COLUMNS))
             .build();
   }
@@ -416,7 +416,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Controls createToggleColumnsControls() {
     return Controls.builder()
             .name(MESSAGES.getString(SELECT))
-            .enabledObserver(tableModel.columnModel().lockedState().reversed())
+            .enabledObserver(tableModel.columnModel().locked().reversed())
             .controls(tableModel.columnModel().columns().stream()
                     .sorted(new ColumnComparator())
                     .map(this::createToggleColumnControl)
@@ -430,7 +430,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createResetColumnsControl() {
     return Control.builder(getModel().columnModel()::resetColumns)
             .name(MESSAGES.getString(RESET))
-            .enabledObserver(tableModel.columnModel().lockedState().reversed())
+            .enabledObserver(tableModel.columnModel().locked().reversed())
             .description(MESSAGES.getString(RESET_COLUMNS_DESCRIPTION))
             .build();
   }
@@ -441,7 +441,7 @@ public final class FilteredTable<R, C> extends JTable {
   public Control createAutoResizeModeControl() {
     return Control.builder(this::selectAutoResizeMode)
             .name(MESSAGES.getString(AUTO_RESIZE) + "...")
-            .enabledObserver(tableModel.columnModel().lockedState().reversed())
+            .enabledObserver(tableModel.columnModel().locked().reversed())
             .build();
   }
 
@@ -498,7 +498,7 @@ public final class FilteredTable<R, C> extends JTable {
     Control selectPreviousResult = control(() -> selectSearchResult(true, false));
     Control requestTableFocus = control(this::requestFocusInWindow);
 
-    return Components.textField(tableModel.searchModel().searchStringValue())
+    return Components.textField(tableModel.searchModel().searchString())
             .columns(SEARCH_FIELD_COLUMNS)
             .selectAllOnFocusGained(true)
             .keyEvent(KeyEvents.builder(VK_ENTER)
@@ -570,9 +570,9 @@ public final class FilteredTable<R, C> extends JTable {
 
   private Controls searchFieldPopupMenuControls() {
     return Controls.builder()
-            .control(ToggleControl.builder(tableModel.searchModel().caseSensitiveState())
+            .control(ToggleControl.builder(tableModel.searchModel().caseSensitive())
                     .name(MESSAGES.getString("case_sensitive_search")))
-            .controls(ToggleControl.builder(tableModel.searchModel().regularExpressionState())
+            .controls(ToggleControl.builder(tableModel.searchModel().regularExpression())
                     .name(MESSAGES.getString("regular_expression_search")))
             .build();
   }

@@ -140,14 +140,14 @@ public final class ClientUserMonitor {
   /**
    * @return a Value linked to the idle connection timeout
    */
-  public Value<Integer> idleConnectionTimeoutValue() {
+  public Value<Integer> idleConnectionTimeout() {
     return idleConnectionTimeoutValue;
   }
 
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> updateIntervalValue() {
+  public Value<Integer> updateInterval() {
     return updateIntervalValue;
   }
 

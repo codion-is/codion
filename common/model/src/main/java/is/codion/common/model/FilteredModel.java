@@ -33,11 +33,10 @@ public interface FilteredModel<T> {
   PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
   /**
-   * Filters this model according to the condition returned by {@link #getIncludeCondition()}.
+   * Filters this model according to the condition specified by {@link #includeCondition()}.
    * If no include condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
-   * @see #getIncludeCondition()
-   * @see #setIncludeCondition(Predicate)
+   * @see #includeCondition()
    */
   void filterItems();
 

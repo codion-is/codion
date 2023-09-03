@@ -556,7 +556,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleConditionPanel() {
     if (conditionPanel != null) {
-      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedViewState(), conditionPanelVisibleState);
+      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedView(), conditionPanelVisibleState);
     }
   }
 
@@ -565,7 +565,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleFilterPanel() {
     if (filterPanel != null) {
-      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedViewState(), filterPanelVisibleState);
+      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedView(), filterPanelVisibleState);
     }
   }
 
@@ -1582,7 +1582,7 @@ public class EntityTablePanel extends JPanel {
       conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
-    conditionControls.add(ToggleControl.builder(tableModel.conditionRequiredState())
+    conditionControls.add(ToggleControl.builder(tableModel.conditionRequired())
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());

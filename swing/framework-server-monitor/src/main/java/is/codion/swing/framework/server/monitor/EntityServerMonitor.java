@@ -71,11 +71,11 @@ public final class EntityServerMonitor {
   public void setUpdateInterval(Integer interval) {
     for (HostMonitor hostMonitor : hostMonitors) {
       hostMonitor.serverMonitors().forEach(serverMonitor -> {
-        serverMonitor.updateIntervalValue().set(interval);
-        serverMonitor.databaseMonitor().updateIntervalValue().set(interval);
+        serverMonitor.updateInterval().set(interval);
+        serverMonitor.databaseMonitor().updateInterval().set(interval);
         serverMonitor.databaseMonitor().connectionPoolMonitor().connectionPoolInstanceMonitors()
-                .forEach(poolMonitor -> poolMonitor.updateIntervalValue().set(interval));
-        serverMonitor.clientMonitor().updateIntervalValue().set(interval);
+                .forEach(poolMonitor -> poolMonitor.updateInterval().set(interval));
+        serverMonitor.clientMonitor().updateInterval().set(interval);
       });
     }
   }

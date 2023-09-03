@@ -58,7 +58,7 @@ public interface Control extends Action {
   /**
    * @return the state which controls whether this Control instance is enabled
    */
-  StateObserver enabledObserver();
+  StateObserver enabled();
 
   /**
    * @param mnemonic the mnemonic to associate with this Control instance
