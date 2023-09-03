@@ -588,7 +588,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     requireNonNull(editPanelSupplier);
 
     return createUpdateControl(new UpdateEntityCommand(searchField, editPanelSupplier), searchField,
-            searchField.model().selectionEmptyObserver().reversed());
+            searchField.model().selectionEmpty().reversed());
   }
 
   /**

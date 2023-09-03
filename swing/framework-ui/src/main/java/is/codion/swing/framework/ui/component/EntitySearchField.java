@@ -131,8 +131,8 @@ public final class EntitySearchField extends HintTextField {
     addFocusListener(new SearchFocusListener());
     addKeyListener(new EnterEscapeListener());
     configureColors();
-    linkToEnabledObserver(searchModel.searchStringRepresentsSelectedObserver(), transferFocusAction);
-    linkToEnabledObserver(searchModel.searchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
+    linkToEnabledObserver(searchModel.searchStringRepresentsSelected(), transferFocusAction);
+    linkToEnabledObserver(searchModel.searchStringRepresentsSelected(), transferFocusBackwardAction);
   }
 
   @Override
@@ -264,8 +264,8 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void linkToModel() {
-    new SearchStringValue(this).link(model.searchStringValue());
-    model.searchStringValue().addDataListener(searchString -> updateColors());
+    new SearchStringValue(this).link(model.searchString());
+    model.searchString().addDataListener(searchString -> updateColors());
     model.addSelectedEntitiesListener(entities -> setCaretPosition(0));
   }
 
@@ -276,18 +276,18 @@ public final class EntitySearchField extends HintTextField {
   }
 
   private void updateColors() {
-    boolean validBackground = model.searchStringRepresentsSelected();
+    boolean validBackground = model.searchStringRepresentsSelected().get();
     setBackground(validBackground ? backgroundColor : invalidBackgroundColor);
   }
 
   private void performSearch(boolean promptUser) {
     try {
       performingSearch = true;
-      if (nullOrEmpty(model.getSearchString())) {
+      if (nullOrEmpty(model.searchString().get())) {
         model.setSelectedEntities(null);
       }
       else {
-        if (!model.searchStringRepresentsSelected()) {
+        if (!model.searchStringRepresentsSelected().get()) {
           try {
             List<Entity> queryResult = performQuery();
             if (queryResult.size() == 1) {
@@ -382,14 +382,14 @@ public final class EntitySearchField extends HintTextField {
 
       JPanel generalSettingsPanel = Components.gridLayoutPanel(2, 1)
               .border(BorderFactory.createTitledBorder(""))
-              .add(Components.checkBox(searchModel.singleSelectionState())
+              .add(Components.checkBox(searchModel.singleSelection())
                       .text(MESSAGES.getString("single_selection"))
                       .build())
               .build();
 
       JPanel valueSeparatorPanel = Components.borderLayoutPanel()
               .centerComponent(new JLabel(MESSAGES.getString("multiple_item_separator")))
-              .westComponent(Components.textField(searchModel.multipleItemSeparatorValue())
+              .westComponent(Components.textField(searchModel.multipleItemSeparator())
                       .columns(1)
                       .maximumLength(1)
                       .build())
@@ -462,7 +462,7 @@ public final class EntitySearchField extends HintTextField {
       selectControl = Control.builder(new SelectCommand(requireNonNull(searchModel), list))
               .name(Messages.ok())
               .build();
-      list.setSelectionMode(searchModel.singleSelectionState().get() ?
+      list.setSelectionMode(searchModel.singleSelection().get() ?
               ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
       list.getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
               KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
@@ -547,7 +547,7 @@ public final class EntitySearchField extends HintTextField {
               .build();
       table = FilteredTable.builder(tableModel)
               .autoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS)
-              .selectionMode(searchModel.singleSelectionState().get() ?
+              .selectionMode(searchModel.singleSelection().get() ?
                       ListSelectionModel.SINGLE_SELECTION : ListSelectionModel.MULTIPLE_INTERVAL_SELECTION)
               .doubleClickAction(selectControl)
               .build();
@@ -675,14 +675,14 @@ public final class EntitySearchField extends HintTextField {
     }
 
     private boolean shouldPerformSearch() {
-      return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsSelected();
+      return searchOnFocusLost && !performingSearch && !model.searchStringRepresentsSelected().get();
     }
   }
 
   private final class EnterEscapeListener extends KeyAdapter {
     @Override
     public void keyPressed(KeyEvent e) {
-      if (!model.searchStringRepresentsSelected()) {
+      if (!model.searchStringRepresentsSelected().get()) {
         if (e.getKeyCode() == VK_ENTER) {
           e.consume();
           performSearch(true);

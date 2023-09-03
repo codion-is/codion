@@ -69,7 +69,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
    */
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
 
-  private final Value<String> searchStringValue = Value.value("");
+  private final Value<String> searchStringValue = Value.value("", "");
   private final Value<String> multipleItemSeparatorValue;
   private final State singleSelectionState = State.state(false);
   private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
@@ -165,7 +165,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<Character> wildcardValue() {
+  public Value<Character> wildcard() {
     return wildcardValue;
   }
 
@@ -186,26 +186,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public void resetSearchString() {
-    setSearchString(selectedEntitiesToString());
-    searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
-  }
-
-  @Override
-  public void setSearchString(String searchString) {
-    searchStringValue.set(searchString == null ? "" : searchString);
-    searchStringRepresentsSelectedState.set(searchStringRepresentsSelected());
-  }
-
-  @Override
-  public String getSearchString() {
-    return searchStringValue.get();
-  }
-
-  @Override
-  public boolean searchStringRepresentsSelected() {
-    String selectedAsString = selectedEntitiesToString();
-    return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
-            || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
+    searchStringValue.set(selectedEntitiesToString());
   }
 
   @Override
@@ -224,17 +205,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public Value<String> searchStringValue() {
+  public Value<String> searchString() {
     return searchStringValue;
   }
 
   @Override
-  public Value<String> multipleItemSeparatorValue() {
+  public Value<String> multipleItemSeparator() {
     return multipleItemSeparatorValue;
   }
 
   @Override
-  public State singleSelectionState() {
+  public State singleSelection() {
     return singleSelectionState;
   }
 
@@ -249,12 +230,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   }
 
   @Override
-  public StateObserver searchStringRepresentsSelectedObserver() {
+  public StateObserver searchStringRepresentsSelected() {
     return searchStringRepresentsSelectedState.observer();
   }
 
   @Override
-  public StateObserver selectionEmptyObserver() {
+  public StateObserver selectionEmpty() {
     return selectionEmptyState.observer();
   }
 
@@ -304,8 +285,14 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   private void bindEventsInternal() {
     searchStringValue.addListener(() ->
-            searchStringRepresentsSelectedState.set(searchStringRepresentsSelected()));
+            searchStringRepresentsSelectedState.set(doesSearchStringRepresentSelectedEntities()));
     multipleItemSeparatorValue.addListener(this::resetSearchString);
+  } 
+  
+  private boolean doesSearchStringRepresentSelectedEntities() {
+    String selectedAsString = selectedEntitiesToString();
+    return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
+            || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
 
   private String createDescription() {

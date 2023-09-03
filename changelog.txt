@@ -9490,3 +9490,4 @@
   TableSelectionModel, Observer and State suffix removed from method names
   EntityEditModel.insertEnabled(), updateEnabled() and deleteEnabled() replace setters, getters and observers
   DetailModelLink.active() replaces setter, getter and observer
+  EntitySearchModel, Observer and State suffix removed from method names, some refactoring
