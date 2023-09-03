@@ -680,7 +680,7 @@ public final class DefaultFilteredTableModelTest {
     assertEquals(3, selectionModel.getMinSelectionIndex());
 
     tableModel.filterModel().conditionModel(0).setEqualValue("d");
-    tableModel.filterModel().conditionModel(0).setEnabled(false);
+    tableModel.filterModel().conditionModel(0).enabled().set(false);
 
     selectionModel.setSelectedIndexes(singletonList(3));
     assertEquals(3, selectionModel.getMinSelectionIndex());
@@ -710,7 +710,7 @@ public final class DefaultFilteredTableModelTest {
     tableModel.filterModel().conditionModel(0).setEqualValue("d");
     assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
     assertEquals(singletonList(0), tableModel.selectionModel().getSelectedIndexes());
-    tableModel.filterModel().conditionModel(0).setEnabled(false);
+    tableModel.filterModel().conditionModel(0).enabled().set(false);
     assertEquals(0, tableModel.selectionModel().getMinSelectionIndex());
     assertEquals(ITEMS.get(3), tableModel.selectionModel().getSelectedItem());
   }
@@ -760,7 +760,7 @@ public final class DefaultFilteredTableModelTest {
 
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
-    assertTrue(tableModel.filterModel().conditionModel(0).isEnabled());
+    assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
     assertEquals(4, tableModel.filteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
@@ -769,19 +769,19 @@ public final class DefaultFilteredTableModelTest {
     assertFalse(tableModel.filteredItems().isEmpty());
     assertFalse(tableModel.items().isEmpty());
 
-    tableModel.filterModel().conditionModel(0).setEnabled(false);
-    assertFalse(tableModel.filterModel().conditionModel(0).isEnabled());
+    tableModel.filterModel().conditionModel(0).enabled().set(false);
+    assertFalse(tableModel.filterModel().conditionModel(0).enabled().get());
 
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
 
     tableModel.filterModel().conditionModel(0).setEqualValue("t"); // ekki til
-    assertTrue(tableModel.filterModel().conditionModel(0).isEnabled());
+    assertTrue(tableModel.filterModel().conditionModel(0).enabled().get());
     assertEquals(5, tableModel.filteredItemCount());
     assertFalse(tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue(tableModelContainsAll(ITEMS, true, tableModel));
-    tableModel.filterModel().conditionModel(0).setEnabled(false);
+    tableModel.filterModel().conditionModel(0).enabled().set(false);
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertFalse(tableModel.filterModel().conditionModel(0).isEnabled());
+    assertFalse(tableModel.filterModel().conditionModel(0).enabled().get());
 
     tableModel.filterModel().conditionModel(0).setEqualValue("b");
     int rowCount = tableModel.getRowCount();

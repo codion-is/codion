@@ -9482,3 +9482,5 @@
   PanelLayout.layoutPanel() default implementation functionality moved back to EntityPanel.initializeUI()
   EntityPanel.caption now Value based, setCaption() removed, getCaption() renamed caption(), returns the Value
   ColumnConditionModel.isLocked(), setLocked() and lockedObserver() replaced with lockedState()
+  ColumnConditionModel.lockedState() renamed locked(), type suffix removed from a couple of other methods
+  ColumnConditionModel.isEnabled(), setEnabled() replaced with enabled()

@@ -1083,12 +1083,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
     ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-    if (columnConditionModel != null && !columnConditionModel.lockedState().get()) {
-      columnConditionModel.setEnabled(false);
+    if (columnConditionModel != null && !columnConditionModel.locked().get()) {
+      columnConditionModel.enabled().set(false);
     }
     ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
-    if (filterModel != null && !filterModel.lockedState().get()) {
-      filterModel.setEnabled(false);
+    if (filterModel != null && !filterModel.locked().get()) {
+      filterModel.enabled().set(false);
     }
   }
 
@@ -1129,9 +1129,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       int index = columnModel().isColumnVisible(attribute) ? columnModel().getColumnIndex(attribute) : -1;
       ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
       ConditionPreferences conditionPreferences = columnConditionModel != null ?
-              conditionPreferences(columnConditionModel.autoEnableState().get(),
-                      columnConditionModel.caseSensitiveState().get(),
-                      columnConditionModel.automaticWildcardValue().get()) : null;
+              conditionPreferences(columnConditionModel.autoEnable().get(),
+                      columnConditionModel.caseSensitive().get(),
+                      columnConditionModel.automaticWildcard().get()) : null;
       ColumnPreferences columnPreferences = columnPreferences(attribute, index, column.getWidth(), conditionPreferences);
       columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }

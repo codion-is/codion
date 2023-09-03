@@ -279,9 +279,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     ColumnConditionModel<?, Double> commissionConditionModel =
             tableModel.conditionModel().attributeModel(Employee.COMMISSION);
     commissionConditionModel.setOperator(Operator.EQUAL);
-    commissionConditionModel.setEnabled(true);
+    commissionConditionModel.enabled().set(true);
     tableModel.refresh();
-    commissionConditionModel.setEnabled(false);
+    commissionConditionModel.enabled().set(false);
     tableModel.refresh();
     assertEquals(6, tableModel.getRowCount());
     tableModel.setLimit(-1);
@@ -303,9 +303,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     empModel.conditionChangedObserver().addListener(conditionChangedListener);
     ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
             empModel.conditionModel().attributeModel(Employee.COMMISSION);
-    commissionModel.setEnabled(true);
+    commissionModel.enabled().set(true);
     assertEquals(1, counter.get());
-    commissionModel.setEnabled(false);
+    commissionModel.enabled().set(false);
     assertEquals(2, counter.get());
     commissionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
     commissionModel.setLowerBound(1200d);
@@ -322,9 +322,9 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
             empModel.conditionModel().attributeModel(Employee.JOB);
     jobModel.setEqualValue("job");
     assertTrue(empModel.conditionChangedObserver().get());
-    jobModel.setEnabled(false);
+    jobModel.enabled().set(false);
     assertFalse(empModel.conditionChangedObserver().get());
-    jobModel.setEnabled(true);
+    jobModel.enabled().set(true);
     assertTrue(empModel.conditionChangedObserver().get());
     empModel.refresh();
     assertFalse(empModel.conditionChangedObserver().get());

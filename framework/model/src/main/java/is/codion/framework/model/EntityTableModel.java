@@ -478,9 +478,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
           preferences.conditionPreferences().ifPresent(conditionPreferences -> {
             ColumnConditionModel<?, ?> conditionModel = tableModel.conditionModel().conditionModels().get(attribute);
             if (conditionModel != null) {
-              conditionModel.autoEnableState().set(conditionPreferences.autoEnable());
-              conditionModel.caseSensitiveState().set(conditionPreferences.caseSensitive());
-              conditionModel.automaticWildcardValue().set(conditionPreferences.automaticWildcard());
+              conditionModel.autoEnable().set(conditionPreferences.autoEnable());
+              conditionModel.caseSensitive().set(conditionPreferences.caseSensitive());
+              conditionModel.automaticWildcard().set(conditionPreferences.automaticWildcard());
             }
           });
         }

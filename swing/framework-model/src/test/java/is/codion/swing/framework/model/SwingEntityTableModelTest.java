@@ -212,9 +212,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     column = tableModel.columnModel().getColumn(5);
     column.setWidth(170);//entity_ref
     ColumnConditionModel<Attribute<String>, String> conditionModel = tableModel.conditionModel().attributeModel(Detail.STRING);
-    conditionModel.autoEnableState().set(false);
-    conditionModel.automaticWildcardValue().set(AutomaticWildcard.PREFIX);
-    conditionModel.caseSensitiveState().set(false);
+    conditionModel.autoEnable().set(false);
+    conditionModel.automaticWildcard().set(AutomaticWildcard.PREFIX);
+    conditionModel.caseSensitive().set(false);
 
     tableModel.savePreferences();
 
@@ -227,9 +227,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     column = model.columnModel().getColumn(5);
     assertEquals(170, column.getPreferredWidth());
     conditionModel = tableModel.conditionModel().attributeModel(Detail.STRING);
-    assertFalse(conditionModel.autoEnableState().get());
-    assertEquals(conditionModel.automaticWildcardValue().get(), AutomaticWildcard.PREFIX);
-    assertFalse(conditionModel.caseSensitiveState().get());
+    assertFalse(conditionModel.autoEnable().get());
+    assertEquals(conditionModel.automaticWildcard().get(), AutomaticWildcard.PREFIX);
+    assertFalse(conditionModel.caseSensitive().get());
 
     model.clearPreferences();
     UserPreferences.flushUserPreferences();
@@ -336,9 +336,9 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertTrue(tableModel.conditionChangedObserver().get());
     tableModel.refresh();
     assertFalse(tableModel.conditionChangedObserver().get());
-    nameConditionModel.setEnabled(false);
+    nameConditionModel.enabled().set(false);
     assertTrue(tableModel.conditionChangedObserver().get());
-    nameConditionModel.setEnabled(true);
+    nameConditionModel.enabled().set(true);
     assertFalse(tableModel.conditionChangedObserver().get());
   }
 
@@ -357,10 +357,10 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     assertEquals(0, tableModel.getRowCount());
     ColumnConditionModel<?, Entity> mgrConditionModel = tableModel.conditionModel().conditionModel(Employee.MGR_FK);
     mgrConditionModel.setEqualValue(null);
-    mgrConditionModel.setEnabled(true);
+    mgrConditionModel.enabled().set(true);
     tableModel.refresh();
     assertEquals(1, tableModel.getRowCount());
-    mgrConditionModel.setEnabled(false);
+    mgrConditionModel.enabled().set(false);
     tableModel.refresh();
     assertEquals(0, tableModel.getRowCount());
   }

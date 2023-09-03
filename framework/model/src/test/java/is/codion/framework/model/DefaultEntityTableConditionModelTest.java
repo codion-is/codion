@@ -47,7 +47,7 @@ public class DefaultEntityTableConditionModelTest {
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
 
     assertFalse(conditionModel.isEnabled());
-    conditionModel.conditionModel(Employee.DEPARTMENT_FK).setEnabled(true);
+    conditionModel.conditionModel(Employee.DEPARTMENT_FK).enabled().set(true);
     assertTrue(conditionModel.isEnabled());
   }
 

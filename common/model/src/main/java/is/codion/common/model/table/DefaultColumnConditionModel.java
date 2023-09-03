@@ -71,7 +71,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public State caseSensitiveState() {
+  public State caseSensitive() {
     return caseSensitiveState;
   }
 
@@ -86,7 +86,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public State lockedState() {
+  public State locked() {
     return lockedState;
   }
 
@@ -163,28 +163,23 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public boolean isEnabled() {
-    return enabledState.get();
+  public State enabled() {
+    return enabledState;
   }
 
   @Override
-  public void setEnabled(boolean enabled) {
-    enabledState.set(enabled);
-  }
-
-  @Override
-  public Value<AutomaticWildcard> automaticWildcardValue() {
+  public Value<AutomaticWildcard> automaticWildcard() {
     return automaticWildcardValue;
   }
 
   @Override
-  public State autoEnableState() {
+  public State autoEnable() {
     return autoEnableState;
   }
 
   @Override
   public void clear() {
-    setEnabled(false);
+    enabledState.set(false);
     setEqualValues(null);
     setUpperBound(null);
     setLowerBound(null);
@@ -193,7 +188,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public boolean accepts(Comparable<T> columnValue) {
-    return !isEnabled() || valueAccepted(columnValue);
+    return !enabledState.get() || valueAccepted(columnValue);
   }
 
   @Override
@@ -209,11 +204,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public Value<T> upperBoundValue() {
     return upperBoundValue;
-  }
-
-  @Override
-  public State enabledState() {
-    return enabledState;
   }
 
   @Override
@@ -499,21 +489,21 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
         switch (operatorValue.get()) {
           case EQUAL:
           case NOT_EQUAL:
-            setEnabled(equalValues.isNotEmpty());
+            enabledState.set(equalValues.isNotEmpty());
             break;
           case LESS_THAN:
           case LESS_THAN_OR_EQUAL:
-            setEnabled(upperBoundValue.isNotNull());
+            enabledState.set(upperBoundValue.isNotNull());
             break;
           case GREATER_THAN:
           case GREATER_THAN_OR_EQUAL:
-            setEnabled(lowerBoundValue.isNotNull());
+            enabledState.set(lowerBoundValue.isNotNull());
             break;
           case BETWEEN:
           case BETWEEN_EXCLUSIVE:
           case NOT_BETWEEN:
           case NOT_BETWEEN_EXCLUSIVE:
-            setEnabled(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
+            enabledState.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
             break;
           default:
             throw new IllegalStateException("Unknown operator: " + operatorValue.get());

@@ -83,20 +83,20 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
-    boolean modelLocked = conditionModel.lockedState().get();
-    conditionModel.lockedState().set(false);//otherwise, the validator checking the locked state kicks in during value linking
+    boolean modelLocked = conditionModel.locked().get();
+    conditionModel.locked().set(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
     this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
     this.operatorCombo = createOperatorComboBox(conditionModel.operators());
-    this.toggleEnabledButton = radioButton(conditionModel.enabledState())
+    this.toggleEnabledButton = radioButton(conditionModel.enabled())
             .horizontalAlignment(CENTER)
             .popupMenu(menu(Controls.builder()
-                    .control(ToggleControl.builder(conditionModel.autoEnableState())
+                    .control(ToggleControl.builder(conditionModel.autoEnable())
                             .name(MESSAGES.getString("auto_enable"))).build())
                     .createPopupMenu())
             .build();
-    conditionModel.lockedState().set(modelLocked);
+    conditionModel.locked().set(modelLocked);
     initializeUI();
     bindEvents();
   }
@@ -387,7 +387,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     operatorCombo.addFocusListener(focusGainedListener);
     KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
-            .action(Control.control(() -> conditionModel.setEnabled(!conditionModel.isEnabled())));
+            .action(Control.control(() -> conditionModel.enabled().set(!conditionModel.enabled().get())));
     KeyEvents.Builder previousOperatorKeyEvent = KeyEvents.builder(KeyEvent.VK_UP)
             .modifiers(InputEvent.CTRL_DOWN_MASK)
             .action(Control.control(this::selectPreviousOperator));
@@ -519,7 +519,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    linkToEnabledObserver(conditionModel.lockedState().reversed(),
+    linkToEnabledObserver(conditionModel.locked().reversed(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
@@ -576,7 +576,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private void addStringConfigurationPopupMenu() {
     if (conditionModel.columnClass().equals(String.class)) {
       JPopupMenu popupMenu = menu(Controls.builder()
-              .control(ToggleControl.builder(conditionModel.caseSensitiveState())
+              .control(ToggleControl.builder(conditionModel.caseSensitive())
                       .name(MESSAGES.getString("case_sensitive"))
                       .build())
               .controls(createAutomaticWildcardControls())
@@ -593,7 +593,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private Controls createAutomaticWildcardControls() {
-    Value<AutomaticWildcard> automaticWildcardValue = conditionModel.automaticWildcardValue();
+    Value<AutomaticWildcard> automaticWildcardValue = conditionModel.automaticWildcard();
     AutomaticWildcard automaticWildcard = automaticWildcardValue.get();
 
     State automaticWildcardNoneState = State.state(automaticWildcard.equals(AutomaticWildcard.NONE));

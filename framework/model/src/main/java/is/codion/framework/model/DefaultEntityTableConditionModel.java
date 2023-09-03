@@ -64,7 +64,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       columnConditionModel.setOperator(Operator.EQUAL);
       columnConditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       columnConditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
-      columnConditionModel.setEnabled(!nullOrEmpty(values));
+      columnConditionModel.enabled().set(!nullOrEmpty(values));
     }
     return !condition.equals(condition());
   }
@@ -72,7 +72,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   @Override
   public Condition condition() {
     Collection<Condition> conditions = conditionModel.conditionModels().values().stream()
-            .filter(ColumnConditionModel::isEnabled)
+            .filter(model -> model.enabled().get())
             .map(DefaultEntityTableConditionModel::condition)
             .collect(Collectors.toCollection(ArrayList::new));
     if (additionalConditionSupplier != null) {
@@ -254,7 +254,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   private static <T> ColumnCondition<T> singleStringEqualCondition(ColumnConditionModel<?, T> conditionModel,
                                                                    ColumnCondition.Builder<T> builder, String value) {
-    boolean caseSensitive = conditionModel.caseSensitiveState().get();
+    boolean caseSensitive = conditionModel.caseSensitive().get();
     if (containsWildcards(value)) {
       return (ColumnCondition<T>) (caseSensitive ? builder.like(value) : builder.likeIgnoreCase(value));
     }
@@ -264,7 +264,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
 
   private static <T> ColumnCondition<T> singleStringNotEqualCondition(ColumnConditionModel<?, T> conditionModel,
                                                                       ColumnCondition.Builder<T> builder, String value) {
-    boolean caseSensitive = conditionModel.caseSensitiveState().get();
+    boolean caseSensitive = conditionModel.caseSensitive().get();
     if (containsWildcards(value)) {
       return (ColumnCondition<T>) (caseSensitive ? builder.notLike(value) : builder.notLikeIgnoreCase(value));
     }
