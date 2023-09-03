@@ -191,9 +191,9 @@ public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<M
 
   @Test
   public void activateDeactivateDetailModel() {
-    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).setActive(false);
+    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).active().set(false);
     assertTrue(departmentModel.activeDetailModels().isEmpty());
-    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).setActive(true);
+    departmentModel.detailModelLink(departmentModel.detailModel(Employee.TYPE)).active().set(true);
     assertFalse(departmentModel.activeDetailModels().isEmpty());
     assertTrue(departmentModel.activeDetailModels().contains(departmentModel.detailModel(Employee.TYPE)));
   }

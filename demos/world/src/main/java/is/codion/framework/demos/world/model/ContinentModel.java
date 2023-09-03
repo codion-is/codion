@@ -27,7 +27,7 @@ public final class ContinentModel extends SwingEntityModel {
     super(Continent.TYPE, connectionProvider);
     tableModel().refresher().addRefreshListener(this::refreshChartDatasets);
     CountryModel countryModel = new CountryModel(connectionProvider);
-    addDetailModel(new CountryModelLink(countryModel)).setActive(true);
+    addDetailModel(new CountryModelLink(countryModel)).active().set(true);
   }
 
   public PieDataset<String> populationDataset() {

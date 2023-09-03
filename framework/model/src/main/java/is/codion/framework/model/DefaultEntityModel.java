@@ -164,7 +164,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
       throw new IllegalArgumentException("Detail model " + detailModelLink.detailModel() + " has already been added");
     }
     detailModels.put(detailModelLink.detailModel(), detailModelLink);
-    detailModelLink.activeObserver().addListener(() -> activeDetailModelChanged(detailModelLink));
+    detailModelLink.active().addListener(() -> activeDetailModelChanged(detailModelLink));
 
     return detailModelLink;
   }
@@ -205,7 +205,7 @@ public class DefaultEntityModel<M extends DefaultEntityModel<M, E, T>, E extends
   @Override
   public final Collection<M> activeDetailModels() {
     return detailModels.values().stream()
-            .filter(DetailModelLink::isActive)
+            .filter(detailModelLink -> detailModelLink.active().get())
             .map(DetailModelLink::detailModel)
             .collect(Collectors.toList());
   }

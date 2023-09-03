@@ -277,7 +277,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
 
       SwingEntityModel detailModel = selectedDetailPanel().model();
       if (entityPanel.model().containsDetailModel(detailModel)) {
-        entityPanel.model().detailModelLink(detailModel).setActive(detailPanelState != HIDDEN);
+        entityPanel.model().detailModelLink(detailModel).active().set(detailPanelState != HIDDEN);
       }
 
       if (detailPanelState == EMBEDDED) {
@@ -325,8 +325,8 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
       SwingEntityModel model = entityPanel.model();
       if (model.containsDetailModel(detailModel)) {
         model.activeDetailModels().forEach(linkedDetailModel ->
-                model.detailModelLink(linkedDetailModel).setActive(false));
-        model.detailModelLink(detailModel).setActive(true);
+                model.detailModelLink(linkedDetailModel).active().set(false));
+        model.detailModelLink(detailModel).active().set(true);
       }
     }
 
