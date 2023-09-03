@@ -138,50 +138,50 @@ public class DefaultColumnConditionModelTest {
 
     model.enabledState().removeListener(enabledListener);
 
-    model.setLocked(true);
-    assertTrue(model.isLocked());
-    assertTrue(model.lockedObserver().get());
+    model.lockedState().set(true);
+    assertTrue(model.lockedState().get());
+    assertTrue(model.lockedState().get());
   }
 
   @Test
   void setUpperBoundLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setUpperBound("test"));
   }
 
   @Test
   void setLowerBoundLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setLowerBound("test"));
   }
 
   @Test
   void setEqualValueLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setEqualValue("test"));
   }
 
   @Test
   void setEqualValuesLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setEqualValues(Collections.singletonList("test")));
   }
 
   @Test
   void setEnabledLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setEnabled(true));
   }
 
   @Test
   void setOperatorLocked() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("test", String.class).build();
-    model.setLocked(true);
+    model.lockedState().set(true);
     assertThrows(IllegalStateException.class, () -> model.setOperator(Operator.NOT_EQUAL));
     assertThrows(IllegalStateException.class, () -> model.operatorValue().set(Operator.NOT_EQUAL));
   }

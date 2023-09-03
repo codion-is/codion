@@ -8,7 +8,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -87,13 +86,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void setLocked(boolean locked) {
-    lockedState.set(locked);
-  }
-
-  @Override
-  public boolean isLocked() {
-    return lockedState.get();
+  public State lockedState() {
+    return lockedState;
   }
 
   @Override
@@ -200,11 +194,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   @Override
   public boolean accepts(Comparable<T> columnValue) {
     return !isEnabled() || valueAccepted(columnValue);
-  }
-
-  @Override
-  public StateObserver lockedObserver() {
-    return lockedState.observer();
   }
 
   @Override

@@ -9481,3 +9481,4 @@
   DefaultTabPanelLayout renamed DefaultTabbedPanelLayout
   PanelLayout.layoutPanel() default implementation functionality moved back to EntityPanel.initializeUI()
   EntityPanel.caption now Value based, setCaption() removed, getCaption() renamed caption(), returns the Value
+  ColumnConditionModel.isLocked(), setLocked() and lockedObserver() replaced with lockedState()

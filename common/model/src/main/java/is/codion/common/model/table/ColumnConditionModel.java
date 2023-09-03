@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.Operator;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -113,14 +112,9 @@ public interface ColumnConditionModel<C, T> {
   State autoEnableState();
 
   /**
-   * @param locked true to lock this model, false to unlock
+   * @return the state controlling the locked status
    */
-  void setLocked(boolean locked);
-
-  /**
-   * @return true if this model is locked
-   */
-  boolean isLocked();
+  State lockedState();
 
   /**
    * @return the column class this condition model is based on
@@ -219,11 +213,6 @@ public interface ColumnConditionModel<C, T> {
    * @return a Value based on the lower bound value of this condition model
    */
   Value<T> lowerBoundValue();
-
-  /**
-   * @return an observer for this model's locked state
-   */
-  StateObserver lockedObserver();
 
   /**
    * @return a State controlling the enabled state

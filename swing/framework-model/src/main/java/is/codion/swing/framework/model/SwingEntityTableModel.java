@@ -1083,11 +1083,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
     ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-    if (columnConditionModel != null && !columnConditionModel.isLocked()) {
+    if (columnConditionModel != null && !columnConditionModel.lockedState().get()) {
       columnConditionModel.setEnabled(false);
     }
     ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
-    if (filterModel != null && !filterModel.isLocked()) {
+    if (filterModel != null && !filterModel.lockedState().get()) {
       filterModel.setEnabled(false);
     }
   }

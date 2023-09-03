@@ -83,8 +83,8 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     requireNonNull(conditionModel, "conditionModel");
     requireNonNull(boundFieldFactory, "boundFieldFactory");
     this.conditionModel = conditionModel;
-    boolean modelLocked = conditionModel.isLocked();
-    conditionModel.setLocked(false);//otherwise, the validator checking the locked state kicks in during value linking
+    boolean modelLocked = conditionModel.lockedState().get();
+    conditionModel.lockedState().set(false);//otherwise, the validator checking the locked state kicks in during value linking
     this.equalField = boundFieldFactory.createEqualField();
     this.upperBoundField = boundFieldFactory.createUpperBoundField().orElse(null);
     this.lowerBoundField = boundFieldFactory.createLowerBoundField().orElse(null);
@@ -96,7 +96,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
                             .name(MESSAGES.getString("auto_enable"))).build())
                     .createPopupMenu())
             .build();
-    conditionModel.setLocked(modelLocked);
+    conditionModel.lockedState().set(modelLocked);
     initializeUI();
     bindEvents();
   }
@@ -519,7 +519,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   private void initializeUI() {
-    linkToEnabledObserver(conditionModel.lockedObserver().reversed(),
+    linkToEnabledObserver(conditionModel.lockedState().reversed(),
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);

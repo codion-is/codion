@@ -6,7 +6,6 @@ package is.codion.framework.model;
 import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
@@ -52,13 +51,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void setLocked(boolean locked) {
-    conditionModel.setLocked(locked);
-  }
-
-  @Override
-  public final boolean isLocked() {
-    return conditionModel.isLocked();
+  public final State lockedState() {
+    return conditionModel.lockedState();
   }
 
   @Override
@@ -159,11 +153,6 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   @Override
   public final boolean accepts(Comparable<Entity> columnValue) {
     return conditionModel.accepts(columnValue);
-  }
-
-  @Override
-  public final StateObserver lockedObserver() {
-    return conditionModel.lockedObserver();
   }
 
   @Override
