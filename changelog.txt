@@ -9493,3 +9493,5 @@
   EntitySearchModel, Observer and State suffix removed from method names, some refactoring
   EntityTableModel.conditionChangedObserver() renamed conditionChanged()
   Observer, State and Value suffix removed from method names
+  TabbedApplicationLayout now an interface
+  EntityApplicationPanel.addInitializationListener() added
