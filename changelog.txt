@@ -9480,3 +9480,4 @@
   DefaultTabPanelLayout bug fixed, did not link detail model when detail panel was selected
   DefaultTabPanelLayout renamed DefaultTabbedPanelLayout
   PanelLayout.layoutPanel() default implementation functionality moved back to EntityPanel.initializeUI()
+  EntityPanel.caption now Value based, setCaption() removed, getCaption() renamed caption(), returns the Value

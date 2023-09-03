@@ -6,6 +6,7 @@ package is.codion.swing.framework.ui;
 import is.codion.common.Configuration;
 import is.codion.common.event.Event;
 import is.codion.common.property.PropertyValue;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.swing.common.ui.KeyEvents;
@@ -206,7 +207,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   /**
    * The caption to use when presenting this entity panel
    */
-  private String caption;
+  private final Value<String> captionValue;
 
   /**
    * The description to display for this entity panel
@@ -356,7 +357,8 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     requireNonNull(entityModel, "entityModel");
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
-    this.caption = entityModel.editModel().entityDefinition().caption();
+    String defaultCaption = entityModel.editModel().entityDefinition().caption();
+    this.captionValue = Value.value(defaultCaption, defaultCaption);
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
@@ -612,22 +614,15 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + caption;
+    return getClass().getSimpleName() + ": " + captionValue.get();
   }
 
   /**
-   * Sets the caption to use when this panel is displayed.
-   * @param caption the caption
+   * Setting this caption Value to null reverts back to the default entity caption.
+   * @return a Value for the caption used when presenting this entity panel
    */
-  public final void setCaption(String caption) {
-    this.caption = caption;
-  }
-
-  /**
-   * @return the caption to use when presenting this entity panel
-   */
-  public final String getCaption() {
-    return caption;
+  public final Value<String> caption() {
+    return captionValue;
   }
 
   /**
@@ -1235,7 +1230,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(editControlPanel)
               .locationRelativeTo(this)
-              .title(caption)
+              .title(captionValue.get())
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
               .onClosed(windowEvent -> setEditPanelState(HIDDEN))
               .build();
@@ -1243,7 +1238,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
     return Dialogs.componentDialog(editControlPanel)
             .owner(this)
-            .title(caption)
+            .title(captionValue.get())
             .modal(false)
             .disposeOnEscape(disposeEditDialogOnEscape)
             .onClosed(e -> setEditPanelState(HIDDEN))

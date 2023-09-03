@@ -675,7 +675,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .locationRelativeTo(this)
-                .title(entityPanel.getCaption())
+                .title(entityPanel.caption().get())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   entityPanel.model().savePreferences();
@@ -715,7 +715,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Dialogs.componentDialog(entityPanel)
                 .owner(parentWindow().orElse(null))
-                .title(entityPanel.getCaption())
+                .title(entityPanel.caption().get())
                 .onClosed(e -> {
                   entityPanel.model().savePreferences();
                   entityPanel.savePreferences();
@@ -918,7 +918,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private static void addModelsToTree(DefaultMutableTreeNode root, Collection<? extends EntityPanel> panels) {
     for (EntityPanel entityPanel : panels) {
-      DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.getCaption());
+      DefaultMutableTreeNode node = new DefaultMutableTreeNode(entityPanel.caption().get());
       root.add(node);
       if (!entityPanel.detailPanels().isEmpty()) {
         addModelsToTree(node, entityPanel.detailPanels());

@@ -56,7 +56,7 @@ final class TabbedApplicationLayout implements ApplicationLayout {
             .focusable(false)
             .changeListener(new InitializeSelectedPanelListener());
     entityPanels.stream()
-            .peek(entityPanel -> builder.tabBuilder(entityPanel.getCaption(), entityPanel)
+            .peek(entityPanel -> builder.tabBuilder(entityPanel.caption().get(), entityPanel)
                     .toolTipText(entityPanel.getDescription())
                     .add())
             .filter(entityPanel -> entityPanel.editPanel() != null)
