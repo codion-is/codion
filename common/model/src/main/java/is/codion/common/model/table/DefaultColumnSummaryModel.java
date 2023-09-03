@@ -37,12 +37,12 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
   }
 
   @Override
-  public State lockedState() {
+  public State locked() {
     return lockedState;
   }
 
   @Override
-  public Value<Summary> summaryValue() {
+  public Value<Summary> summary() {
     return summaryValue;
   }
 
@@ -52,12 +52,12 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
   }
 
   @Override
-  public ValueObserver<String> summaryTextObserver() {
+  public ValueObserver<String> summaryText() {
     return summaryTextValue.observer();
   }
 
   private void updateSummary() {
-    summaryTextValue.set(summaryValue().get().summary(valueProvider));
+    summaryTextValue.set(summary().get().summary(valueProvider));
   }
 
   static final class DefaultSummaryValues<T extends Number> implements ColumnSummaryModel.SummaryValues<T> {

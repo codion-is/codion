@@ -31,7 +31,7 @@ public final class CustomerTablePanel extends EntityTablePanel {
     setControl(ControlCode.PRINT, Control.builder(this::viewCustomerReport)
             .name(BUNDLE.getString("customer_report"))
             .smallIcon(FrameworkIcons.instance().print())
-            .enabledObserver(tableModel().selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel().selectionModel().selectionNotEmpty())
             .build());
     setRefreshButtonVisible(RefreshButtonVisible.ALWAYS);
   }

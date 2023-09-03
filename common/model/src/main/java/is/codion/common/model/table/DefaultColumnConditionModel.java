@@ -8,7 +8,6 @@ import is.codion.common.Text;
 import is.codion.common.event.Event;
 import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -30,7 +29,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private final Value<T> equalValue = equalValues.value();
   private final Value<T> upperBoundValue = Value.value();
   private final Value<T> lowerBoundValue = Value.value();
-  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
+  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL, Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Event.event();
 
   private final State caseSensitiveState;
@@ -72,7 +71,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public State caseSensitiveState() {
+  public State caseSensitive() {
     return caseSensitiveState;
   }
 
@@ -87,13 +86,8 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public void setLocked(boolean locked) {
-    lockedState.set(locked);
-  }
-
-  @Override
-  public boolean isLocked() {
-    return lockedState.get();
+  public State locked() {
+    return lockedState;
   }
 
   @Override
@@ -144,17 +138,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public Operator getOperator() {
-    return operatorValue.get();
-  }
-
-  @Override
-  public void setOperator(Operator operator) {
-    operatorValue.set(operator);
-  }
-
-  @Override
-  public Value<Operator> operatorValue() {
+  public Value<Operator> operator() {
     return operatorValue;
   }
 
@@ -169,42 +153,32 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public boolean isEnabled() {
-    return enabledState.get();
+  public State enabled() {
+    return enabledState;
   }
 
   @Override
-  public void setEnabled(boolean enabled) {
-    enabledState.set(enabled);
-  }
-
-  @Override
-  public Value<AutomaticWildcard> automaticWildcardValue() {
+  public Value<AutomaticWildcard> automaticWildcard() {
     return automaticWildcardValue;
   }
 
   @Override
-  public State autoEnableState() {
+  public State autoEnable() {
     return autoEnableState;
   }
 
   @Override
   public void clear() {
-    setEnabled(false);
+    enabledState.set(false);
     setEqualValues(null);
     setUpperBound(null);
     setLowerBound(null);
-    setOperator(Operator.EQUAL);
+    operatorValue.set(Operator.EQUAL);
   }
 
   @Override
   public boolean accepts(Comparable<T> columnValue) {
-    return !isEnabled() || valueAccepted(columnValue);
-  }
-
-  @Override
-  public StateObserver lockedObserver() {
-    return lockedState.observer();
+    return !enabledState.get() || valueAccepted(columnValue);
   }
 
   @Override
@@ -223,11 +197,6 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public State enabledState() {
-    return enabledState;
-  }
-
-  @Override
   public void addChangeListener(Runnable listener) {
     conditionChangedEvent.addListener(listener);
   }
@@ -238,7 +207,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {
-    switch (getOperator()) {
+    switch (operatorValue.get()) {
       case EQUAL:
         return isEqual(comparable);
       case NOT_EQUAL:
@@ -260,7 +229,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       case NOT_BETWEEN:
         return isNotBetween(comparable);
       default:
-        throw new IllegalArgumentException("Undefined operator: " + getOperator());
+        throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
   }
 
@@ -510,21 +479,21 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
         switch (operatorValue.get()) {
           case EQUAL:
           case NOT_EQUAL:
-            setEnabled(equalValues.isNotEmpty());
+            enabledState.set(equalValues.isNotEmpty());
             break;
           case LESS_THAN:
           case LESS_THAN_OR_EQUAL:
-            setEnabled(upperBoundValue.isNotNull());
+            enabledState.set(upperBoundValue.isNotNull());
             break;
           case GREATER_THAN:
           case GREATER_THAN_OR_EQUAL:
-            setEnabled(lowerBoundValue.isNotNull());
+            enabledState.set(lowerBoundValue.isNotNull());
             break;
           case BETWEEN:
           case BETWEEN_EXCLUSIVE:
           case NOT_BETWEEN:
           case NOT_BETWEEN_EXCLUSIVE:
-            setEnabled(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
+            enabledState.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
             break;
           default:
             throw new IllegalStateException("Unknown operator: " + operatorValue.get());

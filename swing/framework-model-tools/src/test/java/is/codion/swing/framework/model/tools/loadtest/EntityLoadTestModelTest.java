@@ -88,7 +88,7 @@ public class EntityLoadTestModelTest {
   void testLoadTesting() throws Exception {
     TestLoadTestModel loadTest = new TestLoadTestModel();
 
-    loadTest.collectChartDataState().set(true);
+    loadTest.collectChartData().set(true);
     loadTest.setUpdateInterval(350);
     loadTest.loginDelayFactorValue().set(1);
 
@@ -115,7 +115,7 @@ public class EntityLoadTestModelTest {
     assertEquals(0, loadTest.usageScenario("1").unsuccessfulRunCount());
     assertEquals(0, loadTest.usageScenario("2").totalRunCount());
 
-    loadTest.pausedState().set(true);
+    loadTest.paused().set(true);
 
     loadTest.clearChartData();
 

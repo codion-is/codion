@@ -226,57 +226,27 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isInsertEnabled() {
-    return insertEnabledState.get();
+  public final State insertEnabled() {
+    return insertEnabledState;
   }
 
   @Override
-  public final void setInsertEnabled(boolean insertEnabled) {
-    insertEnabledState.set(insertEnabled);
+  public final State updateEnabled() {
+    return updateEnabledState;
   }
 
   @Override
-  public final StateObserver insertEnabledObserver() {
-    return insertEnabledState.observer();
+  public final State deleteEnabled() {
+    return deleteEnabledState;
   }
 
   @Override
-  public final boolean isUpdateEnabled() {
-    return updateEnabledState.get();
-  }
-
-  @Override
-  public final void setUpdateEnabled(boolean updateEnabled) {
-    updateEnabledState.set(updateEnabled);
-  }
-
-  @Override
-  public final StateObserver updateEnabledObserver() {
-    return updateEnabledState.observer();
-  }
-
-  @Override
-  public final boolean isDeleteEnabled() {
-    return deleteEnabledState.get();
-  }
-
-  @Override
-  public final void setDeleteEnabled(boolean deleteEnabled) {
-    deleteEnabledState.set(deleteEnabled);
-  }
-
-  @Override
-  public final StateObserver deleteEnabledObserver() {
-    return deleteEnabledState.observer();
-  }
-
-  @Override
-  public final StateObserver entityNewObserver() {
+  public final StateObserver entityNew() {
     return entityNewState.observer();
   }
 
   @Override
-  public final StateObserver primaryKeyNullObserver() {
+  public final StateObserver primaryKeyNull() {
     return primaryKeyNullState.observer();
   }
 
@@ -320,7 +290,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public StateObserver modifiedObserver() {
+  public StateObserver modified() {
     return entityModifiedState.observer();
   }
 
@@ -401,12 +371,12 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final StateObserver validObserver() {
+  public final StateObserver entityValid() {
     return entityValidState.observer();
   }
 
   @Override
-  public final boolean isValid() {
+  public final boolean isEntityValid() {
     return entityValidState.get();
   }
 
@@ -455,7 +425,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    if (!isInsertEnabled()) {
+    if (!insertEnabledState.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     Entity toInsert = entity.copy();
@@ -477,7 +447,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (!isInsertEnabled()) {
+    if (!insertEnabledState.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
@@ -503,7 +473,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (!isUpdateEnabled()) {
+    if (!updateEnabledState.get()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
@@ -544,7 +514,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
-    if (!isDeleteEnabled()) {
+    if (!deleteEnabledState.get()) {
       throw new IllegalStateException("Delete is not enabled!");
     }
     if (entities.isEmpty()) {
@@ -626,7 +596,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean containsUnsavedData() {
-    return !isEntityNew() && modifiedObserver().get();
+    return !isEntityNew() && modified().get();
   }
 
   @Override

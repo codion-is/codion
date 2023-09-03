@@ -21,27 +21,27 @@ public interface TableSelectionModel<R> {
   /**
    * @return a StateObserver indicating whether the selection is empty
    */
-  StateObserver selectionEmptyObserver();
+  StateObserver selectionEmpty();
 
   /**
    * @return a StateObserver indicating whether one or more items are selected
    */
-  StateObserver selectionNotEmptyObserver();
+  StateObserver selectionNotEmpty();
 
   /**
    * @return a StateObserver indicating whether multiple rows are selected
    */
-  StateObserver multipleSelectionObserver();
+  StateObserver multipleSelection();
 
   /**
    * @return a StateObserver indicating whether a single row is selected
    */
-  StateObserver singleSelectionObserver();
+  StateObserver singleSelection();
 
   /**
    * @return a State controlling the single selection mode of this selection model
    */
-  State singleSelectionModeState();
+  State singleSelectionMode();
 
   /**
    * To prevent a selection change, add a listener throwing a {@link is.codion.common.model.CancelException}.

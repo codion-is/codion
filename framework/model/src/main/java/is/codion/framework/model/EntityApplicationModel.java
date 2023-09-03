@@ -73,7 +73,7 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return a StateObserver indicating the validity of the underlying connection provider
    * @see #SCHEDULE_CONNECTION_VALIDATION
    */
-  StateObserver connectionValidObserver();
+  StateObserver connectionValid();
 
   /**
    * @return the underlying domain entities

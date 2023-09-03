@@ -7,7 +7,6 @@ import is.codion.common.Configuration;
 import is.codion.common.Operator;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 
@@ -88,7 +87,7 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return the State controlling whether this model is case-sensitive, when working with strings
    */
-  State caseSensitiveState();
+  State caseSensitive();
 
   /**
    * @return the Format object to use when formatting input, if any
@@ -105,22 +104,17 @@ public interface ColumnConditionModel<C, T> {
    * operators {@link Operator#EQUAL} and {@link Operator#NOT_EQUAL}
    * @return the Value controlling whether automatic wildcards are enabled when working with strings
    */
-  Value<AutomaticWildcard> automaticWildcardValue();
+  Value<AutomaticWildcard> automaticWildcard();
 
   /**
    * @return the {@link State} controlling whether this model is enabled automatically when a condition value is specified
    */
-  State autoEnableState();
+  State autoEnable();
 
   /**
-   * @param locked true to lock this model, false to unlock
+   * @return the state controlling the locked status
    */
-  void setLocked(boolean locked);
-
-  /**
-   * @return true if this model is locked
-   */
-  boolean isLocked();
+  State locked();
 
   /**
    * @return the column class this condition model is based on
@@ -169,17 +163,6 @@ public interface ColumnConditionModel<C, T> {
   T getLowerBound();
 
   /**
-   * @return the search operator
-   */
-  Operator getOperator();
-
-  /**
-   * @param operator the conditional operator
-   * @throws IllegalArgumentException in case the given operator is not available in this condition model
-   */
-  void setOperator(Operator operator);
-
-  /**
    * @return the operators available in this condition model
    */
   List<Operator> operators();
@@ -190,14 +173,9 @@ public interface ColumnConditionModel<C, T> {
   char wildcard();
 
   /**
-   * @return true if this condition model is enabled
+   * @return a state controlling the enabled status
    */
-  boolean isEnabled();
-
-  /**
-   * @param enabled true to enable, false to disable
-   */
-  void setEnabled(boolean enabled);
+  State enabled();
 
   /**
    * Disables and clears this condition model, that is, sets the upper and lower bounds to null
@@ -221,19 +199,9 @@ public interface ColumnConditionModel<C, T> {
   Value<T> lowerBoundValue();
 
   /**
-   * @return an observer for this model's locked state
-   */
-  StateObserver lockedObserver();
-
-  /**
-   * @return a State controlling the enabled state
-   */
-  State enabledState();
-
-  /**
    * @return a Value based on the operator
    */
-  Value<Operator> operatorValue();
+  Value<Operator> operator();
 
   /**
    * Returns true if this model is enabled and the given value is accepted by this models condition.

@@ -164,7 +164,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     TabbedPaneBuilder builder = tabbedPane()
             .focusable(false)
             .changeListener(e -> selectedDetailPanel().activatePanel());
-    entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.getCaption(), detailPanel)
+    entityPanel.detailPanels().forEach(detailPanel -> builder.tabBuilder(detailPanel.caption().get(), detailPanel)
             .toolTipText(detailPanel.getDescription())
             .add());
     if (includeDetailPanelControls) {
@@ -277,7 +277,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
 
       SwingEntityModel detailModel = selectedDetailPanel().model();
       if (entityPanel.model().containsDetailModel(detailModel)) {
-        entityPanel.model().detailModelLink(detailModel).setActive(detailPanelState != HIDDEN);
+        entityPanel.model().detailModelLink(detailModel).active().set(detailPanelState != HIDDEN);
       }
 
       if (detailPanelState == EMBEDDED) {
@@ -325,8 +325,8 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
       SwingEntityModel model = entityPanel.model();
       if (model.containsDetailModel(detailModel)) {
         model.activeDetailModels().forEach(linkedDetailModel ->
-                model.detailModelLink(linkedDetailModel).setActive(false));
-        model.detailModelLink(detailModel).setActive(true);
+                model.detailModelLink(linkedDetailModel).active().set(false));
+        model.detailModelLink(detailModel).active().set(true);
       }
     }
 
@@ -363,7 +363,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
               .smallIcon(FrameworkIcons.instance().detail());
       entityPanel.detailPanels().forEach(detailPanel ->
               controls.control(Control.builder(new SelectDetailPanelCommand(detailPanel))
-                      .name(detailPanel.getCaption())));
+                      .name(detailPanel.caption().get())));
 
       return controls.build();
     }
@@ -408,7 +408,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     private Window createDetailPanelWindow() {
       if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
         return Windows.frame(detailPanelTabbedPane)
-                .title(entityPanel.getCaption() + " - " + MESSAGES.getString(DETAIL_TABLES))
+                .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   //the frame can be closed when embedding the panel, don't hide if that's the case
@@ -421,7 +421,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
 
       return Dialogs.componentDialog(detailPanelTabbedPane)
               .owner(entityPanel)
-              .title(entityPanel.getCaption() + " - " + MESSAGES.getString(DETAIL_TABLES))
+              .title(entityPanel.caption().get() + " - " + MESSAGES.getString(DETAIL_TABLES))
               .modal(false)
               .onClosed(e -> {
                 //the dialog can be closed when embedding the panel, don't hide if that's the case

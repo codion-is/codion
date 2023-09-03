@@ -9520,3 +9520,16 @@
   DefaultTabPanelLayout bug fixed, did not link detail model when detail panel was selected
   DefaultTabPanelLayout renamed DefaultTabbedPanelLayout
   PanelLayout.layoutPanel() default implementation functionality moved back to EntityPanel.initializeUI()
+  EntityPanel.caption now Value based, setCaption() removed, getCaption() renamed caption(), returns the Value
+  ColumnConditionModel.isLocked(), setLocked() and lockedObserver() replaced with lockedState()
+  ColumnConditionModel.lockedState() renamed locked(), type suffix removed from a couple of other methods
+  ColumnConditionModel.isEnabled(), setEnabled() replaced with enabled()
+  FilteredModel.set/getIncludeCondition() replaced with Value based includeCondition()
+  ColumnConditionModel.getSetOperator() replaced with Value based operator()
+  ColumnSummaryModel.lockedState(), summaryValue() and summaryTextObserver() renamed locked(), summary() and summaryText() respectively
+  TableSelectionModel, Observer and State suffix removed from method names
+  EntityEditModel.insertEnabled(), updateEnabled() and deleteEnabled() replace setters, getters and observers
+  DetailModelLink.active() replaces setter, getter and observer
+  EntitySearchModel, Observer and State suffix removed from method names, some refactoring
+  EntityTableModel.conditionChangedObserver() renamed conditionChanged()
+  Observer, State and Value suffix removed from method names

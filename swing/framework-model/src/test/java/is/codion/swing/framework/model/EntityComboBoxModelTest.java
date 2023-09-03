@@ -195,7 +195,7 @@ public final class EntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.selectedValue());
     comboBoxModel.setSelectedItem(null);
     assertNull(comboBoxModel.selectedValue());
-    comboBoxModel.setIncludeCondition(entity -> false);
+    comboBoxModel.includeCondition().set(entity -> false);
     comboBoxModel.selectByKey(clark.primaryKey());
     assertEquals(clark, comboBoxModel.selectedValue());
     Entity.Key nobodyPK = ENTITIES.primaryKey(Employee.TYPE, -1);

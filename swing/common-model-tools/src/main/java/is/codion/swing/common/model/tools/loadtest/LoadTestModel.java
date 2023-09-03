@@ -330,17 +330,17 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   }
 
   @Override
-  public final State pausedState() {
+  public final State paused() {
     return pausedState;
   }
 
   @Override
-  public final State collectChartDataState() {
+  public final State collectChartData() {
     return collectChartDataState;
   }
 
   @Override
-  public final State autoRefreshApplicationsState() {
+  public final State autoRefreshApplications() {
     return autoRefreshApplicationsState;
   }
 

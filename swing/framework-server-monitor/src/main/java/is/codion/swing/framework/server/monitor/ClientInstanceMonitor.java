@@ -59,7 +59,7 @@ public final class ClientInstanceMonitor {
   /**
    * @return the {@link State} for controlling whether logging is enabled
    */
-  public State loggingEnabledState() {
+  public State loggingEnabled() {
     return loggingEnabledState;
   }
 

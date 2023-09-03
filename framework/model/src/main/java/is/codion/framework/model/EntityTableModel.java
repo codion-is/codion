@@ -263,7 +263,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * with a large underlying dataset.
    * @return a State specifying whether this table model requires a query condition
    */
-  State conditionRequiredState();
+  State conditionRequired();
 
   /**
    * @return true if entities that are deleted via the associated edit model
@@ -368,7 +368,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return a StateObserver indicating if the search condition has changed since last refresh
    */
-  StateObserver conditionChangedObserver();
+  StateObserver conditionChanged();
 
   /**
    * @param listener notified when the selection changes in the underlying selection model
@@ -478,9 +478,9 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
           preferences.conditionPreferences().ifPresent(conditionPreferences -> {
             ColumnConditionModel<?, ?> conditionModel = tableModel.conditionModel().conditionModels().get(attribute);
             if (conditionModel != null) {
-              conditionModel.autoEnableState().set(conditionPreferences.autoEnable());
-              conditionModel.caseSensitiveState().set(conditionPreferences.caseSensitive());
-              conditionModel.automaticWildcardValue().set(conditionPreferences.automaticWildcard());
+              conditionModel.autoEnable().set(conditionPreferences.autoEnable());
+              conditionModel.caseSensitive().set(conditionPreferences.caseSensitive());
+              conditionModel.automaticWildcard().set(conditionPreferences.automaticWildcard());
             }
           });
         }

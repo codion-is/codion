@@ -41,22 +41,22 @@ final class DefaultFilteredTableSearchModel<C> implements FilteredTableSearchMod
   }
 
   @Override
-  public State regularExpressionState() {
+  public State regularExpression() {
     return regularExpressionState;
   }
 
   @Override
-  public State caseSensitiveState() {
+  public State caseSensitive() {
     return caseSensitiveState;
   }
 
   @Override
-  public Value<String> searchStringValue() {
+  public Value<String> searchString() {
     return searchStringValue;
   }
 
   @Override
-  public Value<Predicate<String>> searchPredicateValue() {
+  public Value<Predicate<String>> searchPredicate() {
     return searchPredicateValue;
   }
 

@@ -113,7 +113,7 @@ public final class ServerMonitorPanel extends JPanel {
             .add(new JLabel("Connections", SwingConstants.RIGHT))
             .add(createConnectionCountField())
             .add(new JLabel("limit", SwingConstants.RIGHT))
-            .add(integerSpinner(model.connectionLimitValue())
+            .add(integerSpinner(model.connectionLimit())
                     .columns(SPINNER_COLUMNS)
                     .build())
             .add(new JLabel("Mem. usage", SwingConstants.RIGHT))
@@ -145,7 +145,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel createPerformancePanel() {
     JPanel intervalPanel = borderLayoutPanel()
             .westComponent(new JLabel("Update interval (s)"))
-            .centerComponent(integerSpinner(model.updateIntervalValue())
+            .centerComponent(integerSpinner(model.updateInterval())
                     .minimum(1)
                     .columns(SPINNER_COLUMNS)
                     .editable(false)
@@ -294,7 +294,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JComboBox<Object> createLogLevelField() {
-    return comboBox(new DefaultComboBoxModel<>(model.logLevels().toArray()), model.logLevelValue()).build();
+    return comboBox(new DefaultComboBoxModel<>(model.logLevels().toArray()), model.logLevel()).build();
   }
 
   private void setColors(JFreeChart chart) {

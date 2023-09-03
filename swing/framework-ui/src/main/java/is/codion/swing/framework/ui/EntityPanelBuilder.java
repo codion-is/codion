@@ -238,8 +238,9 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
       else {
         entityPanel = findModelConstructor(panelClass()).newInstance(entityModel);
       }
-      entityPanel.setCaption(caption == null ? entityModel.connectionProvider()
-              .entities().definition(entityModel.entityType()).caption() : caption);
+      if (caption != null) {
+        entityPanel.caption().set(caption);
+      }
       if (preferredSize != null) {
         entityPanel.setPreferredSize(preferredSize);
       }

@@ -42,7 +42,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel<EmpDeptAppModel> 
                     .build());
 
     SwingEntityModel model = applicationModel.entityModel(Department.TYPE);
-    model.detailModelLink(model.detailModel(Employee.TYPE)).setActive(true);
+    model.detailModelLink(model.detailModel(Employee.TYPE)).active().set(true);
     try {
       model.tableModel().refresh();
     }

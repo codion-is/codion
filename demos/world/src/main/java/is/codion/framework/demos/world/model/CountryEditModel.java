@@ -27,7 +27,7 @@ public final class CountryEditModel extends SwingEntityEditModel {
     if (foreignKey.equals(Country.CAPITAL_FK)) {
       //only show cities for currently selected country
       addEntityListener(country ->
-              comboBoxModel.setIncludeCondition(cityEntity ->
+              comboBoxModel.includeCondition().set(cityEntity ->
                       cityEntity.castTo(City.class)
                               .isInCountry(country)));
     }

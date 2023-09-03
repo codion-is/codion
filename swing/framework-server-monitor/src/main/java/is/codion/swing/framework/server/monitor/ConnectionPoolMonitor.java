@@ -110,35 +110,35 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the pool connection timeout in milliseconds
    */
-  public Value<Integer> pooledConnectionTimeoutValue() {
+  public Value<Integer> pooledConnectionTimeout() {
     return pooledConnectionTimeoutValue;
   }
 
   /**
    * @return the pool maintenance interval in seconds
    */
-  public Value<Integer> poolCleanupIntervalValue() {
+  public Value<Integer> poolCleanupInterval() {
     return pooledCleanupIntervalValue;
   }
 
   /**
    * @return the minimum pool size to maintain
    */
-  public Value<Integer> minimumPoolSizeValue() {
+  public Value<Integer> minimumPoolSize() {
     return minimumPoolSizeValue;
   }
 
   /**
    * @return the maximum allowed pool size
    */
-  public Value<Integer> maximumPoolSizeValue() {
+  public Value<Integer> maximumPoolSize() {
     return maximumPoolSizeValue;
   }
 
   /**
    * @return the maximum wait time for a connection
    */
-  public Value<Integer> maximumCheckOutTimeValue() {
+  public Value<Integer> maximumCheckOutTime() {
     return maximumCheckoutTimeValue;
   }
 
@@ -208,14 +208,14 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the State controlling whether snapshot statistics are collected
    */
-  public State collectSnapshotStatisticsState() {
+  public State collectSnapshotStatistics() {
     return collectSnapshotStatisticsState;
   }
 
   /**
    * @return the State controlling whether checkout times are collected
    */
-  public State collectCheckOutTimesState() {
+  public State collectCheckOutTimes() {
     return collectCheckOutTimesState;
   }
 
@@ -229,7 +229,7 @@ public final class ConnectionPoolMonitor {
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> updateIntervalValue() {
+  public Value<Integer> updateInterval() {
     return updateIntervalValue;
   }
 

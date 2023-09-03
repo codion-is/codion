@@ -556,7 +556,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleConditionPanel() {
     if (conditionPanel != null) {
-      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedViewState(), conditionPanelVisibleState);
+      toggleConditionPanel(conditionPanelScrollPane, conditionPanel.advancedView(), conditionPanelVisibleState);
     }
   }
 
@@ -565,7 +565,7 @@ public class EntityTablePanel extends JPanel {
    */
   public final void toggleFilterPanel() {
     if (filterPanel != null) {
-      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedViewState(), filterPanelVisibleState);
+      toggleConditionPanel(filterPanelScrollPane, filterPanel.advancedView(), filterPanelVisibleState);
     }
   }
 
@@ -1135,8 +1135,8 @@ public class EntityTablePanel extends JPanel {
    * @see EntityEditModel#updateEnabledObserver()
    */
   private Controls createEditSelectedControls() {
-    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmptyObserver();
-    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
+    StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabled();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls editControls = Controls.builder()
             .name(FrameworkMessages.edit())
@@ -1161,7 +1161,7 @@ public class EntityTablePanel extends JPanel {
   private Control createViewDependenciesControl() {
     return Control.builder(this::viewSelectionDependencies)
             .name(FrameworkMessages.dependencies())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .description(FrameworkMessages.dependenciesTip())
             .smallIcon(FrameworkIcons.instance().dependencies())
             .build();
@@ -1175,8 +1175,8 @@ public class EntityTablePanel extends JPanel {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
             .enabledObserver(State.and(
-                    tableModel.editModel().deleteEnabledObserver(),
-                    tableModel.selectionModel().selectionNotEmptyObserver()))
+                    tableModel.editModel().deleteEnabled(),
+                    tableModel.selectionModel().selectionNotEmpty()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(FrameworkIcons.instance().delete())
             .build();
@@ -1230,7 +1230,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createClearSelectionControl() {
     return Control.builder(tableModel.selectionModel()::clearSelection)
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .smallIcon(FrameworkIcons.instance().clearSelection())
             .description(MESSAGES.getString("clear_selection_tip"))
             .build();
@@ -1283,7 +1283,7 @@ public class EntityTablePanel extends JPanel {
   private Control createCopyCellControl() {
     return Control.builder(table::copySelectedCell)
             .name(FrameworkMessages.copyCell())
-            .enabledObserver(tableModel.selectionModel().selectionNotEmptyObserver())
+            .enabledObserver(tableModel.selectionModel().selectionNotEmpty())
             .build();
   }
 
@@ -1318,7 +1318,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createConditionRefreshControl() {
     return Control.builder(tableModel::refresh)
-            .enabledObserver(tableModel.conditionChangedObserver())
+            .enabledObserver(tableModel.conditionChanged())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
   }
@@ -1582,7 +1582,7 @@ public class EntityTablePanel extends JPanel {
       conditionControls.addAll(conditionPanelControls);
       conditionControls.addSeparator();
     }
-    conditionControls.add(ToggleControl.builder(tableModel.conditionRequiredState())
+    conditionControls.add(ToggleControl.builder(tableModel.conditionRequired())
             .name(MESSAGES.getString("require_query_condition"))
             .description(MESSAGES.getString("require_query_condition_description"))
             .build());

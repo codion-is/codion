@@ -87,7 +87,7 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   }
 
   @Override
-  public final StateObserver connectionValidObserver() {
+  public final StateObserver connectionValid() {
     return connectionValidState.observer();
   }
 

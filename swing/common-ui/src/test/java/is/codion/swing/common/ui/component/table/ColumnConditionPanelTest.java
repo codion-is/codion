@@ -27,7 +27,7 @@ public class ColumnConditionPanelTest {
   @Test
   void lockedModel() {
     ColumnConditionModel<String, String> model = ColumnConditionModel.builder("key", String.class).build();
-    model.setLocked(true);
+    model.locked().set(true);
     columnConditionPanel(model);
   }
 }

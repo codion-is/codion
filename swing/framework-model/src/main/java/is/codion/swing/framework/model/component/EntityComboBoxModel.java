@@ -80,7 +80,7 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     setItemSupplier(new ItemSupplier());
     setItemValidator(new ItemValidator());
     setStaticData(this.entities.definition(entityType).isStaticData());
-    setIncludeCondition(foreignKeyIncludeCondition);
+    includeCondition().set(foreignKeyIncludeCondition);
     refresher().addRefreshListener(() -> forceRefresh = false);
     refresher().addRefreshFailedListener(throwable -> forceRefresh = false);
     addEditListeners();
@@ -261,10 +261,10 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
 
   /**
    * Use this method to retrieve the default foreign key filter include condition if you
-   * want to add a custom {@link Predicate} to this model via {@link #setIncludeCondition(Predicate)}.
+   * want to add a custom {@link Predicate} to this model via {@link #includeCondition()}.
    * <pre>
    *   Predicate fkCondition = model.foreignKeyIncludeCondition();
-   *   model.setIncludeCondition(item -&gt; fkCondition.test(item) &amp;&amp; ...);
+   *   model.includeCondition().set(item -&gt; fkCondition.test(item) &amp;&amp; ...);
    * </pre>
    * @return the {@link Predicate} based on the foreign key filter entities
    * @see #setForeignKeyFilterKeys(ForeignKey, Collection)
@@ -286,7 +286,8 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
     else {
       foreignKeyFilterKeys.put(foreignKey, new HashSet<>(keys));
     }
-    setIncludeCondition(foreignKeyIncludeCondition);
+    includeCondition().set(foreignKeyIncludeCondition);
+    filterItems();
   }
 
   /**
@@ -443,11 +444,11 @@ public class EntityComboBoxModel extends FilteredComboBoxModel<Entity> {
   private void linkFilter(ForeignKey foreignKey, EntityComboBoxModel foreignKeyModel) {
     Predicate<Entity> filterAllCondition = item -> false;
     if (strictForeignKeyFiltering) {
-      setIncludeCondition(filterAllCondition);
+      includeCondition().set(filterAllCondition);
     }
     foreignKeyModel.addSelectionListener(selected -> {
       if (selected == null && isStrictForeignKeyFiltering()) {
-        setIncludeCondition(filterAllCondition);
+        includeCondition().set(filterAllCondition);
       }
       else {
         setForeignKeyFilterKeys(foreignKey, selected == null ? emptyList() : singletonList(selected.primaryKey()));

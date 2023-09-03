@@ -27,7 +27,7 @@ public final class ContinentModel extends SwingEntityModel {
     super(Continent.TYPE, connectionProvider);
     tableModel().refresher().addRefreshListener(this::refreshChartDatasets);
     CountryModel countryModel = new CountryModel(connectionProvider);
-    addDetailModel(new CountryModelLink(countryModel)).setActive(true);
+    addDetailModel(new CountryModelLink(countryModel)).active().set(true);
   }
 
   public PieDataset<String> populationDataset() {
@@ -67,8 +67,8 @@ public final class ContinentModel extends SwingEntityModel {
       editModel().setReadOnly(true);
       ColumnConditionModel<?, ?> continentConditionModel =
               tableModel().conditionModel().conditionModel(Country.CONTINENT);
-      continentConditionModel.automaticWildcardValue().set(AutomaticWildcard.NONE);
-      continentConditionModel.caseSensitiveState().set(true);
+      continentConditionModel.automaticWildcard().set(AutomaticWildcard.NONE);
+      continentConditionModel.caseSensitive().set(true);
     }
   }
 

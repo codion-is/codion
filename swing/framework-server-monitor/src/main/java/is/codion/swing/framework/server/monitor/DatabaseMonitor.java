@@ -102,7 +102,7 @@ public final class DatabaseMonitor {
   /**
    * @return the value controlling the update interval
    */
-  public Value<Integer> updateIntervalValue() {
+  public Value<Integer> updateInterval() {
     return updateIntervalValue;
   }
 

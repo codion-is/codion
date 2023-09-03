@@ -115,7 +115,7 @@ public final class ClientMonitorPanel extends JPanel {
     return menu(Controls.builder()
             .control(Control.builder(this::disconnect)
                     .name("Disconnect")
-                    .enabledObserver(model.clientInstanceTableModel().selectionModel().selectionNotEmptyObserver()))
+                    .enabledObserver(model.clientInstanceTableModel().selectionModel().selectionNotEmpty()))
             .build())
             .createPopupMenu();
   }
@@ -128,7 +128,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void toggleAdvancedFilters(Boolean advanced) {
-    clientInstanceTable.filterPanel().advancedViewState().set(advanced);
+    clientInstanceTable.filterPanel().advancedView().set(advanced);
     revalidate();
   }
 

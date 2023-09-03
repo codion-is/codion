@@ -144,32 +144,32 @@ public class FilteredComboBoxModelTest {
   @Test
   void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
-    testModel.setIncludeCondition(item -> !item.equals(BJORN));
+    testModel.includeCondition().set(item -> !item.equals(BJORN));
     assertEquals(NULL, testModel.getSelectedItem());
     assertNull(testModel.selectedValue());
 
-    testModel.setIncludeCondition(null);
+    testModel.includeCondition().set(null);
     testModel.setFilterSelectedItem(false);
     assertFalse(testModel.isFilterSelectedItem());
     testModel.setSelectedItem(BJORN);
-    testModel.setIncludeCondition(item -> !item.equals(BJORN));
+    testModel.includeCondition().set(item -> !item.equals(BJORN));
     assertNotNull(testModel.getSelectedItem());
     assertEquals(BJORN, testModel.selectedValue());
   }
 
   @Test
-  void setIncludeCondition() {
+  void includeCondition() {
     testModel.addListDataListener(listDataListener);
 
-    testModel.setIncludeCondition(item -> false);
+    testModel.includeCondition().set(item -> false);
     assertEquals(1, testModel.getSize());
-    testModel.setIncludeCondition(item -> true);
+    testModel.includeCondition().set(item -> true);
     assertEquals(6, testModel.getSize());
-    testModel.setIncludeCondition(item -> !item.equals(ANNA));
+    testModel.includeCondition().set(item -> !item.equals(ANNA));
     assertEquals(5, testModel.getSize());
     assertFalse(testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
-    testModel.setIncludeCondition(item -> item.equals(ANNA));
+    testModel.includeCondition().set(item -> item.equals(ANNA));
     assertEquals(2, testModel.getSize());
     assertTrue(testModel.isVisible(ANNA));
 
@@ -191,9 +191,9 @@ public class FilteredComboBoxModelTest {
   @Test
   void removeItem() {
     //remove filtered item
-    testModel.setIncludeCondition(item -> !item.equals(BJORN));
+    testModel.includeCondition().set(item -> !item.equals(BJORN));
     testModel.removeItem(BJORN);
-    testModel.setIncludeCondition(null);
+    testModel.includeCondition().set(null);
     assertFalse(testModel.isVisible(BJORN));
 
     //remove visible item
@@ -205,7 +205,7 @@ public class FilteredComboBoxModelTest {
   void addItem() {
     testModel.clear();
     //add filtered item
-    testModel.setIncludeCondition(item -> !item.equals(BJORN));
+    testModel.includeCondition().set(item -> !item.equals(BJORN));
     testModel.addItem(BJORN);
     assertFalse(testModel.isVisible(BJORN));
 
@@ -213,7 +213,7 @@ public class FilteredComboBoxModelTest {
     testModel.addItem(KALLI);
     assertTrue(testModel.isVisible(KALLI));
 
-    testModel.setIncludeCondition(null);
+    testModel.includeCondition().set(null);
     assertTrue(testModel.isVisible(BJORN));
   }
 

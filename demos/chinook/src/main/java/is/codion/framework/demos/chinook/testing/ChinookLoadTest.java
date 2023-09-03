@@ -53,23 +53,23 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppModel> 
 
     SwingEntityModel customerModel = applicationModel.entityModel(Customer.TYPE);
     SwingEntityModel invoiceModel = customerModel.detailModel(Invoice.TYPE);
-    customerModel.detailModelLink(invoiceModel).setActive(true);
+    customerModel.detailModelLink(invoiceModel).active().set(true);
 
     SwingEntityModel artistModel = applicationModel.entityModel(Artist.TYPE);
     SwingEntityModel albumModel = artistModel.detailModel(Album.TYPE);
     SwingEntityModel trackModel = albumModel.detailModel(Track.TYPE);
 
-    artistModel.detailModelLink(albumModel).setActive(true);
-    albumModel.detailModelLink(trackModel).setActive(true);
+    artistModel.detailModelLink(albumModel).active().set(true);
+    albumModel.detailModelLink(trackModel).active().set(true);
 
     SwingEntityModel playlistModel = applicationModel.entityModel(Playlist.TYPE);
     SwingEntityModel playlistTrackModel = playlistModel.detailModel(PlaylistTrack.TYPE);
-    playlistModel.detailModelLink(playlistTrackModel).setActive(true);
+    playlistModel.detailModelLink(playlistTrackModel).active().set(true);
 
     /* Add a Genre model used in the ViewGenre scenario */
     SwingEntityModel genreModel = new SwingEntityModel(Genre.TYPE, applicationModel.connectionProvider());
     SwingEntityModel genreTrackModel = new SwingEntityModel(Track.TYPE, applicationModel.connectionProvider());
-    genreModel.addDetailModel(genreTrackModel).setActive(true);
+    genreModel.addDetailModel(genreTrackModel).active().set(true);
 
     applicationModel.addEntityModel(genreModel);
 

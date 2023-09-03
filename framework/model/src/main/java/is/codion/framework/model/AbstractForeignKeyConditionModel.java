@@ -6,7 +6,6 @@ package is.codion.framework.model;
 import is.codion.common.Operator;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.value.Value;
 import is.codion.common.value.ValueSet;
 import is.codion.framework.domain.entity.Entity;
@@ -37,8 +36,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final State caseSensitiveState() {
-    return conditionModel.caseSensitiveState();
+  public final State caseSensitive() {
+    return conditionModel.caseSensitive();
   }
 
   @Override
@@ -52,13 +51,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final void setLocked(boolean locked) {
-    conditionModel.setLocked(locked);
-  }
-
-  @Override
-  public final boolean isLocked() {
-    return conditionModel.isLocked();
+  public final State locked() {
+    return conditionModel.locked();
   }
 
   @Override
@@ -107,18 +101,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final Operator getOperator() {
-    return conditionModel.getOperator();
-  }
-
-  @Override
-  public final void setOperator(Operator operator) {
-    conditionModel.setOperator(operator);
-  }
-
-  @Override
-  public final Value<Operator> operatorValue() {
-    return conditionModel.operatorValue();
+  public final Value<Operator> operator() {
+    return conditionModel.operator();
   }
 
   @Override
@@ -132,23 +116,18 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final boolean isEnabled() {
-    return conditionModel.isEnabled();
+  public final State enabled() {
+    return conditionModel.enabled();
   }
 
   @Override
-  public final void setEnabled(boolean enabled) {
-    conditionModel.setEnabled(enabled);
+  public final Value<AutomaticWildcard> automaticWildcard() {
+    return conditionModel.automaticWildcard();
   }
 
   @Override
-  public final Value<AutomaticWildcard> automaticWildcardValue() {
-    return conditionModel.automaticWildcardValue();
-  }
-
-  @Override
-  public final State autoEnableState() {
-    return conditionModel.autoEnableState();
+  public final State autoEnable() {
+    return conditionModel.autoEnable();
   }
 
   @Override
@@ -159,11 +138,6 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   @Override
   public final boolean accepts(Comparable<Entity> columnValue) {
     return conditionModel.accepts(columnValue);
-  }
-
-  @Override
-  public final StateObserver lockedObserver() {
-    return conditionModel.lockedObserver();
   }
 
   @Override
@@ -179,11 +153,6 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   @Override
   public final Value<Entity> upperBoundValue() {
     return conditionModel.upperBoundValue();
-  }
-
-  @Override
-  public final State enabledState() {
-    return conditionModel.enabledState();
   }
 
   @Override

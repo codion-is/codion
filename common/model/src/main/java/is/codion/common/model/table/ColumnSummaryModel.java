@@ -39,7 +39,7 @@ public interface ColumnSummaryModel {
   /**
    * @return the locked state, if true then changing summary type is disabled
    */
-  State lockedState();
+  State locked();
 
   /**
    * @return a list containing the available summaries
@@ -49,12 +49,12 @@ public interface ColumnSummaryModel {
   /**
    * @return the value controlling the summary
    */
-  Value<Summary> summaryValue();
+  Value<Summary> summary();
 
   /**
    * @return an observer for the string representing the summary value
    */
-  ValueObserver<String> summaryTextObserver();
+  ValueObserver<String> summaryText();
 
   /**
    * Instantiates a new {@link ColumnSummaryModel}

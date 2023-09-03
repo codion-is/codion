@@ -4,7 +4,6 @@
 package is.codion.framework.model;
 
 import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 
 import java.util.Collection;
 import java.util.Map;
@@ -31,7 +30,7 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
   public DefaultDetailModelLink(M detailModel) {
     this.detailModel = requireNonNull(detailModel, "detailModel");
     if (detailModel.containsTableModel()) {
-      detailModel.tableModel().conditionRequiredState().set(true);
+      detailModel.tableModel().conditionRequired().set(true);
     }
   }
 
@@ -41,17 +40,7 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
   }
 
   @Override
-  public final StateObserver activeObserver() {
-    return activeState.observer();
-  }
-
-  @Override
-  public final boolean isActive() {
-    return activeState.get();
-  }
-
-  @Override
-  public final void setActive(boolean active) {
-    activeState.set(active);
+  public final State active() {
+    return activeState;
   }
 }

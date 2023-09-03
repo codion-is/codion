@@ -97,7 +97,7 @@ public interface EntityEditModel {
    * Basing the result of this function on a database query is not recommended since it is called very frequently,
    * as in, every time an attribute value changes.
    * @return true if the active entity is new, that is, does not represent a persistent row
-   * @see #primaryKeyNullObserver
+   * @see #primaryKeyNull
    * @see Entity.Key#isNull()
    */
   boolean isEntityNew();
@@ -190,18 +190,18 @@ public interface EntityEditModel {
 
   /**
    * @return true if this model is read only, that is if the insert, update and delete operations are not enabled
-   * @see #isInsertEnabled()
-   * @see #isUpdateEnabled()
-   * @see #isDeleteEnabled()
+   * @see #insertEnabled()
+   * @see #updateEnabled()
+   * @see #deleteEnabled()
    */
   boolean isReadOnly();
 
   /**
    * Makes this model read-only by disabling insert, update and delete
    * @param readOnly the read only status
-   * @see #setInsertEnabled(boolean)
-   * @see #setUpdateEnabled(boolean)
-   * @see #setDeleteEnabled(boolean)
+   * @see #insertEnabled()
+   * @see #updateEnabled()
+   * @see #deleteEnabled()
    */
   void setReadOnly(boolean readOnly);
 
@@ -218,34 +218,19 @@ public interface EntityEditModel {
   void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
-   * @return true if this model should enable records to be inserted
+   * @return the state controlling whether inserting is enabled via this edit model
    */
-  boolean isInsertEnabled();
+  State insertEnabled();
 
   /**
-   * @param insertEnabled true if this model should enable inserts
+   * @return the state controlling whether updating is enabled via this edit model
    */
-  void setInsertEnabled(boolean insertEnabled);
+  State updateEnabled();
 
   /**
-   * @return true if this model should enable records to be updated
+   * @return the state controlling whether deleting is enabled via this edit model
    */
-  boolean isUpdateEnabled();
-
-  /**
-   * @param updateEnabled true if this model should enable records to be updated
-   */
-  void setUpdateEnabled(boolean updateEnabled);
-
-  /**
-   * @return true if this model should allow records to be deleted
-   */
-  boolean isDeleteEnabled();
-
-  /**
-   * @param deleteEnabled true if this model should enable records to be deleted
-   */
-  void setDeleteEnabled(boolean deleteEnabled);
+  State deleteEnabled();
 
   /**
    * Returns true if this edit model posts its insert, update and delete events on the
@@ -300,7 +285,7 @@ public interface EntityEditModel {
    * the modified state of the underlying entity. The default supplier returns {@link Entity#isModified()}.
    * @param modifiedSupplier specifies whether the underlying entity is modified
    * @see Entity#isModified()
-   * @see #modifiedObserver()
+   * @see #modified()
    */
   void setModifiedSupplier(Supplier<Boolean> modifiedSupplier);
 
@@ -401,7 +386,7 @@ public interface EntityEditModel {
   /**
    * @return true if the underlying Entity is modified
    * @see #setModifiedSupplier(Supplier)
-   * @see #modifiedObserver()
+   * @see #modified()
    */
   boolean isModified();
 
@@ -481,23 +466,23 @@ public interface EntityEditModel {
 
   /**
    * @return true if the underlying Entity contains only valid values
-   * @see #validObserver()
+   * @see #entityValid()
    */
-  boolean isValid();
+  boolean isEntityValid();
 
   /**
    * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
    * @see #validator()
-   * @see #isValid()
+   * @see #isEntityValid()
    */
-  StateObserver validObserver();
+  StateObserver entityValid();
 
   /**
    * Returns a {@link StateObserver} responsible for indicating when and if any values in the underlying Entity have been modified.
    * @return a {@link StateObserver} indicating the modified state of this edit model, not null
    * @see #isModified()
    */
-  StateObserver modifiedObserver();
+  StateObserver modified();
 
   /**
    * Returns a {@link StateObserver} instance indicating whether the value of the given attribute has been modified.
@@ -521,38 +506,17 @@ public interface EntityEditModel {
    * @return a {@link StateObserver} indicating whether the active entity is new
    * @see #isEntityNew()
    */
-  StateObserver entityNewObserver();
-
-  /**
-   * @return the {@link StateObserver} used to determine if deleting should be enabled
-   * @see #isDeleteEnabled()
-   * @see #setDeleteEnabled(boolean)
-   */
-  StateObserver deleteEnabledObserver();
+  StateObserver entityNew();
 
   /**
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
-  StateObserver primaryKeyNullObserver();
-
-  /**
-   * @return the {@link StateObserver} used to determine if updating should be enabled
-   * @see #isUpdateEnabled()
-   * @see #setUpdateEnabled(boolean)
-   */
-  StateObserver updateEnabledObserver();
-
-  /**
-   * @return the {@link StateObserver} used to determine if inserting should be enabled
-   * @see #isInsertEnabled()
-   * @see #setInsertEnabled(boolean)
-   */
-  StateObserver insertEnabledObserver();
+  StateObserver primaryKeyNull();
 
   /**
    * @return a {@link StateObserver} active while data models (such as combo box models) are being refreshed
    */
-  StateObserver refreshingObserver();
+  StateObserver refreshing();
 
   /**
    * Adds a listener notified each time the value associated with the given attribute is edited via

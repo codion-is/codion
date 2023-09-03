@@ -87,25 +87,9 @@ public interface EntitySearchModel {
   void resetSearchString();
 
   /**
-   * Sets the search string to use when performing the next search
-   * @param searchString the search string
-   */
-  void setSearchString(String searchString);
-
-  /**
-   * @return the current search string value
-   */
-  String getSearchString();
-
-  /**
    * @return the Value controlling the wildcard character
    */
-  Value<Character> wildcardValue();
-
-  /**
-   * @return true if the current search string represents the selected entities
-   */
-  boolean searchStringRepresentsSelected();
+  Value<Character> wildcard();
 
   /**
    * Performs a query based on the current search configuration
@@ -147,12 +131,12 @@ public interface EntitySearchModel {
   /**
    * @return a StateObserver indicating whether the search string represents the selected entities
    */
-  StateObserver searchStringRepresentsSelectedObserver();
+  StateObserver searchStringRepresentsSelected();
 
   /**
    * @return a StateObserver indicating whether the selection is empty
    */
-  StateObserver selectionEmptyObserver();
+  StateObserver selectionEmpty();
 
   /**
    * @return the settings associated with the search Column
@@ -162,17 +146,17 @@ public interface EntitySearchModel {
   /**
    * @return the Value representing the search string
    */
-  Value<String> searchStringValue();
+  Value<String> searchString();
 
   /**
    * @return the Value representing the multiple item separator setting
    */
-  Value<String> multipleItemSeparatorValue();
+  Value<String> multipleItemSeparator();
 
   /**
    * @return the State representing the single selection enabled setting
    */
-  State singleSelectionState();
+  State singleSelection();
 
   /**
    * Attribute search settings
@@ -182,17 +166,17 @@ public interface EntitySearchModel {
     /**
      * @return a State representing whether a wildcard is automatically prepended to the search string
      */
-    State wildcardPrefixState();
+    State wildcardPrefix();
 
     /**
      * @return a State representing whether a wildcard is automatically appended to the search string
      */
-    State wildcardPostfixState();
+    State wildcardPostfix();
 
     /**
      * @return a State representing whether the search is case-sensitive
      */
-    State caseSensitiveState();
+    State caseSensitive();
   }
 
   /**

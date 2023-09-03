@@ -352,7 +352,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     P applicationPanel = initializeApplicationPanel(applicationModel);
 
     JFrame applicationFrame = applicationFrame(applicationPanel);
-    applicationModel.connectionValidObserver().addDataListener(connectionValid ->
+    applicationModel.connectionValid().addDataListener(connectionValid ->
             SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
 
     if (setUncaughtExceptionHandler) {
@@ -427,7 +427,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
         frame.setJMenuBar(menuBar);
       }
     }
-    frame.setAlwaysOnTop(applicationPanel.alwaysOnTopState().get());
+    frame.setAlwaysOnTop(applicationPanel.alwaysOnTop().get());
 
     return frame;
   }
@@ -444,7 +444,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private String frameTitle(M applicationModel) {
     String title = frameTitleFactory.apply(applicationModel);
 
-    return applicationModel.connectionValidObserver().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
+    return applicationModel.connectionValid().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
   }
 
   private EntityConnectionProvider initializeConnectionProvider(User user) {

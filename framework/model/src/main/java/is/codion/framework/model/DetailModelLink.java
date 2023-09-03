@@ -3,7 +3,7 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.state.StateObserver;
+import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
 
 import java.util.Collection;
@@ -23,21 +23,11 @@ public interface DetailModelLink<M extends EntityModel<M, E, T>, E extends Entit
   M detailModel();
 
   /**
-   * @return an observer for the active state
-   */
-  StateObserver activeObserver();
-
-  /**
-   * @return true if this link is active
-   */
-  boolean isActive();
-
-  /**
-   * Sets the active state of this link. Active detail model handlers update and filter
+   * Controls the active status of this link. Active detail model handlers update and filter
    * the detail model according to the entity/entities selected in the master model.
-   * @param active true if this link should be activated
+   * @return the state controlling the active status of this detail model link
    */
-  void setActive(boolean active);
+  State active();
 
   /**
    * Called when the selection changes in the master model

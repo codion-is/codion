@@ -277,7 +277,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final State conditionRequiredState() {
+  public final State conditionRequired() {
     return conditionRequiredState;
   }
 
@@ -359,12 +359,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final boolean isDeleteEnabled() {
-    return editModel != null && editModel.isDeleteEnabled();
+    return editModel != null && editModel.deleteEnabled().get();
   }
 
   @Override
   public final boolean isUpdateEnabled() {
-    return editModel != null && editModel.isUpdateEnabled();
+    return editModel != null && editModel.updateEnabled().get();
   }
 
   @Override
@@ -544,7 +544,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final StateObserver conditionChangedObserver() {
+  public final StateObserver conditionChanged() {
     return conditionChangedState.observer();
   }
 
@@ -566,13 +566,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Predicate<Entity> getIncludeCondition() {
-    return tableModel.getIncludeCondition();
-  }
-
-  @Override
-  public final void setIncludeCondition(Predicate<Entity> includeCondition) {
-    tableModel.setIncludeCondition(includeCondition);
+  public Value<Predicate<Entity>> includeCondition() {
+    return tableModel.includeCondition();
   }
 
   @Override
@@ -856,7 +851,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * order by clause ({@link #orderBy()}), the limit ({@link #getLimit()}) and select attributes
    * ({@link #attributes()}) when querying.
    * @return entities selected from the database according the query condition.
-   * @see #conditionRequiredState()
+   * @see #conditionRequired()
    * @see #isConditionEnabled()
    * @see EntityTableConditionModel#condition()
    */
@@ -876,11 +871,11 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   /**
    * It can be necessary to prevent the user from selecting too much data, when working with a large dataset.
-   * This can be done by enabling the {@link #conditionRequiredState()}, which prevents a refresh as long as this
+   * This can be done by enabling the {@link #conditionRequired()}, which prevents a refresh as long as this
    * method returns {@code false}. This default implementation simply returns {@link EntityTableConditionModel#isEnabled()}.
    * Override for a more fine grained control, such as requiring a specific column condition to be enabled.
    * @return true if enough conditions are enabled for a safe refresh
-   * @see #conditionRequiredState()
+   * @see #conditionRequired()
    */
   protected boolean isConditionEnabled() {
     return conditionModel.isEnabled();
@@ -1083,12 +1078,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private void onColumnHidden(Attribute<?> attribute) {
     //disable the condition and filter model for the column to be hidden, to prevent confusion
     ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
-    if (columnConditionModel != null && !columnConditionModel.isLocked()) {
-      columnConditionModel.setEnabled(false);
+    if (columnConditionModel != null && !columnConditionModel.locked().get()) {
+      columnConditionModel.enabled().set(false);
     }
     ColumnConditionModel<?, ?> filterModel = filterModel().conditionModels().get(attribute);
-    if (filterModel != null && !filterModel.isLocked()) {
-      filterModel.setEnabled(false);
+    if (filterModel != null && !filterModel.locked().get()) {
+      filterModel.enabled().set(false);
     }
   }
 
@@ -1129,9 +1124,9 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
       int index = columnModel().isColumnVisible(attribute) ? columnModel().getColumnIndex(attribute) : -1;
       ColumnConditionModel<?, ?> columnConditionModel = conditionModel.conditionModels().get(attribute);
       ConditionPreferences conditionPreferences = columnConditionModel != null ?
-              conditionPreferences(columnConditionModel.autoEnableState().get(),
-                      columnConditionModel.caseSensitiveState().get(),
-                      columnConditionModel.automaticWildcardValue().get()) : null;
+              conditionPreferences(columnConditionModel.autoEnable().get(),
+                      columnConditionModel.caseSensitive().get(),
+                      columnConditionModel.automaticWildcard().get()) : null;
       ColumnPreferences columnPreferences = columnPreferences(attribute, index, column.getWidth(), conditionPreferences);
       columnPreferencesRoot.put(attribute.name(), columnPreferences.toJSONObject());
     }

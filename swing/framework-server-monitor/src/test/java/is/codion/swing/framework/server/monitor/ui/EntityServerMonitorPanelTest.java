@@ -30,13 +30,13 @@ public class EntityServerMonitorPanelTest {
     EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
             EntityServerMonitorTest.CONFIGURATION.registryPort(), EntityServerMonitorTest.CONFIGURATION.adminUser()));
     ServerMonitor serverMonitor = panel.model().hostMonitors().iterator().next().serverMonitors().iterator().next();
-    serverMonitor.updateIntervalValue().set(1);
+    serverMonitor.updateInterval().set(1);
     DatabaseMonitor databaseMonitor = serverMonitor.databaseMonitor();
-    databaseMonitor.updateIntervalValue().set(1);
+    databaseMonitor.updateInterval().set(1);
     ConnectionPoolMonitor poolMonitor = databaseMonitor.connectionPoolMonitor().connectionPoolInstanceMonitors().iterator().next();
-    poolMonitor.collectSnapshotStatisticsState().set(true);
-    poolMonitor.collectCheckOutTimesState().set(true);
-    poolMonitor.updateIntervalValue().set(1);
+    poolMonitor.collectSnapshotStatistics().set(true);
+    poolMonitor.collectCheckOutTimes().set(true);
+    poolMonitor.updateInterval().set(1);
 
     Thread.sleep(1000);
     poolMonitor.resetStatistics();

@@ -25,7 +25,6 @@ import java.util.ResourceBundle;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static is.codion.common.NullOrEmpty.nullOrEmpty;
 import static is.codion.swing.common.ui.control.Control.control;
 import static java.awt.event.KeyEvent.*;
 import static java.util.Objects.requireNonNull;
@@ -39,7 +38,7 @@ public final class SearchHighlighter {
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(SearchHighlighter.class.getName());
 
   private final Document document;
-  private final Value<String> searchStringValue = Value.value();
+  private final Value<String> searchStringValue = Value.value("", "");
   private final State caseSensitiveState = State.state();
   private final Highlighter highlighter = new DefaultHighlighter();
   private final List<MatchPosition> searchTextPositions = new ArrayList<>();
@@ -58,14 +57,14 @@ public final class SearchHighlighter {
   /**
    * @return the search string value
    */
-  public Value<String> searchStringValue() {
+  public Value<String> searchString() {
     return searchStringValue;
   }
 
   /**
    * @return the state controlling whether the search is case-sensitive.
    */
-  public State caseSensitiveState() {
+  public State caseSensitive() {
     return caseSensitiveState;
   }
 
@@ -156,7 +155,7 @@ public final class SearchHighlighter {
     selectedSearchTextPosition.set(null);
     highlighter.removeAllHighlights();
     searchTextPositions.clear();
-    if (!nullOrEmpty(searchStringValue.get())) {
+    if (!searchStringValue.get().isEmpty()) {
       Pattern pattern = Pattern.compile(searchStringValue.get(), caseSensitiveState.get() ? 0 : Pattern.CASE_INSENSITIVE);
       try {
         Matcher matcher = pattern.matcher(document.getText(0, document.getLength()));

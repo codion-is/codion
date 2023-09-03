@@ -62,7 +62,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   /**
    * @return the state controlling the advanced view state of this condition panel
    */
-  public State advancedViewState() {
+  public State advancedView() {
     return advancedViewState;
   }
 

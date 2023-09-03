@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,25 +33,17 @@ public interface FilteredModel<T> {
   PropertyValue<Boolean> ASYNC_REFRESH = Configuration.booleanValue("is.codion.common.model.FilteredModel.asyncRefresh", true);
 
   /**
-   * Filters this model according to the condition returned by {@link #getIncludeCondition()}.
+   * Filters this model according to the condition specified by {@link #includeCondition()}.
    * If no include condition is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
-   * @see #getIncludeCondition()
-   * @see #setIncludeCondition(Predicate)
+   * @see #includeCondition()
    */
   void filterItems();
 
   /**
-   * Returns the include condition used by this model, null if no include condition has been set.
-   * @return the include condition
+   * @return the include condition value
    */
-  Predicate<T> getIncludeCondition();
-
-  /**
-   * Sets the include condition and filters the model
-   * @param includeCondition the Predicate to use when filtering, null if no filtering should be performed
-   */
-  void setIncludeCondition(Predicate<T> includeCondition);
+  Value<Predicate<T>> includeCondition();
 
   /**
    * @return an unmodifiable view of all visible and filtered items in this model

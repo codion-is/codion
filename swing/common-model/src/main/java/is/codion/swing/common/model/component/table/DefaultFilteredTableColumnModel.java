@@ -51,7 +51,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   @Override
-  public State lockedState() {
+  public State locked() {
     return lockedState;
   }
 
