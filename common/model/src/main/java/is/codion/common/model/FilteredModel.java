@@ -8,6 +8,7 @@ import is.codion.common.event.Event;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.state.StateObserver;
+import is.codion.common.value.Value;
 
 import java.util.Collection;
 import java.util.List;
@@ -41,16 +42,9 @@ public interface FilteredModel<T> {
   void filterItems();
 
   /**
-   * Returns the include condition used by this model, null if no include condition has been set.
-   * @return the include condition
+   * @return the include condition value
    */
-  Predicate<T> getIncludeCondition();
-
-  /**
-   * Sets the include condition and filters the model
-   * @param includeCondition the Predicate to use when filtering, null if no filtering should be performed
-   */
-  void setIncludeCondition(Predicate<T> includeCondition);
+  Value<Predicate<T>> includeCondition();
 
   /**
    * @return an unmodifiable view of all visible and filtered items in this model

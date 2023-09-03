@@ -566,13 +566,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final Predicate<Entity> getIncludeCondition() {
-    return tableModel.getIncludeCondition();
-  }
-
-  @Override
-  public final void setIncludeCondition(Predicate<Entity> includeCondition) {
-    tableModel.setIncludeCondition(includeCondition);
+  public Value<Predicate<Entity>> includeCondition() {
+    return tableModel.includeCondition();
   }
 
   @Override

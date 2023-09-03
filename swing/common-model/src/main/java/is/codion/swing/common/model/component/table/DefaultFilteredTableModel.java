@@ -11,6 +11,7 @@ import is.codion.common.model.table.ColumnSummaryModel;
 import is.codion.common.model.table.ColumnSummaryModel.SummaryValueProvider;
 import is.codion.common.model.table.TableConditionModel;
 import is.codion.common.model.table.TableSummaryModel;
+import is.codion.common.value.Value;
 import is.codion.swing.common.model.component.AbstractFilteredModelRefresher;
 
 import javax.swing.event.TableModelEvent;
@@ -241,14 +242,8 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
   }
 
   @Override
-  public Predicate<R> getIncludeCondition() {
+  public Value<Predicate<R>> includeCondition() {
     return combinedIncludeCondition.includeCondition;
-  }
-
-  @Override
-  public void setIncludeCondition(Predicate<R> includeCondition) {
-    combinedIncludeCondition.includeCondition = includeCondition;
-    filterItems();
   }
 
   @Override
@@ -565,10 +560,11 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
 
     private final List<? extends ColumnConditionModel<? extends C, ?>> columnFilters;
 
-    private Predicate<R> includeCondition;
+    private final Value<Predicate<R>> includeCondition = Value.value();
 
     private CombinedIncludeCondition(Collection<? extends ColumnConditionModel<? extends C, ?>> columnFilters) {
       this.columnFilters = columnFilters == null ? Collections.emptyList() : new ArrayList<>(columnFilters);
+      includeCondition.addListener(DefaultFilteredTableModel.this::filterItems);
     }
 
     @Override
@@ -580,7 +576,7 @@ final class DefaultFilteredTableModel<R, C> extends AbstractTableModel implement
         }
       }
 
-      return includeCondition == null || includeCondition.test(item);
+      return includeCondition.isNull() || includeCondition.get().test(item);
     }
   }
 

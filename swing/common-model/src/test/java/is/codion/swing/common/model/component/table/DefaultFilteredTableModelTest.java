@@ -86,14 +86,14 @@ public final class DefaultFilteredTableModelTest {
   @Test
   void filterItems() {
     tableModel.refresh();
-    tableModel.setIncludeCondition(item -> !item.equals(B) && !item.equals(F));
+    tableModel.includeCondition().set(item -> !item.equals(B) && !item.equals(F));
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.containsItem(B));
     tableModel.addItemsAt(0, Collections.singletonList(F));
     tableModel.sortModel().setSortOrder(0, SortOrder.DESCENDING);
     assertFalse(tableModel.isVisible(F));
     assertTrue(tableModel.containsItem(F));
-    tableModel.setIncludeCondition(null);
+    tableModel.includeCondition().set(null);
     assertTrue(tableModel.isVisible(B));
     assertTrue(tableModel.isVisible(F));
   }
@@ -192,7 +192,7 @@ public final class DefaultFilteredTableModelTest {
     testModel.selectionModel().setSelectedItem(E);
     assertEquals(3, selectionEvents.get());
 
-    testModel.setIncludeCondition(item -> !item.equals(E));
+    testModel.includeCondition().set(item -> !item.equals(E));
     assertEquals(4, selectionEvents.get());
 
     items.add(B);
@@ -716,9 +716,9 @@ public final class DefaultFilteredTableModelTest {
   }
 
   @Test
-  void setIncludeCondition() {
+  void includeCondition() {
     tableModel.refresh();
-    tableModel.setIncludeCondition(item -> false);
+    tableModel.includeCondition().set(item -> false);
     assertEquals(0, tableModel.getRowCount());
   }
 
@@ -742,7 +742,7 @@ public final class DefaultFilteredTableModelTest {
   void filtering() {
     tableModel.refresh();
     assertTrue(tableModelContainsAll(ITEMS, false, tableModel));
-    assertNull(tableModel.getIncludeCondition());
+    assertTrue(tableModel.includeCondition().isNull());
 
     //test filters
     assertNotNull(tableModel.filterModel().conditionModel(0));
@@ -752,10 +752,10 @@ public final class DefaultFilteredTableModelTest {
     assertFalse(tableModel.isVisible(B));
     assertTrue(tableModel.isFiltered(D));
 
-    tableModel.setIncludeCondition(strings -> !strings.equals(A));
-    assertNotNull(tableModel.getIncludeCondition());
+    tableModel.includeCondition().set(strings -> !strings.equals(A));
+    assertTrue(tableModel.includeCondition().isNotNull());
     assertFalse(tableModel.isVisible(A));
-    tableModel.setIncludeCondition(null);
+    tableModel.includeCondition().set(null);
     assertTrue(tableModel.isVisible(A));
 
     assertFalse(tableModel.isVisible(B));

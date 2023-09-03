@@ -63,7 +63,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   private T selectedItem = null;
   private boolean includeNull;
   private T nullItem;
-  private Predicate<T> includeCondition;
+  private final Value<Predicate<T>> includeCondition = Value.value();
   private boolean filterSelectedItem = true;
 
   /**
@@ -79,6 +79,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public FilteredComboBoxModel() {
     this.sortComparator = new SortComparator<>();
     this.refresher = new DefaultRefresher(new DefaultItemSupplier());
+    includeCondition.addListener(this::filterItems);
   }
 
   @Override
@@ -137,10 +138,10 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   public final void filterItems() {
     visibleItems.addAll(filteredItems);
     filteredItems.clear();
-    if (includeCondition != null) {
+    if (includeCondition.isNotNull()) {
       for (Iterator<T> iterator = visibleItems.listIterator(); iterator.hasNext(); ) {
         T item = iterator.next();
-        if (item != null && !includeCondition.test(item)) {
+        if (item != null && !includeCondition.get().test(item)) {
           filteredItems.add(item);
           iterator.remove();
         }
@@ -185,13 +186,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
   }
 
   @Override
-  public final void setIncludeCondition(Predicate<T> includeCondition) {
-    this.includeCondition = includeCondition;
-    filterItems();
-  }
-
-  @Override
-  public final Predicate<T> getIncludeCondition() {
+  public final Value<Predicate<T>> includeCondition() {
     return includeCondition;
   }
 
@@ -229,7 +224,7 @@ public class FilteredComboBoxModel<T> implements FilteredModel<T>, ComboBoxModel
    */
   public final void addItem(T item) {
     validate(item);
-    if (includeCondition == null || includeCondition.test(item)) {
+    if (includeCondition.isNull() || includeCondition.get().test(item)) {
       if (!visibleItems.contains(item)) {
         visibleItems.add(item);
         sortVisibleItems();
