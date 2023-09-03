@@ -1136,7 +1136,7 @@ public class EntityTablePanel extends JPanel {
    */
   private Controls createEditSelectedControls() {
     StateObserver selectionNotEmpty = tableModel.selectionModel().selectionNotEmpty();
-    StateObserver updateEnabled = tableModel.editModel().updateEnabledObserver();
+    StateObserver updateEnabled = tableModel.editModel().updateEnabled();
     StateObserver enabledState = State.and(selectionNotEmpty, updateEnabled);
     Controls editControls = Controls.builder()
             .name(FrameworkMessages.edit())
@@ -1175,7 +1175,7 @@ public class EntityTablePanel extends JPanel {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
             .enabledObserver(State.and(
-                    tableModel.editModel().deleteEnabledObserver(),
+                    tableModel.editModel().deleteEnabled(),
                     tableModel.selectionModel().selectionNotEmpty()))
             .description(FrameworkMessages.deleteSelectedTip())
             .smallIcon(FrameworkIcons.instance().delete())

@@ -185,7 +185,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void isUpdateEnabled() {
     TableModel tableModel = createDetailTableModel();
     assertTrue(tableModel.isUpdateEnabled());
-    tableModel.editModel().setUpdateEnabled(false);
+    tableModel.editModel().updateEnabled().set(false);
     assertFalse(tableModel.isUpdateEnabled());
   }
 
@@ -193,7 +193,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   public void isDeleteEnabled() {
     TableModel tableModel = createDetailTableModel();
     assertTrue(tableModel.isDeleteEnabled());
-    tableModel.editModel().setDeleteEnabled(false);
+    tableModel.editModel().deleteEnabled().set(false);
     assertFalse(tableModel.isDeleteEnabled());
   }
 
@@ -204,7 +204,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void deleteNotEnabled() {
-    testModel.editModel().setDeleteEnabled(false);
+    testModel.editModel().deleteEnabled().set(false);
     assertFalse(testModel.isDeleteEnabled());
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(singletonList(0));
@@ -213,7 +213,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
 
   @Test
   public void updateNotEnabled() {
-    testModel.editModel().setUpdateEnabled(false);
+    testModel.editModel().updateEnabled().set(false);
     assertFalse(testModel.isUpdateEnabled());
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(singletonList(0));

@@ -218,34 +218,19 @@ public interface EntityEditModel {
   void setWarnAboutUnsavedData(boolean warnAboutUnsavedData);
 
   /**
-   * @return true if this model should enable records to be inserted
+   * @return the state controlling whether inserting is enabled via this edit model
    */
-  boolean isInsertEnabled();
+  State insertEnabled();
 
   /**
-   * @param insertEnabled true if this model should enable inserts
+   * @return the state controlling whether updating is enabled via this edit model
    */
-  void setInsertEnabled(boolean insertEnabled);
+  State updateEnabled();
 
   /**
-   * @return true if this model should enable records to be updated
+   * @return the state controlling whether deleting is enabled via this edit model
    */
-  boolean isUpdateEnabled();
-
-  /**
-   * @param updateEnabled true if this model should enable records to be updated
-   */
-  void setUpdateEnabled(boolean updateEnabled);
-
-  /**
-   * @return true if this model should allow records to be deleted
-   */
-  boolean isDeleteEnabled();
-
-  /**
-   * @param deleteEnabled true if this model should enable records to be deleted
-   */
-  void setDeleteEnabled(boolean deleteEnabled);
+  State deleteEnabled();
 
   /**
    * Returns true if this edit model posts its insert, update and delete events on the
@@ -524,30 +509,9 @@ public interface EntityEditModel {
   StateObserver entityNewObserver();
 
   /**
-   * @return the {@link StateObserver} used to determine if deleting should be enabled
-   * @see #isDeleteEnabled()
-   * @see #setDeleteEnabled(boolean)
-   */
-  StateObserver deleteEnabledObserver();
-
-  /**
    * @return a {@link StateObserver} indicating whether the primary key of the active entity is null
    */
   StateObserver primaryKeyNullObserver();
-
-  /**
-   * @return the {@link StateObserver} used to determine if updating should be enabled
-   * @see #isUpdateEnabled()
-   * @see #setUpdateEnabled(boolean)
-   */
-  StateObserver updateEnabledObserver();
-
-  /**
-   * @return the {@link StateObserver} used to determine if inserting should be enabled
-   * @see #isInsertEnabled()
-   * @see #setInsertEnabled(boolean)
-   */
-  StateObserver insertEnabledObserver();
 
   /**
    * @return a {@link StateObserver} active while data models (such as combo box models) are being refreshed

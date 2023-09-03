@@ -9488,3 +9488,4 @@
   ColumnConditionModel.getSetOperator() replaced with Value based operator()
   ColumnSummaryModel.lockedState(), summaryValue() and summaryTextObserver() renamed locked(), summary() and summaryText() respectively
   TableSelectionModel, Observer and State suffix removed from method names
+  EntityEditModel.insertEnabled(), updateEnabled() and deleteEnabled() replace setters, getters and observers

@@ -359,12 +359,12 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final boolean isDeleteEnabled() {
-    return editModel != null && editModel.isDeleteEnabled();
+    return editModel != null && editModel.deleteEnabled().get();
   }
 
   @Override
   public final boolean isUpdateEnabled() {
-    return editModel != null && editModel.isUpdateEnabled();
+    return editModel != null && editModel.updateEnabled().get();
   }
 
   @Override

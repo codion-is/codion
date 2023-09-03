@@ -682,13 +682,13 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
   }
 
   private void setupEditControls() {
-    if (editModel().isInsertEnabled() && controlCodes.contains(ControlCode.INSERT)) {
+    if (editModel().insertEnabled().get() && controlCodes.contains(ControlCode.INSERT)) {
       controls.putIfAbsent(ControlCode.INSERT, createInsertControl());
     }
-    if (editModel().isUpdateEnabled() && controlCodes.contains(ControlCode.UPDATE)) {
+    if (editModel().updateEnabled().get() && controlCodes.contains(ControlCode.UPDATE)) {
       controls.putIfAbsent(ControlCode.UPDATE, createUpdateControl());
     }
-    if (editModel().isDeleteEnabled() && controlCodes.contains(ControlCode.DELETE)) {
+    if (editModel().deleteEnabled().get() && controlCodes.contains(ControlCode.DELETE)) {
       controls.putIfAbsent(ControlCode.DELETE, createDeleteControl());
     }
   }
@@ -707,7 +707,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::deleteWithConfirmation)
             .name(FrameworkMessages.delete())
             .enabledObserver(State.and(activeState,
-                    editModel().deleteEnabledObserver(),
+                    editModel().deleteEnabled(),
                     editModel().entityNewObserver().reversed()))
             .description(FrameworkMessages.deleteCurrentTip() + ALT_PREFIX + FrameworkMessages.deleteMnemonic() + ")")
             .mnemonic(FrameworkMessages.deleteMnemonic())
@@ -729,7 +729,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     return Control.builder(this::updateWithConfirmation)
             .name(FrameworkMessages.update())
             .enabledObserver(State.and(activeState,
-                    editModel().updateEnabledObserver(),
+                    editModel().updateEnabled(),
                     editModel().entityNewObserver().reversed(),
                     editModel().modifiedObserver()))
             .description(FrameworkMessages.updateTip() + ALT_PREFIX + FrameworkMessages.updateMnemonic() + ")")
@@ -744,7 +744,7 @@ public abstract class EntityEditPanel extends EntityEditComponentPanel {
     String caption = useSaveCaption ? FrameworkMessages.save() : FrameworkMessages.add();
     return Control.builder(this::insertWithConfirmation)
             .name(caption)
-            .enabledObserver(State.and(activeState, editModel().insertEnabledObserver()))
+            .enabledObserver(State.and(activeState, editModel().insertEnabled()))
             .description(FrameworkMessages.addTip() + ALT_PREFIX + mnemonic + ")")
             .mnemonic(mnemonic)
             .smallIcon(FrameworkIcons.instance().add())
