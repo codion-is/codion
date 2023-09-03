@@ -391,7 +391,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @return the panel layout
    * @param <T> the panel layout type
    */
-  protected final <T extends ApplicationLayout> T panelLayout() {
+  protected final <T extends ApplicationLayout> T applicationLayout() {
     return (T) applicationLayout;
   }
 
@@ -1000,9 +1000,17 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public interface ApplicationLayout {
 
+    /**
+     * Lays out the given application panel
+     * @param applicationPanel the application panel
+     */
     void layoutPanel(EntityApplicationPanel<?> applicationPanel);
 
-    void selectEntityPanel(EntityPanel entityPanel);
+    /**
+     * Select the given entity panel by making it visible
+     * @param entityPanel the entity panel to select
+     */
+    default void selectEntityPanel(EntityPanel entityPanel) {};
   }
 
   /**
