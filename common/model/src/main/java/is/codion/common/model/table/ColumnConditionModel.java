@@ -163,17 +163,6 @@ public interface ColumnConditionModel<C, T> {
   T getLowerBound();
 
   /**
-   * @return the search operator
-   */
-  Operator getOperator();
-
-  /**
-   * @param operator the conditional operator
-   * @throws IllegalArgumentException in case the given operator is not available in this condition model
-   */
-  void setOperator(Operator operator);
-
-  /**
    * @return the operators available in this condition model
    */
   List<Operator> operators();
@@ -212,7 +201,7 @@ public interface ColumnConditionModel<C, T> {
   /**
    * @return a Value based on the operator
    */
-  Value<Operator> operatorValue();
+  Value<Operator> operator();
 
   /**
    * Returns true if this model is enabled and the given value is accepted by this models condition.

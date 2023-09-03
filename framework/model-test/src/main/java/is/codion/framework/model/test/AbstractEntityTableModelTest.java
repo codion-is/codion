@@ -278,7 +278,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(6, tableModel.getRowCount());
     ColumnConditionModel<?, Double> commissionConditionModel =
             tableModel.conditionModel().attributeModel(Employee.COMMISSION);
-    commissionConditionModel.setOperator(Operator.EQUAL);
+    commissionConditionModel.operator().set(Operator.EQUAL);
     commissionConditionModel.enabled().set(true);
     tableModel.refresh();
     commissionConditionModel.enabled().set(false);
@@ -307,7 +307,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(1, counter.get());
     commissionModel.enabled().set(false);
     assertEquals(2, counter.get());
-    commissionModel.setOperator(Operator.GREATER_THAN_OR_EQUAL);
+    commissionModel.operator().set(Operator.GREATER_THAN_OR_EQUAL);
     commissionModel.setLowerBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(3, counter.get());

@@ -9485,3 +9485,4 @@
   ColumnConditionModel.lockedState() renamed locked(), type suffix removed from a couple of other methods
   ColumnConditionModel.isEnabled(), setEnabled() replaced with enabled()
   FilteredModel.set/getIncludeCondition() replaced with Value based includeCondition()
+  ColumnConditionModel.getSetOperator() replaced with Value based operator()

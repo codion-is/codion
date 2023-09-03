@@ -61,7 +61,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     Condition condition = condition();
     ColumnConditionModel<Attribute<T>, T> columnConditionModel = (ColumnConditionModel<Attribute<T>, T>) conditionModel.conditionModels().get(attribute);
     if (columnConditionModel != null) {
-      columnConditionModel.setOperator(Operator.EQUAL);
+      columnConditionModel.operator().set(Operator.EQUAL);
       columnConditionModel.setEqualValues(null);//because the equalValue could be a reference to the active entity which changes accordingly
       columnConditionModel.setEqualValues(values != null && values.isEmpty() ? null : values);//this then fails to register a changed equalValue
       columnConditionModel.enabled().set(!nullOrEmpty(values));
@@ -186,19 +186,19 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
     ForeignKey foreignKey = (ForeignKey) conditionModel.columnIdentifier();
     Collection<Entity> values = conditionModel.equalValues().get();
     ForeignKeyCondition.Builder builder = foreignKey(foreignKey);
-    switch (conditionModel.getOperator()) {
+    switch (conditionModel.operator().get()) {
       case EQUAL:
         return values.isEmpty() ? builder.isNull() : builder.in(values);
       case NOT_EQUAL:
         return values.isEmpty() ? builder.isNotNull() : builder.notIn(values);
       default:
-        throw new IllegalArgumentException("Unsupported operator: " + conditionModel.getOperator() + " for foreign key condition");
+        throw new IllegalArgumentException("Unsupported operator: " + conditionModel.operator().get() + " for foreign key condition");
     }
   }
 
   private static <T> ColumnCondition<T> columnCondition(ColumnConditionModel<?, T> conditionModel) {
     ColumnCondition.Builder<T> builder = column((Column<T>) conditionModel.columnIdentifier());
-    switch (conditionModel.getOperator()) {
+    switch (conditionModel.operator().get()) {
       case EQUAL:
         return equalCondition(conditionModel, builder);
       case NOT_EQUAL:
@@ -220,7 +220,7 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
       case NOT_BETWEEN:
         return builder.notBetween(conditionModel.getLowerBound(), conditionModel.getUpperBound());
       default:
-        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
     }
   }
 

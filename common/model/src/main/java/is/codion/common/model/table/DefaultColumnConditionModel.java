@@ -29,7 +29,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private final Value<T> equalValue = equalValues.value();
   private final Value<T> upperBoundValue = Value.value();
   private final Value<T> lowerBoundValue = Value.value();
-  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL);
+  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL, Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Event.event();
 
   private final State caseSensitiveState;
@@ -138,17 +138,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   @Override
-  public Operator getOperator() {
-    return operatorValue.get();
-  }
-
-  @Override
-  public void setOperator(Operator operator) {
-    operatorValue.set(operator);
-  }
-
-  @Override
-  public Value<Operator> operatorValue() {
+  public Value<Operator> operator() {
     return operatorValue;
   }
 
@@ -183,7 +173,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     setEqualValues(null);
     setUpperBound(null);
     setLowerBound(null);
-    setOperator(Operator.EQUAL);
+    operatorValue.set(Operator.EQUAL);
   }
 
   @Override
@@ -217,7 +207,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {
-    switch (getOperator()) {
+    switch (operatorValue.get()) {
       case EQUAL:
         return isEqual(comparable);
       case NOT_EQUAL:
@@ -239,7 +229,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       case NOT_BETWEEN:
         return isNotBetween(comparable);
       default:
-        throw new IllegalArgumentException("Undefined operator: " + getOperator());
+        throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
     }
   }
 

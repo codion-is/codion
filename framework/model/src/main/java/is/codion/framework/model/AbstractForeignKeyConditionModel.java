@@ -101,18 +101,8 @@ public abstract class AbstractForeignKeyConditionModel implements ColumnConditio
   }
 
   @Override
-  public final Operator getOperator() {
-    return conditionModel.getOperator();
-  }
-
-  @Override
-  public final void setOperator(Operator operator) {
-    conditionModel.setOperator(operator);
-  }
-
-  @Override
-  public final Value<Operator> operatorValue() {
-    return conditionModel.operatorValue();
+  public final Value<Operator> operator() {
+    return conditionModel.operator();
   }
 
   @Override

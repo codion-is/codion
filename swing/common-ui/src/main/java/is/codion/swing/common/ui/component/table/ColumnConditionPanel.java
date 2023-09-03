@@ -119,7 +119,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Requests keyboard focus for this panels input field
    */
   public void requestInputFocus() {
-    switch (conditionModel.getOperator()) {
+    switch (conditionModel.operator().get()) {
       case EQUAL:
       case NOT_EQUAL:
         equalField.requestFocusInWindow();
@@ -137,7 +137,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         upperBoundField.requestFocusInWindow();
         break;
       default:
-        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
     }
   }
 
@@ -382,7 +382,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    */
   private void bindEvents() {
     advancedViewState.addDataListener(this::onAdvancedViewChange);
-    conditionModel.operatorValue().addDataListener(this::onOperatorChanged);
+    conditionModel.operator().addDataListener(this::onOperatorChanged);
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
     KeyEvents.Builder enableOnEnterKeyEvent = KeyEvents.builder(KeyEvent.VK_ENTER)
@@ -438,7 +438,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
         rangePanel();
         break;
       default:
-        throw new IllegalArgumentException("Unknown operator: " + conditionModel.getOperator());
+        throw new IllegalArgumentException("Unknown operator: " + conditionModel.operator().get());
     }
     revalidate();
     repaint();
@@ -490,7 +490,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             .map(operator -> Item.item(operator, ColumnConditionModel.caption(operator)))
             .collect(Collectors.toList()));
     operatorComboBoxModel.setSelectedItem(operators.get(0));
-    return itemComboBox(operatorComboBoxModel, conditionModel.operatorValue())
+    return itemComboBox(operatorComboBoxModel, conditionModel.operator())
             .completionMode(Completion.Mode.NONE)
             .renderer(new OperatorComboBoxRenderer())
             .maximumRowCount(operators.size())
@@ -523,7 +523,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
             operatorCombo, equalField, upperBoundField, lowerBoundField, toggleEnabledButton);
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
-    onOperatorChanged(conditionModel.getOperator());
+    onOperatorChanged(conditionModel.operator().get());
     onAdvancedViewChange(advancedViewState.get());
     addStringConfigurationPopupMenu();
   }
