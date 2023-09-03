@@ -134,13 +134,13 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
 
   /**
-   * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)}
-   * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel.Builder)} should be cached,
+   * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
+   * or {@link EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)} should be cached,
    * instead of being created each time the dialog/frame is shown.<br>
    * Value type: Boolean<br>
    * Default value: false
-   * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel.Builder)
-   * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel.Builder)
+   * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
+   * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
    */
   public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue("codion.swing.cacheEntityPanels", false);
 
@@ -641,23 +641,31 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @param panelBuilder the entity panel builder
    */
   protected final void displayEntityPanel(EntityPanel.Builder panelBuilder) {
+    displayEntityPanel(entityPanel(panelBuilder));
+  }
+
+  /**
+   * Displays the given panel in a frame or dialog,
+   * depending on {@link EntityPanel#USE_FRAME_PANEL_DISPLAY}.
+   * @param entityPanel the entity panel
+   */
+  protected final void displayEntityPanel(EntityPanel entityPanel) {
     if (EntityPanel.USE_FRAME_PANEL_DISPLAY.get()) {
-      displayEntityPanelFrame(panelBuilder);
+      displayEntityPanelFrame(entityPanel);
     }
     else {
-      displayEntityPanelDialog(panelBuilder);
+      displayEntityPanelDialog(entityPanel);
     }
   }
 
   /**
-   * Shows a frame containing the entity panel provided by the given panel builder
-   * @param panelBuilder the entity panel builder
+   * Shows a frame containing the given entity panel
+   * @param entityPanel the entity panel
    */
-  protected final void displayEntityPanelFrame(EntityPanel.Builder panelBuilder) {
-    requireNonNull(panelBuilder, "panelBuilder");
+  protected final void displayEntityPanelFrame(EntityPanel entityPanel) {
+    requireNonNull(entityPanel, "entityPanel");
     WaitCursor.show(this);
     try {
-      EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Window parentWindow = Utilities.parentWindow(entityPanel);
         if (parentWindow != null) {
@@ -667,7 +675,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
       else {
         Windows.frame(entityPanel)
                 .locationRelativeTo(this)
-                .title(panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption()))
+                .title(entityPanel.getCaption())
                 .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
                 .onClosed(windowEvent -> {
                   entityPanel.model().savePreferences();
@@ -682,23 +690,22 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   }
 
   /**
-   * Shows a dialog containing the entity panel provided by the given panel builder
-   * @param panelBuilder the entity panel builder
+   * Shows a non-modal dialog containing the given entity panel
+   * @param entityPanel the entity panel
    */
-  protected final void displayEntityPanelDialog(EntityPanel.Builder panelBuilder) {
-    displayEntityPanelDialog(panelBuilder, false);
+  protected final void displayEntityPanelDialog(EntityPanel entityPanel) {
+    displayEntityPanelDialog(entityPanel, false);
   }
 
   /**
-   * Shows a dialog containing the entity panel provided by the given panel builder
-   * @param panelBuilder the entity panel builder
+   * Shows a dialog containing the given entity panel
+   * @param entityPanel the entity panel
    * @param modalDialog if true the dialog is made modal
    */
-  protected final void displayEntityPanelDialog(EntityPanel.Builder panelBuilder, boolean modalDialog) {
-    requireNonNull(panelBuilder, "panelBuilder");
+  protected final void displayEntityPanelDialog(EntityPanel entityPanel, boolean modalDialog) {
+    requireNonNull(entityPanel, "entityPanel");
     WaitCursor.show(this);
     try {
-      EntityPanel entityPanel = entityPanel(panelBuilder);
       if (entityPanel.isShowing()) {
         Window parentWindow = Utilities.parentWindow(entityPanel);
         if (parentWindow != null) {
@@ -706,10 +713,9 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         }
       }
       else {
-        String dialogTitle = panelBuilder.caption().orElse(applicationModel.entities().definition(panelBuilder.entityType()).caption());
         Dialogs.componentDialog(entityPanel)
                 .owner(parentWindow().orElse(null))
-                .title(dialogTitle)
+                .title(entityPanel.getCaption())
                 .onClosed(e -> {
                   entityPanel.model().savePreferences();
                   entityPanel.savePreferences();
