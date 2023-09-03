@@ -1318,7 +1318,7 @@ public class EntityTablePanel extends JPanel {
 
   private Control createConditionRefreshControl() {
     return Control.builder(tableModel::refresh)
-            .enabledObserver(tableModel.conditionChangedObserver())
+            .enabledObserver(tableModel.conditionChanged())
             .smallIcon(FrameworkIcons.instance().refreshRequired())
             .build();
   }

@@ -300,7 +300,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     TableModel empModel = createEmployeeTableModel();
     AtomicInteger counter = new AtomicInteger();
     Runnable conditionChangedListener = counter::incrementAndGet;
-    empModel.conditionChangedObserver().addListener(conditionChangedListener);
+    empModel.conditionChanged().addListener(conditionChangedListener);
     ColumnConditionModel<? extends Attribute<Double>, Double> commissionModel =
             empModel.conditionModel().attributeModel(Employee.COMMISSION);
     commissionModel.enabled().set(true);
@@ -311,23 +311,23 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     commissionModel.setLowerBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(3, counter.get());
-    empModel.conditionChangedObserver().removeListener(conditionChangedListener);
+    empModel.conditionChanged().removeListener(conditionChangedListener);
   }
 
   @Test
   public void testSearchState() {
     TableModel empModel = createEmployeeTableModel();
-    assertFalse(empModel.conditionChangedObserver().get());
+    assertFalse(empModel.conditionChanged().get());
     ColumnConditionModel<? extends Attribute<String>, String> jobModel =
             empModel.conditionModel().attributeModel(Employee.JOB);
     jobModel.setEqualValue("job");
-    assertTrue(empModel.conditionChangedObserver().get());
+    assertTrue(empModel.conditionChanged().get());
     jobModel.enabled().set(false);
-    assertFalse(empModel.conditionChangedObserver().get());
+    assertFalse(empModel.conditionChanged().get());
     jobModel.enabled().set(true);
-    assertTrue(empModel.conditionChangedObserver().get());
+    assertTrue(empModel.conditionChanged().get());
     empModel.refresh();
-    assertFalse(empModel.conditionChangedObserver().get());
+    assertFalse(empModel.conditionChanged().get());
   }
 
   protected final EntityConnectionProvider connectionProvider() {

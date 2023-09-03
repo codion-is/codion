@@ -328,18 +328,18 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Test
-  void conditionChangedObserver() {
+  void conditionChanged() {
     SwingEntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
     ColumnConditionModel<?, String> nameConditionModel = tableModel.conditionModel().conditionModel(Employee.NAME);
     nameConditionModel.setEqualValue("JONES");
-    assertTrue(tableModel.conditionChangedObserver().get());
+    assertTrue(tableModel.conditionChanged().get());
     tableModel.refresh();
-    assertFalse(tableModel.conditionChangedObserver().get());
+    assertFalse(tableModel.conditionChanged().get());
     nameConditionModel.enabled().set(false);
-    assertTrue(tableModel.conditionChangedObserver().get());
+    assertTrue(tableModel.conditionChanged().get());
     nameConditionModel.enabled().set(true);
-    assertFalse(tableModel.conditionChangedObserver().get());
+    assertFalse(tableModel.conditionChanged().get());
   }
 
   @Test

@@ -544,7 +544,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final StateObserver conditionChangedObserver() {
+  public final StateObserver conditionChanged() {
     return conditionChangedState.observer();
   }
 

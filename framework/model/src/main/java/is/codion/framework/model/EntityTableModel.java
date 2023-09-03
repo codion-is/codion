@@ -368,7 +368,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return a StateObserver indicating if the search condition has changed since last refresh
    */
-  StateObserver conditionChangedObserver();
+  StateObserver conditionChanged();
 
   /**
    * @param listener notified when the selection changes in the underlying selection model
