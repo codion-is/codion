@@ -9496,3 +9496,4 @@
   TabbedApplicationLayout now an interface
   EntityApplicationPanel.addInitializationListener() added
   EntityPanel.get/SetEditPanelState() replaced with value based editPanelState()
+  ValueObserver.notEqualTo() added
