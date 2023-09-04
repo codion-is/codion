@@ -207,7 +207,12 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   /**
    * The caption to use when presenting this entity panel
    */
-  private final Value<String> captionValue;
+  private final Value<String> caption;
+
+  /**
+   * Controls the edit panel state
+   */
+  private final Value<PanelState> editPanelState = Value.value(EMBEDDED, EMBEDDED);
 
   /**
    * The description to display for this entity panel
@@ -243,11 +248,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * indicates where the control panel should be placed in a BorderLayout
    */
   private String controlPanelConstraints = TOOLBAR_CONTROLS.get() ? CONTROL_TOOLBAR_CONSTRAINTS.get() : CONTROL_PANEL_CONSTRAINTS.get();
-
-  /**
-   * Holds the current state of the edit panel (HIDDEN, EMBEDDED or WINDOW)
-   */
-  private PanelState editPanelState = EMBEDDED;
 
   /**
    * if true then the edit control panel should be included
@@ -358,12 +358,13 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     setFocusCycleRoot(true);
     this.entityModel = entityModel;
     String defaultCaption = entityModel.editModel().entityDefinition().caption();
-    this.captionValue = Value.value(defaultCaption, defaultCaption);
+    this.caption = Value.value(defaultCaption, defaultCaption);
     this.description = entityModel.editModel().entityDefinition().description();
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
     this.panelLayout = requireNonNull(panelLayout);
-    this.detailController = this.panelLayout.detailController().orElse(new NullDetailPanelController());
+    this.detailController = panelLayout.detailController().orElse(new NullDetailPanelController());
+    editPanelState.addListener(this::updateEditPanelState);
   }
 
   @Override
@@ -614,7 +615,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
   @Override
   public final String toString() {
-    return getClass().getSimpleName() + ": " + captionValue.get();
+    return getClass().getSimpleName() + ": " + caption.get();
   }
 
   /**
@@ -622,7 +623,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @return a Value for the caption used when presenting this entity panel
    */
   public final Value<String> caption() {
-    return captionValue;
+    return caption;
   }
 
   /**
@@ -745,38 +746,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   /**
-   * Toggles the edit panel state between WINDOW, HIDDEN and EMBEDDED
+   * @return the value controlling the edit panel state, either HIDDEN, EMBEDDED or WINDOW
    */
-  public final void toggleEditPanelState() {
-    if (editPanelState == WINDOW) {
-      setEditPanelState(HIDDEN);
-    }
-    else if (editPanelState == EMBEDDED) {
-      setEditPanelState(WINDOW);
-    }
-    else {
-      setEditPanelState(EMBEDDED);
-    }
-  }
-
-  /**
-   * @return the edit panel state, either HIDDEN, EMBEDDED or WINDOW
-   */
-  public final PanelState getEditPanelState() {
+  public final Value<PanelState> editPanelState() {
     return editPanelState;
-  }
-
-  /**
-   * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
-   */
-  public final void setEditPanelState(PanelState state) {
-    requireNonNull(state);
-    if (!containsEditPanel() || (editPanelState == state)) {
-      return;
-    }
-
-    editPanelState = state;
-    updateEditPanelState();
   }
 
   /**
@@ -1153,22 +1126,12 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
       detailController.setupTablePanelControls(tablePanel);
     }
     if (tablePanel.table().getDoubleClickAction() == null) {
-      tablePanel.table().setDoubleClickAction(createTableDoubleClickAction());
+      tablePanel.table().setDoubleClickAction(Control.control(new ShowHiddenEditPanelCommand()));
     }
     tablePanel.initialize();
     tablePanel.setMinimumSize(new Dimension(0, 0));
     int gap = Layouts.HORIZONTAL_VERTICAL_GAP.get();
     tablePanel.setBorder(BorderFactory.createEmptyBorder(0, gap, 0, gap));
-  }
-
-  /**
-   * Creates the Control to trigger when a double click is performed on the table, if a table is present.
-   * The default implementation shows the edit panel in a window if one is available and hidden, if that is
-   * not the case and the detail panels are hidden those are shown in a window.
-   * @return the Control to trigger when a double click is performed on the table
-   */
-  private Control createTableDoubleClickAction() {
-    return Control.control(new TableDoubleClickCommand());
   }
 
   /**
@@ -1186,28 +1149,28 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   //#############################################################################################
 
   private void selectEditPanel() {
-    if (getEditPanelState() == HIDDEN) {
-      setEditPanelState(EMBEDDED);
+    if (editPanelState.get() == HIDDEN) {
+      editPanelState.set(EMBEDDED);
     }
     editPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
-    if (getEditPanelState() == HIDDEN) {
-      setEditPanelState(EMBEDDED);
+    if (editPanelState.get() == HIDDEN) {
+      editPanelState.set(EMBEDDED);
     }
     editPanel().selectInputComponent();
   }
 
   private void updateEditPanelState() {
-    if (editPanelState != WINDOW) {
+    if (editPanelState.get() != WINDOW) {
       disposeEditWindow();
     }
 
-    if (editPanelState == EMBEDDED) {
+    if (editPanelState.get() == EMBEDDED) {
       editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
     }
-    else if (editPanelState == HIDDEN) {
+    else if (editPanelState.get() == HIDDEN) {
       editControlTablePanel.remove(editControlPanel);
     }
     else {
@@ -1216,6 +1179,18 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     requestInitialFocus();
 
     revalidate();
+  }
+
+  private void toggleEditPanelState() {
+    if (editPanelState.get() == WINDOW) {
+      editPanelState.set(HIDDEN);
+    }
+    else if (editPanelState.get() == EMBEDDED) {
+      editPanelState.set(WINDOW);
+    }
+    else {
+      editPanelState.set(EMBEDDED);
+    }
   }
 
   /**
@@ -1230,18 +1205,18 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(editControlPanel)
               .locationRelativeTo(this)
-              .title(captionValue.get())
+              .title(caption.get())
               .defaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE)
-              .onClosed(windowEvent -> setEditPanelState(HIDDEN))
+              .onClosed(windowEvent -> editPanelState.set(HIDDEN))
               .build();
     }
 
     return Dialogs.componentDialog(editControlPanel)
             .owner(this)
-            .title(captionValue.get())
+            .title(caption.get())
             .modal(false)
             .disposeOnEscape(disposeEditDialogOnEscape)
-            .onClosed(e -> setEditPanelState(HIDDEN))
+            .onClosed(e -> editPanelState.set(HIDDEN))
             .build();
   }
 
@@ -1259,12 +1234,12 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
   }
 
-  private final class TableDoubleClickCommand implements Control.Command {
+  private final class ShowHiddenEditPanelCommand implements Control.Command {
 
     @Override
     public void perform() {
-      if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-        setEditPanelState(WINDOW);
+      if (containsEditPanel() && editPanelState.get() == HIDDEN) {
+        editPanelState.set(WINDOW);
       }
     }
   }

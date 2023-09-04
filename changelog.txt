@@ -9495,3 +9495,4 @@
   Observer, State and Value suffix removed from method names
   TabbedApplicationLayout now an interface
   EntityApplicationPanel.addInitializationListener() added
+  EntityPanel.get/SetEditPanelState() replaced with value based editPanelState()
