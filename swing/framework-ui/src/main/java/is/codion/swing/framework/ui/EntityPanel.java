@@ -1149,28 +1149,28 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   //#############################################################################################
 
   private void selectEditPanel() {
-    if (editPanelState.get() == HIDDEN) {
+    if (editPanelState.equalTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
     editPanel().requestInitialFocus();
   }
 
   private void selectInputComponent() {
-    if (editPanelState.get() == HIDDEN) {
+    if (editPanelState.equalTo(HIDDEN)) {
       editPanelState.set(EMBEDDED);
     }
     editPanel().selectInputComponent();
   }
 
   private void updateEditPanelState() {
-    if (editPanelState.get() != WINDOW) {
+    if (editPanelState.notEqualTo(WINDOW)) {
       disposeEditWindow();
     }
 
-    if (editPanelState.get() == EMBEDDED) {
+    if (editPanelState.equalTo(EMBEDDED)) {
       editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
     }
-    else if (editPanelState.get() == HIDDEN) {
+    else if (editPanelState.equalTo(HIDDEN)) {
       editControlTablePanel.remove(editControlPanel);
     }
     else {
@@ -1182,10 +1182,10 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   }
 
   private void toggleEditPanelState() {
-    if (editPanelState.get() == WINDOW) {
+    if (editPanelState.equalTo(WINDOW)) {
       editPanelState.set(HIDDEN);
     }
-    else if (editPanelState.get() == EMBEDDED) {
+    else if (editPanelState.equalTo(EMBEDDED)) {
       editPanelState.set(WINDOW);
     }
     else {
@@ -1238,7 +1238,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
     @Override
     public void perform() {
-      if (containsEditPanel() && editPanelState.get() == HIDDEN) {
+      if (containsEditPanel() && editPanelState.equalTo(HIDDEN)) {
         editPanelState.set(WINDOW);
       }
     }
@@ -1362,19 +1362,9 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     void selectDetailPanel(EntityPanel detailPanel);
 
     /**
-     * @param panelState the detail panel state
+     * @return the value controlling the detail panel state
      */
-    void setDetailPanelState(PanelState panelState);
-
-    /**
-     * @return the detail panel state
-     */
-    PanelState getDetailPanelState();
-
-    /**
-     * Toggles the detail panel state
-     */
-    void toggleDetailPanelState();
+    Value<PanelState> detailPanelState();
 
     /**
      * Adds any detail panel related controls to the table panel popup menu and toolbar
@@ -1513,19 +1503,23 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
 
   private static final class NullDetailPanelController implements DetailController {
 
+    private final Value<PanelState> detailPanelState = Value.value(HIDDEN);
+
+    private NullDetailPanelController() {
+      detailPanelState.addValidator(value -> {
+        if (value != HIDDEN) {
+          throw new IllegalArgumentException("No detail controller available, can not set the detail panel state");
+        }
+      });
+    }
+
     @Override
     public void selectDetailPanel(EntityPanel detailPanel) {}
 
     @Override
-    public void setDetailPanelState(PanelState panelState) {}
-
-    @Override
-    public PanelState getDetailPanelState() {
-      return HIDDEN;
+    public Value<PanelState> detailPanelState() {
+      return detailPanelState;
     }
-
-    @Override
-    public void toggleDetailPanelState() {}
 
     @Override
     public void setupTablePanelControls(EntityTablePanel tablePanel) {}

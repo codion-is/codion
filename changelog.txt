@@ -9497,3 +9497,4 @@
   EntityApplicationPanel.addInitializationListener() added
   EntityPanel.get/SetEditPanelState() replaced with value based editPanelState()
   ValueObserver.notEqualTo() added
+  DetailController.get/SetDetailPanelState() replaced with value based detailPanelState()
