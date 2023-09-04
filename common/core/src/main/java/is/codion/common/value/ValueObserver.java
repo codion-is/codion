@@ -54,4 +54,13 @@ public interface ValueObserver<T> extends EventObserver<T>, Supplier<T> {
   default boolean equalTo(T value) {
     return Objects.equals(get(), value);
   }
+
+  /**
+   * Returns true if the underlying value is NOT equal to the given one. Note that null == null.
+   * @param value the value
+   * @return true if the underlying value is NOT equal to the given one
+   */
+  default boolean notEqualTo(T value) {
+    return !equalTo(value);
+  }
 }

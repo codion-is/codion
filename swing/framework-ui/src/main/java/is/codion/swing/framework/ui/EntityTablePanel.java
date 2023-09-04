@@ -570,7 +570,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Allows the user to select on of the available search condition panels
+   * Allows the user to select one of the available search condition panels
    */
   public final void selectConditionPanel() {
     if (includeConditionPanel) {
@@ -580,7 +580,7 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Allows the user to select on of the available filter condition panels
+   * Allows the user to select one of the available filter condition panels
    */
   public final void selectFilterPanel() {
     if (includeFilterPanel) {

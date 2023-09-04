@@ -167,6 +167,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
   private final State alwaysOnTopState = State.state();
   private final Event<?> onExitEvent = Event.event();
+  private final Event<EntityApplicationPanel<?>> onInitialized = Event.event();
 
   private final Map<EntityPanel.Builder, EntityPanel> cachedEntityPanels = new HashMap<>();
 
@@ -175,7 +176,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   private boolean initialized = false;
 
   public EntityApplicationPanel(M applicationModel) {
-    this(applicationModel, new TabbedApplicationLayout());
+    this(applicationModel, new DefaultTabbedApplicationLayout());
   }
 
   public EntityApplicationPanel(M applicationModel, ApplicationLayout applicationLayout) {
@@ -205,6 +206,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    */
   public final M applicationModel() {
     return applicationModel;
+  }
+
+  /**
+   * @return the application layout
+   * @param <T> the layout type
+   */
+  public final <T extends ApplicationLayout> T applicationLayout() {
+    return (T) applicationLayout;
   }
 
   /**
@@ -267,6 +276,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   @Override
   public final void selectEntityPanel(EntityPanel entityPanel) {
     applicationLayout.selectEntityPanel(entityPanel);
+  }
+
+  /**
+   * @param listener notified when this application panel has been initialized
+   * @see #initialize()
+   */
+  public final void addInitializationListener(Consumer<EntityApplicationPanel<?>> listener) {
+    onInitialized.addDataListener(listener);
   }
 
   /**
@@ -352,6 +369,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
         initializeUI();
         bindEventsInternal();
         bindEvents();
+        onInitialized.accept(this);
       }
       finally {
         initialized = true;
@@ -385,14 +403,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   public static <M extends SwingEntityApplicationModel, P extends EntityApplicationPanel<M>> Builder<M, P> builder(
           Class<M> applicationModelClass, Class<P> applicationPanelClass) {
     return new DefaultEntityApplicationPanelBuilder<>(applicationModelClass, applicationPanelClass);
-  }
-
-  /**
-   * @return the panel layout
-   * @param <T> the panel layout type
-   */
-  protected final <T extends ApplicationLayout> T applicationLayout() {
-    return (T) applicationLayout;
   }
 
   /**
