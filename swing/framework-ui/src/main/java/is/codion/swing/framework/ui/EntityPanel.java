@@ -1255,15 +1255,15 @@ public class EntityPanel extends JPanel {
           throw new IllegalArgumentException("Unknown direction: " + direction);
       }
     }
-  }
 
-  private Optional<EntityPanel> activeDetailPanel() {
-    Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
-    if (!activeDetailPanels.isEmpty()) {
-      return Optional.of(activeDetailPanels.iterator().next());
+    private Optional<EntityPanel> activeDetailPanel() {
+      Collection<EntityPanel> activeDetailPanels = activeDetailPanels();
+      if (!activeDetailPanels.isEmpty()) {
+        return Optional.of(activeDetailPanels.iterator().next());
+      }
+
+      return Optional.empty();
     }
-
-    return Optional.empty();
   }
 
   private static final class ToggleEditPanelStateAction extends AbstractAction {

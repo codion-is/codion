@@ -1021,7 +1021,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
      * Select the given entity panel by making it visible
      * @param entityPanel the entity panel to select
      */
-    default void selectEntityPanel(EntityPanel entityPanel) {};
+    default void selectEntityPanel(EntityPanel entityPanel) {}
   }
 
   /**

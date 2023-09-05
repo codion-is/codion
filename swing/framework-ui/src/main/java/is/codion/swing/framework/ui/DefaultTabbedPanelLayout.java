@@ -282,10 +282,9 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
           detailPanel.panelLayout().detailPanelController()
                   .filter(TabbedDetailPanelController.class::isInstance)
                   .map(TabbedDetailPanelController.class::cast)
-                  .ifPresent(detailPanelController -> {
-                    TabbedDetailPanelController tabDetailPanelLayout = detailPanelController;
-                    if (tabDetailPanelLayout.detailPanelState.equalTo(WINDOW)) {
-                      tabDetailPanelLayout.detailPanelState.set(HIDDEN);
+                  .ifPresent(controller -> {
+                    if (controller.detailPanelState.equalTo(WINDOW)) {
+                      controller.detailPanelState.set(HIDDEN);
                     }
                   });
         }
