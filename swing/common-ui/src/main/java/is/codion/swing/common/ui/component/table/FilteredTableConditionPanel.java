@@ -60,7 +60,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   /**
-   * @return the state controlling the advanced view state of this condition panel
+   * @return the state controlling the advanced view status of this condition panel
    */
   public State advancedView() {
     return advancedViewState;
@@ -101,20 +101,6 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   /**
-   * @param listener a listener notified each time the advanced search state changes
-   */
-  public void addAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public void removeAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.removeDataListener(listener);
-  }
-
-  /**
    * @param <C> the column identifier type
    * @param conditionModel the condition model
    * @param columnModel the column model
@@ -134,7 +120,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   private void setAdvancedView(boolean advanced) {
-    componentPanel.columnComponents().forEach((column, panel) -> panel.setAdvancedView(advanced));
+    componentPanel.columnComponents().forEach((column, panel) -> panel.advancedView().set(advanced));
   }
 
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(

@@ -9538,3 +9538,11 @@
   EntityPanel.get/SetEditPanelState() replaced with value based editPanelState()
   ValueObserver.notEqualTo() added
   DetailController.get/SetDetailPanelState() replaced with value based detailPanelState()
+  EntityTableConditionModel.additionalConditionSupplier and conjunction now value based
+  EntityTablePanel.createTableCellEditor no longer returns an Optional
+  FilteredTableConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough
+  AbstractEntityModel.setModifiedSupplier() replaced with protected setModifiedFunction()
+  ColumnConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough
+  EntityPanel.DetailController.detailPanelState() now with a detailPanel parameter
+  EntityPanel.EntityPanelSelector added, DetailController renamed DetailPanelController, extends EntityPanelSelector, EntityPanelParent removed
+  EntityPanel.editPanelWindow field removed

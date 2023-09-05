@@ -77,7 +77,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   private final JPanel rangePanel = new JPanel(new GridLayout(1, 2));
 
   private final Event<C> focusGainedEvent = Event.event();
-  private final State advancedViewState = State.state();
+  private final State advancedView = State.state();
 
   private ColumnConditionPanel(ColumnConditionModel<? extends C, T> conditionModel, BoundFieldFactory boundFieldFactory) {
     requireNonNull(conditionModel, "conditionModel");
@@ -142,17 +142,10 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
   }
 
   /**
-   * @param advanced true if advanced view should be enabled
+   * @return the state controlling the advanced view status of this condition panel
    */
-  public void setAdvancedView(boolean advanced) {
-    advancedViewState.set(advanced);
-  }
-
-  /**
-   * @return true if the advanced view is enabled
-   */
-  public boolean isAdvancedView() {
-    return advancedViewState.get();
+  public State advancedView() {
+    return advancedView;
   }
 
   /**
@@ -187,14 +180,14 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * @param listener a listener notified each time the advanced condition state changes
    */
   public void addAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.addDataListener(listener);
+    advancedView.addDataListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.removeDataListener(listener);
+    advancedView.removeDataListener(listener);
   }
 
   /**
@@ -381,7 +374,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedViewState.addDataListener(this::onAdvancedViewChange);
+    advancedView.addDataListener(this::onAdvancedViewChange);
     conditionModel.operator().addDataListener(this::onOperatorChanged);
     FocusGainedListener focusGainedListener = new FocusGainedListener();
     operatorCombo.addFocusListener(focusGainedListener);
@@ -524,7 +517,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
     setLayout(new BorderLayout());
     controlPanel.add(operatorCombo, BorderLayout.CENTER);
     onOperatorChanged(conditionModel.operator().get());
-    onAdvancedViewChange(advancedViewState.get());
+    onAdvancedViewChange(advancedView.get());
     addStringConfigurationPopupMenu();
   }
 
@@ -533,7 +526,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       boolean requestFocus = boundFieldHasFocus();
       clearInputPanel(requestFocus);
       inputPanel.add(boundField, BorderLayout.CENTER);
-      if (!isAdvancedView()) {
+      if (!advancedView.get()) {
         inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
       }
       if (requestFocus) {
@@ -549,7 +542,7 @@ public final class ColumnConditionPanel<C, T> extends JPanel {
       rangePanel.add(lowerBoundField);
       rangePanel.add(upperBoundField);
       inputPanel.add(rangePanel, BorderLayout.CENTER);
-      if (!isAdvancedView()) {
+      if (!advancedView.get()) {
         inputPanel.add(toggleEnabledButton, BorderLayout.EAST);
       }
       if (requestFocus) {

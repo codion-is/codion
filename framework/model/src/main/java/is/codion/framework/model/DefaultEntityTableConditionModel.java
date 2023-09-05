@@ -8,6 +8,7 @@ import is.codion.common.Operator;
 import is.codion.common.event.Event;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.ColumnCondition;
 import is.codion.framework.db.condition.Condition;
@@ -36,12 +37,14 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements EntityTableConditionModel<C> {
 
+  private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
+
   private final EntityType entityType;
   private final EntityConnectionProvider connectionProvider;
   private final TableConditionModel<C> conditionModel;
   private final Event<Condition> conditionChangedEvent = Event.event();
-  private Supplier<Condition> additionalConditionSupplier;
-  private Conjunction conjunction = Conjunction.AND;
+  private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final Value<Conjunction> conjunction = Value.value(Conjunction.AND, Conjunction.AND);
 
   DefaultEntityTableConditionModel(EntityType entityType, EntityConnectionProvider connectionProvider,
                                    ColumnConditionModel.Factory<C> conditionModelFactory) {
@@ -75,24 +78,17 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
             .filter(model -> model.enabled().get())
             .map(DefaultEntityTableConditionModel::condition)
             .collect(Collectors.toCollection(ArrayList::new));
-    if (additionalConditionSupplier != null) {
-      Condition additionalCondition = additionalConditionSupplier.get();
-      if (additionalCondition != null) {
-        conditions.add(additionalCondition);
-      }
+    Condition additionalCondition = additionalConditionSupplier.get().get();
+    if (additionalCondition != null) {
+      conditions.add(additionalCondition);
     }
 
-    return conditions.isEmpty() ? all(entityType) : combination(conjunction, conditions);
+    return conditions.isEmpty() ? all(entityType) : combination(conjunction.get(), conditions);
   }
 
   @Override
-  public Supplier<Condition> getAdditionalConditionSupplier() {
+  public Value<Supplier<Condition>> additionalConditionSupplier() {
     return additionalConditionSupplier;
-  }
-
-  @Override
-  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
-    this.additionalConditionSupplier = additionalConditionSupplier;
   }
 
   @Override
@@ -136,13 +132,8 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   @Override
-  public Conjunction getConjunction() {
+  public Value<Conjunction> conjunction() {
     return conjunction;
-  }
-
-  @Override
-  public void setConjunction(Conjunction conjunction) {
-    this.conjunction = conjunction;
   }
 
   @Override
@@ -156,8 +147,11 @@ final class DefaultEntityTableConditionModel<C extends Attribute<?>> implements 
   }
 
   private void bindEvents() {
+    Runnable listener = () -> conditionChangedEvent.accept(condition());
     conditionModel.conditionModels().values().forEach(columnConditionModel ->
-            columnConditionModel.addChangeListener(() -> conditionChangedEvent.accept(condition())));
+            columnConditionModel.addChangeListener(listener));
+    additionalConditionSupplier.addListener(listener);
+    conjunction.addListener(listener);
   }
 
   private Collection<ColumnConditionModel<C, ?>> createConditionModels(EntityType entityType,

@@ -40,8 +40,8 @@ public class DefaultEntityTableConditionModelTest {
   @Test
   void test() {
     assertEquals(Employee.TYPE, conditionModel.entityType());
-    conditionModel.setConjunction(Conjunction.OR);
-    assertEquals(Conjunction.OR, conditionModel.getConjunction());
+    conditionModel.conjunction().set(Conjunction.OR);
+    assertEquals(Conjunction.OR, conditionModel.conjunction().get());
     assertEquals(10, conditionModel.conditionModels().size());
 
     assertFalse(conditionModel.isEnabled(Employee.DEPARTMENT_FK));
@@ -108,7 +108,7 @@ public class DefaultEntityTableConditionModelTest {
     conditionModel.setEqualConditionValues(Employee.DEPARTMENT_FK, asList(sales, accounting));
     ColumnConditionModel<?, String> nameConditionModel = conditionModel.attributeModel(Employee.NAME);
     nameConditionModel.setEqualValue("SCOTT");
-    conditionModel.setAdditionalConditionSupplier(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
-    assertNotNull(conditionModel.getAdditionalConditionSupplier());
+    conditionModel.additionalConditionSupplier().set(() -> Condition.customCondition(Employee.CONDITION_2_TYPE));
+    assertNotNull(conditionModel.additionalConditionSupplier().get());
   }
 }
