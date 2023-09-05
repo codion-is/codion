@@ -75,7 +75,7 @@ import static javax.swing.SwingConstants.VERTICAL;
  *   frame.setVisible(true);
  * </pre>
  */
-public class EntityPanel extends JPanel implements EntityPanelParent {
+public class EntityPanel extends JPanel {
 
   private static final ResourceBundle MESSAGES = ResourceBundle.getBundle(EntityPanel.class.getName());
 
@@ -202,7 +202,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
   /**
    * The detail panel controller
    */
-  private final DetailController detailController;
+  private final DetailPanelController detailPanelController;
 
   /**
    * The caption to use when presenting this entity panel
@@ -363,7 +363,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
     this.panelLayout = requireNonNull(panelLayout);
-    this.detailController = panelLayout.detailController().orElse(new NullDetailPanelController());
+    this.detailPanelController = panelLayout.detailPanelController().orElse(new NullDetailPanelController());
     editPanelState.addListener(this::updateEditPanelState);
   }
 
@@ -415,8 +415,8 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
    * @return the detail panel controller
    * @param <T> the detail panel controller type
    */
-  public final <T extends DetailController> T detailController() {
-    return (T) detailController;
+  public final <T extends DetailPanelController> T detailPanelController() {
+    return (T) detailPanelController;
   }
 
   /**
@@ -502,7 +502,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
     addEntityPanelAndLinkSiblings(detailPanel, detailPanels);
     detailPanel.setParentPanel(this);
-    detailPanel.addBeforeActivateListener(this::selectEntityPanel);
+    detailPanel.addBeforeActivateListener(detailPanelController::selectEntityPanel);
   }
 
   /**
@@ -660,12 +660,6 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
       editPanelWindow.toFront();
     }
     requestInitialFocus();
-  }
-
-  @Override
-  public final void selectEntityPanel(EntityPanel entityPanel) {
-    requireNonNull(entityPanel);
-    detailController.selectDetailPanel(entityPanel);
   }
 
   /**
@@ -1122,8 +1116,8 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
               .control(createToggleEditPanelControl())
               .build());
     }
-    if (detailController != null) {
-      detailController.setupTablePanelControls(tablePanel);
+    if (detailPanelController != null) {
+      detailPanelController.setupTablePanelControls(tablePanel);
     }
     if (tablePanel.table().getDoubleClickAction() == null) {
       tablePanel.table().setDoubleClickAction(Control.control(new ShowHiddenEditPanelCommand()));
@@ -1342,24 +1336,31 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     void layoutPanel(EntityPanel entityPanel);
 
     /**
-     * @return the {@link DetailController} provided by this {@link PanelLayout}
+     * @return the {@link DetailPanelController} provided by this {@link PanelLayout}
      * @param <T> the detail panel controller type
      */
-    default <T extends DetailController> Optional<T> detailController() {
+    default <T extends DetailPanelController> Optional<T> detailPanelController() {
       return Optional.empty();
     }
   }
 
   /**
-   * Controls the detail panels of a entity panel
+   * Selects an entity panel.
    */
-  public interface DetailController {
+  public interface EntityPanelSelector {
 
     /**
-     * Selects the given detail panel
-     * @param detailPanel the detail panel to select
+     * Selects the given entity panel. If the entityPanel
+     * is not available, calling this method has no effect.
+     * @param entityPanel the entity panel to select
      */
-    void selectDetailPanel(EntityPanel detailPanel);
+    void selectEntityPanel(EntityPanel entityPanel);
+  }
+
+  /**
+   * Controls the detail panels of a entity panel
+   */
+  public interface DetailPanelController extends EntityPanelSelector {
 
     /**
      * Note that the detail panel state may be shared between detail panels,
@@ -1504,7 +1505,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     EntityTablePanel buildTablePanel(EntityConnectionProvider connectionProvider);
   }
 
-  private static final class NullDetailPanelController implements DetailController {
+  private static final class NullDetailPanelController implements DetailPanelController {
 
     private final Value<PanelState> detailPanelState = Value.value(HIDDEN);
 
@@ -1517,7 +1518,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     }
 
     @Override
-    public void selectDetailPanel(EntityPanel detailPanel) {}
+    public void selectEntityPanel(EntityPanel entityPanel) {}
 
     @Override
     public Value<PanelState> detailPanelState(EntityPanel detailPanel) {

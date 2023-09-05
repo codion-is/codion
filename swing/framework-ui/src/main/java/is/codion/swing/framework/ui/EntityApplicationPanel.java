@@ -36,6 +36,7 @@ import is.codion.swing.common.ui.dialog.Dialogs;
 import is.codion.swing.common.ui.laf.LookAndFeelComboBox;
 import is.codion.swing.common.ui.laf.LookAndFeelProvider;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
+import is.codion.swing.framework.ui.EntityPanel.EntityPanelSelector;
 import is.codion.swing.framework.ui.icon.FrameworkIcons;
 
 import org.slf4j.Logger;
@@ -92,8 +93,7 @@ import static java.util.Objects.requireNonNull;
  * @param <M> the application model type
  * @see #builder(Class, Class)
  */
-public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel>
-        extends JPanel implements EntityPanelParent {
+public abstract class EntityApplicationPanel<M extends SwingEntityApplicationModel> extends JPanel {
 
   private static final String LOG_LEVEL = "log_level";
   private static final String LOG_LEVEL_DESC = "log_level_desc";
@@ -271,11 +271,6 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
             .title(FrameworkMessages.dependencies())
             .modal(false)
             .show();
-  }
-
-  @Override
-  public final void selectEntityPanel(EntityPanel entityPanel) {
-    applicationLayout.selectEntityPanel(entityPanel);
   }
 
   /**
@@ -1014,7 +1009,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
   /**
    * Handles laying out an EntityApplicationPanel.
    */
-  public interface ApplicationLayout {
+  public interface ApplicationLayout extends EntityPanelSelector {
 
     /**
      * Lays out the given application panel
