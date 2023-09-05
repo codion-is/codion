@@ -120,7 +120,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   private void setAdvancedView(boolean advanced) {
-    componentPanel.columnComponents().forEach((column, panel) -> panel.setAdvancedView(advanced));
+    componentPanel.columnComponents().forEach((column, panel) -> panel.advancedView().set(advanced));
   }
 
   private Map<C, ColumnConditionPanel<C, ?>> createConditionPanels(
