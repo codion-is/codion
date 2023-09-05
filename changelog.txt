@@ -9498,3 +9498,6 @@
   EntityPanel.get/SetEditPanelState() replaced with value based editPanelState()
   ValueObserver.notEqualTo() added
   DetailController.get/SetDetailPanelState() replaced with value based detailPanelState()
+  EntityTableConditionModel.additionalConditionSupplier and conjunction now value based
+  EntityTablePanel.createTableCellEditor no longer returns an Optional
+  FilteredTableConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough

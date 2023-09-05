@@ -6,6 +6,7 @@ package is.codion.framework.model;
 import is.codion.common.Conjunction;
 import is.codion.common.model.table.ColumnConditionModel;
 import is.codion.common.model.table.TableConditionModel;
+import is.codion.common.value.Value;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.db.condition.Condition;
 import is.codion.framework.domain.entity.EntityType;
@@ -45,29 +46,17 @@ public interface EntityTableConditionModel<C extends Attribute<?>> extends Table
   Condition condition();
 
   /**
-   * @return supplies any additional search condition
+   * Controls the additional condition supplier.
+   * The condition supplier may return null in case of no condition.
+   * @return the state controlling the additional conndition
    */
-  Supplier<Condition> getAdditionalConditionSupplier();
+  Value<Supplier<Condition>> additionalConditionSupplier();
 
   /**
-   * Sets the additional condition supplier.
-   * This condition supplier may return null in case of no condition.
-   * @param additionalConditionSupplier the condition supplier
-   */
-  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
-
-  /**
-   * @return the conjunction to be used when multiple column condition are active,
-   * the default is {@code Conjunction.AND}
+   * @return the value controlling the conjunction
    * @see Conjunction
    */
-  Conjunction getConjunction();
-
-  /**
-   * @param conjunction the conjunction to be used when more than one column search condition is active
-   * @see Conjunction
-   */
-  void setConjunction(Conjunction conjunction);
+  Value<Conjunction> conjunction();
 
   /**
    * Returns the {@link ColumnConditionModel} associated with the given attribute.

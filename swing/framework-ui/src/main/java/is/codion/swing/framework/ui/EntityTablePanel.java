@@ -1059,21 +1059,21 @@ public class EntityTablePanel extends JPanel {
   }
 
   /**
-   * Creates a TableCellEditor for the given attribute, returns an empty Optional if no editor is available,
+   * Creates a TableCellEditor for the given attribute, returns null if no editor is available,
    * such as for non-updatable attributes.
    * @param attribute the attribute
-   * @return a TableCellEditor for the given attribute, an empty Optional in case none is available
+   * @return a TableCellEditor for the given attribute, null in case none is available
    */
-  protected Optional<TableCellEditor> createTableCellEditor(Attribute<?> attribute) {
+  protected TableCellEditor createTableCellEditor(Attribute<?> attribute) {
     AttributeDefinition<?> attributeDefinition = tableModel.entityDefinition().attributeDefinition(attribute);
     if (attribute instanceof ColumnDefinition && !((ColumnDefinition<?>) attributeDefinition).isUpdatable()) {
-      return Optional.empty();
+      return null;
     }
     if (isNonUpdatableForeignKey(attribute)) {
-      return Optional.empty();
+      return null;
     }
 
-    return Optional.of(new EntityTableCellEditor<>(() -> cellEditorComponentValue(attribute, null)));
+    return new EntityTableCellEditor<>(() -> cellEditorComponentValue(attribute, null));
   }
 
   /**
@@ -1400,17 +1400,16 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void bindEvents() {
-    if (includeDeleteSelectedControl()) {
-      KeyEvents.builder(VK_DELETE)
-              .action(controls.get(ControlCode.DELETE_SELECTED))
-              .enable(table);
-    }
     if (INCLUDE_ENTITY_MENU.get()) {
       KeyEvents.builder(VK_V)
               .modifiers(CTRL_DOWN_MASK | ALT_DOWN_MASK)
               .action(Control.control(this::showEntityMenu))
               .enable(table);
     }
+    control(ControlCode.DELETE_SELECTED).ifPresent(control ->
+            KeyEvents.builder(VK_DELETE)
+                    .action(control)
+                    .enable(table));
     conditionPanelVisibleState.addDataListener(this::setConditionPanelVisibleInternal);
     filterPanelVisibleState.addDataListener(this::setFilterPanelVisibleInternal);
     summaryPanelVisibleState.addDataListener(this::setSummaryPanelVisibleInternal);
@@ -1425,7 +1424,7 @@ public class EntityTablePanel extends JPanel {
               .enable(conditionPanel);
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
       addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
-      conditionPanel.addAdvancedViewListener(advanced -> {
+      conditionPanel.advancedView().addDataListener(advanced -> {
         if (isConditionPanelVisible()) {
           revalidate();
         }
@@ -1433,7 +1432,7 @@ public class EntityTablePanel extends JPanel {
     }
     if (filterPanel != null) {
       filterPanel.addFocusGainedListener(table::scrollToColumn);
-      filterPanel.addAdvancedViewListener(advanced -> {
+      filterPanel.advancedView().addDataListener(advanced -> {
         if (isFilterPanelVisible()) {
           revalidate();
         }
@@ -1541,7 +1540,10 @@ public class EntityTablePanel extends JPanel {
   }
 
   private void configureColumn(FilteredTableColumn<Attribute<?>> column) {
-    createTableCellEditor(column.getIdentifier()).ifPresent(column::setCellEditor);
+    TableCellEditor tableCellEditor = createTableCellEditor(column.getIdentifier());
+    if (tableCellEditor != null) {
+      column.setCellEditor(tableCellEditor);
+    }
     column.setHeaderRenderer(new HeaderRenderer(column.getHeaderRenderer()));
   }
 

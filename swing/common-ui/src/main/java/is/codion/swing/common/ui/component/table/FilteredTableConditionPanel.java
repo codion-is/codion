@@ -60,7 +60,7 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
   }
 
   /**
-   * @return the state controlling the advanced view state of this condition panel
+   * @return the state controlling the advanced view status of this condition panel
    */
   public State advancedView() {
     return advancedViewState;
@@ -98,20 +98,6 @@ public final class FilteredTableConditionPanel<C> extends JPanel {
    */
   public void addFocusGainedListener(Consumer<C> listener) {
     componentPanel().columnComponents().values().forEach(panel -> panel.addFocusGainedListener(listener));
-  }
-
-  /**
-   * @param listener a listener notified each time the advanced search state changes
-   */
-  public void addAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.addDataListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public void removeAdvancedViewListener(Consumer<Boolean> listener) {
-    advancedViewState.removeDataListener(listener);
   }
 
   /**
