@@ -235,11 +235,6 @@ public class EntityPanel extends JPanel {
   private EntityPanel nextSiblingPanel;
 
   /**
-   * The window used when the edit panel is undocked
-   */
-  private Window editPanelWindow;
-
-  /**
    * Specifies whether the edit controls buttons are on a toolbar instead of a button panel
    */
   private boolean toolbarControls = TOOLBAR_CONTROLS.get();
@@ -656,6 +651,7 @@ public class EntityPanel extends JPanel {
     if (parentWindow != null) {
       parentWindow.toFront();
     }
+    Window editPanelWindow = parentWindow(editControlPanel);
     if (editPanelWindow != null) {
       editPanelWindow.toFront();
     }
@@ -1158,9 +1154,11 @@ public class EntityPanel extends JPanel {
 
   private void updateEditPanelState() {
     if (editPanelState.notEqualTo(WINDOW)) {
-      disposeEditWindow();
+      Window editPanelWindow = parentWindow(editControlPanel);
+      if (editPanelWindow != null) {
+        editPanelWindow.dispose();
+      }
     }
-
     if (editPanelState.equalTo(EMBEDDED)) {
       editControlTablePanel.add(editControlPanel, BorderLayout.NORTH);
     }
@@ -1168,7 +1166,7 @@ public class EntityPanel extends JPanel {
       editControlTablePanel.remove(editControlPanel);
     }
     else {
-      showEditWindow();
+      createEditWindow().setVisible(true);
     }
     requestInitialFocus();
 
@@ -1187,14 +1185,6 @@ public class EntityPanel extends JPanel {
     }
   }
 
-  /**
-   * Shows the edit panel in a window
-   */
-  private void showEditWindow() {
-    editPanelWindow = createEditWindow();
-    editPanelWindow.setVisible(true);
-  }
-
   private Window createEditWindow() {
     if (USE_FRAME_PANEL_DISPLAY.get()) {
       return Windows.frame(editControlPanel)
@@ -1210,16 +1200,8 @@ public class EntityPanel extends JPanel {
             .title(caption.get())
             .modal(false)
             .disposeOnEscape(disposeEditDialogOnEscape)
-            .onClosed(e -> editPanelState.set(HIDDEN))
+            .onClosed(windowEvent -> editPanelState.set(HIDDEN))
             .build();
-  }
-
-  private void disposeEditWindow() {
-    if (editPanelWindow != null) {
-      editPanelWindow.setVisible(false);
-      editPanelWindow.dispose();
-      editPanelWindow = null;
-    }
   }
 
   private void checkIfInitialized() {
