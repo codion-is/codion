@@ -9506,3 +9506,4 @@
   EntityPanel.DetailController.detailPanelState() now with a detailPanel parameter
   EntityPanel.EntityPanelSelector added, DetailController renamed DetailPanelController, extends EntityPanelSelector, EntityPanelParent removed
   EntityPanel.editPanelWindow field removed
+  EntityDefinition.attributeDefinitions() and columnDefinitions() removed

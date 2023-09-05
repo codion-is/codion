@@ -379,23 +379,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public Collection<AttributeDefinition<?>> attributeDefinitions(Collection<Attribute<?>> attributes) {
-    return requireNonNull(attributes, ATTRIBUTES).stream()
-            .map(this::attributeDefinition)
-            .collect(toList());
-  }
-
-  @Override
-  public List<ColumnDefinition<?>> columnDefinitions(List<Column<?>> columns) {
-    List<ColumnDefinition<?>> definitionList = new ArrayList<>(requireNonNull(columns, COLUMNS).size());
-    for (int i = 0; i < columns.size(); i++) {
-      definitionList.add(columnDefinition(columns.get(i)));
-    }
-
-    return definitionList;
-  }
-
-  @Override
   public List<ColumnDefinition<?>> writableColumnDefinitions(boolean includePrimaryKeyColumns,
                                                              boolean includeNonUpdatable) {
     return entityAttributes.columnDefinitions.stream()

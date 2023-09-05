@@ -256,20 +256,6 @@ public interface EntityDefinition {
   <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute);
 
   /**
-   * Returns the {@link AttributeDefinition}s for the given attributes
-   * @param attributes the attributes which definitions to retrieve
-   * @return a Collection containing the definitions for the given attributes
-   */
-  Collection<AttributeDefinition<?>> attributeDefinitions(Collection<Attribute<?>> attributes);
-
-  /**
-   * Returns the {@link ColumnDefinition}s based on the given columns
-   * @param columns the columns which definitions to retrieve
-   * @return a list of column definitions
-   */
-  List<ColumnDefinition<?>> columnDefinitions(List<Column<?>> columns);
-
-  /**
    * Retrieves the definitions of the writable (non-read-only) columns comprising this entity type
    * @param includePrimaryKeyColumns if true primary key columns are included, non-updatable primary key columns
    * are only included if {@code includeNonUpdatable} is true
