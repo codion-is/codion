@@ -82,7 +82,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
 
   @Override
   public void layoutPanel(EntityPanel entityPanel) {
-    this.entityPanel = entityPanel;
+    this.entityPanel = requireNonNull(entityPanel);
     tableDetailSplitPane = createTableDetailSplitPane();
     detailPanelTabbedPane = createDetailTabbedPane();
     entityPanel.setLayout(borderLayout());
@@ -93,7 +93,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
                     .build(), BorderLayout.CENTER);
     setupResizing();
     if (detailController.detailPanelState.notEqualTo(detailPanelState)) {
-      detailController.detailPanelState().set(detailPanelState);
+      detailController.detailPanelState(selectedDetailPanel()).set(detailPanelState);
     }
     else {
       detailController.updateDetailPanelState();
@@ -174,7 +174,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
             .toolTipText(detailPanel.getDescription())
             .add());
     if (includeDetailPanelControls) {
-      builder.mouseListener(new TabbedPaneMouseReleasesListener());
+      builder.mouseListener(new TabbedPaneMouseReleasedListener());
     }
 
     return builder.build();
@@ -218,16 +218,17 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     }
   }
 
-  private final class TabbedPaneMouseReleasesListener extends MouseAdapter {
+  private final class TabbedPaneMouseReleasedListener extends MouseAdapter {
 
     @Override
     public void mouseReleased(MouseEvent e) {
-      PanelState panelState = detailController.detailPanelState().get();
+      EntityPanel detailPanel = selectedDetailPanel();
+      PanelState panelState = detailController.detailPanelState(detailPanel).get();
       if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-        detailController.detailPanelState().set(panelState == WINDOW ? EMBEDDED : WINDOW);
+        detailController.detailPanelState(detailPanel).set(panelState == WINDOW ? EMBEDDED : WINDOW);
       }
       else if (e.getButton() == MouseEvent.BUTTON2) {
-        detailController.detailPanelState().set(panelState == EMBEDDED ? HIDDEN : EMBEDDED);
+        detailController.detailPanelState(detailPanel).set(panelState == EMBEDDED ? HIDDEN : EMBEDDED);
       }
     }
   }
@@ -252,7 +253,7 @@ final class DefaultTabbedPanelLayout implements TabbedPanelLayout {
     }
 
     @Override
-    public Value<PanelState> detailPanelState() {
+    public Value<PanelState> detailPanelState(EntityPanel detailPanel) {
       return detailPanelState;
     }
 

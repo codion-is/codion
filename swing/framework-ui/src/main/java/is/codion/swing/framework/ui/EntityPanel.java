@@ -1362,9 +1362,12 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     void selectDetailPanel(EntityPanel detailPanel);
 
     /**
-     * @return the value controlling the detail panel state
+     * Note that the detail panel state may be shared between detail panels,
+     * as they may be displayed in a shared window.
+     * @param detailPanel the detail panel
+     * @return the value controlling the state of the given detail panel
      */
-    Value<PanelState> detailPanelState();
+    Value<PanelState> detailPanelState(EntityPanel detailPanel);
 
     /**
      * Adds any detail panel related controls to the table panel popup menu and toolbar
@@ -1517,7 +1520,7 @@ public class EntityPanel extends JPanel implements EntityPanelParent {
     public void selectDetailPanel(EntityPanel detailPanel) {}
 
     @Override
-    public Value<PanelState> detailPanelState() {
+    public Value<PanelState> detailPanelState(EntityPanel detailPanel) {
       return detailPanelState;
     }
 

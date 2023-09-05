@@ -9503,3 +9503,4 @@
   FilteredTableConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough
   AbstractEntityModel.setModifiedSupplier() replaced with protected setModifiedFunction()
   ColumnConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough
+  EntityPanel.DetailController.detailPanelState() now with a detailPanel parameter
