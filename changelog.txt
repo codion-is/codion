@@ -9501,3 +9501,4 @@
   EntityTableConditionModel.additionalConditionSupplier and conjunction now value based
   EntityTablePanel.createTableCellEditor no longer returns an Optional
   FilteredTableConditionPanel.get/SetAdvancedView() removed, advancedView() state is enough
+  AbstractEntityModel.setModifiedSupplier() replaced with protected setModifiedFunction()

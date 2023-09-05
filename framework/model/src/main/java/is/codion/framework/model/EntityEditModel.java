@@ -107,7 +107,7 @@ public interface EntityEditModel {
    * @return true if this edit model contains unsaved data
    * @see EntityEditModel#WARN_ABOUT_UNSAVED_DATA
    * @see #isEntityNew()
-   * @see #setModifiedSupplier(Supplier)
+   * @see #isModified()
    */
   boolean containsUnsavedData();
 
@@ -281,15 +281,6 @@ public interface EntityEditModel {
   <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueProvider);
 
   /**
-   * Sets the 'modified' supplier for this edit model, which is responsible for providing
-   * the modified state of the underlying entity. The default supplier returns {@link Entity#isModified()}.
-   * @param modifiedSupplier specifies whether the underlying entity is modified
-   * @see Entity#isModified()
-   * @see #modified()
-   */
-  void setModifiedSupplier(Supplier<Boolean> modifiedSupplier);
-
-  /**
    * Returns true if the last available value for this attribute should be used when initializing
    * a default entity.
    * Override for selective reset of field values when the model is cleared.
@@ -385,7 +376,6 @@ public interface EntityEditModel {
 
   /**
    * @return true if the underlying Entity is modified
-   * @see #setModifiedSupplier(Supplier)
    * @see #modified()
    */
   boolean isModified();

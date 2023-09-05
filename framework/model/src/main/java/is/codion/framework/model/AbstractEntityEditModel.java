@@ -38,6 +38,7 @@ import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
+import java.util.function.Function;
 import java.util.function.Supplier;
 
 import static java.util.Collections.*;
@@ -124,7 +125,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Provides this model with a way to check if the underlying entity is in a modified state.
    */
-  private Supplier<Boolean> modifiedSupplier;
+  private Function<Entity, Boolean> modifiedFunction;
 
   /**
    * Specifies whether this edit model should warn about unsaved data
@@ -157,7 +158,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     this.entity = requireNonNull(connectionProvider).entities().entity(entityType);
     this.connectionProvider = connectionProvider;
     this.validator = requireNonNull(validator);
-    this.modifiedSupplier = entity::isModified;
+    this.modifiedFunction = Entity::isModified;
     setReadOnly(entityDefinition().isReadOnly());
     configurePersistentForeignKeyValues();
     bindEventsInternal();
@@ -183,11 +184,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final <T> void setDefaultValueSupplier(Attribute<T> attribute, Supplier<T> valueSupplier) {
     entityDefinition().attributeDefinition(attribute);
     defaultValueSuppliers.put(attribute, requireNonNull(valueSupplier, "valueSupplier"));
-  }
-
-  @Override
-  public final void setModifiedSupplier(Supplier<Boolean> modifiedSupplier) {
-    this.modifiedSupplier = requireNonNull(modifiedSupplier, "modifiedSupplier");
   }
 
   @Override
@@ -296,7 +292,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean isModified() {
-    return modifiedSupplier.get();
+    return modifiedFunction.apply(entity);
   }
 
   @Override
@@ -808,6 +804,18 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
         }
       }
     }
+  }
+
+  /**
+   * Sets the 'modified' function for this edit model, which is responsible for providing
+   * the modified state of the underlying entity.
+   * By default {@link Entity#isModified()} is returned.
+   * @param modifiedFunction specifies whether the given entity is modified
+   * @see Entity#isModified()
+   * @see #modified()
+   */
+  protected final void setModifiedFunction(Function<Entity, Boolean> modifiedFunction) {
+    this.modifiedFunction = requireNonNull(modifiedFunction);
   }
 
   /**
