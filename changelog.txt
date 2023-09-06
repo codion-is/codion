@@ -9512,3 +9512,4 @@
   Entity.revertAll() and saveAll() renamed revert() and save() respectively
   EntityEditModel.isEntityValid() removed
   EntityTableModel.etForeignKeyConditionValues() removed
+  ForeignKeyDetailModelLink, setters and getters replaced with Value

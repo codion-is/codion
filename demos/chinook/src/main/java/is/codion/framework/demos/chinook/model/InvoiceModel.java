@@ -4,6 +4,7 @@
 package is.codion.framework.demos.chinook.model;
 
 import is.codion.framework.db.EntityConnectionProvider;
+import is.codion.framework.model.ForeignKeyDetailModelLink;
 import is.codion.swing.framework.model.SwingEntityModel;
 
 public final class InvoiceModel extends SwingEntityModel {
@@ -14,9 +15,9 @@ public final class InvoiceModel extends SwingEntityModel {
     InvoiceLineEditModel invoiceLineEditModel = new InvoiceLineEditModel(connectionProvider);
 
     SwingEntityModel invoiceLineModel = new SwingEntityModel(invoiceLineEditModel);
-    addDetailModel(invoiceLineModel)
-            .setClearForeignKeyOnEmptySelection(true)
-            .active().set(true);
+    ForeignKeyDetailModelLink<?, ?, ?> detailModelLink = addDetailModel(invoiceLineModel);
+    detailModelLink.clearForeignKeyOnEmptySelection().set(true);
+    detailModelLink.active().set(true);
 
     invoiceLineEditModel.addTotalsUpdatedListener(tableModel()::replaceEntities);
   }
