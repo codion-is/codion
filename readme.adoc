@@ -26,7 +26,7 @@ Codion is a full-stack, Java rich client desktop CRUD application framework, bas
 
 == Motivation
 
-My main motivation for developing Codion back in 2004 was the lack of Java application frameworks not based on the Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
+My main motivation for developing Codion back in 2004 was the lack of Java application frameworks that were not based on the Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
 
 I figured a CRUD application framework should:
 
