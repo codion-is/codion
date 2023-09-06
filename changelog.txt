@@ -9508,3 +9508,4 @@
   EntityPanel.editPanelWindow field removed
   EntityDefinition.attributeDefinitions() and columnDefinitions() removed
   EntityDefinition.hasDerivedAttributes(), visibleAttributeDefinitions(), lazyLoadedBlobColumnDefinitions() and transientAttributeDefinitions() removed, related refactoring
+  EntityDefinition.foreignKeyDefinitions() return type changed from List to Collection, related refactoring

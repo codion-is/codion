@@ -166,7 +166,7 @@ public interface EntityDefinition {
   /**
    * @return a list containing the foreign key definitions for this entity type
    */
-  List<ForeignKeyDefinition> foreignKeyDefinitions();
+  Collection<ForeignKeyDefinition> foreignKeyDefinitions();
 
   /**
    * @return all foreign keys for this entity type

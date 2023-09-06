@@ -949,10 +949,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void setForeignKeys(List<Entity> entities, Select select,
                               int currentForeignKeyFetchDepth) throws SQLException {
-    List<ForeignKeyDefinition> foreignKeyDefinitions =
+    Collection<ForeignKeyDefinition> foreignKeysToSet =
             foreignKeysToSet(entities.get(0).entityType(), select.attributes());
-    for (int i = 0; i < foreignKeyDefinitions.size(); i++) {
-      ForeignKeyDefinition foreignKeyDefinition = foreignKeyDefinitions.get(i);
+    for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
       ForeignKey foreignKey = foreignKeyDefinition.attribute();
       int conditionFetchDepthLimit = select.fetchDepth(foreignKey)
               .orElse(foreignKeyDefinition.fetchDepth());
@@ -983,9 +982,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
-                                                      Collection<Attribute<?>> conditionSelectAttributes) {
-    List<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeyDefinitions();
+  private Collection<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
+                                                            Collection<Attribute<?>> conditionSelectAttributes) {
+    Collection<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeyDefinitions();
     if (conditionSelectAttributes.isEmpty()) {
       return foreignKeyDefinitions;
     }
