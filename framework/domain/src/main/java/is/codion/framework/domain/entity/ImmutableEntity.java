@@ -47,7 +47,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   }
 
   @Override
-  public void saveAll() {
+  public void save() {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
   }
 
@@ -57,7 +57,7 @@ final class ImmutableEntity extends DefaultEntity implements Serializable {
   }
 
   @Override
-  public void revertAll() {
+  public void revert() {
     throw new UnsupportedOperationException(ERROR_MESSAGE);
   }
 

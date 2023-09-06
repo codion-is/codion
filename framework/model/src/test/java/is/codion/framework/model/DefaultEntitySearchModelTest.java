@@ -194,7 +194,7 @@ public final class DefaultEntitySearchModelTest {
     searchModel.columnSearchSettings().get(Employee.JOB).caseSensitive().set(true);
     searchModel.columnSearchSettings().get(Employee.NAME).wildcardPostfix().set(true);
     searchModel.columnSearchSettings().get(Employee.JOB).wildcardPostfix().set(true);
-    searchModel.setAdditionalConditionSupplier(() -> column(Employee.JOB).notEqualTo("MANAGER"));
+    searchModel.additionalConditionSupplier().set(() -> column(Employee.JOB).notEqualTo("MANAGER"));
     result = searchModel.performQuery();
     assertTrue(contains(result, "John"));
     assertFalse(contains(result, "johnson"));
@@ -208,7 +208,7 @@ public final class DefaultEntitySearchModelTest {
     List<Entity> result = searchModel.performQuery();
     assertEquals(1, result.size());
     searchModel.setSelectedEntities(result);
-    searchModel.setAdditionalConditionSupplier(() ->
+    searchModel.additionalConditionSupplier().set(() ->
             Condition.customCondition(Employee.CONDITION_1_TYPE));
     assertEquals(1, searchModel.getSelectedEntities().size());
     result = searchModel.performQuery();

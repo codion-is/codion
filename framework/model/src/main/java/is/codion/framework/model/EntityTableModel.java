@@ -110,14 +110,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   <C extends E> C editModel();
 
   /**
-   * Sets {@code foreignKeyValues} as the search condition values for the given foreign key.
-   * @param foreignKey the foreign key
-   * @param foreignKeyValues the entities to use as condition values
-   * @return true if the table search condition changed due to this call and a refresh is in order, false otherwise
-   */
-  boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues);
-
-  /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
    * key with the corresponding entity from {@code foreignKeyValues}, useful when attribute
    * values have been changed in the referenced entity that must be reflected in the table model.

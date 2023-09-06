@@ -18,6 +18,7 @@ import java.util.List;
 import java.util.Locale;
 
 import static is.codion.framework.demos.petstore.domain.Petstore.*;
+import static is.codion.swing.framework.ui.TabbedPanelLayout.detailPanelState;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppModel> {
 
@@ -44,7 +45,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppMo
             new ProductEditPanel(productModel.editModel()));
     EntityPanel itemPanel = new EntityPanel(itemModel,
             new ItemEditPanel(itemModel.editModel()),
-            TabbedPanelLayout.detailPanelState(PanelState.HIDDEN));
+            detailPanelState(PanelState.HIDDEN));
     EntityPanel tagItemPanel = new EntityPanel(tagItemModel,
             new TagItemEditPanel(tagItemModel.editModel()));
 

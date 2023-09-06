@@ -32,10 +32,12 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
 import static java.util.Collections.singletonList;
+import static java.util.stream.Collectors.toList;
 import static org.junit.jupiter.api.Assertions.*;
 
 public final class EntitiesTest {
@@ -156,10 +158,12 @@ public final class EntitiesTest {
 
   @Test
   void sortAttributes() {
-    List<AttributeDefinition<?>> attributes = new ArrayList<>(entities.definition(TestDomain.Employee.TYPE).attributeDefinitions(
-            asList(TestDomain.Employee.HIREDATE, TestDomain.Employee.COMMISSION,
-                    TestDomain.Employee.SALARY, TestDomain.Employee.JOB)));
-    attributes.sort(AttributeDefinition.definitionComparator());
+    EntityDefinition definition = entities.definition(TestDomain.Employee.TYPE);
+    List<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Employee.HIREDATE, TestDomain.Employee.COMMISSION,
+                    TestDomain.Employee.SALARY, TestDomain.Employee.JOB)
+            .map(definition::attributeDefinition)
+            .sorted(AttributeDefinition.definitionComparator())
+            .collect(toList());
     assertEquals(TestDomain.Employee.COMMISSION, attributes.get(0).attribute());
     assertEquals(TestDomain.Employee.HIREDATE, attributes.get(1).attribute());
     assertEquals(TestDomain.Employee.JOB, attributes.get(2).attribute());
@@ -183,13 +187,12 @@ public final class EntitiesTest {
     attributes.add(TestDomain.Department.NAME);
 
     EntityDefinition definition = entities.definition(TestDomain.Department.TYPE);
-    Collection<AttributeDefinition<?>> definitions = definition.attributeDefinitions(attributes);
+    Collection<AttributeDefinition<?>> definitions = attributes.stream()
+            .map(definition::attributeDefinition)
+            .collect(toList());
     assertEquals(2, definitions.size());
     assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.NO)));
     assertTrue(definitions.contains(definition.columnDefinition(TestDomain.Department.NAME)));
-
-    Collection<AttributeDefinition<?>> noAttributes = definition.attributeDefinitions(emptyList());
-    assertEquals(0, noAttributes.size());
   }
 
   @Test
@@ -281,13 +284,17 @@ public final class EntitiesTest {
     AttributeDefinition<String> location = definition.columnDefinition(TestDomain.Department.LOCATION);
     AttributeDefinition<String> name = definition.columnDefinition(TestDomain.Department.NAME);
     AttributeDefinition<Boolean> active = definition.columnDefinition(TestDomain.Department.ACTIVE);
-    Collection<AttributeDefinition<?>> attributes = definition.attributeDefinitions(asList(TestDomain.Department.LOCATION, TestDomain.Department.NAME));
+    Collection<AttributeDefinition<?>> attributes = Stream.of(TestDomain.Department.LOCATION, TestDomain.Department.NAME)
+            .map(definition::attributeDefinition)
+            .collect(toList());
     assertEquals(2, attributes.size());
     assertFalse(attributes.contains(id));
     assertTrue(attributes.contains(location));
     assertTrue(attributes.contains(name));
 
-    attributes = definition.visibleAttributeDefinitions();
+    attributes = definition.attributeDefinitions().stream()
+            .filter(ad -> !ad.isHidden())
+            .collect(toList());
     assertTrue(attributes.contains(id));
     assertTrue(attributes.contains(location));
     assertTrue(attributes.contains(name));
@@ -330,8 +337,8 @@ public final class EntitiesTest {
   @Test
   void hasDerivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    assertFalse(definition.hasDerivedAttributes(TestDomain.Detail.BOOLEAN));
-    assertTrue(definition.hasDerivedAttributes(TestDomain.Detail.INT));
+    assertTrue(definition.derivedAttributes(TestDomain.Detail.BOOLEAN).isEmpty());
+    assertFalse(definition.derivedAttributes(TestDomain.Detail.INT).isEmpty());
   }
 
   @Test

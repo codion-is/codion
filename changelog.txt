@@ -9546,3 +9546,11 @@
   EntityPanel.DetailController.detailPanelState() now with a detailPanel parameter
   EntityPanel.EntityPanelSelector added, DetailController renamed DetailPanelController, extends EntityPanelSelector, EntityPanelParent removed
   EntityPanel.editPanelWindow field removed
+  EntityDefinition.attributeDefinitions() and columnDefinitions() removed
+  EntityDefinition.hasDerivedAttributes(), visibleAttributeDefinitions(), lazyLoadedBlobColumnDefinitions() and transientAttributeDefinitions() removed, related refactoring
+  EntityDefinition.foreignKeyDefinitions() return type changed from List to Collection, related refactoring
+  Entity.revertAll() and saveAll() renamed revert() and save() respectively
+  EntityEditModel.isEntityValid() removed
+  EntityTableModel.etForeignKeyConditionValues() removed
+  ForeignKeyDetailModelLink, setters and getters replaced with Value
+  EntitySearchModel.get/setAdditionalConditionSupplier() replaced with Value

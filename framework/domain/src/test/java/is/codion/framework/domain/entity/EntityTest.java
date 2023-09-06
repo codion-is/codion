@@ -94,8 +94,6 @@ public final class EntityTest {
             .with(Department.ACTIVE, true)
             .build();
 
-    EntityDefinition definition = entities.definition(Department.TYPE);
-
     Entity current = entities.builder(Department.TYPE)
             .with(Department.NO, 1)
             .with(Department.LOCATION, "Location")
@@ -107,29 +105,29 @@ public final class EntityTest {
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NAME));
 
     current.put(Department.NO, 2);
-    current.saveAll();
+    current.save();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
     assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     Integer id = current.remove(Department.NO);
     assertEquals(2, id);
-    current.saveAll();
+    current.save();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.NO));
     assertEquals(Department.NO, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.put(Department.NO, 1);
-    current.saveAll();
+    current.save();
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.NO));
     assertTrue(Entity.modifiedColumnAttributes(current, entity).isEmpty());
 
     current.put(Department.LOCATION, "New location");
-    current.saveAll();
+    current.save();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
     assertEquals(Department.LOCATION, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.remove(Department.LOCATION);
-    current.saveAll();
+    current.save();
     assertTrue(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
     assertEquals(Department.LOCATION, Entity.modifiedColumnAttributes(current, entity).iterator().next());
     current.put(Department.LOCATION, "Location");
-    current.saveAll();
+    current.save();
     assertFalse(Entity.isValueMissingOrModified(current, entity, Department.LOCATION));
     assertTrue(Entity.modifiedColumnAttributes(current, entity).isEmpty());
 
@@ -147,7 +145,6 @@ public final class EntityTest {
     byte[] modifiedBytes = new byte[1024];
     random.nextBytes(modifiedBytes);
 
-    EntityDefinition definition = entities.definition(Employee.TYPE);
     //eagerly loaded blob
     Entity emp1 = entities.builder(Employee.TYPE)
             .with(Employee.ID, 1)
@@ -174,8 +171,6 @@ public final class EntityTest {
     Entity dept2 = dept1.copyBuilder()
             .with(Department.DATA, modifiedBytes)
             .build();
-
-    EntityDefinition departmentDefinition = entities.definition(Department.TYPE);
 
     modifiedAttributes = Entity.modifiedColumnAttributes(dept1, dept2);
     assertFalse(modifiedAttributes.contains(Department.DATA));

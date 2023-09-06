@@ -274,7 +274,7 @@ public class DefaultEntityTest {
     assertEquals("newname", entity2.original(Master.NAME));
 
     assertTrue(entity2.isModified());
-    entity2.revertAll();
+    entity2.revert();
     assertFalse(entity2.isModified());
   }
 
@@ -765,7 +765,7 @@ public class DefaultEntityTest {
     assertTrue(emp.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)
             .columnValuesEqual(copy.referencedEntity(Employee.MANAGER_FK).referencedEntity(Employee.DEPARTMENT_FK)));
 
-    emp.saveAll();
+    emp.save();
     emp.entityDefinition().foreignKeys().forEach(foreignKey -> assertTrue(emp.isLoaded(foreignKey)));
     emp.entityDefinition().foreignKeys().forEach(emp::remove);
     assertFalse(emp.isModified());
@@ -912,9 +912,9 @@ public class DefaultEntityTest {
     assertThrows(UnsupportedOperationException.class, () -> emp.put(Department.NO, 2));
     assertThrows(UnsupportedOperationException.class, emp::clearPrimaryKey);
     assertThrows(UnsupportedOperationException.class, () -> emp.save(Department.NO));
-    assertThrows(UnsupportedOperationException.class, emp::saveAll);
+    assertThrows(UnsupportedOperationException.class, emp::save);
     assertThrows(UnsupportedOperationException.class, () -> emp.revert(Department.NO));
-    assertThrows(UnsupportedOperationException.class, emp::revertAll);
+    assertThrows(UnsupportedOperationException.class, emp::revert);
     assertThrows(UnsupportedOperationException.class, () -> emp.remove(Department.NO));
     assertThrows(UnsupportedOperationException.class, () -> emp.set(emp));
 
@@ -922,9 +922,9 @@ public class DefaultEntityTest {
     assertThrows(UnsupportedOperationException.class, () -> dept.put(Department.NO, 2));
     assertThrows(UnsupportedOperationException.class, dept::clearPrimaryKey);
     assertThrows(UnsupportedOperationException.class, () -> dept.save(Department.NO));
-    assertThrows(UnsupportedOperationException.class, dept::saveAll);
+    assertThrows(UnsupportedOperationException.class, dept::save);
     assertThrows(UnsupportedOperationException.class, () -> dept.revert(Department.NO));
-    assertThrows(UnsupportedOperationException.class, dept::revertAll);
+    assertThrows(UnsupportedOperationException.class, dept::revert);
     assertThrows(UnsupportedOperationException.class, () -> dept.remove(Department.NO));
     assertThrows(UnsupportedOperationException.class, () -> dept.set(dept));
   }
@@ -939,7 +939,7 @@ public class DefaultEntityTest {
     assertTrue(emp.isNew());
     emp.put(Employee.ID, 1);
     assertTrue(emp.isNew());
-    emp.saveAll();
+    emp.save();
     emp.put(Employee.ID, 2);
     assertFalse(emp.isNew());
     emp.remove(Employee.ID);

@@ -3,6 +3,7 @@
  */
 package is.codion.framework.model;
 
+import is.codion.common.state.State;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -22,10 +23,9 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
         T extends EntityTableModel<E>> extends DefaultDetailModelLink<M, E, T> implements ForeignKeyDetailModelLink<M, E, T> {
 
   private final ForeignKey foreignKey;
-
-  private boolean clearForeignKeyOnEmptySelection = ForeignKeyDetailModelLink.CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION.get();
-  private boolean searchByInsertedEntity = ForeignKeyDetailModelLink.SEARCH_BY_INSERTED_ENTITY.get();
-  private boolean refreshOnSelection = ForeignKeyDetailModelLink.REFRESH_ON_SELECTION.get();
+  private final State clearForeignKeyOnEmptySelection = State.state(ForeignKeyDetailModelLink.CLEAR_FOREIGN_KEY_ON_EMPTY_SELECTION.get());
+  private final State searchByInsertedEntity = State.state(ForeignKeyDetailModelLink.SEARCH_BY_INSERTED_ENTITY.get());
+  private final State refreshOnSelection = State.state(ForeignKeyDetailModelLink.REFRESH_ON_SELECTION.get());
 
   /**
    * @param detailModel the detail model
@@ -42,41 +42,24 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
   }
 
   @Override
-  public final boolean isSearchByInsertedEntity() {
+  public final State searchByInsertedEntity() {
     return searchByInsertedEntity;
   }
 
   @Override
-  public final ForeignKeyDetailModelLink<M, E, T> setSearchByInsertedEntity(boolean searchByInsertedEntity) {
-    this.searchByInsertedEntity = searchByInsertedEntity;
-    return this;
-  }
-
-  @Override
-  public final boolean isRefreshOnSelection() {
+  public final State refreshOnSelection() {
     return refreshOnSelection;
   }
 
   @Override
-  public final ForeignKeyDetailModelLink<M, E, T> setRefreshOnSelection(boolean refreshOnSelection) {
-    this.refreshOnSelection = refreshOnSelection;
-    return this;
-  }
-
-  @Override
-  public final boolean isClearForeignKeyOnEmptySelection() {
+  public final State clearForeignKeyOnEmptySelection() {
     return clearForeignKeyOnEmptySelection;
   }
 
   @Override
-  public final ForeignKeyDetailModelLink<M, E, T> setClearForeignKeyOnEmptySelection(boolean clearForeignKeyOnEmptySelection) {
-    this.clearForeignKeyOnEmptySelection = clearForeignKeyOnEmptySelection;
-    return this;
-  }
-
-  @Override
   public void onSelection(Collection<Entity> selectedEntities) {
-    if (detailModel().containsTableModel() && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, selectedEntities) && isRefreshOnSelection()) {
+    if (detailModel().containsTableModel() && detailModel().tableModel()
+            .conditionModel().setEqualConditionValues(foreignKey, selectedEntities) && refreshOnSelection.get()) {
       detailModel().tableModel().refresher().refreshThen(items -> setEditModelForeignKeyValue(selectedEntities));
     }
     else {
@@ -91,8 +74,8 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
     if (!entities.isEmpty()) {
       detailModel().editModel().put(foreignKey, entities.iterator().next());
     }
-    if (detailModel().containsTableModel() && isSearchByInsertedEntity()
-            && detailModel().tableModel().setForeignKeyConditionValues(foreignKey, entities)) {
+    if (detailModel().containsTableModel() && searchByInsertedEntity.get()
+            && detailModel().tableModel().conditionModel().setEqualConditionValues(foreignKey, entities)) {
       detailModel().tableModel().refresh();
     }
   }
@@ -119,7 +102,7 @@ public class DefaultForeignKeyDetailModelLink<M extends DefaultEntityModel<M, E,
 
   private void setEditModelForeignKeyValue(Collection<Entity> selectedEntities) {
     Entity foreignKeyValue = selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
-    if (detailModel().editModel().isEntityNew() && (foreignKeyValue != null || isClearForeignKeyOnEmptySelection())) {
+    if (detailModel().editModel().isEntityNew() && (foreignKeyValue != null || clearForeignKeyOnEmptySelection.get())) {
       detailModel().editModel().put(foreignKey, foreignKeyValue);
     }
   }

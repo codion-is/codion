@@ -38,6 +38,7 @@ import static java.util.stream.Collectors.joining;
 
 final class DefaultEntitySearchModel implements EntitySearchModel {
 
+  private static final Supplier<Condition> NULL_CONDITION_SUPPLIER = () -> null;
   private static final Function<Entity, String> DEFAULT_TO_STRING = Object::toString;
   private static final String DEFAULT_SEPARATOR = ",";
 
@@ -69,27 +70,27 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
    */
   private final Map<Column<String>, SearchSettings> columnSearchSettings = new HashMap<>();
 
-  private final Value<String> searchStringValue = Value.value("", "");
-  private final Value<String> multipleItemSeparatorValue;
-  private final State singleSelectionState = State.state(false);
-  private final Value<Character> wildcardValue = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
-  private final State selectionEmptyState = State.state(true);
+  private final Value<String> searchString = Value.value("", "");
+  private final Value<String> multipleItemSeparator;
+  private final State singleSelection = State.state(false);
+  private final Value<Character> wildcard = Value.value(Text.WILDCARD_CHARACTER.get(), Text.WILDCARD_CHARACTER.get());
+  private final Value<Supplier<Condition>> additionalConditionSupplier = Value.value(NULL_CONDITION_SUPPLIER, NULL_CONDITION_SUPPLIER);
+  private final State selectionEmpty = State.state(true);
 
   private Function<Entity, String> toStringProvider;
   private Comparator<Entity> resultSorter;
   private String description;
-  private Supplier<Condition> additionalConditionSupplier;
 
   private DefaultEntitySearchModel(DefaultBuilder builder) {
     this.entityType = builder.entityType;
     this.connectionProvider = builder.connectionProvider;
-    this.multipleItemSeparatorValue = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
+    this.multipleItemSeparator = Value.value(builder.multipleItemSeparator, DEFAULT_SEPARATOR);
     this.searchColumns = unmodifiableCollection(builder.searchColumns);
     this.searchColumns.forEach(attribute -> columnSearchSettings.put(attribute, new DefaultSearchSettings()));
     this.toStringProvider = builder.toStringProvider;
     this.resultSorter = builder.resultSorter;
     this.description = builder.description == null ? createDescription() : builder.description;
-    this.singleSelectionState.set(builder.singleSelection);
+    this.singleSelection.set(builder.singleSelection);
     bindEventsInternal();
   }
 
@@ -139,7 +140,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       return;//no change
     }
     if (entities != null) {
-      if (entities.size() > 1 && singleSelectionState.get()) {
+      if (entities.size() > 1 && singleSelection.get()) {
         throw new IllegalArgumentException("This EntitySearchModel does not allow the selection of multiple entities");
       }
       entities.forEach(this::validateType);
@@ -150,7 +151,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       selectedEntities.addAll(entities);
     }
     resetSearchString();
-    selectionEmptyState.set(selectedEntities.isEmpty());
+    selectionEmpty.set(selectedEntities.isEmpty());
     selectedEntitiesChangedEvent.accept(unmodifiableList(selectedEntities));
   }
 
@@ -166,12 +167,12 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public Value<Character> wildcard() {
-    return wildcardValue;
+    return wildcard;
   }
 
   @Override
-  public void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier) {
-    this.additionalConditionSupplier = additionalConditionSupplier;
+  public Value<Supplier<Condition>> additionalConditionSupplier() {
+    return additionalConditionSupplier;
   }
 
   @Override
@@ -186,7 +187,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public void resetSearchString() {
-    searchStringValue.set(selectedEntitiesToString());
+    searchString.set(selectedEntitiesToString());
   }
 
   @Override
@@ -206,17 +207,17 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public Value<String> searchString() {
-    return searchStringValue;
+    return searchString;
   }
 
   @Override
   public Value<String> multipleItemSeparator() {
-    return multipleItemSeparatorValue;
+    return multipleItemSeparator;
   }
 
   @Override
   public State singleSelection() {
-    return singleSelectionState;
+    return singleSelection;
   }
 
   @Override
@@ -236,7 +237,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
 
   @Override
   public StateObserver selectionEmpty() {
-    return selectionEmptyState.observer();
+    return selectionEmpty.observer();
   }
 
   /**
@@ -249,8 +250,8 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       throw new IllegalStateException("No search columns provided for search model: " + entityType);
     }
     Collection<Condition> conditions = new ArrayList<>();
-    String[] searchStrings = singleSelectionState.get() ?
-            new String[] {searchStringValue.get()} : searchStringValue.get().split(multipleItemSeparatorValue.get());
+    String[] searchStrings = singleSelection.get() ?
+            new String[] {searchString.get()} : searchString.get().split(multipleItemSeparator.get());
     for (Column<String> searchColumn : searchColumns) {
       SearchSettings searchSettings = columnSearchSettings.get(searchColumn);
       for (String rawSearchString : searchStrings) {
@@ -266,9 +267,10 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
       }
     }
     Condition conditionCombination = or(conditions);
-    Select.Builder selectBuilder = additionalConditionSupplier == null ?
+    Condition additionalCondition = additionalConditionSupplier.get().get();
+    Select.Builder selectBuilder = additionalCondition == null ?
             Select.where(conditionCombination) :
-            Select.where(and(additionalConditionSupplier.get(), conditionCombination));
+            Select.where(and(additionalCondition, conditionCombination));
 
     return selectBuilder
             .orderBy(connectionProvider.entities().definition(entityType).orderBy())
@@ -279,20 +281,20 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
     boolean wildcardPrefix = searchSettings.wildcardPrefix().get();
     boolean wildcardPostfix = searchSettings.wildcardPostfix().get();
 
-    return rawSearchString.equals(String.valueOf(wildcardValue.get())) ? String.valueOf(wildcardValue.get()) :
-            ((wildcardPrefix ? wildcardValue.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcardValue.get() : ""));
+    return rawSearchString.equals(String.valueOf(wildcard.get())) ? String.valueOf(wildcard.get()) :
+            ((wildcardPrefix ? wildcard.get() : "") + rawSearchString.trim() + (wildcardPostfix ? wildcard.get() : ""));
   }
 
   private void bindEventsInternal() {
-    searchStringValue.addListener(() ->
+    searchString.addListener(() ->
             searchStringRepresentsSelectedState.set(doesSearchStringRepresentSelectedEntities()));
-    multipleItemSeparatorValue.addListener(this::resetSearchString);
+    multipleItemSeparator.addListener(this::resetSearchString);
   } 
   
   private boolean doesSearchStringRepresentSelectedEntities() {
     String selectedAsString = selectedEntitiesToString();
-    return (selectedEntities.isEmpty() && nullOrEmpty(searchStringValue.get()))
-            || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
+    return (selectedEntities.isEmpty() && nullOrEmpty(searchString.get()))
+            || !selectedEntities.isEmpty() && selectedAsString.equals(searchString.get());
   }
 
   private String createDescription() {
@@ -306,7 +308,7 @@ final class DefaultEntitySearchModel implements EntitySearchModel {
   private String selectedEntitiesToString() {
     return selectedEntities.stream()
             .map(toStringProvider)
-            .collect(joining(multipleItemSeparatorValue.get()));
+            .collect(joining(multipleItemSeparator.get()));
   }
 
   private void validateType(Entity entity) {

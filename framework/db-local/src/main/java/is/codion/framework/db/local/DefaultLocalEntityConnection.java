@@ -293,7 +293,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             Condition condition = key(entity.originalPrimaryKey());
             updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, condition.toString(entityDefinition));
             statement = prepareStatement(updateQuery);
-            statementColumns.addAll(entityDefinition.columnDefinitions(condition.columns()));
+            statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
             statementValues.addAll(condition.values());
             int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
             if (updatedRows == 0) {
@@ -360,7 +360,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         }
         updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
         statement = prepareStatement(updateQuery);
-        statementColumns.addAll(entityDefinition.columnDefinitions(update.where().columns()));
+        statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
         statementValues.addAll(update.where().values());
         int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
         commitIfTransactionIsNotOpen();
@@ -384,7 +384,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
     List<?> statementValues = condition.values();
-    List<ColumnDefinition<?>> statementColumns = entityDefinition.columnDefinitions(condition.columns());
+    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     PreparedStatement statement = null;
     String deleteQuery = null;
     synchronized (connection) {
@@ -432,7 +432,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           EntityDefinition entityDefinition = domainEntities.definition(entityTypeKeys.getKey());
           condition = keys(entityTypeKeys.getValue());
           statementValues = condition.values();
-          statementColumns = entityDefinition.columnDefinitions(condition.columns());
+          statementColumns = columnDefinitions(entityDefinition, condition.columns());
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
           statement = prepareStatement(deleteQuery);
           deleteCount += executeStatement(statement, deleteQuery, statementColumns, statementValues);
@@ -572,7 +572,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, asList(column, select),
-                entityDefinition.columnDefinitions(combinedCondition.columns()), e), e);
+                columnDefinitions(entityDefinition, combinedCondition.columns()), e), e);
         throw translateSQLException(e);
       }
       finally {
@@ -611,7 +611,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       catch (SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(selectQuery, condition.values(),
-                entityDefinition.columnDefinitions(condition.columns()), e), e);
+                columnDefinitions(entityDefinition, condition.columns()), e), e);
         throw translateSQLException(e);
       }
       finally {
@@ -737,7 +737,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     statementValues.addAll(condition.values());
     List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
     statementColumns.add(columnDefinition);
-    statementColumns.addAll(entityDefinition.columnDefinitions(condition.columns()));
+    statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
     synchronized (connection) {
       Exception exception = null;
       PreparedStatement statement = null;
@@ -779,7 +779,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     ResultSet resultSet = null;
     Condition condition = key(primaryKey);
-    List<ColumnDefinition<?>> statementColumns = entityDefinition.columnDefinitions(condition.columns());
+    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns(columnDefinition.columnExpression())
             .where(condition)
@@ -902,7 +902,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
       if (current == null) {
         Entity original = entity.copy();
-        original.revertAll();
+        original.revert();
 
         throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                 + ", " + original + " " + MESSAGES.getString("has_been_deleted"));
@@ -949,10 +949,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
    */
   private void setForeignKeys(List<Entity> entities, Select select,
                               int currentForeignKeyFetchDepth) throws SQLException {
-    List<ForeignKeyDefinition> foreignKeyDefinitions =
+    Collection<ForeignKeyDefinition> foreignKeysToSet =
             foreignKeysToSet(entities.get(0).entityType(), select.attributes());
-    for (int i = 0; i < foreignKeyDefinitions.size(); i++) {
-      ForeignKeyDefinition foreignKeyDefinition = foreignKeyDefinitions.get(i);
+    for (ForeignKeyDefinition foreignKeyDefinition : foreignKeysToSet) {
       ForeignKey foreignKey = foreignKeyDefinition.attribute();
       int conditionFetchDepthLimit = select.fetchDepth(foreignKey)
               .orElse(foreignKeyDefinition.fetchDepth());
@@ -983,9 +982,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
-  private List<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
-                                                      Collection<Attribute<?>> conditionSelectAttributes) {
-    List<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeyDefinitions();
+  private Collection<ForeignKeyDefinition> foreignKeysToSet(EntityType entityType,
+                                                            Collection<Attribute<?>> conditionSelectAttributes) {
+    Collection<ForeignKeyDefinition> foreignKeyDefinitions = domainEntities.definition(entityType).foreignKeyDefinitions();
     if (conditionSelectAttributes.isEmpty()) {
       return foreignKeyDefinitions;
     }
@@ -1054,7 +1053,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       closeSilently(resultSet);
       closeSilently(statement);
       LOG.error(createLogMessage(selectQuery, condition.values(),
-              entityDefinition.columnDefinitions(condition.columns()), e), e);
+              columnDefinitions(entityDefinition, condition.columns()), e), e);
       throw e;
     }
   }
@@ -1086,7 +1085,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                                      Condition condition, EntityDefinition entityDefinition) throws SQLException {
     SQLException exception = null;
     List<?> statementValues = condition.values();
-    List<ColumnDefinition<?>> statementColumns = entityDefinition.columnDefinitions(condition.columns());
+    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     try {
       logEntry(EXECUTE_STATEMENT, statementValues);
       setParameterValues(statement, statementColumns, statementValues);
@@ -1324,6 +1323,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return referencedEntity;
+  }
+
+  /**
+   *
+   * @param entityDefinition
+   * @param columns
+   * @return
+   */
+  private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,
+                                                             List<Column<?>> columns) {
+    return columns.stream()
+            .map(entityDefinition::columnDefinition)
+            .collect(toList());
   }
 
   private static void setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,

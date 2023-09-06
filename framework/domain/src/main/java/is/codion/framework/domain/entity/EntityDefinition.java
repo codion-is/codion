@@ -11,7 +11,6 @@ import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.lang.invoke.MethodHandle;
@@ -137,19 +136,6 @@ public interface EntityDefinition {
   boolean hasPrimaryKey();
 
   /**
-   * @return true if this entity contains any attribute which values are derived from other attribute
-   */
-  boolean hasDerivedAttributes();
-
-  /**
-   * Returns true if this entity contains attributes which values are derived from the value of the given attribute
-   * @param attribute the attribute
-   * @param <T> the attribute type
-   * @return true if any attribute values are derived from the given attribute
-   */
-  <T> boolean hasDerivedAttributes(Attribute<T> attribute);
-
-  /**
    * Returns the attributes which values are derived from the value of the given attribute,
    * an empty collection if no such derived attributes exist
    * @param attribute the attribute
@@ -173,29 +159,14 @@ public interface EntityDefinition {
   List<ColumnDefinition<?>> primaryKeyColumnDefinitions();
 
   /**
-   * @return a list containing the definitions of the visible attributes for this entity type
-   */
-  List<AttributeDefinition<?>> visibleAttributeDefinitions();
-
-  /**
    * @return a list containing the definitions of the colums for this entity type
    */
   List<ColumnDefinition<?>> columnDefinitions();
 
   /**
-   * @return a list containing the definitions of the lazy loaded blob columns for this entity type
-   */
-  List<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions();
-
-  /**
-   * @return a list containing the definitions of all non-column-based attributes for this entity type
-   */
-  List<TransientAttributeDefinition<?>> transientAttributeDefinitions();
-
-  /**
    * @return a list containing the foreign key definitions for this entity type
    */
-  List<ForeignKeyDefinition> foreignKeyDefinitions();
+  Collection<ForeignKeyDefinition> foreignKeyDefinitions();
 
   /**
    * @return all foreign keys for this entity type
@@ -254,20 +225,6 @@ public interface EntityDefinition {
    * @throws NullPointerException in case {@code attribute} is null
    */
   <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute);
-
-  /**
-   * Returns the {@link AttributeDefinition}s for the given attributes
-   * @param attributes the attributes which definitions to retrieve
-   * @return a Collection containing the definitions for the given attributes
-   */
-  Collection<AttributeDefinition<?>> attributeDefinitions(Collection<Attribute<?>> attributes);
-
-  /**
-   * Returns the {@link ColumnDefinition}s based on the given columns
-   * @param columns the columns which definitions to retrieve
-   * @return a list of column definitions
-   */
-  List<ColumnDefinition<?>> columnDefinitions(List<Column<?>> columns);
 
   /**
    * Retrieves the definitions of the writable (non-read-only) columns comprising this entity type

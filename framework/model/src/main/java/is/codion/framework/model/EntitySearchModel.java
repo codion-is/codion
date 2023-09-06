@@ -102,9 +102,9 @@ public interface EntitySearchModel {
    * Sets the additional search condition provider to use when performing the next search.
    * This condition is AND'ed to the actual search condition.
    * NOTE, this does not affect the currently selected value(s), if any.
-   * @param additionalConditionSupplier the additional search condition provider
+   * @return the Value controlling the addition condition supplier
    */
-  void setAdditionalConditionSupplier(Supplier<Condition> additionalConditionSupplier);
+  Value<Supplier<Condition>> additionalConditionSupplier();
 
   /**
    * Override the default toString() for search elements when displayed

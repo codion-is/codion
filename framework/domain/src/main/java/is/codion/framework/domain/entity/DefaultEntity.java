@@ -232,7 +232,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public void saveAll() {
+  public void save() {
     originalValues = null;
   }
 
@@ -245,7 +245,7 @@ class DefaultEntity implements Entity, Serializable {
   }
 
   @Override
-  public void revertAll() {
+  public void revert() {
     if (originalValues != null) {
       for (Attribute<?> attribute : new ArrayList<>(originalValues.keySet())) {
         revert(attribute);
