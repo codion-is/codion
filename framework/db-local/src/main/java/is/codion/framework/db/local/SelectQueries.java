@@ -10,6 +10,7 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -35,6 +36,7 @@ final class SelectQueries {
   private final Map<EntityType, List<ColumnDefinition<?>>> selectableColumnsCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> allColumnsClauseCache = new ConcurrentHashMap<>();
   private final Map<EntityType, String> groupByClauseCache = new ConcurrentHashMap<>();
+  private final Map<EntityType, Set<ColumnDefinition<?>>> lazyLoadedBlobColumnDefinitions = new ConcurrentHashMap<>();
 
   SelectQueries(Database database) {
     this.database = database;
@@ -261,11 +263,23 @@ final class SelectQueries {
     }
 
     private List<ColumnDefinition<?>> selectableColumns() {
+      Set<ColumnDefinition<?>> lazyLoadedBlobColumns =
+              lazyLoadedBlobColumnDefinitions.computeIfAbsent(definition.entityType(), entityType ->
+                      initializeLazyLoadedBlobColumnDefinitions());
+
       return selectableColumnsCache.computeIfAbsent(definition.entityType(), entityType ->
               definition.columnDefinitions().stream()
-                      .filter(columnDefinition -> !definition.lazyLoadedBlobColumnDefinitions().contains(columnDefinition))
+                      .filter(columnDefinition -> !lazyLoadedBlobColumns.contains(columnDefinition))
                       .filter(ColumnDefinition::isSelectable)
                       .collect(toList()));
+    }
+
+    private Set<ColumnDefinition<?>> initializeLazyLoadedBlobColumnDefinitions() {
+      return definition.columnDefinitions().stream()
+              .filter(column -> column.attribute().isByteArray())
+              .map(column -> (ColumnDefinition<byte[]>) column)
+              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+              .collect(Collectors.toSet());
     }
 
     private String allColumnsClause() {

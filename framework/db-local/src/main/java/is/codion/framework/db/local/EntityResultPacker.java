@@ -7,6 +7,7 @@ import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.attribute.Attribute;
+import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
@@ -57,22 +58,19 @@ final class EntityResultPacker implements ResultPacker<Entity> {
   }
 
   private void addTransientNullValues(Map<Attribute<?>, Object> values) {
-    List<TransientAttributeDefinition<?>> transientDefinitions = definition.transientAttributeDefinitions();
-    for (int i = 0; i < transientDefinitions.size(); i++) {
-      TransientAttributeDefinition<?> transientDefinition = transientDefinitions.get(i);
-      if (!transientDefinition.isDerived()) {
-        values.put(transientDefinition.attribute(), null);
-      }
-    }
+    definition.attributeDefinitions().stream()
+            .filter(TransientAttributeDefinition.class::isInstance)
+            .map(TransientAttributeDefinition.class::cast)
+            .filter(transientAttributeDefinition -> !transientAttributeDefinition.isDerived())
+            .forEach(transientAttributeDefinition -> values.put(transientAttributeDefinition.attribute(), null));
   }
 
   private void addLazyLoadedBlobNullValues(Map<Attribute<?>, Object> values) {
-    List<ColumnDefinition<byte[]>> lazyLoadedBlobColumns = definition.lazyLoadedBlobColumnDefinitions();
-    for (int i = 0; i < lazyLoadedBlobColumns.size(); i++) {
-      ColumnDefinition<?> blobDefinition = lazyLoadedBlobColumns.get(i);
-      if (!values.containsKey(blobDefinition.attribute())) {
-        values.put(blobDefinition.attribute(), null);
-      }
-    }
+    definition.columnDefinitions().stream()
+            .filter(column -> column.attribute().isByteArray())
+            .map(column -> (ColumnDefinition<byte[]>) column)
+            .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+            .filter(column -> !values.containsKey(column.attribute()))
+            .forEach(column -> values.put(column.attribute(), null));
   }
 }

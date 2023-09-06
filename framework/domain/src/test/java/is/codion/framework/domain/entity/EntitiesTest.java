@@ -292,7 +292,9 @@ public final class EntitiesTest {
     assertTrue(attributes.contains(location));
     assertTrue(attributes.contains(name));
 
-    attributes = definition.visibleAttributeDefinitions();
+    attributes = definition.attributeDefinitions().stream()
+            .filter(ad -> !ad.isHidden())
+            .collect(toList());
     assertTrue(attributes.contains(id));
     assertTrue(attributes.contains(location));
     assertTrue(attributes.contains(name));
@@ -335,8 +337,8 @@ public final class EntitiesTest {
   @Test
   void hasDerivedAttributes() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
-    assertFalse(definition.hasDerivedAttributes(TestDomain.Detail.BOOLEAN));
-    assertTrue(definition.hasDerivedAttributes(TestDomain.Detail.INT));
+    assertTrue(definition.derivedAttributes(TestDomain.Detail.BOOLEAN).isEmpty());
+    assertFalse(definition.derivedAttributes(TestDomain.Detail.INT).isEmpty());
   }
 
   @Test

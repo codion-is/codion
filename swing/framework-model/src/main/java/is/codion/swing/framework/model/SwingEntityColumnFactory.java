@@ -10,10 +10,11 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.common.model.component.table.FilteredTableColumn;
 import is.codion.swing.common.model.component.table.FilteredTableModel.ColumnFactory;
 
-import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import static java.util.Objects.requireNonNull;
 
@@ -34,12 +35,13 @@ public class SwingEntityColumnFactory implements ColumnFactory<Attribute<?>> {
 
   @Override
   public final List<FilteredTableColumn<Attribute<?>>> createColumns() {
-    List<FilteredTableColumn<Attribute<?>>> columns = new ArrayList<>(entityDefinition.visibleAttributeDefinitions().size());
-    for (AttributeDefinition<?> attributeDefinition : entityDefinition.visibleAttributeDefinitions()) {
-      createColumn(attributeDefinition, columns.size()).ifPresent(columns::add);
-    }
-
-    return columns;
+    AtomicInteger index = new AtomicInteger();
+    return entityDefinition.attributeDefinitions().stream()
+            .filter(attributeDefinition -> !attributeDefinition.isHidden())
+            .map(attributeDefinition -> createColumn(attributeDefinition, index.getAndIncrement()))
+            .filter(Optional::isPresent)
+            .map(Optional::get)
+            .collect(Collectors.toList());
   }
 
   /**

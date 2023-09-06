@@ -290,8 +290,8 @@ public class DefaultEntityDefinitionTest {
     Domain domain = new TestDomain();
 
     EntityDefinition definition = domain.entities().definition(entityType);
-    assertTrue(definition.hasDerivedAttributes(column1));
-    assertTrue(definition.hasDerivedAttributes(column2));
+    assertFalse(definition.derivedAttributes(column1).isEmpty());
+    assertFalse(definition.derivedAttributes(column2).isEmpty());
   }
 
   @Test

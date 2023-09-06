@@ -9507,3 +9507,4 @@
   EntityPanel.EntityPanelSelector added, DetailController renamed DetailPanelController, extends EntityPanelSelector, EntityPanelParent removed
   EntityPanel.editPanelWindow field removed
   EntityDefinition.attributeDefinitions() and columnDefinitions() removed
+  EntityDefinition.hasDerivedAttributes(), visibleAttributeDefinitions(), lazyLoadedBlobColumnDefinitions() and transientAttributeDefinitions() removed, related refactoring

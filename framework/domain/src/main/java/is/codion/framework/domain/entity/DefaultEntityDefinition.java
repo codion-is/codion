@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.DerivedAttributeDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.attribute.ForeignKeyDefinition;
-import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 import is.codion.framework.domain.entity.query.SelectQuery;
 
 import java.io.IOException;
@@ -55,8 +54,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private static final String METHOD = "method";
   private static final String ATTRIBUTE = "attribute";
   private static final String COLUMN = "column";
-  private static final String ATTRIBUTES = "attributes";
-  private static final String COLUMNS = "columns";
   private static final String FOREIGN_KEY = "foreignKey";
 
   /**
@@ -447,16 +444,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public boolean hasDerivedAttributes() {
-    return !entityAttributes.derivedAttributes.isEmpty();
-  }
-
-  @Override
-  public <T> boolean hasDerivedAttributes(Attribute<T> attribute) {
-    return entityAttributes.derivedAttributes.containsKey(requireNonNull(attribute, ATTRIBUTE));
-  }
-
-  @Override
   public <T> Collection<Attribute<?>> derivedAttributes(Attribute<T> attribute) {
     return entityAttributes.derivedAttributes.getOrDefault(requireNonNull(attribute, ATTRIBUTE), emptySet());
   }
@@ -472,25 +459,8 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<AttributeDefinition<?>> visibleAttributeDefinitions() {
-    return entityAttributes.attributeDefinitions.stream()
-            .filter(definition -> !definition.isHidden())
-            .collect(toList());
-  }
-
-  @Override
   public List<ColumnDefinition<?>> columnDefinitions() {
     return entityAttributes.columnDefinitions;
-  }
-
-  @Override
-  public List<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions() {
-    return entityAttributes.lazyLoadedBlobColumnDefinitions;
-  }
-
-  @Override
-  public List<TransientAttributeDefinition<?>> transientAttributeDefinitions() {
-    return entityAttributes.transientAttributeDefinitions;
   }
 
   @Override
@@ -720,7 +690,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Map<Attribute<?>, AttributeDefinition<?>> attributeMap;
     private final List<AttributeDefinition<?>> attributeDefinitions;
     private final List<ColumnDefinition<?>> columnDefinitions;
-    private final List<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions;
     private final List<Column<?>> primaryKeyColumns;
     private final List<ColumnDefinition<?>> primaryKeyColumnDefinitions;
     private final List<ForeignKeyDefinition> foreignKeyDefinitions;
@@ -728,7 +697,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private final Map<Column<?>, Collection<ForeignKeyDefinition>> columnForeignKeyDefinitions;
     private final Set<Column<?>> foreignKeyColumns = new HashSet<>();
     private final Map<Attribute<?>, Set<Attribute<?>>> derivedAttributes;
-    private final List<TransientAttributeDefinition<?>> transientAttributeDefinitions;
     private final List<Attribute<?>> selectAttributes;
 
     private EntityAttributes(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
@@ -750,14 +718,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
       this.attributeNameMap = unmodifiableMap(attributeNameMap(attributeMap));
       this.attributeDefinitions = unmodifiableList(new ArrayList<>(attributeMap.values()));
       this.columnDefinitions = unmodifiableList(columnDefinitions());
-      this.lazyLoadedBlobColumnDefinitions = unmodifiableList(lazyLoadedBlobColumnDefinitions());
       this.primaryKeyColumnDefinitions = unmodifiableList(primaryKeyColumnDefinitions());
       this.primaryKeyColumns = unmodifiableList(primaryKeyColumns());
       this.foreignKeyDefinitions = unmodifiableList(foreignKeyDefinitions());
       this.foreignKeyDefinitionMap = unmodifiableMap(foreignKeyDefinitionMap());
       this.columnForeignKeyDefinitions = unmodifiableMap(columnForeignKeyDefinitions());
       this.derivedAttributes = unmodifiableMap(derivedAttributes());
-      this.transientAttributeDefinitions = unmodifiableList(transientAttributeDefinitions());
       this.selectAttributes = unmodifiableList(selectAttributes());
     }
 
@@ -824,22 +790,12 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
               .collect(toList());
     }
 
-    private List<TransientAttributeDefinition<?>> transientAttributeDefinitions() {
-      return attributeDefinitions.stream()
-              .filter(TransientAttributeDefinition.class::isInstance)
-              .map(attribute -> (TransientAttributeDefinition<?>) attribute)
-              .collect(toList());
-    }
-
-    private List<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions() {
-      return columnDefinitions.stream()
+    private List<Attribute<?>> selectAttributes() {
+      Set<ColumnDefinition<byte[]>> lazyLoadedBlobColumnDefinitions = columnDefinitions.stream()
               .filter(column -> column.attribute().isByteArray())
               .map(column -> (ColumnDefinition<byte[]>) column)
               .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
-              .collect(toList());
-    }
-
-    private List<Attribute<?>> selectAttributes() {
+              .collect(toSet());
       List<Attribute<?>> selectableAttributes = columnDefinitions.stream()
               .filter(ColumnDefinition::isSelectable)
               .filter(column -> !lazyLoadedBlobColumnDefinitions.contains(column))

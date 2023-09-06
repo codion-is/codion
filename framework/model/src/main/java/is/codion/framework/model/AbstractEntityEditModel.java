@@ -961,17 +961,9 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private Entity defaultEntity(ValueSupplier valueSupplier) {
     EntityDefinition definition = entityDefinition();
     Entity newEntity = definition.entity();
-    definition.columnDefinitions().stream()
-            .filter(columnDefinition -> !definition.isForeignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
-            .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
-            .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
-            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
-    definition.transientAttributeDefinitions().stream()
-            .filter(attributeDefinition -> !attributeDefinition.isDerived())
-            .map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
-            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
-    definition.foreignKeyDefinitions().forEach(foreignKeyDefinition ->
-            newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
+    addColumnValues(valueSupplier, definition, newEntity);
+    addTransientValues(valueSupplier, definition, newEntity);
+    addForeignKeyValues(valueSupplier, definition, newEntity);
 
     newEntity.saveAll();
 
@@ -1054,6 +1046,27 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     entityValidState.set(validator.isValid(entity));
     primaryKeyNullState.set(entity.primaryKey().isNull());
     entityNewState.set(isEntityNew());
+  }
+
+  private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+    definition.columnDefinitions().stream()
+            .filter(columnDefinition -> !definition.isForeignKeyColumn(columnDefinition.attribute()))//these are set via their respective parent foreign key
+            .filter(columnDefinition -> !columnDefinition.columnHasDefaultValue() || columnDefinition.hasDefaultValue())
+            .map(columnDefinition -> (AttributeDefinition<Object>) columnDefinition)
+            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+  }
+
+  private static void addTransientValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+    definition.attributeDefinitions().stream()
+            .filter(TransientAttributeDefinition.class::isInstance)
+            .filter(attributeDefinition -> !attributeDefinition.isDerived())
+            .map(attributeDefinition -> (AttributeDefinition<Object>) attributeDefinition)
+            .forEach(attributeDefinition -> newEntity.put(attributeDefinition.attribute(), valueSupplier.get(attributeDefinition)));
+  }
+
+  private static void addForeignKeyValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {
+    definition.foreignKeyDefinitions().forEach(foreignKeyDefinition ->
+            newEntity.put(foreignKeyDefinition.attribute(), valueSupplier.get(foreignKeyDefinition)));
   }
 
   /**
