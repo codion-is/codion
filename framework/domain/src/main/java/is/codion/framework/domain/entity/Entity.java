@@ -105,7 +105,7 @@ public interface Entity extends Comparable<Entity> {
    * If no modifications have been made then calling this method has no effect.
    * @throws UnsupportedOperationException in case this entity is immutable
    */
-  void revertAll();
+  void revert();
 
   /**
    * Saves the value associated with the given attribute, that is, removes the original value.
@@ -121,7 +121,7 @@ public interface Entity extends Comparable<Entity> {
    * @throws UnsupportedOperationException in case this entity is immutable
    * @see #isModified()
    */
-  void saveAll();
+  void save();
 
   /**
    * Removes the given value from this Entity along with the original value if any.

@@ -618,7 +618,7 @@ public class DefaultLocalEntityConnectionTest {
     connection.setOptimisticLockingEnabled(false);
     Entity employee = connection.selectSingle(column(Employee.ID).equalTo(4));
     employee.put(Employee.ID, -888);//non existing
-    employee.saveAll();
+    employee.save();
     employee.put(Employee.NAME, "New name");
     assertThrows(UpdateException.class, () -> connection.update(employee));
   }
@@ -992,7 +992,7 @@ public class DefaultLocalEntityConnectionTest {
     scott.put(Employee.DATA_LAZY, lazyBytes);
     scott.put(Employee.DATA, bytes);
     connection.update(scott);
-    scott.saveAll();
+    scott.save();
 
     byte[] lazyFromDb = connection.readBlob(scott.primaryKey(), Employee.DATA_LAZY);
     byte[] fromDb = connection.readBlob(scott.primaryKey(), Employee.DATA);

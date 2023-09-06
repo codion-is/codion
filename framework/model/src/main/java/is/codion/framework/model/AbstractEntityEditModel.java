@@ -428,7 +428,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     if (entityDefinition().isKeyGenerated()) {
       toInsert.clearPrimaryKey();
     }
-    toInsert.saveAll();
+    toInsert.save();
     Collection<Entity> insertedEntities = insertEntities(singletonList(toInsert));
     if (insertedEntities.isEmpty()) {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
@@ -502,7 +502,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void delete() throws DatabaseException {
     Entity originalEntity = entity.copy();
-    originalEntity.revertAll();
+    originalEntity.revert();
 
     delete(singletonList(originalEntity));
   }
@@ -965,7 +965,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     addTransientValues(valueSupplier, definition, newEntity);
     addForeignKeyValues(valueSupplier, definition, newEntity);
 
-    newEntity.saveAll();
+    newEntity.save();
 
     return newEntity;
   }

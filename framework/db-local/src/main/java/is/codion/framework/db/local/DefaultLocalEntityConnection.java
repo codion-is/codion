@@ -902,7 +902,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Entity current = currentEntitiesByKey.get(entity.originalPrimaryKey());
       if (current == null) {
         Entity original = entity.copy();
-        original.revertAll();
+        original.revert();
 
         throw new RecordModifiedException(entity, null, MESSAGES.getString(RECORD_MODIFIED)
                 + ", " + original + " " + MESSAGES.getString("has_been_deleted"));

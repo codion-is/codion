@@ -9509,3 +9509,4 @@
   EntityDefinition.attributeDefinitions() and columnDefinitions() removed
   EntityDefinition.hasDerivedAttributes(), visibleAttributeDefinitions(), lazyLoadedBlobColumnDefinitions() and transientAttributeDefinitions() removed, related refactoring
   EntityDefinition.foreignKeyDefinitions() return type changed from List to Collection, related refactoring
+  Entity.revertAll() and saveAll() renamed revert() and save() respectively
