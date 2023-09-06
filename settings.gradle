@@ -172,7 +172,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         libs {
-            version("slf4j.api", "2.0.7")
+            version("slf4j.api", "2.0.9")
             version("logback", "1.4.11")
             version("h2", "2.2.222")
             version("json", "20230618")
@@ -182,7 +182,7 @@ dependencyResolutionManagement {
             version("http.client", "4.5.14")
             version("junit", "5.10.0")
             version("sslcontext.kickstart", "8.1.6")
-            version("flatlaf", "3.2")
+            version("flatlaf", "3.2.1")
             version("ikonli", "12.3.1")
             version("javalin", "5.6.2")
             //plugins

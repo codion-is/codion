@@ -1310,7 +1310,7 @@ public class EntityPanel extends JPanel {
      * Override to update the UI of components that may be hidden and
      * therefore not updated along with the component tree.
      */
-    default void updateUI() {};
+    default void updateUI() {}
 
     /**
      * @param entityPanel the panel to lay out
