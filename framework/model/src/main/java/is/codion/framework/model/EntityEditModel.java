@@ -328,7 +328,7 @@ public interface EntityEditModel {
    * Performs an update on the active entity
    * @return the updated entity
    * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified since it was loaded
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case updating is not enabled
    * @throws is.codion.common.db.exception.UpdateException in case the active entity is not modified
@@ -341,7 +341,7 @@ public interface EntityEditModel {
    * @param entities the entities to update
    * @return the updated entities
    * @throws DatabaseException in case of a database exception
-   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity was modified by another user
+   * @throws is.codion.common.db.exception.RecordModifiedException  in case an entity has been modified since it was loaded
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case updating is not enabled
    * @see #addBeforeUpdateListener(Consumer)
@@ -455,15 +455,8 @@ public interface EntityEditModel {
   boolean isValid(Attribute<?> attribute);
 
   /**
-   * @return true if the underlying Entity contains only valid values
-   * @see #entityValid()
-   */
-  boolean isEntityValid();
-
-  /**
    * @return a {@link StateObserver} indicating the valid status of the underlying Entity.
    * @see #validator()
-   * @see #isEntityValid()
    */
   StateObserver entityValid();
 

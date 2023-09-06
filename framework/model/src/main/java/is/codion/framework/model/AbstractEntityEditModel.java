@@ -372,11 +372,6 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   @Override
-  public final boolean isEntityValid() {
-    return entityValidState.get();
-  }
-
-  @Override
   public final void validate(Attribute<?> attribute) throws ValidationException {
     validator.validate(entity, attribute);
   }
