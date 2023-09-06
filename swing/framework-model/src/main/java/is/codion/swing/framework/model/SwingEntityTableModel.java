@@ -461,15 +461,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public boolean setForeignKeyConditionValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
-    requireNonNull(foreignKey, "foreignKey");
-    requireNonNull(foreignKeyValues, "foreignKeyValues");
-    entityDefinition().foreignKeyDefinition(foreignKey);
-
-    return conditionModel.setEqualConditionValues(foreignKey, foreignKeyValues);
-  }
-
-  @Override
   public final void replaceForeignKeyValues(ForeignKey foreignKey, Collection<Entity> foreignKeyValues) {
     requireNonNull(foreignKey, "foreignKey");
     requireNonNull(foreignKeyValues, "foreignKeyValues");

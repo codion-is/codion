@@ -9511,3 +9511,4 @@
   EntityDefinition.foreignKeyDefinitions() return type changed from List to Collection, related refactoring
   Entity.revertAll() and saveAll() renamed revert() and save() respectively
   EntityEditModel.isEntityValid() removed
+  EntityTableModel.etForeignKeyConditionValues() removed
