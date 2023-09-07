@@ -12,6 +12,12 @@
 
 == Demo applications
 
+=== Notes
+
+A simple Note-taking appliation.
+
+<<{basedir}/tutorials/notes.adoc#_notes, Notes tutorial>>
+
 === Petclinic
 link:{basedir}/tutorials/petclinic/petclinic.html[Petclinic tutorial]
 

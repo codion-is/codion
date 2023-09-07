@@ -1181,10 +1181,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
     Builder<M, P> setUncaughtExceptionHandler(boolean setUncaughtExceptionHandler);
 
     /**
-     * @param displayProgressDialog if true then a progress dialog is displayed while the application is being initialized
+     * @param displayStartupDialog if true then a progress dialog is displayed while the application is being initialized
      * @return this Builder instance
      */
-    Builder<M, P> displayStartupDialog(boolean displayProgressDialog);
+    Builder<M, P> displayStartupDialog(boolean displayStartupDialog);
 
     /**
      * @param frameSize the frame size when not maximized
