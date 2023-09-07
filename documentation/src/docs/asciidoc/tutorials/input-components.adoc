@@ -1,12 +1,22 @@
 [#_input_components]
 = Input Components
 :dir-source: ../../../../../demos/manual/src/main/java
+:imagesdir: ../images
+
+Demonstrates basic input component usage.
+
+
+
+image::tutorials/input_components.png[]
 
 == Application Model
+
+Holds value instances which are bound to input components in the panel below.
 
 .Show code
 [%collapsible]
 ====
+demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationModel.java
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationModel.java[tags=demoModelImport]
@@ -19,6 +29,7 @@ include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationMo
 .Show code
 [%collapsible]
 ====
+demos/manual/src/main/java/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java
 [source,java,indent=0]
 ----
 include::{dir-source}/is/codion/framework/demos/manual/common/demo/ApplicationPanel.java[tags=demoPanelImport]
