@@ -25,7 +25,7 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
         T extends EntityTableModel<E>> implements DetailModelLink<M, E, T> {
 
   private final M detailModel;
-  private final State activeState = State.state();
+  private final State active = State.state();
 
   public DefaultDetailModelLink(M detailModel) {
     this.detailModel = requireNonNull(detailModel, "detailModel");
@@ -41,6 +41,6 @@ public class DefaultDetailModelLink<M extends DefaultEntityModel<M, E, T>, E ext
 
   @Override
   public final State active() {
-    return activeState;
+    return active;
   }
 }

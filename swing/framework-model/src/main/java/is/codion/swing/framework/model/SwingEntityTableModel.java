@@ -1200,7 +1200,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
             .itemSupplier(new EntityItemSupplier(this))
-            .itemValidator(new EntityItemValidator(entityDefinition))
+            .itemValidator(new EntityItemValidator(entityDefinition.entityType()))
             .build();
   }
 
@@ -1302,15 +1302,15 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private static final class EntityItemValidator implements Predicate<Entity> {
 
-    private final EntityDefinition entityDefinition;
+    private final EntityType entityType;
 
-    private EntityItemValidator(EntityDefinition entityDefinition) {
-      this.entityDefinition = requireNonNull(entityDefinition);
+    private EntityItemValidator(EntityType entityType) {
+      this.entityType = requireNonNull(entityType);
     }
 
     @Override
     public boolean test(Entity entity) {
-      return entity.entityType().equals(entityDefinition.entityType());
+      return entity.entityType().equals(entityType);
     }
   }
 }
