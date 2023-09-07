@@ -216,7 +216,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the component associated with the given attribute
    * @throws IllegalArgumentException in case no component or component builder has been associated with the given attribute
    */
-  public final JComponent getComponent(Attribute<?> attribute) {
+  public final JComponent component(Attribute<?> attribute) {
     JComponent component = getComponentInternal(attribute);
     if (component == null) {
       throw new IllegalArgumentException("No component associated with attribute: " + attribute);
@@ -231,7 +231,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @return the attribute the given component is associated with
    * @throws IllegalArgumentException in case no attribute is associated with the given component
    */
-  public final <T> Attribute<T> getAttribute(JComponent component) {
+  public final <T> Attribute<T> attribute(JComponent component) {
     requireNonNull(component);
     return (Attribute<T>) components.entrySet().stream()
             .filter(entry -> entry.getValue() == component)
@@ -473,7 +473,7 @@ public class EntityEditComponentPanel extends JPanel {
    * @throws IllegalArgumentException in case no component has been associated with the given attribute
    */
   protected final JPanel createInputPanel(Attribute<?> attribute) {
-    return createInputPanel(attribute, getComponent(attribute));
+    return createInputPanel(attribute, component(attribute));
   }
 
   /**

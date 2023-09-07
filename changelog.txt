@@ -9514,3 +9514,4 @@
   EntityTableModel.etForeignKeyConditionValues() removed
   ForeignKeyDetailModelLink, setters and getters replaced with Value
   EntitySearchModel.get/setAdditionalConditionSupplier() replaced with Value
+  EntityEditComponentPanel.getComponent() and getAttribute() renamed component() and attribute() respectively
