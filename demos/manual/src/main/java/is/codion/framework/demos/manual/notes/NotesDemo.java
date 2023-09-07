@@ -159,7 +159,7 @@ public final class NotesDemo {
       super(new NoteEditModel(connectionProvider));
       //configure the table model and columns
       sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
-      setInsertAction(InsertAction.ADD_TOP_SORTED);
+      setOnInsert(OnInsert.ADD_TOP_SORTED);
       FilteredTableColumnModel<Attribute<?>> columnModel = columnModel();
       columnModel.column(Note.NOTE).setPreferredWidth(280);
       columnModel.column(Note.CREATED).setPreferredWidth(130);

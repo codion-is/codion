@@ -49,7 +49,7 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: true
    */
-  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("codion.client.queryHiddenColumns", true);
+  PropertyValue<Boolean> QUERY_HIDDEN_COLUMNS = Configuration.booleanValue("is.codion.framework.model.EntityTableModel.queryHiddenColumns", true);
 
   /**
    * Specifies whether the table model sort order is used as a basis for the query order by clause.
@@ -57,12 +57,19 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("codion.client.orderQueryBySortOrder", false);
+  PropertyValue<Boolean> ORDER_QUERY_BY_SORT_ORDER = Configuration.booleanValue("is.codion.framework.model.EntityTableModel.orderQueryBySortOrder", false);
+
+  /**
+   * Specifies the default action a table model takes when entities are inserted via its edit model.
+   * Value type: {@link OnInsert}<br>
+   * Default value: {@link OnInsert#ADD_TOP}
+   */
+  PropertyValue<OnInsert> ON_INSERT = Configuration.enumValue("is.codion.framework.model.EntityTableModel.onInsert", OnInsert.class, OnInsert.ADD_TOP);
 
   /**
    * Defines the actions a table model can perform when entities are inserted via the associated edit model
    */
-  enum InsertAction {
+  enum OnInsert {
     /**
      * This table model does nothing when entities are inserted via the associated edit model
      */
@@ -79,7 +86,12 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
      * The entities inserted via the associated edit model are added as the topmost rows in the model,
      * if sorting is enabled then sorting is performed
      */
-    ADD_TOP_SORTED
+    ADD_TOP_SORTED,
+    /**
+     * The entities inserted via the associated edit model are added as the bottommost rows in the model,
+     * if sorting is enabled then sorting is performed
+     */
+    ADD_BOTTOM_SORTED
   }
 
   /**
@@ -286,12 +298,13 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   /**
    * @return the action performed when entities are inserted via the associated edit model
    */
-  InsertAction getInsertAction();
+  OnInsert getOnInsert();
 
   /**
-   * @param insertAction the action to perform when entities are inserted via the associated edit model
+   * @param onInsert the action to perform when entities are inserted via the associated edit model
+   * @see #ON_INSERT
    */
-  void setInsertAction(InsertAction insertAction);
+  void setOnInsert(OnInsert onInsert);
 
   /**
    * Finds entities according to the values in {@code keys}

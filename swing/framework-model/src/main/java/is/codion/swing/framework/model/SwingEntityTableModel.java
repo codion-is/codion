@@ -123,7 +123,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * The action to perform when entities are inserted via the edit model
    */
-  private InsertAction insertAction = InsertAction.ADD_TOP;
+  private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
 
   /**
    * Specifies whether multiple entities can be updated at a time
@@ -282,13 +282,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final InsertAction getInsertAction() {
-    return insertAction;
+  public final OnInsert getOnInsert() {
+    return onInsert;
   }
 
   @Override
-  public final void setInsertAction(InsertAction insertAction) {
-    this.insertAction = requireNonNull(insertAction, "insertAction");
+  public final void setOnInsert(OnInsert onInsert) {
+    this.onInsert = requireNonNull(onInsert, "onInsert");
   }
 
   @Override
@@ -996,19 +996,22 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void onInsert(Collection<Entity> insertedEntities) {
     selectionModel().clearSelection();
-    if (!insertAction.equals(InsertAction.DO_NOTHING)) {
+    if (!onInsert.equals(OnInsert.DO_NOTHING)) {
       Collection<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.entityType().equals(entityType()))
               .collect(toList());
-      switch (insertAction) {
+      switch (onInsert) {
         case ADD_TOP:
           tableModel.addItemsAt(0, entitiesToAdd);
+          break;
+        case ADD_TOP_SORTED:
+          tableModel.addItemsAtSorted(0, entitiesToAdd);
           break;
         case ADD_BOTTOM:
           tableModel.addItemsAt(visibleItemCount(), entitiesToAdd);
           break;
-        case ADD_TOP_SORTED:
-          tableModel.addItemsAtSorted(0, entitiesToAdd);
+        case ADD_BOTTOM_SORTED:
+          tableModel.addItemsAtSorted(visibleItemCount(), entitiesToAdd);
           break;
       }
     }
