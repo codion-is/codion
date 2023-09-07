@@ -123,7 +123,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   /**
    * The action to perform when entities are inserted via the edit model
    */
-  private InsertAction insertAction = InsertAction.ADD_TOP;
+  private OnInsert onInsert = EntityTableModel.ON_INSERT.get();
 
   /**
    * Specifies whether multiple entities can be updated at a time
@@ -282,13 +282,13 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   @Override
-  public final InsertAction getInsertAction() {
-    return insertAction;
+  public final OnInsert getOnInsert() {
+    return onInsert;
   }
 
   @Override
-  public final void setInsertAction(InsertAction insertAction) {
-    this.insertAction = requireNonNull(insertAction, "insertAction");
+  public final void setOnInsert(OnInsert onInsert) {
+    this.onInsert = requireNonNull(onInsert, "onInsert");
   }
 
   @Override
@@ -995,20 +995,22 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
-    selectionModel().clearSelection();
-    if (!insertAction.equals(InsertAction.DO_NOTHING)) {
+    if (!onInsert.equals(OnInsert.DO_NOTHING)) {
       Collection<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.entityType().equals(entityType()))
               .collect(toList());
-      switch (insertAction) {
+      switch (onInsert) {
         case ADD_TOP:
           tableModel.addItemsAt(0, entitiesToAdd);
+          break;
+        case ADD_TOP_SORTED:
+          tableModel.addItemsAtSorted(0, entitiesToAdd);
           break;
         case ADD_BOTTOM:
           tableModel.addItemsAt(visibleItemCount(), entitiesToAdd);
           break;
-        case ADD_TOP_SORTED:
-          tableModel.addItemsAtSorted(0, entitiesToAdd);
+        case ADD_BOTTOM_SORTED:
+          tableModel.addItemsAtSorted(visibleItemCount(), entitiesToAdd);
           break;
       }
     }
@@ -1198,7 +1200,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
             .filterModelFactory(new EntityFilterModelFactory(entityDefinition))
             .summaryValueProviderFactory(new EntitySummaryValueProviderFactory(entityDefinition, this))
             .itemSupplier(new EntityItemSupplier(this))
-            .itemValidator(new EntityItemValidator(entityDefinition))
+            .itemValidator(new EntityItemValidator(entityDefinition.entityType()))
             .build();
   }
 
@@ -1300,15 +1302,15 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private static final class EntityItemValidator implements Predicate<Entity> {
 
-    private final EntityDefinition entityDefinition;
+    private final EntityType entityType;
 
-    private EntityItemValidator(EntityDefinition entityDefinition) {
-      this.entityDefinition = requireNonNull(entityDefinition);
+    private EntityItemValidator(EntityType entityType) {
+      this.entityType = requireNonNull(entityType);
     }
 
     @Override
     public boolean test(Entity entity) {
-      return entity.entityType().equals(entityDefinition.entityType());
+      return entity.entityType().equals(entityType);
     }
   }
 }

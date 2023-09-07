@@ -13,7 +13,6 @@ import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.model.EntityTableModel.InsertAction;
 import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
@@ -154,17 +153,25 @@ public final class NotesDemo {
     }
   }
 
-  private static final class NoteTablePanel extends EntityTablePanel  {
+  private static final class NoteTableModel extends SwingEntityTableModel {
 
-    private NoteTablePanel(SwingEntityTableModel tableModel) {
-      super(tableModel);
-      tableModel.sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
-      tableModel.setInsertAction(InsertAction.ADD_TOP_SORTED);
-      table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
-      FilteredTableColumnModel<Attribute<?>> columnModel = tableModel.columnModel();
+    private NoteTableModel(EntityConnectionProvider connectionProvider) {
+      super(new NoteEditModel(connectionProvider));
+      //configure the table model and columns
+      sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
+      setOnInsert(OnInsert.ADD_TOP_SORTED);
+      FilteredTableColumnModel<Attribute<?>> columnModel = columnModel();
       columnModel.column(Note.NOTE).setPreferredWidth(280);
       columnModel.column(Note.CREATED).setPreferredWidth(130);
       columnModel.column(Note.UPDATED).setPreferredWidth(130);
+    }
+  }
+
+  private static final class NoteTablePanel extends EntityTablePanel  {
+
+    private NoteTablePanel(NoteTableModel tableModel) {
+      super(tableModel);
+      table().setAutoResizeMode(JTable.AUTO_RESIZE_SUBSEQUENT_COLUMNS);
       // Exclude the Note.UPDATED attribute from the Edit popup menu since
       // the value is set automatically and shouldn't be editable via the UI.
       // Note.CREATED is excluded by default since it is not updatable.
@@ -172,9 +179,16 @@ public final class NotesDemo {
     }
   }
 
+  private static final class NoteModel extends SwingEntityModel {
+
+    private NoteModel(EntityConnectionProvider connectionProvider) {
+      super(new NoteTableModel(connectionProvider));
+    }
+  }
+
   private static final class NotePanel extends EntityPanel {
 
-    private NotePanel(SwingEntityModel noteModel) {
+    private NotePanel(NoteModel noteModel) {
       super(noteModel,
               new NoteEditPanel(noteModel.editModel()),
               new NoteTablePanel(noteModel.tableModel()));
@@ -197,7 +211,7 @@ public final class NotesDemo {
 
     public NotesApplicationModel(EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
-      SwingEntityModel noteModel = new SwingEntityModel(new NoteEditModel(connectionProvider));
+      NoteModel noteModel = new NoteModel(connectionProvider);
       addEntityModel(noteModel);
       // Refresh the table model to populate it
       noteModel.tableModel().refresh();
@@ -219,7 +233,7 @@ public final class NotesDemo {
 
     @Override
     protected List<EntityPanel> createEntityPanels() {
-      SwingEntityModel noteModel = applicationModel().entityModel(Note.TYPE);
+      NoteModel noteModel = applicationModel().entityModel(Note.TYPE);
 
       return singletonList(new NotePanel(noteModel));
     }

@@ -9555,3 +9555,6 @@
   ForeignKeyDetailModelLink, setters and getters replaced with Value
   EntitySearchModel.get/setAdditionalConditionSupplier() replaced with Value
   EntityEditComponentPanel.getComponent() and getAttribute() renamed component() and attribute() respectively
+  EntityTableModel.InsertAction renamed OnInsert, configuration value added, related changes
+  EntityTableModel.OnInsert.ADD_BOTTOM_SORTED added
+  SwingEntityTableModel no longer clears the selection on insert

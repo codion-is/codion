@@ -102,7 +102,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     deptModel.refresh();
 
     Entities entities = deptModel.entities();
-    deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
+    deptModel.setOnInsert(EntityTableModel.OnInsert.ADD_BOTTOM);
     Entity dept = entities.builder(Department.TYPE)
             .with(Department.ID, -10)
             .with(Department.LOCATION, "Nowhere1")
@@ -113,7 +113,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(count + 1, deptModel.getRowCount());
     assertEquals(dept, deptModel.visibleItems().get(deptModel.getRowCount() - 1));
 
-    deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_TOP_SORTED);
+    deptModel.setOnInsert(EntityTableModel.OnInsert.ADD_TOP_SORTED);
     Entity dept2 = entities.builder(Department.TYPE)
             .with(Department.ID, -20)
             .with(Department.LOCATION, "Nowhere2")
@@ -123,7 +123,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     assertEquals(count + 2, deptModel.getRowCount());
     assertEquals(dept2, deptModel.visibleItems().get(2));
 
-    deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
+    deptModel.setOnInsert(EntityTableModel.OnInsert.DO_NOTHING);
     Entity dept3 = entities.builder(Department.TYPE)
             .with(Department.ID, -30)
             .with(Department.LOCATION, "Nowhere3")
