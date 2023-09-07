@@ -9517,3 +9517,4 @@
   EntityEditComponentPanel.getComponent() and getAttribute() renamed component() and attribute() respectively
   EntityTableModel.InsertAction renamed OnInsert, configuration value added, related changes
   EntityTableModel.OnInsert.ADD_BOTTOM_SORTED added
+  SwingEntityTableModel no longer clears the selection on insert

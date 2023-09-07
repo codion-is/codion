@@ -995,7 +995,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
-    selectionModel().clearSelection();
     if (!onInsert.equals(OnInsert.DO_NOTHING)) {
       Collection<Entity> entitiesToAdd = insertedEntities.stream()
               .filter(entity -> entity.entityType().equals(entityType()))
