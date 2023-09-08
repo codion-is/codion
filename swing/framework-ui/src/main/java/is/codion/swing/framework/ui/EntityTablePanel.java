@@ -172,6 +172,14 @@ public class EntityTablePanel extends JPanel {
           Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.includeFilterPanel", false);
 
   /**
+   * Specifies whether to show an indeterminate progress bar while the model is refreshing.<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final PropertyValue<Boolean> SHOW_REFRESH_PROGRESS_BAR =
+          Configuration.booleanValue("is.codion.swing.framework.ui.EntityTablePanel.showRefreshProgressBar", false);
+
+  /**
    * Specifies whether the refresh button should always be visible or only when the condition panel is visible<br>
    * Value type: Boolean<br>
    * Default value: {@link RefreshButtonVisible#WHEN_CONDITION_PANEL_IS_VISIBLE}
@@ -1949,7 +1957,7 @@ public class EntityTablePanel extends JPanel {
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
-    private boolean showRefreshProgressBar = false;
+    private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
 
     private StatusPanel(SwingEntityTableModel tableModel) {
       super(new CardLayout());

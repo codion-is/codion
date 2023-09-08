@@ -9523,3 +9523,4 @@
   EntityApplicationModel.connectionValid() removed, DefaultEntityApplicationModel no longer periodically checks connection validity
   EntityConnectionProvider.isConnected() removed
   EntityConnection.update() renamed updateSelect(), update() added, which does not select and return the updated entities
+  EntityTablePanel.SHOW_REFRESH_PROGRESS_BAR configuration value added
