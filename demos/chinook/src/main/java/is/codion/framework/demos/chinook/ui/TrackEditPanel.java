@@ -38,14 +38,14 @@ public final class TrackEditPanel extends EntityEditPanel {
     Supplier<EntityEditPanel> mediaTypeEditPanelSupplier = () ->
             new MediaTypeEditPanel(new SwingEntityEditModel(MediaType.TYPE, editModel().connectionProvider()));
     Control newMediaTypeControl = createInsertControl(mediaTypeBox, mediaTypeEditPanelSupplier);
-    Control editMediaTypeControl = createUpdateControl(mediaTypeBox, mediaTypeEditPanelSupplier);
+    Control editMediaTypeControl = createEditControl(mediaTypeBox, mediaTypeEditPanelSupplier);
     EntityComboBox genreBox = createForeignKeyComboBox(Track.GENRE_FK)
             .preferredWidth(140)
             .build();
     Supplier<EntityEditPanel> genreEditPanelSupplier = () ->
             new GenreEditPanel(new SwingEntityEditModel(Genre.TYPE, editModel().connectionProvider()));
     Control newGenreControl = createInsertControl(genreBox, genreEditPanelSupplier);
-    Control editGenreControl = createUpdateControl(genreBox, genreEditPanelSupplier);
+    Control editGenreControl = createEditControl(genreBox, genreEditPanelSupplier);
     createTextInputPanel(Track.COMPOSER);
     createIntegerField(Track.MILLISECONDS)
             .columns(5);
