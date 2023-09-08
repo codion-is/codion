@@ -77,7 +77,7 @@ public class StoreDatabase {
 
     customer.put(Customer.EMAIL, "mail@email.com");
 
-    customer = connection.update(customer);
+    customer = connection.updateSelect(customer);
 
     connection.delete(asList(addressKey, customerKey));
 

@@ -235,16 +235,38 @@ final class JsonHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Entity update(Entity entity) throws DatabaseException {
-    return update(singletonList(entity)).iterator().next();
+  public void update(Entity entity) throws DatabaseException {
+    update(singletonList(entity));
   }
 
   @Override
-  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
+  public Entity updateSelect(Entity entity) throws DatabaseException {
+    return updateSelect(singletonList(entity)).iterator().next();
+  }
+
+  @Override
+  public void update(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        return onJsonResponse(execute(createHttpPost("update",
+        onJsonResponse(execute(createHttpPost("update",
+                stringEntity(entityObjectMapper.writeValueAsString(entities)))));
+      }
+    }
+    catch (DatabaseException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw logAndWrap(e);
+    }
+  }
+
+  @Override
+  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
+    try {
+      synchronized (this.entities) {
+        return onJsonResponse(execute(createHttpPost("updateSelect",
                         stringEntity(entityObjectMapper.writeValueAsString(entities)))),
                 entityObjectMapper, EntityObjectMapper.ENTITY_LIST_REFERENCE);
       }

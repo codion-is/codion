@@ -171,16 +171,30 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
-  public Entity update(Entity entity) throws RemoteException, DatabaseException {
+  public void update(Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.update(entity);
+      connectionProxy.update(entity);
     }
   }
 
   @Override
-  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
+  public Entity updateSelect(Entity entity) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.update(entities);
+      return connectionProxy.updateSelect(entity);
+    }
+  }
+
+  @Override
+  public void update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      connectionProxy.update(entities);
+    }
+  }
+
+  @Override
+  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.updateSelect(entities);
     }
   }
 

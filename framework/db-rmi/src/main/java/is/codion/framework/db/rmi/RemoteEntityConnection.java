@@ -168,13 +168,35 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * Throws an exception if the given entity is unmodified.
    * Performs a commit unless a transaction is open.
    * @param entity the entity to update
+   * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   * @throws RemoteException in case of a remote exception
+   */
+  void update(Entity entity) throws RemoteException, DatabaseException;
+
+  /**
+   * Updates the given entity based on its attribute values. Returns the updated entity.
+   * Throws an exception if the given entity is unmodified.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to update
    * @return the updated entity
    * @throws DatabaseException in case of a database exception
    * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  Entity update(Entity entity) throws RemoteException, DatabaseException;
+  Entity updateSelect(Entity entity) throws RemoteException, DatabaseException;
+
+  /**
+   * Updates the given entities based on their attribute values.
+   * Performs a commit unless a transaction is open.
+   * @param entities the entities to update
+   * @throws DatabaseException in case of a db exception
+   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+   * @throws RemoteException in case of a remote exception
+   */
+  void update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
@@ -185,7 +207,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws RemoteException in case of a remote exception
    */
-  Collection<Entity> update(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+  Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Performs an update based on the given update, updating the columns found

@@ -9522,3 +9522,4 @@
   EntityApplicationPanel.Builder.frameTitleFactory() replaced with frameTitle()
   EntityApplicationModel.connectionValid() removed, DefaultEntityApplicationModel no longer periodically checks connection validity
   EntityConnectionProvider.isConnected() removed
+  EntityConnection.update() renamed updateSelect(), update() added, which does not select and return the updated entities

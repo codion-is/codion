@@ -751,7 +751,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @throws DatabaseException in case of a database exception
    */
   protected Collection<Entity> doUpdate(Collection<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().update(entities);
+    return connectionProvider.connection().updateSelect(entities);
   }
 
   /**

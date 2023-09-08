@@ -434,7 +434,7 @@ public class EntityServiceTest {
 
     try (CloseableHttpClient client = createClient()) {
       HttpClientContext context = createHttpContext(UNIT_TEST_USER, TARGET_HOST);
-      HttpPost post = new HttpPost(createSerURI("update"));
+      HttpPost post = new HttpPost(createSerURI("updateSelect"));
       post.setEntity(new ByteArrayEntity(Serializer.serialize(entities)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
@@ -451,7 +451,7 @@ public class EntityServiceTest {
       entities.get(0).put(Department.LOCATION, "NEW YORK");
       entities.get(1).save(Department.LOCATION);
       entities.get(1).put(Department.LOCATION, "DALLAS");
-      post = new HttpPost(createJsonURI("update"));
+      post = new HttpPost(createJsonURI("updateSelect"));
       post.setEntity(new StringEntity(ENTITY_OBJECT_MAPPER.writeValueAsString(entities)));
       try (CloseableHttpResponse response = client.execute(TARGET_HOST, post, context)) {
         assertEquals(HttpStatus.SC_OK, response.getStatusLine().getStatusCode());
