@@ -5,7 +5,6 @@ package is.codion.framework.model;
 
 import is.codion.common.Configuration;
 import is.codion.common.property.PropertyValue;
-import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -46,13 +45,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
   PropertyValue<Boolean> SAVE_DEFAULT_USERNAME = Configuration.booleanValue("codion.client.saveDefaultUsername", true);
 
   /**
-   * Specifies whether a periodic (30 sec) validity check of the underlying connection should be scheduled.
-   * Value type: Boolean<br>
-   * Default value: true
-   */
-  PropertyValue<Boolean> SCHEDULE_CONNECTION_VALIDATION = Configuration.booleanValue("codion.client.scheduleConnectionValidation", true);
-
-  /**
    * @return the current user
    */
   User user();
@@ -66,14 +58,6 @@ public interface EntityApplicationModel<M extends EntityModel<M, E, T>, E extend
    * @return the application version, an empty Optional in case no version information is available
    */
   Optional<Version> version();
-
-  /**
-   * Returns a StateObserver which is active while the underlying application connection provider is connected.
-   * Note that this state is updated every 30 seconds if {@link #SCHEDULE_CONNECTION_VALIDATION} is true
-   * @return a StateObserver indicating the validity of the underlying connection provider
-   * @see #SCHEDULE_CONNECTION_VALIDATION
-   */
-  StateObserver connectionValid();
 
   /**
    * @return the underlying domain entities

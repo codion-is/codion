@@ -3,9 +3,6 @@
  */
 package is.codion.framework.model;
 
-import is.codion.common.scheduler.TaskScheduler;
-import is.codion.common.state.State;
-import is.codion.common.state.StateObserver;
 import is.codion.common.user.User;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
@@ -17,7 +14,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 import static java.util.Objects.requireNonNull;
 
@@ -30,15 +26,8 @@ import static java.util.Objects.requireNonNull;
 public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>,
         E extends AbstractEntityEditModel, T extends EntityTableModel<E>> implements EntityApplicationModel<M, E, T> {
 
-  private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 30;
-
   private final EntityConnectionProvider connectionProvider;
   private final Version version;
-  private final State connectionValidState = State.state();
-  private final TaskScheduler validityCheckScheduler = TaskScheduler.builder(this::checkConnectionValidity)
-          .interval(VALIDITY_CHECK_INTERVAL_SECONDS, TimeUnit.SECONDS)
-          .initialDelay(VALIDITY_CHECK_INTERVAL_SECONDS)
-          .build();
   private final List<M> entityModels = new ArrayList<>();
 
   private boolean warnAboutUnsavedData = EntityEditModel.WARN_ABOUT_UNSAVED_DATA.get();
@@ -61,14 +50,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   public DefaultEntityApplicationModel(EntityConnectionProvider connectionProvider, Version version) {
     this.connectionProvider = requireNonNull(connectionProvider, "connectionProvider");
     this.version = version;
-    if (SCHEDULE_CONNECTION_VALIDATION.get()) {
-      validityCheckScheduler.start();
-      connectionValidState.set(connectionProvider.isConnectionValid());
-      connectionProvider.addOnConnectListener(connection -> {
-        connectionValidState.set(true);
-        validityCheckScheduler.start();
-      });
-    }
   }
 
   @Override
@@ -84,11 +65,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public final Optional<Version> version() {
     return Optional.ofNullable(version);
-  }
-
-  @Override
-  public final StateObserver connectionValid() {
-    return connectionValidState.observer();
   }
 
   @Override
@@ -184,13 +160,6 @@ public class DefaultEntityApplicationModel<M extends DefaultEntityModel<M, E, T>
   @Override
   public void savePreferences() {
     entityModels().forEach(EntityModel::savePreferences);
-  }
-
-  private void checkConnectionValidity() {
-    connectionValidState.set(connectionProvider.isConnectionValid());
-    if (!connectionValidState.get()) {
-      validityCheckScheduler.stop();
-    }
   }
 
   private static boolean containsUnsavedData(Collection<? extends EntityModel<?, ?, ?>> models) {

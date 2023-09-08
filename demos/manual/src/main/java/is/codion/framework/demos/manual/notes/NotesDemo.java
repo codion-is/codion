@@ -272,7 +272,7 @@ public final class NotesDemo {
             .forEach(LookAndFeelProvider::addLookAndFeelProvider);
 
     EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
-            .frameTitleFactory(applicationModel -> "Notes")
+            .frameTitle("Notes")
             .frameSize(new Dimension(600, 500))
             // No need for a startup dialog singe startup is very quick
             .displayStartupDialog(false)

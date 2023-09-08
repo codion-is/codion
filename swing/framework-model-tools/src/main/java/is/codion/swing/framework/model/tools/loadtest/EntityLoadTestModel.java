@@ -8,7 +8,6 @@ import is.codion.common.property.PropertyValue;
 import is.codion.common.user.User;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.entity.Entity;
-import is.codion.framework.model.EntityApplicationModel;
 import is.codion.framework.model.EntityTableModel;
 import is.codion.swing.common.model.tools.loadtest.LoadTestModel;
 import is.codion.swing.common.model.tools.loadtest.UsageScenario;
@@ -53,7 +52,7 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
   public static final PropertyValue<Integer> LOAD_TEST_BATCH_SIZE = Configuration.integerValue("codion.loadtest.batchsize", DEFAULT_LOAD_TEST_BATCH_SIZE);
 
   /**
-   * Specifies the number which the max think time is multiplied with when initializing the clients<br>
+   * Specifies the number with which the max think time is multiplied when initializing the clients<br>
    * Value type: Integer<br>
    * Default value: 2
    */
@@ -61,14 +60,12 @@ public abstract class EntityLoadTestModel<M extends SwingEntityApplicationModel>
 
   /**
    * Instantiates a new EntityLoadTestModel.
-   * Note that {@link EntityApplicationModel#SCHEDULE_CONNECTION_VALIDATION} is set to false when this class is instantiated
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
   protected EntityLoadTestModel(User user, Collection<? extends UsageScenario<M>> usageScenarios) {
     super(user, usageScenarios, LOAD_TEST_THINKTIME.get(), LOAD_TEST_LOGIN_DELAY.get(),
             LOAD_TEST_BATCH_SIZE.get());
-    EntityApplicationModel.SCHEDULE_CONNECTION_VALIDATION.set(false);
   }
 
   @Override
