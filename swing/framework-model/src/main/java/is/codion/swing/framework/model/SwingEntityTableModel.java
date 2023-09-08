@@ -357,21 +357,6 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     this.multipleEntityUpdateEnabled = multipleEntityUpdateEnabled;
   }
 
-  @Override
-  public final boolean isDeleteEnabled() {
-    return editModel != null && editModel.deleteEnabled().get();
-  }
-
-  @Override
-  public final boolean isUpdateEnabled() {
-    return editModel != null && editModel.updateEnabled().get();
-  }
-
-  @Override
-  public final boolean isReadOnly() {
-    return editModel == null || editModel.isReadOnly();
-  }
-
   /**
    * Returns true if the cell at <code>rowIndex</code> and <code>modelColumnIndex</code> is editable.
    * @param rowIndex the row to edit
@@ -381,7 +366,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public boolean isCellEditable(int rowIndex, int modelColumnIndex) {
-    if (!editable || isReadOnly() || !isUpdateEnabled()) {
+    if (!editable || editModel.isReadOnly() || !editModel.updateEnabled().get()) {
       return false;
     }
     Attribute<?> attribute = columnModel().columnIdentifier(modelColumnIndex);
@@ -402,7 +387,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    */
   @Override
   public final void setValueAt(Object value, int rowIndex, int modelColumnIndex) {
-    if (!editable || isReadOnly() || !isUpdateEnabled()) {
+    if (!editable || editModel.isReadOnly() || !editModel.updateEnabled().get()) {
       throw new IllegalStateException("This table model is readOnly or has disabled update");
     }
     Entity entity = itemAt(rowIndex).copy();
@@ -494,7 +479,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final void deleteSelected() throws DatabaseException {
-    if (!isDeleteEnabled()) {
+    if (!editModel.deleteEnabled().get()) {
       throw new IllegalStateException("Deleting is not enabled in this table model");
     }
     editModel.delete(selectionModel().getSelectedItems());
@@ -503,7 +488,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   @Override
   public final void update(Collection<? extends Entity> entities) throws ValidationException, DatabaseException {
     requireNonNull(entities, "entities");
-    if (!isUpdateEnabled()) {
+    if (!editModel.updateEnabled().get()) {
       throw new IllegalStateException("Updating is not enabled in this table model");
     }
     if (entities.size() > 1 && !multipleEntityUpdateEnabled) {

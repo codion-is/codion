@@ -9518,3 +9518,4 @@
   EntityTableModel.InsertAction renamed OnInsert, configuration value added, related changes
   EntityTableModel.OnInsert.ADD_BOTTOM_SORTED added
   SwingEntityTableModel no longer clears the selection on insert
+  EntityTableModel.isDeleteEnabled(), isReadOnly() and isUpdateEnabled() removed

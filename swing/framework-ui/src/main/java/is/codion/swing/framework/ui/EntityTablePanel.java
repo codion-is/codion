@@ -1300,13 +1300,13 @@ public class EntityTablePanel extends JPanel {
             .count();
 
     return updatableAttributeCount > 0 &&
-            !tableModel.isReadOnly() &&
-            tableModel.isUpdateEnabled() &&
+            !tableModel.editModel().isReadOnly() &&
+            tableModel.editModel().updateEnabled().get() &&
             tableModel.isMultipleEntityUpdateEnabled();
   }
 
   private boolean includeDeleteSelectedControl() {
-    return !tableModel.isReadOnly() && tableModel.isDeleteEnabled();
+    return !tableModel.editModel().isReadOnly() && tableModel.editModel().deleteEnabled().get();
   }
 
   private FilteredTable<Entity, Attribute<?>> createTable() {
