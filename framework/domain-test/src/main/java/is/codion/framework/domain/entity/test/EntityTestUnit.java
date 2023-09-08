@@ -241,7 +241,7 @@ public class EntityTestUnit {
       return;
     }
 
-    Entity updatedEntity = connection.update(testEntity);
+    Entity updatedEntity = connection.updateSelect(testEntity);
     assertEquals(testEntity.primaryKey(), updatedEntity.primaryKey());
     testEntity.entityDefinition().columnDefinitions().stream()
             .filter(ColumnDefinition::isUpdatable)

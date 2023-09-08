@@ -225,7 +225,9 @@ public final class EntityService implements AuxiliaryServer {
     javalin.post(URL_JAVA_SERIALIZATION + "insert", new InsertHandler());
     javalin.post(URL_JSON_SERIALIZATION + "insert", new InsertJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "update", new UpdateHandler());
+    javalin.post(URL_JAVA_SERIALIZATION + "updateSelect", new UpdateSelectHandler());
     javalin.post(URL_JSON_SERIALIZATION + "update", new UpdateJsonHandler());
+    javalin.post(URL_JSON_SERIALIZATION + "updateSelect", new UpdateSelectJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "updateByCondition", new UpdateByConditionHandler());
     javalin.post(URL_JSON_SERIALIZATION + "updateByCondition", new UpdateByConditionJsonHandler());
     javalin.post(URL_JAVA_SERIALIZATION + "delete", new DeleteHandler());
@@ -696,7 +698,23 @@ public final class EntityService implements AuxiliaryServer {
     public void handle(Context context) {
       try {
         RemoteEntityConnection connection = authenticate(context);
-        Collection<Entity> updated = connection.update((List<Entity>) deserialize(context.req()));
+        connection.update((List<Entity>) deserialize(context.req()));
+        context.status(HttpStatus.OK_200)
+                .contentType(ContentType.APPLICATION_OCTET_STREAM);
+      }
+      catch (Exception e) {
+        handleException(context, e);
+      }
+    }
+  }
+
+  private final class UpdateSelectHandler implements Handler {
+
+    @Override
+    public void handle(Context context) {
+      try {
+        RemoteEntityConnection connection = authenticate(context);
+        Collection<Entity> updated = connection.updateSelect((List<Entity>) deserialize(context.req()));
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_OCTET_STREAM)
                 .result(Serializer.serialize(updated));
@@ -715,7 +733,25 @@ public final class EntityService implements AuxiliaryServer {
         RemoteEntityConnection connection = authenticate(context);
         EntityObjectMapper mapper = entityObjectMapper(connection.entities());
         List<Entity> entities = mapper.deserializeEntities(context.req().getInputStream());
-        Collection<Entity> updated = connection.update(entities);
+        connection.update(entities);
+        context.status(HttpStatus.OK_200)
+                .contentType(ContentType.APPLICATION_JSON);
+      }
+      catch (Exception e) {
+        handleException(context, e);
+      }
+    }
+  }
+
+  private final class UpdateSelectJsonHandler implements Handler {
+
+    @Override
+    public void handle(Context context) {
+      try {
+        RemoteEntityConnection connection = authenticate(context);
+        EntityObjectMapper mapper = entityObjectMapper(connection.entities());
+        List<Entity> entities = mapper.deserializeEntities(context.req().getInputStream());
+        Collection<Entity> updated = connection.updateSelect(entities);
         context.status(HttpStatus.OK_200)
                 .contentType(ContentType.APPLICATION_JSON)
                 .result(mapper.writeValueAsString(updated));

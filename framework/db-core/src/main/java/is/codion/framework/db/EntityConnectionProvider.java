@@ -83,13 +83,6 @@ public interface EntityConnectionProvider extends AutoCloseable {
   String description();
 
   /**
-   * @return true if a connection has been established, note that this does not check if the actual
-   * connection is valid, only that one has been established.
-   * @see #isConnectionValid()
-   */
-  boolean isConnected();
-
-  /**
    * @return true if a connection has been establised and the connection is in a valid state
    */
   boolean isConnectionValid();

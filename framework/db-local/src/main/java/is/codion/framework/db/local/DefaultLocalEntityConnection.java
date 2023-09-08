@@ -255,85 +255,29 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
-  public Entity update(Entity entity) throws DatabaseException {
-    return update(singletonList(requireNonNull(entity, "entity"))).iterator().next();
+  public void update(Entity entity) throws DatabaseException {
+    update(singletonList(requireNonNull(entity, "entity")));
   }
 
   @Override
-  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
+  public Entity updateSelect(Entity entity) throws DatabaseException {
+    return updateSelect(singletonList(requireNonNull(entity, "entity"))).iterator().next();
+  }
+
+  @Override
+  public void update(Collection<? extends Entity> entities) throws DatabaseException {
+    update(entities, null);
+  }
+
+  @Override
+  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
     }
-    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
-    checkIfReadOnly(entitiesByEntityType.keySet());
+    List<Entity> updatedEntities = new ArrayList<>(entities.size());
+    update(entities, updatedEntities);
 
-    List<Object> statementValues = new ArrayList<>();
-    List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-    PreparedStatement statement = null;
-    String updateQuery = null;
-    synchronized (connection) {
-      try {
-        if (optimisticLockingEnabled) {
-          performOptimisticLocking(entitiesByEntityType);
-        }
-
-        List<Entity> updatedEntities = new ArrayList<>(entities.size());
-        for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
-          EntityDefinition entityDefinition = domainEntities.definition(entityTypeEntities.getKey());
-          List<ColumnDefinition<?>> updatableColumns = updatableColumns(entityDefinition);
-
-          List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
-          for (Entity entity : entitiesToUpdate) {
-            populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
-                    columnDefinition -> entity.isModified(columnDefinition.attribute()));
-            if (statementColumns.isEmpty()) {
-              throw new SQLException("Unable to update entity " + entity.entityType() + ", no modified values found");
-            }
-
-            Condition condition = key(entity.originalPrimaryKey());
-            updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, condition.toString(entityDefinition));
-            statement = prepareStatement(updateQuery);
-            statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
-            statementValues.addAll(condition.values());
-            int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
-            if (updatedRows == 0) {
-              throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
-            }
-
-            statement.close();
-            statementColumns.clear();
-            statementValues.clear();
-          }
-          List<Entity> selected = doSelect(Select.where(keys(Entity.primaryKeys(entitiesToUpdate))).build(), 0);//bypass caching
-          if (selected.size() != entitiesToUpdate.size()) {
-            throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
-                    selected.size() + ", entityType: " + entityTypeEntities.getKey());
-          }
-          updatedEntities.addAll(selected);
-        }
-        commitIfTransactionIsNotOpen();
-
-        return updatedEntities;
-      }
-      catch (SQLException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-        throw translateSQLException(e);
-      }
-      catch (RecordModifiedException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-        LOG.debug(e.getMessage(), e);
-        throw e;
-      }
-      catch (UpdateException e) {
-        rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
-        throw e;
-      }
-      finally {
-        closeSilently(statement);
-      }
-    }
+    return updatedEntities;
   }
 
   @Override
@@ -870,6 +814,78 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   @Override
   public Domain domain() {
     return domain;
+  }
+
+  private void update(Collection<? extends Entity> entities, List<Entity> updatedEntities) throws DatabaseException {
+    Map<EntityType, List<Entity>> entitiesByEntityType = Entity.mapToType(entities);
+    checkIfReadOnly(entitiesByEntityType.keySet());
+
+    List<Object> statementValues = new ArrayList<>();
+    List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
+    PreparedStatement statement = null;
+    String updateQuery = null;
+    synchronized (connection) {
+      try {
+        if (optimisticLockingEnabled) {
+          performOptimisticLocking(entitiesByEntityType);
+        }
+
+        for (Map.Entry<EntityType, List<Entity>> entityTypeEntities : entitiesByEntityType.entrySet()) {
+          EntityDefinition entityDefinition = domainEntities.definition(entityTypeEntities.getKey());
+          List<ColumnDefinition<?>> updatableColumns = updatableColumns(entityDefinition);
+
+          List<Entity> entitiesToUpdate = entityTypeEntities.getValue();
+          for (Entity entity : entitiesToUpdate) {
+            populateColumnsAndValues(entity, updatableColumns, statementColumns, statementValues,
+                    columnDefinition -> entity.isModified(columnDefinition.attribute()));
+            if (statementColumns.isEmpty()) {
+              throw new SQLException("Unable to update entity " + entity.entityType() + ", no modified values found");
+            }
+
+            Condition condition = key(entity.originalPrimaryKey());
+            updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, condition.toString(entityDefinition));
+            statement = prepareStatement(updateQuery);
+            statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
+            statementValues.addAll(condition.values());
+            int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
+            if (updatedRows == 0) {
+              throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
+            }
+
+            statement.close();
+            statementColumns.clear();
+            statementValues.clear();
+          }
+          if (updatedEntities != null) {
+            List<Entity> selected = doSelect(Select.where(keys(Entity.primaryKeys(entitiesToUpdate))).build(), 0);//bypass caching
+            if (selected.size() != entitiesToUpdate.size()) {
+              throw new UpdateException(entitiesToUpdate.size() + " updated rows expected, query returned " +
+                      selected.size() + ", entityType: " + entityTypeEntities.getKey());
+            }
+            updatedEntities.addAll(selected);
+          }
+        }
+        commitIfTransactionIsNotOpen();
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
+        throw translateSQLException(e);
+      }
+      catch (RecordModifiedException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+        LOG.debug(e.getMessage(), e);
+        throw e;
+      }
+      catch (UpdateException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
+        throw e;
+      }
+      finally {
+        closeSilently(statement);
+      }
+    }
   }
 
   /**

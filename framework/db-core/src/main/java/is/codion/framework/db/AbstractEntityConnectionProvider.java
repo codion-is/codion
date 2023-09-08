@@ -82,16 +82,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   @Override
-  public final boolean isConnected() {
-    synchronized (lock) {
-      return entityConnection != null;
-    }
-  }
-
-  @Override
   public final boolean isConnectionValid() {
     synchronized (lock) {
-      if (!isConnected()) {
+      if (entityConnection == null) {
         return false;
       }
       try {

@@ -32,8 +32,8 @@ import java.util.function.Consumer;
  * A connection to a database, for querying and manipulating {@link Entity}s and running database
  * operations specified by a single {@link Domain} model.
  * {@link #execute(FunctionType)}  and {@link #execute(ProcedureType)}
- * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)},
- * {@link #update(Entity)}, {@link #update(Collection)}, {@link #delete(Entity.Key)} and {@link #delete(Collection)}
+ * do not perform any transaction control but {@link #insert(Entity)}, {@link #insert(Collection)}, {@link #update(Entity)}, {@link #update(Collection)},
+ * {@link #updateSelect(Entity)}, {@link #updateSelect(Collection)}, {@link #delete(Entity.Key)} and {@link #delete(Collection)}
  * perform a commit unless they are run within a transaction.
  * A static helper class for mass data manipulation.
  * @see #beginTransaction()
@@ -163,6 +163,17 @@ public interface EntityConnection extends AutoCloseable {
   Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
+   * Updates the given entity based on its attribute values.
+   * Throws an exception if the given entity is unmodified.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to update
+   * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
+   */
+  void update(Entity entity) throws DatabaseException;
+
+  /**
    * Updates the given entity based on its attribute values. Returns the updated entity.
    * Throws an exception if the given entity is unmodified.
    * Performs a commit unless a transaction is open.
@@ -172,7 +183,18 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case the entity has been modified or deleted by another user
    */
-  Entity update(Entity entity) throws DatabaseException;
+  Entity updateSelect(Entity entity) throws DatabaseException;
+
+  /**
+   * Updates the given entities based on their attribute values.
+   * Throws an exception if any of the given entities is unmodified.
+   * Performs a commit unless a transaction is open.
+   * @param entities the entities to update
+   * @throws DatabaseException in case of a database exception
+   * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
+   * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
+   */
+  void update(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entities based on their attribute values. Returns the updated entities, in no particular order.
@@ -184,7 +206,7 @@ public interface EntityConnection extends AutoCloseable {
    * @throws is.codion.common.db.exception.UpdateException in case there is a mismatch between expected and actual number of updated rows
    * @throws is.codion.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    */
-  Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException;
+  Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Performs an update based on the given update, updating the columns found

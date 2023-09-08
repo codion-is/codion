@@ -235,7 +235,7 @@ public final class EntityConnectionDemo {
 
     myBand.put(Artist.NAME, "Proper Name");
 
-    connection.update(myBand);
+    myBand = connection.updateSelect(myBand);
 
     List<Entity> customersWithoutPhoneNo =
             connection.select(column(Customer.PHONE).isNull());

@@ -182,22 +182,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   }
 
   @Test
-  public void isUpdateEnabled() {
-    TableModel tableModel = createDetailTableModel();
-    assertTrue(tableModel.isUpdateEnabled());
-    tableModel.editModel().updateEnabled().set(false);
-    assertFalse(tableModel.isUpdateEnabled());
-  }
-
-  @Test
-  public void isDeleteEnabled() {
-    TableModel tableModel = createDetailTableModel();
-    assertTrue(tableModel.isDeleteEnabled());
-    tableModel.editModel().deleteEnabled().set(false);
-    assertFalse(tableModel.isDeleteEnabled());
-  }
-
-  @Test
   public void entityType() {
     assertEquals(Detail.TYPE, testModel.entityType());
   }
@@ -205,7 +189,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void deleteNotEnabled() {
     testModel.editModel().deleteEnabled().set(false);
-    assertFalse(testModel.isDeleteEnabled());
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(singletonList(0));
     assertThrows(IllegalStateException.class, testModel::deleteSelected);
@@ -214,7 +197,6 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
   @Test
   public void updateNotEnabled() {
     testModel.editModel().updateEnabled().set(false);
-    assertFalse(testModel.isUpdateEnabled());
     testModel.refresh();
     testModel.selectionModel().setSelectedIndexes(singletonList(0));
     Entity entity = testModel.selectionModel().getSelectedItem();
@@ -243,7 +225,7 @@ public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditM
     testModel.setLimit(10);
     assertEquals(10, testModel.getLimit());
     assertNotNull(testModel.editModel());
-    assertFalse(testModel.isReadOnly());
+    assertFalse(testModel.editModel().isReadOnly());
     testModel.refresh();
   }
 

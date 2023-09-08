@@ -602,7 +602,7 @@ public class DefaultLocalEntityConnectionTest {
       final String newName = "New name";
       sales.put(Department.DNAME, newName);
       king.put(Employee.NAME, newName);
-      List<Entity> updated = new ArrayList<>(connection.update(asList(sales, king)));
+      List<Entity> updated = new ArrayList<>(connection.updateSelect(asList(sales, king)));
       assertTrue(updated.containsAll(asList(sales, king)));
       assertEquals(newName, updated.get(updated.indexOf(sales)).get(Department.DNAME));
       assertEquals(newName, updated.get(updated.indexOf(king)).get(Employee.NAME));
@@ -625,8 +625,7 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void update() throws DatabaseException {
-    Collection<Entity> updated = connection.update(new ArrayList<>());
-    assertTrue(updated.isEmpty());
+    assertTrue(connection.updateSelect(new ArrayList<>()).isEmpty());
   }
 
   @Test
@@ -748,7 +747,7 @@ public class DefaultLocalEntityConnectionTest {
       connection.select(all(Department.TYPE));//any query will do
 
       try {
-        sales = connection2.update(sales);
+        sales = connection2.updateSelect(sales);
         sales.put(Department.LOC, originalLocation);
         connection2.update(sales);//revert changes to data
       }
@@ -809,7 +808,7 @@ public class DefaultLocalEntityConnectionTest {
     try {
       Entity department = baseConnection.selectSingle(column(Department.DNAME).equalTo("SALES"));
       oldLocation = department.put(Department.LOC, "NEWLOC");
-      updatedDepartment = baseConnection.update(department);
+      updatedDepartment = baseConnection.updateSelect(department);
       try {
         optimisticConnection.update(department);
         fail("RecordModifiedException should have been thrown");
@@ -847,7 +846,7 @@ public class DefaultLocalEntityConnectionTest {
 
       Entity employee = baseConnection.selectSingle(column(Employee.NAME).equalTo("BLAKE"));
       employee.put(Employee.DATA, bytes);
-      updatedEmployee = baseConnection.update(employee);
+      updatedEmployee = baseConnection.updateSelect(employee);
 
       random.nextBytes(bytes);
       employee.put(Employee.DATA, bytes);
@@ -1060,7 +1059,7 @@ public class DefaultLocalEntityConnectionTest {
       Department department = departments.get(0).castTo(Department.class);
       department.setName("New Name");
 
-      department = connection.update(department).castTo(Department.class);
+      department = connection.updateSelect(department).castTo(Department.class);
 
       assertEquals("New Name", department.getName());
 
@@ -1068,7 +1067,7 @@ public class DefaultLocalEntityConnectionTest {
 
       departmentsCast.forEach(dept -> dept.setName(dept.getName() + "N"));
 
-      departmentsCast = Entity.castTo(Department.class, connection.update(new ArrayList<>(departmentsCast)));
+      departmentsCast = Entity.castTo(Department.class, connection.updateSelect(new ArrayList<>(departmentsCast)));
 
       Department newDept1 = ENTITIES.entity(Department.TYPE).castTo(Department.class);
       newDept1.setId(-1);

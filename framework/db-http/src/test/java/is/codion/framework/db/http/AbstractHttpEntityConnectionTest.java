@@ -121,6 +121,17 @@ abstract class AbstractHttpEntityConnectionTest {
   }
 
   @Test
+  void updateSelect() throws DatabaseException {
+    Entity department = connection.selectSingle(column(Department.NAME).equalTo("ACCOUNTING"));
+    department.put(Department.NAME, "TEstING");
+    department = connection.updateSelect(department);
+    department = connection.selectSingle(column(Department.ID).equalTo(department.get(Department.ID)));
+    assertEquals("TEstING", department.get(Department.NAME));
+    department.put(Department.NAME, "ACCOUNTING");
+    department = connection.updateSelect(department);
+  }
+
+  @Test
   void updateByCondition() throws DatabaseException {
     Condition condition = column(Employee.COMMISSION).isNull();
 

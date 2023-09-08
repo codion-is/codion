@@ -159,21 +159,6 @@ public interface EntityTableModel<E extends EntityEditModel> extends FilteredMod
   void setEditable(boolean editable);
 
   /**
-   * @return true if the underlying edit model allows deletion of records
-   */
-  boolean isDeleteEnabled();
-
-  /**
-   * @return true if the underlying edit model is read only
-   */
-  boolean isReadOnly();
-
-  /**
-   * @return true if the underlying edit model allows updating of records
-   */
-  boolean isUpdateEnabled();
-
-  /**
    * @return true if multiple entities can be updated at a time
    */
   boolean isMultipleEntityUpdateEnabled();

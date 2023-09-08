@@ -9558,3 +9558,8 @@
   EntityTableModel.InsertAction renamed OnInsert, configuration value added, related changes
   EntityTableModel.OnInsert.ADD_BOTTOM_SORTED added
   SwingEntityTableModel no longer clears the selection on insert
+  EntityTableModel.isDeleteEnabled(), isReadOnly() and isUpdateEnabled() removed
+  EntityApplicationPanel.Builder.frameTitleFactory() replaced with frameTitle()
+  EntityApplicationModel.connectionValid() removed, DefaultEntityApplicationModel no longer periodically checks connection validity
+  EntityConnectionProvider.isConnected() removed
+  EntityConnection.update() renamed updateSelect(), update() added, which does not select and return the updated entities

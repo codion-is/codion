@@ -217,16 +217,37 @@ final class DefaultHttpEntityConnection extends AbstractHttpEntityConnection {
   }
 
   @Override
-  public Entity update(Entity entity) throws DatabaseException {
-    return update(singletonList(entity)).iterator().next();
+  public void update(Entity entity) throws DatabaseException {
+    update(singletonList(requireNonNull(entity, "entity")));
   }
 
   @Override
-  public Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException {
+  public Entity updateSelect(Entity entity) throws DatabaseException {
+    return updateSelect(singletonList(requireNonNull(entity, "entity"))).iterator().next();
+  }
+
+  @Override
+  public void update(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
-        return onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
+        onResponse(execute(createHttpPost("update", byteArrayEntity(entities))));
+      }
+    }
+    catch (DatabaseException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      throw logAndWrap(e);
+    }
+  }
+
+  @Override
+  public Collection<Entity> updateSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
+    try {
+      synchronized (this.entities) {
+        return onResponse(execute(createHttpPost("updateSelect", byteArrayEntity(entities))));
       }
     }
     catch (DatabaseException e) {

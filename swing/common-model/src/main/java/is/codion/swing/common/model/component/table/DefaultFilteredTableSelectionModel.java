@@ -30,11 +30,11 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   private final Event<List<Integer>> selectedIndexesEvent = Event.event();
   private final Event<R> selectedItemEvent = Event.event();
   private final Event<List<R>> selectedItemsEvent = Event.event();
-  private final State singleSelectionModeState = State.state(false);
-  private final State selectionEmptyState = State.state(true);
-  private final State singleSelectionState = State.state(false);
-  private final StateObserver multipleSelectionObserver = State.combination(Conjunction.AND,
-          selectionEmptyState.reversed(), singleSelectionState.reversed());
+  private final State singleSelectionMode = State.state(false);
+  private final State selectionEmpty = State.state(true);
+  private final State singleSelection = State.state(false);
+  private final StateObserver multipleSelection = State.combination(Conjunction.AND,
+          selectionEmpty.reversed(), singleSelection.reversed());
 
   /**
    * Holds the topmost (minimum) selected index
@@ -58,13 +58,13 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
     if (getSelectionMode() != selectionMode) {
       clearSelection();
       super.setSelectionMode(selectionMode);
-      singleSelectionModeState.set(selectionMode == SINGLE_SELECTION);
+      singleSelectionMode.set(selectionMode == SINGLE_SELECTION);
     }
   }
 
   @Override
   public State singleSelectionMode() {
-    return singleSelectionModeState;
+    return singleSelectionMode;
   }
 
   @Override
@@ -294,8 +294,8 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
   public void fireValueChanged(int firstIndex, int lastIndex, boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
     if (!isAdjusting) {
-      selectionEmptyState.set(isSelectionEmpty());
-      singleSelectionState.set(selectionCount() == 1);
+      selectionEmpty.set(isSelectionEmpty());
+      singleSelection.set(selectionCount() == 1);
       int minSelIndex = getMinSelectionIndex();
       if (selectedIndex != minSelIndex) {
         selectedIndex = minSelIndex;
@@ -375,26 +375,26 @@ final class DefaultFilteredTableSelectionModel<R> extends DefaultListSelectionMo
 
   @Override
   public StateObserver multipleSelection() {
-    return multipleSelectionObserver;
+    return multipleSelection;
   }
 
   @Override
   public StateObserver singleSelection() {
-    return singleSelectionState.observer();
+    return singleSelection.observer();
   }
 
   @Override
   public StateObserver selectionEmpty() {
-    return selectionEmptyState.observer();
+    return selectionEmpty.observer();
   }
 
   @Override
   public StateObserver selectionNotEmpty() {
-    return selectionEmptyState.reversed();
+    return selectionEmpty.reversed();
   }
 
   private void bindEvents() {
-    singleSelectionModeState.addDataListener(singleSelection ->
+    singleSelectionMode.addDataListener(singleSelection ->
             setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION));
   }
 

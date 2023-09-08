@@ -7,6 +7,7 @@ import is.codion.common.i18n.Messages;
 import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
+import is.codion.common.value.Value;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -36,7 +37,6 @@ import java.awt.Frame;
 import java.awt.Window;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.util.ResourceBundle;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -59,8 +59,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityApplicationPanelBuilder.class);
 
-  private static final ResourceBundle RESOURCE_BUNDLE = ResourceBundle.getBundle(EntityApplicationPanel.class.getName());
-
   private static final String CODION_APPLICATION_VERSION = "codion.application.version";
   private static final int DEFAULT_LOGO_SIZE = 68;
   private static final String DASH = " - ";
@@ -77,7 +75,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
   private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
-  private Function<M, String> frameTitleFactory = new DefaultFrameTitleFactory();
+  private Value<String> frameTitle;
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
   private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
@@ -189,8 +187,13 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   }
 
   @Override
-  public EntityApplicationPanel.Builder<M, P> frameTitleFactory(Function<M, String> frameTitleFactory) {
-    this.frameTitleFactory = requireNonNull(frameTitleFactory);
+  public EntityApplicationPanel.Builder<M, P> frameTitle(String frameTitle) {
+    return frameTitle(Value.value(requireNonNull(frameTitle)));
+  }
+
+  @Override
+  public EntityApplicationPanel.Builder<M, P> frameTitle(Value<String> frameTitle) {
+    this.frameTitle = requireNonNull(frameTitle);
     return this;
   }
 
@@ -350,11 +353,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
   private void startApplication(M applicationModel, long initializationStarted) {
     P applicationPanel = initializeApplicationPanel(applicationModel);
-
     JFrame applicationFrame = applicationFrame(applicationPanel);
-    applicationModel.connectionValid().addDataListener(connectionValid ->
-            SwingUtilities.invokeLater(() -> applicationFrame.setTitle(frameTitle(applicationModel))));
-
     if (setUncaughtExceptionHandler) {
       setDefaultUncaughtExceptionHandler((thread, exception) -> displayException(exception, applicationFrame));
     }
@@ -420,7 +419,14 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     if (maximizeFrame) {
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
-    frame.setTitle(frameTitle(applicationPanel.applicationModel()));
+    if (frameTitle != null) {
+      frame.setTitle(frameTitle.get());
+      frameTitle.addDataListener(title ->
+              SwingUtilities.invokeLater(() -> frame.setTitle(title)));
+    }
+    else {
+      frame.setTitle(createDefaultFrameTitle(applicationPanel.applicationModel()));
+    }
     if (includeMainMenu) {
       JMenuBar menuBar = applicationPanel.createMenuBar();
       if (menuBar != null) {
@@ -432,6 +438,22 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     return frame;
   }
 
+  private String createDefaultFrameTitle(M applicationModel) {
+    StringBuilder builder = new StringBuilder(applicationName);
+    if (applicationVersion != null) {
+      if (builder.length() > 0) {
+        builder.append(DASH);
+      }
+      builder.append(applicationVersion);
+    }
+    if (builder.length() > 0) {
+      builder.append(DASH);
+    }
+    builder.append(userInfo(applicationModel.connectionProvider()));
+
+    return builder.toString();
+  }
+
   private JPanel createStartupIconPanel() {
     JPanel panel = new JPanel(new BorderLayout());
     if (applicationIcon != null) {
@@ -439,12 +461,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     }
 
     return panel;
-  }
-
-  private String frameTitle(M applicationModel) {
-    String title = frameTitleFactory.apply(applicationModel);
-
-    return applicationModel.connectionValid().get() ? title : title + DASH + RESOURCE_BUNDLE.getString("not_connected");
   }
 
   private EntityConnectionProvider initializeConnectionProvider(User user) {
@@ -459,6 +475,21 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private EntityConnectionProvider initializeConnectionProvider(User user, DomainType domainType,
                                                                 String clientTypeId, Version clientVersion) {
     return connectionProviderFactory.createConnectionProvider(user, domainType, clientTypeId, clientVersion);
+  }
+
+  private static String userInfo(EntityConnectionProvider connectionProvider) {
+    String description = connectionProvider.description();
+
+    return removeUsernamePrefix(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
+  }
+
+  private static String removeUsernamePrefix(String username) {
+    String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
+    if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
+      return username.substring(usernamePrefix.length());
+    }
+
+    return username;
   }
 
   private static void displayExceptionAndExit(Throwable exception) {
@@ -552,41 +583,6 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
       catch (Exception e) {
         throw new RuntimeException(e);
       }
-    }
-  }
-
-  private class DefaultFrameTitleFactory implements Function<M, String> {
-
-    @Override
-    public String apply(M applicationModel) {
-      StringBuilder builder = new StringBuilder(applicationName);
-      if (applicationVersion != null) {
-        if (builder.length() > 0) {
-          builder.append(DASH);
-        }
-        builder.append(applicationVersion);
-      }
-      if (builder.length() > 0) {
-        builder.append(DASH);
-      }
-      builder.append(userInfo(applicationModel.connectionProvider()));
-
-      return builder.toString();
-    }
-
-    private String userInfo(EntityConnectionProvider connectionProvider) {
-      String description = connectionProvider.description();
-
-      return removeUsernamePrefix(connectionProvider.user().username().toUpperCase()) + (description != null ? "@" + description.toUpperCase() : "");
-    }
-
-    private String removeUsernamePrefix(String username) {
-      String usernamePrefix = EntityApplicationModel.USERNAME_PREFIX.get();
-      if (!nullOrEmpty(usernamePrefix) && username.toUpperCase().startsWith(usernamePrefix.toUpperCase())) {
-        return username.substring(usernamePrefix.length());
-      }
-
-      return username;
     }
   }
 

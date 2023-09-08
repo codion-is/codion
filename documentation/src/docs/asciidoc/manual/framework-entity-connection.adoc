@@ -136,7 +136,7 @@ For inserting rows.
 
 ** {url-entity-connection}#insert{opar}is.codion.framework.domain.entity.Entity{cpar}[insert(Entity entity)]
 
-** {url-entity-connection}#insert{opar}java.util.List{cpar}[insert(List<Entity> entities)]
+** {url-entity-connection}#insert{opar}java.util.Collection{cpar}[insert(Collection<? extends Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -149,7 +149,11 @@ For updating one or more entity instances. These methods throw an exception if a
 
 ** {url-entity-connection}#update{opar}is.codion.framework.domain.entity.Entity{cpar}[update(Entity entity)]
 
-** {url-entity-connection}#update{opar}java.util.List{cpar}[update(List<Entity> entities)]
+** {url-entity-connection}#updateSelect{opar}is.codion.framework.domain.entity.Entity{cpar}[updateSelect(Entity entity)]
+
+** {url-entity-connection}#update{opar}java.util.Collection{cpar}[update(Collection<? extends Entity> entities)]
+
+** {url-entity-connection}#updateSelect{opar}java.util.Collection{cpar}[updateSelect(Collection<? extends Entity> entities)]
 
 [source,java,indent=0]
 ----
@@ -182,7 +186,7 @@ include::{dir-chinook-source}/is/codion/framework/demos/chinook/manual/EntityCon
 
 ** {url-entity-connection}#delete{opar}is.codion.framework.domain.entity.Key{cpar}[delete(Key key)]
 
-** {url-entity-connection}#delete{opar}java.util.List{cpar}[delete(List<Key> keys)]
+** {url-entity-connection}#delete{opar}java.util.Collection{cpar}[delete(Collection<Key> keys)]
 
 [source,java,indent=0]
 ----
