@@ -124,11 +124,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   private final boolean keyGenerated;
 
   /**
-   * True if optimistic locking should be used during updates
-   */
-  private final transient boolean optimisticLockingEnabled;
-
-  /**
    * The {@link Function} to use when toString() is called for this entity type
    */
   private final Function<Entity, String> stringFactory;
@@ -168,6 +163,11 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
    * The primary key value generator
    */
   private final transient KeyGenerator keyGenerator;
+
+  /**
+   * True if optimistic locking should be used during updates
+   */
+  private final transient boolean optimisticLockingEnabled;
 
   /**
    * Provides a custom sql query used when selecting entities of this type
@@ -728,27 +728,27 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     private Map<Attribute<?>, AttributeDefinition<?>> attributeMap(List<AttributeDefinition.Builder<?, ?>> builders) {
-      Map<Attribute<?>, AttributeDefinition<?>> map = new HashMap<>(builders.size());
+      Map<Attribute<?>, AttributeDefinition<?>> attributes = new HashMap<>(builders.size());
       for (AttributeDefinition.Builder<?, ?> builder : builders) {
         if (!(builder instanceof ForeignKeyDefinition.Builder)) {
-          validateAndAddAttribute(builder.build(), map, entityType);
+          validateAndAddAttribute(builder.build(), attributes, entityType);
         }
       }
-      validatePrimaryKeyAttributes(map, entityType);
+      validatePrimaryKeyAttributes(attributes, entityType);
 
       configureForeignKeyColumns(builders.stream()
               .filter(ForeignKeyDefinition.Builder.class::isInstance)
               .map(ForeignKeyDefinition.Builder.class::cast)
-              .collect(toList()), map);
+              .collect(toList()), attributes);
       for (AttributeDefinition.Builder<?, ?> builder : builders) {
         if (builder instanceof ForeignKeyDefinition.Builder) {
-          validateAndAddAttribute(builder.build(), map, entityType);
+          validateAndAddAttribute(builder.build(), attributes, entityType);
         }
       }
       Map<Attribute<?>, AttributeDefinition<?>> ordereredMap = new LinkedHashMap<>(builders.size());
       //retain the original attribute order
       for (AttributeDefinition.Builder<?, ?> builder : builders) {
-        ordereredMap.put(builder.attribute(), map.get(builder.attribute()));
+        ordereredMap.put(builder.attribute(), attributes.get(builder.attribute()));
       }
 
       return ordereredMap;
@@ -940,10 +940,10 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     private String selectTableName;
     private SelectQuery selectQuery;
     private Function<Entity, String> stringFactory = DefaultEntity.DEFAULT_STRING_FACTORY;
-    private ColorProvider backgroundColorProvider = new NullColorProvider();
-    private ColorProvider foregroundColorProvider = new NullColorProvider();
+    private ColorProvider backgroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
+    private ColorProvider foregroundColorProvider = DefaultEntity.NULL_COLOR_PROVIDER;
     private Comparator<Entity> comparator = Text.spaceAwareCollator();
-    private EntityValidator validator = new DefaultEntityValidator();
+    private EntityValidator validator = DefaultEntity.DEFAULT_VALIDATOR;
 
     DefaultBuilder(EntityType entityType, List<AttributeDefinition.Builder<?, ?>> attributeDefinitionBuilders) {
       this.attributes = new EntityAttributes(entityType, attributeDefinitionBuilders);

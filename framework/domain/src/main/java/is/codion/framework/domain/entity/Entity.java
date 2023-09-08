@@ -9,6 +9,7 @@ import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
+import is.codion.framework.domain.entity.attribute.TransientAttributeDefinition;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -186,8 +187,9 @@ public interface Entity extends Comparable<Entity> {
 
   /**
    * Returns true if one or more writable attributes have been modified from their initial value,
-   * non-insertable and non-updatable attributes are excluded unless they are transient.
+   * non-insertable and non-updatable attributes are excluded unless they are transient and modify the entity.
    * @return true if one or more writable attributes have been modified since they were first set
+   * @see TransientAttributeDefinition#modifiesEntity()
    */
   boolean isModified();
 
