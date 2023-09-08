@@ -65,17 +65,17 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   private final Event<Attribute<?>> valueChangeEvent = Event.event();
   private final Event<?> refreshEvent = Event.event();
 
-  private final State entityValidState = State.state();
-  private final State entityNewState = State.state(true);
-  private final State entityModifiedState = State.state();
-  private final State primaryKeyNullState = State.state(true);
-  private final State insertEnabledState = State.state(true);
-  private final State updateEnabledState = State.state(true);
-  private final State deleteEnabledState = State.state(true);
-  private final StateObserver readOnlyObserver = State.and(insertEnabledState.reversed(),
-          updateEnabledState.reversed(), deleteEnabledState.reversed());
-  private final Map<Attribute<?>, State> attributeModifiedStateMap = new HashMap<>();
-  private final Map<Attribute<?>, State> attributeNullStateMap = new HashMap<>();
+  private final State entityValid = State.state();
+  private final State entityNew = State.state(true);
+  private final State entityModified = State.state();
+  private final State primaryKeyNull = State.state(true);
+  private final State insertEnabled = State.state(true);
+  private final State updateEnabled = State.state(true);
+  private final State deleteEnabled = State.state(true);
+  private final StateObserver readOnly = State.and(insertEnabled.reversed(),
+          updateEnabled.reversed(), deleteEnabled.reversed());
+  private final Map<Attribute<?>, State> attributeModifiedMap = new HashMap<>();
+  private final Map<Attribute<?>, State> attributeNullMap = new HashMap<>();
 
   /**
    * The Entity being edited by this model
@@ -188,14 +188,14 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final boolean isReadOnly() {
-    return readOnlyObserver.get();
+    return readOnly.get();
   }
 
   @Override
   public final void setReadOnly(boolean readOnly) {
-    insertEnabledState.set(!readOnly);
-    updateEnabledState.set(!readOnly);
-    deleteEnabledState.set(!readOnly);
+    insertEnabled.set(!readOnly);
+    updateEnabled.set(!readOnly);
+    deleteEnabled.set(!readOnly);
   }
 
   @Override
@@ -223,27 +223,27 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final State insertEnabled() {
-    return insertEnabledState;
+    return insertEnabled;
   }
 
   @Override
   public final State updateEnabled() {
-    return updateEnabledState;
+    return updateEnabled;
   }
 
   @Override
   public final State deleteEnabled() {
-    return deleteEnabledState;
+    return deleteEnabled;
   }
 
   @Override
   public final StateObserver entityNew() {
-    return entityNewState.observer();
+    return entityNew.observer();
   }
 
   @Override
   public final StateObserver primaryKeyNull() {
-    return primaryKeyNullState.observer();
+    return primaryKeyNull.observer();
   }
 
   @Override
@@ -287,7 +287,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public StateObserver modified() {
-    return entityModifiedState.observer();
+    return entityModified.observer();
   }
 
   @Override
@@ -299,7 +299,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final StateObserver modifiedObserver(Attribute<?> attribute) {
     entityDefinition().attributeDefinition(attribute);
 
-    return attributeModifiedStateMap.computeIfAbsent(attribute, k ->
+    return attributeModifiedMap.computeIfAbsent(attribute, k ->
             State.state(!entity.isNew() && entity.isModified(attribute))).observer();
   }
 
@@ -307,7 +307,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   public final StateObserver nullObserver(Attribute<?> attribute) {
     entityDefinition().attributeDefinition(attribute);
 
-    return attributeNullStateMap.computeIfAbsent(attribute, k ->
+    return attributeNullMap.computeIfAbsent(attribute, k ->
             State.state(entity.isNull(attribute))).observer();
   }
 
@@ -368,7 +368,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final StateObserver entityValid() {
-    return entityValidState.observer();
+    return entityValid.observer();
   }
 
   @Override
@@ -416,7 +416,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Entity insert() throws DatabaseException, ValidationException {
-    if (!insertEnabledState.get()) {
+    if (!insertEnabled.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     Entity toInsert = entity.copy();
@@ -438,7 +438,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> insert(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (!insertEnabledState.get()) {
+    if (!insertEnabled.get()) {
       throw new IllegalStateException("Inserting is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
@@ -464,7 +464,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   @Override
   public final Collection<Entity> update(Collection<? extends Entity> entities) throws DatabaseException, ValidationException {
-    if (!updateEnabledState.get()) {
+    if (!updateEnabled.get()) {
       throw new IllegalStateException("Updating is not enabled!");
     }
     requireNonNull(entities, ENTITIES);
@@ -505,7 +505,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   @Override
   public final void delete(Collection<? extends Entity> entities) throws DatabaseException {
     requireNonNull(entities, ENTITIES);
-    if (!deleteEnabledState.get()) {
+    if (!deleteEnabled.get()) {
       throw new IllegalStateException("Delete is not enabled!");
     }
     if (entities.isEmpty()) {
@@ -817,7 +817,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
    * @return the State used to indicate the modified state of this edit model, handle with care
    */
   protected final State modifiedState() {
-    return entityModifiedState;
+    return entityModified;
   }
 
   /**
@@ -1013,11 +1013,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
 
   private <T> void onValueChange(Attribute<T> attribute, T value) {
     updateEntityStates();
-    State nullState = attributeNullStateMap.get(attribute);
+    State nullState = attributeNullMap.get(attribute);
     if (nullState != null) {
       nullState.set(entity.isNull(attribute));
     }
-    State modifiedState = attributeModifiedStateMap.get(attribute);
+    State modifiedState = attributeModifiedMap.get(attribute);
     if (modifiedState != null) {
       updateModifiedAttributeState(attribute, modifiedState);
     }
@@ -1029,7 +1029,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateModifiedAttributeStates() {
-    attributeModifiedStateMap.forEach(this::updateModifiedAttributeState);
+    attributeModifiedMap.forEach(this::updateModifiedAttributeState);
   }
 
   private void updateModifiedAttributeState(Attribute<?> attribute, State modifiedState) {
@@ -1037,10 +1037,10 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   }
 
   private void updateEntityStates() {
-    entityModifiedState.set(isModified());
-    entityValidState.set(validator.isValid(entity));
-    primaryKeyNullState.set(entity.primaryKey().isNull());
-    entityNewState.set(isEntityNew());
+    entityModified.set(isModified());
+    entityValid.set(validator.isValid(entity));
+    primaryKeyNull.set(entity.primaryKey().isNull());
+    entityNew.set(isEntityNew());
   }
 
   private static void addColumnValues(ValueSupplier valueSupplier, EntityDefinition definition, Entity newEntity) {

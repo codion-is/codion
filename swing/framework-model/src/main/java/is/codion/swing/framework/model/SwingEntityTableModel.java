@@ -90,14 +90,14 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   private final FilteredTableModel<Entity, Attribute<?>> tableModel;
   private final SwingEntityEditModel editModel;
   private final EntityTableConditionModel<Attribute<?>> conditionModel;
-  private final State conditionRequiredState = State.state();
+  private final State conditionRequired = State.state();
 
   /**
    * Caches java.awt.Color instances parsed from hex strings via {@link #getColor(Object)}
    */
   private final Map<String, Color> colorCache = new ConcurrentHashMap<>();
-  private final Value<String> statusMessageValue = Value.value("", "");
-  private final State conditionChangedState = State.state();
+  private final Value<String> statusMessage = Value.value("", "");
+  private final State conditionChanged = State.state();
   private final Consumer<Map<Entity.Key, Entity>> updateListener = new UpdateListener();
 
   /**
@@ -278,7 +278,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final State conditionRequired() {
-    return conditionRequiredState;
+    return conditionRequired;
   }
 
   @Override
@@ -521,7 +521,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   @Override
   public final StateObserver conditionChanged() {
-    return conditionChangedState.observer();
+    return conditionChanged.observer();
   }
 
   @Override
@@ -533,7 +533,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @return an Observer for the table model status message, that is, the number of rows, number of selected rows etc
    */
   public final ValueObserver<String> statusMessageObserver() {
-    return statusMessageValue.observer();
+    return statusMessage.observer();
   }
 
   @Override
@@ -832,7 +832,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
    * @see EntityTableConditionModel#condition()
    */
   protected Collection<Entity> refreshItems() {
-    if (conditionRequiredState.get() && !isConditionEnabled()) {
+    if (conditionRequired.get() && !isConditionEnabled()) {
       updateRefreshCondition(conditionModel.condition());
 
       return emptyList();
@@ -948,7 +948,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
     editModel.addEntityListener(this::onEntitySet);
     selectionModel().addSelectedItemListener(editModel::setEntity);
     addTableModelListener(this::onTableModelEvent);
-    Runnable statusListener = () -> statusMessageValue.set(statusMessage());
+    Runnable statusListener = () -> statusMessage.set(statusMessage());
     selectionModel().addSelectionListener(statusListener);
     addDataChangedListener(statusListener);
   }
@@ -976,7 +976,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
 
   private void updateRefreshCondition(Condition condition) {
     refreshCondition = condition;
-    conditionChangedState.set(false);
+    conditionChanged.set(false);
   }
 
   private void onInsert(Collection<Entity> insertedEntities) {
@@ -1050,7 +1050,7 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
   }
 
   private void onConditionChanged(Condition condition) {
-    conditionChangedState.set(!Objects.equals(refreshCondition, condition));
+    conditionChanged.set(!Objects.equals(refreshCondition, condition));
   }
 
   private void onColumnHidden(Attribute<?> attribute) {
