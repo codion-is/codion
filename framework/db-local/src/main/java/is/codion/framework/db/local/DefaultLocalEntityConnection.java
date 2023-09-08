@@ -1341,12 +1341,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return referencedEntity;
   }
 
-  /**
-   *
-   * @param entityDefinition
-   * @param columns
-   * @return
-   */
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,
                                                              List<Column<?>> columns) {
     return columns.stream()
