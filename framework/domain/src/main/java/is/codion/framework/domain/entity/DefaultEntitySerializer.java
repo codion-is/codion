@@ -17,7 +17,7 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEntitySerializer implements EntitySerializer {
+final class DefaultEntitySerializer {
 
   private final Entities entities;
   private final boolean strictDeserialization;
@@ -27,26 +27,22 @@ final class DefaultEntitySerializer implements EntitySerializer {
     this.strictDeserialization = strictDeserialization;
   }
 
-  @Override
-  public void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
+  static void serialize(DefaultEntity entity, ObjectOutputStream stream) throws IOException {
     stream.writeObject(entity.definition.entityType().name());
     serializeValues(entity, stream);
   }
 
-  @Override
-  public void deserialize(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  void deserialize(DefaultEntity entity, ObjectInputStream stream) throws IOException, ClassNotFoundException {
     entity.definition = entities.definition((String) stream.readObject());
     deserializeValues(entity, stream);
   }
 
-  @Override
-  public void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
+  static void serialize(DefaultKey key, ObjectOutputStream stream) throws IOException {
     stream.writeObject(key.definition.entityType().name());
     serializeValues(key, stream);
   }
 
-  @Override
-  public void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
+  void deserialize(DefaultKey key, ObjectInputStream stream) throws IOException, ClassNotFoundException {
     key.definition = entities.definition((String) stream.readObject());
     deserializeValues(key, stream);
   }

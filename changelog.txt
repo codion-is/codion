@@ -9527,3 +9527,4 @@
   EntityEditPanel.createUpdateControl() renamed createEditControl()
   EntityResultPacker, optimized for reduced garbage production
   EntityApplicationPanel.Builder.frameTitle() renamed frameTitleProvider() for consistency
+  EntitySerializer interface removed
