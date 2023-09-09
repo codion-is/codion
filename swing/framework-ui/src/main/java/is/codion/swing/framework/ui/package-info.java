@@ -4,7 +4,6 @@
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CONFIRM_EXIT}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#SHOW_STARTUP_DIALOG}<br>
  * {@link is.codion.swing.framework.ui.EntityApplicationPanel#CACHE_ENTITY_PANELS}<br>
- * {@link is.codion.swing.framework.ui.EntityApplicationPanel#TAB_PLACEMENT}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_SAVE_CAPTION}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#USE_FOCUS_ACTIVATION}<br>
  * {@link is.codion.swing.framework.ui.EntityEditPanel#INCLUDE_ENTITY_MENU}<br>
@@ -24,6 +23,7 @@
  * {@link is.codion.swing.framework.ui.EntityTablePanel#INCLUDE_FILTER_PANEL}<br>
  * {@link is.codion.swing.framework.ui.EntityTablePanel#SHOW_REFRESH_PROGRESS_BAR}<br>
  * {@link is.codion.swing.framework.ui.ReferentialIntegrityErrorHandling#REFERENTIAL_INTEGRITY_ERROR_HANDLING}<br>
+ * {@link is.codion.swing.framework.ui.TabbedApplicationLayout#TAB_PLACEMENT}<br>
  * {@link is.codion.swing.framework.ui.TabbedPanelLayout#INCLUDE_DETAIL_PANEL_CONTROLS}<br>
  */
 package is.codion.swing.framework.ui;
