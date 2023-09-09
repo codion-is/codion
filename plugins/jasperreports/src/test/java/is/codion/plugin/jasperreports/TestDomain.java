@@ -6,13 +6,13 @@ package is.codion.plugin.jasperreports;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
 import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static is.codion.plugin.jasperreports.JasperReports.fileReport;
 import static java.util.Arrays.asList;
@@ -106,7 +106,7 @@ public final class TestDomain extends DefaultDomain {
                     .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .caption("Employee"));
   }
 }

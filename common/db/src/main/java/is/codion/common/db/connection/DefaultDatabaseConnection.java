@@ -5,15 +5,11 @@ package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
-import is.codion.common.db.result.ResultPacker;
 import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -24,9 +20,6 @@ import static java.util.Objects.requireNonNull;
  * This class is not thread-safe.
  */
 final class DefaultDatabaseConnection implements DatabaseConnection {
-
-  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
-  private static final ResultPacker<Long> LONG_RESULT_PACKER = resultSet -> resultSet.getLong(1);
 
   private static final Map<String, User> META_DATA_USER_CACHE = new ConcurrentHashMap<>();
 
@@ -117,26 +110,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   @Override
   public Database database() {
     return database;
-  }
-
-  @Override
-  public int selectInteger(String sql) throws SQLException {
-    List<Integer> integers = select(sql, INTEGER_RESULT_PACKER, 1);
-    if (!integers.isEmpty()) {
-      return integers.get(0);
-    }
-
-    throw new SQLException("No records returned when querying for an integer", SQL_STATE_NO_DATA);
-  }
-
-  @Override
-  public long selectLong(String sql) throws SQLException {
-    List<Long> longs = select(sql, LONG_RESULT_PACKER, 1);
-    if (!longs.isEmpty()) {
-      return longs.get(0);
-    }
-
-    throw new SQLException("No records returned when querying for a long", SQL_STATE_NO_DATA);
   }
 
   @Override
@@ -241,39 +214,9 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private <T> List<T> select(String sql, ResultPacker<T> resultPacker, int fetchLimit) throws SQLException {
-    verifyOpenConnection();
-    database.countQuery(requireNonNull(sql, "sql"));
-    Statement statement = null;
-    SQLException exception = null;
-    ResultSet resultSet = null;
-    try {
-      logEntry("select", sql);
-      statement = connection.createStatement();
-      resultSet = statement.executeQuery(sql);
-
-      return resultPacker.pack(resultSet, fetchLimit);
-    }
-    catch (SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      Database.closeSilently(statement);
-      Database.closeSilently(resultSet);
-      logExit("select", exception);
-    }
-  }
-
   private void logEntry(String method) {
     if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.enter(method);
-    }
-  }
-
-  private void logEntry(String method, Object argument) {
-    if (methodLogger != null && methodLogger.isEnabled()) {
-      methodLogger.enter(method, argument);
     }
   }
 

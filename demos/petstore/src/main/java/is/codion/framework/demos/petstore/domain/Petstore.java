@@ -13,7 +13,7 @@ import is.codion.framework.domain.entity.attribute.ForeignKey;
 import java.math.BigDecimal;
 
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 
 public final class Petstore extends DefaultDomain {
@@ -90,7 +90,7 @@ public final class Petstore extends DefaultDomain {
                     .nullable(false)
                     .maximumFractionDigits(2))
             .tableName("petstore.address")
-            .keyGenerator(increment("petstore.address", "addressid"))
+            .keyGenerator(sequence("petstore.address_seq"))
             .orderBy(ascending(Address.CITY, Address.STREET_1, Address.STREET_2))
             .stringFactory(StringFactory.builder()
                     .value(Address.STREET_1).text(" ")
@@ -134,7 +134,7 @@ public final class Petstore extends DefaultDomain {
                     .columnName("imageurl")
                     .hidden(true))
             .tableName("petstore.category")
-            .keyGenerator(increment("petstore.category", "categoryid"))
+            .keyGenerator(sequence("petstore.category_seq"))
             .orderBy(ascending(Category.NAME))
             .stringFactory(Category.NAME)
             .caption("Categories"));
@@ -182,7 +182,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(55)
                     .hidden(true))
             .tableName("petstore.product")
-            .keyGenerator(increment("petstore.product", "productid"))
+            .keyGenerator(sequence("petstore.product_seq"))
             .orderBy(ascending(Product.NAME))
             .stringFactory(StringFactory.builder()
                     .value(Product.CATEGORY_FK)
@@ -227,7 +227,7 @@ public final class Petstore extends DefaultDomain {
                     .maximumLength(24)
                     .nullable(false))
             .tableName("petstore.sellercontactinfo")
-            .keyGenerator(increment("petstore.sellercontactinfo", "contactinfoid"))
+            .keyGenerator(sequence("petstore.sellercontactinfo_seq"))
             .orderBy(ascending(SellerContactInfo.LAST_NAME, SellerContactInfo.FIRST_NAME))
             .stringFactory(StringFactory.builder()
                     .value(SellerContactInfo.LAST_NAME)
@@ -317,7 +317,7 @@ public final class Petstore extends DefaultDomain {
                     .defaultValue(false)
                     .nullable(false))
             .tableName("petstore.item")
-            .keyGenerator(increment("petstore.item", "itemid"))
+            .keyGenerator(sequence("petstore.item_seq"))
             .orderBy(ascending(Item.NAME))
             .stringFactory(StringFactory.builder()
                     .value(Item.PRODUCT_FK)
@@ -351,7 +351,7 @@ public final class Petstore extends DefaultDomain {
                     .caption(Tag.REFCOUNT.name())
                     .columnName("refcount"))
             .tableName("petstore.tag")
-            .keyGenerator(increment("petstore.tag", "tagid"))
+            .keyGenerator(sequence("petstore.tag_seq"))
             .orderBy(ascending(Tag.TAG))
             .selectTableName("petstore.tag tag")
             .stringFactory(Tag.TAG)

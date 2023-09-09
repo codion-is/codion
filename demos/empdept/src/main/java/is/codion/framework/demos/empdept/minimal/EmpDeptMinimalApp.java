@@ -9,6 +9,7 @@ import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.swing.framework.model.SwingEntityApplicationModel;
@@ -28,7 +29,7 @@ import java.util.Locale;
 
 import static is.codion.framework.db.condition.Condition.column;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 
 /**
  * EmpDept minimal application demo
@@ -93,7 +94,7 @@ public final class EmpDeptMinimalApp {
                      .column()
                      .caption("Department location")
                      .maximumLength(13))
-              .keyGenerator(increment("scott.dept", "deptno"))
+              .keyGenerator(sequence("scott.dept_seq"))
               .caption("Departments")
               .stringFactory(Department.DNAME));
       /*
@@ -140,7 +141,7 @@ public final class EmpDeptMinimalApp {
                       .column()
                       .caption("Hiredate")
                       .nullable(false))
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .caption("Employees")
             .stringFactory(Employee.ENAME));
     }

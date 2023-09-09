@@ -9531,3 +9531,6 @@
   DefaultEntitySerializer renamed EntitySerializer
   EntityTablePanel, conditionPanelVisible(), filterPanelVisible(), summaryPanelVisible() and showRefreshProgressBar() replace setters and getters
   FilteredModel.AbstractRefresher.fireRefreshEvent() and fireRefreshFailedEvent() renamed refreshEvent() and refreshFailedEvent()
+  DatabaseConnection.selectInteger() and selectLong() removed, now only handles transaction control
+  AbstractQueriedKeyGenerator refactored
+  KeyGenerator.increment() implementation removed

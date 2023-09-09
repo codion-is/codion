@@ -66,19 +66,6 @@ public interface KeyGenerator {
   }
 
   /**
-   * Instantiates a primary key generator which fetches the current maximum primary key value and increments
-   * it by one prior to insert.
-   * Note that if the primary key value of the entity being inserted is already populated this key
-   * generator does nothing, that is, it does not overwrite a manually set primary key value.
-   * @param tableName the table name
-   * @param columnName the primary key column name
-   * @return an incrementing primary key generator
-   */
-  static KeyGenerator increment(String tableName, String columnName) {
-    return new IncrementKeyGenerator(tableName, columnName);
-  }
-
-  /**
    * Instantiates a primary key generator which fetches primary key values from a sequence prior to insert.
    * Note that if the primary key value of the entity being inserted is already populated this key
    * generator does nothing, that is, it does not overwrite a manually set primary key value.

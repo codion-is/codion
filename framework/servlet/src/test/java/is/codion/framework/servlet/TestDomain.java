@@ -11,6 +11,7 @@ import is.codion.framework.db.EntityConnection;
 import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -19,7 +20,6 @@ import java.time.LocalDate;
 import java.util.List;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
 import static java.util.Collections.emptyList;
@@ -119,7 +119,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DATA.column()
                     .caption("Data"))
             .stringFactory(Employee.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .caption("Employee"));
   }

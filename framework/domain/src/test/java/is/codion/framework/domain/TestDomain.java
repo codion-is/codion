@@ -7,6 +7,7 @@ import is.codion.common.format.LocaleDateTimePattern;
 import is.codion.common.item.Item;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.DerivedAttribute;
@@ -20,7 +21,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static is.codion.framework.domain.entity.KeyGenerator.queried;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static java.util.Arrays.asList;
@@ -367,7 +367,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption("Data")
                     .eagerlyLoaded(true))
             .tableName("scott.emp")
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT_NO, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee"));
