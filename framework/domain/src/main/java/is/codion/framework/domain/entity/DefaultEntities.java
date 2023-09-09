@@ -153,8 +153,8 @@ public abstract class DefaultEntities implements Entities, Serializable {
     DefaultKey.setSerializer(domainType.name(), createSerializer(this));
   }
 
-  private static DefaultEntitySerializer createSerializer(Entities entities) {
-    return new DefaultEntitySerializer(entities, STRICT_DESERIALIZATION.get());
+  private static EntitySerializer createSerializer(Entities entities) {
+    return new EntitySerializer(entities, STRICT_DESERIALIZATION.get());
   }
 
   private static void validateReference(ForeignKey foreignKey, Attribute<?> referencedAttribute, EntityDefinition referencedEntity) {

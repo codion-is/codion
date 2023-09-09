@@ -27,7 +27,7 @@ public final class EntitySerializerTest {
 
   @Test
   void defaultSerializer() throws IOException, ClassNotFoundException {
-    testSerializer(new DefaultEntitySerializer(ENTITIES, true));
+    testSerializer(new EntitySerializer(ENTITIES, true));
   }
 
   @Test
@@ -42,9 +42,9 @@ public final class EntitySerializerTest {
             TestTable.EXTRA.column())
             .build());
 
-    DefaultEntitySerializer serializer1 = new DefaultEntitySerializer(domain1.entities(), true);
-    DefaultEntitySerializer serializer2 = new DefaultEntitySerializer(domain2.entities(), true);
-    DefaultEntitySerializer serializer3 = new DefaultEntitySerializer(domain1.entities(), false);
+    EntitySerializer serializer1 = new EntitySerializer(domain1.entities(), true);
+    EntitySerializer serializer2 = new EntitySerializer(domain2.entities(), true);
+    EntitySerializer serializer3 = new EntitySerializer(domain1.entities(), false);
 
     DefaultEntity entity = (DefaultEntity) domain1.entities().builder(TestTable.TYPE)
             .with(TestTable.ID, 1)
@@ -75,7 +75,7 @@ public final class EntitySerializerTest {
     assertTrue(deserialized.contains(TestTable.EXTRA));
   }
 
-  private static void testSerializer(DefaultEntitySerializer serializer) throws IOException, ClassNotFoundException {
+  private static void testSerializer(EntitySerializer serializer) throws IOException, ClassNotFoundException {
     DefaultEntity entity = createTestEntity();
     DefaultEntity deserializedEntity = (DefaultEntity) ENTITIES.entity(Employee.TYPE);
     serializeDeserialize(serializer, serializer, entity, deserializedEntity);
@@ -94,7 +94,7 @@ public final class EntitySerializerTest {
     assertEquals(key.values, deserializedKey.values);
   }
 
-  private static void serializeDeserialize(DefaultEntitySerializer serializer, DefaultEntitySerializer deserializer,
+  private static void serializeDeserialize(EntitySerializer serializer, EntitySerializer deserializer,
                                            DefaultEntity toSerialize, DefaultEntity toDeserialize)
           throws IOException, ClassNotFoundException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -107,7 +107,7 @@ public final class EntitySerializerTest {
     }
   }
 
-  private static void serializeDeserialize(DefaultEntitySerializer serializer, DefaultEntitySerializer deserializer,
+  private static void serializeDeserialize(EntitySerializer serializer, EntitySerializer deserializer,
                                            DefaultKey toSerialize, DefaultKey toDeserialize)
           throws IOException, ClassNotFoundException {
     ByteArrayOutputStream bos = new ByteArrayOutputStream();

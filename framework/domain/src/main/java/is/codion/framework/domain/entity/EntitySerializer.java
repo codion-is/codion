@@ -17,12 +17,12 @@ import static java.util.Collections.unmodifiableList;
 import static java.util.Collections.unmodifiableMap;
 import static java.util.Objects.requireNonNull;
 
-final class DefaultEntitySerializer {
+final class EntitySerializer {
 
   private final Entities entities;
   private final boolean strictDeserialization;
 
-  DefaultEntitySerializer(Entities entities, boolean strictDeserialization) {
+  EntitySerializer(Entities entities, boolean strictDeserialization) {
     this.entities = requireNonNull(entities);
     this.strictDeserialization = strictDeserialization;
   }

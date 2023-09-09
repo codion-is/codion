@@ -31,7 +31,7 @@ class DefaultKey implements Entity.Key, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private static final Map<String, DefaultEntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
+  private static final Map<String, EntitySerializer> SERIALIZERS = new ConcurrentHashMap<>();
 
   /**
    * The columns comprising this key
@@ -309,7 +309,7 @@ class DefaultKey implements Entity.Key, Serializable {
     return values;
   }
 
-  static void setSerializer(String domainName, DefaultEntitySerializer serializer) {
+  static void setSerializer(String domainName, EntitySerializer serializer) {
     SERIALIZERS.put(requireNonNull(domainName), requireNonNull(serializer));
   }
 
@@ -319,8 +319,8 @@ class DefaultKey implements Entity.Key, Serializable {
    * @return the serializer to use for the given domain
    * @throws IllegalArgumentException in case no serializer has been associated with the domain
    */
-  static DefaultEntitySerializer serializerForDomain(String domainName) {
-    DefaultEntitySerializer serializer = SERIALIZERS.get(requireNonNull(domainName));
+  static EntitySerializer serializerForDomain(String domainName) {
+    EntitySerializer serializer = SERIALIZERS.get(requireNonNull(domainName));
     if (serializer == null) {
       throw new IllegalArgumentException("No EntitySerializer found for domain: " + domainName);
     }
