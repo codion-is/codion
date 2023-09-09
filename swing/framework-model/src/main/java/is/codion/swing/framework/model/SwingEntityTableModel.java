@@ -997,6 +997,8 @@ public class SwingEntityTableModel implements EntityTableModel<SwingEntityEditMo
         case ADD_BOTTOM_SORTED:
           tableModel.addItemsAtSorted(visibleItemCount(), entitiesToAdd);
           break;
+        default:
+          break;
       }
     }
   }
