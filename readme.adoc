@@ -28,7 +28,7 @@ Codion is a full-stack, Java rich client desktop CRUD application framework, bas
 
 == Motivation
 
-My main motivation for developing Codion back in 2004 was the lack of Java application frameworks that were not based on the Java Enterprise Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Java Standard Edition components, Swing, JDBC and RMI.
+My main motivation for developing Codion back in 2004 was the lack of application frameworks based on Java Standard Edition. I was writing rather basic desktop CRUD appliations, so I wanted to stick with Standard Edition components, Swing, JDBC and RMI.
 
 I figured a CRUD application framework should:
 
@@ -39,16 +39,16 @@ I figured a CRUD application framework should:
 
 == Dependencies
 
-Codion uses a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
+The core Codion framework components use a limited set of third-party libraries, a Swing client with local JDBC and RMI connection capabilities pulls in the following dependencies:
 
 * *https://www.json.org[org.json:json]* for persisting application preferences
 * *https://github.com/kordamp/ikonli[org.kordamp.ikonli:ikonli-swing]* for application icon handling
-* *https://github.com/Hakky54/sslcontext-kickstart[io.github.hakky54:sslcontext-kickstart]* for truststore handling
+* *https://github.com/Hakky54/sslcontext-kickstart[io.github.hakky54:sslcontext-kickstart]* for RMI truststore handling
 * *https://github.com/qos-ch/slf4j[org.slf4j:slf4j-api]* for your logging framework of choice
 * *JDBC driver*
 * *Logging framework*
 
-A simple CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Petclinic demo client, with RMI and local connection capabilities, is around 2MB (excluding the JDBC driver and logging framework).
+A basic CRUD client pulls in ~15 Codion modules totalling ~1.7MB, so the combined size of the Petclinic demo client for example, with local connection capabilities, is ~5MB.
 
 == Demo application projects
 
@@ -315,7 +315,7 @@ add(address);
 |is.codion.framework.domain.test|is.codion:codion-framework-domain-test:{version}
 |===
 
-The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityType)* method runs insert, select, update and delete on a randomly generated entity instance, verifying the results.
+The *EntityTestUnit* class provides a JUnit testing harness for the domain model. The *EntityTestUnit.test(entityType)* method runs insert, select, update and delete on a randomly (or manually) generated  entity instance, verifying the results.
 
 [source,java]
 ----
