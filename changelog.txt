@@ -9529,3 +9529,4 @@
   EntityApplicationPanel.Builder.frameTitle() renamed frameTitleProvider() for consistency
   EntitySerializer interface removed
   DefaultEntitySerializer renamed EntitySerializer
+  EntityTablePanel, conditionPanelVisible(), filterPanelVisible(), summaryPanelVisible() and showRefreshProgressBar() replace setters and getters
