@@ -23,7 +23,7 @@ public interface FrameworkIcons extends Icons, Logos {
   /**
    * Specifies the name of the {@link FrameworkIcons} implementation class to use.
    */
-  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("codion.swing.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
+  PropertyValue<String> FRAMEWORK_ICONS_CLASSNAME = Configuration.stringValue("is.codion.swing.framework.ui.icon.FrameworkIcons.frameworkIconsClassName", DefaultFrameworkIcons.class.getName());
 
   /**
    * @return icon for the 'filter' action.

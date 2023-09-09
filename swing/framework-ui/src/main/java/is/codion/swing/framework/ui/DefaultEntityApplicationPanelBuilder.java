@@ -8,6 +8,7 @@ import is.codion.common.model.CancelException;
 import is.codion.common.model.UserPreferences;
 import is.codion.common.user.User;
 import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -75,7 +76,7 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
   private ConnectionProviderFactory connectionProviderFactory = new DefaultConnectionProviderFactory();
   private Function<EntityConnectionProvider, M> applicationModelFactory = new DefaultApplicationModelFactory();
   private Function<M, P> applicationPanelFactory = new DefaultApplicationPanelFactory();
-  private Value<String> frameTitle;
+  private ValueObserver<String> frameTitleProvider;
 
   private LoginProvider loginProvider = new DefaultDialogLoginProvider();
   private Supplier<JFrame> frameSupplier = new DefaultFrameSupplier();
@@ -188,12 +189,12 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
 
   @Override
   public EntityApplicationPanel.Builder<M, P> frameTitle(String frameTitle) {
-    return frameTitle(Value.value(requireNonNull(frameTitle)));
+    return frameTitleProvider(Value.value(requireNonNull(frameTitle)));
   }
 
   @Override
-  public EntityApplicationPanel.Builder<M, P> frameTitle(Value<String> frameTitle) {
-    this.frameTitle = requireNonNull(frameTitle);
+  public EntityApplicationPanel.Builder<M, P> frameTitleProvider(ValueObserver<String> frameTitleProvider) {
+    this.frameTitleProvider = requireNonNull(frameTitleProvider);
     return this;
   }
 
@@ -419,9 +420,9 @@ final class DefaultEntityApplicationPanelBuilder<M extends SwingEntityApplicatio
     if (maximizeFrame) {
       frame.setExtendedState(Frame.MAXIMIZED_BOTH);
     }
-    if (frameTitle != null) {
-      frame.setTitle(frameTitle.get());
-      frameTitle.addDataListener(title ->
+    if (frameTitleProvider != null) {
+      frame.setTitle(frameTitleProvider.get());
+      frameTitleProvider.addDataListener(title ->
               SwingUtilities.invokeLater(() -> frame.setTitle(title)));
     }
     else {

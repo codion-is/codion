@@ -381,11 +381,11 @@ public abstract class AbstractServer<T extends Remote, A extends ServerAdmin> ex
    * Validates the given user credentials
    * @param userToCheck the credentials to check
    * @param requiredUser the required credentials
-   * @throws ServerAuthenticationException in case either User instance is null or if the username or password does not match
+   * @throws ServerAuthenticationException in case either User instance is null or if the username or password do not match
    */
   protected static void validateUserCredentials(User userToCheck, User requiredUser) throws ServerAuthenticationException {
     if (userToCheck == null || requiredUser == null
-            || !Objects.equals(userToCheck.username(), requiredUser.username())
+            || !userToCheck.username().equalsIgnoreCase(requiredUser.username())
             || !Arrays.equals(userToCheck.password(), requiredUser.password())) {
       throw new ServerAuthenticationException("Wrong username or password");
     }

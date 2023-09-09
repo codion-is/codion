@@ -10,7 +10,6 @@ import is.codion.framework.domain.entity.EntityDefinition;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.OrderBy;
 import is.codion.framework.domain.entity.attribute.Attribute;
-import is.codion.framework.domain.entity.attribute.BlobColumnDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -276,9 +275,9 @@ final class SelectQueries {
 
     private Set<ColumnDefinition<?>> initializeLazyLoadedBlobColumnDefinitions() {
       return definition.columnDefinitions().stream()
-              .filter(column -> column.attribute().isByteArray())
-              .map(column -> (ColumnDefinition<byte[]>) column)
-              .filter(column -> !(column instanceof BlobColumnDefinition) || !((BlobColumnDefinition) column).isEagerlyLoaded())
+              .filter(EntityResultPacker.IS_BYTE_ARRAY)
+              .map(EntityResultPacker.CAST_TO_BYTE_ARRAY_COLUMN)
+              .filter(EntityResultPacker.LAZY_LOADED_BLOB)
               .collect(Collectors.toSet());
     }
 

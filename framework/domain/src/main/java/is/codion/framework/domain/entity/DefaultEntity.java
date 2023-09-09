@@ -41,8 +41,9 @@ class DefaultEntity implements Entity, Serializable {
   private static final long serialVersionUID = 1;
 
   static final DefaultKeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
-
   static final DefaultStringFactory DEFAULT_STRING_FACTORY = new DefaultStringFactory();
+  static final NullColorProvider NULL_COLOR_PROVIDER = new NullColorProvider();
+  static final EntityValidator DEFAULT_VALIDATOR = new DefaultEntityValidator();
 
   /**
    * Keep a reference to this frequently referenced object

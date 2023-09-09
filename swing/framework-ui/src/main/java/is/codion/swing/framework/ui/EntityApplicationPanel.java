@@ -15,7 +15,7 @@ import is.codion.common.model.credentials.CredentialsProvider;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -53,7 +53,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 import javax.swing.ScrollPaneConstants;
-import javax.swing.SwingConstants;
 import javax.swing.WindowConstants;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
@@ -117,7 +116,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Value type: String<br>
    * Default value: https://codion.is/doc/{version}/help/client.html
    */
-  public static final PropertyValue<String> HELP_URL = Configuration.stringValue("codion.swing.helpUrl",
+  public static final PropertyValue<String> HELP_URL = Configuration.stringValue("is.codion.swing.framework.ui.EntityApplicationPanel.helpUrl",
           "https://codion.is/doc/" + Version.versionString() + "/help/client.html");
 
   /**
@@ -125,14 +124,14 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("codion.swing.confirmExit", false);
+  public static final PropertyValue<Boolean> CONFIRM_EXIT = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.confirmExit", false);
 
   /**
    * Specifies whether a startup dialog should be shown<br>
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("codion.swing.showStartupDialog", true);
+  public static final PropertyValue<Boolean> SHOW_STARTUP_DIALOG = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.showStartupDialog", true);
 
   /**
    * Specifies whether EntityPanels displayed via {@link EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)}
@@ -143,14 +142,7 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
    * @see EntityApplicationPanel#displayEntityPanelDialog(EntityPanel)
    * @see EntityApplicationPanel#displayEntityPanelFrame(EntityPanel)
    */
-  public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue("codion.swing.cacheEntityPanels", false);
-
-  /**
-   * Specifies the tab placement<br>
-   * Value type: Integer (SwingConstants.TOP, SwingConstants.BOTTOM, SwingConstants.LEFT, SwingConstants.RIGHT)<br>
-   * Default value: {@link SwingConstants#TOP}
-   */
-  public static final PropertyValue<Integer> TAB_PLACEMENT = Configuration.integerValue("codion.swing.tabPlacement", SwingConstants.TOP);
+  public static final PropertyValue<Boolean> CACHE_ENTITY_PANELS = Configuration.booleanValue("is.codion.swing.framework.ui.EntityApplicationPanel.cacheEntityPanels", false);
 
   private static final int DEFAULT_LOGO_SIZE = 68;
 
@@ -1157,10 +1149,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     /**
      * For a dynamic frame title.
-     * @param frameTitle the value controlling the frame title
+     * @param frameTitle the value observer controlling the frame title
      * @return this Builder instance
      */
-    Builder<M, P> frameTitle(Value<String> frameTitle);
+    Builder<M, P> frameTitleProvider(ValueObserver<String> frameTitle);
 
     /**
      * @param includeMainMenu if true then a main menu is included

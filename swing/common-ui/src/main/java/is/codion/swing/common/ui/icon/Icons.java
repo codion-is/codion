@@ -27,14 +27,14 @@ public interface Icons {
    * Value type: Integer<br>
    * Default value: 16
    */
-  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("codion.swing.iconSize", DEFAULT_ICON_SIZE);
+  PropertyValue<Integer> ICON_SIZE = Configuration.integerValue("is.codion.swing.common.ui.icon.Icons.iconSize", DEFAULT_ICON_SIZE);
 
   /**
    * The icon color<br>
    * Value type: Color<br>
    * Default value: UIManager.getColor("Button.foreground")
    */
-  PropertyValue<Color> ICON_COLOR = Configuration.value("codion.swing.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
+  PropertyValue<Color> ICON_COLOR = Configuration.value("is.codion.swing.common.ui.icon.Icons.iconColor", Color::decode, UIManager.getColor("Button.foreground"));
 
   /**
    * Adds the given ikons to this FrameworkIcons instance. Retrieve an icon via {@link #icon(Ikon)}.

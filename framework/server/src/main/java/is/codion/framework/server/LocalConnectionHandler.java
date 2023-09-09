@@ -82,7 +82,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   /**
    * The date and time when this remote connection was established
    */
-  private final long creationDate = System.currentTimeMillis();
+  private final long creationTime = System.currentTimeMillis();
 
   /**
    * True while working
@@ -102,7 +102,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   /**
    * The time this connection was last used
    */
-  private long lastAccessTime = creationDate;
+  private long lastAccessTime = creationTime;
 
   /**
    * Indicates whether this remote connection has been disconnected

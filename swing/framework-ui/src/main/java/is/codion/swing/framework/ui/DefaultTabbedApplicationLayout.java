@@ -56,7 +56,7 @@ final class DefaultTabbedApplicationLayout implements TabbedApplicationLayout {
 
   private JTabbedPane createApplicationTabPane() {
     TabbedPaneBuilder builder = Components.tabbedPane()
-            .tabPlacement(EntityApplicationPanel.TAB_PLACEMENT.get())
+            .tabPlacement(TAB_PLACEMENT.get())
             .focusable(false)
             .changeListener(new InitializeSelectedPanelListener());
     entityPanels.stream()
