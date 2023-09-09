@@ -23,7 +23,7 @@ final class QueryKeyGenerator extends AbstractQueriedKeyGenerator {
   public void beforeInsert(Entity entity, DatabaseConnection connection) throws SQLException {
     ColumnDefinition<?> columnDefinition = entity.entityDefinition().primaryKeyColumnDefinitions().get(0);
     if (entity.isNull(columnDefinition.attribute())) {
-      selectAndPut(entity, columnDefinition, connection);
+      selectAndPopulate(entity, columnDefinition, connection);
     }
   }
 

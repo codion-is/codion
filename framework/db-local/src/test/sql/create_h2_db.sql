@@ -25,6 +25,8 @@ CREATE TABLE scott.emp (
   constraint emp_mgr_fk foreign key (mgr) references scott.emp(empno)
 );
 
+CREATE SEQUENCE scott.emp_seq START WITH 17;
+
 INSERT INTO scott.dept(deptno, dname, loc)
 VALUES (10, 'ACCOUNTING', 'NEW YORK'),
   (20, 'RESEARCH', 'DALLAS'),

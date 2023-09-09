@@ -193,7 +193,7 @@ final class EntityPanelBuilder implements EntityPanel.Builder {
     try {
       EntityPanel entityPanel = createPanel(model);
       if (entityPanel.tablePanel() != null && tableConditionPanelVisible) {
-        entityPanel.tablePanel().setConditionPanelVisible(tableConditionPanelVisible);
+        entityPanel.tablePanel().conditionPanelVisible().set(tableConditionPanelVisible);
       }
       if (!detailPanelBuilders.isEmpty()) {
         for (EntityPanel.Builder detailPanelBuilder : detailPanelBuilders) {

@@ -276,7 +276,7 @@ public final class FilteredTable<R, C> extends JTable {
 
   /**
    * @return true if the JTable instance scrolls automatically to the coordinate
-   * of the record selected in the underlying table model
+   * of the item selected in the underlying table model
    */
   public boolean isScrollToSelectedItem() {
     return scrollToSelectedItem;

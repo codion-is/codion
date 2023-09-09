@@ -408,15 +408,6 @@ The framework can select new primary key values from a query.
     "where table_name = 'store.customer'"));
 ----
 
-=== Increment
-
-The framework can automatically increment the primary key value by selecting the maximum value and add one, this is very simplistic, not transaction safe and is not recommended for use anywhere but the simplest demos.
-
-[source,java]
-----
-.keyGenerator(increment("scott.emp", "empno"))
-----
-
 === Custom
 
 You can provide a custom key generator strategy by implementing a {url-javadoc}{framework-domain}/is/codion/framework/domain/entity/KeyGenerator.html[KeyGenerator].

@@ -22,7 +22,7 @@ import java.util.List;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.DomainType.domainType;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
+import static is.codion.framework.domain.entity.KeyGenerator.sequence;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
 import static is.codion.plugin.jasperreports.JasperReports.classPathReport;
 import static java.util.Arrays.asList;
@@ -219,7 +219,7 @@ public final class EmpDept extends DefaultDomain {
             Employee.DEPARTMENT_LOCATION
                     .denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption("Location"))
-            .keyGenerator(increment("scott.emp", Employee.ID.name()))
+            .keyGenerator(sequence("scott.emp_seq"))
             .orderBy(ascending(Employee.DEPARTMENT, Employee.NAME))
             .stringFactory(Employee.NAME)
             .caption("Employee")

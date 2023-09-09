@@ -33,7 +33,6 @@ import java.util.UUID;
 
 import static is.codion.common.item.Item.item;
 import static is.codion.framework.domain.entity.KeyGenerator.identity;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -190,7 +189,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DATA.blobColumn()
                     .eagerlyLoaded(true))
             .stringFactory(Employee.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .conditionProvider(Employee.NAME_IS_BLAKE_CONDITION, (attributes, values) -> "ename = 'BLAKE'")
             .conditionProvider(Employee.MGR_GREATER_THAN_CONDITION, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
@@ -264,7 +263,7 @@ public final class TestDomain extends DefaultDomain {
                     .caption(EmployeeFk.HIRETIME.name()))
             .tableName("scott.emp")
             .stringFactory(EmployeeFk.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .caption("Employee"));
   }
 

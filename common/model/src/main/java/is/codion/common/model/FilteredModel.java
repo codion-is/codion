@@ -290,19 +290,19 @@ public interface FilteredModel<T> {
     }
 
     /**
-     * Fires the refresh event
+     * Triggers the successful refresh event
      * @see #addRefreshListener(Runnable)
      */
-    protected final void fireRefreshEvent() {
+    protected final void refreshEvent() {
       refreshEvent.run();
     }
 
     /**
-     * Fires the refresh failed event
+     * Triggers the refresh failed event
      * @param throwable the refresh exception
      * @see #addRefreshFailedListener(Consumer)
      */
-    protected final void fireRefreshFailedEvent(Throwable throwable) {
+    protected final void refreshFailedEvent(Throwable throwable) {
       refreshFailedEvent.accept(throwable);
     }
 

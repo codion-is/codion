@@ -8,6 +8,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.Entity;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
@@ -19,7 +20,6 @@ import java.time.LocalTime;
 import java.time.OffsetDateTime;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -119,7 +119,7 @@ public final class TestDomain extends DefaultDomain {
                     .nullable(false),
             Employee.EMP_DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION))
             .stringFactory(Employee.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .caption("Employee"));
   }
 }

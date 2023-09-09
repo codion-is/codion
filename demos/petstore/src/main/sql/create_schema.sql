@@ -11,6 +11,8 @@ create table petstore.category(
  primary key (categoryid)
 );
 
+create sequence petstore.category_seq start with 6;
+
 CREATE TABLE petstore.product (
  productid INTEGER NOT NULL,
  categoryid INTEGER NOT NULL,
@@ -20,6 +22,8 @@ CREATE TABLE petstore.product (
  primary key (productid),
  foreign key (categoryid) references petstore.category(categoryid)
 );
+
+create sequence petstore.product_seq start with 11;
 
 CREATE TABLE petstore.address (
  addressid INTEGER NOT NULL,
@@ -33,6 +37,8 @@ CREATE TABLE petstore.address (
  primary key (addressid)
 );
 
+create sequence petstore.address_seq start with 103;
+
 CREATE TABLE petstore.sellercontactinfo (
  contactinfoid INTEGER NOT NULL,
  lastname VARCHAR(24) NOT NULL,
@@ -40,6 +46,8 @@ CREATE TABLE petstore.sellercontactinfo (
  email VARCHAR(24) NOT NULL,
  primary key (contactinfoid)
 );
+
+create sequence petstore.sellercontactinfo_seq start with 103;
 
 CREATE TABLE petstore.item (
  itemid INTEGER NOT NULL,
@@ -60,12 +68,16 @@ CREATE TABLE petstore.item (
  foreign key (contactinfo_contactinfoid) references petstore.sellercontactinfo(contactinfoid)
 );
 
+create sequence petstore.item_seq start with 420;
+
 create table petstore.tag(
  tagid INTEGER NOT NULL,
  tag VARCHAR(30) NOT NULL,
  primary key (tagid),
  unique(tag)
 );
+
+create sequence petstore.tag_seq start with 9;
 
 create table petstore.tag_item(
  tagid INTEGER NOT NULL,

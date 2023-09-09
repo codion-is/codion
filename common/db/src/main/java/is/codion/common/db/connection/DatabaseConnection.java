@@ -44,22 +44,6 @@ public interface DatabaseConnection extends AutoCloseable {
   void setConnection(Connection connection);
 
   /**
-   * Selects a single integer value using the given query.
-   * @param sql the query must select at least a single number column, any other subsequent columns are ignored
-   * @return the first column from the first record in the result as an integer
-   * @throws SQLException if anything goes wrong during the execution, or no results from query with {@link SQLException#getSQLState()} as {@link #SQL_STATE_NO_DATA}
-   */
-  int selectInteger(String sql) throws SQLException;
-
-  /**
-   * Selects a single long value using the given query.
-   * @param sql the query must select at least a single number column, any other subsequent columns are ignored
-   * @return the first column from the first record in the result as a long
-   * @throws SQLException if anything goes wrong during the execution, or no results from query with {@link SQLException#getSQLState()} as {@link #SQL_STATE_NO_DATA}
-   */
-  long selectLong(String sql) throws SQLException;
-
-  /**
    * Begins a transaction on this connection, to end the transaction use {@link #commitTransaction()} or {@link #rollbackTransaction()}.
    * @throws IllegalStateException in case a transaction is already open
    */

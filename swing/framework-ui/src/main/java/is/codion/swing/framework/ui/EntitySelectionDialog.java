@@ -138,7 +138,7 @@ public final class EntitySelectionDialog extends JDialog {
         okControl.actionPerformed(null);
       }
     });
-    tablePanel.setConditionPanelVisible(true);
+    tablePanel.conditionPanelVisible().set(true);
     tablePanel.table().getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
             .put(KeyStroke.getKeyStroke(VK_ENTER, 0), "none");
     tablePanel.table().setSelectionMode(singleSelection ? SINGLE_SELECTION : MULTIPLE_INTERVAL_SELECTION);

@@ -5,6 +5,7 @@ package is.codion.common.db.connection;
 
 import is.codion.common.db.database.Database;
 import is.codion.common.db.exception.DatabaseException;
+import is.codion.common.logging.MethodLogger;
 import is.codion.common.user.User;
 
 import org.junit.jupiter.api.AfterEach;
@@ -14,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import java.sql.Connection;
 import java.sql.SQLException;
 
+import static is.codion.common.db.connection.DatabaseConnection.databaseConnection;
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
@@ -43,6 +45,62 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test
+  void createConnection() throws Exception {
+    try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+      DatabaseConnection databaseConnection = databaseConnection(DATABASE, connection);
+      assertTrue(databaseConnection.isConnected());
+      assertNotNull(databaseConnection.user());
+      assertTrue(UNIT_TEST_USER.username().equalsIgnoreCase(databaseConnection.user().username()));
+    }
+  }
+
+  @Test
+  void createConnectionWithClosedConnection() {
+    assertThrows(DatabaseException.class, () -> {
+      try (Connection connection = DATABASE.createConnection(UNIT_TEST_USER)) {
+        connection.close();
+        databaseConnection(DATABASE, connection);
+      }
+    });
+  }
+
+  @Test
+  void test() {
+    try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+      MethodLogger methodLogger = MethodLogger.methodLogger(20);
+      methodLogger.setEnabled(true);
+      connection.setMethodLogger(methodLogger);
+      assertSame(methodLogger, connection.getMethodLogger());
+      connection.commit();
+      connection.rollback();
+      connection.toString();
+    }
+    catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Test
+  void transaction() {
+    try (DatabaseConnection connection = databaseConnection(DATABASE, UNIT_TEST_USER)) {
+      assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+      connection.beginTransaction();
+      assertThrows(IllegalStateException.class, () -> connection.beginTransaction());
+      connection.commitTransaction();
+      assertThrows(IllegalStateException.class, () -> connection.commitTransaction());
+      connection.beginTransaction();
+      connection.rollbackTransaction();
+      assertThrows(IllegalStateException.class, () -> connection.rollbackTransaction());
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Test
   void constructorWithConnection() throws DatabaseException, SQLException {
     Connection connection = DATABASE.createConnection(UNIT_TEST_USER);
     new DefaultDatabaseConnection(DATABASE, connection).close();
@@ -64,36 +122,6 @@ public class DefaultDatabaseConnectionTest {
   @Test
   void wrongPassword() {
     assertThrows(DatabaseException.class, () -> new DefaultDatabaseConnection(DATABASE, User.user(UNIT_TEST_USER.username(), "xxxxx".toCharArray())));
-  }
-
-  @Test
-  void queryInteger() throws Exception {
-    try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
-      int qInt = connection.selectInteger("select empno from scott.emp where ename = 'ADAMS'");
-      assertEquals(10, qInt);
-      try {
-        connection.selectInteger("select empno from scott.emp where ename = 'NOONE'");
-        fail();
-      }
-      catch (SQLException e) {
-        assertEquals(DatabaseConnection.SQL_STATE_NO_DATA, e.getSQLState());
-      }
-    }
-  }
-
-  @Test
-  void queryLong() throws Exception {
-    try (DatabaseConnection connection = new DefaultDatabaseConnection(Database.instance(), UNIT_TEST_USER)) {
-      long qLong = connection.selectLong("select empno from scott.emp where ename = 'ADAMS'");
-      assertEquals(10L, qLong);
-      try {
-        connection.selectLong("select empno from scott.emp where ename = 'NOONE'");
-        fail();
-      }
-      catch (SQLException e) {
-        assertEquals(DatabaseConnection.SQL_STATE_NO_DATA, e.getSQLState());
-      }
-    }
   }
 
   @Test

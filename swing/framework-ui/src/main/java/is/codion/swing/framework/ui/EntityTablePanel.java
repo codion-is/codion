@@ -484,51 +484,36 @@ public class EntityTablePanel extends JPanel {
     if (refreshButtonToolBar == null) {
       refreshButtonToolBar = createRefreshButtonToolBar();
     }
-    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || isConditionPanelVisible());
+    refreshButtonToolBar.setVisible(refreshButtonVisible == RefreshButtonVisible.ALWAYS || conditionPanelVisibleState.get());
   }
 
   /**
-   * @return true if a progress bar is shown while the model is refreshing
+   * @return the state controlling whether the condition panel is visible
    */
-  public final boolean isShowRefreshProgressBar() {
+  public final State conditionPanelVisible() {
+    return conditionPanelVisibleState;
+  }
+
+  /**
+   * @return the state controlling whether the filter panel is visible
+   */
+  public final State filterPanelVisible() {
+    return filterPanelVisibleState;
+  }
+
+  /**
+   * @return the state controlling whether the summary panel is visible
+   */
+  public final State summaryPanelVisible() {
+    return summaryPanelVisibleState;
+  }
+
+  /**
+   * @return the state controlling whether an indeterminate progress bar should be shown while the model is refreshing
+   * @see #SHOW_REFRESH_PROGRESS_BAR
+   */
+  public final State showRefreshProgressBar() {
     return statusPanel.showRefreshProgressBar;
-  }
-
-  /**
-   * @param showRefreshProgressBar true if an indeterminate progress bar should be shown while the model is refreshing
-   */
-  public final void setShowRefreshProgressBar(boolean showRefreshProgressBar) {
-    statusPanel.showRefreshProgressBar = showRefreshProgressBar;
-  }
-
-  /**
-   * Hides or shows the column condition panel for this EntityTablePanel
-   * @param visible if true the condition panel is shown, if false it is hidden
-   */
-  public final void setConditionPanelVisible(boolean visible) {
-    conditionPanelVisibleState.set(visible);
-  }
-
-  /**
-   * @return true if the condition panel is visible, false if it is hidden
-   */
-  public final boolean isConditionPanelVisible() {
-    return conditionPanelScrollPane != null && conditionPanelScrollPane.isVisible();
-  }
-
-  /**
-   * Hides or shows the column filter panel for this EntityTablePanel
-   * @param visible if true the filkter panel is shown, if false it is hidden
-   */
-  public final void setFilterPanelVisible(boolean visible) {
-    filterPanelVisibleState.set(visible);
-  }
-
-  /**
-   * @return true if the filter panel is visible, false if it is hidden
-   */
-  public final boolean isFilterPanelVisible() {
-    return filterPanelScrollPane != null && filterPanelScrollPane.isVisible();
   }
 
   /**
@@ -595,22 +580,6 @@ public class EntityTablePanel extends JPanel {
       selectConditionPanel(filterPanel, filterPanelScrollPane, filterPanelVisibleState,
               tableModel, this, FrameworkMessages.selectFilterField());
     }
-  }
-
-  /**
-   * Hides or shows the column summary panel for this EntityTablePanel, if no summary panel
-   * is available calling this method has no effect.
-   * @param visible if true then the summary panel is shown, if false it is hidden
-   */
-  public final void setSummaryPanelVisible(boolean visible) {
-    summaryPanelVisibleState.set(visible);
-  }
-
-  /**
-   * @return true if the column summary panel is visible, false if it is hidden
-   */
-  public final boolean isSummaryPanelVisible() {
-    return summaryPanelScrollPane != null && summaryPanelScrollPane.isVisible();
   }
 
   /**
@@ -1433,7 +1402,7 @@ public class EntityTablePanel extends JPanel {
       conditionPanel.addFocusGainedListener(table::scrollToColumn);
       addRefreshOnEnterControl(tableModel.columnModel().columns(), conditionPanel, conditionRefreshControl);
       conditionPanel.advancedView().addDataListener(advanced -> {
-        if (isConditionPanelVisible()) {
+        if (conditionPanelVisibleState.get()) {
           revalidate();
         }
       });
@@ -1441,7 +1410,7 @@ public class EntityTablePanel extends JPanel {
     if (filterPanel != null) {
       filterPanel.addFocusGainedListener(table::scrollToColumn);
       filterPanel.advancedView().addDataListener(advanced -> {
-        if (isFilterPanelVisible()) {
+        if (filterPanelVisibleState.get()) {
           revalidate();
         }
       });
@@ -1957,7 +1926,7 @@ public class EntityTablePanel extends JPanel {
     private static final String STATUS = "status";
     private static final String REFRESHING = "refreshing";
 
-    private boolean showRefreshProgressBar = SHOW_REFRESH_PROGRESS_BAR.get();
+    private final State showRefreshProgressBar = State.state(SHOW_REFRESH_PROGRESS_BAR.get());
 
     private StatusPanel(SwingEntityTableModel tableModel) {
       super(new CardLayout());
@@ -1967,7 +1936,7 @@ public class EntityTablePanel extends JPanel {
       add(createRefreshingProgressPanel(), REFRESHING);
       CardLayout layout = (CardLayout) getLayout();
       tableModel.refresher().observer().addDataListener(isRefreshing -> {
-        if (showRefreshProgressBar) {
+        if (showRefreshProgressBar.get()) {
           layout.show(this, isRefreshing ? REFRESHING : STATUS);
         }
       });

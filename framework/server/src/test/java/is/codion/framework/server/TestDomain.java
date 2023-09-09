@@ -12,6 +12,7 @@ import is.codion.framework.domain.DefaultDomain;
 import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.ConditionType;
 import is.codion.framework.domain.entity.EntityType;
+import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.attribute.Column;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 
@@ -19,7 +20,6 @@ import java.sql.Connection;
 import java.time.LocalDate;
 
 import static is.codion.common.item.Item.item;
-import static is.codion.framework.domain.entity.KeyGenerator.increment;
 import static java.util.Arrays.asList;
 
 public final class TestDomain extends DefaultDomain {
@@ -118,7 +118,7 @@ public final class TestDomain extends DefaultDomain {
             Employee.DEPARTMENT_LOCATION.denormalizedAttribute(Employee.DEPARTMENT_FK, Department.LOCATION)
                     .caption(Department.LOCATION.name()))
             .stringFactory(Employee.NAME)
-            .keyGenerator(increment("scott.emp", "empno"))
+            .keyGenerator(KeyGenerator.sequence("scott.emp_seq"))
             .conditionProvider(Employee.MGR_CONDITION_TYPE, (attributes, values) -> "mgr > ?")
             .caption("Employee"));
 

@@ -95,7 +95,7 @@ public class StoreDemo {
     customerPanel.addDetailPanel(addressPanel);
 
     addressPanel.tablePanel()
-            .setConditionPanelVisible(true);
+            .conditionPanelVisible().set(true);
 
     customerModel.tableModel().refresh();
     customerPanel.initialize();
