@@ -1,49 +1,49 @@
 <templateSet group="codion">
-  <template name="atd" value="Attribute&lt;Double&gt; $ATTRIBUTE_NAME$ = TYPE.doubleAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Double&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="cod" value="Column&lt;Double&gt; $COLUMN_NAME$ = TYPE.doubleColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Double&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="ati" value="Attribute&lt;Integer&gt; $ATTRIBUTE_NAME$ = TYPE.integerAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Integer&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="coi" value="Column&lt;Integer&gt; $COLUMN_NAME$ = TYPE.integerColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Integer&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atl" value="Attribute&lt;Long&gt; $ATTRIBUTE_NAME$ = TYPE.longAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Long&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="col" value="Column&lt;Long&gt; $COLUMN_NAME$ = TYPE.longColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Long&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="ats" value="Attribute&lt;String&gt; $ATTRIBUTE_NAME$ = TYPE.stringAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;String&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="cos" value="Column&lt;String&gt; $COLUMN_NAME$ = TYPE.stringColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;String&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="fk" value="ForeignKey $ATTRIBUTE_NAME$ = TYPE.foreignKey(&quot;$FK_NAME$&quot;, $END$);" description="ForeignKey" toReformat="false" toShortenFQNames="true">
+  <template name="fk" value="ForeignKey $COLUMN_NAME$ = TYPE.foreignKey(&quot;$FK_NAME$&quot;, $END$);" description="ForeignKey" toReformat="false" toShortenFQNames="true">
     <variable name="FK_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, FK_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, FK_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atld" value="Attribute&lt;LocalDate&gt; $ATTRIBUTE_NAME$ = TYPE.localDateAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;LocalDate&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="cold" value="Column&lt;LocalDate&gt; $COLUMN_NAME$ = TYPE.localDateColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;LocalDate&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atldt" value="Attribute&lt;LocalDateTime&gt; $ATTRIBUTE_NAME$ = TYPE.localDateTimeAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;LocalDateTime&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="coldt" value="Column&lt;LocalDateTime&gt; $COLUMN_NAME$ = TYPE.localDateTimeColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;LocalDateTime&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
@@ -54,44 +54,37 @@
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atb" value="Attribute&lt;Boolean&gt; $ATTRIBUTE_NAME$ = TYPE.booleanAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Boolean&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="cob" value="Column&lt;Boolean&gt; $COLUMN_NAME$ = TYPE.booleanColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Boolean&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atsh" value="Attribute&lt;Short&gt; $ATTRIBUTE_NAME$ = TYPE.shortAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Short&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="cosh" value="Column&lt;Short&gt; $COLUMN_NAME$ = TYPE.shortColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Short&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atc" value="Attribute&lt;Character&gt; $ATTRIBUTE_NAME$ = TYPE.characterAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Character&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="coc" value="Column&lt;Character&gt; $COLUMN_NAME$ = TYPE.characterColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;Character&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="atodt" value="Attribute&lt;OffsetDateTime&gt; $ATTRIBUTE_NAME$ = TYPE.offsetDateTimeAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;OffsetDateTime&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="coodt" value="Column&lt;OffsetDateTime&gt; $COLUMN_NAME$ = TYPE.offsetDateTimeColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;OffsetDateTime&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>
   </template>
-  <template name="ate" value="Attribute&lt;Entity&gt; $ATTRIBUTE_NAME$ = TYPE.entityAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;Entity&gt;" toReformat="false" toShortenFQNames="true">
+  <template name="coby" value="Column&lt;byte[]&gt; $COLUMN_NAME$ = TYPE.byteArrayColumn(&quot;$COLUMN_NAME$&quot;);$END$" description="Column&lt;byte[]&gt;" toReformat="false" toShortenFQNames="true">
     <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
-    <context>
-      <option name="JAVA_DECLARATION" value="true" />
-    </context>
-  </template>
-  <template name="atby" value="Attribute&lt;byte[]&gt; $ATTRIBUTE_NAME$ = TYPE.byteArrayAttribute(&quot;$COLUMN_NAME$&quot;);$END$" description="Attribute&lt;byte[]&gt;" toReformat="false" toShortenFQNames="true">
-    <variable name="COLUMN_NAME" expression="" defaultValue="" alwaysStopAt="true" />
-    <variable name="ATTRIBUTE_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
+    <variable name="COLUMN_NAME" expression="groovyScript(&quot;_1.toUpperCase()&quot;, COLUMN_NAME)" defaultValue="" alwaysStopAt="true" />
     <context>
       <option name="JAVA_DECLARATION" value="true" />
     </context>

@@ -27,16 +27,15 @@ include::{dir-utilities}/idea/templates/codion.xml[]
 |Name|Template
 |et|EntityType TYPE = DOMAIN.entityType("table_name");
 |fk|ForeignKey FK_KEY = TYPE.foreignKey("fk_key");
-|atsh|Attribute<Short> ATTRIBUTE = TYPE.shortAttribute("attribute");
-|ati|Attribute<Integer> ATTRIBUTE = TYPE.integerAttribute("attribute");
-|atl|Attribute<Long> ATTRIBUTE = TYPE.longAttribute("attribute");
-|atd|Attribute<Double> ATTRIBUTE = TYPE.doubleAttribute("attribute");
-|ats|Attribute<String> ATTRIBUTE = TYPE.stringAttribute("attribute");
-|atld|Attribute<LocalDate> ATTRIBUTE = TYPE.localDateAttribute("attribute");
-|atldt|Attribute<LocalDateTime> ATTRIBUTE = TYPE.localDateTimeAttribute("attribute");
-|atodt|Attribute<OffsetDateTime> ATTRIBUTE = TYPE.offsetDateTimeAttribute("attribute");
-|atb|Attribute<Boolean> ATTRIBUTE = TYPE.booleanAttribute("attribute");
-|atc|Attribute<Character> ATTRIBUTE = TYPE.characterAttribute("attribute");
-|ate|Attribute<Entity> ATTRIBUTE = TYPE.entityAttribute("attribute");
-|atby|Attribute<byte[]> ATTRIBUTE = TYPE.byteArrayAttribute("attribute");
+|cosh|Column<Short> COLUMN = TYPE.shortColumn("column");
+|coi|Column<Integer> COLUMN = TYPE.integerColumn("column");
+|col|Column<Long> COLUMN = TYPE.longColumn("column");
+|cod|Column<Double> COLUMN = TYPE.doubleColumn("column");
+|cos|Column<String> COLUMN = TYPE.stringColumn("column");
+|cold|Column<LocalDate> COLUMN = TYPE.localDateColumn("column");
+|coldt|Column<LocalDateTime> COLUMN = TYPE.localDateTimeColumn("column");
+|coodt|Column<OffsetDateTime> COLUMN = TYPE.offsetDateTimeColumn("column");
+|cob|Column<Boolean> COLUMN = TYPE.booleanColumn("column");
+|coc|Column<Character> COLUMN = TYPE.characterColumn("column");
+|coby|Column<byte[]> COLUMN = TYPE.byteArrayColumn("column");
 |===
