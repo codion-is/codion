@@ -57,7 +57,7 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
   private void onRefreshFailedAsync(Throwable throwable) {
     refreshWorker = null;
     setRefreshing(false);
-    fireRefreshFailedEvent(throwable);
+    refreshFailedEvent(throwable);
   }
 
   private void onRefreshFailedSync(Throwable throwable) {
@@ -76,7 +76,7 @@ public abstract class AbstractFilteredModelRefresher<T> extends FilteredModel.Ab
     if (afterRefresh != null) {
       afterRefresh.accept(items);
     }
-    fireRefreshEvent();
+    refreshEvent();
   }
 
   private void cancelCurrentRefresh() {

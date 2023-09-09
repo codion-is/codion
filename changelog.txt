@@ -9530,3 +9530,4 @@
   EntitySerializer interface removed
   DefaultEntitySerializer renamed EntitySerializer
   EntityTablePanel, conditionPanelVisible(), filterPanelVisible(), summaryPanelVisible() and showRefreshProgressBar() replace setters and getters
+  FilteredModel.AbstractRefresher.fireRefreshEvent() and fireRefreshFailedEvent() renamed refreshEvent() and refreshFailedEvent()
