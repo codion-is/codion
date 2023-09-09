@@ -9526,3 +9526,4 @@
   EntityTablePanel.SHOW_REFRESH_PROGRESS_BAR configuration value added
   EntityEditPanel.createUpdateControl() renamed createEditControl()
   EntityResultPacker, optimized for reduced garbage production
+  EntityApplicationPanel.Builder.frameTitle() renamed frameTitleProvider() for consistency

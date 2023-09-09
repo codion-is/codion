@@ -15,7 +15,7 @@ import is.codion.common.model.credentials.CredentialsProvider;
 import is.codion.common.property.PropertyValue;
 import is.codion.common.state.State;
 import is.codion.common.user.User;
-import is.codion.common.value.Value;
+import is.codion.common.value.ValueObserver;
 import is.codion.common.version.Version;
 import is.codion.framework.db.EntityConnectionProvider;
 import is.codion.framework.domain.DomainType;
@@ -1157,10 +1157,10 @@ public abstract class EntityApplicationPanel<M extends SwingEntityApplicationMod
 
     /**
      * For a dynamic frame title.
-     * @param frameTitle the value controlling the frame title
+     * @param frameTitle the value observer controlling the frame title
      * @return this Builder instance
      */
-    Builder<M, P> frameTitle(Value<String> frameTitle);
+    Builder<M, P> frameTitleProvider(ValueObserver<String> frameTitle);
 
     /**
      * @param includeMainMenu if true then a main menu is included
