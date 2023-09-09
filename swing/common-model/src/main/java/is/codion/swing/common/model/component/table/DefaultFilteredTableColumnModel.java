@@ -36,7 +36,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   private final Map<Integer, C> columnIdentifiers = new HashMap<>();
   private final Map<C, HiddenColumn> hiddenColumns = new LinkedHashMap<>();
   private final Map<C, State> visibleStates = new HashMap<>();
-  private final State lockedState = State.state();
+  private final State locked = State.state();
 
   DefaultFilteredTableColumnModel(List<FilteredTableColumn<C>> tableColumns) {
     if (requireNonNull(tableColumns, "columns").isEmpty()) {
@@ -52,7 +52,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
 
   @Override
   public State locked() {
-    return lockedState;
+    return locked;
   }
 
   @Override
@@ -311,7 +311,7 @@ final class DefaultFilteredTableColumnModel<C> implements FilteredTableColumnMod
   }
 
   private void checkIfLocked() {
-    if (lockedState.get()) {
+    if (locked.get()) {
       throw new IllegalStateException("Column model is locked");
     }
   }
