@@ -44,7 +44,7 @@ public abstract class AbstractRemoteEntityConnection extends UnicastRemoteObject
   private final transient LocalConnectionHandler connectionHandler;
 
   /**
-   * An event notified when this connection is disconnected
+   * An event triggered when this connection is disconnected
    */
   private final transient Event<AbstractRemoteEntityConnection> disconnectedEvent = Event.event();
 
