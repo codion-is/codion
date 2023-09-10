@@ -3,9 +3,9 @@
  */
 package is.codion.framework.json.db;
 
-import is.codion.framework.db.condition.AllCondition;
 import is.codion.framework.db.condition.ColumnCondition;
 import is.codion.framework.db.condition.Condition;
+import is.codion.framework.db.condition.Condition.All;
 import is.codion.framework.db.condition.Condition.Combination;
 import is.codion.framework.db.condition.CustomCondition;
 import is.codion.framework.json.domain.EntityObjectMapper;
@@ -54,7 +54,7 @@ final class ConditionSerializer extends StdSerializer<Condition> {
       CustomCondition customCondition = (CustomCondition) condition;
       customConditionSerializer.serialize(customCondition, generator);
     }
-    else if (condition instanceof AllCondition) {
+    else if (condition instanceof All) {
       generator.writeStartObject();
       generator.writeStringField("type", "all");
       generator.writeStringField("entityType", condition.entityType().name());

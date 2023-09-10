@@ -9574,3 +9574,6 @@
   DatabaseConnection.selectInteger() and selectLong() removed, now only handles transaction control
   AbstractQueriedKeyGenerator refactored
   KeyGenerator.increment() implementation removed
+  AllCondition now interface, moved to Condition, renamed All
+  ColumnDefinition.resultPacker() removed, related refactoring
+  ColumnDefinition.toColumnValue() replaced with valueConverter()

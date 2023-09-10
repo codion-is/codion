@@ -883,7 +883,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     @Override
     public int hashCode() {
-      return Objects.hash(application);
+      return application.hashCode();
     }
   }
 

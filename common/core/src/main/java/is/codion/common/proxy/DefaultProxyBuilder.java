@@ -10,7 +10,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -192,7 +191,7 @@ final class DefaultProxyBuilder<T> implements ProxyBuilder<T> {
 
     @Override
     public int hashCode() {
-      int result = Objects.hash(methodName);
+      int result = methodName.hashCode();
       result = 31 * result + Arrays.hashCode(parameterTypes);
 
       return result;

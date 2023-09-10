@@ -19,31 +19,31 @@ import static java.util.Objects.requireNonNull;
  */
 final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummaryModel {
 
-  private final Value<Summary> summaryValue = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
-  private final Value<String> summaryTextValue = Value.value();
-  private final State lockedState = State.state();
+  private final Value<Summary> summary = Value.value(ColumnSummary.NONE, ColumnSummary.NONE);
+  private final Value<String> summaryText = Value.value();
+  private final State locked = State.state();
   private final SummaryValueProvider<T> valueProvider;
   private final List<Summary> summaries = asList(ColumnSummary.values());
 
   DefaultColumnSummaryModel(SummaryValueProvider<T> valueProvider) {
     this.valueProvider = requireNonNull(valueProvider);
-    this.summaryValue.addValidator(summary -> {
-      if (lockedState.get()) {
+    this.summary.addValidator(summary -> {
+      if (locked.get()) {
         throw new IllegalStateException("Summary model is locked");
       }
     });
     this.valueProvider.addListener(this::updateSummary);
-    this.summaryValue.addListener(this::updateSummary);
+    this.summary.addListener(this::updateSummary);
   }
 
   @Override
   public State locked() {
-    return lockedState;
+    return locked;
   }
 
   @Override
   public Value<Summary> summary() {
-    return summaryValue;
+    return summary;
   }
 
   @Override
@@ -53,11 +53,11 @@ final class DefaultColumnSummaryModel<T extends Number> implements ColumnSummary
 
   @Override
   public ValueObserver<String> summaryText() {
-    return summaryTextValue.observer();
+    return summaryText.observer();
   }
 
   private void updateSummary() {
-    summaryTextValue.set(summary().get().summary(valueProvider));
+    summaryText.set(summary().get().summary(valueProvider));
   }
 
   static final class DefaultSummaryValues<T extends Number> implements ColumnSummaryModel.SummaryValues<T> {

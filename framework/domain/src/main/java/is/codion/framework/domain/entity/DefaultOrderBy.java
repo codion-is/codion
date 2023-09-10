@@ -42,7 +42,7 @@ final class DefaultOrderBy implements OrderBy, Serializable {
 
   @Override
   public int hashCode() {
-    return Objects.hash(orderByColumns);
+    return orderByColumns.hashCode();
   }
 
   @Override

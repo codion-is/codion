@@ -508,7 +508,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
-        List<T> result = columnDefinition.resultPacker().pack(resultSet);
+        List<T> result = resultPacker(columnDefinition).pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -1348,6 +1348,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .collect(toList());
   }
 
+  private static <T> ResultPacker<T> resultPacker(ColumnDefinition<T> columnDefinition) {
+    return resultSet -> columnDefinition.get(resultSet, 1);
+  }
+
   private static void setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
                                          List<?> statementValues) throws SQLException {
     if (statementValues.isEmpty()) {
@@ -1365,7 +1369,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void setParameterValue(PreparedStatement statement, ColumnDefinition<Object> columnDefinition,
                                         Object value, int parameterIndex) throws SQLException {
-    Object columnValue = columnDefinition.toColumnValue(value, statement);
+    Object columnValue = columnDefinition.valueConverter().toColumnValue(value, statement);
     try {
       if (columnValue == null) {
         statement.setNull(parameterIndex, columnDefinition.columnType());
@@ -1442,7 +1446,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Object columnValue;
       String stringValue;
       try {
-        columnValue = columnDefinition.toColumnValue(value, null);
+        columnValue = columnDefinition.valueConverter().toColumnValue(value, null);
         stringValue = String.valueOf(value);
       }
       catch (SQLException e) {

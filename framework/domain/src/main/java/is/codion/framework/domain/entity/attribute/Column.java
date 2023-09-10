@@ -11,6 +11,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
 
+/**
+ * An {@link Attribute} representing a table column.
+ * @param <T> the column value type
+ */
 public interface Column<T> extends Attribute<T> {
 
   /**

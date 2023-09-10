@@ -3,7 +3,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.result.ResultPacker;
 import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
 import is.codion.framework.domain.entity.attribute.Column.ValueFetcher;
 
@@ -40,7 +39,6 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   private final boolean updatable;
   private final boolean searchColumn;
 
-  private final transient ResultPacker<T> resultPacker = new ColumnResultPacker();
   private final transient String columnName;
   private final transient String columnExpression;
   private final transient ValueFetcher<Object> valueFetcher;
@@ -87,8 +85,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final <C> C toColumnValue(T value, Statement statement) throws SQLException {
-    return (C) valueConverter.toColumnValue(value, statement);
+  public final <C> ValueConverter<C, T> valueConverter() {
+    return (ValueConverter<C, T>) valueConverter;
   }
 
   @Override
@@ -144,19 +142,6 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   @Override
   public final T get(ResultSet resultSet, int index) throws SQLException {
     return valueConverter.fromColumnValue(valueFetcher.get(resultSet, index));
-  }
-
-  @Override
-  public final ResultPacker<T> resultPacker() {
-    return resultPacker;
-  }
-
-  private class ColumnResultPacker implements ResultPacker<T> {
-
-    @Override
-    public T get(ResultSet resultSet) throws SQLException {
-      return DefaultColumnDefinition.this.get(resultSet, 1);
-    }
   }
 
   private static final class DefaultValueConverter implements ValueConverter<Object, Object> {
