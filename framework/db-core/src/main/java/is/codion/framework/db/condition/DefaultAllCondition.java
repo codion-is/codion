@@ -12,11 +12,11 @@ import java.util.Objects;
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 
-public final class AllCondition extends AbstractCondition implements Serializable {
+final class DefaultAllCondition extends AbstractCondition implements Condition.All, Serializable {
 
   private static final long serialVersionUID = 1;
 
-  AllCondition(EntityType entityType) {
+  DefaultAllCondition(EntityType entityType) {
     super(entityType, emptyList(), emptyList());
   }
 
@@ -31,15 +31,15 @@ public final class AllCondition extends AbstractCondition implements Serializabl
     if (this == object) {
       return true;
     }
-    if (!(object instanceof AllCondition)) {
+    if (!(object instanceof All)) {
       return false;
     }
-    AllCondition that = (AllCondition) object;
+    All that = (All) object;
     return Objects.equals(entityType(), that.entityType());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(entityType());
+    return entityType().hashCode();
   }
 }

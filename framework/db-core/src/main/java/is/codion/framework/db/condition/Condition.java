@@ -70,6 +70,11 @@ public interface Condition {
   String toString(EntityDefinition definition);
 
   /**
+   * A condition specifying all entities of a given type.
+   */
+  interface All extends Condition {}
+
+  /**
    * An interface encapsulating a combination of Condition instances,
    * that should be either AND'ed or OR'ed together in a query context
    */
@@ -91,7 +96,7 @@ public interface Condition {
    * @return a Condition specifying all entities of the given type
    */
   static Condition all(EntityType entityType) {
-    return new AllCondition(entityType);
+    return new DefaultAllCondition(entityType);
   }
 
   /**
