@@ -508,7 +508,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         statement = prepareStatement(selectQuery);
         resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
-        List<T> result = columnDefinition.resultPacker().pack(resultSet);
+        List<T> result = resultPacker(columnDefinition).pack(resultSet);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -1346,6 +1346,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return columns.stream()
             .map(entityDefinition::columnDefinition)
             .collect(toList());
+  }
+
+  private static <T> ResultPacker<T> resultPacker(ColumnDefinition<T> columnDefinition) {
+    return resultSet -> columnDefinition.get(resultSet, 1);
   }
 
   private static void setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,

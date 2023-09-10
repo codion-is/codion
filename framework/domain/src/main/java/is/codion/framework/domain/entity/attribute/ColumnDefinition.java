@@ -3,8 +3,6 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
-import is.codion.common.db.result.ResultPacker;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -100,16 +98,11 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   /**
    * Fetches a value for this column from a ResultSet
    * @param resultSet the ResultSet
-   * @param index the index of the column to fetch
+   * @param index this columns index in the result
    * @return a single value fetched from the given ResultSet
    * @throws SQLException in case of an exception
    */
   T get(ResultSet resultSet, int index) throws SQLException;
-
-  /**
-   * @return a ResultPacker responsible for packing this column
-   */
-  ResultPacker<T> resultPacker();
 
   /**
    * Builds a {@link ColumnDefinition}

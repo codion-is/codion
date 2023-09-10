@@ -8,6 +8,9 @@ import is.codion.framework.domain.entity.EntityType;
 
 import java.util.List;
 
+/**
+ * An {@link Attribute} representing a foreign key relation.
+ */
 public interface ForeignKey extends Attribute<Entity> {
 
   /**

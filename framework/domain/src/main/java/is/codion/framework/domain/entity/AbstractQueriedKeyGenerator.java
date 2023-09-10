@@ -12,7 +12,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.List;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 
@@ -37,12 +36,11 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
     try {
       statement = connection.prepareStatement(query);
       resultSet = statement.executeQuery();
-      List<T> result = columnDefinition.resultPacker().pack(resultSet, -1);
-      if (result.isEmpty()) {
-        throw new SQLException("No records returned when querying for a key value", SQL_STATE_NO_DATA);
+      if (!resultSet.next()) {
+        throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
       }
 
-      entity.put(columnDefinition.attribute(), result.get(0));
+      entity.put(columnDefinition.attribute(), columnDefinition.get(resultSet, 1));
     }
     catch (SQLException e) {
       exception = e;
