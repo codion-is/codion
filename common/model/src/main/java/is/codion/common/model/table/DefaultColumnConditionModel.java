@@ -29,16 +29,16 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   private final Value<T> equalValue = equalValues.value();
   private final Value<T> upperBoundValue = Value.value();
   private final Value<T> lowerBoundValue = Value.value();
-  private final Value<Operator> operatorValue = Value.value(Operator.EQUAL, Operator.EQUAL);
+  private final Value<Operator> operator = Value.value(Operator.EQUAL, Operator.EQUAL);
   private final Event<?> conditionChangedEvent = Event.event();
 
-  private final State caseSensitiveState;
-  private final Value<AutomaticWildcard> automaticWildcardValue;
+  private final State caseSensitive;
+  private final Value<AutomaticWildcard> automaticWildcard;
   private final char wildcard;
 
-  private final State autoEnableState;
-  private final State enabledState = State.state();
-  private final State lockedState = State.state();
+  private final State autoEnable;
+  private final State enabled = State.state();
+  private final State locked = State.state();
 
   private final C columnIdentifier;
   private final Class<T> columnClass;
@@ -53,15 +53,15 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     this.wildcard = builder.wildcard;
     this.format = builder.format;
     this.dateTimePattern = builder.dateTimePattern;
-    this.automaticWildcardValue = Value.value(builder.automaticWildcard, AutomaticWildcard.NONE);
-    this.caseSensitiveState = State.state(builder.caseSensitive);
-    this.autoEnableState = State.state(builder.autoEnable);
-    this.enabledState.addValidator(value -> checkLock());
+    this.automaticWildcard = Value.value(builder.automaticWildcard, AutomaticWildcard.NONE);
+    this.caseSensitive = State.state(builder.caseSensitive);
+    this.autoEnable = State.state(builder.autoEnable);
+    this.enabled.addValidator(value -> checkLock());
     this.equalValues.addValidator(value -> checkLock());
     this.upperBoundValue.addValidator(value -> checkLock());
     this.lowerBoundValue.addValidator(value -> checkLock());
-    this.operatorValue.addValidator(this::validateOperator);
-    this.operatorValue.addValidator(value -> checkLock());
+    this.operator.addValidator(this::validateOperator);
+    this.operator.addValidator(value -> checkLock());
     bindEvents();
   }
 
@@ -72,7 +72,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public State caseSensitive() {
-    return caseSensitiveState;
+    return caseSensitive;
   }
 
   @Override
@@ -87,7 +87,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public State locked() {
-    return lockedState;
+    return locked;
   }
 
   @Override
@@ -139,7 +139,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public Value<Operator> operator() {
-    return operatorValue;
+    return operator;
   }
 
   @Override
@@ -154,31 +154,31 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
   @Override
   public State enabled() {
-    return enabledState;
+    return enabled;
   }
 
   @Override
   public Value<AutomaticWildcard> automaticWildcard() {
-    return automaticWildcardValue;
+    return automaticWildcard;
   }
 
   @Override
   public State autoEnable() {
-    return autoEnableState;
+    return autoEnable;
   }
 
   @Override
   public void clear() {
-    enabledState.set(false);
+    enabled.set(false);
     setEqualValues(null);
     setUpperBound(null);
     setLowerBound(null);
-    operatorValue.set(Operator.EQUAL);
+    operator.set(Operator.EQUAL);
   }
 
   @Override
   public boolean accepts(Comparable<T> columnValue) {
-    return !enabledState.get() || valueAccepted(columnValue);
+    return !enabled.get() || valueAccepted(columnValue);
   }
 
   @Override
@@ -207,7 +207,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private boolean valueAccepted(Comparable<T> comparable) {
-    switch (operatorValue.get()) {
+    switch (operator.get()) {
       case EQUAL:
         return isEqual(comparable);
       case NOT_EQUAL:
@@ -229,7 +229,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
       case NOT_BETWEEN:
         return isNotBetween(comparable);
       default:
-        throw new IllegalArgumentException("Undefined operator: " + operatorValue.get());
+        throw new IllegalArgumentException("Undefined operator: " + operator.get());
     }
   }
 
@@ -275,7 +275,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     }
 
     String valueToTest = value;
-    if (!caseSensitiveState.get()) {
+    if (!caseSensitive.get()) {
       equalValue = equalValue.toUpperCase();
       valueToTest = valueToTest.toUpperCase();
     }
@@ -420,7 +420,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     if (!(bound instanceof String)) {
       return bound;
     }
-    switch (operatorValue.get()) {
+    switch (operator.get()) {
       //wildcard only used for EQUAL and NOT_EQUAL
       case EQUAL:
       case NOT_EQUAL:
@@ -431,7 +431,7 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
   }
 
   private String addAutomaticWildcard(String value) {
-    switch (automaticWildcardValue.get()) {
+    switch (automaticWildcard.get()) {
       case PREFIX_AND_POSTFIX:
         return wildcard + value + wildcard;
       case PREFIX:
@@ -448,19 +448,19 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
     equalValues.addListener(autoEnableListener);
     upperBoundValue.addListener(autoEnableListener);
     lowerBoundValue.addListener(autoEnableListener);
-    operatorValue.addListener(autoEnableListener);
-    autoEnableState.addListener(autoEnableListener);
+    operator.addListener(autoEnableListener);
+    autoEnable.addListener(autoEnableListener);
     equalValues.addListener(conditionChangedEvent);
     upperBoundValue.addListener(conditionChangedEvent);
     lowerBoundValue.addListener(conditionChangedEvent);
-    operatorValue.addListener(conditionChangedEvent);
-    enabledState.addListener(conditionChangedEvent);
-    caseSensitiveState.addListener(conditionChangedEvent);
-    automaticWildcardValue.addListener(conditionChangedEvent);
+    operator.addListener(conditionChangedEvent);
+    enabled.addListener(conditionChangedEvent);
+    caseSensitive.addListener(conditionChangedEvent);
+    automaticWildcard.addListener(conditionChangedEvent);
   }
 
   private void checkLock() {
-    if (lockedState.get()) {
+    if (locked.get()) {
       throw new IllegalStateException("Condition model for column identified by " + columnIdentifier + " is locked");
     }
   }
@@ -475,28 +475,28 @@ final class DefaultColumnConditionModel<C, T> implements ColumnConditionModel<C,
 
     @Override
     public void run() {
-      if (autoEnableState.get()) {
-        switch (operatorValue.get()) {
+      if (autoEnable.get()) {
+        switch (operator.get()) {
           case EQUAL:
           case NOT_EQUAL:
-            enabledState.set(equalValues.isNotEmpty());
+            enabled.set(equalValues.isNotEmpty());
             break;
           case LESS_THAN:
           case LESS_THAN_OR_EQUAL:
-            enabledState.set(upperBoundValue.isNotNull());
+            enabled.set(upperBoundValue.isNotNull());
             break;
           case GREATER_THAN:
           case GREATER_THAN_OR_EQUAL:
-            enabledState.set(lowerBoundValue.isNotNull());
+            enabled.set(lowerBoundValue.isNotNull());
             break;
           case BETWEEN:
           case BETWEEN_EXCLUSIVE:
           case NOT_BETWEEN:
           case NOT_BETWEEN_EXCLUSIVE:
-            enabledState.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
+            enabled.set(lowerBoundValue.isNotNull() && upperBoundValue.isNotNull());
             break;
           default:
-            throw new IllegalStateException("Unknown operator: " + operatorValue.get());
+            throw new IllegalStateException("Unknown operator: " + operator.get());
         }
       }
     }
