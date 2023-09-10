@@ -85,8 +85,8 @@ class DefaultColumnDefinition<T> extends AbstractAttributeDefinition<T> implemen
   }
 
   @Override
-  public final <C> C toColumnValue(T value, Statement statement) throws SQLException {
-    return (C) valueConverter.toColumnValue(value, statement);
+  public final <C> ValueConverter<C, T> valueConverter() {
+    return (ValueConverter<C, T>) valueConverter;
   }
 
   @Override

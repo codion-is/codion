@@ -1369,7 +1369,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private static void setParameterValue(PreparedStatement statement, ColumnDefinition<Object> columnDefinition,
                                         Object value, int parameterIndex) throws SQLException {
-    Object columnValue = columnDefinition.toColumnValue(value, statement);
+    Object columnValue = columnDefinition.valueConverter().toColumnValue(value, statement);
     try {
       if (columnValue == null) {
         statement.setNull(parameterIndex, columnDefinition.columnType());
@@ -1446,7 +1446,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       Object columnValue;
       String stringValue;
       try {
-        columnValue = columnDefinition.toColumnValue(value, null);
+        columnValue = columnDefinition.valueConverter().toColumnValue(value, null);
         stringValue = String.valueOf(value);
       }
       catch (SQLException e) {

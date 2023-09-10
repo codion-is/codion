@@ -3,9 +3,10 @@
  */
 package is.codion.framework.domain.entity.attribute;
 
+import is.codion.framework.domain.entity.attribute.Column.ValueConverter;
+
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 
 /**
  * Specifies a attribute definition based on a table column
@@ -32,16 +33,10 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   int columnType();
 
   /**
-   * Translates the given value into a sql value, usually this is not required
-   * but for certain types this may be necessary, such as boolean values
-   * represented by a non-boolean data type in the underlying database
-   * @param value the value to translate
-   * @param statement the statement using the column value
-   * @param <C> the column value type
-   * @return the sql value used to represent the given value
-   * @throws java.sql.SQLException in case of an exception
+   * @return the {@link ValueConverter} for this column.
+   * @param <C> the colum value type
    */
-  <C> C toColumnValue(T value, Statement statement) throws SQLException;
+  <C> ValueConverter<C, T> valueConverter();
 
   /**
    * @return this columns zero based index in the primary key, -1 if this column is not part of a primary key
@@ -112,23 +107,23 @@ public interface ColumnDefinition<T> extends AttributeDefinition<T> {
   interface Builder<T, B extends Builder<T, B>> extends AttributeDefinition.Builder<T, B> {
 
     /**
-     * Sets the actual column type, and the required {@link Column.ValueConverter}.
+     * Sets the actual column type, and the required {@link ValueConverter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
      * @param valueConverter the converter to use when converting to and from column values
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, Column.ValueConverter<T, C> valueConverter);
+    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter);
 
     /**
-     * Sets the actual column type, and the required {@link Column.ValueConverter}.
+     * Sets the actual column type, and the required {@link ValueConverter}.
      * @param <C> the column type
      * @param columnClass the underlying column type class
      * @param valueConverter the converter to use when converting to and from column values
      * @param valueFetcher the value fetcher used to retrieve the value from a ResultSet
      * @return this instance
      */
-    <C> B columnClass(Class<C> columnClass, Column.ValueConverter<T, C> valueConverter, Column.ValueFetcher<C> valueFetcher);
+    <C> B columnClass(Class<C> columnClass, ValueConverter<T, C> valueConverter, Column.ValueFetcher<C> valueFetcher);
 
     /**
      * Sets the actual string used as column when querying
