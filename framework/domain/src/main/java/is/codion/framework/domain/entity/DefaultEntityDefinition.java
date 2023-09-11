@@ -376,18 +376,13 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
   }
 
   @Override
-  public List<ColumnDefinition<?>> writableColumnDefinitions(boolean includePrimaryKeyColumns,
-                                                             boolean includeNonUpdatable) {
-    return entityAttributes.columnDefinitions.stream()
-            .filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
-            .collect(toList());
-  }
-
-  @Override
   public Collection<AttributeDefinition<?>> updatableAttributeDefinitions() {
-    List<ColumnDefinition<?>> writableColumns = writableColumnDefinitions(!isKeyGenerated(), false);
-    writableColumns.removeIf(column -> isForeignKeyColumn(column.attribute()));
-    List<AttributeDefinition<?>> updatable = new ArrayList<>(writableColumns);
+    List<ColumnDefinition<?>> updatableColumns = entityAttributes.columnDefinitions.stream()
+            .filter(ColumnDefinition::isUpdatable)
+            .filter(column -> (!column.isPrimaryKeyColumn() || !isKeyGenerated()))
+            .collect(toList());
+    updatableColumns.removeIf(column -> isForeignKeyColumn(column.attribute()));
+    List<AttributeDefinition<?>> updatable = new ArrayList<>(updatableColumns);
     for (ForeignKeyDefinition definition : entityAttributes.foreignKeyDefinitions) {
       if (isUpdatable(definition.attribute())) {
         updatable.add(definition);
@@ -673,12 +668,6 @@ final class DefaultEntityDefinition implements EntityDefinition, Serializable {
     }
 
     return valueClass;
-  }
-
-  private static boolean isWritable(ColumnDefinition<?> definition, boolean includePrimaryKeyColumns,
-                                    boolean includeNonUpdatable) {
-    return definition.isInsertable() && (includeNonUpdatable || definition.isUpdatable())
-            && (includePrimaryKeyColumns || !definition.isPrimaryKeyColumn());
   }
 
   private static final class EntityAttributes implements Serializable {

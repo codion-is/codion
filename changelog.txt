@@ -9538,3 +9538,4 @@
   ColumnDefinition.resultPacker() removed, related refactoring
   ColumnDefinition.toColumnValue() replaced with valueConverter()
   Database.QueryCounter added along with queryCounter(), replaces countQuery(sql), related refactoring
+  EntityDefinition.writableColumnDefinitions() removed, related refactoring

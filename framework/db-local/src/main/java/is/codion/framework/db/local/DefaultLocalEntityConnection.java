@@ -1188,12 +1188,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
                                                       boolean includePrimaryKeyColumns) {
     return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.writableColumnDefinitions(includePrimaryKeyColumns, true));
+            writableColumnDefinitions(entityDefinition, includePrimaryKeyColumns, true));
   }
 
   private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {
     return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.writableColumnDefinitions(true, false));
+            writableColumnDefinitions(entityDefinition, true, false));
   }
 
   private List<Attribute<?>> primaryKeyAndWritableColumnAttributes(EntityType entityType) {
@@ -1204,7 +1204,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<Attribute<?>> collectPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
     EntityDefinition entityDefinition = domainEntities.definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
-            new ArrayList<>(entityDefinition.writableColumnDefinitions(true, true));
+            new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
     entityDefinition.primaryKeyColumnDefinitions().forEach(primaryKeyColumn -> {
       if (!writableAndPrimaryKeyColumns.contains(primaryKeyColumn)) {
         writableAndPrimaryKeyColumns.add(primaryKeyColumn);
@@ -1358,6 +1358,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return referencedEntity;
+  }
+
+  private static List<ColumnDefinition<?>> writableColumnDefinitions(
+          EntityDefinition entityDefinition, boolean includePrimaryKeyColumns, boolean includeNonUpdatable) {
+    return entityDefinition.columnDefinitions().stream()
+            .filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
+            .collect(toList());
+  }
+
+  private static boolean isWritable(ColumnDefinition<?> definition, boolean includePrimaryKeyColumns,
+                                    boolean includeNonUpdatable) {
+    return definition.isInsertable() && (includeNonUpdatable || definition.isUpdatable())
+            && (includePrimaryKeyColumns || !definition.isPrimaryKeyColumn());
   }
 
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,
