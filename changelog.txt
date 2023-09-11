@@ -9540,3 +9540,4 @@
   Database.QueryCounter added along with queryCounter(), replaces countQuery(sql), related refactoring
   EntityDefinition.writableColumnDefinitions() removed, related refactoring
   AbstractQueriedKeyGenerator, AbstractDatabase.validateWithQuery() now use try with resources
+  DefaultLocalEntityConnection refactored, more try with resources, less code within synchronized blocks
