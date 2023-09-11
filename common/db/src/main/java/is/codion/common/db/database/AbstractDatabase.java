@@ -12,7 +12,6 @@ import is.codion.common.user.User;
 import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -22,7 +21,6 @@ import java.util.Map;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static is.codion.common.db.database.Database.closeSilently;
 import static java.util.Objects.requireNonNull;
 
 /**
@@ -292,21 +290,20 @@ public abstract class AbstractDatabase implements Database {
   }
 
   private boolean validateWithQuery(Connection connection) throws SQLException {
-    ResultSet rs = null;
-    try (Statement statement = connection.createStatement()) {
-      if (validityCheckTimeout > 0) {
-        try {
-          statement.setQueryTimeout(validityCheckTimeout);
-        }
-        catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
-      }
-      rs = statement.executeQuery(checkConnectionQuery());
+    try (Statement statement = setQueryTimeout(connection.createStatement())) {
+      return statement.execute(checkConnectionQuery());
+    }
+  }
 
-      return true;
+  private Statement setQueryTimeout(Statement statement) {
+    if (validityCheckTimeout > 0) {
+      try {
+        statement.setQueryTimeout(validityCheckTimeout);
+      }
+      catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
     }
-    finally {
-      closeSilently(rs);
-    }
+
+    return statement;
   }
 
   private static final class DefaultQueryCounter implements QueryCounter {

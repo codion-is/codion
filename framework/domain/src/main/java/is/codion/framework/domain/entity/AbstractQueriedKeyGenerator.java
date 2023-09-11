@@ -28,13 +28,10 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
     if (query == null) {
       throw new IllegalStateException("Queried key generator returned no query");
     }
-    PreparedStatement statement = null;
     SQLException exception = null;
-    ResultSet resultSet = null;
     logEntry(methodLogger, query);
-    try {
-      statement = connection.prepareStatement(query);
-      resultSet = statement.executeQuery();
+    try (PreparedStatement statement = connection.prepareStatement(query);
+         ResultSet resultSet = statement.executeQuery()) {
       if (!resultSet.next()) {
         throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
       }
@@ -46,8 +43,6 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
       throw e;
     }
     finally {
-      Database.closeSilently(statement);
-      Database.closeSilently(resultSet);
       logExit(methodLogger, exception);
       databaseConnection.database().queryCounter().select();
     }
