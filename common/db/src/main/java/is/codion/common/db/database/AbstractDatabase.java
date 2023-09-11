@@ -43,8 +43,7 @@ public abstract class AbstractDatabase implements Database {
 
   private final Map<String, ConnectionPoolWrapper> connectionPools = new HashMap<>();
   private final int validityCheckTimeout = CONNECTION_VALIDITY_CHECK_TIMEOUT.get();
-  private final QueryCounter queryCounter = new QueryCounter();
-  private final boolean queryCounterEnabled = QUERY_COUNTER_ENABLED.get();
+  private final DefaultQueryCounter queryCounter = new DefaultQueryCounter();
   private final String url;
 
   private ConnectionProvider connectionProvider = new ConnectionProvider() {};
@@ -97,10 +96,8 @@ public abstract class AbstractDatabase implements Database {
   }
 
   @Override
-  public final void countQuery(String query) {
-    if (queryCounterEnabled) {
-      queryCounter.count(query);
-    }
+  public final QueryCounter queryCounter() {
+    return queryCounter;
   }
 
   @Override
@@ -312,7 +309,7 @@ public abstract class AbstractDatabase implements Database {
     }
   }
 
-  private static final class QueryCounter {
+  private static final class DefaultQueryCounter implements QueryCounter {
 
     private static final double THOUSAND = 1000d;
 
@@ -322,30 +319,47 @@ public abstract class AbstractDatabase implements Database {
     private final AtomicInteger insertsPerSecondCounter = new AtomicInteger();
     private final AtomicInteger updatesPerSecondCounter = new AtomicInteger();
     private final AtomicInteger deletesPerSecondCounter = new AtomicInteger();
-    private final AtomicInteger undefinedPerSecondCounter = new AtomicInteger();
+    private final AtomicInteger otherPerSecondCounter = new AtomicInteger();
 
-    /**
-     * Counts the given query, based on its first character
-     * @param query the sql query
-     */
-    private void count(String query) {
-      requireNonNull(query);
-      queriesPerSecondCounter.incrementAndGet();
-      switch (Character.toLowerCase(query.charAt(0))) {
-        case 's':
-          selectsPerSecondCounter.incrementAndGet();
-          break;
-        case 'i':
-          insertsPerSecondCounter.incrementAndGet();
-          break;
-        case 'u':
-          updatesPerSecondCounter.incrementAndGet();
-          break;
-        case 'd':
-          deletesPerSecondCounter.incrementAndGet();
-          break;
-        default:
-          undefinedPerSecondCounter.incrementAndGet();
+    private final boolean enabled = QUERY_COUNTER_ENABLED.get();
+
+    @Override
+    public void select() {
+      if (enabled) {
+        selectsPerSecondCounter.incrementAndGet();
+        queriesPerSecondCounter.incrementAndGet();
+      }
+    }
+
+    @Override
+    public void insert() {
+      if (enabled) {
+        insertsPerSecondCounter.incrementAndGet();
+        queriesPerSecondCounter.incrementAndGet();
+      }
+    }
+
+    @Override
+    public void update() {
+      if (enabled) {
+        updatesPerSecondCounter.incrementAndGet();
+        queriesPerSecondCounter.incrementAndGet();
+      }
+    }
+
+    @Override
+    public void delete() {
+      if (enabled) {
+        deletesPerSecondCounter.incrementAndGet();
+        queriesPerSecondCounter.incrementAndGet();
+      }
+    }
+
+    @Override
+    public void other() {
+      if (enabled) {
+        otherPerSecondCounter.incrementAndGet();
+        queriesPerSecondCounter.incrementAndGet();
       }
     }
 
@@ -357,22 +371,24 @@ public abstract class AbstractDatabase implements Database {
       int insertsPerSecond = 0;
       int updatesPerSecond = 0;
       int deletesPerSecond = 0;
+      int otherPerSecond = 0;
       if (seconds > 0) {
         queriesPerSecond = (int) (queriesPerSecondCounter.get() / seconds);
         selectsPerSecond = (int) (selectsPerSecondCounter.get() / seconds);
         insertsPerSecond = (int) (insertsPerSecondCounter.get() / seconds);
         deletesPerSecond = (int) (deletesPerSecondCounter.get() / seconds);
         updatesPerSecond = (int) (updatesPerSecondCounter.get() / seconds);
+        otherPerSecond = (int) (otherPerSecondCounter.get() / seconds);
         queriesPerSecondCounter.set(0);
         selectsPerSecondCounter.set(0);
         insertsPerSecondCounter.set(0);
         deletesPerSecondCounter.set(0);
         updatesPerSecondCounter.set(0);
-        undefinedPerSecondCounter.set(0);
+        otherPerSecondCounter.set(0);
         queriesPerSecondTime.set(current);
       }
 
-      return new DefaultDatabaseStatistics(current, queriesPerSecond, selectsPerSecond, insertsPerSecond, deletesPerSecond, updatesPerSecond);
+      return new DefaultDatabaseStatistics(current, queriesPerSecond, selectsPerSecond, insertsPerSecond, deletesPerSecond, updatesPerSecond, otherPerSecond);
     }
   }
 
@@ -389,6 +405,7 @@ public abstract class AbstractDatabase implements Database {
     private final int insertsPerSecond;
     private final int deletesPerSecond;
     private final int updatesPerSecond;
+    private final int otherPerSecond;
 
     /**
      * Instantiates a new DatabaseStatistics object
@@ -398,15 +415,18 @@ public abstract class AbstractDatabase implements Database {
      * @param insertsPerSecond the number of insert queries being run per second
      * @param deletesPerSecond the number of delete queries being run per second
      * @param updatesPerSecond the number of update queries being run per second
+     * @param otherPerSecond the number of other queries being run per second
      */
     private DefaultDatabaseStatistics(long timestamp, int queriesPerSecond, int selectsPerSecond,
-                                      int insertsPerSecond, int deletesPerSecond, int updatesPerSecond) {
+                                      int insertsPerSecond, int deletesPerSecond, int updatesPerSecond,
+                                      int otherPerSecond) {
       this.timestamp = timestamp;
       this.queriesPerSecond = queriesPerSecond;
       this.selectsPerSecond = selectsPerSecond;
       this.insertsPerSecond = insertsPerSecond;
       this.deletesPerSecond = deletesPerSecond;
       this.updatesPerSecond = updatesPerSecond;
+      this.otherPerSecond = otherPerSecond;
     }
 
     @Override
@@ -432,6 +452,11 @@ public abstract class AbstractDatabase implements Database {
     @Override
     public int updatesPerSecond() {
       return updatesPerSecond;
+    }
+
+    @Override
+    public int otherPerSecond() {
+      return otherPerSecond;
     }
 
     @Override

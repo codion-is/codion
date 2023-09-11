@@ -9537,3 +9537,4 @@
   AllCondition now interface, moved to Condition, renamed All
   ColumnDefinition.resultPacker() removed, related refactoring
   ColumnDefinition.toColumnValue() replaced with valueConverter()
+  Database.QueryCounter added along with queryCounter(), replaces countQuery(sql), related refactoring
