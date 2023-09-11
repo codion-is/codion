@@ -59,6 +59,7 @@ import java.util.Set;
 import java.util.function.Function;
 import java.util.function.Predicate;
 
+import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
 import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.Queries.*;
@@ -294,23 +295,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
     List<Object> statementValues = new ArrayList<>();
     List<ColumnDefinition<?>> statementColumns = new ArrayList<>();
-    PreparedStatement statement = null;
-    String updateQuery = null;
+    String updateQuery = createUpdateQuery(update, statementColumns, statementValues);
     synchronized (connection) {
-      try {
-        EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
-        for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
-          ColumnDefinition<Object> columnDefinition = entityDefinition.columnDefinition((Column<Object>) columnValue.getKey());
-          if (!columnDefinition.isUpdatable()) {
-            throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
-          }
-          statementColumns.add(columnDefinition);
-          statementValues.add(columnDefinition.attribute().validateType(columnValue.getValue()));
-        }
-        updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
-        statement = prepareStatement(updateQuery);
-        statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
-        statementValues.addAll(update.where().values());
+      try (PreparedStatement statement = prepareStatement(updateQuery)) {
         int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
         commitIfTransactionIsNotOpen();
 
@@ -320,9 +307,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(updateQuery, statementValues, statementColumns, e), e);
         throw translateSQLException(e);
-      }
-      finally {
-        closeSilently(statement);
       }
     }
   }
@@ -334,12 +318,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     EntityDefinition entityDefinition = domainEntities.definition(condition.entityType());
     List<?> statementValues = condition.values();
     List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
-    PreparedStatement statement = null;
-    String deleteQuery = null;
+    String deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
     synchronized (connection) {
-      try {
-        deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
-        statement = prepareStatement(deleteQuery);
+      try (PreparedStatement statement = prepareStatement(deleteQuery)) {
         int deleteCount = executeStatement(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
         commitIfTransactionIsNotOpen();
 
@@ -349,9 +330,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(createLogMessage(deleteQuery, statementValues, statementColumns, e), e);
         throw translateSQLException(e);
-      }
-      finally {
-        closeSilently(statement);
       }
     }
   }
@@ -507,12 +485,9 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             .where(combinedCondition)
             .groupBy(columnDefinition.columnExpression())
             .build();
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
     synchronized (connection) {
-      try {
-        statement = prepareStatement(selectQuery);
-        resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition);
+      try (PreparedStatement statement = prepareStatement(selectQuery);
+           ResultSet resultSet = executeStatement(statement, selectQuery, combinedCondition, entityDefinition)) {
         List<T> result = resultPacker(columnDefinition).pack(resultSet);
         commitIfTransactionIsNotOpen();
 
@@ -523,10 +498,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         LOG.error(createLogMessage(selectQuery, asList(column, select),
                 columnDefinitions(entityDefinition, combinedCondition.columns()), e), e);
         throw translateSQLException(e);
-      }
-      finally {
-        closeSilently(resultSet);
-        closeSilently(statement);
       }
     }
   }
@@ -542,16 +513,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
                             .build())
                     .build())
             .build();
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
     synchronized (connection) {
-      try {
-        statement = prepareStatement(selectQuery);
-        resultSet = executeStatement(statement, selectQuery, condition, entityDefinition);
+      try (PreparedStatement statement = prepareStatement(selectQuery);
+           ResultSet resultSet = executeStatement(statement, selectQuery, condition, entityDefinition)) {
         List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
-          throw new SQLException("Row count query returned no value");
+          throw new SQLException("Row count query returned no value", SQL_STATE_NO_DATA);
         }
 
         return result.get(0);
@@ -561,10 +529,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         LOG.error(createLogMessage(selectQuery, condition.values(),
                 columnDefinitions(entityDefinition, condition.columns()), e), e);
         throw translateSQLException(e);
-      }
-      finally {
-        closeSilently(resultSet);
-        closeSilently(statement);
       }
     }
   }
@@ -679,6 +643,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
     Condition condition = key(primaryKey);
     String updateQuery = updateQuery(entityDefinition.tableName(), singletonList(columnDefinition), condition.toString(entityDefinition));
+    logEntry("writeBlob", updateQuery);
     List<Object> statementValues = new ArrayList<>();
     statementValues.add(null);//the blob value, binary stream set explicitly later
     statementValues.addAll(condition.values());
@@ -687,11 +652,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
     synchronized (connection) {
       Exception exception = null;
-      PreparedStatement statement = null;
-      try {
-        logEntry("writeBlob", updateQuery);
-        statement = prepareStatement(updateQuery);
-        setParameterValues(statement, statementColumns, statementValues);
+      try (PreparedStatement statement = setParameterValues(prepareStatement(updateQuery), statementColumns, statementValues)) {
         statement.setBinaryStream(1, new ByteArrayInputStream(blobData));//no need to close ByteArrayInputStream
         if (statement.executeUpdate() > 1) {
           throw new UpdateException("Blob write updated more than one row, key: " + primaryKey);
@@ -711,7 +672,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw e;
       }
       finally {
-        closeSilently(statement);
         logExit("writeBlob", exception);
         countQuery(StatementType.UPDATE);
       }
@@ -722,22 +682,17 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   public byte[] readBlob(Entity.Key primaryKey, Column<byte[]> blobColumn) throws DatabaseException {
     EntityDefinition entityDefinition = domainEntities.definition(requireNonNull(primaryKey, "primaryKey").entityType());
     ColumnDefinition<byte[]> columnDefinition = entityDefinition.columnDefinition(blobColumn);
-    PreparedStatement statement = null;
     SQLException exception = null;
-    ResultSet resultSet = null;
     Condition condition = key(primaryKey);
-    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     String selectQuery = selectQueries.builder(entityDefinition)
             .columns(columnDefinition.columnExpression())
             .where(condition)
             .build();
+    logEntry("readBlob", selectQuery);
+    List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     synchronized (connection) {
-      try {
-        logEntry("readBlob", selectQuery);
-        statement = prepareStatement(selectQuery);
-        setParameterValues(statement, statementColumns, condition.values());
-
-        resultSet = statement.executeQuery();
+      try (PreparedStatement statement = setParameterValues(prepareStatement(selectQuery), statementColumns, condition.values());
+           ResultSet resultSet = statement.executeQuery()) {
         List<byte[]> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
         if (result.isEmpty()) {
           return null;
@@ -754,8 +709,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         throw translateSQLException(e);
       }
       finally {
-        closeSilently(statement);
-        closeSilently(resultSet);
         logExit("readBlob", exception);
         countQuery(StatementType.SELECT);
       }
@@ -910,6 +863,24 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
   }
 
+  private String createUpdateQuery(Update update, List<ColumnDefinition<?>> statementColumns,
+                                   List<Object> statementValues) throws UpdateException {
+    EntityDefinition entityDefinition = domainEntities.definition(update.where().entityType());
+    for (Map.Entry<Column<?>, Object> columnValue : update.columnValues().entrySet()) {
+      ColumnDefinition<Object> columnDefinition = entityDefinition.columnDefinition((Column<Object>) columnValue.getKey());
+      if (!columnDefinition.isUpdatable()) {
+        throw new UpdateException("Column is not updatable: " + columnDefinition.attribute());
+      }
+      statementColumns.add(columnDefinition);
+      statementValues.add(columnDefinition.attribute().validateType(columnValue.getValue()));
+    }
+    String updateQuery = updateQuery(entityDefinition.tableName(), statementColumns, update.where().toString(entityDefinition));
+    statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
+    statementValues.addAll(update.where().values());
+
+    return updateQuery;
+  }
+
   private void checkIfMissingOrModified(EntityType entityType, List<Entity> entities) throws SQLException, RecordModifiedException {
     Collection<Entity.Key> originalKeys = Entity.originalPrimaryKeys(entities);
     Select selectForUpdate = Select.where(keys(originalKeys))
@@ -1055,13 +1026,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     requireNonNull(select, CONDITION);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    String selectQuery = null;
     EntityDefinition entityDefinition = domainEntities.definition(select.where().entityType());
     SelectQueries.Builder selectQueryBuilder = selectQueries.builder(entityDefinition)
             .select(select);
     Condition condition = select.where();
+    String selectQuery = selectQueryBuilder.build();
     try {
-      selectQuery = selectQueryBuilder.build();
       statement = prepareStatement(selectQuery, false, select.queryTimeout());
       resultSet = executeStatement(statement, selectQuery, condition, entityDefinition);
 
@@ -1084,9 +1054,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     SQLException exception = null;
     try {
       logEntry(EXECUTE_STATEMENT, statementValues);
-      setParameterValues(statement, statementColumns, statementValues);
 
-      return statement.executeUpdate();
+      return setParameterValues(statement, statementColumns, statementValues).executeUpdate();
     }
     catch (SQLException e) {
       exception = e;
@@ -1108,9 +1077,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     List<ColumnDefinition<?>> statementColumns = columnDefinitions(entityDefinition, condition.columns());
     try {
       logEntry(EXECUTE_STATEMENT, statementValues);
-      setParameterValues(statement, statementColumns, statementValues);
 
-      return statement.executeQuery();
+      return setParameterValues(statement, statementColumns, statementValues).executeQuery();
     }
     catch (SQLException e) {
       exception = e;
@@ -1384,10 +1352,10 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return resultSet -> columnDefinition.get(resultSet, 1);
   }
 
-  private static void setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
+  private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
                                          List<?> statementValues) throws SQLException {
     if (statementValues.isEmpty()) {
-      return;
+      return statement;
     }
     if (statementColumns.size() != statementValues.size()) {
       throw new SQLException("Parameter column value count mismatch: " +
@@ -1397,6 +1365,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     for (int i = 0; i < statementColumns.size(); i++) {
       setParameterValue(statement, (ColumnDefinition<Object>) statementColumns.get(i), statementValues.get(i), i + 1);
     }
+
+    return statement;
   }
 
   private static void setParameterValue(PreparedStatement statement, ColumnDefinition<Object> columnDefinition,

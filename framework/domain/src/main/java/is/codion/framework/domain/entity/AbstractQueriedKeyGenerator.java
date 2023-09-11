@@ -17,7 +17,7 @@ import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DAT
 
 abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
 
-  protected final <T> void selectAndPopulate(Entity entity, ColumnDefinition<T> columnDefinition,
+  protected final <T> void selectAndPopulate(Entity entity, ColumnDefinition<T> primaryKeyColumn,
                                              DatabaseConnection databaseConnection) throws SQLException {
     MethodLogger methodLogger = databaseConnection.getMethodLogger();
     Connection connection = databaseConnection.getConnection();
@@ -28,26 +28,21 @@ abstract class AbstractQueriedKeyGenerator implements KeyGenerator {
     if (query == null) {
       throw new IllegalStateException("Queried key generator returned no query");
     }
-    PreparedStatement statement = null;
     SQLException exception = null;
-    ResultSet resultSet = null;
     logEntry(methodLogger, query);
-    try {
-      statement = connection.prepareStatement(query);
-      resultSet = statement.executeQuery();
+    try (PreparedStatement statement = connection.prepareStatement(query);
+         ResultSet resultSet = statement.executeQuery()) {
       if (!resultSet.next()) {
         throw new SQLException("No rows returned when querying for a key value", SQL_STATE_NO_DATA);
       }
 
-      entity.put(columnDefinition.attribute(), columnDefinition.get(resultSet, 1));
+      entity.put(primaryKeyColumn.attribute(), primaryKeyColumn.get(resultSet, 1));
     }
     catch (SQLException e) {
       exception = e;
       throw e;
     }
     finally {
-      Database.closeSilently(statement);
-      Database.closeSilently(resultSet);
       logExit(methodLogger, exception);
       databaseConnection.database().queryCounter().select();
     }

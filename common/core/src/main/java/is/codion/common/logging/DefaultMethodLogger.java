@@ -98,9 +98,13 @@ final class DefaultMethodLogger implements MethodLogger {
 
   @Override
   public synchronized void setEnabled(boolean enabled) {
-    this.enabled = enabled;
-    entries.clear();
-    callStack.clear();
+    if (this.enabled != enabled) {
+      this.enabled = enabled;
+      if (!enabled) {
+        entries.clear();
+        callStack.clear();
+      }
+    }
   }
 
   @Override
