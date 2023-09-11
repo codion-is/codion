@@ -29,6 +29,7 @@ public final class DatabaseMonitor {
   private final XYSeries insertsPerSecond = new XYSeries("Inserts per second");
   private final XYSeries updatesPerSecond = new XYSeries("Updates per second");
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
+  private final XYSeries otherPerSecond = new XYSeries("Other per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
   private final TaskScheduler updateScheduler;
   private final Value<Integer> updateIntervalValue;
@@ -47,6 +48,7 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(insertsPerSecond);
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
+    this.queriesPerSecondCollection.addSeries(otherPerSecond);
     this.updateScheduler = TaskScheduler.builder(this::doUpdateStatistics)
             .interval(updateRate, TimeUnit.SECONDS)
             .start();
@@ -77,6 +79,7 @@ public final class DatabaseMonitor {
     insertsPerSecond.clear();
     updatesPerSecond.clear();
     deletesPerSecond.clear();
+    otherPerSecond.clear();
   }
 
   /**
@@ -90,6 +93,7 @@ public final class DatabaseMonitor {
     insertsPerSecond.add(dbStats.timestamp(), dbStats.insertsPerSecond());
     updatesPerSecond.add(dbStats.timestamp(), dbStats.updatesPerSecond());
     deletesPerSecond.add(dbStats.timestamp(), dbStats.deletesPerSecond());
+    otherPerSecond.add(dbStats.timestamp(), dbStats.otherPerSecond());
   }
 
   /**

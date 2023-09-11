@@ -103,7 +103,7 @@ public interface EntityServerAdmin extends ServerAdmin {
   ConnectionPoolStatistics connectionPoolStatistics(String username, long since) throws RemoteException;
 
   /**
-   * Returns the statistics gathered via {@link Database#countQuery(String)}.
+   * Returns the statistics gathered via {@link Database#queryCounter()}.
    * @return a {@link Database.Statistics} object containing query statistics collected since
    * the last time this function was called.
    * @throws RemoteException in case of an exception

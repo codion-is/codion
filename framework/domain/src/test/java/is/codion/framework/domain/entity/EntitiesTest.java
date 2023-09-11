@@ -10,7 +10,6 @@ import is.codion.framework.domain.TestDomainExtended;
 import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.AttributeDefinition;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.framework.domain.entity.attribute.ColumnDefinition;
 import is.codion.framework.domain.entity.attribute.ForeignKey;
 import is.codion.framework.domain.entity.exception.ItemValidationException;
 import is.codion.framework.domain.entity.exception.LengthValidationException;
@@ -106,54 +105,6 @@ public final class EntitiesTest {
   void attributeWrongEntityType() {
     EntityDefinition definition = entities.definition(TestDomain.Detail.TYPE);
     assertThrows(IllegalArgumentException.class, () -> definition.columnDefinition(TestDomain.Master.CODE));
-  }
-
-  @Test
-  void writableColumns() {
-    EntityDefinition deptDef = entities.definition(TestDomain.Department.TYPE);
-    List<ColumnDefinition<?>> writable = deptDef
-            .writableColumnDefinitions(true, true);
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.NO)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.NAME)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.LOCATION)));
-    assertFalse(writable.contains(deptDef.columnDefinition(TestDomain.Department.ACTIVE)));
-
-    writable = deptDef.writableColumnDefinitions(false, true);
-    assertFalse(writable.contains(deptDef.columnDefinition(TestDomain.Department.NO)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.NAME)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.LOCATION)));
-    assertFalse(writable.contains(deptDef.columnDefinition(TestDomain.Department.ACTIVE)));
-
-    writable = deptDef.writableColumnDefinitions(false, false);
-    assertFalse(writable.contains(deptDef.columnDefinition(TestDomain.Department.NO)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.NAME)));
-    assertTrue(writable.contains(deptDef.columnDefinition(TestDomain.Department.LOCATION)));
-    assertFalse(writable.contains(deptDef.columnDefinition(TestDomain.Department.ACTIVE)));
-
-    EntityDefinition empDef = entities.definition(TestDomain.Employee.TYPE);
-    writable = empDef.writableColumnDefinitions(true, true);
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.ID)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.HIREDATE)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.NAME)));
-    assertFalse(writable.contains(empDef.attributeDefinition(TestDomain.Employee.DEPARTMENT_NAME)));
-
-    writable = empDef.writableColumnDefinitions(false, true);
-    assertFalse(writable.contains(empDef.columnDefinition(TestDomain.Employee.ID)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.HIREDATE)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.NAME)));
-    assertFalse(writable.contains(empDef.attributeDefinition(TestDomain.Employee.DEPARTMENT_NAME)));
-
-    writable = empDef.writableColumnDefinitions(false, false);
-    assertFalse(writable.contains(empDef.columnDefinition(TestDomain.Employee.ID)));
-    assertFalse(writable.contains(empDef.columnDefinition(TestDomain.Employee.HIREDATE)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.NAME)));
-    assertFalse(writable.contains(empDef.attributeDefinition(TestDomain.Employee.DEPARTMENT_NAME)));
-
-    writable = empDef.writableColumnDefinitions(true, false);
-    assertFalse(writable.contains(empDef.columnDefinition(TestDomain.Employee.ID)));//overridden by includeNonUpdatable
-    assertFalse(writable.contains(empDef.columnDefinition(TestDomain.Employee.HIREDATE)));
-    assertTrue(writable.contains(empDef.columnDefinition(TestDomain.Employee.NAME)));
-    assertFalse(writable.contains(empDef.attributeDefinition(TestDomain.Employee.DEPARTMENT_NAME)));
   }
 
   @Test

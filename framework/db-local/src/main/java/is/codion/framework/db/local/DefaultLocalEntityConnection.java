@@ -84,6 +84,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private static final ResultPacker<byte[]> BLOB_RESULT_PACKER = resultSet -> resultSet.getBytes(1);
   private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = resultSet -> resultSet.getInt(1);
 
+  // For counting queries.
+  private enum StatementType {
+    SELECT, UPDATE, INSERT, DELETE
+  }
+
   private final Domain domain;
   private final Entities domainEntities;
   private final DatabaseConnection connection;
@@ -230,7 +235,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
           insertQuery = insertQuery(entityDefinition.tableName(), statementColumns);
           statement = prepareStatement(insertQuery, keyGenerator.returnGeneratedKeys());
-          executeStatement(statement, insertQuery, statementColumns, statementValues);
+          executeStatement(statement, insertQuery, statementColumns, statementValues, StatementType.INSERT);
           keyGenerator.afterInsert(entity, connection, statement);
 
           insertedKeys.add(entity.primaryKey());
@@ -306,7 +311,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         statement = prepareStatement(updateQuery);
         statementColumns.addAll(columnDefinitions(entityDefinition, update.where().columns()));
         statementValues.addAll(update.where().values());
-        int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
+        int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
         commitIfTransactionIsNotOpen();
 
         return updatedRows;
@@ -335,7 +340,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       try {
         deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
         statement = prepareStatement(deleteQuery);
-        int deleteCount = executeStatement(statement, deleteQuery, statementColumns, statementValues);
+        int deleteCount = executeStatement(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
         commitIfTransactionIsNotOpen();
 
         return deleteCount;
@@ -379,7 +384,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
           statementColumns = columnDefinitions(entityDefinition, condition.columns());
           deleteQuery = deleteQuery(entityDefinition.tableName(), condition.toString(entityDefinition));
           statement = prepareStatement(deleteQuery);
-          deleteCount += executeStatement(statement, deleteQuery, statementColumns, statementValues);
+          deleteCount += executeStatement(statement, deleteQuery, statementColumns, statementValues, StatementType.DELETE);
           statement.close();
         }
         if (keys.size() != deleteCount) {
@@ -522,7 +527,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(resultSet);
         closeSilently(statement);
-        countQuery(selectQuery);
       }
     }
   }
@@ -561,7 +565,6 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(resultSet);
         closeSilently(statement);
-        countQuery(selectQuery);
       }
     }
   }
@@ -710,7 +713,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
       finally {
         closeSilently(statement);
         logExit("writeBlob", exception);
-        countQuery(updateQuery);
+        countQuery(StatementType.UPDATE);
       }
     }
   }
@@ -754,7 +757,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         closeSilently(statement);
         closeSilently(resultSet);
         logExit("readBlob", exception);
-        countQuery(selectQuery);
+        countQuery(StatementType.SELECT);
       }
     }
   }
@@ -847,7 +850,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
             statement = prepareStatement(updateQuery);
             statementColumns.addAll(columnDefinitions(entityDefinition, condition.columns()));
             statementValues.addAll(condition.values());
-            int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues);
+            int updatedRows = executeStatement(statement, updateQuery, statementColumns, statementValues, StatementType.UPDATE);
             if (updatedRows == 0) {
               throw new UpdateException("Update did not affect any rows, entityType: " + entityTypeEntities.getKey());
             }
@@ -1076,7 +1079,8 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   private int executeStatement(PreparedStatement statement, String query,
                                List<ColumnDefinition<?>> statementColumns,
-                               List<?> statementValues) throws SQLException {
+                               List<?> statementValues,
+                               StatementType statementType) throws SQLException {
     SQLException exception = null;
     try {
       logEntry(EXECUTE_STATEMENT, statementValues);
@@ -1090,7 +1094,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     finally {
       logExit(EXECUTE_STATEMENT, exception);
-      countQuery(query);
+      countQuery(statementType);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
       }
@@ -1114,7 +1118,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
     finally {
       logExit(EXECUTE_STATEMENT, exception);
-      countQuery(query);
+      countQuery(StatementType.SELECT);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(query, statementValues, statementColumns, exception));
       }
@@ -1184,12 +1188,12 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<ColumnDefinition<?>> insertableColumns(EntityDefinition entityDefinition,
                                                       boolean includePrimaryKeyColumns) {
     return insertableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.writableColumnDefinitions(includePrimaryKeyColumns, true));
+            writableColumnDefinitions(entityDefinition, includePrimaryKeyColumns, true));
   }
 
   private List<ColumnDefinition<?>> updatableColumns(EntityDefinition entityDefinition) {
     return updatableColumnsCache.computeIfAbsent(entityDefinition.entityType(), entityType ->
-            entityDefinition.writableColumnDefinitions(true, false));
+            writableColumnDefinitions(entityDefinition, true, false));
   }
 
   private List<Attribute<?>> primaryKeyAndWritableColumnAttributes(EntityType entityType) {
@@ -1200,7 +1204,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   private List<Attribute<?>> collectPrimaryKeyAndWritableColumnAttributes(EntityType entityType) {
     EntityDefinition entityDefinition = domainEntities.definition(entityType);
     List<ColumnDefinition<?>> writableAndPrimaryKeyColumns =
-            new ArrayList<>(entityDefinition.writableColumnDefinitions(true, true));
+            new ArrayList<>(writableColumnDefinitions(entityDefinition, true, true));
     entityDefinition.primaryKeyColumnDefinitions().forEach(primaryKeyColumn -> {
       if (!writableAndPrimaryKeyColumns.contains(primaryKeyColumn)) {
         writableAndPrimaryKeyColumns.add(primaryKeyColumn);
@@ -1288,8 +1292,23 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     return logMessage.toString();
   }
 
-  private void countQuery(String query) {
-    connection.database().countQuery(query);
+  private void countQuery(StatementType statementType) {
+    switch (statementType) {
+      case SELECT:
+        connection.database().queryCounter().select();
+        break;
+      case INSERT:
+        connection.database().queryCounter().insert();
+        break;
+      case UPDATE:
+        connection.database().queryCounter().update();
+        break;
+      case DELETE:
+        connection.database().queryCounter().delete();
+        break;
+      default:
+        break;
+    }
   }
 
   private void checkIfReadOnly(Collection<? extends Entity> entities) throws DatabaseException {
@@ -1339,6 +1358,19 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     }
 
     return referencedEntity;
+  }
+
+  private static List<ColumnDefinition<?>> writableColumnDefinitions(
+          EntityDefinition entityDefinition, boolean includePrimaryKeyColumns, boolean includeNonUpdatable) {
+    return entityDefinition.columnDefinitions().stream()
+            .filter(column -> isWritable(column, includePrimaryKeyColumns, includeNonUpdatable))
+            .collect(toList());
+  }
+
+  private static boolean isWritable(ColumnDefinition<?> definition, boolean includePrimaryKeyColumns,
+                                    boolean includeNonUpdatable) {
+    return definition.isInsertable() && (includeNonUpdatable || definition.isUpdatable())
+            && (includePrimaryKeyColumns || !definition.isPrimaryKeyColumn());
   }
 
   private static List<ColumnDefinition<?>> columnDefinitions(EntityDefinition entityDefinition,

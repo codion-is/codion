@@ -227,16 +227,6 @@ public interface EntityDefinition {
   <T> AttributeDefinition<T> attributeDefinition(Attribute<T> attribute);
 
   /**
-   * Retrieves the definitions of the writable (non-read-only) columns comprising this entity type
-   * @param includePrimaryKeyColumns if true primary key columns are included, non-updatable primary key columns
-   * are only included if {@code includeNonUpdatable} is true
-   * @param includeNonUpdatable if true then non-updatable columns are included
-   * @return a list containing the writable columns (attributes that map to database columns) comprising
-   * the entity of type {@code entityType}
-   */
-  List<ColumnDefinition<?>> writableColumnDefinitions(boolean includePrimaryKeyColumns, boolean includeNonUpdatable);
-
-  /**
    * @return a Collection containing all updatable attributes associated with the given entityType
    */
   Collection<AttributeDefinition<?>> updatableAttributeDefinitions();

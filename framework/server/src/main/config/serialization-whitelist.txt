@@ -106,7 +106,7 @@ is.codion.framework.db.DefaultSelect
 is.codion.framework.db.DefaultUpdate
 is.codion.framework.db.condition.AbstractCondition
 is.codion.framework.db.condition.AbstractColumnCondition
-is.codion.framework.db.condition.AllCondition
+is.codion.framework.db.condition.DefaultAllCondition
 is.codion.framework.db.condition.DefaultConditionCombination
 is.codion.framework.db.condition.DefaultCustomCondition
 is.codion.framework.db.condition.AbstractColumnCondition

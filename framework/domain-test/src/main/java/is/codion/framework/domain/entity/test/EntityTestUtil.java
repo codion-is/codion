@@ -33,6 +33,7 @@ import java.util.Random;
 import java.util.function.Function;
 
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toList;
 
 /**
  * Utility methods for creating and manipulating Entity instances for testing purposes.
@@ -63,20 +64,19 @@ public final class EntityTestUtil {
    * @param entities the domain model entities
    * @param entityType the entityType
    * @param valueProvider the value provider
-   * @return an Entity instance initialized with values provided by the given value provider
+   * @return an Entity instance with insertable attributes populated with values provided by the given value provider
    */
   public static Entity createEntity(Entities entities, EntityType entityType, Function<AttributeDefinition<?>, Object> valueProvider) {
     requireNonNull(entities);
     requireNonNull(entityType);
     Entity entity = entities.entity(entityType);
-    populateEntity(entity, entities.definition(entityType).writableColumnDefinitions(
-            !entities.definition(entityType).isKeyGenerated(), true), valueProvider);
+    populateEntity(entity, insertableColumnDefinitions(entities.definition(entityType)), valueProvider);
 
     return entity;
   }
 
   /**
-   * Randomizes the values in the given entity, note that if a foreign key entity is not provided
+   * Randomizes updatable attribute values in the given entity, note that if a foreign key entity is not provided
    * the respective foreign key value in not modified
    * @param entities the domain model entities
    * @param entity the entity to randomize
@@ -86,7 +86,7 @@ public final class EntityTestUtil {
     requireNonNull(entities);
     requireNonNull(entity);
     populateEntity(entity,
-            entity.entityDefinition().writableColumnDefinitions(false, true),
+            updatableColumnDefinitions(entity.entityDefinition()),
             attributeDefinition -> createRandomValue(attributeDefinition, foreignKeyEntities));
   }
 
@@ -173,6 +173,18 @@ public final class EntityTestUtil {
         entity.put(foreignKeyDefinition.attribute(), value);
       }
     }
+  }
+
+  private static List<ColumnDefinition<?>> insertableColumnDefinitions(EntityDefinition entityDefinition) {
+    return entityDefinition.columnDefinitions().stream()
+            .filter(column -> column.isInsertable() && (!entityDefinition.isKeyGenerated() || !column.isPrimaryKeyColumn()))
+            .collect(toList());
+  }
+
+  private static List<ColumnDefinition<?>> updatableColumnDefinitions(EntityDefinition entityDefinition) {
+    return entityDefinition.columnDefinitions().stream()
+            .filter(column -> column.isUpdatable() && !column.isPrimaryKeyColumn())
+            .collect(toList());
   }
 
   private static String randomString(AttributeDefinition<?> attributeDefinition) {

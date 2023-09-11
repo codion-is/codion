@@ -211,14 +211,12 @@ public interface Database extends ConnectionFactory {
   boolean isTimeoutException(SQLException exception);
 
   /**
-   * Counts this query, based on the first character.
-   * @param query the query to count
-   * @see #statistics()
+   * @return the {@link QueryCounter} for collecting query statistics
    */
-  void countQuery(String query);
+  QueryCounter queryCounter();
 
   /**
-   * Returns statistics collected via {@link #countQuery(String)}.
+   * Returns statistics collected via {@link #queryCounter()}.
    * Note that calling this method resets the counter.
    * @return collected statistics.
    */
@@ -286,6 +284,37 @@ public interface Database extends ConnectionFactory {
   }
 
   /**
+   * Counts queries for statistics.
+   */
+  interface QueryCounter {
+
+    /**
+     * Count one select query
+     */
+    void select();
+
+    /**
+     * Count one insert query
+     */
+    void insert();
+
+    /**
+     * Count one update query
+     */
+    void update();
+
+    /**
+     * Count one delete query
+     */
+    void delete();
+
+    /**
+     * Count one query which does not fall under select, insert, delete or update
+     */
+    void other();
+  }
+
+  /**
    * Encapsulates basic database usage statistics.
    */
   interface Statistics {
@@ -314,6 +343,11 @@ public interface Database extends ConnectionFactory {
      * @return the number of update queries being run per second
      */
     int updatesPerSecond();
+
+    /**
+     * @return the number of queries, not falling under select, insert, update or delete, being run per second
+     */
+    int otherPerSecond();
 
     /**
      * @return the timestamp of these statistics

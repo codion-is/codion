@@ -11,9 +11,7 @@ import is.codion.framework.domain.DomainType;
 import is.codion.framework.domain.entity.EntityType;
 import is.codion.framework.domain.entity.KeyGenerator;
 import is.codion.framework.domain.entity.OrderBy;
-import is.codion.framework.domain.entity.attribute.Attribute;
 import is.codion.framework.domain.entity.attribute.Column;
-import is.codion.swing.common.model.component.table.FilteredTableColumnModel;
 import is.codion.swing.common.ui.component.Components;
 import is.codion.swing.common.ui.component.table.FilteredTableCellRenderer;
 import is.codion.swing.common.ui.control.Control;
@@ -93,8 +91,7 @@ public final class NotesDemo {
                       .columnHasDefaultValue(true),
               Note.UPDATED
                       .column()
-                      .caption("Updated")
-                      .columnHasDefaultValue(true))
+                      .caption("Updated"))
               .keyGenerator(KeyGenerator.identity())
               .orderBy(OrderBy.descending(Note.CREATED))
               .caption("Notes"));
@@ -160,10 +157,9 @@ public final class NotesDemo {
       //configure the table model and columns
       sortModel().setSortOrder(Note.CREATED, SortOrder.DESCENDING);
       setOnInsert(OnInsert.ADD_TOP_SORTED);
-      FilteredTableColumnModel<Attribute<?>> columnModel = columnModel();
-      columnModel.column(Note.NOTE).setPreferredWidth(280);
-      columnModel.column(Note.CREATED).setPreferredWidth(130);
-      columnModel.column(Note.UPDATED).setPreferredWidth(130);
+      columnModel().column(Note.NOTE).setPreferredWidth(280);
+      columnModel().column(Note.CREATED).setPreferredWidth(130);
+      columnModel().column(Note.UPDATED).setPreferredWidth(130);
     }
   }
 
@@ -274,7 +270,7 @@ public final class NotesDemo {
     EntityApplicationPanel.builder(NotesApplicationModel.class, NotesApplicationPanel.class)
             .frameTitle("Notes")
             .frameSize(new Dimension(600, 500))
-            // No need for a startup dialog singe startup is very quick
+            // No need for a startup dialog since startup is very quick
             .displayStartupDialog(false)
             // Supply our connection provider factory from above
             .connectionProviderFactory(new NotesConnectionProviderFactory())
