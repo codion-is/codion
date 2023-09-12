@@ -9581,3 +9581,6 @@
   EntityDefinition.writableColumnDefinitions() removed, related refactoring
   AbstractQueriedKeyGenerator, AbstractDatabase.validateWithQuery() now use try with resources
   DefaultLocalEntityConnection refactored, more try with resources, less code within synchronized blocks
+  DefaultLocalEntityConnection.dependencies() bug fixed, now synchronized due to usage of non-thread-safe access to nonSoftForeignKeyReferenceCache, now throws exception if entities are not of the same type
+  LoadTestPanel, applications tab now first, scenarios second, overview third, automatic refresh of applications true by default
+  LoadTestModel refactored, application initialization improved

@@ -352,6 +352,7 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * Selects the entities that depend on the given entities via (non-soft) foreign keys, mapped to corresponding entityTypes
    * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on {@code entities}
+   * @throws IllegalArgumentException in case the entities are not of the same type
    * @throws DatabaseException in case of a db exception
    * @throws RemoteException in case of a remote exception
    */

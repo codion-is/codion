@@ -76,7 +76,7 @@ public class EntityLoadTestModelTest {
 
   @Test
   void setLoginDelayFactorNegative() {
-    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loginDelayFactorValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> new TestLoadTestModel().loginDelayFactor().set(-1));
   }
 
   @Test
@@ -90,25 +90,25 @@ public class EntityLoadTestModelTest {
 
     loadTest.collectChartData().set(true);
     loadTest.setUpdateInterval(350);
-    loadTest.loginDelayFactorValue().set(1);
+    loadTest.loginDelayFactor().set(1);
 
     assertEquals(350, loadTest.getUpdateInterval());
-    assertEquals(1, loadTest.loginDelayFactorValue().get());
+    assertEquals(1, loadTest.loginDelayFactor().get());
 
     loadTest.setWeight("1", 1);
     loadTest.setWeight("2", 0);
 
-    loadTest.minimumThinkTimeValue().set(50);
-    loadTest.maximumThinkTimeValue().set(100);
+    loadTest.minimumThinkTime().set(50);
+    loadTest.maximumThinkTime().set(100);
 
-    loadTest.applicationBatchSizeValue().set(2);
-    assertEquals(2, loadTest.applicationBatchSizeValue().get());
+    loadTest.applicationBatchSize().set(2);
+    assertEquals(2, loadTest.applicationBatchSize().get());
 
     loadTest.addApplicationBatch();
 
     Thread.sleep(1500);
 
-    assertEquals(2, loadTest.applicationCount(),
+    assertEquals(2, loadTest.applicationCount().get(),
             "Two clients expected, if this fails try increasing the Thread.sleep() value above");
     assertTrue(loadTest.usageScenario("1").totalRunCount() > 0);
     assertTrue(loadTest.usageScenario("1").successfulRunCount() > 0);
@@ -119,14 +119,14 @@ public class EntityLoadTestModelTest {
 
     loadTest.clearChartData();
 
-    loadTest.applicationBatchSizeValue().set(1);
+    loadTest.applicationBatchSize().set(1);
     loadTest.removeApplicationBatch();
-    assertEquals(1, loadTest.applicationCount());
+    assertEquals(1, loadTest.applicationCount().get());
     loadTest.shutdown();
 
     Thread.sleep(500);
 
-    assertEquals(0, loadTest.applicationCount());
+    assertEquals(0, loadTest.applicationCount().get());
   }
 
   private static EntityServerConfiguration configure() {

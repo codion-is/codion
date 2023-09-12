@@ -30,7 +30,7 @@ public interface LoadTest<T> {
   /**
    * @return the user to use when initializing new application instances
    */
-  Value<User> userValue();
+  Value<User> user();
 
   /**
    * @return a table model for displaying the active application instances
@@ -84,14 +84,9 @@ public interface LoadTest<T> {
   void setUpdateInterval(int updateInterval);
 
   /**
-   * @return the number of active applications
-   */
-  int applicationCount();
-
-  /**
    * @return the Value controlling the number of applications to initialize per batch
    */
-  Value<Integer> applicationBatchSizeValue();
+  Value<Integer> applicationBatchSize();
 
   /**
    * @return the state controlling the paused state of this load test
@@ -101,19 +96,19 @@ public interface LoadTest<T> {
   /**
    * @return the Value controlling the maximum number of milliseconds that should pass between work requests
    */
-  Value<Integer> maximumThinkTimeValue();
+  Value<Integer> maximumThinkTime();
 
   /**
    * @return the Value controlling the minimum number of milliseconds that should pass between work requests
    */
-  Value<Integer> minimumThinkTimeValue();
+  Value<Integer> minimumThinkTime();
 
   /**
    * This value controls the factor with which to multiply the think time when logging in, this helps
    * spread the application logins when creating a batch of application.
    * @return the Value controlling the factor with which to multiply the think time when logging in
    */
-  Value<Integer> loginDelayFactorValue();
+  Value<Integer> loginDelayFactor();
 
   /**
    * @return the state controlling whether this load test collects chart data
@@ -128,17 +123,17 @@ public interface LoadTest<T> {
   /**
    * @return an observer notified each time the application count changes
    */
-  ValueObserver<Integer> applicationCountObserver();
+  ValueObserver<Integer> applicationCount();
 
   /**
    * Adds a batch of applications.
-   * @see #applicationBatchSizeValue()
+   * @see #applicationBatchSize()
    */
   void addApplicationBatch();
 
   /**
    * Removes one batch of applications.
-   * @see #applicationBatchSizeValue()
+   * @see #applicationBatchSize()
    */
   void removeApplicationBatch();
 

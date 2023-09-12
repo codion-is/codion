@@ -95,6 +95,11 @@ public abstract class DefaultEntities implements Entities, Serializable {
     return new DefaultKeyBuilder(definition(entityType));
   }
 
+  @Override
+  public final String toString() {
+    return getClass().getSimpleName() + ": " + domainType;
+  }
+
   protected final void setStrictForeignKeys(boolean strictForeignKeys) {
     this.strictForeignKeys = strictForeignKeys;
   }

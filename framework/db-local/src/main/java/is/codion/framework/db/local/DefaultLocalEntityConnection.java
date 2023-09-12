@@ -535,20 +535,28 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
 
   @Override
   public Map<EntityType, Collection<Entity>> dependencies(Collection<? extends Entity> entities) throws DatabaseException {
-    if (requireNonNull(entities, ENTITIES).isEmpty()) {
-      return emptyMap();
+    Set<EntityType> entityTypes = requireNonNull(entities, ENTITIES).stream()
+            .map(Entity::entityType)
+            .collect(toSet());
+    if (entityTypes.isEmpty()) {
+      return emptyMap();//no entities
+    }
+    if (entityTypes.size() > 1) {
+      throw new IllegalArgumentException("All entities must be of the same type when selecting dependencies");
     }
 
     Map<EntityType, Collection<Entity>> dependencyMap = new HashMap<>();
-    for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entities.iterator().next().entityType())) {
-      List<Entity> dependencies = select(Select.where(foreignKey(foreignKeyReference.attribute()).in(entities))
-              .fetchDepth(1)
-              .build())
-              .stream()
-              .map(Entity::immutable)
-              .collect(toList());
-      if (!dependencies.isEmpty()) {
-        dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
+    synchronized (connection) {
+      for (ForeignKeyDefinition foreignKeyReference : nonSoftForeignKeyReferences(entityTypes.iterator().next())) {
+        List<Entity> dependencies = select(Select.where(foreignKey(foreignKeyReference.attribute()).in(entities))
+                .fetchDepth(1)
+                .build())
+                .stream()
+                .map(Entity::immutable)
+                .collect(toList());
+        if (!dependencies.isEmpty()) {
+          dependencyMap.computeIfAbsent(foreignKeyReference.entityType(), k -> new HashSet<>()).addAll(dependencies);
+        }
       }
     }
 

@@ -51,7 +51,7 @@ public class LoadTestModelTest {
   @Test
   void setApplicationBatchSizeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.applicationBatchSizeValue().set(-5));
+    assertThrows(IllegalArgumentException.class, () -> model.applicationBatchSize().set(-5));
   }
 
   @Test
@@ -63,19 +63,19 @@ public class LoadTestModelTest {
   @Test
   void setLoginDelayFactorNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactorValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.loginDelayFactor().set(-1));
   }
 
   @Test
   void setMinimumThinkTimeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.minimumThinkTimeValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.minimumThinkTime().set(-1));
   }
 
   @Test
   void setMaximumThinkTimeNegative() {
     TestLoadTestModel model = new TestLoadTestModel(User.user("test", "hello".toCharArray()), 50, 2, 2);
-    assertThrows(IllegalArgumentException.class, () -> model.maximumThinkTimeValue().set(-1));
+    assertThrows(IllegalArgumentException.class, () -> model.maximumThinkTime().set(-1));
   }
 
   @Test
@@ -87,7 +87,7 @@ public class LoadTestModelTest {
   @Test
   void test() throws Exception {
     TestLoadTestModel model = new TestLoadTestModel(UNIT_TEST_USER, 50, 2, 2);
-    assertEquals(2, model.applicationBatchSizeValue().get());
+    assertEquals(2, model.applicationBatchSize().get());
     model.collectChartData().set(true);
 
     assertNotNull(model.memoryUsageDataset());
@@ -95,23 +95,23 @@ public class LoadTestModelTest {
     assertNotNull(model.thinkTimeDataset());
     assertNotNull(model.usageScenarioDataset());
 
-    assertEquals(2, model.loginDelayFactorValue().get());
-    model.loginDelayFactorValue().set(3);
-    assertEquals(3, model.loginDelayFactorValue().get());
+    assertEquals(2, model.loginDelayFactor().get());
+    model.loginDelayFactor().set(3);
+    assertEquals(3, model.loginDelayFactor().get());
     assertEquals(LoadTestModel.DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, model.getUpdateInterval());
-    assertEquals(2, model.applicationBatchSizeValue().get());
+    assertEquals(2, model.applicationBatchSize().get());
 
-    assertEquals(25, model.minimumThinkTimeValue().get());
-    assertEquals(50, model.maximumThinkTimeValue().get());
-    model.maximumThinkTimeValue().set(40);
-    model.minimumThinkTimeValue().set(20);
-    assertEquals(20, model.minimumThinkTimeValue().get());
-    assertEquals(40, model.maximumThinkTimeValue().get());
+    assertEquals(25, model.minimumThinkTime().get());
+    assertEquals(50, model.maximumThinkTime().get());
+    model.maximumThinkTime().set(40);
+    model.minimumThinkTime().set(20);
+    assertEquals(20, model.minimumThinkTime().get());
+    assertEquals(40, model.maximumThinkTime().get());
 
-    model.applicationBatchSizeValue().set(5);
+    model.applicationBatchSize().set(5);
     assertTrue(model.usageScenarios().contains(SCENARIO.name()));
-    model.userValue().set(UNIT_TEST_USER);
-    assertEquals(UNIT_TEST_USER, model.userValue().get());
+    model.user().set(UNIT_TEST_USER);
+    assertEquals(UNIT_TEST_USER, model.user().get());
     assertNotNull(model.scenarioChooser());
     model.setWeight(SCENARIO.name(), 2);
     model.setScenarioEnabled(SCENARIO_II.name(), false);
@@ -120,7 +120,7 @@ public class LoadTestModelTest {
     model.paused().set(true);
     Thread.sleep(200);
     model.paused().set(false);
-    assertEquals(5, model.applicationCount());
+    assertEquals(5, model.applicationCount().get());
     assertEquals(0, SCENARIO_II.totalRunCount());
     assertTrue(SCENARIO.successfulRunCount() > 0);
     assertTrue(SCENARIO.unsuccessfulRunCount() > 0);
@@ -133,7 +133,7 @@ public class LoadTestModelTest {
     assertEquals(0, SCENARIO.unsuccessfulRunCount());
     model.clearChartData();
     model.removeApplicationBatch();
-    assertEquals(0, model.applicationCount());
+    assertEquals(0, model.applicationCount().get());
 
     AtomicInteger exitCounter = new AtomicInteger();
     model.addShutdownListener(exitCounter::incrementAndGet);
