@@ -276,11 +276,33 @@ final class HttpEntityConnectionJdk implements EntityConnection {
   }
 
   @Override
+  public Entity insertSelect(Entity entity) throws DatabaseException {
+    return insertSelect(singletonList(entity)).iterator().next();
+  }
+
+  @Override
   public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     Objects.requireNonNull(entities);
     try {
       synchronized (this.entities) {
         return handleResponse(execute(createRequest("insert", entities)));
+      }
+    }
+    catch (DatabaseException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      LOG.error(e.getMessage(), e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(entities);
+    try {
+      synchronized (this.entities) {
+        return handleResponse(execute(createRequest("insertSelect", entities)));
       }
     }
     catch (DatabaseException e) {
