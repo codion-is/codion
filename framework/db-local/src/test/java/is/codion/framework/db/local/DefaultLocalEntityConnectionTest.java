@@ -263,6 +263,8 @@ public class DefaultLocalEntityConnectionTest {
 
     Entity jones = connection.selectSingle(column(EmployeeFk.NAME).equalTo("JONES"));
     assertTrue(connection.dependencies(singletonList(jones)).isEmpty());//soft reference
+
+    assertThrows(IllegalArgumentException.class, () -> connection.dependencies(Arrays.asList(master1, jones)));
   }
 
   @Test
