@@ -9548,3 +9548,4 @@
   ResultIterator no longer calls close() on exhaustion or error, related refactoring
   Database.closeSilently() removed
   EntityConnection.insertSelect() added
+  AbstractEntityEditModel.doInsert() now returns entities instead of keys

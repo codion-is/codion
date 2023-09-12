@@ -737,11 +737,11 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
   /**
    * Inserts the given entities into the database
    * @param entities the entities to insert
-   * @return the primary keys of the inserted entities
+   * @return the inserted entities
    * @throws DatabaseException in case of a database exception
    */
-  protected Collection<Entity.Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
-    return connectionProvider.connection().insert(entities);
+  protected Collection<Entity> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
+    return connectionProvider.connection().insertSelect(entities);
   }
 
   /**
@@ -890,7 +890,7 @@ public abstract class AbstractEntityEditModel implements EntityEditModel {
     //has not been performed, hence why this logging is performed after validation
     LOG.debug("{} - insert {}", this, entities);
 
-    return connectionProvider.connection().select(doInsert(entities));
+    return doInsert(entities);
   }
 
   private boolean isSetEntityAllowed() {
