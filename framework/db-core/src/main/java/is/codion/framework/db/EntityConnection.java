@@ -154,7 +154,7 @@ public interface EntityConnection extends AutoCloseable {
   Entity.Key insert(Entity entity) throws DatabaseException;
 
   /**
-   * Inserts the given entity, returning the inserted etity.
+   * Inserts the given entity, returning the inserted entity.
    * Performs a commit unless a transaction is open.
    * @param entity the entity to insert
    * @return the inserted entity

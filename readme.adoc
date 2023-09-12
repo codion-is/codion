@@ -492,9 +492,7 @@ Entity customer = entities.builder(Customer.TYPE)
         .with(Customer.LAST_NAME, "Jackson")
         .build();
 
-Entity.Key customerKey = connection.insert(customer);
-// select to get generated and default column values
-customer = connection.select(customerKey);
+customer = connection.insertSelect(customer);
 
 Entity address = entities.builder(Address.TYPE)
         .with(Address.CUSTOMER_FK, customer)
@@ -508,7 +506,7 @@ customer.put(Customer.EMAIL, "mail@email.com");
 
 customer = connection.updateSelect(customer);
 
-connection.delete(asList(addressKey, customerKey));
+connection.delete(asList(addressKey, customer.primaryKey()));
 
 connection.close();
 ----

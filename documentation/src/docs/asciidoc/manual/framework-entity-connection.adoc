@@ -136,7 +136,11 @@ For inserting rows.
 
 ** {url-entity-connection}#insert{opar}is.codion.framework.domain.entity.Entity{cpar}[insert(Entity entity)]
 
+** {url-entity-connection}#insertSelect{opar}is.codion.framework.domain.entity.Entity{cpar}[insertSelect(Entity entity)]
+
 ** {url-entity-connection}#insert{opar}java.util.Collection{cpar}[insert(Collection<? extends Entity> entities)]
+
+** {url-entity-connection}#insertSelect{opar}java.util.Collection{cpar}[insertSelect(Collection<? extends Entity> entities)]
 
 [source,java,indent=0]
 ----
