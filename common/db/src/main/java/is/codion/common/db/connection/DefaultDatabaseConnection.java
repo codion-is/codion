@@ -87,7 +87,10 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
     catch (SQLException ex) {
       System.err.println("DefaultDatabaseConnection.close(), connection invalid");
     }
-    Database.closeSilently(connection);
+    try {
+      connection.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
     connection = null;
     transactionOpen = false;
   }

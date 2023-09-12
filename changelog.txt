@@ -9545,3 +9545,5 @@
   LoadTestPanel, applications tab now first, scenarios second, overview third, automatic refresh of applications true by default
   LoadTestModel refactored, application initialization improved
   DefaultRemoteClient.withDatabaseUser() bug fixed, copy constructor improved
+  ResultIterator no longer calls close() on exhaustion or error, related refactoring
+  Database.closeSilently() removed

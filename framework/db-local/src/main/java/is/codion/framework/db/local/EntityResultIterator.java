@@ -12,8 +12,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.NoSuchElementException;
 
-import static is.codion.common.db.database.Database.closeSilently;
-
 final class EntityResultIterator implements ResultIterator<Entity> {
 
   private final Statement statement;
@@ -23,11 +21,6 @@ final class EntityResultIterator implements ResultIterator<Entity> {
   private boolean hasNext;
   private boolean hasNextCalled;
 
-  /**
-   * @param statement the Statement, closed on exception or exhaustion
-   * @param resultSet the ResultSet, closed on exception or exhaustion
-   * @param resultPacker the ResultPacker
-   */
   EntityResultIterator(Statement statement, ResultSet resultSet, ResultPacker<Entity> resultPacker) {
     this.statement = statement;
     this.resultSet = resultSet;
@@ -39,20 +32,10 @@ final class EntityResultIterator implements ResultIterator<Entity> {
     if (hasNextCalled) {
       return hasNext;
     }
-    try {
-      hasNext = resultSet.next();
-      hasNextCalled = true;
-      if (hasNext) {
-        return true;
-      }
-      close();
+    hasNext = resultSet.next();
+    hasNextCalled = true;
 
-      return false;
-    }
-    catch (SQLException e) {
-      close();
-      throw e;
-    }
+    return hasNext;
   }
 
   @Override
@@ -61,18 +44,20 @@ final class EntityResultIterator implements ResultIterator<Entity> {
       throw new NoSuchElementException();
     }
     hasNextCalled = false;
-    try {
-      return resultPacker.get(resultSet);
-    }
-    catch (SQLException e) {
-      close();
-      throw e;
-    }
+
+    return resultPacker.get(resultSet);
   }
 
   @Override
   public void close() {
     closeSilently(resultSet);
     closeSilently(statement);
+  }
+
+  private static void closeSilently(AutoCloseable closeable) {
+    try {
+      closeable.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
   }
 }

@@ -872,7 +872,8 @@ public class DefaultLocalEntityConnectionTest {
   void iterator() throws Exception {
     try (LocalEntityConnection connection = createConnection()) {
       Condition condition = all(Employee.TYPE);
-      Iterator<Entity> iterator = connection.iterator(condition).iterator();
+      ResultIterator<Entity> resultIterator = connection.iterator(condition);
+      Iterator<Entity> iterator = resultIterator.iterator();
       //calling hasNext() should be idempotent and not lose rows
       assertTrue(iterator.hasNext());
       assertTrue(iterator.hasNext());
@@ -886,7 +887,9 @@ public class DefaultLocalEntityConnectionTest {
       assertThrows(NoSuchElementException.class, iterator::next);
       int rowCount = connection.count(condition);
       assertEquals(rowCount, counter);
-      iterator = connection.iterator(condition).iterator();
+      resultIterator.close();
+      resultIterator = connection.iterator(condition);
+      iterator = resultIterator.iterator();
       counter = 0;
       try {
         while (true) {
@@ -902,14 +905,14 @@ public class DefaultLocalEntityConnectionTest {
 
   @Test
   void dualIterator() throws Exception {
-    try (LocalEntityConnection connection = createConnection()) {
-      ResultIterator<Entity> deptIterator =
-              connection.iterator(all(Department.TYPE));
+    try (LocalEntityConnection connection = createConnection();
+         ResultIterator<Entity> deptIterator = connection.iterator(all(Department.TYPE))) {
       while (deptIterator.hasNext()) {
-        ResultIterator<Entity> empIterator =
-                connection.iterator(foreignKey(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()));
-        while (empIterator.hasNext()) {
-          empIterator.next();
+        try (ResultIterator<Entity> empIterator =
+                     connection.iterator(foreignKey(Employee.DEPARTMENT_FK).equalTo(deptIterator.next()))) {
+          while (empIterator.hasNext()) {
+            empIterator.next();
+          }
         }
       }
     }
@@ -1113,29 +1116,29 @@ public class DefaultLocalEntityConnectionTest {
     assertSame(result, result2);
 
     result2 = connection.select(Select.where(column(Department.DEPTNO)
-            .greaterThanOrEqualTo(20))
+                    .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
     result = connection.select(Select.where(column(Department.DEPTNO)
-            .greaterThanOrEqualTo(20))
+                    .greaterThanOrEqualTo(20))
             .orderBy(descending(Department.DEPTNO))
             .build());
     assertSame(result, result2);
 
     result2 = connection.select(Select.where(column(Department.DEPTNO)
-            .greaterThanOrEqualTo(20))
+                    .greaterThanOrEqualTo(20))
             .orderBy(OrderBy.ascending(Department.DEPTNO))
             .build());
     assertNotSame(result, result2);
 
     result = connection.select(Select.where(column(Department.DEPTNO)
-            .greaterThanOrEqualTo(20))
+                    .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
     result2 = connection.select(Select.where(column(Department.DEPTNO)
-            .greaterThanOrEqualTo(20))
+                    .greaterThanOrEqualTo(20))
             .forUpdate()
             .build());
     assertNotSame(result, result2);

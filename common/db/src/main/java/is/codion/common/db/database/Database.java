@@ -271,19 +271,6 @@ public interface Database extends ConnectionFactory {
   }
 
   /**
-   * Closes the given {@link AutoCloseable} instance, suppressing any Exceptions that may occur.
-   * @param closeable the closeable to close
-   */
-  static void closeSilently(AutoCloseable closeable) {
-    try {
-      if (closeable != null) {
-        closeable.close();
-      }
-    }
-    catch (Exception ignored) {/*ignored*/}
-  }
-
-  /**
    * Counts queries for statistics.
    */
   interface QueryCounter {

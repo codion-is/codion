@@ -133,9 +133,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         throw e;
       }
       finally {
-        Database.closeSilently(connection);
-        Database.closeSilently(resultSet);
-        Database.closeSilently(statement);
+        closeSilently(connection);
+        closeSilently(resultSet);
+        closeSilently(statement);
       }
     }
 
@@ -168,5 +168,12 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         }
       }
     }
+  }
+
+  private static void closeSilently(AutoCloseable closeable) {
+    try {
+      closeable.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
   }
 }
