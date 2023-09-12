@@ -171,7 +171,7 @@ public final class LoadTestPanel<T> extends JPanel {
                     .focusable(false)
                     .horizontalAlignment(SwingConstants.CENTER)
                     .columns(5)
-                    .linkedValueObserver(loadTestModel.applicationCountObserver())
+                    .linkedValueObserver(loadTestModel.applicationCount())
                     .build())
             .eastComponent(button(Control.builder(loadTestModel::addApplicationBatch)
                     .name("+")
@@ -206,7 +206,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .northComponent(borderLayoutPanel()
                     .centerComponent(flowLayoutPanel(FlowLayout.LEADING)
                             .add(new JLabel("Batch size"))
-                            .add(integerSpinner(loadTestModel.applicationBatchSizeValue())
+                            .add(integerSpinner(loadTestModel.applicationBatchSize())
                                     .editable(false)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .toolTipText("Application batch size")
@@ -214,12 +214,12 @@ public final class LoadTestPanel<T> extends JPanel {
                             .add(createAddRemoveApplicationPanel())
                             .add(createUserPanel())
                             .add(new JLabel("Min. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTestModel.minimumThinkTimeValue())
+                            .add(integerSpinner(loadTestModel.minimumThinkTime())
                                     .stepSize(SPINNER_STEP_SIZE)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .build())
                             .add(new JLabel("Max. think time", SwingConstants.CENTER))
-                            .add(integerSpinner(loadTestModel.maximumThinkTimeValue())
+                            .add(integerSpinner(loadTestModel.maximumThinkTime())
                                     .stepSize(SPINNER_STEP_SIZE)
                                     .columns(SMALL_TEXT_FIELD_COLUMNS)
                                     .build())
@@ -237,7 +237,7 @@ public final class LoadTestPanel<T> extends JPanel {
   }
 
   private JPanel createUserPanel() {
-    User user = loadTestModel.userValue().get();
+    User user = loadTestModel.user().get();
     JTextField usernameField = textField()
             .initialValue(user.username())
             .columns(USERNAME_PASSWORD_COLUMNS)
@@ -246,7 +246,7 @@ public final class LoadTestPanel<T> extends JPanel {
             .initialValue(String.valueOf(user.password()))
             .columns(USERNAME_PASSWORD_COLUMNS)
             .build();
-    ActionListener userInfoListener = e -> loadTestModel.userValue().set(User.user(usernameField.getText(), passwordField.getPassword()));
+    ActionListener userInfoListener = e -> loadTestModel.user().set(User.user(usernameField.getText(), passwordField.getPassword()));
     usernameField.addActionListener(userInfoListener);
     passwordField.addActionListener(userInfoListener);
 
