@@ -77,7 +77,10 @@ public final class DatabaseExplorerModel {
   }
 
   public void close() {
-    Database.closeSilently(connection);
+    try {
+      connection.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
   }
 
   private void bindEvents() {

@@ -70,9 +70,8 @@ public interface LocalEntityConnection extends EntityConnection {
   DatabaseConnection databaseConnection();
 
   /**
-   * Returns a result set iterator based on the given query condition, this iterator closes all underlying
-   * resources in case of an exception and when it finishes iterating.
-   * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
+   * Returns a result set iterator based on the given query condition.
+   * Remember to use try with resources or to call {@link ResultIterator#close()} in order to close underlying resources.
    * @param condition the query condition
    * @return an iterator for the given query condition
    * @throws DatabaseException in case of an exception
@@ -80,9 +79,8 @@ public interface LocalEntityConnection extends EntityConnection {
   ResultIterator<Entity> iterator(Condition condition) throws DatabaseException;
 
   /**
-   * Returns a result set iterator based on the given select, this iterator closes all underlying
-   * resources in case of an exception and when it finishes iterating.
-   * Calling {@link ResultIterator#close()} is required if the iterator has not been exhausted and is always recommended.
+   * Returns a result set iterator based on the given select.
+   * Remember to use try with resources or to call {@link ResultIterator#close()} in order to close underlying resources.
    * @param select the query select
    * @return an iterator for the given query select
    * @throws DatabaseException in case of an exception

@@ -60,7 +60,6 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static is.codion.common.db.connection.DatabaseConnection.SQL_STATE_NO_DATA;
-import static is.codion.common.db.database.Database.closeSilently;
 import static is.codion.framework.db.condition.Condition.*;
 import static is.codion.framework.db.local.Queries.*;
 import static is.codion.framework.domain.entity.OrderBy.ascending;
@@ -1361,7 +1360,7 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   private static PreparedStatement setParameterValues(PreparedStatement statement, List<ColumnDefinition<?>> statementColumns,
-                                         List<?> statementValues) throws SQLException {
+                                                      List<?> statementValues) throws SQLException {
     if (statementValues.isEmpty()) {
       return statement;
     }
@@ -1492,6 +1491,13 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
     if (selectQuery != null && selectQuery.columns() != null) {
       throw new UnsupportedOperationException("Selecting column values is not implemented for entities with custom column clauses");
     }
+  }
+
+  private static void closeSilently(AutoCloseable closeable) {
+    try {
+      closeable.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
   }
 
   static Database configureDatabase(Database database, Domain domain) throws DatabaseException {

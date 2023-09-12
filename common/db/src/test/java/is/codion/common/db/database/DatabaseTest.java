@@ -17,13 +17,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 public class DatabaseTest {
 
   @Test
-  void closeSilently() {
-    Database.closeSilently(null);
-    Database.closeSilently(null);
-    Database.closeSilently(null);
-  }
-
-  @Test
   void validateWithQuery() throws DatabaseException, SQLException {
     Database testDatabase = new TestDatabase();
     Connection connection = testDatabase.createConnection(User.parse("scott:tiger"));

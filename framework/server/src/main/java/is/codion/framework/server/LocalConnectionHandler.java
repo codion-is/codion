@@ -291,7 +291,7 @@ final class LocalConnectionHandler implements InvocationHandler {
   private void returnConnectionToPool() {
     Connection connection = poolEntityConnection.databaseConnection().getConnection();
     if (connection != null) {
-      Database.closeSilently(connection);
+      closeSilently(connection);
       poolEntityConnection.databaseConnection().setConnection(null);
     }
   }
@@ -322,6 +322,13 @@ final class LocalConnectionHandler implements InvocationHandler {
       databaseConnection.rollback();
     }
     catch (SQLException e) {/*Silently*/}
+  }
+
+  private static void closeSilently(AutoCloseable closeable) {
+    try {
+      closeable.close();
+    }
+    catch (Exception ignored) {/*ignored*/}
   }
 
   static final class RequestCounter {
