@@ -9544,3 +9544,4 @@
   DefaultLocalEntityConnection.dependencies() bug fixed, now synchronized due to usage of non-thread-safe access to nonSoftForeignKeyReferenceCache, now throws exception if entities are not of the same type
   LoadTestPanel, applications tab now first, scenarios second, overview third, automatic refresh of applications true by default
   LoadTestModel refactored, application initialization improved
+  DefaultRemoteClient.withDatabaseUser() bug fixed, copy constructor improved
