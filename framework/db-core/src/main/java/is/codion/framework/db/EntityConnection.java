@@ -154,6 +154,15 @@ public interface EntityConnection extends AutoCloseable {
   Entity.Key insert(Entity entity) throws DatabaseException;
 
   /**
+   * Inserts the given entity, returning the inserted entity.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to insert
+   * @return the inserted entity
+   * @throws DatabaseException in case of a database exception
+   */
+  Entity insertSelect(Entity entity) throws DatabaseException;
+
+  /**
    * Inserts the given entities, returning the primary keys in the same order as they were received.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
@@ -161,6 +170,15 @@ public interface EntityConnection extends AutoCloseable {
    * @throws DatabaseException in case of a database exception
    */
   Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException;
+
+  /**
+   * Inserts the given entities, returning the inserted entities.
+   * Performs a commit unless a transaction is open.
+   * @param entities the entities to insert
+   * @return the inserted entities
+   * @throws DatabaseException in case of a database exception
+   */
+  Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values.

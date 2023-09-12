@@ -164,9 +164,23 @@ final class DefaultRemoteEntityConnection extends AbstractRemoteEntityConnection
   }
 
   @Override
+  public Entity insertSelect(Entity entity) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.insertSelect(entity);
+    }
+  }
+
+  @Override
   public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.insert(entities);
+    }
+  }
+
+  @Override
+  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.insertSelect(entities);
     }
   }
 

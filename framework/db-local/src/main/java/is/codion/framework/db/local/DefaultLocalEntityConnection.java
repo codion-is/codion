@@ -209,6 +209,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
   }
 
   @Override
+  public Entity insertSelect(Entity entity) throws DatabaseException {
+    return select(insert(entity));
+  }
+
+  @Override
   public Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws DatabaseException {
     if (requireNonNull(entities, ENTITIES).isEmpty()) {
       return emptyList();
@@ -257,6 +262,11 @@ final class DefaultLocalEntityConnection implements LocalEntityConnection {
         closeSilently(statement);
       }
     }
+  }
+
+  @Override
+  public Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws DatabaseException {
+    return select(insert(entities));
   }
 
   @Override

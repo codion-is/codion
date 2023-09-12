@@ -212,7 +212,7 @@ public final class EntityConnectionDemo {
             .with(Artist.NAME, "My Band")
             .build();
 
-    connection.insert(myBand);
+    myBand = connection.insertSelect(myBand);
 
     Entity firstAlbum = entities.builder(Album.TYPE)
             .with(Album.ARTIST_FK, myBand)
@@ -223,7 +223,7 @@ public final class EntityConnectionDemo {
             .with(Album.TITLE, "Second album")
             .build();
 
-    Collection<Entity.Key> keys = connection.insert(asList(firstAlbum, secondAlbum));
+    Collection<Entity.Key> albumKeys = connection.insert(asList(firstAlbum, secondAlbum));
     // end::insert[]
   }
 

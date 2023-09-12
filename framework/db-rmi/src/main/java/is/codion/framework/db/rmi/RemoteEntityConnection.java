@@ -154,6 +154,16 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
   Entity.Key insert(Entity entity) throws RemoteException, DatabaseException;
 
   /**
+   * Inserts the given entity, returning the inserted etity.
+   * Performs a commit unless a transaction is open.
+   * @param entity the entity to insert
+   * @return the inserted entity
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  Entity insertSelect(Entity entity) throws RemoteException, DatabaseException;
+
+  /**
    * Inserts the given entities, returning the primary keys in the same order as they were received.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
@@ -162,6 +172,16 @@ public interface RemoteEntityConnection extends Remote, AutoCloseable {
    * @throws RemoteException in case of a remote exception
    */
   Collection<Entity.Key> insert(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
+
+  /**
+   * Inserts the given entities, returning the inserted entities.
+   * Performs a commit unless a transaction is open.
+   * @param entities the entities to insert
+   * @return the inserted entities
+   * @throws DatabaseException in case of a database exception
+   * @throws RemoteException in case of a remote exception
+   */
+  Collection<Entity> insertSelect(Collection<? extends Entity> entities) throws RemoteException, DatabaseException;
 
   /**
    * Updates the given entity based on its attribute values. Returns the updated entity.

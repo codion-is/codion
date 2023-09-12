@@ -30,15 +30,15 @@ public final class InvoiceLineEditModel extends SwingEntityEditModel {
   }
 
   @Override
-  protected Collection<Entity.Key> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
+  protected Collection<Entity> doInsert(Collection<? extends Entity> entities) throws DatabaseException {
     EntityConnection connection = connectionProvider().connection();
     connection.beginTransaction();
     try {
-      Collection<Entity.Key> keys = connection.insert(entities);
+      Collection<Entity> inserted = connection.insertSelect(entities);
       updateTotals(entities, connection);
       connection.commitTransaction();
 
-      return keys;
+      return inserted;
     }
     catch (DatabaseException e) {
       connection.rollbackTransaction();
