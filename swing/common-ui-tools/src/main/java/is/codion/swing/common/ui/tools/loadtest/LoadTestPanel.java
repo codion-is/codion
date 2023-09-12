@@ -85,6 +85,8 @@ public final class LoadTestPanel<T> extends JPanel {
             .ifPresent(LookAndFeelProvider::enable);
   }
 
+  private boolean exiting;
+
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
@@ -401,7 +403,11 @@ public final class LoadTestPanel<T> extends JPanel {
     ChartUtil.linkColors(this, chart);
   }
 
-  private void exit() {
+  private synchronized void exit() {
+    if (exiting) {
+      return;
+    }
+    exiting = true;
     JFrame frame = Utilities.parentFrame(this);
     if (frame != null) {
       frame.setTitle(frame.getTitle() + " - Closing...");

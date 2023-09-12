@@ -35,7 +35,6 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Random;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -162,7 +161,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
             .build();
     this.applicationsRefreshScheduler = TaskScheduler.builder(new TableRefreshTask())
             .interval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS)
-            .build();
+            .start();
     bindEvents();
   }
 
@@ -296,13 +295,17 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
   public final void addApplicationBatch() {
     synchronized (applications) {
       int batchSize = applicationBatchSize.get();
-      applicationCount.set(applicationCount.get() + batchSize);
       for (int i = 0; i < batchSize; i++) {
         int initialDelay = thinkTime();
         if (loginDelayFactor.get() > 0) {
           initialDelay *= loginDelayFactor.get();
         }
-        scheduledExecutor.schedule(new ApplicationInitializer(user.get()), initialDelay, TimeUnit.MILLISECONDS);
+        ApplicationRunner applicationRunner = new ApplicationRunner(user.get(), this::createApplication);
+        synchronized (applications) {
+          applications.add(applicationRunner);
+          applicationCount.set(applications.size());
+        }
+        scheduledExecutor.schedule(applicationRunner, initialDelay, TimeUnit.MILLISECONDS);
       }
     }
   }
@@ -440,9 +443,12 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     applicationRunner.stop();
     synchronized (applications) {
       applications.remove(applicationRunner);
+      applicationCount.set(applications.size());
     }
-    disconnectApplication(applicationRunner.application);
-    LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
+    if (applicationRunner.application != null) {
+      disconnectApplication(applicationRunner.application);
+      LOG.debug("LoadTestModel disconnected application: {}", applicationRunner.application);
+    }
   }
 
   private static List<FilteredTableColumn<Integer>> createApplicationTableModelColumns() {
@@ -486,45 +492,36 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     return ((com.sun.management.OperatingSystemMXBean) ManagementFactory.getOperatingSystemMXBean()).getProcessCpuLoad();
   }
 
-  private final class ApplicationInitializer implements Runnable {
-
-    private final User user;
-
-    private ApplicationInitializer(User user) {
-      this.user = user;
-    }
-
-    @Override
-    public void run() {
-      ApplicationRunner applicationRunner = new ApplicationRunner(user, createApplication(user));
-      LOG.debug("LoadTestModel initialized application: {}", applicationRunner.application);
-      synchronized (applications) {
-        applications.add(applicationRunner);
-      }
-      scheduledExecutor.schedule(applicationRunner, thinkTime(), TimeUnit.MILLISECONDS);
-    }
-  }
-
   private final class ApplicationRunner implements Runnable {
 
     private static final int MAX_RESULTS = 20;
 
     private final User user;
-    private final T application;
+    private final Function<User, T> applicationProvider;
     private final List<RunResult> runResults = new ArrayList<>();
     private final AtomicBoolean stopped = new AtomicBoolean();
     private final LocalDateTime created = LocalDateTime.now();
 
-    private ApplicationRunner(User user, T application) {
+    private T application;
+
+    private ApplicationRunner(User user, Function<User, T> applicationProvider) {
       this.user = user;
-      this.application = application;
+      this.applicationProvider = applicationProvider;
     }
 
     @Override
     public void run() {
       try {
-        if (!stopped.get() && !paused.get()) {
-          runScenario(application, scenarioChooser.randomItem());
+        if (application == null && !stopped.get() && !paused.get()) {
+          application = initializeApplication();
+          if (application != null) {
+            LOG.debug("LoadTestModel initialized application: {}", application);
+          }
+        }
+        else {
+          if (!stopped.get() && !paused.get()) {
+            runScenario(application, scenarioChooser.randomItem());
+          }
         }
         if (!stopped.get()) {
           scheduledExecutor.schedule(this, thinkTime(), TimeUnit.MILLISECONDS);
@@ -535,9 +532,28 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
       }
     }
 
+    private T initializeApplication() {
+      try {
+        long startTime = System.currentTimeMillis();
+        T application = applicationProvider.apply(user);
+        int duration = (int) (System.currentTimeMillis() - startTime);
+        addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", duration, null));
+
+        return application;
+      }
+      catch (Exception e) {
+        addRunResult(new AbstractUsageScenario.DefaultRunResult("Initialization", -1, e));
+        return null;
+      }
+    }
+
     private void runScenario(T application, UsageScenario<T> scenario) {
       RunResult runResult = scenario.run(application);
       counter.addScenarioDuration(scenario, runResult.duration());
+      addRunResult(runResult);
+    }
+
+    private void addRunResult(RunResult runResult) {
       synchronized (runResults) {
         runResults.add(runResult);
         if (runResults.size() > MAX_RESULTS) {
@@ -805,19 +821,19 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
   private static final class DefaultApplication implements Application {
 
+    private final LoadTestModel<?>.ApplicationRunner applicationRunner;
     private final List<RunResult> runResults;
-    private final String application;
     private final String user;
     private final String scenario;
     private final Boolean successful;
-    private final Integer duration;
+    private final int duration;
     private final String exception;
     private final LocalDateTime created;
 
     private DefaultApplication(LoadTestModel<?>.ApplicationRunner applicationRunner) {
+      this.applicationRunner = applicationRunner;
       this.runResults = applicationRunner.runResults == null ? emptyList() : applicationRunner.runResults;
       RunResult runResult = runResults.isEmpty() ? null : runResults.get(runResults.size() - 1);
-      this.application = applicationRunner.application.toString();
       this.user = applicationRunner.user.username();
       this.scenario = runResult == null ? null : runResult.scenario();
       this.successful = runResult == null ? null : runResult.successful();
@@ -828,7 +844,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     @Override
     public String name() {
-      return application;
+      return applicationRunner.application == null ? "Not initialized" : applicationRunner.application.toString();
     }
 
     @Override
@@ -848,7 +864,7 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
 
     @Override
     public Integer duration() {
-      return duration;
+      return duration == -1 ? null : duration;
     }
 
     @Override
@@ -859,24 +875,6 @@ public abstract class LoadTestModel<T> implements LoadTest<T> {
     @Override
     public LocalDateTime created() {
       return created;
-    }
-
-    @Override
-    public boolean equals(Object object) {
-      if (this == object) {
-        return true;
-      }
-      if (!(object instanceof DefaultApplication)) {
-        return false;
-      }
-      DefaultApplication that = (DefaultApplication) object;
-
-      return Objects.equals(application, that.application);
-    }
-
-    @Override
-    public int hashCode() {
-      return application.hashCode();
     }
   }
 
